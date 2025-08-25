@@ -19,7 +19,7 @@ import ModalBaseHeader from "./ModalBaseHeader";
 import ModalBaseMain from "./ModalBaseMain";
 
 const ModalBase = forwardRef((props: any, ref) => {
-  const { addModal, removeModal } = useNiceModal();
+  const { addModal, removeModal, modal: _modal } = useNiceModal();
   const modal = useModal();
   const modalContentRef = useRef<any>(null);
   const [maskHeight, setMaskHeight] = useState(
@@ -36,6 +36,12 @@ const ModalBase = forwardRef((props: any, ref) => {
   //   if (close) modalClose();
   // }, [close]);
   const modalClose = () => {
+    modalCloseAnimated();
+    window.history.replaceState(null, "", window.location.href);
+    window.history.back();
+  };
+  const modalCloseAnimated = () => {
+    console.log("back?");
     if (props.slide || props.slideDown || props.slideLeft) {
       setIsClosing(true);
 
@@ -66,13 +72,27 @@ const ModalBase = forwardRef((props: any, ref) => {
       const _modal = {
         ...modal,
         close: () => {
-          if (!props.require) modalClose();
+          if (!props.require) modalCloseAnimated();
         },
       };
       addModal(_modal);
       return () => removeModal(_modal);
     }
   }, [modal, isMounted]);
+  useEffect(() => {
+    if (_modal) {
+      const handleBackButton = (event: any) => {
+        event.preventDefault();
+        _modal?.close();
+      };
+
+      window.addEventListener("popstate", handleBackButton);
+
+      return () => {
+        window.removeEventListener("popstate", handleBackButton);
+      };
+    }
+  }, [_modal]);
   useEffect(() => {
     // preventOverlayScroll();
     window.addEventListener("resize", handleWindowSizeChange);
