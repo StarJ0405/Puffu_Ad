@@ -8,7 +8,7 @@ export const ModalContext = createContext({
   closeAllModal: function () {} as any,
   closeModal: function () {} as any,
   modals: [] as any[],
-  modal: {} as object, // 마지막에 열린 모달
+  modal: {} as any, // 마지막에 열린 모달
 });
 
 export default function ModalProviderClient({
