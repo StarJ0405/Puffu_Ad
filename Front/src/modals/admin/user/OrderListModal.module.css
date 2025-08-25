@@ -1,0 +1,11 @@
+.image {
+  border: 2px solid var(--admin-color);
+}
+
+.head {
+  width: 100px;
+  padding: 15px;
+}
+.content {
+  padding: 15px;
+}

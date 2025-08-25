@@ -1,0 +1,41 @@
+.button {
+  position: relative;
+  cursor: pointer;
+  border-radius: 5;
+  padding: 6px 8px;
+  width: max-content;
+  border: none;
+  background-color: var(--main-color);
+  color: #fff;
+}
+
+.admin {
+  background-color: var(--admin-button-color);
+  color: var(--admin-button-text-color);
+}
+.admin2 {
+  background-color: var(--admin-text-color);
+  color: var(--admin-button-text-color);
+}
+
+.reverse {
+  color: var(--admin-button-color);
+  background-color: var(--admin-button-text-color);
+}
+
+.empty {
+  background-color: #fff;
+  border: 1px solid var(--admin-color);
+  color: var(--admin-color);
+}
+
+.white {
+  background-color: #fff;
+  border: 1px solid var(--admin-text-color);
+  color: var(--admin-text-color);
+}
+
+.disabled {
+  cursor: not-allowed;
+  background-color: gray;
+}

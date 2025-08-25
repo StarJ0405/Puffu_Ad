@@ -1,0 +1,68 @@
+.cancel {
+  padding: 12.5px;
+  width: 100%;
+  font-weight: 600;
+  font-size: 18px;
+  color: #474747;
+  background-color: #eaeaea;
+  border-radius: 4px;
+}
+
+.button {
+  padding: 12.5px;
+  width: 100%;
+  font-weight: 600;
+  font-size: 18px;
+  color: #fff;
+  background-color: var(--main-color);
+  border-radius: 4px;
+}
+.button:disabled {
+  background-color: #d9d9d9;
+}
+
+.bar {
+  position: absolute;
+  top: 11px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background-color: #d9d9d9;
+}
+
+.selectLine {
+  padding: 11px 18px;
+  border-bottom: 1px solid #eaeaea;
+  border-left: 1px solid #eaeaea;
+  border-right: 1px solid #eaeaea;
+}
+.selectOption {
+  font-weight: 500;
+  font-size: 16px;
+  color: #1c1b1f;
+}
+
+.selectHeader {
+  padding: 11px 18px;
+  border: 1px solid #eaeaea;
+}
+
+.selectArrow {
+  color: #bbb;
+}
+.selectPlaceholder {
+  font-weight: 500;
+  font-size: 16px;
+  color: #bbb;
+}
+
+.toastClass {
+  width: calc(100vw - 30px);
+  background-color: #474747e5;
+  font-weight: 600;
+  font-size: 16px;
+  color: #fff;
+  bottom: 60px;
+  border-radius: 4px;
+}

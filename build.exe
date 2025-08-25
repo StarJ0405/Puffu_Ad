@@ -1,0 +1,4 @@
+cd ./Front
+./build.exe
+cd ../Back
+./build.exe

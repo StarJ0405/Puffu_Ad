@@ -1,0 +1,115 @@
+.list {
+  justify-content: center;
+  padding: 10px;
+  font-weight: 700;
+  font-size: 20px;
+  cursor: pointer;
+  border-bottom: 1px solid #dadada;
+  border-right: 1px solid #dadada;
+}
+.list:hover {
+  text-decoration-line: underline;
+}
+.list.selected {
+  background-color: var(--admin-color);
+  color: #fff;
+  cursor: default;
+}
+.list.selected:hover {
+  text-decoration-line: none;
+  background-color: var(--admin-color);
+}
+
+.label {
+  width: 200px;
+  min-width: 200px;
+  color: #fff;
+  background-color: #3c4b64;
+  padding: 15px;
+  justify-content: center;
+  text-align: center;
+  margin-right: 30px;
+}
+
+.singleEditButton {
+  padding: 10px 20px;
+  font-weight: 600;
+  font-size: 18px;
+  background-color: #fff;
+  border: 1px solid var(--admin-color);
+  color: var(--admin-color);
+}
+.singleCloseButton {
+  padding: 10px 20px;
+  font-weight: 600;
+  font-size: 18px;
+  background-color: #fff;
+  border: 1px solid #414141;
+  color: #414141;
+}
+
+.customPagination {
+  position: absolute;
+  bottom: 10px !important;
+  left: unset !important;
+  right: 15px !important;
+  z-index: 2;
+  width: max-content;
+  padding: 2px 20px;
+  background: #0000004d;
+  border-radius: 50px;
+  color: #ffffff;
+  font-size: 12px;
+  padding: 6px 12px;
+}
+
+.customPagination > span {
+  color: inherit;
+  font-weight: 700;
+}
+
+.optionGroup {
+  position: relative;
+  justify-content: center;
+  padding: 20px;
+  background-color: #3c4b64;
+  font-weight: 700;
+  font-size: 20px;
+  color: #fff;
+}
+.optionGroupChildWrapper {
+  padding: 15px;
+  border: 1px solid #d0d0d0;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.optionGroupChild {
+  width: max-content;
+  padding: 10px 20px;
+  border: 1px solid #d0d0d0;
+  border-radius: 8px;
+  background-color: #fff;
+  gap: 10px;
+}
+
+.label2 {
+  width: 200px;
+  min-width: 200px;
+  color: #fff;
+  background-color: var(--admin-color);
+  border-bottom: 1px solid #fff;
+  padding: 15px;
+  justify-content: center;
+  text-align: center;
+  margin-right: 30px;
+}
+
+.add {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 15px;
+  padding: 7px 14px;
+  font-weight: 600;
+  font-size: 16px;
+}

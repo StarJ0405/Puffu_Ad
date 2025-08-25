@@ -1,0 +1,80 @@
+.itemBox {
+  box-shadow: 0 4px 17px -5px var(--box-shadow-color);
+  border-radius: 10px;
+  overflow: hidden !important;
+  position: relative;
+  bottom: 0;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.itemBox::before {
+  content: "";
+  position: absolute;
+  width: 94%;
+  height: 89%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 3px solid #3c4b64;
+  border-radius: 10px;
+}
+
+.itemBox:hover {
+  bottom: 10px;
+}
+
+.wrap {
+  background-color: #3c4b64;
+  height: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.line {
+  width: 1px;
+  height: 100px;
+  border-left: 1px solid black;
+}
+
+.wrap2 {
+  background-color: white;
+  height: 100%;
+  box-shadow: 0 4px 17px -5px var(--box-shadow-color);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.text {
+  padding: 2px;
+}
+
+.label {
+  background-color: #3c4b64;
+  padding: 11px 15px;
+}
+
+.dummyWrap {
+  cursor: pointer;
+}
+
+.toggleMenu {
+  width: 100%;
+  max-width: 458px;
+  height: 156px;
+}
+
+.toggleWrap {
+  padding: 20px;
+  background-color: white;
+  height: 100%;
+  cursor: pointer;
+}
+
+.iconArea {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0 10px 25px;
+  z-index: 1; /* 애니메이션 때문에 이미지 클릭시 작동을 안함 */
+}

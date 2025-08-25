@@ -1,0 +1,139 @@
+/* src/components/Table/Table.module.css */
+.table {
+  /* border: 1px solid black; */
+  overflow-x: auto;
+}
+.common {
+  padding: 15px;
+  transition: 0.2s;
+  justify-content: flex-start;
+  gap: 10px;
+  border-bottom: 0.5px solid #c0c0c0;
+  text-align: center;
+}
+.row {
+  background-color: #ffffff;
+  color: #3c4b64;
+}
+.row.selected {
+  background-color: #d4d4d4;
+}
+
+.row:hover {
+  background-color: #dfe4d6;
+}
+
+.header {
+  background-color: #3c4b64;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: bold;
+}
+.checkbox {
+  width: max-content;
+}
+.index {
+  width: 100px;
+  min-width: 100px;
+  text-align: center;
+}
+.cell {
+  /* width: max-content; */
+  justify-content: center;
+}
+.cell p {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cell div {
+  width: 100%;
+}
+.headerCell {
+}
+.columnCell {
+}
+.pageLine {
+  padding-top: 20px;
+  width: 100%;
+}
+
+.pageButton {
+  background-color: #ffffff;
+  color: #3c4b64;
+  border: 1px solid #cecece;
+  padding: 5px 10px;
+  font-size: 16px;
+  border-radius: 50px;
+  cursor: pointer;
+  width: max-content;
+  min-width: 35px;
+  height: 35px;
+  text-align: center;
+  transition: 0.2s;
+  font-weight: bold;
+}
+.pageButton:hover {
+  background-color: #ccc;
+}
+
+.pageButton.selected {
+  background-color: var(--admin-background-color);
+  color: #ffffff;
+  font-weight: bold;
+  border-color: var(--admin-border-color);
+}
+
+.pageButton.arrow {
+  background-color: #3c4b64;
+  color: #ffffff;
+  border-color: #3c4b64;
+  position: relative;
+}
+.pageButton.arrow::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: url("/resources/icons/arrow_left.png") no-repeat center center /
+    cover;
+  width: 10px;
+  height: 16px;
+}
+.pageButton.arrowNext::before {
+  transform: translate(-50%, -50%) rotate(180deg);
+}
+
+.pageButton.arrowTwice::before {
+  width: 16px;
+  height: 16px;
+  background: url("/resources/icons/arrow_twice.png") no-repeat center center /
+    cover;
+}
+.pageButton.arrowTwiceNext::before {
+  width: 16px;
+  height: 16px;
+  transform: translate(-50%, -50%) rotate(180deg);
+  background: url("/resources/icons/arrow_twice.png") no-repeat center center /
+    cover;
+}
+
+.pageButton.selected:hover {
+  text-decoration: unset;
+}
+
+.scrollButton {
+  margin: 20px 0;
+  width: max-content;
+  text-align: center;
+  justify-self: center;
+  background-color: #ffffff;
+  color: #3c4b64;
+  border: 1px solid #cecece;
+  padding: 5px 10px;
+  font-size: 16px;
+  border-radius: 50px;
+  cursor: pointer;
+}
