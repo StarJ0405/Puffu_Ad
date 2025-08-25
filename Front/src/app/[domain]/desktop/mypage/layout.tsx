@@ -1,5 +1,4 @@
 import React from "react";
-import Header from '../Header/header'
 
 export default async function ({
   children,
@@ -9,7 +8,7 @@ export default async function ({
   return (
     <>
       {/*  */}
-      <Header />
+      <>1111</>
       {children}
       {/*  */}
     </>

@@ -1,27 +1,51 @@
-/* :root {
-  --background: #ffffff;
-  --foreground: #171717;
+:root {
+  --mainBg: #1A141D;
+  --foreground: #fff;
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
 } */
 
+@font-face {
+  font-family: "suit";
+  font-weight: 400;
+  font-display: swap;
+  src: local("SUIT-Variable"),
+    url(./woff2-subset/SUIT-Variable.woff2) format("woff2"),
+    url(./woff-subset/SUIT-Variable.woff) format("woff");
+}
+
+@font-face {
+  font-family: "SacheonHangGong-Regular";
+  font-weight: 400;
+  font-display: swap;
+  src: local("SacheonHangGong-Regular"),
+    url(./woff-subset/SacheonHangGong-Regular.woff) format("woff");
+}
+
+.SacheonFont {font-family: "SacheonHangGong-Regular", sans-serif !important;}
+
+* {
+  box-sizing: border-box;
+}
+
 html,
 body {
   max-width: 100vw;
+  height: 100%;
   overflow-x: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  font-family: "pretendard", sans-serif;
+  font-family: "pretendard", sans-serif !important;
 }
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  background: var(--mainBg);
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -32,6 +56,13 @@ body {
     color-scheme: dark;
   }
 } */
+
+.desktop_container {
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
 
 div {
   width: 100%;
@@ -114,3 +145,25 @@ a {
     transform: translateX(-20px);
   }
 }
+
+
+
+/* 컴포넌트 공통 css ----------------------- */
+.searchInput_Box {
+  border-color: rgba(255,255,255,0.3);
+  background: #111;
+}
+
+.searchInput_Box input {
+  background: transparent;
+  border: none;
+  color: #fff;
+  width: 100%;
+}
+
+.searchInput_Box input::placeholder {
+  color: #A9A9A9;
+}
+
+
+/* 컴포넌트 공통 css end ------------------ */
