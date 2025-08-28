@@ -72,15 +72,15 @@ export default async function () {
 
                      <HorizontalFlex width={'auto'} gap={10}>
                         <FlexChild>
-                           <Image src='/resources/images/user_icon.png' width={28} height={'auto'} cursor="pointer"/>
+                           <Image src='/resources/icons/main/user_icon.png' width={28} height={'auto'} cursor="pointer"/>
                         </FlexChild>
 
                         <FlexChild>
-                           <Image src='/resources/images/cart_icon.png' width={30} height={'auto'} cursor="pointer"/>
+                           <Image src='/resources/icons/main/cart_icon.png' width={30} height={'auto'} cursor="pointer"/>
                         </FlexChild>
 
                         <FlexChild>
-                           <Image src='/resources/images/heart_icon.png' width={30} height={'auto'} cursor="pointer"/>
+                           <Image src='/resources/images/header/heart_icon.png' width={30} height={'auto'} cursor="pointer"/>
                         </FlexChild>
                      </HorizontalFlex>
                   </VerticalFlex>
