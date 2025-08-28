@@ -1,6 +1,6 @@
 
 .header {
-   background: linear-gradient(180deg, #313131, #1e1e20);
+   background: linear-gradient(180deg, #2b2b2b, #1a1a1a);
    padding: 15px 0 5px;
    display: flex;
    flex-direction: column;
@@ -85,7 +85,7 @@
    gap: 20px;
    width: 120px;
    padding: 13px 5px 17px;
-   background: #1E1E20;
+   background: #1a1a1a;
    border-radius: 0 0 5px 5px;
 
    transition: all 0.2s;
