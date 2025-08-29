@@ -76,7 +76,7 @@ export default async function () {
               </FlexChild>
             </HorizontalFlex>
 
-            <ProductSlider />
+            <ProductSlider lineClamp={1} />
 
           </VerticalFlex>
         </FlexChild>
