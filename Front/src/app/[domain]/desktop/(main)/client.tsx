@@ -23,11 +23,12 @@ import ProductCard from "@/components/card/ProductCard";
 import style from "./page.module.css";
 
 
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, Autoplay, Navigation } from 'swiper/modules';
+import {Swiper as SwiperType} from 'swiper';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Autoplay } from 'swiper/modules';
-import {Swiper as SwiperType} from 'swiper';
+import 'swiper/css/navigation';
 
 
 export function MainBanner() {
@@ -191,8 +192,9 @@ export function ProductSlider({ lineClamp }: { lineClamp?: number }) {
             slidesPerView={6}
             speed={600}
             spaceBetween={20}
-            modules={[Autoplay]}
-            // autoplay={{ delay: 4000 }}
+            modules={[Autoplay, Navigation]}
+            autoplay={{ delay: 4000 }}
+            navigation={true}
          >
             {
                ListProduct.map((product, i) => {
