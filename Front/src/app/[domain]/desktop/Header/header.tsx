@@ -53,11 +53,13 @@ export default async function () {
             <HorizontalFlex className="desktop_container" alignItems="end">
                <FlexChild gap={20}>
                   <FlexChild className={style.logo}>
-                     <Image 
-                        src='/resources/images/header/logo.png'
-                        width={150}
-                        height={'auto'}
-                     />
+                     <Link href='/'>
+                        <Image 
+                           src='/resources/images/header/logo.png'
+                           width={150}
+                           height={'auto'}
+                        />
+                     </Link>
                   </FlexChild>
 
                   <SearchBox /> {/* 검색창 */}
