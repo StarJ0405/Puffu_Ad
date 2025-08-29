@@ -1,0 +1,21 @@
+.footer {
+   background: #1B1B1B;
+   padding: 28px 15px;
+}
+
+.footer * {width: auto;}
+
+.footer .info_box {
+   gap: 10px;
+}
+
+.footer .info_box .text_box {
+   gap: 7px;
+}
+
+.footer .info_box .text_box :is(p, span) {
+   font-size: 13px !important;
+   line-height: 1.2;
+}
+
+.footer .info_box .text_box .txt_item {gap: 10px;}

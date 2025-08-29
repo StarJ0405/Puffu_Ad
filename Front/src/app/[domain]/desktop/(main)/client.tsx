@@ -30,7 +30,6 @@ import { Pagination, Autoplay } from 'swiper/modules';
 import {Swiper as SwiperType} from 'swiper';
 
 
-
 export function MainBanner() {
    const swiperRef = useRef<SwiperType | null>(null);
 
@@ -104,14 +103,27 @@ export function MainBanner() {
    )
 }
 
-export function ProductSlider() {
-   const productItem = [ // 임시
+
+
+type ListItem = {
+   thumbnail: string;
+   title: string;
+   price: number;
+   discount_rate: number;
+   discount_price: number;
+   heart_count: number,
+   store_name: string;
+}
+
+const ListProduct: ListItem[] = [ // 임시
       {
          thumbnail: '/resources/images/dummy_img/product_01.png',
          title: '블랙 골드버스트 바디수트',
          price: 30000,
          discount_rate: 12,
          discount_price: 20000,
+         heart_count: 10,
+         store_name: '키테루 키테루',
       },
       {
          thumbnail: '/resources/images/dummy_img/product_02.png',
@@ -119,6 +131,8 @@ export function ProductSlider() {
          price: 30000,
          discount_rate: 12,
          discount_price: 20000,
+         heart_count: 100,
+         store_name: '키테루 키테루',
       },
       {
          thumbnail: '/resources/images/dummy_img/product_03.png',
@@ -126,6 +140,8 @@ export function ProductSlider() {
          price: 30000,
          discount_rate: 12,
          discount_price: 20000,
+         heart_count: 100,
+         store_name: '키테루 키테루',
       },
       {
          thumbnail: '/resources/images/dummy_img/product_04.png',
@@ -133,6 +149,8 @@ export function ProductSlider() {
          price: 30000,
          discount_rate: 12,
          discount_price: 20000,
+         heart_count: 70,
+         store_name: '키테루 키테루',
       },
       {
          thumbnail: '/resources/images/dummy_img/product_05.png',
@@ -140,6 +158,8 @@ export function ProductSlider() {
          price: 30000,
          discount_rate: 12,
          discount_price: 20000,
+         heart_count: 4,
+         store_name: '키테루 키테루',
       },
       {
          thumbnail: '/resources/images/dummy_img/product_06.png',
@@ -147,6 +167,8 @@ export function ProductSlider() {
          price: 30000,
          discount_rate: 12,
          discount_price: 20000,
+         heart_count: 1020,
+         store_name: '키테루 키테루',
       },
       {
          thumbnail: '/resources/images/dummy_img/product_07.png',
@@ -154,8 +176,13 @@ export function ProductSlider() {
          price: 30000,
          discount_rate: 12,
          discount_price: 20000,
+         heart_count: 1030,
+         store_name: '키테루 키테루',
       },
    ]
+
+
+export function ProductSlider({ lineClamp }: { lineClamp?: number }) {
 
    return (
       <FlexChild>
@@ -168,63 +195,14 @@ export function ProductSlider() {
             // autoplay={{ delay: 4000 }}
          >
             {
-               productItem.map((product, i) => {
+               ListProduct.map((product, i) => {
                return (
                   <SwiperSlide key={i} className={`swiper_0${i}`}>
-                     <VerticalFlex
-                        width={200}
-                        gap={15}
-                        // margin={product.margin}
-                        className={style.prodcut_item}
-                     >
-                        <FlexChild>
-                           <Image src={product.thumbnail} width={"100%"} height={"auto"} />
-                        </FlexChild>
-
-                        <FlexChild padding={"0 5px"} className={style.text_box}>
-                           <VerticalFlex gap={2}>
-                              <FlexChild>
-
-                              </FlexChild>
-                              <FlexChild>
-                                 <P weight={500} fontSize={14} ellipsis>
-                                 {product.title}
-                                 </P>
-                              </FlexChild>
-                              <FlexChild>
-                                 <P
-                                 color="#AAA"
-                                 fontSize={10}
-                                 weight={500}
-                                 textDecoration={"line-through"}
-                                 // hidden={product.discount_rate >= 1}
-                                 >
-                                 <Span>{product.price}</Span>
-                                 {/* <Span>{currency_unit}</Span> */}
-                                 </P>
-                              </FlexChild>
-                              <FlexChild>
-                                 <P>
-                                 <Span
-                                    color="var(--main-color)"
-                                    weight={600}
-                                    fontSize={14}
-                                    hidden={product.discount_rate >= 1}
-                                    paddingRight={"0.5em"}
-                                 >
-                                    {product.discount_rate}
-                                 </Span>
-                                 <Span fontSize={14} weight={600}>
-                                    {product.discount_price}
-                                 </Span>
-                                 {/* <Span fontSize={14} weight={600}>
-                                    {currency_unit}
-                                 </Span> */}
-                                 </P>
-                              </FlexChild>
-                           </VerticalFlex>
-                        </FlexChild>
-                     </VerticalFlex>
+                     <DummyProdcutCard
+                        product={product}
+                        lineClamp={lineClamp ?? 2}
+                        key={i}
+                     />
                   </SwiperSlide>
                )
                })
@@ -235,70 +213,12 @@ export function ProductSlider() {
 }
 
 
-type ListItem = {
-   thumbnail: string;
-   title: string;
-   price: number;
-   discount_rate: number;
-   discount_price: number;
-}
+
 
 export function ProductList() {
 
-   const ListProduct: ListItem[] = [ // 임시
-      {
-         thumbnail: '/resources/images/dummy_img/product_01.png',
-         title: '블랙 골드버스트 바디수트',
-         price: 30000,
-         discount_rate: 12,
-         discount_price: 20000,
-      },
-      {
-         thumbnail: '/resources/images/dummy_img/product_02.png',
-         title: '핑크색 일본 st 로제 베일 가벼움',
-         price: 30000,
-         discount_rate: 12,
-         discount_price: 20000,
-      },
-      {
-         thumbnail: '/resources/images/dummy_img/product_03.png',
-         title: '뒷태 반전 유혹하는 파자마',
-         price: 30000,
-         discount_rate: 12,
-         discount_price: 20000,
-      },
-      {
-         thumbnail: '/resources/images/dummy_img/product_04.png',
-         title: '스지망 쿠파 로린코 처녀궁 프리미엄 소프트',
-         price: 30000,
-         discount_rate: 12,
-         discount_price: 20000,
-      },
-      {
-         thumbnail: '/resources/images/dummy_img/product_05.png',
-         title: '[유니더스/얇은콘돔형] 지브라 콘돔 1box(10p) [NR]',
-         price: 30000,
-         discount_rate: 12,
-         discount_price: 20000,
-      },
-      {
-         thumbnail: '/resources/images/dummy_img/product_06.png',
-         title: '블랙 망사 리본 스타킹',
-         price: 30000,
-         discount_rate: 12,
-         discount_price: 20000,
-      },
-      {
-         thumbnail: '/resources/images/dummy_img/product_07.png',
-         title: '섹시 스트랩 간호사 st 코스튬',
-         price: 30000,
-         discount_rate: 12,
-         discount_price: 20000,
-      },
-   ]
-
    return (
-      <MasonryGrid gap={20} breakpoints={6}>
+      <MasonryGrid gap={20} breakpoints={5}>
          {
             ListProduct.map((product, i) => {
                return (
@@ -306,6 +226,7 @@ export function ProductList() {
                      product={product}
                      lineClamp={2}
                      key={i}
+                     width={244}
                   />
                )
             })
@@ -315,17 +236,26 @@ export function ProductList() {
 }
 
 
-// lineClamp 구별해주기, 더미프로덕트카드는 임시로 만든거임. 나중에 프로덕트카드에 스타일만 입히면 됨.
+// lineClamp 구별해주기, DummyProdcutCard는 임시로 만든거임. 나중에 프로덕트카드에 스타일만 입히면 됨.
 // 프로덕트 카드에 하트랑 좋아요, 브랜드 이름 추가해야 함. 라인클램프는 제목태그에 달아서 속성 주기.
 
+function DummyProdcutCard({ product, lineClamp, width }: { product: ListItem; lineClamp: number; width?: number }) {
 
-function DummyProdcutCard({ product, lineClamp }: { product: ListItem; lineClamp: number }) {
+
+   // 프로덕트 카드 쓰면 다 지워도 됨.
+   const [heartCheck, setHeartCheck] = useState(false);
+   const [heartCount, setHeartCount] = useState(product.heart_count);
+   
+
+   const toggleHeart = () => {
+   setHeartCheck(prev => !prev);
+   setHeartCount(prev => prev + (heartCheck ? -1 : 1));
+   };
+
    return (
       <VerticalFlex
-         width={200}
-         gap={15}
+         width={width ?? 200}
          // margin={product.margin}
-         paddingBottom={'40px'}
          className={style.prodcut_item}
       >
          <FlexChild>
@@ -333,30 +263,24 @@ function DummyProdcutCard({ product, lineClamp }: { product: ListItem; lineClamp
          </FlexChild>
 
          <FlexChild padding={"0 5px"} className={style.text_box}>
-            <VerticalFlex gap={2}>
-               <FlexChild>
-                  
+            <VerticalFlex gap={2} alignItems={'start'}>
+               <FlexChild className={style.store_name}>
+                  <Span>{product.store_name}</Span>
                </FlexChild>
-               <FlexChild>
-                  <P weight={500} fontSize={14} ellipsis>
-                  {product.title}
-                  </P>
-               </FlexChild>
-               <FlexChild>
-                  <P
-                  color="#AAA"
-                  fontSize={10}
-                  weight={500}
-                  textDecoration={"line-through"}
-                  // hidden={product.discount_rate >= 1}
+
+               <FlexChild className={style.product_title}>
+                  <P 
+                     textOverflow={"ellipsis"}
+                     display={"webkit-box"}
+                     overflow={"hidden"}
+                     lineClamp={lineClamp}
                   >
-                  <Span>{product.price}</Span>
-                  {/* <Span>{currency_unit}</Span> */}
+                     {product.title}
                   </P>
                </FlexChild>
-               <FlexChild>
-                  <P>
-                  <Span
+               
+               <HorizontalFlex className={style.content_item}>
+                  {/* <Span
                      color="var(--main-color)"
                      weight={600}
                      fontSize={14}
@@ -364,15 +288,30 @@ function DummyProdcutCard({ product, lineClamp }: { product: ListItem; lineClamp
                      paddingRight={"0.5em"}
                   >
                      {product.discount_rate}
-                  </Span>
-                  <Span fontSize={14} weight={600}>
-                     {product.discount_price}
-                  </Span>
+                  </Span> */}
+                  <VerticalFlex className={style.price_box}>
+                     <Span
+                        className={style.through_price}
+                        textDecoration={"line-through"}
+                     >
+                        {product.price}
+                     </Span>
+                     <Span className={style.discount_price} >
+                        {product.discount_price} ₩
+                     </Span>
+                  </VerticalFlex>
+
+                  <FlexChild onClick={toggleHeart} className={style.heart_counter}>
+                     <Image
+                        src={`/resources/icons/main/product_heart_icon${heartCheck === true ? '_active' : ''}.png`}
+                        width={23}
+                     />
+                     <Span>{heartCount}</Span>
+                  </FlexChild>
                   {/* <Span fontSize={14} weight={600}>
                      {currency_unit}
                   </Span> */}
-                  </P>
-               </FlexChild>
+               </HorizontalFlex>
             </VerticalFlex>
          </FlexChild>
       </VerticalFlex>
