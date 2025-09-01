@@ -42,7 +42,7 @@ export default async function () {
                         <Span>Copyright, ⓒ 2025 puffutoy.com. All rights reserved.</Span>
                      </FlexChild>
 
-                     <FlexChild>
+                     <FlexChild className={style.policy_item}>
                         <Link href={'/'}>이용약관</Link>
                         <Span>|</Span>
                         <Link href={'/'}>개인정보처리방침</Link>
@@ -52,10 +52,12 @@ export default async function () {
                </VerticalFlex>
 
                <VerticalFlex className={style.Cs_center} alignItems={'start'}>
-                  <P>CS CENTER</P>
-                  <P>010-7627-3243</P>
-                  <P>평일 : 09:30 ~ 18:30</P>
-                  <P>점심시간 : 12:00 ~ 13:00</P>
+                  <P className={style.cs_title}>CS CENTER</P>
+                  <P className={style.cs_number}>010-7627-3243</P>
+                  <VerticalFlex className={style.cs_days}>
+                     <P><Span>평일 : </Span>09:30 ~ 18:30</P>
+                     <P><Span>점심시간 :</Span> 12:00 ~ 13:00</P>
+                  </VerticalFlex>
                </VerticalFlex>
             </HorizontalFlex>
          </footer>

@@ -5,6 +5,9 @@
 
 .footer * {width: auto;}
 
+.footer > * {width: auto; flex: unset;}
+
+/* 회사 정보 */
 .footer .info_box {
    gap: 10px;
 }
@@ -13,9 +16,50 @@
    gap: 7px;
 }
 
-.footer .info_box .text_box :is(p, span) {
-   font-size: 13px !important;
+.footer .text_box, .footer .cs_days {
+   font-size: 13px;
+   color: #dadada;
    line-height: 1.2;
 }
 
 .footer .info_box .text_box .txt_item {gap: 10px;}
+.footer .info_box .text_box > *:last-child {margin-top: 15px;}
+ 
+
+/* 개인정보처리방침 */
+.footer .info_box .policy_item {
+   gap: 5px; font-size: 14px;
+   font-weight: 500;
+}
+
+.footer .info_box .policy_item > a:hover {
+   text-decoration: underline;
+}
+
+
+/* 콜센터 */
+.footer .Cs_center {
+   gap: 5px;
+}
+
+.footer .Cs_center .cs_title {
+   font-size: 13px;
+   color: #fff;
+   font-weight: 600;
+   margin-bottom: 3px !important;
+}
+
+.footer .Cs_center .cs_number {
+   font-size: 25px;
+   color: var(--main-color2);
+   font-weight: 900;
+}
+
+.footer .Cs_center .cs_days {
+   align-items: start !important;
+   gap: 5px;
+}
+
+.footer .Cs_center .cs_days p > span {
+   font-weight: 600 !important;
+}

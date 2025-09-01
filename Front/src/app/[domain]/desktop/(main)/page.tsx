@@ -8,12 +8,13 @@ import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
-import style from './page.module.css'
 import {MainBanner} from './client'
 import {ProductList} from './client'
 import Link from "next/link";
 import clsx from "clsx";
 import {ProductSlider} from './client';
+import {MainCatgeory} from '../Category/mainCategory'
+import style from './page.module.css'
 
 
 export default async function () {
@@ -29,16 +30,19 @@ export default async function () {
     <>
       <MainBanner />
 
-      <VerticalFlex marginTop={'35px'} gap={80} className="desktop_container">
-        <FlexChild width={'auto'}>
-          <Image 
-            src='/resources/images/desktop/category_main_icon.png'
-            width={65}
-            height={'auto'}
-          />
-          <h3 className="SacheonFont">카테고리 메뉴</h3>
+      <VerticalFlex marginTop={'35px'} marginBottom={'100px'} gap={80} className="desktop_container">
+        <VerticalFlex className={style.category_sec}>
+          <VerticalFlex className={style.ca_title}>
+            <Image 
+              src='/resources/images/desktop/category_main_icon.png'
+              width={65}
+              height={'auto'}
+            />
+            <P className="SacheonFont">카테고리 메뉴</P>
+          </VerticalFlex>
 
-        </FlexChild>
+          <MainCatgeory /> {/* 카테고리 */}
+        </VerticalFlex>
 
         <FlexChild width={'auto'}>
           <div className={style.link_Banner}>
@@ -76,7 +80,7 @@ export default async function () {
               </FlexChild>
             </HorizontalFlex>
 
-            <ProductSlider lineClamp={1} />
+            <ProductSlider id={'sale'} lineClamp={1} />
 
           </VerticalFlex>
         </FlexChild>
@@ -96,7 +100,7 @@ export default async function () {
               </FlexChild>
             </HorizontalFlex>
 
-            <ProductSlider />
+            <ProductSlider id={'new'} />
 
           </VerticalFlex>
         </FlexChild>
@@ -120,7 +124,7 @@ export default async function () {
               </FlexChild>
             </HorizontalFlex>
 
-            <ProductSlider />
+            <ProductSlider id={'pick'} />
 
           </VerticalFlex>
         </FlexChild>
@@ -134,7 +138,7 @@ export default async function () {
               </div>
             </FlexChild>
 
-            <ProductList />
+            <ProductList /> {/* 메인, 상세 리스트 */}
           </VerticalFlex>
         </FlexChild>
       </VerticalFlex>

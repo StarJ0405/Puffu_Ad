@@ -1,0 +1,33 @@
+.category_wrap {
+   width: fit-content;
+   justify-content: center !important;
+   border: 3px solid #f4f4f4;
+   border-radius: 10px;
+   padding: 26px 36px;
+   gap: 40px;
+
+}
+
+.category_wrap > * {
+   flex: unset !important;
+}
+
+.category_wrap .ca_item {
+   gap: 13px;
+   font-size: 20px;
+   text-align: center;
+   color: #f4f4f4;
+   border-radius: 5px;
+   background: #2d2d2d;
+   padding: 15px 5px 30px;
+   justify-content: end !important;
+   width: 150px;
+   min-height: 150px;
+   cursor: pointer;
+   transition: all 0.2s;
+}
+
+.category_wrap .ca_item:hover {
+   background: #1b1b1b;
+   color: var(--main-color2);
+}

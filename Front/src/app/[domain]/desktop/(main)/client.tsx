@@ -70,8 +70,10 @@ export function MainBanner() {
             speed={600}
             spaceBetween={40}
             modules={[Pagination, Autoplay]}
+            
             pagination={{
               dynamicBullets: true,
+              clickable: true,
             }}
             autoplay={{ delay: 4000 }}
             onSwiper={(swiper) => {
@@ -145,7 +147,7 @@ const ListProduct: ListItem[] = [ // 임시
          store_name: '키테루 키테루',
       },
       {
-         thumbnail: '/resources/images/dummy_img/product_04.png',
+         thumbnail: '/resources/images/dummy_img/product_04.jpg',
          title: '스지망 쿠파 로린코 처녀궁 프리미엄 소프트',
          price: 30000,
          discount_rate: 12,
@@ -183,10 +185,10 @@ const ListProduct: ListItem[] = [ // 임시
    ]
 
 
-export function ProductSlider({ lineClamp }: { lineClamp?: number }) {
+export function ProductSlider({id, lineClamp }: { id: string, lineClamp?: number }) {
 
    return (
-      <FlexChild>
+      <FlexChild id={id} className={style.ProductSlider}>
          <Swiper
             loop={true}
             slidesPerView={6}
@@ -194,22 +196,31 @@ export function ProductSlider({ lineClamp }: { lineClamp?: number }) {
             spaceBetween={20}
             modules={[Autoplay, Navigation]}
             autoplay={{ delay: 4000 }}
-            navigation={true}
+            navigation={{
+               prevEl: `#${id} .${style.prevBtn}`,
+               nextEl: `#${id} .${style.nextBtn}`,
+            }}
          >
             {
                ListProduct.map((product, i) => {
                return (
-                  <SwiperSlide key={i} className={`swiper_0${i}`}>
-                     <DummyProdcutCard
+                  <SwiperSlide key={i}>
+                     <TestProdcutCard
                         product={product}
                         lineClamp={lineClamp ?? 2}
-                        key={i}
                      />
                   </SwiperSlide>
                )
                })
             }
          </Swiper>
+
+         <div className={clsx(style.naviBtn, style.prevBtn)}>
+           <Image src={'/resources/icons/arrow/slide_arrow.png'} width={10}></Image>
+         </div>
+         <div className={clsx(style.naviBtn, style.nextBtn)}>
+           <Image src={'/resources/icons/arrow/slide_arrow.png'} width={10}></Image>
+         </div>
       </FlexChild>
    )
 }
@@ -224,7 +235,7 @@ export function ProductList() {
          {
             ListProduct.map((product, i) => {
                return (
-                  <DummyProdcutCard
+                  <TestProdcutCard
                      product={product}
                      lineClamp={2}
                      key={i}
@@ -238,10 +249,10 @@ export function ProductList() {
 }
 
 
-// lineClamp 구별해주기, DummyProdcutCard는 임시로 만든거임. 나중에 프로덕트카드에 스타일만 입히면 됨.
-// 프로덕트 카드에 하트랑 좋아요, 브랜드 이름 추가해야 함. 라인클램프는 제목태그에 달아서 속성 주기.
+// lineClamp 구별해주기, TestProdcutCard는 임시로 만든거임. 나중에 프로덕트카드에 스타일만 입히면 됨.
+// 라인클램프는 제목태그에 달아서 속성 주기.
 
-function DummyProdcutCard({ product, lineClamp, width }: { product: ListItem; lineClamp: number; width?: number }) {
+function TestProdcutCard({ product, lineClamp, width }: { product: ListItem; lineClamp: number; width?: number }) {
 
 
    // 프로덕트 카드 쓰면 다 지워도 됨.
@@ -260,8 +271,8 @@ function DummyProdcutCard({ product, lineClamp, width }: { product: ListItem; li
          // margin={product.margin}
          className={style.prodcut_item}
       >
-         <FlexChild>
-            <Image src={product.thumbnail} width={"100%"} height={"auto"} />
+         <FlexChild className={style.imgBox}>
+            <Image src={product.thumbnail} width={"100%"} height={"auto"}/>
          </FlexChild>
 
          <FlexChild padding={"0 5px"} className={style.text_box}>
