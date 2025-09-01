@@ -1,3 +1,5 @@
+
+/* 메인베너 */
 .main_banner {
    width: 100%;
    height: auto;
@@ -11,6 +13,8 @@
    background-size: cover;
    /* background-position: center bottom; */
 }
+
+/* 메인베너 end ------------------------ */
 
 .link_Banner {
    width: 100%;
@@ -66,9 +70,6 @@
 .titleBox3 .title h2 > * {font-family: inherit !important;}
 
 
-
-
-
 .linkBtn {
    padding: 6px 19px;
    background: #050505;
@@ -79,6 +80,40 @@
 }
 
 
+.category_sec {gap: 25px;}
+.category_sec .ca_title {
+   text-align: center;
+   gap: 10px;
+   font-size: 30px;
+   color: #fff;
+}
+
+
+/* 프로덕트슬라이더 */
+.ProductSlider {position: relative;}
+.ProductSlider .naviBtn {
+   position: absolute;
+   top: 25%;
+   z-index: 100;
+   width: 45px; height: 45px;
+   border-radius: 50%;
+   background: rgba(0,0,0,0.7);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   cursor: pointer;
+   transition: all 0.2s;
+}
+
+.ProductSlider .prevBtn {left: -20px;}
+.ProductSlider .nextBtn {right: -20px;}
+.ProductSlider .nextBtn > img {
+   transform: rotate(180deg);
+}
+
+.ProductSlider .naviBtn:hover {
+   background: #000;
+}
 
 
 /* 프로덕트카드용 */
@@ -86,6 +121,22 @@
 .prodcut_item {
    padding-bottom: 40px;
    gap: 15px;
+}
+
+.prodcut_item .imgBox {
+   cursor: pointer;
+   overflow: hidden;
+   width: 100%;
+   border-radius: 10px;
+}
+
+.prodcut_item .imgBox img {
+   transition: all 0.5s;
+   will-change: transform;
+}
+
+.prodcut_item .imgBox:hover img {
+   transform: scale(1.1);
 }
 
 .prodcut_item .text_box {
@@ -107,6 +158,7 @@
    margin: 7px 0 18px;
    font-size: 16px; color: #fff;
    line-height: 1.2; font-weight: 600;
+   cursor: pointer;
 }
 
 .prodcut_item .content_item {

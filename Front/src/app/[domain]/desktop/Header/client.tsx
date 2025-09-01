@@ -19,11 +19,12 @@ import clsx from "clsx";
 import { useParams } from "next/navigation";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import style from "./header.module.css";
+import {HeaderCatgeory} from '../Category/headerCategory'
 
 export function SearchBox() {
    return (
       <FlexChild gap={10} className={`searchInput_Box ${style.search_Box}`}>
-         <input type="search" placeholder="2025 신제품" onClick={()=> {'저는 자아를 가진 검색창입니다.'}} />
+         <input type="search" placeholder="2025 신제품" onClick={()=> {'검색창 클릭'}} />
 
          <Image 
             src='/resources/images/header/input_search_icon.png'
@@ -35,9 +36,28 @@ export function SearchBox() {
    )
 }
 
-export function CategoryBtn() {
+
+// 카테고리 버튼, 메뉴
+export function CategoryBox() {
+
+   const [CaOpen, SetCaOpen] = useState(false);
+
    return (
-      <FlexChild gap={10} width={'auto'} className={style.category_btn} onClick={()=> {'저는 자아를 가진 버튼입니다.'}}>
+      <FlexChild
+         width={'auto'} 
+         onMouseEnter={() => SetCaOpen(true)} 
+         onMouseLeave={() => SetCaOpen(false)}
+         className={style.CategoryBox}
+      >
+         <CategoryBtn />
+         <HeaderCatgeory CaOpen={CaOpen} />
+      </FlexChild>
+   )
+}
+
+function CategoryBtn() { // 버튼
+   return (
+      <FlexChild gap={10} width={'auto'} className={style.category_btn}>
          <Image 
             src='/resources/images/header/category_menu_icon.png'
             width={18}

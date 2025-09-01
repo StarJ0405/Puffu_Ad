@@ -1,10 +1,11 @@
 
 .header {
    background: linear-gradient(180deg, #2b2b2b, #1a1a1a);
-   padding: 15px 0 5px;
+   padding: 15px 0 0;
    display: flex;
    flex-direction: column;
    gap: 35px;
+   position: relative;
 }
 
 .logo {
@@ -34,11 +35,17 @@
 
 
 /* 카테고리 버튼 */
+.CategoryBox {
+   padding: 18px 0;
+}
 .category_btn {
    font-size: 16px;
    color: #fff;
    cursor: pointer;
 }
+.CategoryBox:hover > .category_btn {
+   color: var(--main-color2);
+} 
 
 
 /* 하단 메뉴 */
@@ -48,12 +55,34 @@
    align-items: center;
 }
 
+.outerMenu > li {position: relative;}
+
 .outerMenu > li > a {
    display: flex;
    align-items: center;
    gap: 5px;
    font-size: 16px;
    color: #fff;
+   transition: all 0.2s;
+}
+
+.outerMenu > li > .active_line {
+   position: absolute; z-index: 1;
+   bottom: -6px;
+   background: #fff;
+   display: block; width: 0;
+   height: 3px;
+   right: 0;
+   transition: all 0.2s;
+}
+
+.outerMenu > li:hover > .active_line, 
+.active_line.active {
+   left: 0; right: unset; width: 100%;
+}
+
+.outerMenu > li:hover > a {
+   color: var(--main-color1);
 }
 
 
@@ -97,10 +126,15 @@
    font-size: 14px;
    color: #fff;
    font-weight: 300;
+   transition: all 0.2s;
 }
 
 .commu_outer > li:hover .subMenu {
    opacity: 1;
    visibility: visible;
    top: 100%;
+}
+
+.commu_outer > li > .subMenu > li a:hover {
+   color: var(--main-color2);
 }
