@@ -1,5 +1,4 @@
 import Image from "@/components/Image/Image";
-import style from "./footer.module.css";
 import {SearchBox, CategoryBtn} from './client'
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import FlexChild from "@/components/flex/FlexChild";
@@ -7,8 +6,12 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import Div from "@/components/div/Div";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
+import Button from "@/components/buttons/Button";
 import Link from "next/link";
 import clsx from "clsx";
+import style from "./footer.module.css";
+
+import TopButton from '@/components/buttons/TopButton'
 
 export default async function () {
 
@@ -61,6 +64,41 @@ export default async function () {
                </VerticalFlex>
             </HorizontalFlex>
          </footer>
+
+
+         {/* 사이드 네비 */}
+         <nav id={style.sideNavi}>
+            <VerticalFlex className={style.outer_box}>
+               <Link href={'/sale'} className={style.hotDeal_link}>
+                  <Image 
+                     src={'/resources/images/footer/sidenavi_hotDeal.png'}
+                     width={43}
+                  />
+                  <h4 className="SacheonFont">데이 HOT딜</h4>
+               </Link>
+   
+               <ul className={style.link_list}>
+                  <li>
+                     <Link href={'/board/photoReview'}>포토사용후기</Link>
+                  </li>
+                  <li>
+                     <Link href={'/board/notice'}>공지사항</Link>
+                  </li>
+                  <li>
+                     <Link href={'/board/event'}>이벤트</Link>
+                  </li>
+                  <li>
+                     <Link href={'/board/FAQ'}>1:1문의</Link>
+                  </li>
+               </ul>
+            </VerticalFlex>
+
+            <TopButton/>
+         </nav>
+
+         <Button className={style.chat_btn}>
+            <Image src={'./resources/images/footer/chat_toggle_icon.png'} width={56} />
+         </Button>
       </>
    )
 }

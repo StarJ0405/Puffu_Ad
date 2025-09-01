@@ -1,0 +1,25 @@
+.topToggleBtn {
+   width: 55px;
+   min-height: 55px;
+   border-radius: 50%;
+   background: #3f3f3f;
+   font-size: 14px;
+   color: #fff;
+   list-style: 1;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   gap: 7px;
+   cursor: pointer;
+   box-shadow: inset 0 0 5px 2px rgba(0,0,0,0.25);
+   transition: all 0.2s;
+}
+
+.topToggleBtn img {
+   transform: rotate(180deg);
+}
+
+.topToggleBtn:hover {
+   background: #111;
+}

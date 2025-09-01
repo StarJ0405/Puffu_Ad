@@ -1,6 +1,6 @@
 import Image from "@/components/Image/Image";
 import style from "./header.module.css";
-import {SearchBox, CategoryBox} from './client'
+import {SearchBox, HeaderBottom} from './client'
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
@@ -9,7 +9,7 @@ import Link from "next/link";
 import Span from "@/components/span/Span";
 import clsx from "clsx";
 
-export default async function () { 
+export default async function () {
 
    const menu1 = [ // 임시 데이터
       { name: '브랜드', link: '/Brand'},
@@ -88,55 +88,7 @@ export default async function () {
                </FlexChild>
             </HorizontalFlex>
 
-            <HorizontalFlex className="desktop_container" position="relative">
-               <HorizontalFlex gap={25} justifyContent="start">
-                  <CategoryBox /> {/* 카테고리 버튼, 카테고리 메뉴 */}
-
-                  <FlexChild width={'auto'}>
-                     <ul className={clsx(style.outerMenu, style.shop_outer)}>
-                        {
-                           menu1.map((item, i)=> (
-                              <li key={i}>
-                                 <Link href={item.link} className="SacheonFont">
-                                    {item.name}
-                                    {item.icon ? <Image src={item.icon} width={12} /> : null}
-                                 </Link>
-                                 <Span className={style.active_line}></Span>
-                              </li>
-                           ))
-                        }
-                     </ul>
-                  </FlexChild>
-               </HorizontalFlex>
-
-
-               <FlexChild gap={20} width={'auto'}>
-                  <ul className={clsx(style.outerMenu, style.commu_outer)}>
-                     {
-                        menu2.map((item, i)=> (
-                           <li key={i}>
-                              <Link href={item.link}>
-                                 {item.name}
-                                 {item.inner ? <Image src={'/resources/icons/arrow/arrow_bottom_icon.png'} width={10} height={'auto'} /> : null}
-                              </Link>
-
-                              {item.inner && (
-                                 <ul className={style.subMenu}>
-                                 {item.inner.map((sub, j) => (
-                                    <li key={j}>
-                                       <Link href={sub.link}>
-                                          {sub.name}
-                                       </Link>
-                                    </li>
-                                 ))}
-                                 </ul>
-                              )}
-                           </li>
-                        ))
-                     }
-                  </ul>
-               </FlexChild>
-            </HorizontalFlex>
+            <HeaderBottom menu1={menu1} menu2={menu2}/>
          </header>
       </>
    )

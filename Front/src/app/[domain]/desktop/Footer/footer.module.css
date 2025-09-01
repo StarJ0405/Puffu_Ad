@@ -5,11 +5,10 @@
 
 .footer * {width: auto;}
 
-.footer > * {width: auto; flex: unset;}
-
 /* 회사 정보 */
 .footer .info_box {
    gap: 10px;
+   flex: unset;
 }
 
 .footer .info_box .text_box {
@@ -40,6 +39,7 @@
 /* 콜센터 */
 .footer .Cs_center {
    gap: 5px;
+   flex: unset;
 }
 
 .footer .Cs_center .cs_title {
@@ -62,4 +62,72 @@
 
 .footer .Cs_center .cs_days p > span {
    font-weight: 600 !important;
+}
+
+
+/* 사이드네비 */
+
+#sideNavi {
+   position: fixed;
+   right: 160px;
+   top: 40%;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 10px;
+   width: 120px;
+   height: auto;
+}
+
+#sideNavi .outer_box {
+   overflow: hidden;
+   border-radius: 7px;
+}
+
+#sideNavi .outer_box > * {
+   width: 100%;
+}
+
+#sideNavi .outer_box .hotDeal_link {
+   display: flex; flex-direction: column;
+   align-items: center; padding: 10px;
+   background: #050505;
+   gap: 3px;
+}
+#sideNavi .outer_box .hotDeal_link h4 {
+   color: #FF4A4D; font-size: 14px;
+   line-height: 1;
+}
+
+#sideNavi .outer_box .link_list {
+   background: #3A3A3A;
+}
+
+#sideNavi .outer_box .link_list > li {
+   color: #ededed;
+   background: transparent;
+   transition: all 0.1s;
+}
+
+#sideNavi .outer_box .link_list > li a {
+   padding: 10px 3px;
+   font-size: 14px;
+   color: inherit;
+   line-height: 1;
+   text-align: center;
+   display: block; width: 100%;
+   transition: inherit;
+}
+
+#sideNavi .outer_box .link_list > li:hover {
+   background: #111;
+   color: var(--main-color2);
+}
+
+.chat_btn {
+   position: fixed;
+   bottom: 10%;
+   right: 30px;
+   background: none;
+   padding: 0;
 }

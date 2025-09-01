@@ -31,8 +31,11 @@
 
 .overlay .ca_tab1 {
     width: 130px;
-    flex: unset;
+    display: flex;
+    flex-direction: column;
+    
     overflow-y: auto;
+
 }
 
 .overlay .tab_item {
