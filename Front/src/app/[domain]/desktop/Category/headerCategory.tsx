@@ -45,7 +45,7 @@ export function HeaderCatgeory({CaOpen} : {CaOpen : boolean}) { // 카테고리�
          // top={`${headerH}px`}
       >
          <HorizontalFlex className={style.category_wrap}>
-            <VerticalFlex className={style.ca_tab1}>
+            <nav className={style.ca_tab1}>
                {
                   ca_test.map((cat, i) => (
                      <FlexChild key={i}
@@ -77,7 +77,7 @@ export function HeaderCatgeory({CaOpen} : {CaOpen : boolean}) { // 카테고리�
                      </FlexChild>
                   ))
                }
-            </VerticalFlex>
+            </nav>
    
             <VerticalFlex className={style.ca_tabBox}>
                <FlexChild 

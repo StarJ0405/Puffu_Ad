@@ -33,7 +33,7 @@ export function MainCatgeory() { // 카테고리메뉴
    ]
 
    return (
-      <HorizontalFlex className={style.category_wrap}>
+      <nav className={style.category_wrap}>
          {
             pathname !== "/" ?
             <VerticalFlex className={clsx(style.ca_item, style.ca_all)}>
@@ -52,6 +52,6 @@ export function MainCatgeory() { // 카테고리메뉴
                </VerticalFlex>
             ))
          }
-      </HorizontalFlex>
+      </nav>
    )
 }

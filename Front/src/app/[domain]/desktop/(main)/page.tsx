@@ -34,7 +34,7 @@ export default async function () {
         <VerticalFlex className={style.category_sec}>
           <VerticalFlex className={style.ca_title}>
             <Image 
-              src='/resources/images/desktop/category_main_icon.png'
+              src='/resources/images/category_main_icon.png'
               width={65}
               height={'auto'}
             />
