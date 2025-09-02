@@ -22,19 +22,19 @@ export default async function () {
       { name: '포토 사용후기', link: '/Boad/ReviewPhoto'},
       { name: '공지사항', link: '/Boad/Notice'},
       { name: '이벤트', link: '/Boad/Event'},
-      { 
-         name: '커뮤니티', 
-         link: '/Boad/Community', 
-         inner: [
-            {name: '자유게시판', link: '/Boad/Community'},
-            {name: '포토사용후기', link: '/Boad/ReviewPhoto'},
-            {name: '유머/움짤', link: '/Boad/Funny'},
-            {name: '안구정화', link: '/Boad/Purify'},
-            {name: '성 상담소', link: '/Boad/Counseling'},
-            {name: '입문자 가이드', link: '/Boad/NewbieGuide'},
-         ]
-      },
-      { 
+      // { 
+      //    name: '커뮤니티', 
+      //    link: '/Boad/Community', 
+      //    inner: [
+      //       {name: '자유게시판', link: '/Boad/Community'},
+      //       {name: '포토사용후기', link: '/Boad/ReviewPhoto'},
+      //       {name: '유머/움짤', link: '/Boad/Funny'},
+      //       {name: '안구정화', link: '/Boad/Purify'},
+      //       {name: '성 상담소', link: '/Boad/Counseling'},
+      //       {name: '입문자 가이드', link: '/Boad/NewbieGuide'},
+      //    ]
+      // },
+      {
          name: '고객센터', 
          link: '/Boad/CustomerCenter', 
          inner: [
@@ -53,7 +53,7 @@ export default async function () {
                <FlexChild gap={20}>
                   <FlexChild className={style.logo}>
                      <Link href='/'>
-                        <Image 
+                        <Image
                            src='/resources/images/header/logo.png'
                            width={150}
                            height={'auto'}
@@ -65,13 +65,12 @@ export default async function () {
                </FlexChild>
 
                <FlexChild width={'auto'} className={style.info_box}>
-                  <VerticalFlex gap={20}>
+                  <VerticalFlex gap={20} alignItems="end">
                      <HorizontalFlex gap={20} className={style.info_top} width={'auto'}>
                         <Link href={'/mypage/inquery'}>로그인</Link>
-                        <span>KOR</span>{/* 언어 */}
                      </HorizontalFlex>
 
-                     <HorizontalFlex width={'auto'} gap={10}>
+                     <HorizontalFlex width={'auto'} gap={10} alignItems="end">
                         <FlexChild>
                            <Image src='/resources/icons/main/user_icon.png' width={28} height={'auto'} cursor="pointer"/>
                         </FlexChild>

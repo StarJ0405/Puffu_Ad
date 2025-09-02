@@ -1,0 +1,45 @@
+.title_box {
+   margin-bottom: 20px;
+}
+
+.title_box h3 {
+   font-size: 30px;
+   margin-bottom: 30px;
+   line-height: 1;
+   font-weight: 700;
+}
+
+
+.sort_group {align-items: end !important;}
+
+.sort_group .count_txt {
+   font-size: 16px;
+   color: #fff;
+}
+
+.sort_group .count_txt p > b {
+   font-weight: 600 !important;
+}
+
+.sort_group .sort_box {
+   width: auto;
+   gap: 10px;
+}
+
+.sort_group .sort_box .sort_btn {
+   padding: 5px 9px;
+   border: 1px solid #D4D4D4;
+   border-radius: 3px !important;
+   background: transparent;
+   font-size: 15px;
+   line-height: 1;
+   color: #e4e4e4;
+   transition: all 0.1s;
+}
+
+.sort_group .sort_box .sort_btn:hover,
+.sort_btn.focus {
+   background: #050505;
+   color: var(--main-color1);
+   border-color: var(--main-color1);
+}
