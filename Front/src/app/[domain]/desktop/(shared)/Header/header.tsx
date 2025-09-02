@@ -49,7 +49,7 @@ export default async function () {
    return (
       <>
          <header className={style.header}>
-            <HorizontalFlex className="desktop_container" alignItems="end">
+            <HorizontalFlex className="desktop_container" alignItems="end" marginBottom={35}>
                <FlexChild gap={20}>
                   <FlexChild className={style.logo}>
                      <Link href='/'>
@@ -67,8 +67,8 @@ export default async function () {
                <FlexChild width={'auto'} className={style.info_box}>
                   <VerticalFlex gap={20}>
                      <HorizontalFlex gap={20} className={style.info_top} width={'auto'}>
-                        <span>회원가입</span>
-                        <span>KOR</span>
+                        <Link href={'/mypage/inquery'}>로그인</Link>
+                        <span>KOR</span>{/* 언어 */}
                      </HorizontalFlex>
 
                      <HorizontalFlex width={'auto'} gap={10}>

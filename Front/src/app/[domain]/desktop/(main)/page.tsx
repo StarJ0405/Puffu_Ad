@@ -13,7 +13,7 @@ import {ProductList} from './client'
 import Link from "next/link";
 import clsx from "clsx";
 import {ProductSlider} from './client';
-import {MainCatgeory} from '../Category/mainCategory'
+import {MainCatgeory} from '../(shared)/Category/mainCategory'
 import style from './page.module.css'
 
 
