@@ -13,8 +13,8 @@ import {ProductList} from './client'
 import Link from "next/link";
 import clsx from "clsx";
 import {ProductSlider} from './client';
-import {MainCatgeory} from '../(shared)/Category/mainCategory'
-import style from './page.module.css'
+import {MainCatgeory} from './(shared)/Category/mainCategory';
+import style from './page.module.css';
 
 
 export default async function () {
@@ -27,7 +27,7 @@ export default async function () {
   ]
 
   return (
-    <>
+    <section className='root'>
       <MainBanner />
 
       <VerticalFlex marginTop={'35px'} marginBottom={'100px'} gap={80} className="desktop_container">
@@ -142,6 +142,6 @@ export default async function () {
           </VerticalFlex>
         </FlexChild>
       </VerticalFlex>
-    </>
+    </section>
   )
 }
