@@ -26,9 +26,6 @@ import style from "./page.module.css";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, Navigation } from 'swiper/modules';
 import {Swiper as SwiperType} from 'swiper';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
 
 
 export function MainBanner() {

@@ -79,13 +79,13 @@ export default async function () {
    
                <ul className={style.link_list}>
                   <li>
-                     <Link href={'/board/photoReview'}>포토사용후기</Link>
+                     <Link href={'/mypage'}>마이페이지</Link>
                   </li>
                   <li>
-                     <Link href={'/board/notice'}>공지사항</Link>
+                     <Link href={'/cart'}>장바구니</Link>
                   </li>
                   <li>
-                     <Link href={'/board/event'}>이벤트</Link>
+                     <Link href={'/wishList'}>위시리스트</Link>
                   </li>
                   <li>
                      <Link href={'/board/FAQ'}>1:1문의</Link>

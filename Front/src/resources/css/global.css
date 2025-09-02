@@ -65,6 +65,10 @@ body {
   margin: 0 auto;
 }
 
+#root {
+  padding-top: 166px;
+}
+
 
 div {
   width: 100%;
