@@ -20,6 +20,7 @@ import clsx from "clsx";
 import { useParams } from "next/navigation";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import ProductCard from "@/components/card/ProductCard";
+import { usePathname } from "next/navigation";
 import style from "./page.module.css";
 
 
@@ -104,6 +105,42 @@ export function MainBanner() {
 }
 
 
+export function MainCategory() { // 카테고리메뉴
+
+   const pathname = usePathname();
+   
+
+   const ca_test = [
+      {name: '코스튬/속옷', thumbnail: '/resources/images/category/ca_costum.png', width: 40,},
+      {name: '진동기', thumbnail: '/resources/images/category/ca_suction.png', width: 54,},
+      {name: '흡입기', thumbnail: '/resources/images/category/ca_vibrator.png', width: 54,},
+   ]
+
+   return (
+      <nav className={style.category_wrap}>
+         {
+            pathname !== "/" ?
+            <VerticalFlex className={clsx(style.ca_item, style.ca_all)}>
+               <Span>ALL</Span>
+            </VerticalFlex>
+            : null
+         }
+         {
+            ca_test.map((cat, i)=> (
+               <VerticalFlex className={style.ca_item} key={i}>
+                  <Image 
+                     src={cat.thumbnail}
+                     width={cat.width}
+                  />
+                  <Span>{cat.name}</Span>
+               </VerticalFlex>
+            ))
+         }
+      </nav>
+   )
+}
+
+
 
 type ListItem = {
    thumbnail: string;
@@ -111,8 +148,9 @@ type ListItem = {
    price: number;
    discount_rate: number;
    discount_price: number;
-   heart_count: number,
+   heart_count: number;
    store_name: string;
+   rank: number;
 }
 
 const ListProduct: ListItem[] = [ // 임시
@@ -124,6 +162,7 @@ const ListProduct: ListItem[] = [ // 임시
          discount_price: 20000,
          heart_count: 10,
          store_name: '키테루 키테루',
+         rank: 0,
       },
       {
          thumbnail: '/resources/images/dummy_img/product_02.png',
@@ -133,6 +172,7 @@ const ListProduct: ListItem[] = [ // 임시
          discount_price: 20000,
          heart_count: 100,
          store_name: '키테루 키테루',
+         rank: 1,
       },
       {
          thumbnail: '/resources/images/dummy_img/product_03.png',
@@ -142,6 +182,7 @@ const ListProduct: ListItem[] = [ // 임시
          discount_price: 20000,
          heart_count: 100,
          store_name: '키테루 키테루',
+         rank: 2,
       },
       {
          thumbnail: '/resources/images/dummy_img/product_04.jpg',
@@ -151,6 +192,7 @@ const ListProduct: ListItem[] = [ // 임시
          discount_price: 20000,
          heart_count: 70,
          store_name: '키테루 키테루',
+         rank: 3,
       },
       {
          thumbnail: '/resources/images/dummy_img/product_05.png',
@@ -160,6 +202,7 @@ const ListProduct: ListItem[] = [ // 임시
          discount_price: 20000,
          heart_count: 4,
          store_name: '키테루 키테루',
+         rank: 4,
       },
       {
          thumbnail: '/resources/images/dummy_img/product_06.png',
@@ -169,6 +212,7 @@ const ListProduct: ListItem[] = [ // 임시
          discount_price: 20000,
          heart_count: 1020,
          store_name: '키테루 키테루',
+         rank: 5,
       },
       {
          thumbnail: '/resources/images/dummy_img/product_07.png',
@@ -178,6 +222,7 @@ const ListProduct: ListItem[] = [ // 임시
          discount_price: 20000,
          heart_count: 1030,
          store_name: '키테루 키테루',
+         rank: 6,
       },
    ]
 
@@ -269,6 +314,11 @@ function TestProdcutCard({ product, lineClamp, width }: { product: ListItem; lin
          className={style.prodcut_item}
       >
          <FlexChild className={style.imgBox}>
+            <FlexChild 
+               className={clsx(style.rank, (product.rank < 3 ? style.topRank : ''))}
+            >
+               <Span className="SacheonFont">{product.rank + 1}</Span>
+            </FlexChild>
             <Image src={product.thumbnail} width={"100%"} height={"auto"}/>
          </FlexChild>
 

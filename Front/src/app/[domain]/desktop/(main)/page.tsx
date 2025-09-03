@@ -12,8 +12,7 @@ import {MainBanner} from './client'
 import {ProductList} from './client'
 import Link from "next/link";
 import clsx from "clsx";
-import {ProductSlider} from './client';
-import {MainCatgeory} from './(shared)/Category/mainCategory';
+import {ProductSlider, MainCategory} from './client';
 import style from './page.module.css';
 
 
@@ -41,7 +40,7 @@ export default async function () {
             <P className="SacheonFont">카테고리 메뉴</P>
           </VerticalFlex>
 
-          <MainCatgeory /> {/* 카테고리 */}
+          <MainCategory /> {/* 카테고리 */}
         </VerticalFlex>
 
         <FlexChild width={'auto'}>
