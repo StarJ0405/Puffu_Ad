@@ -12,10 +12,10 @@ import clsx from "clsx";
 export default async function () {
 
    const menu1 = [ // 임시 데이터
-      { name: '브랜드', link: '/Brand'},
       { name: 'BEST 상품', link: '/Best'},
       { name: '신상품', link: '/NewProduct'},
       { name: '데이 핫딜', link: '/Sale', icon: '/resources/images/header/HotDeal_icon.png'},
+      { name: '랜덤박스', link: '/RandomBox'},
    ]
 
    const menu2 = [ // 임시 데이터

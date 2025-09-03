@@ -19,7 +19,7 @@ import clsx from "clsx";
 import { useParams } from "next/navigation";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import style from "./header.module.css";
-import {HeaderCatgeory} from '../Category/headerCategory'
+import {HeaderCatgeory} from './headerCategory'
 import Link from "next/link";
 
 interface ShopMenuItem {
@@ -152,3 +152,6 @@ export function HeaderBottom({menu1, menu2} : HeaderBottomProps) {
       </>
    )
 }
+
+
+

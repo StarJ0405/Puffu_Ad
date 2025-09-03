@@ -15,6 +15,57 @@
 
 /* 메인베너 end ------------------------ */
 
+
+
+.category_sec {gap: 25px;}
+.category_sec .ca_title {
+   text-align: center;
+   gap: 10px;
+   font-size: 30px;
+   color: #fff;
+}
+
+/* 메인 카테고리 */
+.category_wrap {
+   display: flex;
+   width: fit-content;
+   justify-content: center;
+   border: 3px solid #f4f4f4;
+   border-radius: 10px;
+   padding: 26px 36px;
+   gap: 40px;
+
+}
+
+.category_wrap > * {
+   flex: unset !important;
+}
+
+.category_wrap .ca_item {
+   gap: 13px;
+   font-size: 20px;
+   text-align: center;
+   color: #f4f4f4;
+   border-radius: 5px;
+   background: #2d2d2d;
+   padding: 15px 5px 30px;
+   justify-content: end !important;
+   width: 150px;
+   min-height: 150px;
+   cursor: pointer;
+   transition: all 0.2s;
+}
+
+.category_wrap .ca_item:hover {
+   background: #1b1b1b;
+   color: var(--main-color2);
+}
+
+/* 메인 카테고리 end --------------------------*/
+
+
+
+/* 보조 베너 */
 .link_Banner {
    width: 100%;
    display: grid;
@@ -26,6 +77,11 @@
    width: 100%; display: block;
    max-width: 640px;
 }
+
+/* 보조 베너 end --------------- */
+
+
+
 
 .titleBox {
    margin-bottom: 25px;
@@ -79,15 +135,6 @@
 }
 
 
-.category_sec {gap: 25px;}
-.category_sec .ca_title {
-   text-align: center;
-   gap: 10px;
-   font-size: 30px;
-   color: #fff;
-}
-
-
 /* 프로덕트슬라이더 */
 .ProductSlider {position: relative;}
 .ProductSlider .naviBtn {
@@ -115,7 +162,7 @@
 }
 
 
-/* 프로덕트카드용 */
+/* 테스트프로덕트카드 */
 
 .prodcut_item {
    padding-bottom: 40px;
@@ -123,11 +170,29 @@
 }
 
 .prodcut_item .imgBox {
+   position: relative;
    cursor: pointer;
    overflow: hidden;
    width: 100%;
    border-radius: 10px;
 }
+
+.prodcut_item .imgBox .rank {
+   position: absolute;
+   top: 7px; left: 7px;
+   width: 25px; height: 25px;
+   background: #050505;
+   color: #fff;
+   font-size: 15px;
+   z-index: 2;
+   align-items: center;
+   justify-content: center;
+   border-radius: 3px;
+}
+.prodcut_item .imgBox .topRank {
+   background: #E6BE1B;
+}
+.prodcut_item .imgBox .rank span {position: relative; top: 2px;}
 
 .prodcut_item .imgBox img {
    transition: all 0.5s;
