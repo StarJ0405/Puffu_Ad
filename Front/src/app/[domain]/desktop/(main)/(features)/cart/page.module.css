@@ -9,9 +9,9 @@
 .cart_wrap {
    display: grid;
    gap: 30px;
-   grid-template-columns: repeat(2, 800px 470px);
+   grid-template-columns: 800px 470px;
    align-items: start !important;
-   height: 1500px;
+   height: auto;
    position: relative;
 }
 
@@ -240,7 +240,7 @@
 
 .payment_block {
    position: sticky;
-   top: 65px;
+   top: 100px;
 }
 
 .payment_block .total_pay_txt {
