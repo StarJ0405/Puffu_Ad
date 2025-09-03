@@ -81,7 +81,7 @@ function Select<T extends string | number>({
   placeholder = "선택하세요",
   multiple = false,
   onChange,
-  width = "250px",
+  width = "100%",
   maxHeight = "200px",
   classNames,
   disabled = false,

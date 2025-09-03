@@ -69,7 +69,8 @@
   color: transparent; /* Hide native placeholder when floating label is active */
 }
 .input:focus {
-  border-color: var(--main-color, var(--admin-color, red));
+  /* border-color: var(--main-color, var(--admin-color, red)); */
+  border-color: #fff;
 }
 
 .input.invalid {

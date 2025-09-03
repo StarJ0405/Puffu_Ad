@@ -23,10 +23,14 @@ import style from "./headerCategory.module.css";
 export function HeaderCatgeory({CaOpen} : {CaOpen : boolean}) { // 카테고리메뉴
 
    const ca_test = [
-      {name: '코스튬/속옷', thumbnail: '/resources/images/dummy_img/ca_menu_01.png'},
-      {name: '진동기', thumbnail: '/resources/images/dummy_img/ca_menu_02.png'},
-      {name: '흡입기', thumbnail: '/resources/images/dummy_img/ca_menu_03.png'},
-      {name: '윤활제/젤', thumbnail: '/resources/images/dummy_img/ca_menu_04.png'},
+      {name: '남성토이', thumbnail: '/resources/images/dummy_img/ca_menu_01.png'},
+      {name: '여성토이', thumbnail: '/resources/images/dummy_img/ca_menu_02.png'},
+      {name: '윤활제/젤', thumbnail: '/resources/images/dummy_img/ca_menu_03.png'},
+      {name: '콘돔', thumbnail: '/resources/images/dummy_img/ca_menu_04.png'},
+      {name: '의류', thumbnail: '/resources/images/dummy_img/ca_menu_04.png'},
+      {name: 'BDSM토이', thumbnail: '/resources/images/dummy_img/ca_menu_04.png'},
+      {name: 'LGBT토이', thumbnail: '/resources/images/dummy_img/ca_menu_04.png'},
+      {name: '악세서리', thumbnail: '/resources/images/dummy_img/ca_menu_04.png'},
    ]
 
    return (

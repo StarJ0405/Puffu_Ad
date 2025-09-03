@@ -3,6 +3,9 @@
   --foreground: #fff;
   --main-color1: #ff62a3;
   --main-color2: #fb5b9b;
+
+
+  --button-disabled-bg : #535353;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -68,6 +71,7 @@ body {
 .root {
   padding-top: 166px;
   min-height: 70dvh;
+  padding-bottom: 100px;
 }
 
 

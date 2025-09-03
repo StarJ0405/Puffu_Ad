@@ -10,12 +10,15 @@
 .selectContainer {
   position: relative; /* Select 컴포넌트 전체를 감싸는 컨테이너 */
   display: inline-block;
-  width: 250px; /* 기본 너비, 필요에 따라 조절 */
+
+  /* 기본 너비, 필요에 따라 조절 */
+  /* max-width: 250px; */
+
   font-family: Arial, sans-serif;
   font-size: 14px;
 }
 
-.selectHeader {
+/* .selectHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -23,6 +26,18 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #fff;
+  cursor: pointer;
+  user-select: none;
+} */
+
+.selectHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  border: 1px solid #fff;
+  border-radius: 4px;
+  background-color: #222;
   cursor: pointer;
   user-select: none; /* 텍스트 선택 방지 */
   transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
@@ -44,22 +59,24 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis; /* 내용이 넘칠 경우 ... 처리 */
-  color: #333;
+  color: #fff;
 }
 
 .placeholder {
-  color: #888;
+  color: #fff;
 }
 
 .arrow {
   margin-left: 10px;
-  color: #333;
+  color: #fff;
   border: solid currentColor;
   border-width: 0 2px 2px 0;
   display: inline-block;
   padding: 3px;
   transform: rotate(45deg);
   transition: transform 0.2s ease-in-out;
+  position: relative;
+  bottom: 1px;
 }
 
 .arrow.up {
@@ -70,7 +87,7 @@
   border: 1px solid #ccc;
   border-top: none;
   border-radius: 0 0 4px 4px;
-  background-color: #fff;
+  background-color: #222;
   z-index: 2000;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
@@ -97,18 +114,18 @@
 }
 
 .optionItem:hover {
-  background-color: #f0f0f0;
+  background-color: #000;
 }
 
 .optionItem.selected {
-  background-color: #e9f5ff;
-  font-weight: bold;
+  background-color: #000;
+  font-weight: 600;
 }
 
 .optionItem.disabled {
   color: #bbb;
   cursor: not-allowed;
-  background-color: #fafafa;
+  background-color: #aaa;
 }
 
 .checkboxIcon {
