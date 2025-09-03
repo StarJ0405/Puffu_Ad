@@ -401,6 +401,7 @@ const InputNumber = forwardRef<refInterface, InputNumberProps>((props, ref) => {
                 height="24"
                 viewBox="0 0 24 24"
                 fill="none"
+                color="#fff"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
@@ -503,6 +504,7 @@ const InputNumber = forwardRef<refInterface, InputNumberProps>((props, ref) => {
                 height="24"
                 viewBox="0 0 24 24"
                 fill="none"
+                color="#fff"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path

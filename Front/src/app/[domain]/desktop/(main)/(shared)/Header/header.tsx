@@ -12,10 +12,10 @@ import clsx from "clsx";
 export default async function () {
 
    const menu1 = [ // 임시 데이터
-      { name: 'BEST 상품', link: '/Best'},
-      { name: '신상품', link: '/NewProduct'},
-      { name: '데이 핫딜', link: '/Sale', icon: '/resources/images/header/HotDeal_icon.png'},
-      { name: '랜덤박스', link: '/RandomBox'},
+      { name: 'BEST 상품', link: '/product'},
+      { name: '신상품', link: '/product'},
+      { name: '데이 핫딜', link: '/product', icon: '/resources/images/header/HotDeal_icon.png'},
+      { name: '랜덤박스', link: '/product'},
    ]
 
    const menu2 = [ // 임시 데이터
@@ -76,7 +76,7 @@ export default async function () {
                         </FlexChild>
 
                         <FlexChild>
-                           <Image src='/resources/icons/main/cart_icon.png' width={30} height={'auto'} cursor="pointer"/>
+                           <Link href={'/cart'}><Image src='/resources/icons/main/cart_icon.png' width={30} height={'auto'} cursor="pointer"/></Link>
                         </FlexChild>
 
                         <FlexChild>

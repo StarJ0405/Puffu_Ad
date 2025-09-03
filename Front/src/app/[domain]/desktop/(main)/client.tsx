@@ -10,6 +10,7 @@ import P from "@/components/P/P";
 import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
 import MasonryGrid from "@/components/masonry/MasonryGrid";
+import TestProductCard from "@/components/card/TestProductCard";
 import StarRate from "@/components/star/StarRate";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import useData from "@/shared/hooks/data/useData";
@@ -27,6 +28,94 @@ import style from "./page.module.css";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, Navigation } from 'swiper/modules';
 import {Swiper as SwiperType} from 'swiper';
+
+
+
+
+type ListItem = {
+   thumbnail: string;
+   title: string;
+   price: number;
+   discount_rate: number;
+   discount_price: number;
+   heart_count: number;
+   store_name: string;
+   rank: number;
+}
+
+
+const ListProduct: ListItem[] = [ // 임시
+{
+   thumbnail: '/resources/images/dummy_img/product_01.png',
+   title: '블랙 골드버스트 바디수트',
+   price: 30000,
+   discount_rate: 12,
+   discount_price: 20000,
+   heart_count: 10,
+   store_name: '키테루 키테루',
+   rank: 0,
+},
+{
+   thumbnail: '/resources/images/dummy_img/product_02.png',
+   title: '핑크색 일본 st 로제 베일 가벼움',
+   price: 30000,
+   discount_rate: 12,
+   discount_price: 20000,
+   heart_count: 100,
+   store_name: '키테루 키테루',
+   rank: 1,
+},
+{
+   thumbnail: '/resources/images/dummy_img/product_03.png',
+   title: '뒷태 반전 유혹하는 파자마',
+   price: 30000,
+   discount_rate: 12,
+   discount_price: 20000,
+   heart_count: 100,
+   store_name: '키테루 키테루',
+   rank: 2,
+},
+{
+   thumbnail: '/resources/images/dummy_img/product_04.jpg',
+   title: '스지망 쿠파 로린코 처녀궁 프리미엄 소프트',
+   price: 30000,
+   discount_rate: 12,
+   discount_price: 20000,
+   heart_count: 70,
+   store_name: '키테루 키테루',
+   rank: 3,
+},
+{
+   thumbnail: '/resources/images/dummy_img/product_05.png',
+   title: '[유니더스/얇은콘돔형] 지브라 콘돔 1box(10p) [NR]',
+   price: 30000,
+   discount_rate: 12,
+   discount_price: 20000,
+   heart_count: 4,
+   store_name: '키테루 키테루',
+   rank: 4,
+},
+{
+   thumbnail: '/resources/images/dummy_img/product_06.png',
+   title: '블랙 망사 리본 스타킹',
+   price: 30000,
+   discount_rate: 12,
+   discount_price: 20000,
+   heart_count: 1020,
+   store_name: '키테루 키테루',
+   rank: 5,
+},
+{
+   thumbnail: '/resources/images/dummy_img/product_07.png',
+   title: '섹시 스트랩 간호사 st 코스튬',
+   price: 30000,
+   discount_rate: 12,
+   discount_price: 20000,
+   heart_count: 1030,
+   store_name: '키테루 키테루',
+   rank: 6,
+},
+]
 
 
 export function MainBanner() {
@@ -142,89 +231,6 @@ export function MainCategory() { // 카테고리메뉴
 
 
 
-type ListItem = {
-   thumbnail: string;
-   title: string;
-   price: number;
-   discount_rate: number;
-   discount_price: number;
-   heart_count: number;
-   store_name: string;
-   rank: number;
-}
-
-const ListProduct: ListItem[] = [ // 임시
-      {
-         thumbnail: '/resources/images/dummy_img/product_01.png',
-         title: '블랙 골드버스트 바디수트',
-         price: 30000,
-         discount_rate: 12,
-         discount_price: 20000,
-         heart_count: 10,
-         store_name: '키테루 키테루',
-         rank: 0,
-      },
-      {
-         thumbnail: '/resources/images/dummy_img/product_02.png',
-         title: '핑크색 일본 st 로제 베일 가벼움',
-         price: 30000,
-         discount_rate: 12,
-         discount_price: 20000,
-         heart_count: 100,
-         store_name: '키테루 키테루',
-         rank: 1,
-      },
-      {
-         thumbnail: '/resources/images/dummy_img/product_03.png',
-         title: '뒷태 반전 유혹하는 파자마',
-         price: 30000,
-         discount_rate: 12,
-         discount_price: 20000,
-         heart_count: 100,
-         store_name: '키테루 키테루',
-         rank: 2,
-      },
-      {
-         thumbnail: '/resources/images/dummy_img/product_04.jpg',
-         title: '스지망 쿠파 로린코 처녀궁 프리미엄 소프트',
-         price: 30000,
-         discount_rate: 12,
-         discount_price: 20000,
-         heart_count: 70,
-         store_name: '키테루 키테루',
-         rank: 3,
-      },
-      {
-         thumbnail: '/resources/images/dummy_img/product_05.png',
-         title: '[유니더스/얇은콘돔형] 지브라 콘돔 1box(10p) [NR]',
-         price: 30000,
-         discount_rate: 12,
-         discount_price: 20000,
-         heart_count: 4,
-         store_name: '키테루 키테루',
-         rank: 4,
-      },
-      {
-         thumbnail: '/resources/images/dummy_img/product_06.png',
-         title: '블랙 망사 리본 스타킹',
-         price: 30000,
-         discount_rate: 12,
-         discount_price: 20000,
-         heart_count: 1020,
-         store_name: '키테루 키테루',
-         rank: 5,
-      },
-      {
-         thumbnail: '/resources/images/dummy_img/product_07.png',
-         title: '섹시 스트랩 간호사 st 코스튬',
-         price: 30000,
-         discount_rate: 12,
-         discount_price: 20000,
-         heart_count: 1030,
-         store_name: '키테루 키테루',
-         rank: 6,
-      },
-   ]
 
 
 export function ProductSlider({id, lineClamp }: { id: string, lineClamp?: number }) {
@@ -247,7 +253,7 @@ export function ProductSlider({id, lineClamp }: { id: string, lineClamp?: number
                ListProduct.map((product, i) => {
                return (
                   <SwiperSlide key={i}>
-                     <TestProdcutCard
+                     <TestProductCard
                         product={product}
                         lineClamp={lineClamp ?? 2}
                      />
@@ -277,7 +283,7 @@ export function ProductList() {
          {
             ListProduct.map((product, i) => {
                return (
-                  <TestProdcutCard
+                  <TestProductCard
                      product={product}
                      lineClamp={2}
                      key={i}
@@ -291,89 +297,4 @@ export function ProductList() {
 }
 
 
-// lineClamp 구별해주기, TestProdcutCard는 임시로 만든거임. 나중에 프로덕트카드에 스타일만 입히면 됨.
-// 라인클램프는 제목태그에 달아서 속성 주기.
 
-function TestProdcutCard({ product, lineClamp, width }: { product: ListItem; lineClamp: number; width?: number }) {
-
-
-   // 프로덕트 카드 쓰면 다 지워도 됨.
-   const [heartCheck, setHeartCheck] = useState(false);
-   const [heartCount, setHeartCount] = useState(product.heart_count);
-   
-
-   const toggleHeart = () => {
-   setHeartCheck(prev => !prev);
-   setHeartCount(prev => prev + (heartCheck ? -1 : 1));
-   };
-
-   return (
-      <VerticalFlex
-         width={width ?? 200}
-         // margin={product.margin}
-         className={style.prodcut_item}
-      >
-         <FlexChild className={style.imgBox}>
-            <FlexChild 
-               className={clsx(style.rank, (product.rank < 3 ? style.topRank : ''))}
-            >
-               <Span className="SacheonFont">{product.rank + 1}</Span>
-            </FlexChild>
-            <Image src={product.thumbnail} width={"100%"} height={"auto"}/>
-         </FlexChild>
-
-         <FlexChild padding={"0 5px"} className={style.text_box}>
-            <VerticalFlex gap={2} alignItems={'start'}>
-               <FlexChild className={style.store_name}>
-                  <Span>{product.store_name}</Span>
-               </FlexChild>
-
-               <FlexChild className={style.product_title}>
-                  <P 
-                     textOverflow={"ellipsis"}
-                     display={"webkit-box"}
-                     overflow={"hidden"}
-                     lineClamp={lineClamp}
-                  >
-                     {product.title}
-                  </P>
-               </FlexChild>
-               
-               <HorizontalFlex className={style.content_item}>
-                  {/* <Span
-                     color="var(--main-color)"
-                     weight={600}
-                     fontSize={14}
-                     hidden={product.discount_rate >= 1}
-                     paddingRight={"0.5em"}
-                  >
-                     {product.discount_rate}
-                  </Span> */}
-                  <VerticalFlex className={style.price_box}>
-                     <Span
-                        className={style.through_price}
-                        textDecoration={"line-through"}
-                     >
-                        {product.price}
-                     </Span>
-                     <Span className={style.discount_price} >
-                        {product.discount_price} ₩
-                     </Span>
-                  </VerticalFlex>
-
-                  <FlexChild onClick={toggleHeart} className={style.heart_counter}>
-                     <Image
-                        src={`/resources/icons/main/product_heart_icon${heartCheck === true ? '_active' : ''}.png`}
-                        width={23}
-                     />
-                     <Span>{heartCount}</Span>
-                  </FlexChild>
-                  {/* <Span fontSize={14} weight={600}>
-                     {currency_unit}
-                  </Span> */}
-               </HorizontalFlex>
-            </VerticalFlex>
-         </FlexChild>
-      </VerticalFlex>
-   )
-}

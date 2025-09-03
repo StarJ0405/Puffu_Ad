@@ -11,66 +11,227 @@ import CheckboxChild from "@/components/choice/checkbox/CheckboxChild";
 import CheckboxGroup from "@/components/choice/checkbox/CheckboxGroup";
 import Icon from "@/components/icons/Icon";
 import Image from "@/components/Image/Image";
+import InputNumber from "@/components/inputs/InputNumber";
 import P from "@/components/P/P";
-import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
 import Link from "next/link";
 import clsx from "clsx";
 import style from './page.module.css'
 
+import { SelectBox, AgreeInfo } from "./client";
+
 export default async function () {
+
+   const cart = [
+      {
+         title: '여성용) 핑크색 일본 st 로제 베일 가운',
+         thumbnail: '/resources/images/dummy_img/product_07.png',
+         brand: '푸푸토이',
+         price: '20,000',
+         option: [
+            {title: '여성용) 핑크색 일본 컬러 레드', price: '0'},
+            {title: '여성용) 핑크색 일본 1+1 증정', price: '1,000'},
+         ],
+         delivery: '/resources/icons/cart/cj_icon.png',
+      },
+      {
+         title: '여성용) 핑크색 일본 st 로제 베일 가운',
+         thumbnail: '/resources/images/dummy_img/product_07.png',
+         brand: '푸푸토이',
+         price: '20,000',
+         option: [
+            {title: '여성용) 핑크색 일본 컬러 레드', price: '0'},
+            {title: '여성용) 핑크색 일본 1+1 증정', price: '1,000'},
+         ],
+         delivery: '/resources/icons/cart/cj_icon.png',
+      }
+   ]
+
    return (
-      <>
-         <Container className={clsx('desktop_container', style.container)}>
-            <VerticalFlex className={style.loginBox}>
-               <FlexChild className={style.logo}>
-                  <Link href={'/'}>
-                     <Image src={'/resources/images/header/logo.png'} width={180} />
-                  </Link>
-               </FlexChild>
+      <section className="root">
+         <Container className={clsx('desktop_container', style.container)} marginTop={50}>
+            <h3 className={style.title}>장바구니</h3>
 
-               <FlexChild className={style.signup}>
-                  <VerticalFlex gap={30}>
-                     <VerticalFlex gap={30} width={'100%'}>
-                        <FlexChild className={style.input_box}>
-                           <Span>아이디</Span>
-                           <Input placeHolder="아이디" width={'100%'} />
-                        </FlexChild>
+            <HorizontalFlex className={style.cart_wrap}>
+               <VerticalFlex className={style.cart_data}>
+                  <VerticalFlex className={style.product_list}>
+                     <article>
+                        <P className={style.list_title}>담은 상품</P>
+                        {/* <CheckboxAll></CheckboxAll> */}
+                        <Span paddingBottom={40}>전체선택</Span>
+                     </article>
+
+                     {// 담은 상품 목록
+                        cart.map((item, i)=> (
+                           <HorizontalFlex className={style.cart_item} key={i}>
+                              
+                              {/* 체크박스 넣기 */}
+                              <FlexChild className={style.unit} width={'auto'}>
+                                 <Image src={item.thumbnail} width={150} />
+                                 <VerticalFlex className={style.unit_content} width={'auto'}>
+                                    <Span className={style.unit_brand}>{item.brand}</Span>
+                                    <P 
+                                       className={style.unit_title}
+                                       lineClamp={2}
+                                       overflow="hidden"
+                                       display="--webkit-box"
+                                    >
+                                       {item.title}
+                                    </P>
+                                    <FlexChild className={style.unit_price}>
+                                       <Image src={item.delivery} width={22} />
+                                       <P>{item.price} <Span>₩</Span></P>
+                                    </FlexChild>
+                                    <VerticalFlex className={style.optionList}>
+                                       {
+                                          item.option.map((opItem, i)=> (
+                                             <FlexChild key={i}>
+                                                <P>
+                                                   {opItem.title}
+                                                   <Span> + {opItem.price}원</Span>
+                                                </P> 
+                                             </FlexChild>
+                                          ))
+                                       }
+                                    </VerticalFlex>
+                                 </VerticalFlex>
+                              </FlexChild>
+
+                              <HorizontalFlex className={style.totalPrice} justifyContent="end">
+                                 <FlexChild width={'auto'}>
+                                    <InputNumber
+                                    //   value={item.quantity}
+                                    //   onChange={handleQuantityChange}
+                                    //   disabled={loading}
+                                       min={1}
+                                       max={99}
+                                       hideArrow={false}
+                                       width={"40px"}
+                                       style={{
+                                          fontSize: "14px",
+                                          color: "#353535",
+                                       }}
+                                    />
+                                 </FlexChild>
+                                 <P>{item.price} <Span>₩</Span></P>
+                              </HorizontalFlex>
+                           </HorizontalFlex>
+                        ))
+                     }
+                  </VerticalFlex>
+
+                  {/* <FlexChild className={style.delivery_root}>
+                     <VerticalFlex alignItems="start">
+                        <article>
+                           <P className={style.list_title}>배송방법</P>
+                        </article>
+
+                        <HorizontalFlex marginTop={15}>
+                           <FlexChild className={style.delivery_btn}>
+                              <Image src="/resources/icons/cart/delivery_icon.png" width={36} />
+                              <Span>배송</Span>
+                           </FlexChild>
+                        </HorizontalFlex>
+                     </VerticalFlex>
+                  </FlexChild> */}
+
+                  <FlexChild className={style.delivery_info}>
+                     <VerticalFlex alignItems="start">
+                        <article>
+                           <P className={style.list_title}>배송 정보</P>
+                           <Button className={style.delivery_list_btn}>배송지 목록</Button>
+                        </article>
+
+                        <VerticalFlex className={style.info_list}>
+                           <HorizontalFlex className={style.info_item}>
+                              <Span>이름</Span>
+                              <P>테스트</P>
+                           </HorizontalFlex>
+
+                           <HorizontalFlex className={style.info_item}>
+                              <Span>배송주소</Span>
+                              <P>(35353) 서구 도안동로 234 대전 303동 1302호</P>
+                           </HorizontalFlex>
+
+                           <HorizontalFlex className={style.info_item}>
+                              <Span>연락처</Span>
+                              <P>01012345678</P>
+                           </HorizontalFlex>
+
+                           <VerticalFlex className={clsx(style.info_item, style.info_select_box)}>
+                              <Span>배송 요청사항 선택</Span>
+                              
+                              <SelectBox />
+                           </VerticalFlex>
+                        </VerticalFlex>
+                     </VerticalFlex>
+                  </FlexChild>
+
+                  <FlexChild className={style.payment_root}>
+                     <VerticalFlex alignItems="start">
+                        <article>
+                           <P className={style.list_title}>결제수단</P>
+                           <P className={style.list_txt}>결제수단을 선택해 주세요.</P>
+                        </article>
+
+                        <VerticalFlex className={style.payment_deak}>
+                           <FlexChild className={clsx(style.payment_card)}>
+                              <Span>신용카드 결제</Span>
+                           </FlexChild>
+                        </VerticalFlex>
+                     </VerticalFlex>
+                  </FlexChild>
+                  
+                  
+                  <FlexChild className={style.agree_info}>
+                     <AgreeInfo />
+                  </FlexChild>
+               </VerticalFlex>
+
+               <FlexChild className={style.payment_block}>
+                  <VerticalFlex>
+                     <VerticalFlex alignItems="start">
+                        <article>
+                           <P className={style.list_title}>결제 금액</P>
+                        </article>
    
-                        <FlexChild className={style.input_box}>
-                           <Span>비밀번호</Span>
-                           <Input type="password" placeHolder="비밀번호" width={'100%'} />
-                        </FlexChild>
+                        <VerticalFlex className={style.info_list}>
+                           <HorizontalFlex className={style.info_item}>
+                              <Span>상품 금액</Span>
+      
+                              <P>28,000 <Span>₩</Span></P>
+                           </HorizontalFlex>
+      
+                           <HorizontalFlex className={style.info_item}>
+                              <Span>배송비</Span>
+                              
+                              <P>0 <Span>₩</Span></P>
+                           </HorizontalFlex>
+      
+                           <HorizontalFlex className={style.info_item}>
+                              <Span>합계</Span>
+                              
+                              <P color={'var(--main-color2)'}>28,000 <Span color="#fff">₩</Span></P>
+                           </HorizontalFlex>
+                        </VerticalFlex>
                      </VerticalFlex>
 
-                     <HorizontalFlex className={style.sign_features}>
-                        <FlexChild>
-                           {/* <CheckboxChild id={'11'} /> */}
-                           <Span cursor="poointer">로그인 상태 유지</Span>
-                        </FlexChild>
+                     <FlexChild className={style.total_pay_txt}>
+                        <Span>총 결제 금액</Span>
+                        <P color={'var(--main-color2)'}>28,000 <Span color="#fff">₩</Span></P>
+                     </FlexChild>
 
-                        <FlexChild className={style.find_box}>
-                           <FlexChild>
-                              <Span>이메일 찾기</Span>
-                           </FlexChild>
-
-                           <Span>|</Span>
-
-                           <FlexChild>
-                              <Span>비밀번호 찾기</Span>
-                           </FlexChild>
-                        </FlexChild>
-                     </HorizontalFlex>
-
-                     <VerticalFlex gap={15}>
-                        <Button className={clsx(style.login_btn, style.btn)}>로그인</Button>
-                        <Button className={clsx(style.join_btn, style.btn)}>회원가입</Button>
-                     </VerticalFlex>
+                     <FlexChild marginTop={30}>
+                        {/* 결제 정보 전부 체크되기 전에는 disabled class 처리하고 경고문 띄우기  */}
+                        <Button className={clsx(style.payment_btn, style.disabled)}>
+                           <Span>결제하기</Span>
+                        </Button>
+                     </FlexChild>
                   </VerticalFlex>
                </FlexChild>
-            </VerticalFlex>
+            </HorizontalFlex>
          </Container>
-      </>
+      </section>
    )
 
 

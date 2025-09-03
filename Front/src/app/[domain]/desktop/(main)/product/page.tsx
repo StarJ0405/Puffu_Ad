@@ -3,7 +3,6 @@ import Div from "@/components/div/Div";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-// import { MainCategory } from "../(shared)/Category/mainCategory";
 import Icon from "@/components/icons/Icon";
 import Image from "@/components/Image/Image";
 import Container from "@/components/container/Container";
@@ -13,8 +12,8 @@ import Span from "@/components/span/Span";
 import Link from "next/link";
 import clsx from "clsx";
 import style from './page.module.css';
-import {ProductList} from '../client'
-import {HotDealCategory, ProductCategory, MainCategory} from './client'
+import {HotDealCategory, ProductCategory, MainCategory, ProductList} from './client'
+
 
 
 export default async function () {
@@ -29,6 +28,11 @@ export default async function () {
 
                {/* 프로덕트 카테고리 */}
                <VerticalFlex marginBottom={30}>
+                  {/* 
+                     불러온 분류 페이지 따라서 카테고리 나타나기.
+                     분류 페이지 (best상품, 신상품, 데이 핫딜, 랜덤박스)
+                     ProductCategory는 중분류, 소분류 있을때만 나타남. 
+                  */}
                   <MainCategory />
                   {/* <ProductCategory /> */}
                   {/* <HotDealCategory /> */}
@@ -53,7 +57,6 @@ export default async function () {
 
 
             <VerticalFlex className={style.list}>
-
                <ProductList />
             </VerticalFlex>
          </Container>
