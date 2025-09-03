@@ -4,6 +4,8 @@
   width: initial;
   display: flex;
   flex-direction: column;
+
+  --button-hover-bg : var(--main-color2);
 }
 
 .inputContainer {
