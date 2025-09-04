@@ -36,10 +36,10 @@ export default async function () {
       // },
       {
          name: '고객센터', 
-         link: '/Boad/CustomerCenter', 
+         link: '/board', 
          inner: [
-            {name: '공지사항', link: '/Boad/Notice'},
-            {name: '자주 묻는 질문', link: '/Boad/FAQ'},
+            {name: '공지사항', link: '/board'},
+            {name: '자주 묻는 질문', link: '/board/FAQ'},
             {name: '1:1문의', link: '/Boad/Q&A'},
             {name: '이벤트', link: '/Boad/Event'},
          ]

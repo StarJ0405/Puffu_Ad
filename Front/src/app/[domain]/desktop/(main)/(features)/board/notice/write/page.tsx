@@ -15,25 +15,27 @@ import InputNumber from "@/components/inputs/InputNumber";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import Link from "next/link";
+
 import clsx from "clsx";
 import style from './page.module.css'
+import boardStyle from '../../boardGrobal.module.css'
 
-import { DetaillTop } from "./client";
+
+import { WriteFrame } from "./client";
+import ChoiceChild from "@/components/choice/ChoiceChild";
+import ChoiceGroup from "@/components/choice/ChoiceGroup";
 
 export default async function () {
 
    return (
-      <section className="root">
-         <Container className={clsx('desktop_container', style.detail_container)} marginTop={100}>
-            <HorizontalFlex>
-               <FlexChild>
-                  <VerticalFlex>
-                     
-                  </VerticalFlex>
-               </FlexChild>
-            </HorizontalFlex>
-         </Container>
-      </section>
+      <VerticalFlex className={boardStyle.board_frame}>
+         <FlexChild className={boardStyle.board_titleBox}>
+            <h3>공지사항</h3>
+         </FlexChild>
+
+
+         <WriteFrame />
+      </VerticalFlex>
    )
 
 

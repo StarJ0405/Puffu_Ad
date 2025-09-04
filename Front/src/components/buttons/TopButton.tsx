@@ -30,7 +30,7 @@ function TopButton () {
 
    return (
       <VerticalFlex className={style.topToggleBtn} onClick={onTopButtonClick}>
-         <Image src={'./resources/icons/arrow/arrow_bottom_icon.png'} width={13} />
+         <Image src={'/resources/icons/arrow/arrow_bottom_icon.png'} width={13} />
          <Span>TOP</Span>
       </VerticalFlex>
    )

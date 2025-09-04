@@ -56,7 +56,7 @@
    cursor: pointer;
 }
 .CategoryBox:hover > .category_btn {
-   color: var(--main-color2);
+   color: var(--main-color1);
 } 
 
 
@@ -148,5 +148,5 @@
 }
 
 .commu_outer > li > .subMenu > li a:hover {
-   color: var(--main-color2);
+   color: var(--main-color1);
 }

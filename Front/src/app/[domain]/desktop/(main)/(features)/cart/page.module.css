@@ -39,6 +39,10 @@
 }
 
 
+.checkbox {
+
+}
+
 /* 왼쪽 주문 정보 */
 
 .cart_wrap .cart_data .product_list {
@@ -59,7 +63,7 @@
 }
 
 .cart_wrap .cart_data .product_list .cart_item .unit .unit_content {
-   align-items: start !important;
+   padding-top: 5px;
 }
 
 .unit .unit_content > .unit_brand {
@@ -81,7 +85,7 @@
 
 .unit .unit_content > .unit_price p {
    font-size: 18px !important; font-weight: 600 !important;
-   line-height: 1; color: var(--main-color2) !important;
+   line-height: 1; color: var(--main-color1) !important;
 }
 
 .unit .unit_content > .unit_price p span {color: #fff;}
@@ -101,14 +105,14 @@
 
 /* 갯수 추가, 총 금액 표시 */
 .product_list .cart_item .totalPrice {
-   gap: 15px;
+   gap: 15px; height: auto;
 }
 
 .product_list .cart_item .totalPrice > p {
    font-size: 25px !important;
    font-weight: 700 !important;
    line-height: 1;
-   color: var(--main-color2) !important;
+   color: var(--main-color1) !important;
 }
 
 .product_list .cart_item .totalPrice > p > span {
@@ -125,7 +129,7 @@
 
 .delivery_btn {
    border: 1px solid #fff;
-   background: var(--main-color2);
+   background: var(--main-color1);
    border-radius: 10px;
    width: 100%;
    max-width: 740px;
@@ -206,7 +210,7 @@
 }
 
 .payment_card.active {
-   border-color: var(--main-color2);
+   border-color: var(--main-color1);
 }
 
 
@@ -267,7 +271,7 @@
 
 
 .payment_btn {
-   background: var(--main-color2);
+   background: var(--main-color1);
    color: #fff;
    border-radius: 10px;
    width: 100%;
@@ -279,7 +283,7 @@
 
 .payment_btn:hover {
    background: #050505;
-   color: var(--main-color2);
+   color: var(--main-color1);
 }
 
 .payment_btn.disabled {

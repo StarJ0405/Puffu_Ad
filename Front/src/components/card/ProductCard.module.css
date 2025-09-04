@@ -79,7 +79,7 @@
 }
 
 .prodcut_item .content_item .price_box .discount_price {
-   font-size: 18px; color: var(--main-color2);
+   font-size: 18px; color: var(--main-color1);
    line-height: 1; font-weight: 700;
 }
 

@@ -72,7 +72,7 @@
 }
 
 .login_btn {
-   background: var(--main-color2);
+   background: var(--main-color1);
 }
 
 .join_btn {
@@ -82,10 +82,10 @@
 
 .login_btn:hover {
    background: #050505;
-   color: var(--main-color2);
+   color: var(--main-color1);
 }
 
 .join_btn:hover {
-   border-color: var(--main-color2);
-   color: var(--main-color2);
+   border-color: var(--main-color1);
+   color: var(--main-color1);
 }
