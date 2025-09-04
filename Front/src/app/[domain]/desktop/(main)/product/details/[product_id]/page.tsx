@@ -26,11 +26,62 @@ export default async function () {
       <section className="root">
          <Container className={clsx('desktop_container', style.detail_container)} marginTop={100}>
             <HorizontalFlex>
-               <FlexChild>
-                  <VerticalFlex>
-                     
-                  </VerticalFlex>
+               <FlexChild className={style.detail_thumbnail}>
+                  <Image 
+                     src={'/resources/images/dummy_img/product_07.png'}
+                     width={600}
+                     height={'auto'}
+                   />
                </FlexChild>
+
+               <VerticalFlex className={style.detail_infoBox}>
+                  <FlexChild className={style.brand}>
+                     <Span>브랜드정보</Span>
+                  </FlexChild>
+
+                  <FlexChild className={style.detail_title}>
+                     <P>상품제목</P>
+                  </FlexChild>
+
+                  <HorizontalFlex>
+                     <FlexChild className={style.price}>
+                        <P>25,000</P> ₩
+                     </FlexChild>
+   
+                     <FlexChild>
+                        <P>15%</P>
+                     </FlexChild>
+
+                     <FlexChild>
+                        <P>28,000₩</P>
+                     </FlexChild>
+                  </HorizontalFlex>
+
+                  <HorizontalFlex className={style.info_box}>
+                     <FlexChild className={style.delivery_info}>
+                        <P>배송정보</P>
+                        <Image 
+                          src={'/resources/icons/cart/cj_icon.png'}
+                          width={22}
+                        />
+                     </FlexChild>
+
+                     <FlexChild>{/* 링크 공유 버튼 */}
+                        <Image 
+                          src={'/resources/icons/main/share_icon.png'}
+                          width={25}
+                        />
+                     </FlexChild>
+                  </HorizontalFlex>
+
+                  <VerticalFlex>
+                     <FlexChild>
+                        <P>배송</P>
+                        <P>오후 4시 이전 주문 결제시 오늘 출발! ( 영업일 기준 )</P>
+                        <P>30,000원 이상 구매시 무료배송</P>
+                     </FlexChild>
+                  </VerticalFlex>
+               </VerticalFlex>
             </HorizontalFlex>
          </Container>
       </section>
