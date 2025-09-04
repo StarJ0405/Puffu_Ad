@@ -118,7 +118,7 @@ export function BoardTable() {
    
                {/* 게시판리스트 헤더 */}
                <thead>
-                  <tr className={style.table_header}>
+                  <tr className={boardStyle.table_header}>
                      <th>번호</th>
                      <th>제목</th>
                      <th>작성자</th>
@@ -137,8 +137,14 @@ export function BoardTable() {
 
                            {/* 제목 */}
                            <td>
-                              <FlexChild gap={5} alignItems="center" height={'100%'}>
-                                 <P lineClamp={1} overflow="hidden" display="--webkit-box" >{list.title}</P>
+                              <FlexChild gap={5} alignItems="center" height={'100%'} className={boardStyle.td_title} width={'fit-content'}>
+                                 <P
+                                    lineClamp={1} 
+                                    overflow="hidden" 
+                                    display="--webkit-box" 
+                                 >
+                                    {list.title}
+                                 </P>
                                  <Image src={'/resources/icons/board/new_icon.png'} width={16} />{/* 12시간 내 등록된 게시물만 나타나기 */}
                                  <Span size={13} color="" className={boardStyle.comment_count}>+2</Span>{/* 현재 게시물 내에 있는 댓글 수 표시 */}
                               </FlexChild>

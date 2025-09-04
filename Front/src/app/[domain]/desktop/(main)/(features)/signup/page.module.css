@@ -1,0 +1,160 @@
+.progressContainer {
+  margin-bottom: 32px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px 16px 0 16px;
+}
+
+.progressDots {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.progressBar {
+  justify-content: center;
+  left: 16px;
+  right: 16px;
+  height: 2px;
+  transform: translateY(17px);
+  background-color: #e5e7eb;
+  z-index: 1;
+}
+
+.progressBarFill {
+  height: 100%;
+  background-color: var(--main-color);
+  transition: width 0.3s ease;
+}
+
+/* Progress dots */
+.progressDot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  position: relative;
+  z-index: 2;
+  background-color: white;
+  border: 2px solid var(--main-color);
+  color: var(--main-color);
+}
+
+.progressDotActive {
+  background-color: var(--main-color);
+  color: white;
+  border: none;
+}
+
+.progressDotComplete {
+  background-color: var(--main-color);
+  color: white;
+  border: none;
+}
+
+.progressDotComplete::after {
+  content: "✓";
+  font-size: 16px;
+}
+
+/* Rest of the styles remain the same */
+.stepContainer {
+  max-width: 800px;
+  margin: 0 auto 32px;
+  padding: 24px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 50px;
+  padding-bottom: 80px;
+}
+
+.button {
+  width: 180px;
+  padding: 13px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.2s ease;
+  justify-content: center;
+}
+
+.buttonPrev {
+  background-color: white;
+  color: var(--main-color);
+  border: 1px solid var(--main-color);
+}
+
+.buttonPrev:hover {
+  background-color: #fff5f5;
+}
+
+.buttonPrevDisabled {
+  background-color: #e5e7eb;
+  border: none;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.buttonNext {
+  background-color: var(--main-color);
+  color: white;
+  border: none;
+}
+
+.buttonNext:hover {
+  background-color: #e31a43;
+}
+
+.termsContainer {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  height: 200px;
+  overflow-y: auto;
+  padding: 16px;
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.checkbox {
+  width: 24px;
+  height: 24px;
+}
+
+.checkboxWrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.checkboxWrapper label {
+  align-items: center;
+}
+
+.checkboxLabelText {
+  font-size: 16px;
+  color: #1f2937;
+}
+
+.contentContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.CardImg > div > div {
+  justify-content: start;
+}

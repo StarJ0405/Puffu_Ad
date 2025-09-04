@@ -1,5 +1,4 @@
 import Image from "@/components/Image/Image";
-import {SearchBox, CategoryBtn} from './client'
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
@@ -11,6 +10,7 @@ import Link from "next/link";
 import clsx from "clsx";
 import style from "./footer.module.css";
 
+import {ChatToggle} from './client'
 import TopButton from '@/components/buttons/TopButton'
 
 export default async function () {
@@ -76,7 +76,7 @@ export default async function () {
                   />
                   <h4 className="SacheonFont">데이 HOT딜</h4>
                </Link>
-   
+
                <ul className={style.link_list}>
                   <li>
                      <Link href={'/mypage'}>마이페이지</Link>
@@ -88,7 +88,7 @@ export default async function () {
                      <Link href={'/wishList'}>위시리스트</Link>
                   </li>
                   <li>
-                     <Link href={'/board/FAQ'}>1:1문의</Link>
+                     <Link href={'/board/faq'}>1:1문의</Link>
                   </li>
                </ul>
             </VerticalFlex>
@@ -96,9 +96,8 @@ export default async function () {
             <TopButton/>
          </nav>
 
-         <Button className={style.chat_btn}>
-            <Image src={'/resources/images/footer/chat_toggle_icon.png'} width={56} />
-         </Button>
+
+         <ChatToggle />
       </>
    )
 }
