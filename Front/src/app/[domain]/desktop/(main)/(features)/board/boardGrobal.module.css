@@ -79,12 +79,21 @@
 .list_table :is(td, th) {
    padding: 15px 10px;
    font-size: 16px;
-   color: #fff;
+   color: #cfcfcf;
    line-height: 1.2;
    text-align: center;
    word-wrap: break-word; /* 이거 줘야 테이블에서 내용들 넘치면 줄바꿈 됨. */
    /* word-break: break-all; */
    vertical-align: middle; /* 테이블 내용 세로 정렬: align-items: center라고 보면 됨 */
+}
+
+.list_table tbody tr td .td_title:hover p {
+   text-decoration: underline;
+}
+
+/* 날짜 */
+.list_table tbody tr td:last-child {
+   font-size: 13px;
 }
 
 
