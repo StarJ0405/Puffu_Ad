@@ -15,25 +15,26 @@ import InputNumber from "@/components/inputs/InputNumber";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import Link from "next/link";
+
 import clsx from "clsx";
 import style from './page.module.css'
+import boardStyle from '../../boardGrobal.module.css'
 
-import { DetaillTop } from "./client";
+import { SelectBox } from "./client";
+import ChoiceChild from "@/components/choice/ChoiceChild";
+import ChoiceGroup from "@/components/choice/ChoiceGroup";
+
+import NoticeBoard from './notice/page'
 
 export default async function () {
 
    return (
-      <section className="root">
-         <Container className={clsx('desktop_container', style.detail_container)} marginTop={100}>
-            <HorizontalFlex>
-               <FlexChild>
-                  <VerticalFlex>
-                     
-                  </VerticalFlex>
-               </FlexChild>
-            </HorizontalFlex>
-         </Container>
-      </section>
+      <>
+         <NoticeBoard />
+         {/* <FAQBoard /> */}
+         {/* <InquiryBoard /> */}
+         {/* <EventBoard /> */}
+      </>
    )
 
 

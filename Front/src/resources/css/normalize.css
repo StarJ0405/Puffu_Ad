@@ -225,3 +225,30 @@ input[type='search']:focus-visible {
 }
 
 ::-webkit-search-cancel-button { display:none }
+
+
+
+
+
+/* 컴포넌트 공통 css ----------------------- */
+.searchInput_Box {
+  border-color: rgba(255,255,255,0.3);
+  background: #111;
+}
+
+.searchInput_Box input {
+  background: transparent;
+  border: none;
+  color: #fff;
+  width: 100%;
+}
+
+.searchInput_Box input::placeholder {
+  color: #A9A9A9;
+}
+
+
+
+
+
+/* 컴포넌트 공통 css end ------------------ */

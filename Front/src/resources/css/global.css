@@ -2,7 +2,6 @@
   --mainBg: #221F22;
   --foreground: #fff;
   --main-color1: #ff62a3;
-  --main-color2: #fb5b9b;
 
 
   --button-disabled-bg : #535353;
@@ -42,8 +41,8 @@ html,
 body {
   max-width: 100vw;
   /* height: 100%; */
-  /* overflow-x: hidden;
-  scrollbar-width: none; */
+  overflow-x: hidden;
+  /* scrollbar-width: none; */
   -ms-overflow-style: none;
   font-family: "pretendard", sans-serif !important;
 }
@@ -156,25 +155,3 @@ a {
     transform: translateX(-20px);
   }
 }
-
-
-
-/* 컴포넌트 공통 css ----------------------- */
-.searchInput_Box {
-  border-color: rgba(255,255,255,0.3);
-  background: #111;
-}
-
-.searchInput_Box input {
-  background: transparent;
-  border: none;
-  color: #fff;
-  width: 100%;
-}
-
-.searchInput_Box input::placeholder {
-  color: #A9A9A9;
-}
-
-
-/* 컴포넌트 공통 css end ------------------ */

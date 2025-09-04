@@ -1,0 +1,130 @@
+
+
+.board_frame {
+   margin-top: 120px;
+}
+
+
+.board_titleBox {
+   margin-bottom: 30px;
+}
+
+.board_titleBox h3 {
+   font-size: 30px;
+   font-weight: 700;
+   color: #fff;
+   line-height: 1.2;
+}
+
+/* 게시판 리스트 스타일 */
+
+.board_titleBox .search_box {width: auto;}
+
+.board_titleBox .search_box input {
+   font-size: 16px;
+   padding: 11px 10px;
+   border: none;
+   width: 100%;
+   max-width: 270px;
+}
+
+.board_titleBox .search_box .searchBtn {
+   padding: 11px 20px;
+   font-size: 16px;
+   font-weight: 500;
+   color: #fff;
+   background: #323232;
+   border-radius: 5px;
+   min-width: 80px;
+   transition: all 0.1s;
+}
+
+.board_titleBox .search_box .searchBtn:hover {
+   background: #050505;
+}
+
+/* 검색창 필터 셀렉트 */
+.search_select_body {
+  width: 100px;
+  border-radius: 0;
+  height: 100%;
+  padding: 12px 15px;
+}
+
+
+
+.list_table {
+   width: 100%;
+   table-layout: fixed;
+}
+
+.list_table thead {
+   background: #323232;
+}
+
+.list_table thead th {
+   font-size: 16px;
+   font-weight: 600;
+}
+
+
+.list_table tr {
+   border-bottom: 1px solid #323232;
+}
+
+.list_table tr td {
+   background: #1a141d;
+}
+
+.list_table :is(td, th) {
+   padding: 15px 10px;
+   font-size: 16px;
+   color: #fff;
+   line-height: 1.2;
+   text-align: center;
+   word-wrap: break-word; /* 이거 줘야 테이블에서 내용들 넘치면 줄바꿈 됨. */
+   /* word-break: break-all; */
+   vertical-align: middle; /* 테이블 내용 세로 정렬: align-items: center라고 보면 됨 */
+}
+
+
+.list_bottom_box {
+   margin-top: 35px;
+   justify-content: center !important;
+   position: relative;
+}
+
+.list_bottom_box .write_btn {
+   position: absolute;
+   right: 0;
+   bottom: 0;
+   background: #323232;
+   border-radius: 5px;
+   padding: 11px 17px;
+   color: #fff;
+   font-size: 18px;
+   font-weight: 600;
+}
+
+/* 댓글수 */
+.comment_count {font-size: 0.8125em !important; color: #FF5B5D;}
+
+
+
+/* 게시판 리스트 스타일 end -------------------------------------------  */
+
+
+
+/* 게시판 쓰기 스타일  */
+.write_container {
+   background-color: #313131;
+   border-radius: 10px;
+   padding: 35px 25px;
+}
+
+.write_container .input_box {
+   
+}
+
+
+/* 게시판 쓰기 스타일 end -------------------------------------------  */

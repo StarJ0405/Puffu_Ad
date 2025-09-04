@@ -47,7 +47,7 @@
 }
 
 .overlay .tab_item:hover {
-   color: var(--main-color2);
+   color: var(--main-color1);
    background: #fff !important;
    font-weight: 600;
 }
@@ -104,7 +104,7 @@
 }
 
 .overlay .ca_tabBox .ca_item:hover {
-   color: var(--main-color2);
+   color: var(--main-color1);
    font-weight: 500;
 }
 

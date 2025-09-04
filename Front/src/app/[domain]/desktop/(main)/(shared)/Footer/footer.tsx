@@ -97,7 +97,7 @@ export default async function () {
          </nav>
 
          <Button className={style.chat_btn}>
-            <Image src={'./resources/images/footer/chat_toggle_icon.png'} width={56} />
+            <Image src={'/resources/images/footer/chat_toggle_icon.png'} width={56} />
          </Button>
       </>
    )

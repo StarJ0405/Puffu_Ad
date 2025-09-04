@@ -1,0 +1,65 @@
+.board_header {
+   padding-top: 80px;
+}
+
+.customer_info {
+   margin-bottom: 50px;
+}
+
+.customer_info > * {
+   width: auto;
+}
+
+.customer_info h3 {
+   font-size: 50px;
+   font-weight: 700;
+   color: #fff;
+   position: relative;
+   padding-bottom: 20px;
+   margin-bottom: 20px;
+}
+
+.customer_info h3::before {
+   content: '';
+   position: absolute; 
+   bottom: 0; left: 50%;
+   transform: translateX(-50%);
+   width: 55px; height: 2px;
+   background: #fff;
+}
+
+.customer_info .call_number {
+   font-size: 25px; font-weight: 900;
+   color: var(--main-color1);
+   margin-bottom: 10px;
+}
+
+.customer_info .business_time {
+   font-size: 18px;
+   color: #dadada;
+}
+
+
+.board_navi .item {
+   background: #242424;
+   align-items: center;
+   justify-content: center;
+   border: 1px solid #575757;
+}
+.board_navi .item a {
+   color: #595959;
+   font-size: 18px;
+   font-weight: 600;
+   width: 100%;
+   display: block;
+   padding: 15px 5px;
+   text-align: center;
+}
+
+/* 해당 링크일 시, */
+.board_navi .item.active {
+   border-color: var(--main-color1);
+   background: #050505;
+}
+
+.board_navi .item.active a {color: #fff;}
