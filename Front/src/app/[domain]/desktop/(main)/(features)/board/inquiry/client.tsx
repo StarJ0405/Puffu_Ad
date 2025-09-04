@@ -8,6 +8,7 @@ import Icon from "@/components/icons/Icon";
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import Select from "@/components/select/Select";
+import NoContent from "@/components/noContent/noContent";
 import { usePathname } from "next/navigation";
 import Span from "@/components/span/Span";
 import CheckboxAll from "@/components/choice/checkbox/CheckboxAll";
@@ -178,6 +179,9 @@ export function BoardTable() {
                   }
                </tbody>
             </table>
+            {
+               boardData.length > 0 ? null : <NoContent/> 
+            }
          </FlexChild>
          <FlexChild className={boardStyle.list_bottom_box}>
             <ListPagination />

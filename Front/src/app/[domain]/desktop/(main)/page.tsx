@@ -12,18 +12,11 @@ import {MainBanner} from './client'
 import {ProductList} from './client'
 import Link from "next/link";
 import clsx from "clsx";
-import {ProductSlider, MainCategory} from './client';
+import {MainCategory, LinkBanner, ProductSlider} from './client';
 import style from './page.module.css';
 
 
 export default async function () {
-
-  const link_banner = [
-    {link: '/', src: '/resources/images/dummy_img/link_banner_01.png'},
-    {link: '/', src: '/resources/images/dummy_img/link_banner_02.png'},
-    {link: '/', src: '/resources/images/dummy_img/link_banner_03.png'},
-    {link: '/', src: '/resources/images/dummy_img/link_banner_04.png'}
-  ]
 
   return (
     <section className='root'>
@@ -43,21 +36,7 @@ export default async function () {
           <MainCategory /> {/* 카테고리 */}
         </VerticalFlex>
 
-        <FlexChild width={'auto'}>
-          <div className={style.link_Banner}>
-            {
-              link_banner.map((item, i) => (
-                <Link href={item.link} key={i}>
-                  <Image 
-                    src={item.src}
-                    width={'100%'}
-                    height={'auto'}
-                  />
-                </Link>
-              ))
-            }
-          </div>
-        </FlexChild>
+        <LinkBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
 
         <FlexChild>
           <VerticalFlex>
@@ -79,11 +58,13 @@ export default async function () {
               </FlexChild>
             </HorizontalFlex>
 
-            <ProductSlider id={'sale'} lineClamp={1} />
+            {/* <ProductSlider id={'sale'} lineClamp={1} /> */}
+            <ProductList id={'sale'} lineClamp={1} /> {/* 메인, 상세 리스트 */}
 
           </VerticalFlex>
         </FlexChild>
 
+        <LinkBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
 
         <FlexChild>
           <VerticalFlex>
@@ -99,45 +80,28 @@ export default async function () {
               </FlexChild>
             </HorizontalFlex>
 
-            <ProductSlider id={'new'} />
+            {/* <ProductSlider id={'new'} /> */}
+            <ProductList id={'new'} /> {/* 메인, 상세 리스트 */}
 
           </VerticalFlex>
         </FlexChild>
+
 
         <FlexChild>
           <VerticalFlex>
-            <HorizontalFlex className={clsx(style.titleBox, style.titleBox3)} justifyContent="start" alignItems="end" gap={50}>
+            <HorizontalFlex className={style.titleBox} justifyContent="center" alignItems="end" gap={50}>
               <div className={style.title}>
                 <h2 className="SacheonFont">
-                  <Image 
-                    src='/resources/images/toy_logo_icon.png'
-                    width={107}
-                    height={'auto'}
-                  />
-                  <P><Span>Pick!</Span> 추천 상품</P>
+                  포토 사용후기
                 </h2>
               </div>
-
-              <FlexChild width={'auto'}>
-                <Link className={style.linkBtn} href={'/Sale'}>더보기</Link>
-              </FlexChild>
             </HorizontalFlex>
 
-            <ProductSlider id={'pick'} />
+            <ProductSlider id={'new'} />
 
-          </VerticalFlex>
-        </FlexChild>
-       
-
-        <FlexChild marginTop={20}>
-          <VerticalFlex>
-            <FlexChild className={style.titleBox} justifyContent="center">
-              <div className={style.title}>
-                <h2 className="SacheonFont">전체 상품</h2>
-              </div>
-            </FlexChild>
-
-            <ProductList /> {/* 메인, 상세 리스트 */}
+            <Link href={'/photoReview'} className={style.link_more_btn}>
+              후기 더보기
+            </Link>
           </VerticalFlex>
         </FlexChild>
       </VerticalFlex>

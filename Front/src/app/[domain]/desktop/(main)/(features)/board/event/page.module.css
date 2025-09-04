@@ -1,0 +1,16 @@
+
+.thumb_frame {
+   position: relative;
+}
+
+.thumb_frame img {
+   position: relative;
+   z-index: 1;
+}
+
+.durationEnd_img {
+   position: absolute;
+   top: 0;
+   left: 0;
+   z-index: 2;
+}

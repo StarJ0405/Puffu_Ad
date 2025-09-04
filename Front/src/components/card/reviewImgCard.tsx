@@ -24,80 +24,47 @@ import { usePathname } from "next/navigation";
 import style from "./ProductCard.module.css";
 
 
-type ListItem = {
-   thumbnail: string;
-   title: string;
-   price: number;
-   discount_rate: number;
-   discount_price: number;
-   heart_count: number;
-   store_name: string;
-   rank: number;
-}
+type ReviewItem = {
+  thumbnail: string;
+  content: string;
+  name: string;
+  date: string;
+  product: {
+    thumb: string;
+    title: string;
+    rating: string;
+    reviewcount: string;
+  };
+};
 
 // lineClamp 구별해주기, TestProdcutCard는 임시로 만든거임. 나중에 프로덕트카드에 스타일만 입히면 됨.
 // 라인클램프는 제목태그에 달아서 속성 주기.
 
-export function TestProductCard(
-   { product, lineClamp, width, autoPlay }:
+export function ReviewImgCard(
+   { review, lineClamp, width, autoPlay }:
    { 
-      product: ListItem;
+      review: ReviewItem;
       lineClamp: number; 
       width?: number;
       autoPlay? : number;
    }) 
 {
 
-
-   // 프로덕트 카드 쓰면 다 지워도 됨.
-   const [heartCheck, setHeartCheck] = useState(false);
-   const [heartCount, setHeartCount] = useState(product.heart_count);
-   
-
-   const toggleHeart = () => {
-      setHeartCheck(prev => !prev);
-      setHeartCount(prev => prev + (heartCheck ? -1 : 1));
-   };
-
-   const [adultCheck, setadultCheck] = useState(true);
-
-   const productType:string = '입고 예정 체크. (기능 넣을때 참고만 하고 이건 지우면 됨.)'
-
    return (
       <VerticalFlex
          width={width ?? 200}
-         // margin={product.margin}
+         // margin={review.margin}
          className={style.prodcut_item}
       >
          <FlexChild className={style.imgBox}>
-            {/* { // 프로덕트 페이지가 best일때만 나타나기.
-               store === 'best' && (
-                  <FlexChild 
-                     className={clsx(style.rank, (product.rank < 3 ? style.topRank : ''))}
-                  >
-                     <Span className="SacheonFont">{product.rank + 1}</Span>
-                  </FlexChild>
-               )
-            } */}
-            {
-               adultCheck === true ? 
-               <Image src={product.thumbnail} width={"100%"} height={"auto"}/>
-               :
-               // 성인인증 안될때 나오는 이미지
-               <Image src={'/resources/images/19_only.png'} width={"100%"} height={"auto"}/>
-            }
-
-            {
-               productType === 'comingSoon' ?
-               <Image src={'/resources/images/ComingSoon.png'} width={"100%"} height={"auto"}/>
-               : null
-            }
+            
+            <Image src={review.thumbnail} width={"100%"} height={"auto"}/>
          </FlexChild>
 
          <FlexChild padding={"0 5px"} className={style.text_box}>
             <VerticalFlex gap={2} alignItems={'start'}>
                <FlexChild className={style.store_name}>
-                  <Span>{product.store_name}</Span>
+                  <Span>{review.content}</Span>
                </FlexChild>
 
                <FlexChild className={style.product_title}>
@@ -107,7 +74,7 @@ export function TestProductCard(
                      overflow={"hidden"}
                      lineClamp={lineClamp}
                   >
-                     {product.title}
+                     {review.name}
                   </P>
                </FlexChild>
                
@@ -116,33 +83,22 @@ export function TestProductCard(
                      color="var(--main-color)"
                      weight={600}
                      fontSize={14}
-                     hidden={product.discount_rate >= 1}
+                     hidden={review.discount_rate >= 1}
                      paddingRight={"0.5em"}
                   >
-                     {product.discount_rate}
+                     {review.discount_rate}
                   </Span> */}
                   <VerticalFlex className={style.price_box}>
                      <Span
                         className={style.through_price}
                         textDecoration={"line-through"}
                      >
-                        {product.price}
+                        {review.date}
                      </Span>
                      <Span className={style.discount_price} >
-                        {product.discount_price} ₩
+                        {review.product.title} ₩
                      </Span>
                   </VerticalFlex>
-
-                  <FlexChild onClick={toggleHeart} className={style.heart_counter}>
-                     <Image
-                        src={`/resources/icons/main/product_heart_icon${heartCheck === true ? '_active' : ''}.png`}
-                        width={23}
-                     />
-                     <Span>{heartCount}</Span>
-                  </FlexChild>
-                  {/* <Span fontSize={14} weight={600}>
-                     {currency_unit}
-                  </Span> */}
                </HorizontalFlex>
             </VerticalFlex>
          </FlexChild>
@@ -150,4 +106,4 @@ export function TestProductCard(
    )
 }
 
-export default TestProductCard
+export default ReviewImgCard

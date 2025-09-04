@@ -11,6 +11,7 @@ import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
+import NoContent from "@/components/noContent/noContent";
 import StarRate from "@/components/star/StarRate";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import useData from "@/shared/hooks/data/useData";
@@ -215,6 +216,7 @@ export function ProductList() {
 
    return (
       <>
+         {ListProduct.length > 0 ? (
          <MasonryGrid gap={20} breakpoints={5}>
             {
                ListProduct.map((product, i) => {
@@ -229,6 +231,9 @@ export function ProductList() {
                })
             }
          </MasonryGrid>
+         ):(
+            <NoContent />
+         )}
          
          <ListPagination />
       </>

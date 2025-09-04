@@ -21,6 +21,7 @@ import style from './page.module.css'
 import { SelectBox, AgreeInfo } from "./client";
 import ChoiceChild from "@/components/choice/ChoiceChild";
 import ChoiceGroup from "@/components/choice/ChoiceGroup";
+import NoContent from "@/components/noContent/noContent";
 
 export default async function () {
 
@@ -65,7 +66,6 @@ export default async function () {
                                  <Span>전체선택</Span>
                               </FlexChild>
                         </article>
-
                         {// 담은 상품 목록
                            cart.map((item, i)=> (
                               <VerticalFlex className={style.cart_item} key={i} gap={20}>
@@ -128,6 +128,8 @@ export default async function () {
                               </VerticalFlex>
                            ))
                         }
+
+                        {cart.length > 0 ? null : <NoContent/>}
                      </VerticalFlex>
                   </CheckboxGroup>
 
