@@ -20,7 +20,7 @@ import clsx from "clsx";
 // import style from './page.module.css'
 import boardStyle from '../boardGrobal.module.css'
 
-import { BoardTitleBox, BoardTable } from "./client";
+import { BoardTitleBox, GalleryTable } from "./client";
 import ChoiceChild from "@/components/choice/ChoiceChild";
 import ChoiceGroup from "@/components/choice/ChoiceGroup";
 
@@ -30,7 +30,7 @@ export default async function () {
       <>
          <VerticalFlex className={boardStyle.board_frame}>
             <BoardTitleBox />
-            <BoardTable />
+            <GalleryTable />
          </VerticalFlex>
       </>
    )

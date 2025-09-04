@@ -8,6 +8,7 @@ import Icon from "@/components/icons/Icon";
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import Select from "@/components/select/Select";
+import NoContent from "@/components/noContent/noContent";
 import { usePathname } from "next/navigation";
 import Span from "@/components/span/Span";
 import CheckboxAll from "@/components/choice/checkbox/CheckboxAll";
@@ -77,101 +78,117 @@ export function SelectBox() {
    )
 }
 
-export function BoardTable() {
+export function GalleryTable() {
 
-   // 조회수는 세자리마다 , 처리.
-   // date는 어차피 뽑으면 년월일시분초 다 나뉠테니 그때 조정하면 됨.
-   const boardData = [
+   
+   const event = [
       
-      {number: '1', Type: '배송', title: '게시판 내용', member: '푸푸토이', answered: '답변완료', date: '2025-09-04 13:48'},
-      {number: '2', Type: '회원/정보관리', title: '게시판 내용', member: '푸푸토이', answered: '답변대기', date: '2025-09-04 13:48'},
-      {number: '3', Type: '주문/결제', title: '게시판 내용', member: '푸푸토이', answered: '답변완료', date: '2025-09-04 13:48'},
-      {number: '4', Type: '반품/환불/교환/AS', title: '게시판 내용', member: '푸푸토이', answered: '답변완료', date: '2025-09-04 13:48'},
-      {number: '5', Type: '상품/이벤트', title: '게시판 내용', member: '푸푸토이', answered: '답변대기', date: '2025-09-04 13:48'},
-      {number: '6', Type: '기타', title: '게시판 내용', member: '푸푸토이', answered: '답변대기', date: '2025-09-04 13:48'},
-      {number: '7', Type: '주문/결제', title: '게시판 내용', member: '푸푸토이', answered: '답변완료', date: '2025-09-04 13:48'},
-      {number: '8', Type: '배송', title: '게시판 내용', member: '푸푸토이', answered: '답변완료', date: '2025-09-04 13:48'},
-      {number: '9', Type: '배송', title: '게시판 내용', member: '푸푸토이', answered: '답변완료', date: '2025-09-04 13:48'},
-      {number: '10', Type: '배송', title: '게시판 내용', member: '푸푸토이', answered: '답변완료', date: '2025-09-04 13:48'},
+      {
+         thumbnail: '/resources/images/dummy_img/event_01.png', 
+         title: '무더운 여름 잊게 해줄 대박 세일!', 
+         subTitle: '여름 할인 상품 확인하세요!', 
+         durationStart: '2025.07.01 00:00',
+         durationEnd: '2025.10.31 23:59'
+      },
+
+      {
+         thumbnail: '/resources/images/dummy_img/event_02.png', 
+         title: '무더운 여름 잊게 해줄 대박 세일!', 
+         subTitle: '여름 할인 상품 확인하세요!', 
+         durationStart: '2025.07.01 00:00',
+         durationEnd: '2025.10.31 23:59'
+      },
+
+      {
+         thumbnail: '/resources/images/dummy_img/event_03.png', 
+         title: '무더운 여름 잊게 해줄 대박 세일!', 
+         subTitle: '여름 할인 상품 확인하세요!', 
+         durationStart: '2025.07.01 00:00',
+         durationEnd: '2025.08.31 23:59'
+      },
+
+      {
+         thumbnail: '/resources/images/dummy_img/event_04.png', 
+         title: '무더운 여름 잊게 해줄 대박 세일!', 
+         subTitle: '여름 할인 상품 확인하세요!', 
+         durationStart: '2025.07.01 00:00',
+         durationEnd: '2025.10.31 23:59'
+      },
+
+      {
+         thumbnail: '/resources/images/dummy_img/event_05.png', 
+         title: '무더운 여름 잊게 해줄 대박 세일!', 
+         subTitle: '여름 할인 상품 확인하세요!', 
+         durationStart: '2025.07.01 00:00',
+         durationEnd: '2025.10.31 23:59'
+      },
    ]
 
    return (
       <VerticalFlex>
+         <HorizontalFlex className={style.event_tab}>
+            <FlexChild className={clsx(style.tab_btn, style.active)}>
+               <P>전체보기</P>
+            </FlexChild>
+
+            <FlexChild className={style.tab_btn}>
+               <P>진행중인 이벤트</P>
+            </FlexChild>
+
+            <FlexChild className={style.tab_btn}>
+               <P>종료된 이벤트</P>
+            </FlexChild>
+         </HorizontalFlex>
+
          <FlexChild>
-            <table className={boardStyle.list_table}>
+            {event.length > 0 ? (
+            <div className={style.gallery_grid_container}>
+               {
+                  event.map((item, i)=> (
+                     <VerticalFlex key={i}>
+                        <FlexChild className={style.thumb_frame}>
+                           <Image src={item.thumbnail} width={'100%'} height={'auto'} />
+                           {
+                              item.durationEnd && ( 
+                                 // 현재 날짜가 이벤트 종료기간을 지났을때 이 이미지가 나타나기
+                                 // 실시간으로 시간 1초라도 기간 지나면 바로 업데이트해서 나타나게 해야 할지.
+                                 //클릭해서 내용은 볼 수 있음
+                                 <Image 
+                                    className={style.durationEnd_img} 
+                                    src={'/resources/images/event_out.png'} 
+                                    width={'100%'}
+                                    height={'auto'} 
+                                 />
+                              )
+                           }
+                        </FlexChild>
+                       
+                       <VerticalFlex>
+                           <FlexChild>
+                              <P>{item.title}</P>
+                           </FlexChild>
 
-               {/* 게시판 셀 너비 조정 */}
-               <colgroup>
-                  <col style={{width: '10%'}} />
-                  <col style={{width: '15%'}} />
-                  <col style={{width: '35%'}} />
-                  <col style={{width: '15%'}} />
-                  <col style={{width: '10%'}} />
-                  <col style={{width: '15%'}} />
-               </colgroup>
-   
-               {/* 게시판리스트 헤더 */}
-               <thead>
-                  <tr className={boardStyle.table_header}>
-                     <th>번호</th>
-                     <th>분류</th>
-                     <th>제목</th>
-                     <th>작성자</th>
-                     <th>문의상태</th>
-                     <th>날짜</th>
-                  </tr>
-               </thead>
-   
-               {/* 게시판 내용 */}
-               <tbody>
-                  {
-                     boardData.map((list, i)=> (
-                        <tr key={i}>
-                           {/* 번호 */}
-                           <td>{list.number}</td>
+                           <FlexChild>
+                              <P>{item.subTitle}</P>
+                           </FlexChild>
 
-                           {/* 분류 */}
-                           <td>{list.Type}</td>
-
-                           {/* 제목 */}
-                           <td>
-                              <FlexChild gap={5} alignItems="center" height={'100%'} cursor="pointer" className={boardStyle.td_title} width={'fit-content'}>
-                                 <Image src={'/resources/icons/board/lock_icon.png'} width={16} />{/* 비밀번호 들어가면 활성화 */}
-                                 <P lineClamp={1} overflow="hidden" display="--webkit-box" >{list.title}</P>
-                                 <Image src={'/resources/icons/board/new_icon.png'} width={16} />{/* 12시간 내 등록된 게시물만 나타나기 */}
-                              </FlexChild>
-                           </td>
-
-                           {/* 작성자 */}
-                           {/* 공지사항은 관리자가 쓰니까 이름 그대로 나오고, 1:1문의에서는 이름 일부 **로 가려주기 */}
-                           <td>
-                              <P lineClamp={2} overflow="hidden" display="--webkit-box" weight={500}>
-                                 {list.member}
-                              </P>
-                           </td>
-
-                           {/* 문의상태 */}
-                           <td>
-                              {
-                                 
-                              }
-                              <Span 
-                                 weight={400}
-                                 color={`${list.answered === '답변완료' ? '#fff' : '#FF4343'}`}
-                              >
-                                 {list.answered}
-                              </Span>
-                           </td>
-
-                           {/* 날짜 */}
-                           {/* 공지사항은 년월일까지 표시, 1:1문의는 분시초도 표시. */}
-                           <td><Span weight={400}>{list.date}</Span></td>
-                        </tr>
-                     ))
-                  }
-               </tbody>
-            </table>
+                           <FlexChild>
+                              <P>{item.durationStart}</P>
+                              <Span>~</Span>
+                              <P>{item.durationEnd}</P>
+                           </FlexChild>
+                       </VerticalFlex>
+                     </VerticalFlex>
+                  ))
+               }
+            </div>
+            ) : (
+               <NoContent />
+            )}
          </FlexChild>
+            
+
+               
          <FlexChild className={boardStyle.list_bottom_box}>
             <ListPagination />
 

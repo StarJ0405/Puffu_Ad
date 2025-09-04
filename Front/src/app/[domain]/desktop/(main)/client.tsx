@@ -11,6 +11,7 @@ import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
 import MasonryGrid from "@/components/masonry/MasonryGrid";
 import TestProductCard from "@/components/card/TestProductCard";
+import ReviewImgCard from "@/components/card/reviewImgCard";
 import StarRate from "@/components/star/StarRate";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import useData from "@/shared/hooks/data/useData";
@@ -22,12 +23,14 @@ import { useParams } from "next/navigation";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import ProductCard from "@/components/card/ProductCard";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 import style from "./page.module.css";
 
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, Navigation } from 'swiper/modules';
 import {Swiper as SwiperType} from 'swiper';
+import NoContent from "@/components/noContent/noContent";
 
 
 
@@ -105,6 +108,39 @@ const ListProduct: ListItem[] = [ // 임시
    store_name: '키테루 키테루',
    rank: 5,
 },
+{
+   thumbnail: '/resources/images/dummy_img/product_07.png',
+   title: '섹시 스트랩 간호사 st 코스튬',
+   price: 30000,
+   discount_rate: 12,
+   discount_price: 20000,
+   heart_count: 1030,
+   store_name: '키테루 키테루',
+   rank: 6,
+},
+
+{
+   thumbnail: '/resources/images/dummy_img/product_07.png',
+   title: '섹시 스트랩 간호사 st 코스튬',
+   price: 30000,
+   discount_rate: 12,
+   discount_price: 20000,
+   heart_count: 1030,
+   store_name: '키테루 키테루',
+   rank: 6,
+},
+
+{
+   thumbnail: '/resources/images/dummy_img/product_07.png',
+   title: '섹시 스트랩 간호사 st 코스튬',
+   price: 30000,
+   discount_rate: 12,
+   discount_price: 20000,
+   heart_count: 1030,
+   store_name: '키테루 키테루',
+   rank: 6,
+},
+
 {
    thumbnail: '/resources/images/dummy_img/product_07.png',
    title: '섹시 스트랩 간호사 st 코스튬',
@@ -194,6 +230,64 @@ export function MainBanner() {
 }
 
 
+export function LinkBanner() {
+
+   const link_banner = [
+    {link: '/', src: '/resources/images/dummy_img/link_banner_01.png'},
+    {link: '/', src: '/resources/images/dummy_img/link_banner_02.png'},
+    {link: '/', src: '/resources/images/dummy_img/link_banner_03.png'},
+    {link: '/', src: '/resources/images/dummy_img/link_banner_04.png'}
+  ]
+
+   return (
+      <FlexChild width={'auto'}>
+         <div className={style.link_Banner}>
+         {
+            link_banner.map((item, i) => (
+               <Link href={item.link} key={i}>
+               <Image 
+                  src={item.src}
+                  width={'100%'}
+                  height={'auto'}
+               />
+               </Link>
+            ))
+         }
+         </div>
+      </FlexChild>
+   )
+}
+
+export function miniBanner() {
+
+   const link_banner = [
+    {link: '/', src: '/resources/images/dummy_img/mini_banner_01.png'},
+    {link: '/', src: '/resources/images/dummy_img/mini_banner_02.png'},
+    {link: '/', src: '/resources/images/dummy_img/mini_banner_03.png'},
+    {link: '/', src: '/resources/images/dummy_img/mini_banner_04.png'}
+  ]
+
+   return (
+      <FlexChild width={'auto'}>
+         <div className={style.mini_Banner}>
+         {
+            link_banner.map((item, i) => (
+               <Link href={item.link} key={i} className={clsx((!item.link ? style.disabled : ''))}>
+               <Image 
+                  src={item.src}
+                  width={'100%'}
+                  height={'auto'}
+               />
+               </Link>
+            ))
+         }
+         </div>
+      </FlexChild>
+   )
+}
+
+
+
 export function MainCategory() { // 카테고리메뉴
 
    const pathname = usePathname();
@@ -230,69 +324,132 @@ export function MainCategory() { // 카테고리메뉴
 }
 
 
-
+type ReviewItem = {
+  thumbnail: string;
+  content: string;
+  name: string;
+  date: string;
+  product: {
+    thumb: string;
+    title: string;
+    rating: string;
+    reviewcount: string;
+  };
+};
 
 
 export function ProductSlider({id, lineClamp }: { id: string, lineClamp?: number }) {
+   
+   const reviewTest: ReviewItem[] = [
+      {
+         thumbnail: '/resources/images/dummy_img/review_img_01.png',
+         content: '벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.',
+         name: '김한별',
+         date: '2025-08-01',
+         product: {
+            thumb: '/resources/images/dummy_img/review_img_01.png',
+            title: '적나라 생츄어리',
+            rating: '4.8',
+            reviewcount: '4,567',
+         }
+      }
+   ];
 
    return (
-      <FlexChild id={id} className={style.ProductSlider}>
-         <Swiper
-            loop={true}
-            slidesPerView={6}
-            speed={600}
-            spaceBetween={20}
-            modules={[Autoplay, Navigation]}
-            autoplay={{ delay: 4000 }}
-            navigation={{
-               prevEl: `#${id} .${style.prevBtn}`,
-               nextEl: `#${id} .${style.nextBtn}`,
-            }}
-         >
-            {
-               ListProduct.map((product, i) => {
-               return (
-                  <SwiperSlide key={i}>
-                     <TestProductCard
-                        product={product}
-                        lineClamp={lineClamp ?? 2}
-                     />
-                  </SwiperSlide>
-               )
-               })
-            }
-         </Swiper>
-
-         <div className={clsx(style.naviBtn, style.prevBtn)}>
-           <Image src={'/resources/icons/arrow/slide_arrow.png'} width={10}></Image>
-         </div>
-         <div className={clsx(style.naviBtn, style.nextBtn)}>
-           <Image src={'/resources/icons/arrow/slide_arrow.png'} width={10}></Image>
-         </div>
-      </FlexChild>
+      <>
+         {reviewTest.length > 0 ? (
+         <FlexChild id={id} className={style.ProductSlider}>
+            <Swiper
+               loop={true}
+               slidesPerView={5}
+               speed={600}
+               spaceBetween={20}
+               modules={[Autoplay, Navigation]}
+               autoplay={{ delay: 4000 }}
+               navigation={{
+                  prevEl: `#${id} .${style.prevBtn}`,
+                  nextEl: `#${id} .${style.nextBtn}`,
+               }}
+            >
+               {
+                  reviewTest.map((review, i) => {
+                  return (
+                     <SwiperSlide key={i}>
+                        <ReviewImgCard
+                           review={review}
+                           lineClamp={lineClamp ?? 2}
+                        />
+                     </SwiperSlide>
+                  )
+                  })
+               }
+            </Swiper>
+   
+            <div className={clsx(style.naviBtn, style.prevBtn)}>
+              <Image src={'/resources/icons/arrow/slide_arrow.png'} width={10}></Image>
+            </div>
+            <div className={clsx(style.naviBtn, style.nextBtn)}>
+              <Image src={'/resources/icons/arrow/slide_arrow.png'} width={10}></Image>
+            </div>
+         </FlexChild>
+         ): (
+            <NoContent />
+         )}
+      </>
    )
 }
 
 
 
 
-export function ProductList() {
+export function ProductList({id, lineClamp }: { id: string, lineClamp?: number }) {
 
    return (
-      <MasonryGrid gap={20} breakpoints={5}>
-         {
-            ListProduct.map((product, i) => {
-               return (
-                  <TestProductCard
-                     product={product}
-                     lineClamp={2}
-                     key={i}
-                     width={244}
-                  />
-               )
-            })
-         }
-      </MasonryGrid>
+      <>
+         {ListProduct.length > 0 ? (
+         <VerticalFlex>
+            <MasonryGrid gap={20} breakpoints={6}>
+               {
+                  ListProduct.map((product, i) => {
+                     return (
+                        <>
+                           <TestProductCard
+                              product={product}
+                              lineClamp={2}
+                              key={i}
+                              width={200}
+                           />
+                           {/* <ProductCard 
+                              product={{
+                                 id: "123",
+                                 title: "테스트 상품",
+                                 thumbnail: "/test.png",
+                                 price: 10000,
+                                 discount_price: 8000,
+                                 discount_rate: 0.8,
+                                 store: "테스트 스토어",
+                                 brand: "브랜드명",
+                                 category: "카테고리",
+                                 variants: [],
+                              }}
+                              currency_unit="₩"
+                           /> */}
+                        </>
+                     )
+                  })
+               }
+            </MasonryGrid>
+            <Button className={style.list_more_btn}>
+               <FlexChild gap={5}>
+                  <Span>더보기</Span>
+                  <Image src={'/resources/icons/arrow/arrow_bottom_icon.png'} width={16} />
+               </FlexChild>
+            </Button>
+         </VerticalFlex>
+         ): (
+            <NoContent />
+         )}
+      </>
    )
 }
 

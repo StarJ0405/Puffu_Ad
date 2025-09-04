@@ -13,6 +13,7 @@ export default async function () {
 
    const menu1 = [ // 임시 데이터
       { name: 'BEST 상품', link: '/product'},
+      { name: '입고예정', link: '/product'},
       { name: '신상품', link: '/product'},
       { name: '데이 핫딜', link: '/product', icon: '/resources/images/header/HotDeal_icon.png'},
       { name: '랜덤박스', link: '/product'},
@@ -22,24 +23,11 @@ export default async function () {
       { name: '포토 사용후기', link: '/Boad/ReviewPhoto'},
       { name: '공지사항', link: '/Boad/Notice'},
       { name: '이벤트', link: '/Boad/Event'},
-      // { 
-      //    name: '커뮤니티', 
-      //    link: '/Boad/Community', 
-      //    inner: [
-      //       {name: '자유게시판', link: '/Boad/Community'},
-      //       {name: '포토사용후기', link: '/Boad/ReviewPhoto'},
-      //       {name: '유머/움짤', link: '/Boad/Funny'},
-      //       {name: '안구정화', link: '/Boad/Purify'},
-      //       {name: '성 상담소', link: '/Boad/Counseling'},
-      //       {name: '입문자 가이드', link: '/Boad/NewbieGuide'},
-      //    ]
-      // },
       {
          name: '고객센터', 
          link: '/board', 
          inner: [
             {name: '공지사항', link: '/board'},
-            {name: '자주 묻는 질문', link: '/board/FAQ'},
             {name: '1:1문의', link: '/Boad/Q&A'},
             {name: '이벤트', link: '/Boad/Event'},
          ]
