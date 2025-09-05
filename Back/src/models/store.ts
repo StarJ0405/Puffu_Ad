@@ -5,13 +5,13 @@ import { ShippingMethod } from "./shipping_method";
 
 @Entity({ name: "store" })
 @Index(["created_at"])
-// CREATE INDEX idx_store_name ON public.store USING GIN (fn_text_to_char_array(name));
+// CREATE INDEX IF NOT EXISTS idx_store_name ON public.store USING GIN (fn_text_to_char_array(name));
 export class Store extends BaseEntity {
   @Column({ type: "character varying", nullable: false })
   name?: string;
 
-  @Column({ type: "character varying", nullable: true })
-  thumbnail?: string;
+  @Column({ type: "jsonb", default: {} })
+  thumbnail?: Record<string, unknown> | null;
 
   @Column({ type: "character varying", nullable: true })
   description?: string;

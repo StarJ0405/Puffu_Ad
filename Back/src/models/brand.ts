@@ -5,7 +5,7 @@ import { ShippingMethod } from "./shipping_method";
 
 @Entity({ name: "brand" })
 @Index(["created_at"])
-// CREATE INDEX idx_brand_name ON public.brand USING GIN (fn_text_to_char_array(name));
+// CREATE INDEX IF NOT EXISTS idx_brand_name ON public.brand USING GIN (fn_text_to_char_array(name));
 export class Brand extends BaseEntity {
   @Column({ type: "character varying", nullable: false })
   name?: string;

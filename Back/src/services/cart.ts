@@ -10,6 +10,7 @@ import { UserRepository } from "repositories/user";
 import { VariantRepository } from "repositories/variant";
 import { inject, injectable } from "tsyringe";
 import { FindManyOptions, FindOneOptions, ILike } from "typeorm";
+import { PointService } from "./point";
 
 @injectable()
 export class CartService extends BaseService<Cart, CartRepository> {
@@ -24,6 +25,8 @@ export class CartService extends BaseService<Cart, CartRepository> {
     protected orderRepository: OrderRepository,
     @inject(UserRepository)
     protected userRepository: UserRepository,
+    @inject(PointService)
+    protected pointService: PointService,
     @inject(VariantRepository)
     protected variantRepository: VariantRepository
   ) {
@@ -151,7 +154,11 @@ export class CartService extends BaseService<Cart, CartRepository> {
         id: cart_id,
         user_id,
       },
-      relations: ["items.variant.product", "store"],
+      relations: [
+        "items.variant.product.discounts.discount",
+        "items.variant.discounts.discount",
+        "store",
+      ],
     });
     if (!cart) throw new Error("해당하는 카트가 없습니다.");
     const items = cart.items?.filter((item) => selected.includes(item.id));
@@ -173,12 +180,23 @@ export class CartService extends BaseService<Cart, CartRepository> {
         id: shipping_method_id,
       },
     });
-    if (!shipping_method) throw new Error("해당하는 배송방법이 업습니다.");
+    if (!shipping_method) throw new Error("해당하는 배송방법이 없습니다.");
     const _shipping_method = {
       ...shipping_method,
       id: undefined,
       store_id: null,
     };
+    const isPoint = cart.store?.currency_unit === "P";
+
+    if (isPoint) {
+      const has = await this.pointService.getTotalPoint(user_id);
+      if (
+        has <
+        (items?.reduce((acc, now) => acc + (now?.total_discount || 0), 0) || 0)
+      )
+        throw new Error("소지하고 있는 포인트가 부족합니다.");
+    }
+
     const now = new Date();
     let display = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(
       2,
@@ -229,20 +247,15 @@ export class CartService extends BaseService<Cart, CartRepository> {
       })
     );
 
-    // 포인트 차감 부분
     order = await this.orderRepository.findOne({
       where: {
         id: order.id,
       },
       relations: ["shipping_methods", "address", "items.brand"],
     });
-    await this.userRepository.update(
-      { id: user_id },
-      {
-        metadata: () =>
-          `metadata || CONCAT('{ "point":"', CAST((CAST(COALESCE(metadata ->>'point','0') as bigint) -${order?.total_discounted}) as TEXT),'"}')::jsonb`,
-      }
-    );
+    if (isPoint) {
+      await this.pointService.usePoint(user_id, order?.total_discounted || 0);
+    }
     return order;
   }
 }

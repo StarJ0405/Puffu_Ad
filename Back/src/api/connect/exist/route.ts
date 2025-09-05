@@ -1,4 +1,3 @@
-import { ApiHandler } from "app";
 import { ConnectService } from "services/connect";
 import { container } from "tsyringe";
 

@@ -1,4 +1,3 @@
-import { ApiHandler } from "app";
 import { ShippingMethod } from "models/shipping_method";
 import { ShippingMethodService } from "services/shipping_method";
 import { container } from "tsyringe";

@@ -10,14 +10,17 @@ import {
 } from "typeorm";
 import { generateEntityId } from "utils/functions";
 import { Brand } from "./brand";
+import { BundleProduct } from "./bundle-product";
 import { Category } from "./category";
+import { DiscountProduct } from "./discount-product";
 import { Option } from "./option";
 import { Store } from "./store";
 import { Variant } from "./variant";
+import { Wishlist } from "./wishlist";
 
 @Entity({ name: "product" })
 @Index(["created_at"])
-// CREATE INDEX idx_product_title ON public.product USING GIN (fn_text_to_char_array(title));
+// CREATE INDEX IF NOT EXISTS idx_product_title ON public.product USING GIN (fn_text_to_char_array(title));
 export class Product extends BaseEntity {
   @Column({ type: "character varying", nullable: false })
   store_id?: string;
@@ -49,19 +52,27 @@ export class Product extends BaseEntity {
   @Column({ type: "character varying", nullable: true })
   description?: string;
 
-  @Column({ type: "character varying", nullable: true })
+  @Column({ type: "text", nullable: true })
   detail?: string;
 
   @Column({ type: "real", nullable: false, default: 0.0 })
   price!: number;
 
   get discount_price(): number {
-    return this.price;
+    return (this.price * (100.0 - this.discount_rate)) / 100.0;
   }
 
   get discount_rate(): number {
-    if (this.price > 0) return this.discount_price / this.price;
-    else return 0;
+    if (this.discounts && this.discounts?.length > 0) {
+      return (
+        this.discounts.reduce(
+          (acc, now) => Math.max(acc, now.discount?.value || 0.0),
+          0.0
+        ) || 0.0
+      );
+    }
+
+    return 0;
   }
 
   @Column({ type: "real", default: 0.0 })
@@ -96,10 +107,21 @@ export class Product extends BaseEntity {
     orphanedRowAction: "soft-delete",
   })
   options?: Option[];
+
+  @OneToMany(() => DiscountProduct, (dp) => dp.product)
+  discounts?: DiscountProduct[];
+
+  @OneToMany(() => BundleProduct, (bp) => bp.product)
+  bundles?: BundleProduct[];
+
   @BeforeInsert()
   protected async BeforeInsert(): Promise<void> {
     this.id = generateEntityId(this.id, "pro");
   }
+
+  @OneToMany(() => Wishlist, (whi) => whi.product)
+  wishlists?: Wishlist[];
+
   toJSON() {
     return {
       ...this,

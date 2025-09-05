@@ -1,7 +1,7 @@
 import { BaseService } from "data-source";
 import { User } from "models/user";
 import { UserRepository } from "repositories/user";
-import { inject, injectable } from "tsyringe";
+import { container, inject, injectable } from "tsyringe";
 import {
   DeepPartial,
   FindManyOptions,
@@ -10,6 +10,7 @@ import {
 } from "typeorm";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 import { comparePasswords, hashPassword } from "utils/functions";
+import { PointService } from "./point";
 
 @injectable()
 export class UserService extends BaseService<User, UserRepository> {
@@ -99,5 +100,18 @@ export class UserService extends BaseService<User, UserRepository> {
       delete data.password;
     }
     return super.update(where, data, returnEnttiy);
+  }
+  async getUser(id: string): Promise<User | null> {
+    const service = container.resolve(PointService);
+    await service.usePoint(id, 0);
+
+    return await this.repository
+      .builder("u")
+      .leftJoinAndSelect("u.points", "pt")
+      .where(`u.id = :id`, { id })
+      .andWhere(
+        `(pt is null OR ((pt.ends_at IS NULL OR pt.ends_at > NOW()) AND pt.point - pt.used_point > 0))`
+      )
+      .getOne();
   }
 }

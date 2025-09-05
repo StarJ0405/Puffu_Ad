@@ -603,16 +603,14 @@ export default function ({
                           </P>
                         </FlexChild>
                         <FlexChild padding={"15px 20px 15px 0"}>
-                          <FlexChild border={"1px solid #CECECE"}>
-                            <InputImage
-                              ref={(el) => {
-                                inputs.current[4] = el;
-                              }}
-                              name={"상품_썸네일"}
-                              path={"/product/thumbnail"}
-                              placeHolder="(6:7 비율의 이미지, 600X700을 권장합니다.)"
-                            />
-                          </FlexChild>
+                          <InputImage
+                            ref={(el) => {
+                              inputs.current[4] = el;
+                            }}
+                            name={"상품_썸네일"}
+                            path={"/product/thumbnail"}
+                            placeHolder="최소 600X600 이상의 이미지를 권장합니다."
+                          />
                         </FlexChild>
                       </HorizontalFlex>
                     </FlexChild>

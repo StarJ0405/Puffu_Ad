@@ -1,4 +1,3 @@
-import { ApiHandler } from "app";
 import { ProductService } from "services/product";
 import { container } from "tsyringe";
 
@@ -12,40 +11,52 @@ export const GET: ApiHandler = async (req, res) => {
     ...where
   } = req.parsedQuery;
   const service: ProductService = container.resolve(ProductService);
-  where.visible = true;
-  if (!relations) {
-    relations = ["variants"];
-  } else {
-    if (Array.isArray(relations)) {
-      if (!relations.some((r) => r.startsWith("variants"))) {
-        relations.push("variants");
-      }
-    } else if (!relations.startsWith("variants")) {
-      relations = [relations, "variants"];
-    }
-  }
-  if (where.variants) {
-    const variants = where.variants;
-    variants.visible = true;
-    where.variants = variants;
-  } else {
-    where.variants = { visible: true };
-  }
-  if (select && !select.includes("visible")) {
-    select.push("visible");
+  if (req.user) {
+    where.user_id = req.user.id;
   }
 
   if (pageSize) {
-    const page = await service.getPageable(
+    const page: any = await service.getWithOrder(
+      { select, order, relations, where },
       {
         pageSize: Number(pageSize),
         pageNumber: Number(pageNumber),
-      },
-      { select, order, relations, where }
+      }
     );
+    if (req.user) {
+      page.content = page.content.map((product: any) => {
+        if (product?.wishlists && product?.wishlists?.length > 0) {
+          const wish = product?.wishlists.find(
+            (f: any) => f.user_id === req.user.id
+          );
+          product.wish = wish;
+          delete product.wishlists;
+          return product;
+        }
+        return product;
+      });
+    }
     return res.json(page);
   } else {
-    const content = await service.getList({ select, order, relations, where });
+    let content: any[] = await service.getWithOrder({
+      select,
+      order,
+      relations,
+      where,
+    });
+    if (req.user) {
+      content = content.map((product: any) => {
+        if (product?.wishlists && product?.wishlists?.length > 0) {
+          const wish = product?.wishlists.find(
+            (f: any) => f.user_id === req.user.id
+          );
+          product.wish = wish;
+          delete product.wishlists;
+          return product;
+        }
+        return product;
+      });
+    }
     return res.json({ content });
   }
 };

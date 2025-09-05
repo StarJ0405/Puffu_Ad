@@ -1,4 +1,3 @@
-import { ApiHandler } from "app";
 import { verificationRequester } from "utils/class";
 
 export const POST: ApiHandler = async (req, res) => {

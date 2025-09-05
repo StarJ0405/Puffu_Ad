@@ -1,4 +1,3 @@
-import { ApiHandler } from "app";
 import { verificationRequester } from "utils/class";
 
 export const GET: ApiHandler = async (req, res) => {

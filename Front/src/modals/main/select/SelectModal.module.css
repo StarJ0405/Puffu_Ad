@@ -1,0 +1,11 @@
+.item {
+  padding: 11.5px 15px;
+  font-weight: 500;
+  font-size: 13px;
+  color: #474747;
+  background-color: #fff;
+}
+.item.select {
+  color: var(--main-color);
+  background-color: #F8F8F8;
+}

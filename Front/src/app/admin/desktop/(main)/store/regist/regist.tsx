@@ -48,7 +48,7 @@ export default function ({ initStores }: { initStores: Pageable }) {
     { fallbackData: initStores, onReprocessing: (data) => data.content }
   );
   const inputs = useRef<any[]>([]);
-  const image = useRef<any>(null);
+  const images = useRef<any[]>([]);
   const radios = useRef<any[]>([]);
   const [colors, setColors] = useState<Color[]>(
     [...ColorList].map((color) => ({ ...color }))
@@ -73,11 +73,12 @@ export default function ({ initStores }: { initStores: Pageable }) {
       ) {
         return setError("이미 사용중인 도메인입니다.");
       }
-      if (true) return true;
-      validateInputs([...inputs.current, image.current])
+      validateInputs([...inputs.current, ...images.current])
         .then(({ isValid }: { isValid: boolean }) => {
           if (!isValid) return;
-          const thumbnail = image.current.getValue();
+          const color = images.current[0].getValue();
+          const white = images.current[1].getValue();
+          const black = images.current[2].getValue();
           const description = inputs.current[1].getValue();
           const index = inputs.current[2].getValue();
           const _data: StoreDataFrame = {
@@ -86,7 +87,13 @@ export default function ({ initStores }: { initStores: Pageable }) {
             adult,
             index,
           };
-          _data.thumbnail = thumbnail;
+          _data.subdomain = domain || null;
+          // _data.thumbnail = thumbnail;
+          _data.thumbnail = {
+            black,
+            color,
+            white,
+          };
           if (description) _data.description = description;
           _data.metadata = {
             colors: colors.map((color) => {
@@ -184,13 +191,75 @@ export default function ({ initStores }: { initStores: Pageable }) {
                     justifyContent={"center"}
                   >
                     <P size={16} weight={600} color={"#ffffff"}>
-                      대표 이미지
+                      로고(컬러)
                     </P>
                   </FlexChild>
                   <FlexChild padding={"15px 15px 15px 0"}>
                     <InputImage
-                      ref={image}
-                      placeHolder="1:1 비율의 이미지를 권장합니다."
+                      ref={(el) => {
+                        images.current[0] = el;
+                      }}
+                      placeHolder="4:1 비율의 이미지를 권장합니다."
+                    />
+                  </FlexChild>
+                </HorizontalFlex>
+              </FlexChild>
+              <FlexChild>
+                <HorizontalFlex
+                  gap={20}
+                  alignItems="stretch"
+                  border={"1px solid #EFEFEF"}
+                  borderRight={"none"}
+                  borderLeft={"none"}
+                  borderTop={"none"}
+                >
+                  <FlexChild
+                    width={"220px"}
+                    padding={"18px 15px"}
+                    backgroundColor={"#3c4b64"}
+                    justifyContent={"center"}
+                  >
+                    <P size={16} weight={600} color={"#ffffff"}>
+                      로고(흰색)
+                    </P>
+                  </FlexChild>
+                  <FlexChild padding={"15px 15px 15px 0"}>
+                    <InputImage
+                      backgroundColor="#1c2b3f"
+                      color="#fff"
+                      ref={(el) => {
+                        images.current[1] = el;
+                      }}
+                      placeHolder="4:1 비율의 이미지를 권장합니다."
+                    />
+                  </FlexChild>
+                </HorizontalFlex>
+              </FlexChild>
+              <FlexChild>
+                <HorizontalFlex
+                  gap={20}
+                  alignItems="stretch"
+                  border={"1px solid #EFEFEF"}
+                  borderRight={"none"}
+                  borderLeft={"none"}
+                  borderTop={"none"}
+                >
+                  <FlexChild
+                    width={"220px"}
+                    padding={"18px 15px"}
+                    backgroundColor={"#3c4b64"}
+                    justifyContent={"center"}
+                  >
+                    <P size={16} weight={600} color={"#ffffff"}>
+                      로고(검정색)
+                    </P>
+                  </FlexChild>
+                  <FlexChild padding={"15px 15px 15px 0"}>
+                    <InputImage
+                      ref={(el) => {
+                        images.current[1] = el;
+                      }}
+                      placeHolder="4:1 비율의 이미지를 권장합니다."
                     />
                   </FlexChild>
                 </HorizontalFlex>

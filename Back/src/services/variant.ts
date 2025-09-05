@@ -6,7 +6,7 @@ import { OptionValueRepository } from "repositories/option-value";
 import { ProductRepository } from "repositories/product";
 import { VariantRepository } from "repositories/variant";
 import { inject, injectable } from "tsyringe";
-import { FindManyOptions, FindOneOptions, FindOptionsWhere } from "typeorm";
+import { FindManyOptions, FindOneOptions, FindOptionsWhere, In } from "typeorm";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 
 @injectable()
@@ -101,6 +101,48 @@ export class VariantService extends BaseService<Variant, VariantRepository> {
         const q = where.q;
         delete where.q;
         where = this.Search(where, ["title", "id"], q);
+
+        if (options.relations) {
+          const relations = Array.isArray(options.relations)
+            ? options.relations
+            : [options.relations];
+          const _where: any[] = [];
+          const _relations: any[] = [];
+          if (
+            relations.some(
+              (relation) =>
+                typeof relation === "string" && relation.includes("product")
+            )
+          ) {
+            _where.push(this.Search({}, ["product.title"], q, true));
+            _relations.push("product");
+          }
+
+          if (
+            relations.some(
+              (relation) =>
+                typeof relation === "string" &&
+                relation.includes("product.brand")
+            )
+          ) {
+            _where.push(this.Search({}, ["product.brand.name"], q, true));
+            _relations.push("product.brand");
+          }
+
+          if (_where.length > 0) {
+            const list = await super.getList({
+              select: ["id"],
+              where: _where,
+              relations: _relations,
+            });
+
+            where = [
+              ...(Array.isArray(where) ? where : [where]),
+              { ...options.where, id: In(list.map((variant) => variant.id)) },
+            ];
+          }
+        }
+
         options.where = where;
       }
       if (!options?.order) {
@@ -119,6 +161,48 @@ export class VariantService extends BaseService<Variant, VariantRepository> {
         const q = where.q;
         delete where.q;
         where = this.Search(where, ["title", "id"], q);
+
+        if (options.relations) {
+          const relations = Array.isArray(options.relations)
+            ? options.relations
+            : [options.relations];
+          const _where: any[] = [];
+          const _relations: any[] = [];
+          if (
+            relations.some(
+              (relation) =>
+                typeof relation === "string" && relation.includes("product")
+            )
+          ) {
+            _where.push(this.Search({}, ["product.title"], q, true));
+            _relations.push("product");
+          }
+
+          if (
+            relations.some(
+              (relation) =>
+                typeof relation === "string" &&
+                relation.includes("product.brand")
+            )
+          ) {
+            _where.push(this.Search({}, ["product.brand.name"], q, true));
+            _relations.push("product.brand");
+          }
+
+          if (_where.length > 0) {
+            const list = await super.getList({
+              select: ["id"],
+              where: _where,
+              relations: _relations,
+            });
+
+            where = [
+              ...(Array.isArray(where) ? where : [where]),
+              { ...options.where, id: In(list.map((variant) => variant.id)) },
+            ];
+          }
+        }
+
         options.where = where;
       }
       if (!options?.order) {

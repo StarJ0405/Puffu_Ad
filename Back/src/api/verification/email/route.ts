@@ -1,4 +1,3 @@
-import { ApiHandler } from "app";
 import { sendMail } from "expand/smtp/module";
 import { UserService } from "services/user";
 import { container } from "tsyringe";

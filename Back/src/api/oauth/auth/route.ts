@@ -1,4 +1,3 @@
-import { ApiHandler } from "app";
 import { UserRole } from "models/user";
 import { AccountLinkService } from "services/account_link";
 import { ConnectService } from "services/connect";

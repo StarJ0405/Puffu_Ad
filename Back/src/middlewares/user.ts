@@ -10,7 +10,7 @@ const logInUser = async (req: Request, res: Response, next: NextFunction) => {
     if (!token.keep || token.exp > new Date().getTime() / 1000) {
       const user_id = token.user_id;
       const service = container.resolve(UserService);
-      req.user = await service.getById(user_id);
+      req.user = await service.getUser(user_id);
     }
   }
   next(); // 다음 미들웨어 또는 라우트 핸들러로 진행

@@ -361,7 +361,7 @@ export default function ({
                         value={store}
                         options={[
                           { display: "전체", value: "" },
-                          ...stores.map((store: StoreData) => ({
+                          ...stores?.map((store: StoreData) => ({
                             display: store.name,
                             value: store.id,
                           })),

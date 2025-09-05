@@ -16,7 +16,7 @@ import { generateEntityId } from "utils/functions";
 @Tree("materialized-path")
 @Entity({ name: "category" })
 @Index(["created_at"])
-// CREATE INDEX idx_category_name ON public.category USING GIN (fn_text_to_char_array(name));
+// CREATE INDEX IF NOT EXISTS idx_category_name ON public.category USING GIN (fn_text_to_char_array(name));
 export class Category extends BaseTreeEntity {
   @ManyToOne(() => Category, (entity) => entity.children, {
     nullable: true,

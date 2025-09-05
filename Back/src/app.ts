@@ -84,7 +84,7 @@ const httpServer = createServer(app);
 
 const io = new SocketIOServer(httpServer, {
   cors: {
-    origin: process.env.CORS ? process.env.CORS.split(",") : "*",
+    origin,
     methods: ["GET", "POST"],
   },
 });
@@ -227,8 +227,10 @@ initializeDataSource().then(() => {
           }
         );
         io.on("connection", (socket) => {
-          if (process.env.CONSOLE_LOG)
-            console.log(`[${new Date().toISOString()}] ${socket.id} connected`);
+          // if (process.env.CONSOLE_LOG)
+          //   console.log(
+          //     `<Socket> [${new Date().toISOString()}] ${socket.id} connected`
+          //   );
           for (const [
             urlPath,
             socketEvent,
@@ -237,16 +239,19 @@ initializeDataSource().then(() => {
               socketEvent(socket, io, urlPath, data)
             );
           }
-
-          socket.onAny((...args) => console.log(args));
-
-          // 공통 disconnect 핸들러 (모든 소켓에 대해 한 번만 등록)
           if (process.env.CONSOLE_LOG)
-            socket.on("disconnect", () => {
-              console.log(
-                `[${new Date().toISOString()}] ${socket.id} disconnected`
-              );
-            });
+            socket.onAny((...args) =>
+              console.log(`<Socket> [${new Date().toISOString()}]`, args)
+            );
+
+          // if (process.env.CONSOLE_LOG)
+          //   socket.on("disconnect", () => {
+          //     console.log(
+          //       `<Socket> [${new Date().toISOString()}] ${
+          //         socket.id
+          //       } disconnected`
+          //     );
+          //   });
         });
         // 서버 시작
         httpServer.listen(port, () => {

@@ -141,6 +141,7 @@ const CategoryModal = NiceModal.create(
 
     return (
       <ModalBase
+        cancelBack
         borderRadius={10}
         headerStyle
         zIndex={10055}

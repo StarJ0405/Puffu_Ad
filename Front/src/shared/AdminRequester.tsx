@@ -433,6 +433,169 @@ class _AdminRequester {
     if (callback) callback(await this.post(`/orders/cancel`, data));
     else return await this.post(`/orders/cancel`, data);
   }
+  // 공지사항
+  async createNotices(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.post(`/notices`, data));
+    else return await this.post(`/notices`, data);
+  }
+  async getNotices(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/notices`, data));
+    else return await this.get(`/notices`, data);
+  }
+  async updateNotice(
+    id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.post(`/notices/${id}`, data));
+    else return await this.post(`/notices/${id}`, data);
+  }
+  async deleteNotice(
+    id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.delete(`/notices/${id}`, data));
+    else return await this.delete(`/notices/${id}`, data);
+  }
+  // 배너
+  async createBanners(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.post(`/banners`, data));
+    else return await this.post(`/banners`, data);
+  }
+  async getBanners(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/banners`, data));
+    else return await this.get(`/banners`, data);
+  }
+  async updateBanner(
+    id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.post(`/banners/${id}`, data));
+    else return await this.post(`/banners/${id}`, data);
+  }
+  async deleteBanner(
+    id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.delete(`/banners/${id}`, data));
+    else return await this.delete(`/banners/${id}`, data);
+  }
+  // 프로모션
+  async createPromotion(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.post(`/events`, data));
+    else return await this.post(`/events`, data);
+  }
+  async createPromotionDiscount(
+    event_id: string,
+    data?: any,
+    callback?: Function
+  ) {
+    if (callback)
+      callback(await this.post(`/events/${event_id}/discount`, data));
+    else return await this.post(`/events/${event_id}/discount`, data);
+  }
+  async createPromotionBundle(
+    event_id: string,
+    data?: any,
+    callback?: Function
+  ) {
+    if (callback) callback(await this.post(`/events/${event_id}/bundle`, data));
+    else return await this.post(`/events/${event_id}/bundle`, data);
+  }
+  async getPromotions(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/events`, data));
+    else return await this.get(`/events`, data);
+  }
+  async getPromotion(
+    id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.get(`/events/${id}`, data));
+    else return await this.get(`/events/${id}`, data);
+  }
+  async updatePromotion(
+    id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.post(`/events/${id}`, data));
+    else return await this.post(`/events/${id}`, data);
+  }
+  async updatePromotionDiscount(
+    event_id: string,
+    discount_id: string,
+    data?: any,
+    callback?: Function
+  ) {
+    if (callback)
+      callback(
+        await this.post(`/events/${event_id}/discount/${discount_id}`, data)
+      );
+    else
+      return await this.post(
+        `/events/${event_id}/discount/${discount_id}`,
+        data
+      );
+  }
+  async updatePromotionBundle(
+    event_id: string,
+    bundle_id: string,
+    data?: any,
+    callback?: Function
+  ) {
+    if (callback)
+      callback(
+        await this.post(`/events/${event_id}/bundle/${bundle_id}`, data)
+      );
+    else
+      return await this.post(`/events/${event_id}/bundle/${bundle_id}`, data);
+  }
+  async deletePromotion(
+    id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.delete(`/events/${id}`, data));
+    else return await this.delete(`/events/${id}`, data);
+  }
+  async deletePromotionDiscount(
+    event_id: string,
+    discount_id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback)
+      callback(
+        await this.delete(`/events/${event_id}/discount/${discount_id}`, data)
+      );
+    else
+      return await this.delete(
+        `/events/${event_id}/discount/${discount_id}`,
+        data
+      );
+  }
+  async deletePromotionBundle(
+    event_id: string,
+    bundle_id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback)
+      callback(
+        await this.delete(`/events/${event_id}/bundle/${bundle_id}`, data)
+      );
+    else
+      return await this.delete(`/events/${event_id}/bundle/${bundle_id}`, data);
+  }
+  // 채팅
+  async getMyChatrooms(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get("/users/me/chatrooms", data));
+    else return await this.get("/users/me/chatrooms", data);
+  }
 }
 
 export default _AdminRequester;

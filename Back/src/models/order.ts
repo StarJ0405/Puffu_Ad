@@ -26,8 +26,8 @@ export enum OrderStatus {
 
 @Entity({ name: "order" })
 @Index(["created_at"])
-// CREATE INDEX idx_order_id ON public.order USING GIN (fn_text_to_char_array(id));
-// CREATE INDEX idx_order_display ON public.order USING GIN (fn_text_to_char_array(display));
+// CREATE INDEX IF NOT EXISTS idx_order_id ON public.order USING GIN (fn_text_to_char_array(id));
+// CREATE INDEX IF NOT EXISTS idx_order_display ON public.order USING GIN (fn_text_to_char_array(display));
 export class Order extends BaseEntity {
   @Column({ type: "character varying", nullable: false, unique: true })
   display?: string;

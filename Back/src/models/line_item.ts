@@ -15,9 +15,9 @@ import { Variant } from "./variant";
 
 @Entity({ name: "line_item" })
 @Index(["created_at"])
-// CREATE INDEX idx_line_item_id ON public.line_item USING GIN (fn_text_to_char_array(id));
-// CREATE INDEX idx_line_item_product_title ON public.line_item USING GIN (fn_text_to_char_array(product_title));
-// CREATE INDEX idx_line_item_variant_title ON public.line_item USING GIN (fn_text_to_char_array(variant_title));
+// CREATE INDEX IF NOT EXISTS idx_line_item_id ON public.line_item USING GIN (fn_text_to_char_array(id));
+// CREATE INDEX IF NOT EXISTS idx_line_item_product_title ON public.line_item USING GIN (fn_text_to_char_array(product_title));
+// CREATE INDEX IF NOT EXISTS idx_line_item_variant_title ON public.line_item USING GIN (fn_text_to_char_array(variant_title));
 export class LineItem extends BaseEntity {
   @Column({ type: "character varying", nullable: true })
   cart_id?: string | null;

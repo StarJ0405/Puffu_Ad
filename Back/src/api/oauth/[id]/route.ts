@@ -1,4 +1,3 @@
-import { ApiHandler } from "app";
 import { AccountLinkService } from "services/account_link";
 import { ConnectService } from "services/connect";
 import { UserService } from "services/user";

@@ -1,4 +1,3 @@
-import { ApiHandler } from "app";
 import { generateToken, verifyToken } from "utils/functions";
 
 export const GET: ApiHandler = async (req, res) => {

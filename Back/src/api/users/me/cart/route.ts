@@ -1,4 +1,3 @@
-import { ApiHandler } from "app";
 import { CartService } from "services/cart";
 import { container } from "tsyringe";
 import { IsNull } from "typeorm";
@@ -13,7 +12,11 @@ export const GET: ApiHandler = async (req, res) => {
       type: type ? type : IsNull(),
       store_id,
     },
-    relations: ["items.variant.product.brand"],
+    relations: [
+      "items.variant.product.brand",
+      "items.variant.discounts.discount",
+      "items.variant.product.discounts.discount",
+    ],
   });
   if (!cart) {
     cart = await service.create({

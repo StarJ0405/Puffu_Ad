@@ -1,4 +1,3 @@
-import { ApiHandler } from "app";
 import { Variant } from "models/variant";
 import { VariantService } from "services/variant";
 import { container } from "tsyringe";

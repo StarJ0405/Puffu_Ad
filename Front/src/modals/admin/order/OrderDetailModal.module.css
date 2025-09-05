@@ -1,4 +1,4 @@
-.wrap {
-  overflow-y: auto;
-  /* height: 72vh; */
+.total {
+  text-decoration-line: line-through;
+  color: #333;
 }

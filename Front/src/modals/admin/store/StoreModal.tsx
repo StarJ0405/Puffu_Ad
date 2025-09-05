@@ -43,9 +43,9 @@ const StoreModal = NiceModal.create(
     const title = "스토어 " + (edit ? "편집" : "상세정보");
     const buttonText = "close";
     const modal = useRef<any>(null);
-    const [thumbnail] = useState(store.thumbnail ? [store.thumbnail] : []);
+    // const [thumbnail] = useState(store.thumbnail ? [store.thumbnail] : []);
     const inputs = useRef<any[]>([]);
-    const image = useRef<any>(null);
+    const images = useRef<any[]>([]);
     const radios = useRef<any[]>([]);
     const [colors, setColors] = useState<Color[]>(
       store.metadata.colors || [...ColorList].map((color) => ({ ...color }))
@@ -56,17 +56,37 @@ const StoreModal = NiceModal.create(
     );
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string>("");
-    const handleSave = () => {
+    const [domain, setDomain] = useState<string>(store.subdomain || "");
+    const handleSave = async () => {
       setIsLoading(true);
       try {
         const name = inputs.current[0].getValue();
         if (!name) {
           return setError("스토어명이 입력되지 않았습니다.");
         }
-        validateInputs([...inputs.current, image.current])
+
+        if (
+          domain !== store.subdomain &&
+          (
+            await adminRequester.getStores({
+              subdomain: domain ? domain : null,
+            })
+          ).content.length > 0
+        ) {
+          return setError("이미 사용중인 도메인입니다.");
+        }
+        validateInputs([...inputs.current, ...images.current])
           .then(({ isValid }: { isValid: boolean }) => {
             if (!isValid) return;
-            const thumbnail = image.current.getValue();
+            const color = images.current[0].getValue();
+            const white = images.current[1].getValue();
+            const black = images.current[2].getValue();
+            const thumbnail = {
+              color,
+              white,
+              black,
+            };
+
             const description = inputs.current[1].getValue();
             const index = inputs.current[2].getValue();
             const _data: StoreDataFrame = {
@@ -75,6 +95,7 @@ const StoreModal = NiceModal.create(
               adult,
               index,
             };
+            _data.subdomain = domain || null;
             _data.thumbnail = thumbnail;
             if (description) _data.description = description;
             _data.metadata = {
@@ -138,21 +159,101 @@ const StoreModal = NiceModal.create(
         buttonText={buttonText}
       >
         <VerticalFlex padding={"10px 20px"}>
-          <FlexChild justifyContent="center">
+          <FlexChild>
             {edit ? (
-              <Div width={300}>
-                <InputImage
-                  ref={image}
-                  value={thumbnail}
-                  placeHolder="1:1 비율의 이미지를 권장합니다."
-                />
-              </Div>
+              <HorizontalFlex justifyContent="center" gap={10}>
+                <FlexChild width={"max-content"}>
+                  <VerticalFlex gap={5}>
+                    <P>로고(컬러)</P>
+                    <Div width={280}>
+                      <InputImage
+                        ref={(el) => {
+                          images.current[0] = el;
+                        }}
+                        value={store?.thumbnail?.color}
+                        placeHolder="4:1 비율의 이미지를 권장합니다."
+                      />
+                    </Div>
+                  </VerticalFlex>
+                </FlexChild>
+                <FlexChild width={"max-content"}>
+                  <VerticalFlex gap={5}>
+                    <P>로고(흰색)</P>
+                    <Div width={280}>
+                      <InputImage
+                        backgroundColor="#1c2b3f"
+                        color="#fff"
+                        ref={(el) => {
+                          images.current[1] = el;
+                        }}
+                        value={store?.thumbnail?.white}
+                        placeHolder="4:1 비율의 이미지를 권장합니다."
+                      />
+                    </Div>
+                  </VerticalFlex>
+                </FlexChild>
+                <FlexChild width={"max-content"}>
+                  <VerticalFlex gap={5}>
+                    <P>로고(검정)</P>
+                    <Div width={280}>
+                      <InputImage
+                        ref={(el) => {
+                          images.current[2] = el;
+                        }}
+                        value={store?.thumbnail?.black}
+                        placeHolder="4:1 비율의 이미지를 권장합니다."
+                      />
+                    </Div>
+                  </VerticalFlex>
+                </FlexChild>
+              </HorizontalFlex>
             ) : (
-              <Image
-                className={styles.image}
-                src={store?.thumbnail || "/resources/images/no-img.png"}
-                size={200}
-              />
+              <HorizontalFlex justifyContent="center" gap={10}>
+                <FlexChild width={"max-content"}>
+                  <VerticalFlex gap={5}>
+                    <P>로고(컬러)</P>
+                    <Image
+                      className={styles.image}
+                      src={
+                        store?.thumbnail?.color ||
+                        "/resources/images/no-img.png"
+                      }
+                      padding={10}
+                      size={200}
+                    />
+                  </VerticalFlex>
+                </FlexChild>
+                <FlexChild width={"max-content"}>
+                  <VerticalFlex gap={5}>
+                    <P>로고(흰색)</P>
+                    <Div backgroundColor="#1c2b3f" color="#fff">
+                      <Image
+                        className={styles.image}
+                        src={
+                          store?.thumbnail?.white ||
+                          "/resources/images/no-img.png"
+                        }
+                        padding={10}
+                        size={200}
+                      />
+                    </Div>
+                  </VerticalFlex>
+                </FlexChild>
+                <FlexChild width={"max-content"}>
+                  <VerticalFlex gap={5}>
+                    <P>로고(검정)</P>
+                    <Image
+                      className={styles.image}
+                      src={
+                        store?.thumbnail?.black ||
+                        "/resources/images/no-img.png"
+                      }
+                      padding={10}
+                      size={200}
+                    />
+                  </VerticalFlex>
+                </FlexChild>
+              </HorizontalFlex>
             )}
           </FlexChild>
           <FlexChild>
@@ -171,6 +272,24 @@ const StoreModal = NiceModal.create(
                   />
                 ) : (
                   <P>{store.name}</P>
+                )}
+              </FlexChild>
+            </HorizontalFlex>
+          </FlexChild>
+          <FlexChild>
+            <HorizontalFlex>
+              <FlexChild className={styles.head}>
+                <P>서브도메인</P>
+              </FlexChild>
+              <FlexChild className={styles.content}>
+                {edit ? (
+                  <Input
+                    value={domain}
+                    onChange={(value) => setDomain(value as string)}
+                    width={"100%"}
+                  />
+                ) : (
+                  <P>{store.subdomain || "(메인페이지)"}</P>
                 )}
               </FlexChild>
             </HorizontalFlex>

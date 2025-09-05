@@ -1,4 +1,3 @@
-import { ApiHandler } from "app";
 import { Brand } from "models/brand";
 import { BrandService } from "services/brand";
 import { container } from "tsyringe";

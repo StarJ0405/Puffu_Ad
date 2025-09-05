@@ -1,11 +1,12 @@
 import { BaseService } from "data-source";
 import { Order, OrderStatus } from "models/order";
 import { ShippingType } from "models/shipping_method";
+import { LogRepository } from "repositories/log";
 import { OrderRepository } from "repositories/order";
 import { ShippingMethodRepository } from "repositories/shipping_method";
 import { UserRepository } from "repositories/user";
 import { VariantRepository } from "repositories/variant";
-import { inject, injectable } from "tsyringe";
+import { container, inject, injectable } from "tsyringe";
 import {
   Between,
   FindManyOptions,
@@ -15,6 +16,7 @@ import {
   LessThanOrEqual,
   MoreThanOrEqual,
 } from "typeorm";
+import { PointService } from "./point";
 
 @injectable()
 export class OrderService extends BaseService<Order, OrderRepository> {
@@ -24,6 +26,8 @@ export class OrderService extends BaseService<Order, OrderRepository> {
     protected shippingMethodRepository: ShippingMethodRepository,
     @inject(UserRepository)
     protected userRepository: UserRepository,
+    @inject(PointService)
+    protected pointService: PointService,
     @inject(VariantRepository)
     protected variantRepository: VariantRepository
   ) {
@@ -125,6 +129,13 @@ export class OrderService extends BaseService<Order, OrderRepository> {
 
     return super.getList(options);
   }
+  async getStatus(
+    user_id: string
+  ): Promise<{ status: string; count: number }[]> {
+    return await this.repository.query(
+      `SELECT status, count(id) FROM public.order WHERE user_id = '${user_id}' GROUP BY status;`
+    );
+  }
   async updateTrackingNumber(
     where: FindOptionsWhere<Order>,
     tracking_number: string
@@ -171,16 +182,30 @@ export class OrderService extends BaseService<Order, OrderRepository> {
         // 환불 처리
       }
       if (order?.store?.currency_unit === "P") {
-        // 포인트 환불 처리
-        this.userRepository.update(
-          {
-            id: order.user_id,
+        await this.pointService.create({
+          user_id: order.user_id,
+          point: order.total_discounted,
+        });
+        const repo = container.resolve(LogRepository);
+        await repo.create({
+          type: "point",
+          name: "상품환불(환급)",
+          data: {
+            point: order.total_discounted,
+            user_id: order.user_id,
           },
-          {
-            metadata: () =>
-              `metadata || CONCAT('{ "point":"', CAST((CAST(COALESCE(metadata ->>'point','0') as bigint) +${order?.total_discounted}) as TEXT),'"}')::jsonb`,
-          }
-        );
+        });
+
+        // 포인트 환불 처리
+        // this.userRepository.update(
+        //   {
+        //     id: order.user_id,
+        //   },
+        //   {
+        //     metadata: () =>
+        //       `metadata || CONCAT('{ "point":"', CAST((CAST(COALESCE(metadata ->>'point','0') as bigint) +${order?.total_discounted}) as TEXT),'"}')::jsonb`,
+        //   }
+        // );
       }
 
       await this.repository.update(

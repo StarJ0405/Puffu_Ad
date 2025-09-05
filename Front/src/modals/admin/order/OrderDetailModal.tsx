@@ -3,12 +3,13 @@ import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
+import Span from "@/components/span/Span";
 import Tooltip from "@/components/tooltip/Tooltip";
 import ModalBase from "@/modals/ModalBase";
 import { copy, dateToString } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import { useRef } from "react";
-
+import styles from "./OrderDetailModal.module.css";
 const OrderDetailModal = NiceModal.create(({ order }: { order: OrderData }) => {
   const modal = useRef<any>(null);
   const [withHeader, withFooter] = [true, false];
@@ -191,9 +192,18 @@ const OrderDetailModal = NiceModal.create(({ order }: { order: OrderData }) => {
                               </P>
                             </FlexChild>
                           </FlexChild>
-                          <FlexChild width={"max-content"}>
-                            <P>{item.total_discount}</P>
-                            <P>{item.currency_unit}</P>
+                          <FlexChild width={"max-content"} gap={"0.5em"}>
+                            <P
+                              hidden={item.total === item.total_discount}
+                              className={styles.total}
+                            >
+                              <Span>{item.total}</Span>
+                              <Span>{item.currency_unit}</Span>
+                            </P>
+                            <P>
+                              <Span>{item.total_discount}</Span>
+                              <Span>{item.currency_unit}</Span>
+                            </P>
                           </FlexChild>
                         </HorizontalFlex>
                       ))}

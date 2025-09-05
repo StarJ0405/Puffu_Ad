@@ -5,15 +5,12 @@ import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import Select from "@/components/select/Select";
 import { dateToString } from "@/shared/utils/Functions";
-import { headers } from "next/headers";
 import Link from "next/link";
+import styles from "./header.module.css";
 import HeaderSide from "./headerSide";
 import HeaderUser from "./headerUser";
-import styles from "./header.module.css";
 
 export default async function () {
-  const headerList = await headers();
-  const pathname = headerList.get("x-pathname");
   return (
     <VerticalFlex
       zIndex={100}

@@ -4,6 +4,7 @@ import { generateEntityId } from "utils/functions";
 import { AccountLink } from "./account_link";
 import { Cart } from "./cart";
 import { Order } from "./order";
+import { Point } from "./point";
 
 export enum UserRole {
   ADMIN = "admin",
@@ -14,17 +15,17 @@ export enum UserRole {
 
 @Entity({ name: "user" })
 @Index(["created_at"])
-// CREATE INDEX idx_user_id ON public.user USING GIN (fn_text_to_char_array(id));
-// CREATE INDEX idx_user_username ON public.user USING GIN (fn_text_to_char_array(username));
-// CREATE INDEX idx_user_name ON public.user USING GIN (fn_text_to_char_array(name));
-// CREATE INDEX idx_user_phone ON public.user USING GIN (fn_text_to_char_array(phone));
-// CREATE INDEX idx_user_nickname ON public.user USING GIN (fn_text_to_char_array(nickname));
+// CREATE INDEX IF NOT EXISTS idx_user_id ON public.user USING GIN (fn_text_to_char_array(id));
+// CREATE INDEX IF NOT EXISTS idx_user_username ON public.user USING GIN (fn_text_to_char_array(username));
+// CREATE INDEX IF NOT EXISTS idx_user_name ON public.user USING GIN (fn_text_to_char_array(name));
+// CREATE INDEX IF NOT EXISTS idx_user_phone ON public.user USING GIN (fn_text_to_char_array(phone));
+// CREATE INDEX IF NOT EXISTS idx_user_nickname ON public.user USING GIN (fn_text_to_char_array(nickname));
 export class User extends BaseEntity {
   @Column({ type: "character varying", unique: true })
   username?: string;
 
   @Column({ type: "character varying" })
-  password_hash?: string;
+  password_hash!: string;
 
   @Column({
     type: "enum",
@@ -98,14 +99,31 @@ export class User extends BaseEntity {
   @OneToMany(() => Cart, (cart) => cart.user)
   carts?: Cart[];
 
+  @OneToMany(() => Point, (point) => point.user)
+  points?: Point[];
+
+  get point(): number {
+    if (this.points && this.points?.length > 0) {
+      const now_time = new Date().getTime();
+      return this.points.reduce((acc, now) => {
+        if (now.ends_at && new Date(now?.ends_at).getTime() < now_time)
+          return acc;
+        return acc + Math.max(0, now.point - now.used_point);
+      }, 0);
+    }
+    return 0;
+  }
   @BeforeInsert()
   protected BeforeInsert(): void {
     this.id = generateEntityId(this.id, "usr");
   }
   toJSON() {
-    return {
+    const result = {
       ...this,
       adult: this.adult,
+      point: this.point,
     };
+    delete result.points;
+    return result;
   }
 }

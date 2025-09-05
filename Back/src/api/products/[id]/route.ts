@@ -1,12 +1,13 @@
-import { ApiHandler } from "app";
 import { ProductService } from "services/product";
+import { WishlistService } from "services/wishlist";
 import { container } from "tsyringe";
+import { IsNull, Or } from "typeorm";
 
 export const GET: ApiHandler = async (req, res) => {
   const { id } = req.params;
   let { select, relations, withDeleted } = req.parsedQuery;
   const service: ProductService = container.resolve(ProductService);
-  const where = {
+  let where: any = {
     id,
     visible: true,
     variants: {
@@ -14,25 +15,54 @@ export const GET: ApiHandler = async (req, res) => {
     },
   };
   if (!relations) {
-    relations = ["variants"];
+    relations = ["variants", "discounts.discount"];
   } else {
-    if (Array.isArray(relations)) {
-      if (!relations.some((r) => r.startsWith("variants"))) {
-        relations.push("variants");
-      }
-    } else if (!relations.startsWith("variants")) {
-      relations = [relations, "variants"];
+    relations = Array.isArray(relations) ? relations : [relations];
+    if (!relations.some((r: string) => r.startsWith("variants"))) {
+      relations.push("variants");
+    }
+    if (!relations.some((r: string) => r.startsWith("discounts.discount"))) {
+      relations.push("discounts.discount");
     }
   }
-  if (select && !select.includes("visible")) {
-    select.push("visible");
+  if (req.user) {
+    if (!relations.some((r: string) => r.startsWith("wishlists"))) {
+      relations.push("wishlists");
+    }
+    if (where.wishlists) {
+      const wishlists = where.wishlists;
+      wishlists.user_id = Or(IsNull(), req.user);
+    }
   }
-  const content = await service.get({
+
+  if (select) {
+    if (Array.isArray(select)) {
+      if (!select.includes("visible")) select.push("visible");
+    } else if (select !== "visible") select = [select, "visible"];
+  }
+
+  const content: any = await service.get({
     where,
     select,
     relations,
     withDeleted,
   });
+  const wishlistService = container.resolve(WishlistService);
+  const count = await wishlistService.getCount({
+    where: {
+      product_id: content?.id,
+    },
+  });
+  content.wishes = count;
+  if (req.user) {
+    if (content?.wishlists && content.wishlists?.length > 0) {
+      const wish = content.wishlists.find(
+        (f: any) => f.user_id === req.user.id
+      );
+      content.wish = wish;
+      delete content.wishlists;
+    }
+  }
 
   return res.json({ content });
 };

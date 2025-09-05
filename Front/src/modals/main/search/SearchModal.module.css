@@ -1,0 +1,74 @@
+.searchHeader {
+  padding: 9px 15px;
+  align-items: center;
+}
+
+.inputWrapper {
+  position: relative;
+}
+
+.input {
+  padding: 8px 64px 8px 15px;
+  background-color: #f4f4f4;
+  border: none;
+  border-radius: 4px;
+}
+
+.close {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 45px;
+}
+
+.search {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 15px;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 15px;
+  color: #1c1b1f;
+}
+.allDelete {
+  font-weight: 600;
+  font-size: 14px;
+  color: #8b8b8b;
+}
+.recent {
+  width: max-content;
+  border: 1px solid #eaeaea;
+  border-radius: 30px;
+  padding: 6px 10px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #474747;
+}
+
+.recommend {
+  width: max-content;
+  background-color: #f4f4f4;
+  border-radius: 30px;
+  padding: 6px 10px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #474747;
+}
+
+.space {
+  height: 10;
+  width: 100%;
+  background-color: #f4f4f4;
+}
+
+.recentWrapper {
+  padding: 24px 0 24px 15px;
+}
+.recentTitle {
+  font-weight: 700;
+  font-size: 18px;
+  color: #0d0d0d;
+}

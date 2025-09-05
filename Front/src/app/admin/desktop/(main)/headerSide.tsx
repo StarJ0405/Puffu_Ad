@@ -6,6 +6,7 @@ import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
+import { useNiceModal } from "@/providers/ModalProvider/ModalProviderClient";
 import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -19,7 +20,6 @@ import {
   useState,
 } from "react";
 import styles from "./header.module.css";
-import { useNiceModal } from "@/providers/ModalProvider/ModalProviderClient";
 
 interface Nav {
   name: string;
@@ -36,11 +36,17 @@ const SidebarNav: NavParent[] = [
     to: "/",
     icon: "/resources/images/sideNav_home.png",
   },
-  // {
-  //   name: "관리자 채팅",
-  //   to: "/chat",
-  //   icon: "/resources/images/sideNav_chat_admin.png",
-  // },
+  {
+    name: "문의 관리",
+    path: "/qa",
+    navs: [
+      {
+        name: "관리자 채팅",
+        to: "/chat",
+        icon: "/resources/images/sideNav_chat_admin.png",
+      },
+    ],
+  },
   {
     name: "주문관리",
     path: "/order",
@@ -116,6 +122,16 @@ const SidebarNav: NavParent[] = [
         to: "/stock",
         icon: "/resources/images/sideNav_product_stock.png",
       },
+      {
+        name: "프로모션 등록",
+        to: "/promotion/regist",
+        icon: "/resources/images/sideNav_promotion_add.png",
+      },
+      {
+        name: "프로모션 조회 및 관리",
+        to: "/promotion/management",
+        icon: "/resources/images/sideNav_promotion_search.png",
+      },
     ],
   },
   {
@@ -147,6 +163,26 @@ const SidebarNav: NavParent[] = [
         name: "스토어등록",
         to: "/regist",
         icon: "/resources/images/sideNav_store_add.png",
+      },
+      {
+        name: "배너 관리",
+        to: "/banners/management",
+        icon: "/resources/images/sideNav_banner_search.png",
+      },
+      {
+        name: "배너 등록",
+        to: "/banners/regist",
+        icon: "/resources/images/sideNav_banner_add.png",
+      },
+      {
+        name: "공지 관리",
+        to: "/notices/management",
+        icon: "/resources/images/sideNav_notice_add.png",
+      },
+      {
+        name: "공지 등록",
+        to: "/notices/regist",
+        icon: "/resources/images/sideNav_notice_search.png",
       },
     ],
   },
