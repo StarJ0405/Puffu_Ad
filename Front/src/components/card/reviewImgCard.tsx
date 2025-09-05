@@ -21,7 +21,7 @@ import { useParams } from "next/navigation";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import ProductCard from "@/components/card/ProductCard";
 import { usePathname } from "next/navigation";
-import style from "./ProductCard.module.css";
+import styles from "./ProductCard.module.css";
 
 
 type ReviewItem = {
@@ -52,22 +52,21 @@ export function ReviewImgCard(
 
    return (
       <VerticalFlex
-         width={width ?? 200}
+         width={width ?? 244}
          // margin={review.margin}
-         className={style.prodcut_item}
+         className={styles.prodcut_item}
       >
-         <FlexChild className={style.imgBox}>
-            
+         <FlexChild className={styles.imgBox}>
             <Image src={review.thumbnail} width={"100%"} height={"auto"}/>
          </FlexChild>
 
-         <FlexChild padding={"0 5px"} className={style.text_box}>
+         <FlexChild padding={"0 5px"} className={styles.text_box}>
             <VerticalFlex gap={2} alignItems={'start'}>
-               <FlexChild className={style.store_name}>
+               <FlexChild className={styles.store_name}>
                   <Span>{review.content}</Span>
                </FlexChild>
 
-               <FlexChild className={style.product_title}>
+               <FlexChild className={styles.product_title}>
                   <P 
                      textOverflow={"ellipsis"}
                      display={"webkit-box"}
@@ -78,7 +77,7 @@ export function ReviewImgCard(
                   </P>
                </FlexChild>
                
-               <HorizontalFlex className={style.content_item}>
+               <HorizontalFlex className={styles.content_item}>
                   {/* <Span
                      color="var(--main-color)"
                      weight={600}
@@ -88,14 +87,14 @@ export function ReviewImgCard(
                   >
                      {review.discount_rate}
                   </Span> */}
-                  <VerticalFlex className={style.price_box}>
+                  <VerticalFlex className={styles.price_box}>
                      <Span
-                        className={style.through_price}
+                        className={styles.through_price}
                         textDecoration={"line-through"}
                      >
                         {review.date}
                      </Span>
-                     <Span className={style.discount_price} >
+                     <Span className={styles.discount_price} >
                         {review.product.title} ₩
                      </Span>
                   </VerticalFlex>

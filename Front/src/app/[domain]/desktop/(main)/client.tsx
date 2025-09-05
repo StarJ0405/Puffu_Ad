@@ -24,7 +24,7 @@ import { memo, useCallback, useEffect, useRef, useState } from "react";
 import ProductCard from "@/components/card/ProductCard";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import style from "./page.module.css";
+import styles from "./page.module.css";
 
 
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -158,9 +158,9 @@ export function MainBanner() {
    const swiperRef = useRef<SwiperType | null>(null);
 
    const components = [ // 임시
-      {img: '/resources/images/dummy_img/main_banner_01.png'},
-      {img: '/resources/images/dummy_img/main_banner_01.png'},
-      {img: '/resources/images/dummy_img/main_banner_01.png'},
+      {img: '/resources/images/dummy_img/main_banner_01.png', link: '/'},
+      {img: '/resources/images/dummy_img/main_banner_01.png', link: '/'},
+      {img: '/resources/images/dummy_img/main_banner_01.png', link: '/'},
    ]
 
    const paintBullets = (swiper: SwiperType) => { // 페이지네이션 스타일 설정
@@ -186,7 +186,7 @@ export function MainBanner() {
    };
 
    return (
-      <FlexChild className={clsx('desktop_container', style.main_banner)}>
+      <FlexChild className={clsx('desktop_container', styles.main_banner)}>
          <Swiper
             loop={true}
             slidesPerView={1}
@@ -219,7 +219,9 @@ export function MainBanner() {
                components.map((item, i) => {
                return (
                   <SwiperSlide key={i} className={`swiper_0${i}`}>
-                     <div className={style.slideItem} style={{backgroundImage: `url(${item.img})`}}></div>
+                     <Link href={item.link}>
+                        <div className={styles.slideItem} style={{backgroundImage: `url(${item.img})`}}></div>
+                     </Link>
                   </SwiperSlide>
                )
                })
@@ -241,7 +243,7 @@ export function LinkBanner() {
 
    return (
       <FlexChild width={'auto'}>
-         <div className={style.link_Banner}>
+         <div className={styles.link_Banner}>
          {
             link_banner.map((item, i) => (
                <Link href={item.link} key={i}>
@@ -258,7 +260,7 @@ export function LinkBanner() {
    )
 }
 
-export function miniBanner() {
+export function MiniBanner() {
 
    const link_banner = [
     {link: '/', src: '/resources/images/dummy_img/mini_banner_01.png'},
@@ -269,10 +271,10 @@ export function miniBanner() {
 
    return (
       <FlexChild width={'auto'}>
-         <div className={style.mini_Banner}>
+         <div className={styles.mini_Banner}>
          {
             link_banner.map((item, i) => (
-               <Link href={item.link} key={i} className={clsx((!item.link ? style.disabled : ''))}>
+               <Link href={item.link} key={i} className={clsx((item.link?.length <=1 ? styles.disabled : ''))}>
                <Image 
                   src={item.src}
                   width={'100%'}
@@ -291,30 +293,29 @@ export function miniBanner() {
 export function MainCategory() { // 카테고리메뉴
 
    const pathname = usePathname();
-   
 
    const ca_test = [
-      {name: '코스튬/속옷', thumbnail: '/resources/images/category/ca_costum.png', width: 40,},
-      {name: '진동기', thumbnail: '/resources/images/category/ca_suction.png', width: 54,},
-      {name: '흡입기', thumbnail: '/resources/images/category/ca_vibrator.png', width: 54,},
+      {name: '코스튬/속옷', thumbnail: '/resources/images/category/ca_img01.png',},
+      {name: '악세서리', thumbnail: '/resources/images/category/ca_img01.png',},
+      {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
+      {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
+      {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
+      {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
+      {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
+      {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
    ]
 
    return (
-      <nav className={style.category_wrap}>
-         {
-            pathname !== "/" ?
-            <VerticalFlex className={clsx(style.ca_item, style.ca_all)}>
-               <Span>ALL</Span>
-            </VerticalFlex>
-            : null
-         }
+      <nav className={styles.category_wrap}>
          {
             ca_test.map((cat, i)=> (
-               <VerticalFlex className={style.ca_item} key={i}>
-                  <Image 
-                     src={cat.thumbnail}
-                     width={cat.width}
-                  />
+               <VerticalFlex className={styles.ca_item} key={i}>
+                  <FlexChild className={styles.ca_thumb}>
+                     <Image 
+                        src={cat.thumbnail}
+                        width={120}
+                     />
+                  </FlexChild>
                   <Span>{cat.name}</Span>
                </VerticalFlex>
             ))
@@ -352,13 +353,73 @@ export function ProductSlider({id, lineClamp }: { id: string, lineClamp?: number
             rating: '4.8',
             reviewcount: '4,567',
          }
-      }
+      },
+      {
+         thumbnail: '/resources/images/dummy_img/review_img_01.png',
+         content: '벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.',
+         name: '김한별',
+         date: '2025-08-01',
+         product: {
+            thumb: '/resources/images/dummy_img/review_img_01.png',
+            title: '적나라 생츄어리',
+            rating: '4.8',
+            reviewcount: '4,567',
+         }
+      },
+      {
+         thumbnail: '/resources/images/dummy_img/review_img_01.png',
+         content: '벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.',
+         name: '김한별',
+         date: '2025-08-01',
+         product: {
+            thumb: '/resources/images/dummy_img/review_img_01.png',
+            title: '적나라 생츄어리',
+            rating: '4.8',
+            reviewcount: '4,567',
+         }
+      },
+      {
+         thumbnail: '/resources/images/dummy_img/review_img_01.png',
+         content: '벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.',
+         name: '김한별',
+         date: '2025-08-01',
+         product: {
+            thumb: '/resources/images/dummy_img/review_img_01.png',
+            title: '적나라 생츄어리',
+            rating: '4.8',
+            reviewcount: '4,567',
+         }
+      },
+      {
+         thumbnail: '/resources/images/dummy_img/review_img_01.png',
+         content: '벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.',
+         name: '김한별',
+         date: '2025-08-01',
+         product: {
+            thumb: '/resources/images/dummy_img/review_img_01.png',
+            title: '적나라 생츄어리',
+            rating: '4.8',
+            reviewcount: '4,567',
+         }
+      },
+      {
+         thumbnail: '/resources/images/dummy_img/review_img_01.png',
+         content: '벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.',
+         name: '김한별',
+         date: '2025-08-01',
+         product: {
+            thumb: '/resources/images/dummy_img/review_img_01.png',
+            title: '적나라 생츄어리',
+            rating: '4.8',
+            reviewcount: '4,567',
+         }
+      },
    ];
 
    return (
       <>
          {reviewTest.length > 0 ? (
-         <FlexChild id={id} className={style.ProductSlider}>
+         <FlexChild id={id} className={styles.ProductSlider}>
             <Swiper
                loop={true}
                slidesPerView={5}
@@ -367,8 +428,8 @@ export function ProductSlider({id, lineClamp }: { id: string, lineClamp?: number
                modules={[Autoplay, Navigation]}
                autoplay={{ delay: 4000 }}
                navigation={{
-                  prevEl: `#${id} .${style.prevBtn}`,
-                  nextEl: `#${id} .${style.nextBtn}`,
+                  prevEl: `#${id} .${styles.prevBtn}`,
+                  nextEl: `#${id} .${styles.nextBtn}`,
                }}
             >
                {
@@ -385,10 +446,10 @@ export function ProductSlider({id, lineClamp }: { id: string, lineClamp?: number
                }
             </Swiper>
    
-            <div className={clsx(style.naviBtn, style.prevBtn)}>
+            <div className={clsx(styles.naviBtn, styles.prevBtn)}>
               <Image src={'/resources/icons/arrow/slide_arrow.png'} width={10}></Image>
             </div>
-            <div className={clsx(style.naviBtn, style.nextBtn)}>
+            <div className={clsx(styles.naviBtn, styles.nextBtn)}>
               <Image src={'/resources/icons/arrow/slide_arrow.png'} width={10}></Image>
             </div>
          </FlexChild>
@@ -412,14 +473,17 @@ export function ProductList({id, lineClamp }: { id: string, lineClamp?: number }
                {
                   ListProduct.map((product, i) => {
                      return (
-                        <>
-                           <TestProductCard
-                              product={product}
-                              lineClamp={2}
-                              key={i}
-                              width={200}
-                           />
-                           {/* <ProductCard 
+                        <TestProductCard
+                           product={product}
+                           lineClamp={2}
+                           key={i}
+                           width={200}
+                        />
+                     )
+                  })
+               }
+            </MasonryGrid>
+            {/* <ProductCard 
                               product={{
                                  id: "123",
                                  title: "테스트 상품",
@@ -434,12 +498,7 @@ export function ProductList({id, lineClamp }: { id: string, lineClamp?: number }
                               }}
                               currency_unit="₩"
                            /> */}
-                        </>
-                     )
-                  })
-               }
-            </MasonryGrid>
-            <Button className={style.list_more_btn}>
+            <Button className={styles.list_more_btn}>
                <FlexChild gap={5}>
                   <Span>더보기</Span>
                   <Image src={'/resources/icons/arrow/arrow_bottom_icon.png'} width={16} />

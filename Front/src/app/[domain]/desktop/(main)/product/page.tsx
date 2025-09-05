@@ -12,7 +12,7 @@ import Span from "@/components/span/Span";
 import Link from "next/link";
 import clsx from "clsx";
 import style from './page.module.css';
-import {HotDealCategory, ProductCategory, MainCategory, ProductList} from './client'
+import {HotDealCategory, SecondCategory, ProdcutCategory, ProductList} from './client'
 
 
 
@@ -31,10 +31,10 @@ export default async function () {
                   {/* 
                      불러온 분류 페이지 따라서 카테고리 나타나기.
                      분류 페이지 (best상품, 신상품, 데이 핫딜, 랜덤박스)
-                     ProductCategory는 중분류, 소분류 있을때만 나타남. 
+                     SecondCategory는 중분류, 소분류 있을때만 나타남. 
                   */}
-                  <MainCategory />
-                  {/* <ProductCategory /> */}
+                  <ProdcutCategory />
+                  {/* <SecondCategory /> */}
                   {/* <HotDealCategory /> */}
                </VerticalFlex>
 

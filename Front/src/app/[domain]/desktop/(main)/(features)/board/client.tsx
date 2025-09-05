@@ -22,16 +22,43 @@ import clsx from "clsx";
 import { useParams } from "next/navigation";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import ProductCard from "@/components/card/ProductCard";
-import style from "./page.module.css";
+import styles from "./page.module.css";
 import Input from "@/components/inputs/Input";
+import Link from "next/link";
+import boardHeader from './boardHeader.module.css'
 
 
-const pathname = usePathname();
+// function linkTabActive() {
+//    if(pathname === 'notice') {
+//       return styles.active;
+//    }
+// }
 
-function linkTabActive() {
-   if(pathname === 'notice') {
-      return style.active;
-   }
+
+// pathname으로 url 오면 active 처리
+
+export function BoardNavi() {
+
+   const pathname = usePathname();
+
+   const tabUrls = [
+      {link: '/board/notice', name: '공지사항'},
+      {link: '/board/inquiry', name: '1:1문의'},
+      {link: '/board/event', name: '이벤트'},
+   ]
+
+   return (
+      <HorizontalFlex className={boardHeader.board_navi}>
+
+         {
+            tabUrls.map((item, i)=> (
+               <FlexChild key={i} className={clsx(boardHeader.item, (pathname.startsWith(item.link) && boardHeader.active))}>
+                  <Link href={item.link}>{item.name}</Link>
+               </FlexChild>
+            ))
+         }
+      </HorizontalFlex>
+   )
 }
 
 export function SelectBox() {
@@ -52,7 +79,7 @@ export function SelectBox() {
       <>
          <Select
             classNames={{
-               search: style.requester_input_body
+               search: styles.requester_input_body
             }}
             options={[
                { value: "직접 입력하기", display: "직접 입력하기" },
@@ -69,7 +96,7 @@ export function SelectBox() {
             selectedMessageOption && (
                <Input
                   width={'100%'}
-                  className={style.direct_input}
+                  className={styles.direct_input}
                   // value={customMessage}
                   // onChange={(value) => {
                   //    setCustomMessage(value);

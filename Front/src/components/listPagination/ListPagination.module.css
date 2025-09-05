@@ -8,6 +8,7 @@
 .pagingBox > * {
    width: auto;
    flex: unset !important;
+   cursor: pointer;
 }
 
 .pagingBox > .paging {

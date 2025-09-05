@@ -58,7 +58,7 @@ export default async function () {
                         <Link href={'/mypage/inquery'}>로그인</Link>
                      </HorizontalFlex>
 
-                     <HorizontalFlex width={'auto'} gap={10} alignItems="end">
+                     <HorizontalFlex width={'auto'} gap={10}>
                         <FlexChild>
                            <Image src='/resources/icons/main/user_icon.png' width={28} height={'auto'} cursor="pointer"/>
                         </FlexChild>
@@ -68,7 +68,7 @@ export default async function () {
                         </FlexChild>
 
                         <FlexChild>
-                           <Image src='/resources/images/header/heart_icon.png' width={30} height={'auto'} cursor="pointer"/>
+                           <Image src='/resources/icons/main/product_heart_icon.png' width={30} height={'auto'} cursor="pointer"/>
                         </FlexChild>
                      </HorizontalFlex>
                   </VerticalFlex>
