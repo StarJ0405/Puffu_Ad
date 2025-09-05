@@ -11,14 +11,13 @@ import CheckboxChild from "@/components/choice/checkbox/CheckboxChild";
 import CheckboxGroup from "@/components/choice/checkbox/CheckboxGroup";
 import Icon from "@/components/icons/Icon";
 import Image from "@/components/Image/Image";
-import InputNumber from "@/components/inputs/InputNumber";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import Link from "next/link";
 import clsx from "clsx";
-import style from './page.module.css'
+import styles from './page.module.css'
 
-import { DetaillTop } from "./client";
+import { OptionItem, BuyButtonGroup, ContentView } from "./client";
 
 export default async function () {
 
@@ -30,9 +29,9 @@ export default async function () {
 
    return (
       <section className="root">
-         <Container className={clsx('desktop_container', style.detail_container)} marginTop={100}>
+         <Container className={clsx('desktop_container', styles.detail_container)} marginTop={100}>
             <HorizontalFlex gap={60} alignItems="start">
-               <FlexChild className={style.detail_thumbnail}>
+               <FlexChild className={styles.detail_thumbnail}>
                   <Image 
                      src={'/resources/images/dummy_img/review_img_01.png'}
                      width={600}
@@ -40,31 +39,31 @@ export default async function () {
                    />
                </FlexChild>
 
-               <VerticalFlex className={style.detail_infoBox} alignItems="start">
-                  <FlexChild className={style.brand}>
+               <VerticalFlex className={styles.detail_infoBox} alignItems="start">
+                  <FlexChild className={styles.brand}>
                      <Span>브랜드정보</Span>
                   </FlexChild>
 
-                  <FlexChild className={style.detail_title}>
+                  <FlexChild className={styles.detail_title}>
                      <P lineClamp={2} display="--webkit-box" overflow="hidden">상품제목</P>
                   </FlexChild>
 
                   <HorizontalFlex marginBottom={17} gap={10}>
-                     <FlexChild className={style.price} marginLeft={5}>
+                     <FlexChild className={styles.price} marginLeft={5}>
                         <P>25,000</P> ₩
                      </FlexChild>
    
-                     <FlexChild className={style.sale_price}>
+                     <FlexChild className={styles.sale_price}>
                         <P>15%</P>
                      </FlexChild>
 
-                     <FlexChild className={style.regular_price}>
+                     <FlexChild className={styles.regular_price}>
                         <P>28,000₩</P>
                      </FlexChild>
                   </HorizontalFlex>
 
-                  <HorizontalFlex className={style.delivery_share_box}>
-                     <FlexChild className={style.delivery_info}>
+                  <HorizontalFlex className={styles.delivery_share_box}>
+                     <FlexChild className={styles.delivery_info}>
                         <P>배송정보</P>
                         <Image 
                           src={'/resources/icons/cart/cj_icon.png'}
@@ -84,7 +83,7 @@ export default async function () {
                      </FlexChild>
                   </HorizontalFlex>
 
-                  <VerticalFlex className={style.delivery_admin_write_data}>
+                  <VerticalFlex className={styles.delivery_admin_write_data}>
                      <VerticalFlex alignItems="start" gap={5}>
                         <P size={16} color="#bbb" weight={600}>배송</P>
                         <P size={14} color="#ddd">오후 2시 이전 주문 결제시 오늘 출발! ( 영업일 기준 )</P>
@@ -93,25 +92,57 @@ export default async function () {
                   </VerticalFlex>
                   
 
-                  <VerticalFlex className={style.option_box}>
+                  <VerticalFlex className={styles.option_box}>
                      {
                         optionTest.map((item, i) => (
-                           <HorizontalFlex key={i}>
-                              <InputNumber />
-                              <FlexChild key={i} className={style.txt_item}>
-                                 <P>{item.name}</P>
-                                 <Span>{item.quantity}개</Span>
-                                 <Span>+ {item.price}원</Span>
-                              </FlexChild>
-                           </HorizontalFlex>
+                           <OptionItem item={item} key={i} />
                         ))
                      }
                   </VerticalFlex>
 
-                  <HorizontalFlex className={style.total_box}>
-                     
+                  <HorizontalFlex className={styles.total_box}>
+                     <P className={styles.total_txt}>총 상품 금액</P>
+
+                     <FlexChild className={styles.price} width={'auto'}>
+                        <P>25,000</P> ₩
+                     </FlexChild>
                   </HorizontalFlex>
+
+                  <BuyButtonGroup/>
                </VerticalFlex>
+            </HorizontalFlex>
+
+            <HorizontalFlex marginTop={30}>
+               <VerticalFlex className={styles.contents_container} width={'100%'} maxWidth={850}>
+
+                  <HorizontalFlex className={styles.tab_wrap}>
+                     <FlexChild className={clsx(styles.content_tab, styles.active)}>
+                        <P>상세설명</P>
+                     </FlexChild>
+
+                     <FlexChild className={clsx(styles.content_tab)}>
+                        <P>사용후기</P>
+                        <Span className={styles.review_count}>36</Span>
+                     </FlexChild>
+
+                     <FlexChild className={clsx(styles.content_tab)}>
+                        <P>상품 Q&A</P>
+                     </FlexChild>
+
+                     <FlexChild className={clsx(styles.content_tab)}>
+                        <P>배송/반품/교환 안내</P>
+                     </FlexChild>
+                  </HorizontalFlex>
+                  
+                  <VerticalFlex className={styles.content_view}>
+                     <ContentView />
+                  </VerticalFlex>
+
+               </VerticalFlex>
+
+               <FlexChild width={'auto'}>
+                  <></>
+               </FlexChild>
             </HorizontalFlex>
          </Container>
       </section>

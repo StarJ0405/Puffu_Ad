@@ -88,16 +88,17 @@
 }
 
 .delivery_admin_write_data {
-   padding: 40px 0 20px;
+   padding: 20px 0 60px;
 }
 
 /* 옵션 상자 */
 .option_box {
    padding: 15px;
-   background: #313131;
+   background: #262626;
    border-radius: 5px;
    width: 100%;
    gap: 30px;
+   margin-bottom: 25px;
 }
 
 .option_box .txt_item {
@@ -112,3 +113,131 @@
    line-height: 1.2;
    text-align: right;
 }
+
+.total_box {
+   width: 100%;
+   margin-bottom: 25px;
+}
+.total_box .price {
+   color: #fff;
+   font-size: 35px;
+   font-weight: 700;
+   line-height: 1.2;
+}
+
+.total_box .total_txt {
+   font-size: 20px !important;
+   color: #fff !important;
+   font-weight: 600 !important;
+}
+
+
+/* 구매버튼 그룹 */
+
+.buyButton_box {
+   --border-style : 1px solid #535353;
+   gap: 10px; width: 100%;
+}
+
+.buyButton_box .heart_btn {
+   padding: 10px 12px;
+   border: var(--border-style);
+   border-radius: 5px;
+   background: #101113;
+}
+
+.buyButton_box .cart_btn {
+   background: #101113;
+   border: var(--border-style);
+}
+
+.buyButton_box .cart_btn,
+.buyButton_box .buy_btn {
+   width: 100%; max-width: 245px;
+   border-radius: 5px;
+   font-size: 20px;
+   font-weight: 600;
+   text-align: center;
+   padding: 15px 5px;
+   transition: all 0.1s;
+}
+
+.buyButton_box .buy_btn {
+   background: #fff;
+   color: var(--main-color1);
+}
+
+.buyButton_box .cart_btn:hover {
+   border-color: var(--main-color1);
+   color: var(--main-color1);
+}
+
+.buyButton_box .buy_btn:hover {
+   background: var(--main-color1);
+   color: #fff;
+}
+
+
+/* 하단 상품 정보 탭 컨테이너 */
+
+.contents_container .tab_wrap {
+   display: grid;
+   grid-template-columns: repeat(4, 1fr);
+}
+
+.contents_container .tab_wrap .content_tab {
+   justify-content: center;
+   color: #595959;
+   border: 1px solid #535353;
+   background: #242424;
+   padding: 15px 5px;
+   cursor: pointer;
+}
+
+.contents_container .tab_wrap .content_tab.active {
+   border-color: var(--main-color1);
+   background: #050505;
+   color: #fff;
+}
+
+
+
+/* review */
+.review_wrap {
+   padding-top: 40px;
+   gap: 40px;
+}
+
+.review_wrap .review_top {
+   gap: 16px;
+}
+
+.review_wrap .review_top .rating {
+   font-size: 30px !important;
+   font-weight: 600 !important;
+   color: #fff !important;
+}
+
+.review_wrap .review_top .total_rating {
+   font-size: 18px !important;
+   font-weight: 400 !important;
+   color: #797979 !important;
+}
+
+.review_wrap .review_top .link_btn {
+   background: #050505;
+   border-radius: 3px;
+   padding: 8px 11px;
+   color: #ff62a3;
+   font-size: 16px;
+}
+
+.review_wrap .review_board .review_write {
+   background: #050505;
+   border-radius: 5px;
+   padding: 20px;
+}
+
+
+
+/* review end ---------------- */
