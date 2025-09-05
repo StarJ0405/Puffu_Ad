@@ -1,13 +1,11 @@
-import Image from "@/components/Image/Image";
-import style from "./boardHeader.module.css";
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import FlexChild from "@/components/flex/FlexChild";
+import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import P from "@/components/P/P";
-import Div from "@/components/div/Div";
-import Link from "next/link";
-import Span from "@/components/span/Span";
 import clsx from "clsx";
+import Link from "next/link";
+import styles from "./boardHeader.module.css";
+import {BoardNavi} from "./client";
 
 export default async function () {
 
@@ -47,38 +45,24 @@ export default async function () {
    ]
 
    return (
-      <VerticalFlex className={style.board_header}>
-         <VerticalFlex className={style.customer_info}>
+      <VerticalFlex className={styles.board_header}>
+         <VerticalFlex className={styles.customer_info}>
             <FlexChild>
                <h3>고객센터</h3>
             </FlexChild>
    
-            <FlexChild className={style.call_number}>
+            <FlexChild className={styles.call_number}>
                <P>010-7627-3243</P>
             </FlexChild>
    
-            <VerticalFlex className={style.business_time} gap={5}>
+            <VerticalFlex className={styles.business_time} gap={5}>
                <P>평일 : 09:30 ~ 18:30</P>
                <P>점심시간 : 12:00 ~ 13:00</P>
             </VerticalFlex>
          </VerticalFlex>
 
 
-
-         <HorizontalFlex className={style.board_navi}>
-
-            <FlexChild className={clsx(style.item, style.active)}>
-               <Link href={'/board/notice'}>공지사항</Link>
-            </FlexChild>
-
-            <FlexChild className={clsx(style.item)}>
-               <Link href={'/board/inquiry'}>1:1문의</Link>
-            </FlexChild>
-
-            <FlexChild className={clsx(style.item)}>
-               <Link href={'/board/event'}>이벤트</Link>
-            </FlexChild>
-         </HorizontalFlex>
+         <BoardNavi />
       </VerticalFlex>
    )
 }

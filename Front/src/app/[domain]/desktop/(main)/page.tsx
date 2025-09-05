@@ -12,8 +12,8 @@ import {MainBanner} from './client'
 import {ProductList} from './client'
 import Link from "next/link";
 import clsx from "clsx";
-import {MainCategory, LinkBanner, ProductSlider} from './client';
-import style from './page.module.css';
+import {MainCategory, LinkBanner, ProductSlider, MiniBanner} from './client';
+import styles from './page.module.css';
 
 
 export default async function () {
@@ -23,8 +23,8 @@ export default async function () {
       <MainBanner />
 
       <VerticalFlex marginTop={'35px'} marginBottom={'100px'} gap={80} className="desktop_container">
-        <VerticalFlex className={style.category_sec}>
-          <VerticalFlex className={style.ca_title}>
+        <VerticalFlex className={styles.category_sec}>
+          <VerticalFlex className={styles.ca_title}>
             <Image 
               src='/resources/images/category_main_icon.png'
               width={65}
@@ -40,8 +40,8 @@ export default async function () {
 
         <FlexChild>
           <VerticalFlex>
-            <HorizontalFlex className={clsx(style.titleBox, style.titleBox1)} justifyContent="start" alignItems="end" gap={50}>
-              <div className={style.title}>
+            <HorizontalFlex className={clsx(styles.titleBox, styles.titleBox1)} justifyContent="start" alignItems="end" gap={50}>
+              <div className={styles.title}>
                 <h2 className="SacheonFont" style={{marginBottom: '12px'}}>
                   <Image 
                     src='/resources/images/header/HotDeal_icon.png'
@@ -54,7 +54,7 @@ export default async function () {
               </div>
 
               <FlexChild width={'auto'}>
-                <Link className={style.linkBtn} href={'/Sale'}>더보기</Link>
+                <Link className={styles.linkBtn} href={'/Sale'}>더보기</Link>
               </FlexChild>
             </HorizontalFlex>
 
@@ -64,19 +64,17 @@ export default async function () {
           </VerticalFlex>
         </FlexChild>
 
-        <LinkBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
-
         <FlexChild>
           <VerticalFlex>
-            <HorizontalFlex className={style.titleBox} justifyContent="start" alignItems="end" gap={50}>
-              <div className={style.title}>
+            <HorizontalFlex className={styles.titleBox} justifyContent="start" alignItems="end" gap={50}>
+              <div className={styles.title}>
                 <h2 className="SacheonFont">
                   <Span>따끈따끈</Span> 신상품
                 </h2>
               </div>
 
               <FlexChild width={'auto'}>
-                <Link className={style.linkBtn} href={'/Sale'}>더보기</Link>
+                <Link className={styles.linkBtn} href={'/Sale'}>더보기</Link>
               </FlexChild>
             </HorizontalFlex>
 
@@ -86,11 +84,12 @@ export default async function () {
           </VerticalFlex>
         </FlexChild>
 
+        <MiniBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
 
         <FlexChild>
           <VerticalFlex>
-            <HorizontalFlex className={style.titleBox} justifyContent="center" alignItems="end" gap={50}>
-              <div className={style.title}>
+            <HorizontalFlex className={styles.titleBox} justifyContent="center" alignItems="end" gap={50}>
+              <div className={styles.title}>
                 <h2 className="SacheonFont">
                   포토 사용후기
                 </h2>
@@ -99,7 +98,7 @@ export default async function () {
 
             <ProductSlider id={'new'} />
 
-            <Link href={'/photoReview'} className={style.link_more_btn}>
+            <Link href={'/photoReview'} className={styles.link_more_btn}>
               후기 더보기
             </Link>
           </VerticalFlex>

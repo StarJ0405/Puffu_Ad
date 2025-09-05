@@ -21,7 +21,7 @@ import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import { useParams } from "next/navigation";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
-import style from "./page.module.css";
+import styles from "./page.module.css";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ListPagination from "@/components/listPagination/ListPagination";
@@ -29,33 +29,45 @@ import ListPagination from "@/components/listPagination/ListPagination";
 
 
 
-export function MainCategory() { // 카테고리메뉴
+export function ProdcutCategory() { // 카테고리메뉴
 
    const pathname = usePathname();
    
+   // css : 카테고리 추가되어도 flex-wrap 구조 문제 없게 수정해놓기
 
    const ca_test = [
-      {name: '코스튬/속옷', thumbnail: '/resources/images/category/ca_costum.png', width: 40,},
-      {name: '진동기', thumbnail: '/resources/images/category/ca_suction.png', width: 54,},
-      {name: '흡입기', thumbnail: '/resources/images/category/ca_vibrator.png', width: 54,},
+      {name: '코스튬/속옷', thumbnail: '/resources/images/category/ca_img01.png',},
+      {name: '악세서리', thumbnail: '/resources/images/category/ca_img01.png',},
+      {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
+      {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
+      {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
+      {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
+      {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
+      {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
    ]
 
    return (
-      <nav className={style.category_wrap}>
+      <nav className={styles.category_wrap}>
+         {/* ca_item에 active 클래스 주기. active 클래스만 걸리면 효과 들어감. */}
          {
             pathname !== "/" ?
-            <VerticalFlex className={clsx(style.ca_item, style.ca_all)}>
-               <Span>ALL</Span>
+            <VerticalFlex className={clsx(styles.ca_item, styles.ca_all)}>
+               <FlexChild className={styles.ca_thumb} width={120} height={120}>
+                  <P>ALL</P>
+               </FlexChild>
+              <Span>전체</Span>
             </VerticalFlex>
             : null
          }
          {
             ca_test.map((cat, i)=> (
-               <VerticalFlex className={style.ca_item} key={i}>
-                  <Image 
-                     src={cat.thumbnail}
-                     width={cat.width}
-                  />
+               <VerticalFlex className={styles.ca_item} key={i}>
+                  <FlexChild className={styles.ca_thumb}>
+                     <Image 
+                        src={cat.thumbnail}
+                        width={120}
+                     />
+                  </FlexChild>
                   <Span>{cat.name}</Span>
                </VerticalFlex>
             ))
@@ -66,7 +78,7 @@ export function MainCategory() { // 카테고리메뉴
 
 
 
-export function ProductCategory() { // 카테고리메뉴
+export function SecondCategory() { // 카테고리메뉴
    
 
    const ca_test = [
@@ -81,8 +93,8 @@ export function ProductCategory() { // 카테고리메뉴
 
    return (
       <>
-         <ul className={style.category_list}>
-            <li className={style.active}>
+         <ul className={styles.category_list}>
+            <li className={styles.active}>
                <Span>전체</Span>
             </li>
             {
