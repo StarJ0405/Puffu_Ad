@@ -19,7 +19,7 @@ import styles from './page.module.css'
 
 export default async function() {
    return (
-      <VerticalFlex className={styles.description_box}>
+      <VerticalFlex className={styles.inquiry_box}>
          1111
       </VerticalFlex>
    )
