@@ -12,7 +12,7 @@ import Span from "@/components/span/Span";
 import Link from "next/link";
 import clsx from "clsx";
 import style from './page.module.css';
-import {HotDealCategory, SecondCategory, ProdcutCategory, ProductList} from './client'
+import {HotDealCategory, SecondCategory, ProdcutCategory, ProductList} from './client';
 
 
 
