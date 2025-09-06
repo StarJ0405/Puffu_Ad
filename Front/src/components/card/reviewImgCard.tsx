@@ -44,7 +44,7 @@ export function ReviewImgCard(
    { review, lineClamp, width, autoPlay }:
    { 
       review: ReviewItem;
-      lineClamp: number; 
+      lineClamp?: number; 
       width?: number;
       autoPlay? : number;
    }) 
