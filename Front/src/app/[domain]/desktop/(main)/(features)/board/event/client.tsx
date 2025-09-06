@@ -86,7 +86,10 @@ export function GalleryTable() {
 
       <FlexChild>
         {event.length > 0 ? (
-          <div className={styles.gallery_grid_container}>
+          <div 
+            className={styles.gallery_grid_container}
+            style={{ "--column": "4" } as React.CSSProperties} // 너비에 몇개 늘어놓을 건지 갯수
+          >
             {event.map((item, i) => (
               <GalleryItem key={i} item={item} />
             ))}
