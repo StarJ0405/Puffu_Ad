@@ -17,14 +17,14 @@ import Span from "@/components/span/Span";
 import Link from "next/link";
 
 import clsx from "clsx";
-// import style from './page.module.css'
+import style from './notice.module.css'
 import boardStyle from '../boardGrobal.module.css'
 
 import { BoardTitleBox, BoardTable } from "./client";
 import ChoiceChild from "@/components/choice/ChoiceChild";
 import ChoiceGroup from "@/components/choice/ChoiceGroup";
 
-export default async function () {
+export default function BoardNotice() {
 
    return (
       <>
