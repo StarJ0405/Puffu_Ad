@@ -13,8 +13,9 @@ import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import clsx from "clsx";
 import Link from "next/link";
-import boardStyle from "../../[boardType]/boardGrobal.module.css";
-import styles from "./page.module.css";
+import boardStyle from "../../boardGrobal.module.css"
+import styles from "./photoReview.module.css";
+import MasonryGrid from "@/components/masonry/MasonryGrid";
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, Navigation } from 'swiper/modules';
@@ -68,7 +69,7 @@ type ReviewItem = {
 };
 
 
-export function BestReviewSlider({id, lineClamp }: { id?: string, lineClamp?: number }) {
+export function BestReviewSlider({id, lineClamp }: { id: string, lineClamp?: number }) {
    
    const reviewTest: ReviewItem[] = [
       {
@@ -143,6 +144,19 @@ export function BestReviewSlider({id, lineClamp }: { id?: string, lineClamp?: nu
             reviewcount: '4,567',
          }
       },
+
+      {
+         thumbnail: '/resources/images/dummy_img/review_img_01.png',
+         content: '벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.',
+         name: '김한별',
+         date: '2025-08-01',
+         product: {
+            thumb: '/resources/images/dummy_img/review_img_01.png',
+            title: '적나라 생츄어리',
+            rating: '4.8',
+            reviewcount: '4,567',
+         }
+      },
    ];
 
    return (
@@ -151,7 +165,7 @@ export function BestReviewSlider({id, lineClamp }: { id?: string, lineClamp?: nu
          <FlexChild id={id} className={styles.ProductSlider}>
             <Swiper
                loop={true}
-               slidesPerView={5}
+               slidesPerView={7}
                speed={600}
                spaceBetween={20}
                modules={[Autoplay, Navigation]}
@@ -167,6 +181,8 @@ export function BestReviewSlider({id, lineClamp }: { id?: string, lineClamp?: nu
                      <SwiperSlide key={i}>
                         <ReviewImgCard
                            review={review}
+                           width={142}
+                           board="photoReviewSlide"
                            // lineClamp={lineClamp ?? 2}
                         />
                      </SwiperSlide>
@@ -174,7 +190,9 @@ export function BestReviewSlider({id, lineClamp }: { id?: string, lineClamp?: nu
                   })
                }
             </Swiper>
-   
+            {
+               // 슬라이드옵션들 props로 빼버리고 그 값 따라서 조건문 걸기
+            }
             <div className={clsx(styles.naviBtn, styles.prevBtn)}>
               <Image src={'/resources/icons/arrow/slide_arrow.png'} width={10}></Image>
             </div>
@@ -231,7 +249,7 @@ export function GalleryTable() {
       },
       {
          thumbnail: '/resources/images/dummy_img/review_img_01.png',
-         content: '벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.',
+         content: '벌써 2번째 구매네요. 항상 잘 씀.',
          name: '김한별',
          date: '2025-08-01',
          product: {
@@ -271,21 +289,26 @@ export function GalleryTable() {
     <VerticalFlex>
       <FlexChild>
         {reviewTest.length > 0 ? (
-          <div 
-            className={styles.gallery_grid_container}
-            style={{ "--column": "5" } as React.CSSProperties} // 너비에 몇개 늘어놓을 건지 갯수
-         >
-            {reviewTest.map((item, i) => (
-              <ReviewImgCard key={i} review={item} />
-            ))}
-          </div>
+         <MasonryGrid gap={20} breakpoints={5}>
+            {
+               reviewTest.map((item, i) => {
+                  return (
+                     <ReviewImgCard key={i} review={item} />
+                  )
+               })
+            }
+         </MasonryGrid>
         ) : (
           <NoContent />
         )}
       </FlexChild>
 
-      <FlexChild>
-         {/* 누르면 리뷰 데이터 더 불러와서 아래로 보여주기 */}
+      <FlexChild justifyContent="center" marginTop={30}>
+         {
+            /* 누르면 리뷰 데이터 더 불러와서 아래로 보여주기 
+            데이터가 만약 10개보다 적거나 데이터를 전부 보여줬다면 더보기 버튼 눌렀을때
+            사라지기.
+         */}
          <Button className={styles.more_btn}>더보기</Button>
       </FlexChild>
     </VerticalFlex>

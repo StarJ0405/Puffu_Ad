@@ -261,7 +261,7 @@ input[type='search']:focus-visible {
   transition: all 0.1s;
 }
 
-.post_btn:hover {
+.post_btn:active {
   background: #b84474 !important;
 }
 

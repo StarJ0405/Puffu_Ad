@@ -1,0 +1,121 @@
+
+.best_review_box {
+   align-items: start !important;
+   margin-bottom: 40px;
+}
+
+.best_review_box .title {
+   background: #1D1D1D;
+   padding: 11px 18px;
+   position: relative;
+   width: auto;
+   z-index: 3;
+   top: 1px;
+   border: 1px solid #fff;
+   border-bottom: none;
+}
+
+.best_review_box .slide_body {
+   width: 100%;
+   padding: 25px 93px 10px;
+   background: #1D1D1D;
+   position: relative;
+   z-index: 2;
+   border: 1px solid #fff;
+}
+
+/* 프로덕트 슬라이더 */
+.slide_title {
+   font-size: 20px;
+}
+
+.ProductSlider {position: relative;}
+.ProductSlider .naviBtn {
+   position: absolute;
+   top: 40%;
+   z-index: 100;
+   width: 45px; height: 45px;
+   border-radius: 50%;
+   /* background: rgba(0,0,0,0.7); */
+   background: #555555;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   cursor: pointer;
+   transition: all 0.2s;
+}
+
+.ProductSlider .prevBtn {left: -55px;}
+.ProductSlider .nextBtn {right: -55px;}
+.ProductSlider .nextBtn > img {
+   transform: rotate(180deg);
+}
+
+.ProductSlider .naviBtn:hover {
+   background: #000;
+}
+
+
+
+/* 갤러리 리스트 */
+/* .gallery_grid_container {
+   display: grid;
+   grid-template-columns: repeat(var(--column), 1fr);
+   gap: var(--gap);
+} */
+
+
+.gallery_item .thumb_frame {
+   position: relative;
+}
+
+.gallery_item .thumb_frame img {
+   position: relative;
+   z-index: 1;
+}
+
+.gallery_item .thumb_frame img.durationEnd_img {
+   position: absolute;
+   top: 0;
+   left: 0;
+   z-index: 2;
+}
+
+.gallery_item .item_content {
+   text-align: center; gap: 15px !important;
+}
+
+.gallery_item .item_content > * {width: auto;}
+
+.gallery_item .item_content .title {
+   color: #fff;
+   font-weight: 700;
+   font-size: 20px;
+}
+
+.gallery_item .item_content .subTitle {
+   color: #ADADAD;
+   font-weight: 400;
+   font-size: 16px;
+   margin-bottom: 10px;
+}
+
+.gallery_item .item_content .duration {
+   color: #ddd;
+   font-size: 14px;
+   gap: 5px !important;
+}
+
+.more_btn {
+   padding: 15px 36px;
+   background: var(--main-color1);
+   border-radius: 5px;
+   color: #fff;
+   font-size: 20px;
+   font-weight: 600;
+   transition: all 0.2s;
+}
+
+.more_btn:active {
+  background: #b84474;
+}
