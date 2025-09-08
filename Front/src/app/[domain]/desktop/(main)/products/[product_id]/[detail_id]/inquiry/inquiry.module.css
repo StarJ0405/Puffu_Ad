@@ -1,0 +1,98 @@
+
+.inquiry_board {
+   gap: 35px;
+}
+
+
+/* select 스타일 */
+.input_body {
+   background: #333333;
+   border-color: #707070;
+   padding: 12px 15px;
+}
+
+.input_holder {
+   color: #A9A9A9;
+}
+
+/* select 스타일 ------------------------------- */
+
+
+.inquiry_content .Private_checkBox {
+   gap: 10px;
+   align-items: center;
+}
+
+
+
+/* 리스트 */
+
+.inquiry_list {gap: 25px;}
+
+.inquiry_list .list_title {
+   gap: 10px;
+}
+
+.inquiry_list .list_title {
+   font-size: 20px;
+   color: #fff;
+   font-weight: 600;
+}
+
+.inquiry_list .list_title span {position: relative; bottom: 2px;}
+
+.inquiry_list .inquiry_item {
+   padding-bottom: 15px;
+   border-bottom: 1px solid #535353;
+}
+
+.inquiry_item .user_question .item_title {
+   margin-bottom: 10px;
+}
+
+.inquiry_item .user_question .item_title p {
+   font-size: 16px !important; color: #fff !important;
+}
+
+.inquiry_item .user_question .data_group {
+   gap: 10px; margin-bottom: 15px;
+}
+
+.inquiry_item .user_question .data_group .response_check {
+   width: auto; padding: 10px 9px;
+   background: #2D2D2D;
+   border-radius: 3px;
+}
+
+.inquiry_item .user_question .data_group .response_check span {
+   color: #fff;
+}
+
+.inquiry_item .user_question .data_group .item_name {
+   color: #fff !important; font-size: 13px !important;
+}
+
+.inquiry_item .user_question .data_group .item_date {
+   color: #797979 !important; font-size: 13px !important;
+}
+
+.inquiry_item .item_content {
+   padding: 15px;
+   background: #333;
+   border: 1px solid #707070;
+   border-radius: 3px;
+   color: #BFBFBF;
+   min-height: 140px;
+   align-items: start !important;
+   line-height: 1.4;
+}
+
+
+/* 관리자 답변 */
+.inquiry_item .admin_answer {
+   margin-top: 20px;
+}
+
+.inquiry_item .admin_answer .answer_title {
+   font-size: 16px; margin-bottom: 10px;
+}

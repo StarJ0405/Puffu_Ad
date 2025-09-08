@@ -12,24 +12,24 @@ import clsx from "clsx";
 export default async function () {
 
    const menu1 = [ // 임시 데이터
-      { name: 'BEST 상품', link: '/product'},
-      { name: '입고예정', link: '/product'},
-      { name: '신상품', link: '/product'},
-      { name: '데이 핫딜', link: '/product', icon: '/resources/images/header/HotDeal_icon.png'},
-      { name: '랜덤박스', link: '/product'},
+      { name: 'BEST 상품', link: '/products/'},
+      { name: '입고예정', link: '/products/'},
+      { name: '신상품', link: '/products/'},
+      { name: '데이 핫딜', link: '/products/', icon: '/resources/images/header/HotDeal_icon.png'},
+      { name: '랜덤박스', link: '/products/'},
    ]
 
    const menu2 = [ // 임시 데이터
-      { name: '포토 사용후기', link: '/Boad/ReviewPhoto'},
-      { name: '공지사항', link: '/Boad/Notice'},
-      { name: '이벤트', link: '/Boad/Event'},
+      { name: '포토 사용후기', link: '/board/photoReview'},
+      { name: '공지사항', link: '/board/notice'},
+      { name: '이벤트', link: '/board/event'},
       {
          name: '고객센터', 
-         link: '/board', 
+         link: '/board/notice', 
          inner: [
-            {name: '공지사항', link: '/board'},
-            {name: '1:1문의', link: '/Boad/Q&A'},
-            {name: '이벤트', link: '/Boad/Event'},
+            {name: '공지사항', link: '/board/notice'},
+            {name: '1:1문의', link: '/board/inquiry'},
+            {name: '이벤트', link: '/board/Event'},
          ]
       },
    ]

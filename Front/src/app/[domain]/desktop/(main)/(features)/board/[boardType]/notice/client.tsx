@@ -24,7 +24,7 @@ import { useParams } from "next/navigation";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import ProductCard from "@/components/card/ProductCard";
 import style from "./page.module.css";
-import boardStyle from "../boardGrobal.module.css";
+import boardStyle from "../../[boardType]/boardGrobal.module.css";
 import Input from "@/components/inputs/Input";
 import ListPagination from "@/components/listPagination/ListPagination";
 import Link from "next/link";

@@ -20,7 +20,7 @@ import Link from "next/link";
 
 import clsx from "clsx";
 import styles from './page.module.css'
-import boardStyle from '../../boardGrobal.module.css'
+// import boardStyle from '../../boardGrobal.module.css'
 
 import { ContinueGroup } from "./client";
 import ChoiceChild from "@/components/choice/ChoiceChild";
@@ -185,7 +185,7 @@ export default async function () {
                <FlexChild className={styles.item_input}>
                   <Select
                      classNames={{
-                        header: boardStyle.search_select_body,
+                        // header: boardStyle.search_select_body,
                      }}
                      options={[
                         { value: "가장 좋아하는 동물은?", display: "가장 좋아하는 동물은?" },
