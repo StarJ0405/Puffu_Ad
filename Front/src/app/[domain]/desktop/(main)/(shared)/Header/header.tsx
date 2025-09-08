@@ -55,7 +55,8 @@ export default async function () {
                <FlexChild width={'auto'} className={style.info_box}>
                   <VerticalFlex gap={20} alignItems="end">
                      <HorizontalFlex gap={20} className={style.info_top} width={'auto'}>
-                        <Link href={'/mypage/inquery'}>로그인</Link>
+                        <Link href={'/signup'}>회원가입</Link>
+                        <Link href={'/login'}>로그인</Link>
                      </HorizontalFlex>
 
                      <HorizontalFlex width={'auto'} gap={10}>
