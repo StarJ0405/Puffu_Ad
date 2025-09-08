@@ -11,31 +11,19 @@ import CheckboxChild from "@/components/choice/checkbox/CheckboxChild";
 import CheckboxGroup from "@/components/choice/checkbox/CheckboxGroup";
 import Icon from "@/components/icons/Icon";
 import Image from "@/components/Image/Image";
-import InputNumber from "@/components/inputs/InputNumber";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import Link from "next/link";
-
 import clsx from "clsx";
-import style from './page.module.css'
-import boardStyle from '../../boardGrobal.module.css'
+import styles from './description.module.css'
 
-import { SelectBox } from "./client";
-import ChoiceChild from "@/components/choice/ChoiceChild";
-import ChoiceGroup from "@/components/choice/ChoiceGroup";
-
-import NoticeBoard from './notice/page'
-
-export default async function () {
-
+export default function Description() {
    return (
-      <>
-         <NoticeBoard />
-         {/* <FAQBoard /> */}
-         {/* <InquiryBoard /> */}
-         {/* <EventBoard /> */}
-      </>
+      <VerticalFlex className={styles.description_box}>
+         <FlexChild>
+            <Image src={'/resources/images/dummy_img/description_img.png'} width={'100%'} />
+         </FlexChild>
+      </VerticalFlex>
    )
-
 
 }

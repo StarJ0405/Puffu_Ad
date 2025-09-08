@@ -20,7 +20,7 @@ import Link from "next/link";
 
 import clsx from "clsx";
 import styles from './page.module.css'
-import boardStyle from '../../boardGrobal.module.css'
+// import boardStyle from '../../boardGrobal.module.css'
 
 import { ContinueGroup } from "./client";
 import ChoiceChild from "@/components/choice/ChoiceChild";
@@ -34,12 +34,11 @@ export default async function () {
    return (
       <section className='root desktop_container'>
 
-         {/* 1단계 */}
-         <VerticalFlex>
+         <VerticalFlex className={styles.signup_frame}>
             <FlexChild className={styles.page_title}>
                <h3>회원가입</h3>
             </FlexChild>
-
+   
             <HorizontalFlex className={styles.step_root}>
                <FlexChild className={styles.step_number}>
                   <Span>1</Span>
@@ -54,170 +53,189 @@ export default async function () {
                </FlexChild>
 
                <FlexChild className={styles.step_line}>
-                  <div id="line"></div>
+                  <div id={styles.line} style={{width: '25%'}}></div>
+                  {/* 스탭 진행될때마다 width 값 올리면 됨. */}
                </FlexChild>
             </HorizontalFlex>
 
-            <VerticalFlex className={styles.agree_box}>
-               <CheckboxGroup name="member_agree">
-                  <FlexChild className={styles.checkbox}>
-                     <label>
-                        <CheckboxAll />
-                        <Span>전체동의</Span>
-                     </label>
-                  </FlexChild>
-
-                  <FlexChild className={styles.agree_item}>
-                     <FlexChild className={styles.checkbox}>
-                        <label>
-                           <CheckboxChild id="term_agree" />
-                           <Span>이용약관 동의</Span>
-                        </label>
+            {/* 1단계 */}
+            <VerticalFlex>
+               <FlexChild className={styles.step_title}>
+                  <P>약관 동의</P>
+               </FlexChild>
+              
+               <VerticalFlex gap={50}>
+                  <CheckboxGroup name="member_agree" className={styles.agree_box}>
+                     <FlexChild className={styles.agree_item}>
+                        <FlexChild className={styles.checkbox}>
+                           <label>
+                              <CheckboxAll />
+                              <Span>전체동의</Span>
+                           </label>
+                        </FlexChild>
                      </FlexChild>
-
-                     <FlexChild className={styles.agree_content}>
-                        <P>
-                           {/* <TermContent /> */}
-                        </P>
+   
+                     <VerticalFlex className={styles.agree_item}>
+                        <FlexChild className={styles.checkbox}>
+                           <label>
+                              <CheckboxChild id="term_agree" />
+                              <Span>이용약관 동의</Span>
+                           </label>
+                        </FlexChild>
+   
+                        <FlexChild className={styles.agree_content}>
+                           <TermContent />
+                        </FlexChild>
+                     </VerticalFlex>
+   
+                     <VerticalFlex className={styles.agree_item}>
+                        <FlexChild className={styles.checkbox}>
+                           <label>
+                              <CheckboxChild id="privacy_agree" />
+                              <Span>개인정보 수집 및 이용 동의</Span>
+                           </label>
+                        </FlexChild>
+   
+                        <FlexChild className={styles.agree_content}>
+                           <PrivacyContent />
+                        </FlexChild>
+                     </VerticalFlex>
+                  </CheckboxGroup>
+   
+                  <VerticalFlex className={styles.phone_verification}>
+                     <FlexChild className={styles.title}>
+                        <h5>본인인증 방식 선택</h5>
                      </FlexChild>
-                  </FlexChild>
-
-                  <FlexChild className={styles.agree_item}>
-                     <FlexChild className={styles.checkbox}>
-                        <label>
-                           <CheckboxChild id="privacy_agree" />
-                           <Span>개인정보 수집 및 이용 동의</Span>
-                        </label>
+   
+                     <FlexChild className={styles.verification_box}>
+                        <RadioGroup name="verification" className={styles.verfi_item}>
+                           {/* <RadioChild id="verification_phone" /> */}
+                           <label>
+                              <input type="radio" />
+                              휴대폰 본인인증
+                           </label>
+                        </RadioGroup>
                      </FlexChild>
-
-                     <FlexChild className={styles.agree_content}>
-                        <P>
-                           {/* <privacyContent /> */}
-                        </P>
-                     </FlexChild>
-                  </FlexChild>
-               </CheckboxGroup>
-
-               <VerticalFlex>
-                  <FlexChild>
-                     <h5>본인인증 방식 선택</h5>
-                  </FlexChild>
-
-                  <FlexChild className={styles.verification}>
-                     <RadioGroup name="verification">
-                        {/* <RadioChild id="verification_phone" /> */}
-                        <label>
-                           <input type="radio" />
-                           휴대폰 본인인증
-                        </label>
-                     </RadioGroup>
-                  </FlexChild>
+                  </VerticalFlex>
                </VerticalFlex>
-            </VerticalFlex>
-
-            <FlexChild>
-               <ContinueGroup />
-            </FlexChild>
-         </VerticalFlex>
-
-
-
-
-         {/* 2단계 */}
-         <VerticalFlex> 
-            <VerticalFlex className={styles.input_box}>
-               <HorizontalFlex className={styles.label}>
-                  <P>이름</P>
-                  <Span>(필수)</Span>
-               </HorizontalFlex>
-               <FlexChild className={styles.item_input}>
-                  <Input type="text" placeHolder="이름을 입력하세요" />
+   
+               <FlexChild>
+                  <ContinueGroup />
                </FlexChild>
             </VerticalFlex>
+   
+   
+   
+   
+            {/* 2단계 */}
+            <VerticalFlex width={'100%'} maxWidth={600}>
+               <FlexChild className={styles.step_title}>
+                  <P>기본 정보</P>
+               </FlexChild>
 
-            <VerticalFlex className={styles.input_box}>
-               <HorizontalFlex className={styles.label}>
-                  <P>이메일</P>
-                  <Span>(필수)</Span>
-               </HorizontalFlex>
-               <FlexChild className={styles.item_input}>
-                  <Input type="text" placeHolder="이메일을 입력하세요" />
+               <VerticalFlex className={styles.input_box}>
+                  <VerticalFlex className={styles.input_item}>
+                     <HorizontalFlex className={styles.label}>
+                        <P>이름</P>
+                        <Span>(필수)</Span>
+                     </HorizontalFlex>
+                     <FlexChild>
+                        <Input type="text" width={'100%'} className={styles.input_unit} placeHolder="이름을 입력하세요" />
+                     </FlexChild>
+                  </VerticalFlex>
+      
+                  <VerticalFlex className={styles.input_item}>
+                     <HorizontalFlex className={styles.label}>
+                        <P>이메일</P>
+                        <Span>(필수)</Span>
+                     </HorizontalFlex>
+                     <FlexChild>
+                        <Input type="text" width={'100%'} className={styles.input_unit} placeHolder="이메일을 입력하세요" />
+                     </FlexChild>
+                  </VerticalFlex>
+      
+                  <VerticalFlex className={styles.input_item}>
+                     <HorizontalFlex className={styles.label}>
+                        <P>휴대폰번호</P>
+                        <Span>(필수)</Span>
+                     </HorizontalFlex>
+                     <FlexChild>
+                        <Input type="number" width={'100%'} className={styles.input_unit} placeHolder="(+86)" />
+                     </FlexChild>
+                  </VerticalFlex>
+      
+                  <VerticalFlex className={styles.input_item}>
+                     <HorizontalFlex className={styles.label}>
+                        <P>아이디</P>
+                        <Span>(필수)</Span>
+                     </HorizontalFlex>
+                     <FlexChild>
+                        <Input type="text" width={'100%'} className={styles.input_unit} placeHolder="아이디를 입력하세요" />
+                     </FlexChild>
+                  </VerticalFlex>
+      
+                  <VerticalFlex className={styles.input_item}>
+                     <HorizontalFlex className={styles.label}>
+                        <P>비밀번호</P>
+                        <Span>(필수)</Span>
+                     </HorizontalFlex>
+                     <FlexChild>
+                        <Input type="password" width={'100%'} className={styles.input_unit} placeHolder="비밀번호를 입력하세요" />
+                     </FlexChild>
+                     <FlexChild>
+                        <Input type="password" width={'100%'} className={styles.input_unit} placeHolder="비밀번호를 한번 더 입력하세요" />
+                     </FlexChild>
+                  </VerticalFlex>
+      
+                  <VerticalFlex className={styles.input_item}>
+                     <HorizontalFlex className={styles.label}>
+                        <P>비밀번호 질문</P>
+                     </HorizontalFlex>
+                     <FlexChild>
+                        <Select
+                           classNames={{
+                              // header: styles.select_body,
+                           }}
+                           options={[
+                              { value: "가장 좋아하는 동물은?", display: "가장 좋아하는 동물은?" },
+                              { value: "어릴적 별명은?", display: "어릴적 별명은?" },
+                              { value: "어머니 성함은?", display: "어머니 성함은?" },
+                              { value: "출생 도시는?", display: "출생 도시는?" },
+                              { value: "졸업한 초등학교는?", display: "졸업한 초등학교는?" },
+                           ]}
+                           placeholder={'질문을 선택하세요'}
+                           // value={selectedMessageOption}
+                         />
+                     </FlexChild>
+                     <FlexChild>
+                        <Input type="text" width={'100%'} className={styles.input_unit} placeHolder="질문에 대한 답변을 입력하세요." />
+                     </FlexChild>
+                  </VerticalFlex>
+               </VerticalFlex>
+   
+               <FlexChild>
+                  <ContinueGroup />
                </FlexChild>
             </VerticalFlex>
+   
+   
+            {/* 3단계 */}
+            <VerticalFlex className={styles.signup_completed}>
+               <FlexChild className={styles.completed_ttitle}>
+                  <P>회원가입 완료</P>
+               </FlexChild>
 
-            <VerticalFlex className={styles.input_box}>
-               <HorizontalFlex className={styles.label}>
-                  <P>휴대폰번호</P>
-                  <Span>(필수)</Span>
-               </HorizontalFlex>
-               <FlexChild className={styles.item_input}>
-                  <Input type="number" placeHolder="(+86)" />
+               <FlexChild className={styles.completed_txt}>
+                  <P>
+                     회원가입을 축하드립니다. <br />
+                     푸푸토이와 함께 더 특별한 경험을 시작해 보세요!
+                  </P>
+               </FlexChild>
+
+               <FlexChild>
+                  <ContinueGroup />
                </FlexChild>
             </VerticalFlex>
-
-            <VerticalFlex className={styles.input_box}>
-               <HorizontalFlex className={styles.label}>
-                  <P>아이디</P>
-                  <Span>(필수)</Span>
-               </HorizontalFlex>
-               <FlexChild className={styles.item_input}>
-                  <Input type="text" placeHolder="아이디를 입력하세요" />
-               </FlexChild>
-            </VerticalFlex>
-
-            <VerticalFlex className={styles.input_box}>
-               <HorizontalFlex className={styles.label}>
-                  <P>비밀번호</P>
-                  <Span>(필수)</Span>
-               </HorizontalFlex>
-               <FlexChild className={styles.item_input}>
-                  <Input type="password" placeHolder="비밀번호를 입력하세요" />
-               </FlexChild>
-               <FlexChild className={styles.item_input}>
-                  <Input type="password" placeHolder="비밀번호를 한번 더 입력하세요" />
-               </FlexChild>
-            </VerticalFlex>
-
-            <VerticalFlex className={styles.input_box}>
-               <HorizontalFlex className={styles.label}>
-                  <P>비밀번호 질문</P>
-               </HorizontalFlex>
-               <FlexChild className={styles.item_input}>
-                  <Select
-                     classNames={{
-                        header: boardStyle.search_select_body,
-                     }}
-                     options={[
-                        { value: "가장 좋아하는 동물은?", display: "가장 좋아하는 동물은?" },
-                        { value: "어릴적 별명은?", display: "어릴적 별명은?" },
-                        { value: "어머니 성함은?", display: "어머니 성함은?" },
-                        { value: "출생 도시는?", display: "출생 도시는?" },
-                        { value: "졸업한 초등학교는?", display: "졸업한 초등학교는?" },
-                     ]}
-                     placeholder={'질문을 선택하세요'}
-                     // value={selectedMessageOption}
-                   />
-               </FlexChild>
-               <FlexChild className={styles.item_input}>
-                  <Input type="text" placeHolder="질문에 대한 답변을 입력하세요." />
-               </FlexChild>
-            </VerticalFlex>
-
-            <FlexChild>
-               <ContinueGroup />
-            </FlexChild>
-         </VerticalFlex>
-
-
-         {/* 3단계 */}
-         <VerticalFlex> 
-            <FlexChild>
-               <P>회원가입 완료!</P>
-            </FlexChild>
-
-            <FlexChild>
-               <Button className={styles.home_btn}>메인으로</Button>
-            </FlexChild>
          </VerticalFlex>
 
 

@@ -17,14 +17,13 @@ import Span from "@/components/span/Span";
 import Link from "next/link";
 
 import clsx from "clsx";
-// import style from './event.module.css'
 import boardStyle from '../boardGrobal.module.css'
 
 import { BoardTitleBox, GalleryTable } from "./client";
 import ChoiceChild from "@/components/choice/ChoiceChild";
 import ChoiceGroup from "@/components/choice/ChoiceGroup";
 
-export default function BoardEvent() {
+export default async function EventBoard() {
 
    return (
       <>

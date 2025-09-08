@@ -17,14 +17,14 @@ import Link from "next/link";
 import clsx from "clsx";
 import styles from './page.module.css'
 
-import { OptionItem, BuyButtonGroup, ContentView } from "./client";
+import { DetailTabContainer, OptionItem, BuyButtonGroup, MiniInfoBox, ProductSlider } from "./client";
 
 export default async function () {
 
    const optionTest = [
       {name: '블랙 망사 리본 스타킹', quantity: 1, price: '0'},
       {name: '크리스마스 요정님 선물 담는 양말', quantity: 2, price: '1,000'},
-      {name: '작은하마가 좋아하는 작은 칼 딜도', quantity: 1, price: '0'},
+      {name: '모에모에 매직 에로카와 태닝 바디 세트 상품', quantity: 1, price: '0'},
    ]
 
    return (
@@ -112,37 +112,20 @@ export default async function () {
                </VerticalFlex>
             </HorizontalFlex>
 
-            <HorizontalFlex marginTop={30}>
-               <VerticalFlex className={styles.contents_container} width={'100%'} maxWidth={850}>
-
-                  <HorizontalFlex className={styles.tab_wrap}>
-                     <FlexChild className={clsx(styles.content_tab, styles.active)}>
-                        <P>상세설명</P>
-                     </FlexChild>
-
-                     <FlexChild className={clsx(styles.content_tab)}>
-                        <P>사용후기</P>
-                        <Span className={styles.review_count}>36</Span>
-                     </FlexChild>
-
-                     <FlexChild className={clsx(styles.content_tab)}>
-                        <P>상품 Q&A</P>
-                     </FlexChild>
-
-                     <FlexChild className={clsx(styles.content_tab)}>
-                        <P>배송/반품/교환 안내</P>
-                     </FlexChild>
-                  </HorizontalFlex>
-                  
-                  <VerticalFlex className={styles.content_view}>
-                     <ContentView />
-                  </VerticalFlex>
-
-               </VerticalFlex>
-
-               <FlexChild width={'auto'}>
-                  <></>
+            <VerticalFlex position="relative" marginTop={40} alignItems="start">
+               <FlexChild marginBottom={20}>
+                  <h3 className={clsx('SacheonFont', styles.slide_title)}>보시는 상품과 비슷한 추천 상품</h3>
                </FlexChild>
+
+               <ProductSlider id={'pick'} />
+            </VerticalFlex>
+
+            <HorizontalFlex marginTop={30} alignItems="start" gap={40}>
+               <VerticalFlex className={styles.contents_container} width={850}>
+                  <DetailTabContainer />
+               </VerticalFlex >
+
+               <MiniInfoBox optionTest={optionTest} />
             </HorizontalFlex>
          </Container>
       </section>

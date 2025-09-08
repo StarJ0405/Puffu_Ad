@@ -2,6 +2,7 @@
   --mainBg: #221F22;
   --foreground: #fff;
   --main-color1: #ff62a3;
+  --main-color2: #e7156d;
 
 
   --button-disabled-bg : #535353;
@@ -41,11 +42,13 @@ html,
 body {
   max-width: 100vw;
   /* height: 100%; */
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
   /* scrollbar-width: none; */
   -ms-overflow-style: none;
   font-family: "pretendard", sans-serif !important;
 }
+
+textarea {font-family: "pretendard", sans-serif !important;}
 
 body {
   color: var(--foreground);

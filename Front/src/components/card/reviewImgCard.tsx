@@ -21,7 +21,7 @@ import { useParams } from "next/navigation";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import ProductCard from "@/components/card/ProductCard";
 import { usePathname } from "next/navigation";
-import styles from "./ProductCard.module.css";
+import styles from "./reviewImgCard.module.css";
 
 
 type ReviewItem = {
@@ -41,66 +41,83 @@ type ReviewItem = {
 // 라인클램프는 제목태그에 달아서 속성 주기.
 
 export function ReviewImgCard(
-   { review, lineClamp, width, autoPlay }:
+   { review, lineClamp, width, autoPlay, board }:
    { 
       review: ReviewItem;
       lineClamp?: number; 
       width?: number;
       autoPlay? : number;
+      board? : string;
    }) 
 {
+
+   const boardValue = board ?? "normal";
 
    return (
       <VerticalFlex
          width={width ?? 244}
          // margin={review.margin}
-         className={styles.prodcut_item}
+         className={clsx(styles.review_item, (boardValue !== 'normal' && styles.slide_item))}
       >
          <FlexChild className={styles.imgBox}>
             <Image src={review.thumbnail} width={"100%"} height={"auto"}/>
          </FlexChild>
 
          <FlexChild padding={"0 5px"} className={styles.text_box}>
-            <VerticalFlex gap={2} alignItems={'start'}>
-               <FlexChild className={styles.store_name}>
-                  <Span>{review.content}</Span>
+            <VerticalFlex alignItems={'start'}>
+
+               <FlexChild className={styles.content}>
+                  <P 
+                     lineClamp={2} 
+                     overflow="hidden" 
+                     display="--webkit-box">
+                        {review.content}
+                     </P>
                </FlexChild>
 
-               <FlexChild className={styles.product_title}>
-                  <P 
-                     textOverflow={"ellipsis"}
-                     display={"webkit-box"}
-                     overflow={"hidden"}
-                     lineClamp={lineClamp}
-                  >
-                     {review.name}
-                  </P>
-               </FlexChild>
-               
-               <HorizontalFlex className={styles.content_item}>
-                  {/* <Span
-                     color="var(--main-color)"
-                     weight={600}
-                     fontSize={14}
-                     hidden={review.discount_rate >= 1}
-                     paddingRight={"0.5em"}
-                  >
-                     {review.discount_rate}
-                  </Span> */}
-                  <VerticalFlex className={styles.price_box}>
-                     <Span
-                        className={styles.through_price}
-                        textDecoration={"line-through"}
-                     >
-                        {review.date}
-                     </Span>
-                     <Span className={styles.discount_price} >
-                        {review.product.title} ₩
-                     </Span>
-                  </VerticalFlex>
-               </HorizontalFlex>
+               {
+                  board === 'normal' && (
+                     <HorizontalFlex className={styles.title_box}>
+                        <FlexChild className={styles.date}>
+                           <Span>{review.date}</Span>
+                        </FlexChild>
+
+                        <FlexChild className={styles.name}>
+                           <Span>{review.name}</Span>
+                        </FlexChild>
+                     </HorizontalFlex>
+                  )
+               }
             </VerticalFlex>
          </FlexChild>
+
+         <HorizontalFlex className={styles.prodcut_data}>
+            <FlexChild className={styles.img}>
+               <Image src={review.product.thumb} width={boardValue == 'normal' ? 35 : 45} />
+            </FlexChild>
+
+            <VerticalFlex className={styles.info}>
+               <FlexChild className={styles.title}>
+                  <P 
+                     lineClamp={1}
+                     overflow="hidden"
+                     display="--webkit-box"
+                  >
+                     {review.product.title}
+                  </P>
+               </FlexChild>
+               <FlexChild className={styles.info_rating}>
+                  <P>평가 <Span>{review.product.rating}</Span></P>
+                  <P
+                     lineClamp={1}
+                     overflow="hidden"
+                     display="--webkit-box"
+                  >
+                     리뷰 <Span>{review.product.reviewcount}</Span>
+                  </P>
+               </FlexChild>
+            </VerticalFlex>
+         </HorizontalFlex>
       </VerticalFlex>
    )
 }

@@ -11,7 +11,7 @@ import Span from "@/components/span/Span";
 import clsx from "clsx";
 import Link from "next/link";
 import boardStyle from "../boardGrobal.module.css";
-import styles from "./page.module.css";
+import styles from "./event.module.css";
 
 // 게시판 리스트 -----------------------------------------------
 export function BoardTitleBox() {

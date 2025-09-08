@@ -98,9 +98,11 @@ export default async function () {
 
             <ProductSlider id={'new'} />
 
-            <Link href={'/photoReview'} className={styles.link_more_btn}>
-              후기 더보기
-            </Link>
+            <FlexChild marginTop={35} justifyContent="center">
+              <Link href={'/photoReview'} className={styles.link_more_btn}>
+                후기 더보기
+              </Link>
+            </FlexChild>
           </VerticalFlex>
         </FlexChild>
       </VerticalFlex>

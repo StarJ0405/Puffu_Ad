@@ -17,22 +17,50 @@ import Span from "@/components/span/Span";
 import Link from "next/link";
 
 import clsx from "clsx";
-// import style from './page.module.css'
-import boardStyle from '../boardGrobal.module.css'
+import style from './page.module.css'
+import boardStyle from '../../boardGrobal.module.css'
 
-import { BoardTitleBox, BestReviewSlider, GalleryTable } from "./client";
+import { SelectBox } from "./client";
 import ChoiceChild from "@/components/choice/ChoiceChild";
 import ChoiceGroup from "@/components/choice/ChoiceGroup";
 
-export default async function () {
+import BoardHeader from './boardHeader'
+import NoticeBoard from './notice/notice'
+import InquiryBoard from './inquiry/inquiry'
+import EventBoard from './event/event'
+
+
+import PhotoReview from './(community)/photoReview/photoReview'
+
+export default async function BoardPage({params} : { params: {boardType: string}}) {
 
    return (
       <>
-         <VerticalFlex className={boardStyle.board_frame}>
-            <BoardTitleBox />
-            <BestReviewSlider />
-            <GalleryTable />
-         </VerticalFlex>
+         {/* {
+            params.boardType !== 'photoReview' && (
+               <BoardHeader />
+            )
+         } */}
+         {
+            params.boardType === 'notice' && (
+               <NoticeBoard />
+            )
+         }
+         {
+            params.boardType === 'photoReview' && (
+               <PhotoReview />
+            )
+         }
+         {
+            params.boardType === 'inquiry' && (
+               <InquiryBoard />
+            )
+         }
+         {
+            params.boardType === 'event' && (
+               <EventBoard />
+            )
+         }
       </>
    )
 

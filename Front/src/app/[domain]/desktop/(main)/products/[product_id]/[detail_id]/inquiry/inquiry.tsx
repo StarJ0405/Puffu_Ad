@@ -9,17 +9,18 @@ import ListPagination from "@/components/listPagination/ListPagination";
 import P from "@/components/P/P";
 import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
-import styles from './page.module.css';
+import styles from './inquiry.module.css';
+import InputTextArea from "@/components/inputs/InputTextArea";
 
 
-export function DetailInquiery() {
+export default  function Inquiry() {
 
    const inquiryTest = [ // 리뷰 게시글 테스트용
       {
          name: 'test',
          title: '상품 관련 문의입니다.',
          date: '2025-08-07', 
-         content: '사용해보니까 충전이 됐다 안됐다 하는데 교환 가능할까요', 
+         content: '사용해보니까 충전이 됐다 안됐다 하는데 교환 가능할까요',
          response: '',
       },
       {
@@ -47,11 +48,12 @@ export function DetailInquiery() {
          <VerticalFlex className={styles.inquiry_board}>
 
             {/* 문의글 작성란 */}
-            <VerticalFlex className={styles.inquiry_write}>
+            <VerticalFlex className={styles.inquiry_write} gap={15}>
                <FlexChild className={styles.select_item}>
                   <Select
                      classNames={{
-                        search: styles.requester_input_body
+                        header: styles.input_body,
+                        placeholder: styles.input_holder
                      }}
 
                      options={[
@@ -60,24 +62,26 @@ export function DetailInquiery() {
                         { value: "교환 환불 배송", display: "교환 환불 배송" },
                         { value: "기타", display: "기타" },
                      ]}
-                     // placeholder={'선택 안함'}
+                     placeholder={'문의 유형을 선택하세요.'}
                      // value={selectedMessageOption}
                   />
                </FlexChild>
 
-               <VerticalFlex className={styles.inquiry_content}>
-                  <textarea placeholder="문의글을 적어주세요." ></textarea>
-                  <HorizontalFlex className={styles.textarea_bottom}>
-                     <CheckboxGroup name='private_Check'>
-                        <CheckboxChild id={'private_Check'} />
-                        <P>비공개로 작성</P>
-                     </CheckboxGroup>
-                     <Span>0/300</Span>
-                  </HorizontalFlex>
+               <VerticalFlex className={styles.inquiry_content} gap={5}>
+                  <InputTextArea width={'100%'} style={{height: '150px'}} placeHolder="문의글을 작성해 주세요." />
+                  
+                  <CheckboxGroup name='private_Check'>
+                     <label>
+                        <FlexChild className={styles.Private_checkBox}>
+                              <CheckboxChild id={'private_Check'} />
+                              <P>비공개로 작성</P>
+                        </FlexChild>
+                     </label>
+                  </CheckboxGroup>
                </VerticalFlex>
 
-               <FlexChild>
-                  <Button className={styles.submit_btn}>
+               <FlexChild justifyContent="center" marginTop={10}>
+                  <Button className='post_btn'>
                      문의하기
                   </Button>
                </FlexChild>
@@ -86,19 +90,20 @@ export function DetailInquiery() {
 
             <VerticalFlex className={styles.inquiry_list}>
                <FlexChild className={styles.list_title}>
-                  <P>전체 문의목록</P>
-                  <P><Span>{inquiryTest.length}</Span>건</P>
+                  <P className={styles.title}>전체 문의목록</P>
+                  <P size={14} color="#797979"><Span color="#fff">{inquiryTest.length}</Span>건</P>
                </FlexChild>
+               
                {
                   inquiryTest.map((inquiry, i)=> (
                      <VerticalFlex key={i} className={styles.inquiry_item}>
                         <VerticalFlex className={styles.user_question}>
-                           <HorizontalFlex>
-                              <P className={styles.item_title}>{inquiry.title}</P> 
+                           <HorizontalFlex alignItems="center" className={styles.item_title}>
+                              <P>{inquiry.title}</P> 
                               {/* 체크된 문의 분류에 따라 만들어진 제목으로 변경됨 */}
    
                               <Button className={styles.toggle_btn}>
-                                 <Image src={`/resources/icons/arrow/arrow_bottom_icon.png`} width={11} />
+                                 <Image src={`/resources/icons/arrow/board_arrow_bottom_icon.png`} width={20} />
                               </Button>
                            </HorizontalFlex>
    
@@ -127,22 +132,26 @@ export function DetailInquiery() {
                            </FlexChild>
                         </VerticalFlex>
 
-                        <VerticalFlex className={styles.admin_answer}>
-                           <FlexChild className={styles.answer_title}>
-                              <P color="var(--main-color1)">관리자 답변</P>
-                           </FlexChild>
-
-                           <FlexChild className={styles.item_content}>
-                              <P>
-                                 {inquiry.response}
-                              </P>
-                           </FlexChild>
-                        </VerticalFlex>
+                        {
+                           inquiry.response.length > 0 && (
+                              <VerticalFlex className={styles.admin_answer}>
+                                 <FlexChild className={styles.answer_title}>
+                                    <P color="var(--main-color1)">관리자 답변</P>
+                                 </FlexChild>
+                                 
+                                 <FlexChild className={styles.item_content}>
+                                    <P>
+                                       {inquiry.response}
+                                    </P>
+                                 </FlexChild>
+                              </VerticalFlex>
+                           )
+                        }
                      </VerticalFlex>
                   ))
                }
 
-               <FlexChild>
+               <FlexChild justifyContent="center">
                   <ListPagination />
                </FlexChild>
                
