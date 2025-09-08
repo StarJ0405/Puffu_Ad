@@ -142,7 +142,7 @@ export function WriteFrame() {
 
          <FlexChild className={styles.button_group}>
             <Button className={styles.cancel_btn}>작성 취소</Button>
-            <Button className={styles.submit_btn}>문의하기</Button>
+            <Button className={styles.submit_btn}>문의하기</Button>{/* 게시판 따라서 문의하기 작성완료로 조건 걸어서 나타나게 하기 */}
          </FlexChild>
       </VerticalFlex>
    )

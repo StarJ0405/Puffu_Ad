@@ -18,7 +18,7 @@ import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import { useParams } from "next/navigation";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
-import style from "./header.module.css";
+import styles from "./header.module.css";
 import {HeaderCatgeory} from './headerCategory'
 import Link from "next/link";
 
@@ -46,7 +46,7 @@ interface HeaderBottomProps {
 
 export function SearchBox() {
    return (
-      <FlexChild gap={10} className={`searchInput_Box ${style.search_Box}`}>
+      <FlexChild gap={10} className={`searchInput_Box ${styles.search_Box}`}>
          <input type="search" placeholder="2025 신제품" onClick={()=> {'검색창 클릭'}} />
 
          <Image 
@@ -80,16 +80,16 @@ export function HeaderBottom({menu1, menu2} : HeaderBottomProps) {
    return (
       <>
          <div ref={bottomRef}></div>{/* 헤더 높이계산용 더미 */}
-         <div className={`${fixed ? style.fixed : ''}`}>
+         <div className={`${fixed ? styles.fixed : ''}`}>
             <HorizontalFlex className="desktop_container" position="relative">
                <HorizontalFlex gap={25} justifyContent="start">
                   <FlexChild
                      width={'auto'} 
                      onMouseEnter={() => SetCaOpen(true)}
                      onMouseLeave={() => SetCaOpen(false)}
-                     className={style.CategoryBox}
+                     className={styles.CategoryBox}
                   >
-                     <FlexChild gap={10} width={'auto'} className={style.category_btn}>
+                     <FlexChild gap={10} width={'auto'} className={styles.category_btn}>
                         <Image 
                            src='/resources/images/header/category_menu_icon.png'
                            width={18}
@@ -103,7 +103,7 @@ export function HeaderBottom({menu1, menu2} : HeaderBottomProps) {
    
                   <FlexChild width={'auto'}>
                      <nav>
-                        <ul className={clsx(style.outerMenu, style.shop_outer)}>
+                        <ul className={clsx(styles.outerMenu, styles.shop_outer)}>
                            {
                               menu1.map((item, i)=> (
                                  <li key={i}>
@@ -111,7 +111,7 @@ export function HeaderBottom({menu1, menu2} : HeaderBottomProps) {
                                        {item.name}
                                        {item.icon ? <Image src={item.icon} width={12} /> : null}
                                     </Link>
-                                    <Span className={style.active_line}></Span>
+                                    <Span className={styles.active_line}></Span>
                                  </li>
                               ))
                            }
@@ -122,7 +122,7 @@ export function HeaderBottom({menu1, menu2} : HeaderBottomProps) {
    
    
                <FlexChild gap={20} width={'auto'}>
-                  <ul className={clsx(style.outerMenu, style.commu_outer)}>
+                  <ul className={clsx(styles.outerMenu, styles.commu_outer)}>
                      {
                         menu2.map((item, i)=> (
                            <li key={i}>
@@ -132,7 +132,7 @@ export function HeaderBottom({menu1, menu2} : HeaderBottomProps) {
                               </Link>
    
                               {item.inner && (
-                                 <ul className={style.subMenu}>
+                                 <ul className={styles.subMenu}>
                                  {item.inner.map((sub, j) => (
                                     <li key={j}>
                                        <Link href={sub.link}>
@@ -151,6 +151,30 @@ export function HeaderBottom({menu1, menu2} : HeaderBottomProps) {
          </div>
       </>
    )
+}
+
+
+export function ChatToggle() {
+  return (
+    <Button
+    className={styles.chat_btn}
+    // onClick={() => {
+      // //   if (requireLogin && !userData) {
+      //     NiceModal.show("confirm", {
+      //       confirmText: "로그인하기",
+      //       cancelText: "취소",
+      //       message: "로그인이 필요합니다.",
+      //       onConfirm: () => {
+      //         navigate("/login");
+      //       },
+      //     });
+      // //   }
+      // //   else if (to) navigate(to);
+      // }}
+    >
+      <Image src={"/resources/images/footer/chat_toggle_icon.png"} width={56} />
+    </Button>
+  );
 }
 
 

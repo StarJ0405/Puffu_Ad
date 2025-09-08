@@ -7,10 +7,7 @@ import Span from "@/components/span/Span";
 import Link from "next/link";
 import style from "./footer.module.css";
 
-import TopButton from "@/components/buttons/TopButton";
-import { ChatToggle } from "./client";
-
-export default async function () {
+export default async function Footer() {
   return (
     <>
       <footer className={style.footer}>
@@ -63,38 +60,6 @@ export default async function () {
           </VerticalFlex>
         </HorizontalFlex>
       </footer>
-
-      {/* 사이드 네비 */}
-      <nav id={style.sideNavi}>
-        <VerticalFlex className={style.outer_box}>
-          <Link href={"/sale"} className={style.hotDeal_link}>
-            <Image
-              src={"/resources/images/footer/sidenavi_hotDeal.png"}
-              width={43}
-            />
-            <h4 className="SacheonFont">데이 HOT딜</h4>
-          </Link>
-
-          <ul className={style.link_list}>
-            <li>
-              <Link href={"/mypage"}>마이페이지</Link>
-            </li>
-            <li>
-              <Link href={"/cart"}>장바구니</Link>
-            </li>
-            <li>
-              <Link href={"/wishList"}>위시리스트</Link>
-            </li>
-            <li>
-              <Link href={"/board/faq"}>1:1문의</Link>
-            </li>
-          </ul>
-        </VerticalFlex>
-
-        <TopButton />
-      </nav>
-
-      <ChatToggle />
     </>
   );
 }

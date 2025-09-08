@@ -1,5 +1,5 @@
 import Image from "@/components/Image/Image";
-import style from "./header.module.css";
+import styles from "./header.module.css";
 import {SearchBox, HeaderBottom} from './client'
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import FlexChild from "@/components/flex/FlexChild";
@@ -9,7 +9,10 @@ import Link from "next/link";
 import Span from "@/components/span/Span";
 import clsx from "clsx";
 
-export default async function () {
+import TopButton from "@/components/buttons/TopButton";
+import { ChatToggle } from "./client";
+
+export default async function Header() {
 
    const menu1 = [ // 임시 데이터
       { name: 'BEST 상품', link: '/product'},
@@ -36,10 +39,10 @@ export default async function () {
 
    return (
       <>
-         <header className={style.header}>
+         <header className={styles.header}>
             <HorizontalFlex className="desktop_container" alignItems="end" marginBottom={35}>
                <FlexChild gap={20}>
-                  <FlexChild className={style.logo}>
+                  <FlexChild className={styles.logo}>
                      <Link href='/'>
                         <Image
                            src='/resources/images/header/logo.png'
@@ -52,9 +55,9 @@ export default async function () {
                   <SearchBox /> {/* 검색창 */}
                </FlexChild>
 
-               <FlexChild width={'auto'} className={style.info_box}>
+               <FlexChild width={'auto'} className={styles.info_box}>
                   <VerticalFlex gap={20} alignItems="end">
-                     <HorizontalFlex gap={20} className={style.info_top} width={'auto'}>
+                     <HorizontalFlex gap={20} className={styles.info_top} width={'auto'}>
                         <Link href={'/mypage/inquery'}>로그인</Link>
                      </HorizontalFlex>
 
@@ -77,6 +80,41 @@ export default async function () {
 
             <HeaderBottom menu1={menu1} menu2={menu2}/>
          </header>
+
+         {/* 사이드 네비 */}
+         <nav id={styles.sideNavi}>
+         <VerticalFlex className={styles.outer_box}>
+            <Link href={"/sale"} className={styles.hotDeal_link}>
+               <Image
+               src={"/resources/images/footer/sidenavi_hotDeal.png"}
+               width={43}
+               />
+               <h4 className="SacheonFont">데이 HOT딜</h4>
+            </Link>
+
+            <ul className={styles.link_list}>
+               <li>
+                  <Link href={"/mypage"}>마이페이지</Link>
+               </li>
+
+               <li>
+                  <Link href={"/cart"}>장바구니</Link>
+               </li>
+
+               <li>
+                  <Link href={"/wishList"}>위시리스트</Link>
+               </li>
+
+               <li>
+                  <Link href={"/board/faq"}>1:1문의</Link>
+               </li>
+            </ul>
+         </VerticalFlex>
+
+         <TopButton />
+         </nav>
+
+         <ChatToggle />
       </>
    )
 }
