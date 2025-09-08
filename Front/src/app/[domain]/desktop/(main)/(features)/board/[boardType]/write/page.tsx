@@ -18,25 +18,34 @@ import Link from "next/link";
 
 import clsx from "clsx";
 import style from './page.module.css'
-import boardStyle from '../../boardGrobal.module.css'
+import boardStyle from "../boardGrobal.module.css";
 
 
 import { WriteFrame } from "./client";
 import ChoiceChild from "@/components/choice/ChoiceChild";
 import ChoiceGroup from "@/components/choice/ChoiceGroup";
 
-export default async function () {
+export default function BoardPage({
+  params,
+}: {
+  params: { boardType: string };
+}) {
+  // boardType에 따라 한글 제목 매핑
+  const boardTitleMap: Record<string, string> = {
+    notice: "공지사항",
+    event: "이벤트",
+    inquiry: "1:1 문의",
+  };
 
-   return (
-      <VerticalFlex className={boardStyle.board_frame}>
-         <FlexChild className={boardStyle.board_titleBox}>
-            <h3>공지사항</h3>
-         </FlexChild>
+  const title = boardTitleMap[params.boardType] ?? "게시판";
 
+  return (
+    <VerticalFlex className={boardStyle.board_frame}>
+      <FlexChild className={boardStyle.board_titleBox}>
+        <h3>{title}</h3>
+      </FlexChild>
 
-         <WriteFrame />
-      </VerticalFlex>
-   )
-
-
+      <WriteFrame />
+    </VerticalFlex>
+  );
 }
