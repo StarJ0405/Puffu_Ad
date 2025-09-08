@@ -17,20 +17,30 @@ import Span from "@/components/span/Span";
 import Link from "next/link";
 
 import clsx from "clsx";
-// import style from './page.module.css'
-import boardStyle from '../../[boardType]/boardGrobal.module.css'
+import styles from './photoReview.module.css'
+import boardStyle from "../../boardGrobal.module.css"
 
 import { BoardTitleBox, BestReviewSlider, GalleryTable } from "./client";
 import ChoiceChild from "@/components/choice/ChoiceChild";
 import ChoiceGroup from "@/components/choice/ChoiceGroup";
 
-export default async function () {
+export default async function PhotoReview() {
 
    return (
       <>
          <VerticalFlex className={boardStyle.board_frame}>
             <BoardTitleBox />
-            <BestReviewSlider />
+
+            <VerticalFlex className={styles.best_review_box}>
+               <FlexChild className={styles.title}>
+                  <P className="SacheonFont">사용후기 베스트</P>
+               </FlexChild>
+
+               <FlexChild className={styles.slide_body}>
+                  <BestReviewSlider id={'best_review'} />
+               </FlexChild>
+            </VerticalFlex>
+
             <GalleryTable />
          </VerticalFlex>
       </>

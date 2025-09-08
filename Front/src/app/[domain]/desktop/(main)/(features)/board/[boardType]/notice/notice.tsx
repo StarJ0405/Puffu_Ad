@@ -15,16 +15,15 @@ import InputNumber from "@/components/inputs/InputNumber";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import Link from "next/link";
-
 import clsx from "clsx";
 import style from './notice.module.css'
-import boardStyle from "../../[boardType]/boardGrobal.module.css";
+import boardStyle from "../boardGrobal.module.css"
 
 import { BoardTitleBox, BoardTable } from "./client";
 import ChoiceChild from "@/components/choice/ChoiceChild";
 import ChoiceGroup from "@/components/choice/ChoiceGroup";
 
-export default function BoardNotice() {
+export default async function BoardNotice() {
 
    return (
       <>

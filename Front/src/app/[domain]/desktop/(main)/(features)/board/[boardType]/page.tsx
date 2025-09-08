@@ -26,16 +26,41 @@ import ChoiceGroup from "@/components/choice/ChoiceGroup";
 
 import BoardHeader from './boardHeader'
 import NoticeBoard from './notice/notice'
+import InquiryBoard from './inquiry/inquiry'
+import EventBoard from './event/event'
 
-export default function BoardPage({params} : { params: {boardType: string}}) {
+
+import PhotoReview from './(community)/photoReview/photoReview'
+
+export default async function BoardPage({params} : { params: {boardType: string}}) {
 
    return (
       <>
-         <BoardHeader />
-         <NoticeBoard />
-         {/* <FAQBoard /> */}
-         {/* <InquiryBoard /> */}
-         {/* <EventBoard /> */}
+         {
+            params.boardType !== 'photoReview' && (
+               <BoardHeader />
+            )
+         }
+         {
+            params.boardType === 'notice' && (
+               <NoticeBoard />
+            )
+         }
+         {
+            params.boardType === 'photoReview' && (
+               <PhotoReview />
+            )
+         }
+         {
+            params.boardType === 'inquiry' && (
+               <InquiryBoard />
+            )
+         }
+         {
+            params.boardType === 'event' && (
+               <EventBoard />
+            )
+         }
       </>
    )
 

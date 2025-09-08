@@ -24,7 +24,7 @@ import { BoardTitleBox, BoardTable } from "./client";
 import ChoiceChild from "@/components/choice/ChoiceChild";
 import ChoiceGroup from "@/components/choice/ChoiceGroup";
 
-export default function BoardInquiry() {
+export default async function InquiryBoard() {
 
    return (
       <>

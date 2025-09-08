@@ -1,5 +1,6 @@
 .review_item {
    gap: 17px;
+   padding-bottom: 30px;
 }
 
 .review_item .imgBox {
@@ -17,6 +18,7 @@
    padding-bottom: 10px;
    border-bottom: 1px solid #6B6B6B;
    cursor: pointer;
+   align-items: start !important;
 }
 
 .review_item .text_box .content:hover {
@@ -41,7 +43,7 @@
    font-size: 13px;
 }
 
-.review_item .prodcut_data {gap: 7px; cursor: pointer;}
+.review_item .prodcut_data {gap: 7px; cursor: pointer; padding: 0 5px;}
 
 .review_item .prodcut_data .img {
    overflow: hidden;
@@ -65,4 +67,26 @@
 
 .review_item .prodcut_data .info .info_rating p span {
    color: var(--main-color1) !important;
+}
+
+
+
+
+/* 카드가 슬라이드로 불러와졌을 때 */
+
+.slide_item {gap: 10px;}
+
+.slide_item .text_box .content {
+   font-size: 13px; min-height: 32px;
+}
+
+.slide_item .prodcut_data .info .info_rating {
+   text-align: center;
+   flex-direction: column;
+   align-items: start !important;
+   gap: 3px;
+}
+
+.slide_item .prodcut_data .img img {
+   width: 45px !important;
 }

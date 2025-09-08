@@ -41,20 +41,23 @@ type ReviewItem = {
 // 라인클램프는 제목태그에 달아서 속성 주기.
 
 export function ReviewImgCard(
-   { review, lineClamp, width, autoPlay }:
+   { review, lineClamp, width, autoPlay, board }:
    { 
       review: ReviewItem;
       lineClamp?: number; 
       width?: number;
       autoPlay? : number;
+      board? : string;
    }) 
 {
+
+   const boardValue = board ?? "normal";
 
    return (
       <VerticalFlex
          width={width ?? 244}
          // margin={review.margin}
-         className={styles.review_item}
+         className={clsx(styles.review_item, (boardValue !== 'normal' && styles.slide_item))}
       >
          <FlexChild className={styles.imgBox}>
             <Image src={review.thumbnail} width={"100%"} height={"auto"}/>
@@ -64,32 +67,40 @@ export function ReviewImgCard(
             <VerticalFlex alignItems={'start'}>
 
                <FlexChild className={styles.content}>
-                  <P lineClamp={2} overflow="hidden" display="--webkit-box">{review.content}</P>
+                  <P 
+                     lineClamp={2} 
+                     overflow="hidden" 
+                     display="--webkit-box">
+                        {review.content}
+                     </P>
                </FlexChild>
 
-               <HorizontalFlex className={styles.title_box}>
-                  <FlexChild className={styles.date}>
-                     <Span>{review.date}</Span>
-                  </FlexChild>
+               {
+                  board === 'normal' && (
+                     <HorizontalFlex className={styles.title_box}>
+                        <FlexChild className={styles.date}>
+                           <Span>{review.date}</Span>
+                        </FlexChild>
 
-                  <FlexChild className={styles.name}>
-                     <Span>{review.name}</Span>
-                  </FlexChild>
-               </HorizontalFlex>
+                        <FlexChild className={styles.name}>
+                           <Span>{review.name}</Span>
+                        </FlexChild>
+                     </HorizontalFlex>
+                  )
+               }
             </VerticalFlex>
          </FlexChild>
 
          <HorizontalFlex className={styles.prodcut_data}>
             <FlexChild className={styles.img}>
-               <Image src={review.product.thumb} width={32} />
+               <Image src={review.product.thumb} width={boardValue == 'normal' ? 35 : 45} />
             </FlexChild>
 
             <VerticalFlex className={styles.info}>
                <FlexChild className={styles.title}>
                   <P 
                      lineClamp={1}
-                     overflow="hiddent"
-                     whiteSpace="nowrap"
+                     overflow="hidden"
                      display="--webkit-box"
                   >
                      {review.product.title}
@@ -97,7 +108,13 @@ export function ReviewImgCard(
                </FlexChild>
                <FlexChild className={styles.info_rating}>
                   <P>평가 <Span>{review.product.rating}</Span></P>
-                  <P>리뷰 <Span>{review.product.reviewcount}</Span></P>
+                  <P
+                     lineClamp={1}
+                     overflow="hidden"
+                     display="--webkit-box"
+                  >
+                     리뷰 <Span>{review.product.reviewcount}</Span>
+                  </P>
                </FlexChild>
             </VerticalFlex>
          </HorizontalFlex>
