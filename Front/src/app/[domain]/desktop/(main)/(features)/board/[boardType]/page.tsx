@@ -36,11 +36,11 @@ export default async function BoardPage({params} : { params: {boardType: string}
 
    return (
       <>
-         {
+         {/* {
             params.boardType !== 'photoReview' && (
                <BoardHeader />
             )
-         }
+         } */}
          {
             params.boardType === 'notice' && (
                <NoticeBoard />
