@@ -1,0 +1,123 @@
+.review_wrap {
+   gap: 40px;
+   width: 100%;
+}
+
+.review_wrap .review_top {
+   gap: 16px;
+}
+
+.review_wrap .review_top .rating {
+   font-size: 30px !important;
+   font-weight: 600 !important;
+   color: #fff !important;
+}
+
+.review_wrap .review_top .total_rating {
+   font-size: 18px !important;
+   font-weight: 400 !important;
+   color: #797979 !important;
+}
+
+.review_wrap .review_top .link_btn {
+   background: #050505;
+   border-radius: 3px;
+   padding: 8px 11px;
+   color: #ff62a3;
+   font-size: 16px;
+}
+
+.review_wrap .review_board {
+   width: 100%; gap: 50px;
+}
+
+.review_wrap .review_board .review_write {
+   background: #050505;
+   border-radius: 5px;
+   padding: 20px 20px 30px;
+   width: 100%;
+}
+
+/* 옵션 */
+.review_write .feedback_select {
+   display: grid;
+   grid-template-columns: repeat(2, 1fr);
+   gap: 10px 30px;
+   margin-bottom: 30px;
+}
+
+.review_write .feedback_select .select_item {
+   gap: 10px;
+}
+
+.review_write .feedback_select .select_item > .label {
+   min-width: 80px;
+   font-size: 16px;
+   color: #fff;
+   font-weight: 600;
+}
+
+
+/* 내용 */
+/* 컴포넌트 사용 */
+
+
+/* 파일 업로드 */
+.review_write .file_upload {
+  justify-content: center;
+  gap: 10px;
+}
+
+
+
+/* 리뷰 목록 */
+
+.review_list .item {
+   border-bottom: 1px solid #535353;
+   padding-bottom: 20px;
+}
+
+.review_list .item .item_header > * {
+   width: auto;
+}
+
+.feedback {
+   justify-content: start;
+   gap: 30px;
+}
+
+.feedback .feed_item { gap: 10px; width: auto;}
+
+.feedback .feed_item > * {width: auto;}
+
+.feedback .feed_item .feed_title {
+   font-size: 14px; color: #797979;
+   font-weight: 700;
+}
+
+.feedback .feed_item .feed_content {
+   font-size: 14px; color: #eaeaea;
+   font-weight: 500;
+}
+
+
+
+.review_list .item .content {
+   border-radius: 10px;
+   background: #181818;
+   padding: 20px;
+   align-items: start !important;
+   gap: 15px;
+}
+
+.review_list .item .content .img_box {position: relative;}
+
+.review_list .item .content .img_box .img_length {
+   position: absolute; bottom: 0; right: 0;
+   width: auto;
+   padding: 6px 8px 5px;
+   background: #2B2B2B;
+   line-height: 1;
+   border-radius: 3px;
+   font-size: 12px;
+}

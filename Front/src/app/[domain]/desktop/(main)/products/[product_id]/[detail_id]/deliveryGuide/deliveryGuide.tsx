@@ -9,17 +9,17 @@ import ListPagination from "@/components/listPagination/ListPagination";
 import P from "@/components/P/P";
 import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
-import styles from "./page.module.css";
+import styles from "./deliveryGuide.module.css";
 
-export function DetailDeliveryGuide() {
+export default function DeliveryGuide() {
   return (
     <VerticalFlex className={styles.delivery_wrap}>
       <FlexChild className={styles.delivery_title}>
          <h3>배송 및 교환 환불 안내</h3>
       </FlexChild>
 
-      <FlexChild className={styles.content}>
-         <FlexChild className={styles.item}>
+      <VerticalFlex className={styles.content}>
+         <VerticalFlex className={styles.item}>
             <h4 className={styles.title}>[배송정보]</h4>
    
             <p className={styles.txt1}>
@@ -36,9 +36,9 @@ export function DetailDeliveryGuide() {
                고객님께서 주문하신 상품은 입금 확인후 배송해 드립니다. <br />
                다만, 상품종류에 따라서 상품의 배송이 다소 지연될 수 있습니다.
             </p>
-         </FlexChild>
+         </VerticalFlex>
 
-         <FlexChild className={styles.item}>
+         <VerticalFlex className={styles.item}>
             <h4 className={styles.title}>[교환 및 반품정보]</h4>
 
             <h5 className={styles.title2}>교환 및 반품 안내</h5>
@@ -60,8 +60,8 @@ export function DetailDeliveryGuide() {
             <p className={styles.txt1}>
                ( 자세한 사항은 푸푸토이 고객센터로 연락 주시면 더 자세한 안내를 해드릴 수 있습니다.)
             </p>
-         </FlexChild>
-      </FlexChild>
+         </VerticalFlex>
+      </VerticalFlex>
     </VerticalFlex>
   );
 }

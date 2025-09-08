@@ -18,7 +18,7 @@ import Link from "next/link";
 
 import clsx from "clsx";
 // import style from './page.module.css'
-import boardStyle from '../boardGrobal.module.css'
+import boardStyle from '../../[boardType]/boardGrobal.module.css'
 
 import { BoardTitleBox, BestReviewSlider, GalleryTable } from "./client";
 import ChoiceChild from "@/components/choice/ChoiceChild";

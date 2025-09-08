@@ -251,6 +251,7 @@ const InputTextArea = forwardRef(
             {t(feedback)}
           </div>
         )} */}
+        <span className={styles.maxWord}>0/30</span>
       </div>
     );
   }

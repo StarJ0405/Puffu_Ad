@@ -13,7 +13,7 @@ import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import clsx from "clsx";
 import Link from "next/link";
-import boardStyle from "../boardGrobal.module.css";
+import boardStyle from "../../[boardType]/boardGrobal.module.css";
 import styles from "./page.module.css";
 
 import { Swiper, SwiperSlide } from 'swiper/react';

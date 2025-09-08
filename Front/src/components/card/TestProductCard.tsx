@@ -126,10 +126,10 @@ export function TestProductCard(
                         className={style.through_price}
                         textDecoration={"line-through"}
                      >
-                        {product.price}
+                        {product.price}원
                      </Span>
                      <Span className={style.discount_price} >
-                        {product.discount_price} ₩
+                        {product.discount_price}원
                      </Span>
                   </VerticalFlex>
 
