@@ -5,7 +5,7 @@
   display: flex;
   flex-direction: column;
 
-  --button-hover-bg : var(--main-color1);
+  --button-hover-bg : #707070;
 }
 
 .inputContainer {
@@ -37,7 +37,7 @@
 
 .input {
   width: 100%;
-  padding: 10px 12px;
+  padding: 6px 12px;
   font-size: 15px;
   /* border: 1px solid var(--line-color, #ccc); */
   border-radius: 0;
@@ -48,6 +48,7 @@
   background-color: #222;
   -moz-appearance: textfield; /* Hide arrows for Firefox */
   text-align: center;
+  color: #fff;
 }
 
 /* Hide default arrows for Chrome, Safari, Edge */
@@ -91,8 +92,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 33px;
   /* border: 1px solid var(--line-color, #ccc); */
   cursor: pointer;
   /* background-color: var(--button-bg, #fff); */

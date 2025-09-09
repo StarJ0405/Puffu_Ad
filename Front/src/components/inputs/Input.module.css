@@ -34,7 +34,8 @@
   box-shadow: none;
   outline: none; /* Remove default outline */
   transition: border-color 0.2s ease-in-out;
-  background-color: var(--field-bg, #fff); /* Example background color */
+  background-color: var(--field-bg, #fff);
+  /* Example background color */
 }
 
 /* Placeholder as floating label styles */

@@ -371,7 +371,7 @@ function Select<T extends string | number>({
               onChange={(e) => setKeyword(e.target.value)}
             />
           ) : (
-            <div className={styles.selectedItemsDisplay}>
+            <div className={clsx(styles.selectedItemsDisplay, classNames?.search)}>
               {getDisplayValue()}
             </div>
           )}
@@ -439,7 +439,7 @@ function Select<T extends string | number>({
               onChange={(e) => setKeyword(e.target.value)}
             />
           ) : (
-            <div className={styles.selectedItemsDisplay}>
+            <div className={clsx(styles.selectedItemsDisplay, classNames?.search)}>
               {getDisplayValue()}
             </div>
           )}

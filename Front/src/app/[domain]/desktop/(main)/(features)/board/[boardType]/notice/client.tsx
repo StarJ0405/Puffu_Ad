@@ -49,7 +49,18 @@ export function BoardTitleBox() {
 
          <FlexChild gap={10} className={boardStyle.search_box}>
             <FlexChild width={'auto'}>
-               <SelectBox />
+               <Select
+                  classNames={{
+                     header: boardStyle.search_select_body,
+                  }}
+                  options={[
+                     { value: "제목", display: "제목" },
+                     { value: "내용", display: "내용" },
+                     { value: "작성자", display: "작성자" },
+                  ]}
+                  // placeholder={'선택 안함'}
+                  // value={selectedMessageOption}
+               />
             </FlexChild>
 
             <Input type={'search'} placeHolder={'검색 내용을 입력해 주세요.'}></Input>
@@ -58,30 +69,6 @@ export function BoardTitleBox() {
             </Link>
          </FlexChild>
       </HorizontalFlex>
-   )
-}
-
-
-export function SelectBox() {
-
-   const [selectedMessageOption, setSelectedMessageOption] = useState("");
-
-   return (
-      <>
-         {/* 처음 기본 선택지 제목이어야 함. */}
-         <Select
-            classNames={{
-               header: boardStyle.search_select_body,
-            }}
-            options={[
-               { value: "제목", display: "제목" },
-               { value: "내용", display: "내용" },
-               { value: "작성자", display: "작성자" },
-            ]}
-            // placeholder={'선택 안함'}
-            value={selectedMessageOption}
-         />
-      </>
    )
 }
 
@@ -186,25 +173,3 @@ export function BoardTable() {
 
 
 // 게시판 리스트 end -----------------------------------------------
-
-
-
-// 게시판 쓰기 -----------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// 게시판 쓰기 end -----------------------------------------------
