@@ -22,9 +22,13 @@
 .review_wrap .review_top .link_btn {
    background: #050505;
    border-radius: 3px;
-   padding: 8px 11px;
-   color: #ff62a3;
+   padding: 10px 15px;
+   color: #fff;
    font-size: 16px;
+}
+
+.review_wrap .review_top .link_btn:hover {
+   color: var(--main-color1);
 }
 
 .review_wrap .review_board {
@@ -32,10 +36,11 @@
 }
 
 .review_wrap .review_board .review_write {
-   background: #050505;
+   background: #111;
    border-radius: 5px;
    padding: 20px 20px 30px;
    width: 100%;
+   /* border: 1px solid #ccc; */
 }
 
 /* 옵션 */
@@ -63,18 +68,29 @@
 
 
 /* 파일 업로드 */
-.review_write .file_upload {
+
+.review_write .review_content {
+   margin-bottom: 35px;
+}
+
+/* .review_write .file_upload {
   justify-content: center;
   gap: 10px;
-}
+} */
 
 
 
 /* 리뷰 목록 */
 
 .review_list .item {
+   align-items: start !important;
    border-bottom: 1px solid #535353;
    padding-bottom: 20px;
+}
+
+.review_list .item .item_header {
+   flex: unset; width: auto;
+   padding-left: 30px;
 }
 
 .review_list .item .item_header > * {
@@ -107,6 +123,7 @@
    background: #181818;
    padding: 20px;
    align-items: start !important;
+   justify-content: start !important;
    gap: 15px;
 }
 

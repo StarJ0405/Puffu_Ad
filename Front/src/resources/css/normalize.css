@@ -253,7 +253,7 @@ input[type='search']:focus-visible {
 .post_btn {
   width: 100% !important;
   max-width: 233px;
-  background: var(--main-color1) !important;
+  background: var(--main-color2) !important;
   color: #fff !important;
   font-size: 20px;
   font-weight: 600;

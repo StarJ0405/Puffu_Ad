@@ -1,5 +1,6 @@
 .mypage_wrap {
    align-items: start !important;
+   padding-top: 50px;
 }
 
 
@@ -113,12 +114,16 @@
 .box_frame .box_header {
    border-bottom: 1px solid #6B6B6B;
    padding-bottom: 15px;
+   font-size: 20px; 
+   font-weight: 600;
+   color: #fff;
+   gap: 20px;
+   align-items: end !important;
 }
 
-.box_frame .box_header p {
-   font-size: 20px !important; 
-   font-weight: 600 !important;
-   color: #fff !important;
+.box_frame .box_header .header_subTitle {
+   font-size: 16px; color: #fff;
+   font-weight: 400; width: auto;
 }
 
 .delivery_box {gap: 35px;}
