@@ -275,7 +275,7 @@ export function ProductSlider({id, lineClamp }: { id: string, lineClamp?: number
             </div>
          </FlexChild>
          ): (
-            <NoContent />
+            <NoContent type="상품" />
          )}
       </>
    )
