@@ -10,16 +10,15 @@ import Span from "@/components/span/Span";
 import clsx from "clsx";
 
 import TopButton from "@/components/buttons/TopButton";
-import { ChatToggle } from "./client";
 
 export default async function Header() {
 
    const menu1 = [ // 임시 데이터
-      { name: 'BEST 상품', link: '/products/'},
-      { name: '입고예정', link: '/products/'},
-      { name: '신상품', link: '/products/'},
-      { name: '데이 핫딜', link: '/products/', icon: '/resources/images/header/HotDeal_icon.png'},
-      { name: '랜덤박스', link: '/products/'},
+      { name: 'BEST 상품', link: '/products/best'},
+      { name: '입고예정', link: '/products/commingSoon'},
+      { name: '신상품', link: '/products/new'},
+      { name: '데이 핫딜', link: '/products/sales', icon: '/resources/images/header/HotDeal_icon.png'},
+      { name: '랜덤박스', link: '/products/randomBox'},
    ]
 
    const menu2 = [ // 임시 데이터
@@ -32,7 +31,7 @@ export default async function Header() {
          inner: [
             {name: '공지사항', link: '/board/notice'},
             {name: '1:1문의', link: '/board/inquiry'},
-            {name: '이벤트', link: '/board/Event'},
+            {name: '이벤트', link: '/board/event'},
          ]
       },
    ]
@@ -58,21 +57,25 @@ export default async function Header() {
                <FlexChild width={'auto'} className={styles.info_box}>
                   <VerticalFlex gap={20} alignItems="end">
                      <HorizontalFlex gap={20} className={styles.info_top} width={'auto'}>
-                        <Link href={'/signup'}>회원가입</Link>
-                        <Link href={'/login'}>로그인</Link>
+                        <Link href={'/auth/signup'}>회원가입</Link>
+                        <Link href={'/auth/login'}>로그인</Link>
                      </HorizontalFlex>
 
                      <HorizontalFlex width={'auto'} gap={10}>
                         <FlexChild>
-                           <Image src='/resources/icons/main/user_icon.png' width={28} height={'auto'} cursor="pointer"/>
+                           <Link href={'/mypage'}>
+                              <Image src='/resources/icons/main/user_icon.png' width={28} height={'auto'} cursor="pointer"/>
+                           </Link>
                         </FlexChild>
 
                         <FlexChild>
-                           <Link href={'/cart'}><Image src='/resources/icons/main/cart_icon.png' width={30} height={'auto'} cursor="pointer"/></Link>
+                           <Link href={'/orders/cart'}><Image src='/resources/icons/main/cart_icon.png' width={30} height={'auto'} cursor="pointer"/></Link>
                         </FlexChild>
 
                         <FlexChild>
-                           <Image src='/resources/icons/main/product_heart_icon.png' width={30} height={'auto'} cursor="pointer"/>
+                           <Link href={'/mypage/wishList'}>
+                              <Image src='/resources/icons/main/product_heart_icon.png' width={30} height={'auto'} cursor="pointer"/>
+                           </Link>
                         </FlexChild>
                      </HorizontalFlex>
                   </VerticalFlex>
@@ -82,40 +85,7 @@ export default async function Header() {
             <HeaderBottom menu1={menu1} menu2={menu2}/>
          </header>
 
-         {/* 사이드 네비 */}
-         <nav id={styles.sideNavi}>
-         <VerticalFlex className={styles.outer_box}>
-            <Link href={"/sale"} className={styles.hotDeal_link}>
-               <Image
-               src={"/resources/images/footer/sidenavi_hotDeal.png"}
-               width={43}
-               />
-               <h4 className="SacheonFont">데이 HOT딜</h4>
-            </Link>
-
-            <ul className={styles.link_list}>
-               <li>
-                  <Link href={"/mypage"}>마이페이지</Link>
-               </li>
-
-               <li>
-                  <Link href={"/cart"}>장바구니</Link>
-               </li>
-
-               <li>
-                  <Link href={"/wishList"}>위시리스트</Link>
-               </li>
-
-               <li>
-                  <Link href={"/board/faq"}>1:1문의</Link>
-               </li>
-            </ul>
-         </VerticalFlex>
-
-         <TopButton />
-         </nav>
-
-         <ChatToggle />
+         
       </>
    )
 }

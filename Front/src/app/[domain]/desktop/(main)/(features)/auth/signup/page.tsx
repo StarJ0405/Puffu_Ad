@@ -83,7 +83,7 @@ export default async function () {
                            </label>
                         </FlexChild>
    
-                        <FlexChild className={styles.agree_content}>
+                        <FlexChild className={'agree_content'}>
                            <TermContent />
                         </FlexChild>
                      </VerticalFlex>
@@ -96,7 +96,7 @@ export default async function () {
                            </label>
                         </FlexChild>
    
-                        <FlexChild className={styles.agree_content}>
+                        <FlexChild className={'agree_content'}>
                            <PrivacyContent />
                         </FlexChild>
                      </VerticalFlex>
@@ -140,7 +140,7 @@ export default async function () {
                         <Span>(필수)</Span>
                      </HorizontalFlex>
                      <FlexChild>
-                        <Input type="text" width={'100%'} className={styles.input_unit} placeHolder="이름을 입력하세요" />
+                        <Input type="text" width={'100%'}  placeHolder="이름을 입력하세요" />
                      </FlexChild>
                   </VerticalFlex>
       
@@ -150,7 +150,7 @@ export default async function () {
                         <Span>(필수)</Span>
                      </HorizontalFlex>
                      <FlexChild>
-                        <Input type="text" width={'100%'} className={styles.input_unit} placeHolder="이메일을 입력하세요" />
+                        <Input type="text" width={'100%'}  placeHolder="이메일을 입력하세요" />
                      </FlexChild>
                   </VerticalFlex>
       
@@ -160,7 +160,7 @@ export default async function () {
                         <Span>(필수)</Span>
                      </HorizontalFlex>
                      <FlexChild>
-                        <Input type="number" width={'100%'} className={styles.input_unit} placeHolder="(+86)" />
+                        <Input type="number" width={'100%'}  placeHolder="(+86)" />
                      </FlexChild>
                   </VerticalFlex>
       
@@ -170,7 +170,7 @@ export default async function () {
                         <Span>(필수)</Span>
                      </HorizontalFlex>
                      <FlexChild>
-                        <Input type="text" width={'100%'} className={styles.input_unit} placeHolder="아이디를 입력하세요" />
+                        <Input type="text" width={'100%'}  placeHolder="아이디를 입력하세요" />
                      </FlexChild>
                   </VerticalFlex>
       
@@ -180,10 +180,10 @@ export default async function () {
                         <Span>(필수)</Span>
                      </HorizontalFlex>
                      <FlexChild>
-                        <Input type="password" width={'100%'} className={styles.input_unit} placeHolder="비밀번호를 입력하세요" />
+                        <Input type="password" width={'100%'}  placeHolder="비밀번호를 입력하세요" />
                      </FlexChild>
                      <FlexChild>
-                        <Input type="password" width={'100%'} className={styles.input_unit} placeHolder="비밀번호를 한번 더 입력하세요" />
+                        <Input type="password" width={'100%'}  placeHolder="비밀번호를 한번 더 입력하세요" />
                      </FlexChild>
                   </VerticalFlex>
       
@@ -208,7 +208,7 @@ export default async function () {
                          />
                      </FlexChild>
                      <FlexChild>
-                        <Input type="text" width={'100%'} className={styles.input_unit} placeHolder="질문에 대한 답변을 입력하세요." />
+                        <Input type="text" width={'100%'}  placeHolder="질문에 대한 답변을 입력하세요." />
                      </FlexChild>
                   </VerticalFlex>
                </VerticalFlex>

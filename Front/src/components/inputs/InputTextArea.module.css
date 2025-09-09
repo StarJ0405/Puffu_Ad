@@ -39,7 +39,7 @@
   resize: vertical; /* Allow vertical resizing by default */
   min-height: 40px; /* Minimum height for textarea */
   font-family: inherit; /* Inherit font from body/parent */
-  color: #fff;
+  color: #aaa;
 }
 
 .textarea:focus {

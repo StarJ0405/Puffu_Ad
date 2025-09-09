@@ -18,7 +18,7 @@
   font-size: 14px;
 }
 
-/* .selectHeader {
+.selectHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -28,18 +28,6 @@
   background-color: #fff;
   cursor: pointer;
   user-select: none;
-} */
-
-.selectHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 15px;
-  border: 1px solid #fff;
-  border-radius: 4px;
-  background-color: #222;
-  cursor: pointer;
-  user-select: none; /* 텍스트 선택 방지 */
   transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
@@ -59,16 +47,12 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis; /* 내용이 넘칠 경우 ... 처리 */
-  color: #fff;
-}
-
-.placeholder {
-  color: #fff;
+  color: #333;
 }
 
 .arrow {
   margin-left: 10px;
-  color: #fff;
+  color: #333;
   border: solid currentColor;
   border-width: 0 2px 2px 0;
   display: inline-block;
@@ -87,7 +71,7 @@
   border: 1px solid #ccc;
   border-top: none;
   border-radius: 0 0 4px 4px;
-  background-color: #222;
+  background-color: #fff;
   z-index: 2000;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
@@ -111,14 +95,15 @@
   padding: 10px 15px;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
+  color: #333;
 }
 
 .optionItem:hover {
-  background-color: #000;
+  background-color: #fff;
 }
 
 .optionItem.selected {
-  background-color: #000;
+  background-color: #fff;
   font-weight: 600;
 }
 

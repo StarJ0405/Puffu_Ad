@@ -397,8 +397,8 @@ const InputNumber = forwardRef<refInterface, InputNumberProps>((props, ref) => {
             <div className={style.center}>
               {/* Minus icon SVG */}
               <svg
-                width="24"
-                height="24"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 fill="none"
                 color="#fff"
@@ -500,8 +500,8 @@ const InputNumber = forwardRef<refInterface, InputNumberProps>((props, ref) => {
             <div className={style.center}>
               {/* Plus icon SVG */}
               <svg
-                width="24"
-                height="24"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 fill="none"
                 color="#fff"

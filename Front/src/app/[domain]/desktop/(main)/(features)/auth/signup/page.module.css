@@ -88,7 +88,7 @@
   font-weight: 500 !important;
 }
 
-.agree_item .agree_content {
+/* .agree_item .agree_content {
   width: 100%;
   border-radius: 5px;
   border: 1px solid #707070;
@@ -100,7 +100,7 @@
   font-size: 16px;
   line-height: 1.6;
   color: #BFBFBF;
-}
+} */
 
 
 .phone_verification .title {
@@ -156,13 +156,6 @@
 
 .input_box .input_item .label > span {
   color: #da1e1e;
-}
-
-.input_box .input_item .input_unit {
-  background: #111111;
-  border: 1px solid #4c4c4c;
-  border-radius: 5px;
-  color: #fff;
 }
 
 

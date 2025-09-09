@@ -266,4 +266,69 @@ input[type='search']:focus-visible {
 }
 
 
+/* 기본 인풋 스타일 */
+.web_input {
+  background: #111111 !important;
+  color: #fff !important;
+  border-radius: 5px !important;
+  border: 1px solid #4c4c4c !important;
+}
+
+.web_input:focus {
+  border: 1px solid #fff !important;
+}
+
+
+/* 셀렉트 */
+/* width는 위에 flexChild 씌워서 그걸로 조정하면 됨. */
+.web_select {
+  background-color: #222 !important;
+  border-radius: 4px !important;
+  border: 1px solid #4c4c4c !important;
+}
+
+.web_select_search {
+  color: #fff !important;
+}
+
+.web_select:hover {
+  border-color: #fff !important;
+}
+
+.web_select_arrow {color: #fff !important;}
+
+.web_select_placholder {
+  color: #fff;
+}
+
+.web_select_line {
+  background: #222 !important;
+  color: #fff !important;
+}
+
+.web_select_line:hover {
+  background: #000 !important;
+}
+
+.web_select_line.selected {
+  background-color: #000 !important;
+  font-weight: 600 !important;
+}
+
+
+.agree_content {
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid #707070;
+  background-color: #2b2b2b;  
+  padding: 20px;
+  height: 200px;
+  align-items: start !important;
+  overflow-y: auto;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #BFBFBF;
+}
+
+
 /* 컴포넌트 공통 css end ------------------ */

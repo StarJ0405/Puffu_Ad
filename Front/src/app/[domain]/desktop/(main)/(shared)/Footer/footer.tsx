@@ -5,40 +5,43 @@ import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import Link from "next/link";
-import style from "./footer.module.css";
+import styles from "./footer.module.css";
+
+import TopButton from "@/components/buttons/TopButton";
+import { ChatToggle } from "./client";
 
 export default async function Footer() {
   return (
     <>
-      <footer className={style.footer}>
+      <footer className={styles.footer}>
         <HorizontalFlex className="desktop_container">
-          <VerticalFlex className={style.info_box} alignItems="start">
+          <VerticalFlex className={styles.info_box} alignItems="start">
             <Image
               src={"/resources/images/footer/footer_logo.png"}
               width={150}
-              className={style.footer_logo}
+              className={styles.footer_logo}
             />
 
-            <VerticalFlex alignItems={"start"} className={style.text_box}>
+            <VerticalFlex alignItems={"start"} className={styles.text_box}>
               <P>푸푸글로벌(주)</P>
-              <FlexChild className={style.txt_item}>
+              <FlexChild className={styles.txt_item}>
                 <Span>대표: 염희하</Span>
                 <Span>주소: 대전광역시 서구 관저중로 95번길 관저동</Span>
                 <Span>이메일: puffuglobal@gmail.com</Span>
               </FlexChild>
 
-              <FlexChild className={style.txt_item}>
+              <FlexChild className={styles.txt_item}>
                 <Span>사업자등록번호: 559-81-02488</Span>
                 <Span>통신판매업신고번호: 대전광역시 서구-0308</Span>
               </FlexChild>
 
-              <FlexChild className={style.txt_item}>
+              <FlexChild className={styles.txt_item}>
                 <Span>
                   Copyright, ⓒ 2025 puffutoy.com. All rights reserved.
                 </Span>
               </FlexChild>
 
-              <FlexChild className={style.policy_item}>
+              <FlexChild className={styles.policy_item}>
                 <Link href={"/"}>이용약관</Link>
                 <Span>|</Span>
                 <Link href={"/"}>개인정보처리방침</Link>
@@ -46,10 +49,10 @@ export default async function Footer() {
             </VerticalFlex>
           </VerticalFlex>
 
-          <VerticalFlex className={style.Cs_center} alignItems={"start"}>
-            <P className={style.cs_title}>CS CENTER</P>
-            <P className={style.cs_number}>010-7627-3243</P>
-            <VerticalFlex className={style.cs_days}>
+          <VerticalFlex className={styles.Cs_center} alignItems={"start"}>
+            <P className={styles.cs_title}>CS CENTER</P>
+            <P className={styles.cs_number}>010-7627-3243</P>
+            <VerticalFlex className={styles.cs_days}>
               <P>
                 <Span>평일 : </Span>09:30 ~ 18:30
               </P>
@@ -60,6 +63,41 @@ export default async function Footer() {
           </VerticalFlex>
         </HorizontalFlex>
       </footer>
+
+      {/* 사이드 네비 */}
+         <nav id={styles.sideNavi}>
+          <VerticalFlex className={styles.outer_box}>
+              <Link href={"/sale"} className={styles.hotDeal_link}>
+                <Image
+                src={"/resources/images/footer/sidenavi_hotDeal.png"}
+                width={43}
+                />
+                <h4 className="SacheonFont">데이 HOT딜</h4>
+              </Link>
+
+              <ul className={styles.link_list}>
+                <li>
+                    <Link href={"/mypage"}>마이페이지</Link>
+                </li>
+
+                <li>
+                    <Link href={"/cart"}>장바구니</Link>
+                </li>
+
+                <li>
+                    <Link href={"/wishList"}>위시리스트</Link>
+                </li>
+
+                <li>
+                    <Link href={"/board/faq"}>1:1문의</Link>
+                </li>
+              </ul>
+          </VerticalFlex>
+
+          <TopButton />
+         </nav>
+
+         <ChatToggle />
     </>
   );
 }

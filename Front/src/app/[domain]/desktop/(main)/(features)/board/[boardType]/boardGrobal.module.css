@@ -1,7 +1,8 @@
 
 
 .board_frame {
-   margin-top: 120px;
+   margin: 120px 0 0;
+   width: 100%;
 }
 
 
@@ -121,19 +122,3 @@
 
 
 /* 게시판 리스트 스타일 end -------------------------------------------  */
-
-
-
-/* 게시판 쓰기 스타일  */
-.write_container {
-   background-color: #161616;
-   border-radius: 10px;
-   padding: 35px 25px;
-}
-
-.write_container .input_box {
-   
-}
-
-
-/* 게시판 쓰기 스타일 end -------------------------------------------  */
