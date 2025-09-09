@@ -50,9 +50,11 @@
 
 .category_wrap .ca_item .ca_thumb {
    border: 3px solid transparent;
-   border-radius: 8px;
+   border-radius: 100px;
    overflow: hidden;
    transition: inherit;
+   width: 120px;
+   justify-content: center;
 }
 
 .category_wrap .ca_item:hover {

@@ -44,7 +44,11 @@ export function SelectBox() {
       <>
          <Select
             classNames={{
-               search: style.requester_input_body
+               header: 'web_select',
+               placeholder: 'web_select_placholder',
+               line: 'web_select_line',
+               arrow: 'web_select_arrow',
+               search: 'web_select_search',
             }}
             options={[
                { value: "직접 입력하기", display: "직접 입력하기" },

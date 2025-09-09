@@ -43,7 +43,7 @@ export function TestProductCard(
    { 
       product: ListItem;
       lineClamp: number; 
-      width?: number;
+      width?: number | string;
       autoPlay? : number;
    }) 
 {
