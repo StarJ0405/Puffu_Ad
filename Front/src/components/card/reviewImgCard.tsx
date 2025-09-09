@@ -15,13 +15,18 @@ import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import useData from "@/shared/hooks/data/useData";
 import useNavigate from "@/shared/hooks/useNavigate";
 import { requester } from "@/shared/Requester";
-import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import { useParams } from "next/navigation";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import ProductCard from "@/components/card/ProductCard";
 import { usePathname } from "next/navigation";
 import styles from "./reviewImgCard.module.css";
+import NiceModal, { useModal } from "@ebay/nice-modal-react";
+import ModalBase from "@/modals/ModalBase";
+
+import ConfirmModal from "@/modals/confirm/ConfirmModal";
+import ToastModal from "@/modals/toast/ToastModal";
+import ProductDetailModal from "@/modals/review/photoReviewModal";
 
 
 type ReviewItem = {
@@ -40,24 +45,41 @@ type ReviewItem = {
 // lineClamp 구별해주기, TestProdcutCard는 임시로 만든거임. 나중에 프로덕트카드에 스타일만 입히면 됨.
 // 라인클램프는 제목태그에 달아서 속성 주기.
 
-export function ReviewImgCard(
-   { review, lineClamp, width, autoPlay, board }:
+export default function (
    { 
+      review, 
+      lineClamp, 
+      width, 
+      autoPlay, 
+      board,
+      onClick,
+   }: { 
       review: ReviewItem;
       lineClamp?: number; 
       width?: number;
       autoPlay? : number;
+      onClick?: (product: ProductData) => void;
       board? : string;
    }) 
 {
 
    const boardValue = board ?? "normal";
 
+   const product  = review.thumbnail;
+
    return (
       <VerticalFlex
          width={width ?? 244}
          // margin={review.margin}
          className={clsx(styles.review_item, (boardValue !== 'normal' && styles.slide_item))}
+         onClick={() => {
+         if (onClick) {
+            // onClick(product);
+         } else {
+            // navigate(`/product/${product.id}`);
+            // NiceModal.show(ProductDetailModal, { product });
+         }
+         }}
       >
          <FlexChild className={styles.imgBox}>
             <Image src={review.thumbnail} width={"100%"} height={"auto"}/>
@@ -122,4 +144,3 @@ export function ReviewImgCard(
    )
 }
 
-export default ReviewImgCard

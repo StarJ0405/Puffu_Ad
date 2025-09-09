@@ -159,8 +159,8 @@ export function MainBanner() {
 
    const components = [ // 임시
       {img: '/resources/images/dummy_img/main_banner_01.png', link: '/'},
-      {img: '/resources/images/dummy_img/main_banner_01.png', link: '/'},
-      {img: '/resources/images/dummy_img/main_banner_01.png', link: '/'},
+      {img: '/resources/images/dummy_img/main_banner_02.png', link: '/'},
+      {img: '/resources/images/dummy_img/main_banner_03.png', link: '/'},
    ]
 
    const paintBullets = (swiper: SwiperType) => { // 페이지네이션 스타일 설정
@@ -295,7 +295,7 @@ export function MainCategory() { // 카테고리메뉴
    const pathname = usePathname();
 
    const ca_test = [
-      {name: '코스튬/속옷', thumbnail: '/resources/images/category/ca_img01.png',},
+      {name: 'BDSM 토이', thumbnail: '/resources/images/category/gif_ca_Img.gif',},
       {name: '악세서리', thumbnail: '/resources/images/category/ca_img01.png',},
       {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
       {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
@@ -313,7 +313,8 @@ export function MainCategory() { // 카테고리메뉴
                   <FlexChild className={styles.ca_thumb}>
                      <Image 
                         src={cat.thumbnail}
-                        width={120}
+                        width={'auto'}
+                        height={120}
                      />
                   </FlexChild>
                   <Span>{cat.name}</Span>
@@ -454,7 +455,7 @@ export function ProductSlider({id, lineClamp }: { id: string, lineClamp?: number
             </div>
          </FlexChild>
          ): (
-            <NoContent />
+            <NoContent type="상품" />
          )}
       </>
    )
@@ -506,7 +507,7 @@ export function ProductList({id, lineClamp }: { id: string, lineClamp?: number }
             </Button>
          </VerticalFlex>
          ): (
-            <NoContent />
+            <NoContent type="상품" />
          )}
       </>
    )

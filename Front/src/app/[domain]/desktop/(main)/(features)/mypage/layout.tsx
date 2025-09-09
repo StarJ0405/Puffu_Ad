@@ -6,11 +6,11 @@ export default async function ({
   children: React.ReactNode;
 }>) {
   return (
-    <>
+    <section className="desktop_container">
       {/*  */}
-      <>1111</>
+      <></>
       {children}
       {/*  */}
-    </>
+    </section>
   );
 }

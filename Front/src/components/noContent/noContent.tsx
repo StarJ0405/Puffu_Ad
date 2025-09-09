@@ -8,25 +8,23 @@ import clsx from "clsx";
 import { useParams } from "next/navigation";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import style from "./noContent.module.css";
+import styles from "./noContent.module.css";
 
 
-
-
-export function NoContent() {
+export function NoContent({type} : {type : string}) {
 
    const pathname = usePathname();
 
    return (
       <>
-         <VerticalFlex>
-            <FlexChild>
+         <VerticalFlex justifyContent="center">
+            <FlexChild width={'auto'} className={styles.NolayerBox}>
                <P>
-                  {pathname.includes("/board") && ('게시물이 없습니다.')}
-                  {pathname.startsWith("/") && ('현재 상품이 없습니다.')}
-                  {pathname.includes("/product") && ('현재 상품이 없습니다.')}
-                  {pathname.includes("/board") && ('게시물이 없습니다.')}
-                  {pathname.startsWith("/cart") && ('담긴 상품이 없습니다.')}
+                  {type === '상품' && ('현재 상품이 없습니다.')}
+                  {type === '리뷰' && ('등록된 리뷰가 없습니다.')}
+                  {type === '게시판' && ('등록된 게시물이 없습니다.')}
+                  {type === '문의' && ('등록된 문의내역이 없습니다.')}
+                  {type === '배송지' && ('등록된 배송지가 없습니다.')}
                </P>
             </FlexChild>
          </VerticalFlex>

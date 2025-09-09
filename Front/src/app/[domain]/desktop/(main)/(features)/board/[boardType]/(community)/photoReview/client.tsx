@@ -35,6 +35,11 @@ export function BoardTitleBox() {
                <Select
                   classNames={{
                      header: boardStyle.search_select_body,
+                     // header: 'web_select',
+                     // placeholder: 'web_select_placholder',
+                     // line: 'web_select_line',
+                     // arrow: 'web_select_arrow',
+                     // search: 'web_select_search',
                   }}
                   options={[
                      { value: "제목", display: "제목" },
@@ -201,7 +206,7 @@ export function BestReviewSlider({id, lineClamp }: { id: string, lineClamp?: num
             </div>
          </FlexChild>
          ): (
-            <NoContent />
+            <NoContent type='리뷰' />
          )}
       </>
    )
@@ -299,7 +304,7 @@ export function GalleryTable() {
             }
          </MasonryGrid>
         ) : (
-          <NoContent />
+          <NoContent type='리뷰' />
         )}
       </FlexChild>
 
