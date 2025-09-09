@@ -84,7 +84,7 @@ export default async function () {
                         </FlexChild>
    
                         <FlexChild className={'agree_content'}>
-                           <TermContent />
+                           <TermContent size={8} />
                         </FlexChild>
                      </VerticalFlex>
    
@@ -97,7 +97,7 @@ export default async function () {
                         </FlexChild>
    
                         <FlexChild className={'agree_content'}>
-                           <PrivacyContent />
+                           <PrivacyContent size={8} />
                         </FlexChild>
                      </VerticalFlex>
                   </CheckboxGroup>
