@@ -56,7 +56,7 @@ export default async function ({ params }: { params: Promise<Params> }) {
                 <ul className={styles.inner_menu}>
                   {
                     myshopMenu.map((item, i)=> (
-                      <li>
+                      <li key={i}>
                         <Link href={item.link}>
                           <Span>{item.name}</Span>
                           <Image src={'/resources/icons/arrow/slide_arrow.png'} width={13} />
@@ -79,7 +79,7 @@ export default async function ({ params }: { params: Promise<Params> }) {
                   </li>
                   {
                     myshopMenu.map((item, i)=> (
-                      <li>
+                      <li key={i}>
                         <Link href={item.link}>
                           <Span>{item.name}</Span>
                           <Image src={'/resources/icons/arrow/slide_arrow.png'} width={13} />

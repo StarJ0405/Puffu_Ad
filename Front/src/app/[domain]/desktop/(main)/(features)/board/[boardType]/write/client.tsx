@@ -174,7 +174,7 @@ export function WriteFrame() {
         </FlexChild>
 
         <FlexChild className={'agree_content'}>
-          <PrivacyContent />
+          <PrivacyContent size={8} />
         </FlexChild>
 
         <FlexChild>

@@ -1,0 +1,42 @@
+
+.board_container {
+   width: 100%;
+   max-width: 1000px;
+   margin: 0 auto;
+   gap: 35px;
+}
+
+.board_container > * {
+   align-items: start !important;
+   gap: 20px;
+}
+
+.board_container > * > div {
+   align-items: start !important;
+   gap: 30px;
+}
+
+.board_container h3 {
+   font-size: 3.5em;
+   color: #fff;
+   font-weight: 600;
+}
+
+
+.title {
+   font-size: 2em;
+   color: #fff;
+   font-weight: 600;
+}
+
+.sub_title {
+   font-size: 1.8em;
+   color: #fff;
+   font-weight: 500;
+}
+
+.txt1 {
+   font-size: 1.6em;
+   color: #aaa;
+   line-height: 1.8;
+}
