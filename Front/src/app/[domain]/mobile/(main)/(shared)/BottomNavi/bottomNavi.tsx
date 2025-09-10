@@ -1,6 +1,5 @@
 import Image from "@/components/Image/Image";
-import styles from "./header.module.css";
-import {SearchBox, HeaderBottom} from './client'
+import styles from "./bottomNavi.module.css";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
@@ -11,7 +10,7 @@ import clsx from "clsx";
 
 import TopButton from "@/components/buttons/TopButton";
 
-export default async function MobileHeader() {
+export default async function BottomNavi() {
 
    const menu1 = [ // 임시 데이터
       { name: 'BEST 상품', link: '/products/best'},
@@ -61,8 +60,6 @@ export default async function MobileHeader() {
                   </VerticalFlex>
                </FlexChild>
             </HorizontalFlex>
-
-            <HeaderBottom menu1={menu1}/>
          </header>
 
          

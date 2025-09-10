@@ -178,9 +178,9 @@ a {
   }
 
   .root {
-    padding-top: 166px;
+    padding-top: 80px;
     min-height: 70dvh;
-    padding-bottom: 100px;
+    padding-bottom: 20px;
     color: var(--default-color);
   }
   

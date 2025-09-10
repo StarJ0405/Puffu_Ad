@@ -23,3 +23,12 @@
 .topToggleBtn:hover {
    background: #111;
 }
+
+
+@media (max-width: 769px) {
+   .topToggleBtn {
+      position: fixed;
+      bottom: 20%;
+      right: 5%;
+   }
+}

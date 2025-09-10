@@ -21,6 +21,7 @@ import { memo, useCallback, useEffect, useRef, useState } from "react";
 import styles from "./header.module.css";
 import {HeaderCatgeory} from './headerCategory'
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface ShopMenuItem {
    name: string;
@@ -28,20 +29,8 @@ interface ShopMenuItem {
    icon?: string; // menu1에 icon이 있음
 }
 
-interface SubMenuItem {
-   name: string;
-   link: string;
-}
-
-interface CommunityMenuItem {
-   name: string;
-   link: string;
-   inner?: SubMenuItem[]; // menu2는 inner 조건 처리
-}
-
 interface HeaderBottomProps {
    menu1: ShopMenuItem[];
-   menu2: CommunityMenuItem[];
 }
 
 export function SearchBox() {
@@ -59,11 +48,12 @@ export function SearchBox() {
    )
 }
 
-export function HeaderBottom({menu1, menu2} : HeaderBottomProps) {
+export function HeaderBottom({menu1} : HeaderBottomProps) {
 
    const bottomRef = useRef<HTMLDivElement | null>(null);
    const [fixed, setFixed] = useState(false);
    const [CaOpen, SetCaOpen] = useState(false);
+   const router = useRouter();
 
    useEffect(()=> {
       const headerScroll = () => {
@@ -79,76 +69,26 @@ export function HeaderBottom({menu1, menu2} : HeaderBottomProps) {
 
    return (
       <>
-         <div ref={bottomRef}></div>{/* 헤더 높이계산용 더미 */}
-         <div className={`${fixed ? styles.fixed : ''}`}>
-            <HorizontalFlex className="page_container" position="relative">
-               <HorizontalFlex gap={25} justifyContent="start">
-                  <FlexChild
-                     width={'auto'} 
-                     onMouseEnter={() => SetCaOpen(true)}
-                     onMouseLeave={() => SetCaOpen(false)}
-                     className={styles.CategoryBox}
-                  >
-                     <FlexChild gap={10} width={'auto'} className={styles.category_btn}>
-                        <Image 
-                           src='/resources/images/header/category_menu_icon.png'
-                           width={18}
-                        />
-                        <span className='SacheonFont'>카테고리</span>
-                     </FlexChild>
-                     <HeaderCatgeory CaOpen={CaOpen} />
-                  </FlexChild>
-   
-   
-   
-                  <FlexChild width={'auto'}>
-                     <nav>
-                        <ul className={clsx(styles.outerMenu, styles.shop_outer)}>
-                           {
-                              menu1.map((item, i)=> (
-                                 <li key={i}>
-                                    <Link href={item.link} className="SacheonFont">
-                                       {item.name}
-                                       {item.icon ? <Image src={item.icon} width={12} /> : null}
-                                    </Link>
-                                    <Span className={styles.active_line}></Span>
-                                 </li>
-                              ))
-                           }
-                        </ul>
-                     </nav>
-                  </FlexChild>
-               </HorizontalFlex>
-   
-   
-               <FlexChild gap={20} width={'auto'}>
-                  <ul className={clsx(styles.outerMenu, styles.commu_outer)}>
-                     {
-                        menu2.map((item, i)=> (
-                           <li key={i}>
-                              <Link href={item.link}>
-                                 {item.name}
-                                 {item.inner ? <Image src={'/resources/icons/arrow/arrow_bottom_icon.png'} width={10} height={'auto'} /> : null}
-                              </Link>
-   
-                              {item.inner && (
-                                 <ul className={styles.subMenu}>
-                                 {item.inner.map((sub, j) => (
-                                    <li key={j}>
-                                       <Link href={sub.link}>
-                                          {sub.name}
-                                       </Link>
-                                    </li>
-                                 ))}
-                                 </ul>
-                              )}
-                           </li>
-                        ))
-                     }
-                  </ul>
-               </FlexChild>
-            </HorizontalFlex>
-         </div>
+      {/* <HeaderCatgeory CaOpen={CaOpen} /> */}
+      <div ref={bottomRef}></div>{/* 헤더 높이계산용 더미 */}
+      <div className={`${fixed ? styles.fixed : ''}`}>
+         <HorizontalFlex 
+            className={clsx('page_container', styles.Menu_box)} 
+         >
+            <nav>
+               <ul className={clsx(styles.outerMenu, styles.shop_outer)}>
+                  {
+                     menu1.map((item, i)=> (
+                        <li key={i} onClick={() => router.push(item.link)} className="SacheonFont">
+                           {item.name}
+                           {item.icon ? <Image src={item.icon} width={12} /> : null}
+                        </li>
+                     ))
+                  }
+               </ul>
+            </nav>
+         </HorizontalFlex>
+      </div>
       </>
    )
 }
