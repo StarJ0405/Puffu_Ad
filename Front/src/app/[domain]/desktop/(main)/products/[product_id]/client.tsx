@@ -36,14 +36,14 @@ export function ProdcutCategory() { // 카테고리메뉴
    // css : 카테고리 추가되어도 flex-wrap 구조 문제 없게 수정해놓기
 
    const ca_test = [
-      {name: '코스튬/속옷', thumbnail: '/resources/images/category/ca_img01.png',},
-      {name: '악세서리', thumbnail: '/resources/images/category/ca_img01.png',},
-      {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
-      {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
-      {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
-      {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
-      {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
-      {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
+      {name: '남성토이', thumbnail: '/resources/images/category/gif_ca_Img_01.gif',},
+      {name: '여성토이', thumbnail: '/resources/images/category/gif_ca_Img_02.gif',},
+      {name: '윤활제/젤', thumbnail: '/resources/images/category/gif_ca_Img_03.gif',},
+      {name: '콘돔', thumbnail: '/resources/images/category/gif_ca_Img_04.gif',},
+      {name: '의류', thumbnail: '/resources/images/category/gif_ca_Img_05.gif',},
+      {name: 'BDSM 토이', thumbnail: '/resources/images/category/gif_ca_Img_06.gif',},
+      {name: 'LGBT 토이', thumbnail: '/resources/images/category/gif_ca_Img_07.gif',},
+      {name: '악세서리', thumbnail: '/resources/images/category/ca_img08.png',},
    ]
 
    return (
@@ -65,7 +65,8 @@ export function ProdcutCategory() { // 카테고리메뉴
                   <FlexChild className={styles.ca_thumb}>
                      <Image 
                         src={cat.thumbnail}
-                        width={120}
+                        width={'auto'}
+                        height={120}
                      />
                   </FlexChild>
                   <Span>{cat.name}</Span>
@@ -244,7 +245,7 @@ export function ProductList() {
             }
          </MasonryGrid>
          ):(
-            <NoContent />
+            <NoContent type={'상품'} />
          )}
          
          <ListPagination />

@@ -1,19 +1,18 @@
+import Button from "@/components/buttons/Button";
 import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import { Params } from "next/dist/server/request/params";
-import Container from "@/components/container/Container";
-import styles from "./mypage.module.css";
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
-import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
-import Button from "@/components/buttons/Button";
-import Link from "next/link";
 import Span from "@/components/span/Span";
 import clsx from "clsx";
+import { Params } from "next/dist/server/request/params";
+import styles from "./mypage.module.css";
 
-import { MypageNavi } from "./client";
+
+// 불러온 내용
+import { MyOrdersTable } from "./myOrders/client";
+import { RecentlyViewTable } from "./recentlyView/client";
 import { ReviewList } from "./review/client";
-import NoContent from "@/components/noContent/noContent";
+
 
 // import {RecentlyViewTable} from '../recentlyView/client'
 
@@ -59,26 +58,28 @@ export default async function ({ params }: { params: Promise<Params> }) {
 
         <VerticalFlex className={clsx(styles.box_frame, styles.delivery_box)}>
           <FlexChild className={styles.box_header}>
+            <P>내 주문 내역</P>
+          </FlexChild>
+
+          <MyOrdersTable />
+        </VerticalFlex>
+
+
+        <VerticalFlex className={clsx(styles.box_frame, styles.delivery_box)}>
+          <FlexChild className={styles.box_header}>
             <P>리뷰 관리</P>
           </FlexChild>
 
           <ReviewList listCount={3} />
         </VerticalFlex>
 
-        <VerticalFlex className={clsx(styles.box_frame, styles.delivery_box)}>
-          <FlexChild className={styles.box_header}>
-            <P>문의 내역</P>
-          </FlexChild>
-
-          <NoContent type={"문의"} />
-        </VerticalFlex>
 
         <VerticalFlex className={clsx(styles.box_frame, styles.delivery_box)}>
           <FlexChild className={styles.box_header}>
             <P>최근 본 상품</P>
           </FlexChild>
 
-          {/* <RecentlyViewTable /> */}
+          <RecentlyViewTable />
         </VerticalFlex>
       </VerticalFlex>
     </>

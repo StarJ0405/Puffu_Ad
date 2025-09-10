@@ -16,8 +16,11 @@ import {HotDealCategory, SecondCategory, ProdcutCategory, ProductList} from './c
 
 
 
-export default async function () {
+export default async function ({params} : {params: { boardType?: string };}) {
 
+   const productTheme = params.boardType;
+
+   console.log(productTheme);
 
    return (
       <section className="root">
@@ -33,6 +36,7 @@ export default async function () {
                      분류 페이지 (best상품, 신상품, 데이 핫딜, 랜덤박스)
                      SecondCategory는 중분류, 소분류 있을때만 나타남. 
                   */}
+                  {productTheme}
                   <ProdcutCategory />
                   {/* <SecondCategory /> */}
                   {/* <HotDealCategory /> */}

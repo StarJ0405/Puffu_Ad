@@ -1,6 +1,7 @@
 :root {
   --mainBg: #221F22;
-  --foreground: #fff;
+  --foreground: #333;
+  --default-color: #fff;
   --main-color1: #ff62a3;
   --main-color2: #e7156d;
 
@@ -68,12 +69,14 @@ body {
   width: 100%;
   max-width: 1300px;
   margin: 0 auto;
+  color: var(--default-color);
 }
 
 .root {
   padding-top: 166px;
   min-height: 70dvh;
   padding-bottom: 100px;
+  color: var(--default-color);
 }
 
 

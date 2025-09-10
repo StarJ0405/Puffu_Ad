@@ -182,7 +182,11 @@ export default async function () {
                      <FlexChild>
                         <Select
                            classNames={{
-                              // header: styles.select_body,
+                              header: 'web_select',
+                              placeholder: 'web_select_placholder',
+                              line: 'web_select_line',
+                              arrow: 'web_select_arrow',
+                              search: 'web_select_search',
                            }}
                            options={[
                               { value: "가장 좋아하는 동물은?", display: "가장 좋아하는 동물은?" },

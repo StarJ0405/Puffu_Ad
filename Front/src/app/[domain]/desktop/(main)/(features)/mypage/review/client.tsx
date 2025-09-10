@@ -1,21 +1,13 @@
 "use client";
-import Button from "@/components/buttons/Button";
+import Div from '@/components/div/Div';
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
-import Div from '@/components/div/Div'
-import Input from "@/components/inputs/Input";
-import ListPagination from "@/components/listPagination/ListPagination";
 import NoContent from "@/components/noContent/noContent";
 import P from "@/components/P/P";
-import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
-import Link from "next/link";
-import MasonryGrid from "@/components/masonry/MasonryGrid";
-import boardStyle from "../boardGrobal.module.css";
 import styles from "./page.module.css";
-import clsx from "clsx";
 
 export function ReviewList({ listCount }: { listCount?: number }) {
 
@@ -112,122 +104,128 @@ export function ReviewList({ listCount }: { listCount?: number }) {
       {reviewTest.length > 0 ? (
         <VerticalFlex className={styles.review_list} gap={35}>
           {reviewTest.slice(0, limit).map((review, i) => (
-            <HorizontalFlex key={i} gap={35} className={styles.item}>
-              <VerticalFlex className={styles.item_header}>
-
-                {/* 상품정보 */}
-                <HorizontalFlex className={styles.prodcut_data}>
-                  <FlexChild className={styles.img}>
-                    <Image src={review.product.thumb} width={45} />
-                  </FlexChild>
-
-                  <VerticalFlex className={styles.info}>
-                    <FlexChild className={styles.title}>
-                        <P 
-                          lineClamp={1}
-                          overflow="hidden"
-                          display="--webkit-box"
-                        >
-                          {review.product.title}
-                        </P>
+            <VerticalFlex alignItems="start" gap={10} key={i}>
+              <FlexChild gap={10} alignSelf="end" width={'auto'} className={styles.review_edit}>
+                <P size={13} color="#ddd" cursor="pointer">수정</P>
+                <P size={13} color="#ddd" cursor="pointer">삭제</P>
+              </FlexChild>
+              <HorizontalFlex gap={35} className={styles.item}>
+                <VerticalFlex className={styles.item_header}>
+  
+                  {/* 상품정보 */}
+                  <HorizontalFlex className={styles.prodcut_data}>
+                    <FlexChild className={styles.img}>
+                      <Image src={review.product.thumb} width={45} />
                     </FlexChild>
-                    <FlexChild className={styles.info_rating}>
-                        <P>평가 <Span>{review.product.rating}</Span></P>
-                        <P
-                          lineClamp={1}
-                          overflow="hidden"
-                          display="--webkit-box"
-                        >
-                          리뷰 <Span>{review.product.reviewcount}</Span>
-                        </P>
+  
+                    <VerticalFlex className={styles.info}>
+                      <FlexChild className={styles.title}>
+                          <P 
+                            lineClamp={1}
+                            overflow="hidden"
+                            display="--webkit-box"
+                          >
+                            {review.product.title}
+                          </P>
+                      </FlexChild>
+                      <FlexChild className={styles.info_rating}>
+                          <P>평가 <Span>{review.product.rating}</Span></P>
+                          <P
+                            lineClamp={1}
+                            overflow="hidden"
+                            display="--webkit-box"
+                          >
+                            리뷰 <Span>{review.product.reviewcount}</Span>
+                          </P>
+                      </FlexChild>
+                    </VerticalFlex>
+                  </HorizontalFlex>
+  
+                  <VerticalFlex gap={10}>
+                    <FlexChild gap={15}>
+                      <Image
+                        src={`/resources/icons/board/review_start_${review.rating}.png`}
+                        width={100}
+                      />
+                    </FlexChild>
+    
+                    <FlexChild>
+                      <P color="#797979" size={13}>
+                        {review.date}
+                      </P>
                     </FlexChild>
                   </VerticalFlex>
-                </HorizontalFlex>
-
-                <VerticalFlex gap={10}>
-                  <FlexChild gap={15}>
-                    <Image
-                      src={`/resources/icons/board/review_start_${review.rating}.png`}
-                      width={100}
-                    />
-                  </FlexChild>
   
-                  <FlexChild>
-                    <P color="#797979" size={13}>
-                      {review.date}
-                    </P>
-                  </FlexChild>
                 </VerticalFlex>
-
-              </VerticalFlex>
-
-              <VerticalFlex gap={25}>
-                <HorizontalFlex className={styles.feedback}>
-                  <FlexChild className={styles.feed_item}>
-                    <FlexChild className={styles.feed_title}>
-                      <P>외형/디자인</P>
-                    </FlexChild>
   
-                    <FlexChild className={styles.feed_content}>
-                      <P>{review.feedBack.design}</P>
+                <VerticalFlex gap={25}>
+                  <HorizontalFlex className={styles.feedback}>
+                    <FlexChild className={styles.feed_item}>
+                      <FlexChild className={styles.feed_title}>
+                        <P>외형/디자인</P>
+                      </FlexChild>
+    
+                      <FlexChild className={styles.feed_content}>
+                        <P>{review.feedBack.design}</P>
+                      </FlexChild>
                     </FlexChild>
-                  </FlexChild>
-  
-                  <FlexChild className={styles.feed_item}>
-                    <FlexChild className={styles.feed_title}>
-                      <P>마감/내구성</P>
+    
+                    <FlexChild className={styles.feed_item}>
+                      <FlexChild className={styles.feed_title}>
+                        <P>마감/내구성</P>
+                      </FlexChild>
+    
+                      <FlexChild className={styles.feed_content}>
+                        <P>{review.feedBack.Sturdiness}</P>
+                      </FlexChild>
                     </FlexChild>
-  
-                    <FlexChild className={styles.feed_content}>
-                      <P>{review.feedBack.Sturdiness}</P>
+    
+                    <FlexChild className={styles.feed_item}>
+                      <FlexChild className={styles.feed_title}>
+                        <P>유지관리</P>
+                      </FlexChild>
+    
+                      <FlexChild className={styles.feed_content}>
+                        <P>{review.feedBack.Upkeep}</P>
+                      </FlexChild>
                     </FlexChild>
-                  </FlexChild>
-  
-                  <FlexChild className={styles.feed_item}>
-                    <FlexChild className={styles.feed_title}>
-                      <P>유지관리</P>
-                    </FlexChild>
-  
-                    <FlexChild className={styles.feed_content}>
-                      <P>{review.feedBack.Upkeep}</P>
-                    </FlexChild>
-                  </FlexChild>
-                </HorizontalFlex>
-  
-                <HorizontalFlex className={styles.content}>
-                  {review.photos.length > 0 && (
-                    <FlexChild
-                      width={180}
-                      className={styles.img_box}
-                      cursor="pointer"
-                    >
-                      <Image
-                        src={review.photos[0]}
-                        width={"100%"}
-                        height={"auto"}
-                      />
-                      <Div className={styles.img_length}>
-                        {review.photos.length}
-                      </Div>
-                    </FlexChild>
-                  )}
-  
-                  {/* 이미지 클릭하면 모달로 이미지 슬라이더 나타나서 크게 보여주기 */}
-                  {/* {
-                                review.photos?.length > 0 && (
-                                   review.photos?.map((img, j)=> (
-                                      <FlexChild key={j} >
-                                         <Image src={img} width={'100%'} height={'auto'} />
-                                      </FlexChild>
-                                   ))
-                                )
-                             } */}
-                  <P size={14} color="#fff" lineHeight={1.6}>
-                    {review.content}
-                  </P>
-                </HorizontalFlex>
-              </VerticalFlex>
-            </HorizontalFlex>
+                  </HorizontalFlex>
+    
+                  <HorizontalFlex className={styles.content}>
+                    {review.photos.length > 0 && (
+                      <FlexChild
+                        width={180}
+                        className={styles.img_box}
+                        cursor="pointer"
+                      >
+                        <Image
+                          src={review.photos[0]}
+                          width={"100%"}
+                          height={"auto"}
+                        />
+                        <Div className={styles.img_length}>
+                          {review.photos.length}
+                        </Div>
+                      </FlexChild>
+                    )}
+    
+                    {/* 이미지 클릭하면 모달로 이미지 슬라이더 나타나서 크게 보여주기 */}
+                    {/* {
+                                  review.photos?.length > 0 && (
+                                     review.photos?.map((img, j)=> (
+                                        <FlexChild key={j} >
+                                           <Image src={img} width={'100%'} height={'auto'} />
+                                        </FlexChild>
+                                     ))
+                                  )
+                               } */}
+                    <P size={14} color="#fff" lineHeight={1.6}>
+                      {review.content}
+                    </P>
+                  </HorizontalFlex>
+                </VerticalFlex>
+              </HorizontalFlex>
+            </VerticalFlex>
           ))}
         </VerticalFlex>
       ) : (
