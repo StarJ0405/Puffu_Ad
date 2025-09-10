@@ -103,11 +103,11 @@ interface StoreDataFrame {
   currency_unit: string;
   adult: boolean;
   thumbnail?: string;
-  logo?: any;
+  logo?:any;
   description?: string;
   metadata?: Record<string, unknown> | null;
   index?: number;
-  subdomain?: string | null;
+  subdomain?:string | null;
 }
 interface StoreData extends BaseEntity, StoreDataFrame {
   index: number;

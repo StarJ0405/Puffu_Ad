@@ -1,9 +1,0 @@
-.categoryLabel {
-  font-weight: 600;
-  font-size: 10px;
-  color: #8b8b8b;
-}
-
-.categoryLabel.active {
-  color: #1c1b1f;
-}

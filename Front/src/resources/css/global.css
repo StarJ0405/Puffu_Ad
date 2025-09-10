@@ -65,6 +65,9 @@ body {
   }
 } */
 
+
+
+/* pc용 컨테이너 ------------------ */
 .desktop_container {
   width: 100%;
   max-width: 1300px;
@@ -160,4 +163,20 @@ a {
     opacity: 0;
     transform: translateX(-20px);
   }
+}
+
+
+/* 모바일 컨테이너 ------------------ */
+.mobile_container {
+  width: 100%;
+  max-width: 768px;
+  margin: 0 auto;
+  color: var(--default-color);
+}
+
+.root {
+  padding-top: 166px;
+  min-height: 70dvh;
+  padding-bottom: 100px;
+  color: var(--default-color);
 }

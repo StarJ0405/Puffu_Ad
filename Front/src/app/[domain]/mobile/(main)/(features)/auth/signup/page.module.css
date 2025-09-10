@@ -1,0 +1,252 @@
+
+.signup_frame {
+  padding-top: 50px;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.page_title {justify-content: center; margin-bottom: 50px;}
+
+.page_title h3{
+  font-size: 50px;
+  color: #fff;
+  font-weight: 700;
+}
+
+.step_root {
+  width: 100%;
+  max-width: 570px;
+  margin: 0 auto 100px;
+  position: relative;
+}
+
+.step_root > * {
+  width: auto;
+}
+
+.step_root .step_number {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  position: relative; z-index: 2;
+  background: #621d8f;
+  color: #fff;
+  font-size: 16px;
+  justify-content: center;
+}
+
+.step_root .step_line {
+  width: 100%; 
+  position: absolute;
+  z-index: 1;
+  height: 2px;
+  background: rgba(255,255,255,0.5);
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+.step_root .step_line #line {
+  width: 0;
+  height: 100%;
+  background: #a444e4;
+}
+
+.step_title {
+  font-size: 30px;
+  font-weight: 600;
+  color: #fff;
+  justify-content: center;
+  margin-bottom: 50px;
+}
+
+
+
+/* 1단계 */
+/* .agree_item{
+  margin-bottom: 16px;
+} */
+
+.agree_box {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.agree_item {
+  gap: 20px;
+}
+
+.agree_item .checkbox label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.agree_item .checkbox label span {
+  font-size: 20px !important; color: #fff;
+  font-weight: 500 !important;
+}
+
+/* .agree_item .agree_content {
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid #707070;
+  background-color: #2b2b2b;  
+  padding: 20px;
+  height: 200px;
+  align-items: start !important;
+  overflow-y: auto;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #BFBFBF;
+} */
+
+
+.phone_verification .title {
+  padding-bottom: 15px;
+  border-bottom: 1px solid #535353;
+}
+
+.phone_verification .title h5{
+  font-size: 20px; color: #fff;
+  font-weight: 600;
+}
+
+.verification_box {
+  justify-content: center;
+  padding: 30px 0 0;
+  margin-bottom: 100px;
+}
+
+.verification_box .verfi_item {
+  width: 100%;
+  max-width: 200px;
+  display: flex;
+}
+
+.verification_box .verfi_item label {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 20px;
+  background: #ff4a4d;
+  border-radius: 10px;
+  justify-content: center;
+}
+
+.verification_box .verfi_item label input {
+  margin: 0;
+}
+
+
+/* 2단계 */
+
+.input_box {gap: 30px; margin-bottom: 100px;}
+
+.input_box .input_item {
+  gap: 10px;
+}
+
+.input_box .input_item .label {
+  font-size: 18px;
+  color: #fff;
+}
+
+.input_box .input_item .label > span {
+  color: #da1e1e;
+}
+
+
+
+/* 3단계 */
+.signup_completed {
+  padding: 50px 0;
+}
+
+.signup_completed > * {
+  width: auto;
+}
+
+.completed_ttitle {
+  font-size: 50px;
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.completed_txt {
+  text-align: center;
+  line-height: 1.4;
+  font-size: 20px;
+  color: #aaaaaa;
+  margin-bottom: 200px;
+}
+
+
+
+
+
+/* 진행 버튼박스 */
+
+.continue_box {
+  justify-content: center;
+  gap: 10px;
+}
+
+.continue_box > button {
+  width: 180px;
+  padding: 13px 10px;
+  border-radius: 5px;
+  font-size: 18px;
+  color: #fff;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.continue_box > .prev_btn {
+  background: #ccc;
+  color: #4D4D4D;
+}
+
+.continue_box > .prev_btn:hover {
+  background: #858484;
+  color: #fff;
+}
+
+.continue_box > .prev_btn.disabled {
+  color: #aaa;
+}
+
+.continue_box > .next_btn {
+  background: #fff;
+  color: var(--main-color1);
+}
+
+.continue_box > .next_btn:hover {
+  background: var(--main-color1);
+  color: #fff;
+}
+
+
+/* 회원가입 완료 시 */
+
+.continue_box > .home_btn {
+  background: transparent;
+  border: 1px solid #fff;
+}
+
+.continue_box > .login_btn {
+  background: var(--main-color1);
+}
+
+.continue_box > .home_btn:hover {
+  color: var(--main-color1);
+  border-color: var(--main-color1);
+}
+
+.continue_box > .login_btn:hover {
+  background: var(--main-color2);
+}
