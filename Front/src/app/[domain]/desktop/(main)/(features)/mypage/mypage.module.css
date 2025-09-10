@@ -45,6 +45,7 @@
 .profile .profile_name {
    font-size: 20px; color: #fff;
    font-weight: 600;
+   gap: 10px;
 }
 
 .profile .link_btn {
@@ -61,13 +62,6 @@
    font-weight: 600;
    padding: 15px 5px;
    border: none;
-}
-
-.profile .setting_btn {
-   width: auto;
-   position: absolute; bottom: -5px;
-   right: -10px; z-index: 2;
-   cursor: pointer;
 }
 
 

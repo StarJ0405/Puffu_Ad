@@ -14,6 +14,36 @@ import ConfirmModal from "@/modals/confirm/ConfirmModal";
 import NiceModal from "@ebay/nice-modal-react";
 
 
+const editInfoModal = () => { // 개인정보 수정
+  NiceModal.show(ConfirmModal, {
+    // title: '개인정보 수정',
+    message: (
+      <EditINfo />
+    ),
+    confirmText: "확인",
+    withCloseButton: true,
+    onConfirm: async () => {
+      
+    },
+  })
+}
+
+const logoutModal = () => { // 로그아웃
+  NiceModal.show(ConfirmModal, {
+    message: (
+      <FlexChild justifyContent="center" marginBottom={30}>
+        <P color="#333" fontSize={20} weight={600}>로그아웃 하시겠습니까?</P>
+      </FlexChild>
+    ),
+    confirmText: "확인",
+    cancelText: "취소",
+    withCloseButton: true,
+    onConfirm: async () => {
+      
+    },
+  })
+}
+
 export function Profile() {
   return (
     <VerticalFlex className={clsx(styles.profile, styles.box_frame)}>
@@ -25,17 +55,19 @@ export function Profile() {
               width={80}
             />
           </FlexChild>
+        </FlexChild>
 
-          <FlexChild className={styles.setting_btn}>
+        <FlexChild width={"auto"} className={styles.profile_name}>
+          <P>콘푸로스트123</P>
+
+          <FlexChild width={'auto'} cursor="pointer"
+            onClick={editInfoModal}
+          >
             <Image
               src={"/resources/icons/mypage/setting_icon.png"}
               width={16}
             />
           </FlexChild>
-        </FlexChild>
-
-        <FlexChild width={"auto"} className={styles.profile_name}>
-          <P>콘푸로스트123</P>
         </FlexChild>
       </VerticalFlex>
 
@@ -49,49 +81,17 @@ export function Profile() {
 export function MypageNavi() {
 
    const myshopMenu = [
-      { name: "내 주문 내역", link: "/" },
+      { name: "내 주문 내역", link: "/mypage/myOrders" },
       { name: "최근 본 상품", link: "/mypage/recentlyView" },
       { name: "관심리스트", link: "/mypage/wishList" },
    ];
 
    const myInfoMenu = [
       { name: "배송지 관리", link: "/mypage/delivery" },
-      { name: "1:1 문의내역", link: "/" },
+      { name: "문의내역", link: "/mypage/inquiry" },
       { name: "리뷰 관리", link: "/mypage/review" },
-      { name: "회원탈퇴", link: "/" },
+      { name: "회원탈퇴", link: "/mypage/deleteAccount" },
    ];
-
-
-   const editInfoModal = () => { // 개인정보 수정
-      NiceModal.show(ConfirmModal, {
-        // title: '개인정보 수정',
-        message: (
-          <EditINfo />
-        ),
-        confirmText: "확인",
-        withCloseButton: true,
-        onConfirm: async () => {
-          
-        },
-      })
-   }
-
-   const logoutModal = () => { // 개인정보 수정
-      NiceModal.show(ConfirmModal, {
-        // title: '개인정보 수정',
-        message: (
-          <FlexChild justifyContent="center" marginBottom={30}>
-            <P color="#333" fontSize={20} weight={600}>로그아웃 하시겠습니까?</P>
-          </FlexChild>
-        ),
-        confirmText: "확인",
-        cancelText: "취소",
-        withCloseButton: true,
-        onConfirm: async () => {
-          
-        },
-      })
-   }
 
   return (
     <VerticalFlex className={clsx(styles.mypage_navi, styles.box_frame)}>

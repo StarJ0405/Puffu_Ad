@@ -28,3 +28,26 @@ import boardStyle from "../boardGrobal.module.css";
 import Input from "@/components/inputs/Input";
 import ListPagination from "@/components/listPagination/ListPagination";
 import Link from "next/link";
+import PrivacyContent from "@/components/agreeContent/privacyContent";
+import TermContent from "@/components/agreeContent/TermContent";
+
+
+export default function Route () {
+   const pathname = usePathname();
+   
+   return (
+      <FlexChild paddingTop={60}>
+        {
+          pathname.includes("term") && (
+            <TermContent size={10} />
+          )
+        }
+
+        {
+          pathname.includes("privacy") && (
+            <PrivacyContent size={10} />
+          )
+        }
+      </FlexChild>
+   )
+}
