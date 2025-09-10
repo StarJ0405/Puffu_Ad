@@ -6,9 +6,10 @@ import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import Link from "next/link";
 import styles from "./footer.module.css";
-import { NaviMenu, ChatToggle } from "./client";
+import { ChatToggle } from "./client";
+import TopButton from "@/components/buttons/TopButton";
 
-export default async function Footer() {
+export default async function MobileFooter() {
 
   return (
     <>
@@ -63,7 +64,7 @@ export default async function Footer() {
         </HorizontalFlex>
       </footer>
 
-      <NaviMenu />
+      <TopButton />
 
       <ChatToggle />
     </>
