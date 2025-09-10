@@ -60,42 +60,7 @@ export default function ({
     {
       label: "로고",
       code: "thumbnail",
-      Cell: ({ cell }) => (
-        <Tooltip
-          disable={!cell?.color && !cell?.black && !cell?.white}
-          content={
-            <FlexChild
-              flexWrap="wrap"
-              backgroundColor="white"
-              border={"0.5px solid #c0c0c0"}
-              width={"calc( min( 40vw , 40vh ) + 2px )"}
-            >
-              <Image
-                src={cell?.color}
-                size={"min(20vw,20vh)"}
-                padding={10}
-                hidden={!cell?.color}
-              />
-              <Image
-                src={cell?.black}
-                size={"min(20vw,20vh)"}
-                padding={10}
-                hidden={!cell?.black}
-              />
-              <Div
-                backgroundColor="#1f2b3f"
-                color="#fff"
-                width={"max-content"}
-                hidden={!cell?.white}
-              >
-                <Image src={cell?.white} size={"min(20vw,20vh)"} padding={10} />
-              </Div>
-            </FlexChild>
-          }
-        >
-          <Image src={cell?.color} size={60} />
-        </Tooltip>
-      ),
+      Cell: ({ cell }) => <Image src={cell} size={60} />,
       styling: {
         common: {
           style: {

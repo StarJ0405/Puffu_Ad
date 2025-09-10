@@ -51,11 +51,11 @@ const SidebarNav: NavParent[] = [
     name: "주문관리",
     path: "/order",
     navs: [
-      {
-        name: "주문관리",
-        to: "/",
-        icon: "/resources/images/sideNav_order_management.png",
-      },
+      // {
+      //   name: "주문관리",
+      //   to: "/",
+      //   icon: "/resources/images/sideNav_order_management.png",
+      // },
       {
         name: "전체주문 조회",
         to: "/management",

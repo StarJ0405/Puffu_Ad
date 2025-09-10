@@ -27,14 +27,17 @@ import clsx from "clsx";
 import _ from "lodash";
 import { RefObject, useRef, useState } from "react";
 import styles from "./page.module.css";
+import useData from "@/shared/hooks/data/useData";
 export default function ({
   initCondition,
   initData,
   status,
+  initStores,
 }: {
   initCondition: any;
   initData: Pageable;
   status: string | undefined;
+  initStores: any;
 }) {
   const columns: Column[] = [
     {
@@ -94,7 +97,11 @@ export default function ({
       code: "total_discounted",
       Cell: ({ cell, row }) => (
         <P width={150}>
-          <Span>{cell}</Span>
+          <Span>
+            {cell +
+              (row?.total_tax || 0) +
+              (row?.shipping_methods?.[0]?.amount || 0)}
+          </Span>
           <Span>{row?.store?.currency_unit}</Span>
         </P>
       ),
@@ -102,6 +109,7 @@ export default function ({
         common: {
           style: {
             width: 150,
+            minWidth: 150,
           },
         },
       },
@@ -239,6 +247,7 @@ export default function ({
         common: {
           style: {
             width: 150,
+            minWidth: 150,
           },
         },
       },
@@ -264,6 +273,16 @@ export default function ({
       },
     },
   ];
+  const { stores } = useData(
+    "stores",
+    {},
+    (condition) => adminRequester.getStores(condition),
+    {
+      onReprocessing: (data) => data?.content,
+      fallbackData: initStores,
+    }
+  );
+  const [store, setStore] = useState<string>("");
   const [dates, setDates] = useState<Date[]>([
     initCondition.start_date,
     new Date(),
@@ -285,11 +304,13 @@ export default function ({
       end_date.setHours(23, 59, 59, 999);
       data.end_date = end_date;
     }
+    if (store) data.store_id = store;
     table.current.setCondition(data);
   };
   const onResetClick = () => {
     input.current.empty();
     setDates([initCondition.start_date, new Date()]);
+    setStore("");
     table.current.reset();
   };
   const ContextMenu = ({ x, y, row }: { x: number; y: number; row?: any }) => {
@@ -432,6 +453,35 @@ export default function ({
           <VerticalFlex>
             <FlexChild>
               <VerticalFlex>
+                <FlexChild borderBottom={"1px solid #e9e9e9"}>
+                  <HorizontalFlex gap={20} justifyContent={"flex-start"}>
+                    <FlexChild
+                      width={"10%"}
+                      backgroundColor={"var(--admin-table-bg-color)"}
+                    >
+                      <div className={styles.titleWrap}>
+                        <Center>
+                          <P size={16} weight={"bold"}>
+                            스토어
+                          </P>
+                        </Center>
+                      </div>
+                    </FlexChild>
+                    <FlexChild>
+                      <Select
+                        value={store}
+                        options={[
+                          { display: "전체", value: "" },
+                          ...stores?.map((store: StoreData) => ({
+                            display: store.name,
+                            value: store.id,
+                          })),
+                        ]}
+                        onChange={(selected) => setStore(selected as string)}
+                      />
+                    </FlexChild>
+                  </HorizontalFlex>
+                </FlexChild>
                 <FlexChild borderBottom={"1px solid #e9e9e9"}>
                   <HorizontalFlex gap={20} justifyContent={"flex-start"}>
                     <FlexChild
