@@ -7,6 +7,7 @@ import RadioChild from "@/components/choice/radio/RadioChild";
 import RadioGroup from "@/components/choice/radio/RadioGroup";
 import Container from "@/components/container/Container";
 import DatePicker from "@/components/date-picker/DatePicker";
+import Editor from "@/components/editor/edtior";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
@@ -19,8 +20,11 @@ import { textFormat } from "@/shared/regExp";
 import { scrollTo, toast, validateInputs } from "@/shared/utils/Functions";
 import { useRef, useState } from "react";
 import styles from "./page.module.css";
-import Editor from "@/components/editor/edtior";
 
+const types = ["일반", "이벤트"].map((type) => ({
+  display: type,
+  value: type,
+}));
 export default function ({ stores }: { stores: StoreData[] }) {
   const [store, setStore] = useState<string>("");
   const inputs = useRef<any[]>([]);
@@ -30,6 +34,7 @@ export default function ({ stores }: { stores: StoreData[] }) {
   const [unlimit, setUnlimit] = useState(true);
   const [dates, setDates] = useState<Date[]>([new Date(), new Date()]);
   const [detail, setDetail] = useState<string>("");
+  const [type, setType] = useState(types[0]);
   const navigate = useNavigate();
   const getCategoryName = (
     category: CategoryData | null
@@ -55,7 +60,8 @@ export default function ({ stores }: { stores: StoreData[] }) {
           detail,
           adult,
           visible,
-          type: inputs.current[1].getValue(),
+          // type: inputs.current[1].getValue(),
+          type: type.value,
         };
 
         if (!unlimit) {
@@ -176,7 +182,7 @@ export default function ({ stores }: { stores: StoreData[] }) {
                           </P>
                         </FlexChild>
                         <FlexChild>
-                          <Input
+                          {/* <Input
                             ref={(el) => {
                               inputs.current[1] = el;
                             }}
@@ -185,7 +191,8 @@ export default function ({ stores }: { stores: StoreData[] }) {
                             placeHolder={"공지사항 타입을 입력하세요"}
                             name={"타입"}
                             width={250}
-                          />
+                          /> */}
+                          <Select options={types} value={type.value} />
                         </FlexChild>
                       </HorizontalFlex>
                     </FlexChild>

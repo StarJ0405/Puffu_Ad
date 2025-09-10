@@ -39,7 +39,7 @@ export default function AdminAuthProviderClient({
     }
   );
   useEffect(() => {
-    if (origin.access_token) {
+    if (origin?.access_token) {
       setCookie(
         Cookies.ADMIN_JWT,
         origin.access_token,

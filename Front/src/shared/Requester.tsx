@@ -197,6 +197,48 @@ class _Requester {
   }
 
   // 회원 관련
+  async loginOuathLogin(
+    type: string,
+    data: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.post(`/auth/oauth/${type}`, data));
+    else return await this.post(`/auth/oauth/${type}`, data);
+  }
+  async getOuathLogin(
+    type: string,
+    data: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.get(`/auth/oauth/${type}`, data));
+    else return await this.get(`/auth/oauth/${type}`, data);
+  }
+
+  async createOuathLink(
+    type: string,
+    data: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.post(`/users/me/oauth/${type}`, data));
+    else return await this.post(`/users/me/oauth/${type}`, data);
+  }
+  async getOuathLink(
+    type: string,
+    data: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.get(`/users/me/oauth/${type}`, data));
+    else return await this.get(`/users/me/oauth/${type}`, data);
+  }
+  async deleteOuathLink(
+    type: string,
+    data: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.delete(`/users/me/oauth/${type}`, data));
+    else return await this.delete(`/users/me/oauth/${type}`, data);
+  }
+
   async isConnectExist(data: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.get(`/connect/exist`, data));
     else return await this.get(`/connect/exist`, data);
@@ -218,6 +260,10 @@ class _Requester {
   async getCurrentUser(data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.get(`/users/me`, data));
     else return await this.get(`/users/me`, data);
+  }
+  async deleteUser(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.delete(`/users/me`, data));
+    else return await this.delete(`/users/me`, data);
   }
 
   async getToken(data?: any, callback?: Function): Promise<any> {
@@ -248,6 +294,28 @@ class _Requester {
     if (callback) callback(await this.post(`/users/${email}`, data));
     else return await this.post(`/users/${email}`, data);
   }
+  // 비밀번호 확인: POST /users/me  (body: { password })
+  async checkCurrentPassword(
+    data: { password: string },
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.post(`/users/me`, data));
+    else return await this.post(`/users/me`, data);
+  }
+  // 휴대폰번호/비번 변경: PUT /users/me  (body: { password, new_password, phone })
+  async updateCurrentUser(
+    data: { password: string; new_password?: string; phone?: string },
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.put(`/users/me`, data));
+    else return await this.put(`/users/me`, data);
+  }
+
+  // 포인트 관련
+  async checkLink(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.post(`/users/me/links`, data));
+    else return await this.post(`/users/me/links`, data);
+  }
 
   // 스토어 관련
   async getStores(data?: any, callback?: Function): Promise<any> {
@@ -259,6 +327,10 @@ class _Requester {
     if (callback) callback(await this.get(`/categories`, data));
     else return await this.get(`/categories`, data);
   }
+  async getCategory(id: string, data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/categories/${id}`, data));
+    else return await this.get(`/categories/${id}`, data);
+  }
   // 상품 관련
   async getProducts(data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.get(`/products`, data));
@@ -267,6 +339,28 @@ class _Requester {
   async getProduct(id: string, data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.get(`/products/${id}`, data));
     else return await this.get(`/products/${id}`, data);
+  }
+  async getProductReviews(
+    id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.get(`/products/${id}/reviews`, data));
+    else return await this.get(`/products/${id}/reviews`, data);
+  }
+
+  async getProductQA(
+    id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.get(`/products/${id}/qa`, data));
+    else return await this.get(`/products/${id}/qa`, data);
+  }
+  // 최근 본 상품
+  async addRecent(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.post(`/users/me/recent`, data));
+    else return await this.post(`/users/me/recent`, data);
   }
   // 배송지 관련
   async createAddress(data?: any, callback?: Function): Promise<any> {
@@ -318,6 +412,139 @@ class _Requester {
   async createOrder(data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.post(`/users/me/cart/complete`, data));
     else return await this.post(`/users/me/cart/complete`, data);
+  }
+  async getOrders(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/users/me/order`, data));
+    else return await this.get(`/users/me/order`, data);
+  }
+  async getOrderStatus(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/users/me/order/status`, data));
+    else return await this.get(`/users/me/order/status`, data);
+  }
+
+  // 키워드 관련
+  async addKeyword(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.post(`/users/me/keywords`, data));
+    else return await this.post(`/users/me/keywords`, data);
+  }
+  async getKeywords(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/keywords`, data));
+    else return await this.get(`/keywords`, data);
+  }
+  // 배너 관련
+  async getBanners(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/banners`, data));
+    else return await this.get(`/banners`, data);
+  }
+  // 좋아요 관련
+  async createWishList(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.post(`/users/me/wishlist`, data));
+    else return await this.post(`/users/me/wishlist`, data);
+  }
+  async getWishlists(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/users/me/wishlist`, data));
+    else return await this.get(`/users/me/wishlist`, data);
+  }
+  async deleteWishList(
+    id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.delete(`/users/me/wishlist/${id}`, data));
+    else return await this.delete(`/users/me/wishlist/${id}`, data);
+  }
+  // 공지사항 관련
+  async getNotices(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/notices`, data));
+    else return await this.get(`/notices`, data);
+  }
+  async getNoticeTypes(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/notices/types`, data));
+    else return await this.get(`/notices/types`, data);
+  }
+  // Q&A, 1:1문의
+  async createQA(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.post(`/users/me/qa`, data));
+    else return await this.post(`/users/me/qa`, data);
+  }
+  async getQAs(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/users/me/qa`, data));
+    else return await this.get(`/users/me/qa`, data);
+  }
+  async updateQA(id: string, data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.post(`/users/me/qa/${id}`, data));
+    else return await this.post(`/users/me/qa/${id}`, data);
+  }
+  async deleteQA(id: string, data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.delete(`/users/me/qa/${id}`, data));
+    else return await this.delete(`/users/me/qa/${id}`, data);
+  }
+  // 리뷰
+  async createReview(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.post(`/users/me/reviews`, data));
+    else return await this.post(`/users/me/review`, data);
+  }
+  async getReviews(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/users/me/reviews`, data));
+    else return await this.get(`/users/me/review`, data);
+  }
+  async updateReviews(
+    id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.post(`/users/me/review/${id}`, data));
+    else return await this.post(`/users/me/review/${id}`, data);
+  }
+  async deleteReview(
+    id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.delete(`/users/me/review/${id}`, data));
+    else return await this.delete(`/users/me/review/${id}`, data);
+  }
+  // 포인트 사용 내역
+  async getPoints(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/users/me/points`, data));
+    else return await this.get(`/users/me/point`, data);
+  }
+  // 채팅 관련
+  async getChatroom(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/users/me/chatroom`, data));
+    else return await this.get(`/users/me/chatrooms`, data);
+  }
+  async getChats(id: string, data?: any, callback?: Function): Promise<any> {
+    if (callback)
+      callback(await this.get(`/users/me/chatrooms/${id}/chats`, data));
+    else return await this.get(`/users/me/chatrooms/${id}/chats`, data);
+  }
+  // 토스 관련
+  async tossSuccess(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.post(`/payment`, data));
+    else return await this.post(`/payment`, data);
+  }
+
+  // nestpay 관련
+  // 요청
+  async requestPaymentApproval(data: any): Promise<any> {
+    try {
+      const response = await this.post("/payment/nestpay/ready", data);
+      return response;
+    } catch (error) {
+      console.error("Payment approval error:", error);
+      throw error;
+    }
+  }
+  // 응답
+  async approvePayment(data: any): Promise<any> {
+    try {
+      const response = await this.post("/payment/nestpay/approve", data);
+      return response;
+    } catch (error) {
+      console.error("Payment approval error:", error);
+      throw error;
+    }
   }
 }
 

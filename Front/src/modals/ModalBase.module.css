@@ -6,6 +6,8 @@
   /* background-color: rgba(0, 0, 0, 0.7); */
   /* z-index: 10000; */
   overflow: auto;
+}
+.mask.baseMask {
   animation: modal-bg-show 0.3s;
 }
 
@@ -64,9 +66,11 @@
   background-color: white;
   word-break: break-all;
 
-  animation: modal-show 0.3s;
   height: 100%;
   overflow: hidden;
+}
+.modal.baseModal {
+  animation: modal-show 0.3s;
 }
 
 .topRound {

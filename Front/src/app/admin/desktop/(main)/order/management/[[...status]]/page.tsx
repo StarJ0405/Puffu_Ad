@@ -36,9 +36,11 @@ export default async function ({ params }: { params: Promise<Params> }) {
     initCondition
   )) as Pageable;
 
+  const initStores = await adminRequester.getStores();
   return (
     <div className={styles.container}>
       <Table
+        initStores={initStores}
         initData={initData}
         initCondition={initCondition}
         status={status?.[0]}

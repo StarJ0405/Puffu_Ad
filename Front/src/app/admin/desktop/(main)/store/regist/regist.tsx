@@ -79,6 +79,7 @@ export default function ({ initStores }: { initStores: Pageable }) {
           const color = images.current[0].getValue();
           const white = images.current[1].getValue();
           const black = images.current[2].getValue();
+          const thumbnail = images.current[3].getValue();
           const description = inputs.current[1].getValue();
           const index = inputs.current[2].getValue();
           const _data: StoreDataFrame = {
@@ -88,8 +89,8 @@ export default function ({ initStores }: { initStores: Pageable }) {
             index,
           };
           _data.subdomain = domain || null;
-          // _data.thumbnail = thumbnail;
-          _data.thumbnail = {
+          _data.thumbnail = thumbnail;
+          _data.logo = {
             black,
             color,
             white,
@@ -171,6 +172,35 @@ export default function ({ initStores }: { initStores: Pageable }) {
                       ref={(el) => {
                         inputs.current[0] = el;
                       }}
+                    />
+                  </FlexChild>
+                </HorizontalFlex>
+              </FlexChild>
+              <FlexChild>
+                <HorizontalFlex
+                  gap={20}
+                  alignItems="stretch"
+                  border={"1px solid #EFEFEF"}
+                  borderRight={"none"}
+                  borderLeft={"none"}
+                  borderTop={"none"}
+                >
+                  <FlexChild
+                    width={"220px"}
+                    padding={"18px 15px"}
+                    backgroundColor={"#3c4b64"}
+                    justifyContent={"center"}
+                  >
+                    <P size={16} weight={600} color={"#ffffff"}>
+                      썸네일
+                    </P>
+                  </FlexChild>
+                  <FlexChild padding={"15px 15px 15px 0"}>
+                    <InputImage
+                      ref={(el) => {
+                        images.current[3] = el;
+                      }}
+                      placeHolder="1:1 비율의 이미지를 권장합니다."
                     />
                   </FlexChild>
                 </HorizontalFlex>

@@ -13,7 +13,7 @@ import {
   useRef,
   useState,
 } from "react";
-import style from "./ModalBase.module.css";
+import styles from "./ModalBase.module.css";
 import ModalBaseFooter from "./ModalBaseFooter";
 import ModalBaseHeader from "./ModalBaseHeader";
 import ModalBaseMain from "./ModalBaseMain";
@@ -37,11 +37,10 @@ const ModalBase = forwardRef((props: any, ref) => {
   // }, [close]);
   const modalClose = () => {
     modalCloseAnimated();
-    window.history.replaceState(null, "", window.location.href);
-    window.history.back();
+    // window.history.replaceState(null, "", window.location.href);
+    if (!props.cancelBack) window.history.back();
   };
   const modalCloseAnimated = () => {
-    console.log("back?");
     if (props.slide || props.slideDown || props.slideLeft) {
       setIsClosing(true);
 
@@ -67,7 +66,7 @@ const ModalBase = forwardRef((props: any, ref) => {
       window.history.pushState(
         { modalOpen: true },
         "",
-        window.location.pathname
+        `${window.location.pathname}${window.location.search}`
       );
       const _modal = {
         ...modal,
@@ -163,10 +162,16 @@ const ModalBase = forwardRef((props: any, ref) => {
       modalClose();
     },
   }));
+  const overflowStyles: any = {};
+  if (props.overflow) overflowStyles.overflow = props.overflow;
+  if (props.overflowY) overflowStyles.overflowY = props.overflowY;
+  if (props.overflowX) overflowStyles.overflowX = props.overflowX;
 
   return (
     <div
-      className={style.mask}
+      className={clsx(styles.mask, {
+        [styles.baseMask]: props.baseAnimation ?? true,
+      })}
       style={{ height: maskHeight, zIndex: props.zIndex ?? 10000 }}
       onContextMenu={(e) => e.preventDefault()}
     >
@@ -180,23 +185,32 @@ const ModalBase = forwardRef((props: any, ref) => {
         }}
         onClick={onClickOutside}
       ></div>
-      <div className={style.wrap} style={{ borderRadius: borderRadius }}>
+      <div
+        className={styles.wrap}
+        style={{
+          borderRadius: borderRadius,
+        }}
+      >
         <div
           ref={modalContentRef}
           className={clsx(
             props.slideUp || props.slide
-              ? style.slideUpModal
+              ? styles.slideUpModal
               : props.slideLeft
-              ? style.slideLeft
-              : style.modal,
+              ? styles.slideLeft
+              : styles.modal,
             {
-              [style.modalSlideLeft]: isClosing && props.slideLeft,
-              [style.modalSlideDown]: isClosing && props.slideDown,
-              [style.topRound]: props.topRound,
-              [style.bottomRound]: props.bottomRound,
+              [styles.baseModal]: props.baseAnimation ?? true,
+              [styles.modalSlideLeft]: isClosing && props.slideLeft,
+              [styles.modalSlideDown]: isClosing && props.slideDown,
+              [styles.topRound]: props.topRound,
+              [styles.bottomRound]: props.bottomRound,
             }
           )}
           style={{
+            left: props.topModal ? 0 : undefined,
+            top: props.topModal ? 0 : undefined,
+            transform: props.topModal ? `translateY(0%)` : "",
             width: props.width,
             maxWidth: props.maxWidth,
             maxHeight: props.maxHeight,
@@ -205,9 +219,7 @@ const ModalBase = forwardRef((props: any, ref) => {
             padding: props.padding,
             borderRadius: props.borderRadius,
             backgroundColor: props.backgroundColor,
-            overflow: props.overflow,
-            overflowY: props.overflowY,
-            overflowX: props.overflowX,
+            ...overflowStyles,
           }}
           onClick={insideClickPropagation}
         >
@@ -216,8 +228,8 @@ const ModalBase = forwardRef((props: any, ref) => {
               <FlexChild height={60}>
                 {props.headerRender ? (
                   <div
-                    className={clsx(style.header, {
-                      [style.admin]: props.admin,
+                    className={clsx(styles.header, {
+                      [styles.admin]: props.admin,
                     })}
                   >
                     {props.headerRender}
@@ -255,7 +267,7 @@ const ModalBase = forwardRef((props: any, ref) => {
             {props.withFooter ? (
               <FlexChild height={50}>
                 {props.footerRender ? (
-                  <div className={style.footer}>{props.footerRender}</div>
+                  <div className={styles.footer}>{props.footerRender}</div>
                 ) : (
                   <ModalBaseFooter
                     buttonText={props.buttonText}
