@@ -1,0 +1,112 @@
+.inquiry_box .search_box {
+   gap: 25px;
+   align-items: start !important;
+}
+.inquiry_box .search_box > * {
+   width: auto; gap: 15px;
+   flex: unset;
+   align-items: start !important;
+   justify-content: start !important;
+}
+
+.inquiry_box .search_box h5 {
+   font-size: 18px;
+   color: #fff; font-weight: 500;
+}
+
+
+/* 검색창 */
+.search_input_box .keyword {
+   position: relative;
+   width: fit-content;
+}
+
+.search_input_box .keyword button {
+   position: absolute;
+   top: 50%;
+   right: 10px;
+   transform: translateY(-50%);
+}
+
+.search_input_box .search {
+   width: 420px; padding-right: 45px;
+}
+
+
+
+/* 기간선택 */
+.picker_input_box .dataPicker_box {gap: 15px;}
+
+.picker_input_box .dataPicker_box .btn_wrap {
+   gap: 10px; flex-wrap: wrap;
+}
+.picker_input_box .dataPicker_box .btn_wrap .term_btn {
+   padding: 10px 5px;
+   width: 100%;
+   max-width: 100px;
+   border: 1px solid #797979;
+   border-radius: 5px;
+   font-size: 16px;
+   color: #797979;
+}
+
+.picker_input_box .dataPicker_box .btn_wrap .term_btn.active {
+   color: #fff;
+   border-color: #fff;
+}
+
+.picker_input_box .dataPicker_box .picker_wrap {gap: 10px;}
+.picker_input_box .dataPicker_box .picker_input {color: #ddd !important;}
+
+
+
+/* 문의 리스트 */
+.list_table {
+   width: 100%;
+   table-layout: fixed;
+}
+
+.list_table thead {
+   background: #323232;
+}
+
+.list_table thead th {
+   font-size: 14px;
+   font-weight: 600;
+}
+
+
+.list_table tr {
+   border-bottom: 1px solid #323232;
+}
+
+.list_table tr td {
+   background: #222;
+}
+
+.list_table :is(td, th) {
+   padding: 13px 10px;
+   font-size: 14px;
+   color: #cfcfcf;
+   line-height: 1.2;
+   text-align: center;
+   word-wrap: break-word; /* 이거 줘야 테이블에서 내용들 넘치면 줄바꿈 됨. */
+   /* word-break: break-all; */
+   vertical-align: middle; /* 테이블 내용 세로 정렬: align-items: center라고 보면 됨 */
+}
+
+.list_table tbody tr td .td_title:hover p {
+   text-decoration: underline;
+}
+
+/* 날짜 */
+.list_table tbody tr td:last-child {
+   font-size: 13px;
+}
+
+
+.list_bottom_box {
+   margin-top: 35px;
+   justify-content: center !important;
+   position: relative;
+}

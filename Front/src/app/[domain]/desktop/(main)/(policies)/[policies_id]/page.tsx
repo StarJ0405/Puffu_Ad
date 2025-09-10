@@ -1,6 +1,7 @@
 import PrivacyContent from "@/components/agreeContent/privacyContent";
 import TermContent from "@/components/agreeContent/TermContent";
 import FlexChild from "@/components/flex/FlexChild";
+import Route from './client'
 
 interface PageProps {
   params: {
@@ -8,10 +9,14 @@ interface PageProps {
   };
 }
 
-export default async function ({ params }: PageProps) {
+export default async function Policies({ params }: PageProps) {
+
+  console.log(params.id);
+
   return (
     <section className="root desktop_container">
-      <FlexChild paddingTop={60}>
+      <Route />
+      {/* <FlexChild paddingTop={60}>
         {
           params.id === 'term' && (
             <TermContent size={10} />
@@ -23,7 +28,7 @@ export default async function ({ params }: PageProps) {
             <PrivacyContent size={10} />
           )
         }
-      </FlexChild>
+      </FlexChild> */}
     </section>
   );
 }

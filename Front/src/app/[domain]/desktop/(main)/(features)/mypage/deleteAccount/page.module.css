@@ -1,0 +1,60 @@
+.delete_box {gap: 35px;}
+
+
+.delete_content {
+   gap: 30px;
+}
+.delete_content > .title {
+   width: auto; color: var(--main-color1);
+   font-size: 20px;
+}
+
+.term_txt {
+   width: 100%;
+   max-width: 700px;
+   gap: 20px;
+   border: 1px solid #eaeaea;
+   padding: 20px;
+   border-radius: 5px;
+   justify-content: center;
+}
+
+.term_txt .title {
+   font-size: 18px;
+   color: #fff;
+   font-weight: 600;
+}
+.term_txt .txt1 {
+   font-size: 16px;
+   color: #aaa;
+   line-height: 1.6;
+   /* text-align: center; */
+}
+
+.input_box {
+   /* align-items: start !important; */
+   gap: 10px;
+   width: 100%;
+   max-width: 300px;
+}
+
+.input_box .input_label {min-width: 60px;}
+
+.button_group {
+   gap: 10px;
+   justify-content: center;
+   padding-bottom: 50px;
+}
+
+.button_group > button {
+   padding: 13px 10px;
+   border-radius: 5px;
+   color: #fff;
+   font-size: 20px;
+   font-weight: 600;
+   width: 100%;
+   max-width: 220px;
+}
+.button_group .submit_btn {
+   background: var(--main-color2);
+}

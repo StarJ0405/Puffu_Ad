@@ -41,9 +41,9 @@ export default async function Footer() {
               </FlexChild>
 
               <FlexChild className={styles.policy_item}>
-                <Link href={"/"}>이용약관</Link>
+                <Link href={"/term"}>이용약관</Link>
                 <Span>|</Span>
-                <Link href={"/"}>개인정보처리방침</Link>
+                <Link href={"/privacy"}>개인정보처리방침</Link>
               </FlexChild>
             </VerticalFlex>
           </VerticalFlex>
