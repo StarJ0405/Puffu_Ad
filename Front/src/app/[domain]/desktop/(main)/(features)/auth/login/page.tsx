@@ -21,7 +21,7 @@ import style from './page.module.css'
 export default async function () {
    return (
       <>
-         <Container className={clsx('desktop_container', style.container)}>
+         <Container className={clsx('page_container', style.container)}>
             <VerticalFlex className={style.loginBox}>
                <FlexChild className={style.logo}>
                   <Link href={'/'}>

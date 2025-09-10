@@ -20,7 +20,7 @@ import { ContinueGroup } from "./client";
 export default async function () {
 
    return (
-      <section className='root desktop_container'>
+      <section className='root page_container'>
 
          <VerticalFlex className={styles.signup_frame}>
             <FlexChild className={styles.page_title}>

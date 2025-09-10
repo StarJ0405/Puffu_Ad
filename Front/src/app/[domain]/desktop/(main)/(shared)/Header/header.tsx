@@ -39,7 +39,7 @@ export default async function Header() {
    return (
       <>
          <header className={styles.header}>
-            <HorizontalFlex className="desktop_container" alignItems="end" marginBottom={35}>
+            <HorizontalFlex className="page_container" alignItems="end" marginBottom={35}>
                <FlexChild gap={20}>
                   <FlexChild className={styles.logo}>
                      <Link href='/'>

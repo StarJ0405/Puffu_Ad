@@ -68,7 +68,7 @@ body {
 
 
 /* pc용 컨테이너 ------------------ */
-.desktop_container {
+.page_container {
   width: 100%;
   max-width: 1300px;
   margin: 0 auto;
@@ -167,16 +167,22 @@ a {
 
 
 /* 모바일 컨테이너 ------------------ */
-.mobile_container {
-  width: 100%;
-  max-width: 768px;
-  margin: 0 auto;
-  color: var(--default-color);
+
+@media (max-width: 769px) {
+
+  .page_container {
+    width: 100%;
+    max-width: 768px;
+    margin: 0 auto;
+    color: var(--default-color);
+  }
+
+  .root {
+    padding-top: 166px;
+    min-height: 70dvh;
+    padding-bottom: 100px;
+    color: var(--default-color);
+  }
+  
 }
 
-.root {
-  padding-top: 166px;
-  min-height: 70dvh;
-  padding-bottom: 100px;
-  color: var(--default-color);
-}

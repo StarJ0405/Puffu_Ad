@@ -81,7 +81,7 @@ export function HeaderBottom({menu1, menu2} : HeaderBottomProps) {
       <>
          <div ref={bottomRef}></div>{/* 헤더 높이계산용 더미 */}
          <div className={`${fixed ? styles.fixed : ''}`}>
-            <HorizontalFlex className="desktop_container" position="relative">
+            <HorizontalFlex className="page_container" position="relative">
                <HorizontalFlex gap={25} justifyContent="start">
                   <FlexChild
                      width={'auto'} 

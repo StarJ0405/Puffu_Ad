@@ -47,7 +47,7 @@ export default async function () {
 
    return (
       <section className="root">
-         <Container className={clsx('desktop_container', style.container)} marginTop={50}>
+         <Container className={clsx('page_container', style.container)} marginTop={50}>
             <h3 className={style.title}>장바구니</h3>
 
             <HorizontalFlex className={style.cart_wrap}>
