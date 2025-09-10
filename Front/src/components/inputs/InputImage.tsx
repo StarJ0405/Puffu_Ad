@@ -27,6 +27,8 @@ interface InputImageProps {
   maxFiles?: number;
   minFiles?: number;
   frame?: boolean; // 디자인 부분 제거
+  backgroundColor?:React.CSSProperties['backgroundColor']
+  color?:React.CSSProperties['color']
 }
 
 const InputImage = forwardRef(

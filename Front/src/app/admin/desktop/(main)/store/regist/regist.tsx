@@ -17,7 +17,7 @@ import { adminRequester } from "@/shared/AdminRequester";
 import useData from "@/shared/hooks/data/useData";
 import useClientEffect from "@/shared/hooks/useClientEffect";
 import useNavigate from "@/shared/hooks/useNavigate";
-import { toast, validateInputs } from "@/shared/utils/Functions";
+import { log, toast, validateInputs } from "@/shared/utils/Functions";
 import { useRef, useState } from "react";
 import styles from "./regist.module.css";
 
@@ -89,7 +89,7 @@ export default function ({ initStores }: { initStores: Pageable }) {
           };
           _data.subdomain = domain || null;
           // _data.thumbnail = thumbnail;
-          _data.thumbnail = {
+          _data.logo = {
             black,
             color,
             white,
@@ -118,7 +118,8 @@ export default function ({ initStores }: { initStores: Pageable }) {
             }
           );
         })
-        .catch(() => {
+        .catch((e) => {
+          log(e)
           toast({ message: "오류가 발생했습니다." });
           setIsLoading(false);
         });
@@ -257,7 +258,7 @@ export default function ({ initStores }: { initStores: Pageable }) {
                   <FlexChild padding={"15px 15px 15px 0"}>
                     <InputImage
                       ref={(el) => {
-                        images.current[1] = el;
+                        images.current[2] = el;
                       }}
                       placeHolder="4:1 비율의 이미지를 권장합니다."
                     />
