@@ -11,7 +11,7 @@ import { usePathname } from "next/navigation";
 
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import ModalBase from "@/modals/ModalBase";
-import AdminChatModal from "@/modals/adminChat/adminChat";
+// import AdminChatModal from "@/modals/adminChat/adminChat";
 import { useState } from "react";
 
 // const navigate = useNavigate();
@@ -24,7 +24,7 @@ export function NaviMenu() {
   return (
     <nav id={styles.sideNavi}>
       <VerticalFlex className={styles.outer_box}>
-          <Link href={"/sale"} className={styles.hotDeal_link}>
+          <Link href={"/products/sales"} className={styles.hotDeal_link}>
             <Image
             src={"/resources/images/footer/sidenavi_hotDeal.png"}
             width={43}
@@ -38,7 +38,7 @@ export function NaviMenu() {
             </li>
 
             <li>
-                <Link href={"/cart"}>장바구니</Link>
+                <Link href={"/orders/cart"}>장바구니</Link>
             </li>
 
             <li>
@@ -46,7 +46,7 @@ export function NaviMenu() {
             </li>
 
             <li>
-                <Link href={"/board/faq"}>1:1문의</Link>
+                <Link href={"/board/inquiry"}>1:1문의</Link>
             </li>
           </ul>
       </VerticalFlex>

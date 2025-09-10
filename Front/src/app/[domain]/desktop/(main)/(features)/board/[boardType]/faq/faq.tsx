@@ -27,7 +27,7 @@ export default function BoardFaq() {
 
    return (
       <>
-         <Container className={clsx('desktop_container', style.container)} marginTop={50}>
+         <Container className={clsx('page_container', style.container)} marginTop={50}>
             
          </Container>
       </>

@@ -186,7 +186,7 @@ export function MainBanner() {
    };
 
    return (
-      <FlexChild className={clsx('desktop_container', styles.main_banner)}>
+      <FlexChild className={clsx('page_container', styles.main_banner)}>
          <Swiper
             loop={true}
             slidesPerView={1}

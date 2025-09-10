@@ -13,7 +13,7 @@ export default async function Footer() {
   return (
     <>
       <footer className={styles.footer}>
-        <HorizontalFlex className="desktop_container">
+        <HorizontalFlex className="page_container">
           <VerticalFlex className={styles.info_box} alignItems="start">
             <Image
               src={"/resources/images/footer/footer_logo.png"}

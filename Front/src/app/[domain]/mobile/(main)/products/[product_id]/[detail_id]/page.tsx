@@ -29,7 +29,7 @@ export default async function () {
 
    return (
       <section className="root">
-         <Container className={clsx('desktop_container', styles.detail_container)} marginTop={100}>
+         <Container className={clsx('page_container', styles.detail_container)} marginTop={100}>
             <HorizontalFlex gap={60} alignItems="start">
                <FlexChild className={styles.detail_thumbnail}>
                   <Image 

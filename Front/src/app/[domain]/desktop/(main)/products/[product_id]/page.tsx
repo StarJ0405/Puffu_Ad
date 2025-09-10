@@ -24,7 +24,7 @@ export default async function ({params} : {params: { boardType?: string };}) {
 
    return (
       <section className="root">
-         <Container className="desktop_container" marginTop={80}>
+         <Container className="page_container" marginTop={80}>
             <VerticalFlex className={style.title_box}>
                
                <h3>관리/보조</h3>

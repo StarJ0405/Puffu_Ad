@@ -1,3 +1,16 @@
+interface Window {
+  NESTPAY?: {
+    welcome: () => void;
+    pay: (opts: {
+      payMethod: string;
+      trxId: string;
+      openType?: "layer" | "redirect" | "popup";
+      onApprove?: (resp: any) => void;
+    }) => void;
+  };
+  _babelPolyfill?: any;
+}
+
 interface ExcelReadableColumn {
   attr: string;
   code: string;
@@ -37,21 +50,24 @@ interface ComponentProps<T extends HTMLElement>
 }
 
 interface DirectionalStyleInterface {
-  padding?: string | number;
-  paddingTop?: string | number;
-  paddingRight?: string | number;
-  paddingBottom?: string | number;
-  paddingLeft?: string | number;
-  margin?: string | number;
-  marginTop?: string | number;
-  marginRight?: string | number;
-  marginBottom?: string | number;
-  marginLeft?: string | number;
-  border?: string | number;
-  borderTop?: string | number;
-  borderRight?: string | number;
-  borderBottom?: string | number;
-  borderLeft?: string | number;
+  padding?: React.CSSProperties["padding"];
+  paddingTop?: React.CSSProperties["paddingTop"];
+  paddingRight?: React.CSSProperties["paddingRight"];
+  paddingBottom?: React.CSSProperties["paddingBottom"];
+  paddingLeft?: React.CSSProperties["paddingLeft"];
+  margin?: React.CSSProperties["margin"];
+  marginTop?: React.CSSProperties["marginTop"];
+  marginRight?: React.CSSProperties["marginRight"];
+  marginBottom?: React.CSSProperties["marginBottom"];
+  marginLeft?: React.CSSProperties["marginLeft"];
+  border?: React.CSSProperties["border"];
+  borderTop?: React.CSSProperties["borderTop"];
+  borderRight?: React.CSSProperties["borderRight"];
+  borderBottom?: React.CSSProperties["borderBottom"];
+  borderLeft?: React.CSSProperties["borderLeft"];
+  overflow?: React.CSSProperties["overflow"];
+  overflowX?: React.CSSProperties["overflowX"];
+  overflowY?: React.CSSProperties["overflowY"];
 }
 
 type OSType = "ios" | "android" | "windows" | "macos" | "linux" | "unknown";
@@ -76,21 +92,30 @@ interface UserDataFrame {
   metadata?: Record<string, unknown> | null;
 }
 interface UserData extends BaseEntity, UserDataFrame {
-  adult?: boolean;
+  adult: boolean;
   role: "member" | "developer" | "admin" | "member";
   point: number;
   accounts?: AccountLinkData[];
+  adult_mode: boolean;
 }
 interface StoreDataFrame {
   name: string;
   currency_unit: string;
   adult: boolean;
   thumbnail?: string;
+<<<<<<< HEAD
   logo?:any;
   description?: string;
   metadata?: Record<string, unknown> | null;
   index?: number;
   subdomain?:string | null;
+=======
+  logo?: any;
+  description?: string;
+  metadata?: Record<string, unknown> | null;
+  index?: number;
+  subdomain?: string | null;
+>>>>>>> f720ef148bdd49eca0b44dc727c41f21888a60dc
 }
 interface StoreData extends BaseEntity, StoreDataFrame {
   index: number;
@@ -150,6 +175,9 @@ interface ProductData extends BaseEntity, ProductDataFrame {
   discount_rate: number;
   price: number;
   brand_mode: boolean;
+  wishlists?: WishData[];
+  wish?: WishData;
+  wishes?: number;
 }
 
 interface VariantDataFrame {
@@ -168,6 +196,7 @@ interface VariantData extends BaseEntity, VariantDataFrame {
   product_id: string;
   price: number;
   discount_price: number;
+  discount_rate: number;
   product: ProductData;
   values: OptionValueData[];
 }
@@ -221,6 +250,7 @@ interface LineItemData extends BaseEntity {
   discount_price?: number;
   total?: number;
   total_discount?: number;
+  total_tax?: number;
   currency_unit?: string;
   metadata?: Record<string, unknown> | null;
 }
@@ -277,6 +307,7 @@ interface OrderData extends BaseEntity {
   shipping_methods?: ShippingMethodData[];
   status: "pending" | "fulfilled" | "shipping" | "complete" | "cancel";
   total: number;
+  total_tax: number;
   total_discounted: number;
   total_refund: number;
   captured_at: string | Date;
@@ -292,4 +323,98 @@ interface AccountLinkData extends BaseEntity {
   name: string;
   uuid: string;
   metadata?: Record<string, unknown> | null;
+}
+
+interface Recommend {
+  keyword: string;
+  popular: number;
+  created_at: Date | string;
+}
+
+interface BannerDataFrame {
+  name: string;
+  store_id: string;
+  thumbnail: Record<string, string>;
+  to?: string;
+  starts_at?: Date | string | null;
+  ends_at?: Date | string | null;
+  metadata?: Record<string, unknown> | null;
+  visible?: boolean;
+  adult?: boolean;
+}
+
+interface BannerData extends BaseEntity, BannerDataFrame {
+  adult: boolean;
+  visible: boolean;
+}
+
+interface EventDataFrame {
+  title: string;
+  store_id: string;
+  starts_at: Date | string;
+  ends_at: Date | string;
+  discounts?: DiscountDataFrame[];
+  bundles?: BundleDataFrame[];
+}
+interface DiscountDataFrame {
+  name: string;
+  value: number;
+  products: { id: stirng }[];
+  variants: { id: stirng }[];
+}
+interface BundleDataFrame {
+  name: string;
+  N: number;
+  M: number;
+  products: { id: stirng }[];
+  variants: { id: stirng }[];
+}
+
+interface WishData extends BaseEntity {
+  user_id: string;
+  user?: UserData;
+  product_id: string;
+  product?: ProductData;
+}
+
+interface NoticeDataFrame {
+  title: string;
+  store_id: string;
+  type: string;
+  detail?: string;
+  starts_at?: Date | string | null;
+  ends_at?: Date | string | null;
+  adult?: boolean;
+  visible?: boolean;
+  metadata?: Record<string, unknown> | null;
+}
+
+interface NoticeData extends BaseEntity, NoticeDataFrame {
+  adult: boolean;
+  visible: boolean;
+}
+
+interface ChatroomData extends BaseEntity {
+  title: string;
+  users?: ChatroomUserData[];
+  chats?: ChatData[];
+  metadata?: Record<string, unknown> | null;
+  unread?: number;
+}
+
+interface ChatData extends BaseEntity {
+  message: string;
+  type: "message" | "image" | "link" | "file";
+  room_id: string;
+  room?: ChatroomData;
+  user_id: string;
+  user?: UserData;
+  metadata?: Record<string, unknown> | null;
+}
+interface ChatroomUserData {
+  user?: UserData;
+  user_id: string;
+  room_id: string;
+  room?: ChatroomData;
+  last_read: Date | string;
 }

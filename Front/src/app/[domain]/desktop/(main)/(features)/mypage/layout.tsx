@@ -16,7 +16,7 @@ export default async function ({
   children: React.ReactNode;
 }>) {
   return (
-    <section className="root desktop_container">
+    <section className="root page_container">
       {/*  */}
       <VerticalFlex className={mypage.mypage_wrap}>
         <FlexChild className={mypage.title}>

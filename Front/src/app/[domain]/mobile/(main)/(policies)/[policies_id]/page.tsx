@@ -14,7 +14,7 @@ export default async function Policies({ params }: PageProps) {
   console.log(params.id);
 
   return (
-    <section className="root desktop_container">
+    <section className="root page_container">
       <Route />
       {/* <FlexChild paddingTop={60}>
         {

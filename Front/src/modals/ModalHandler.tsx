@@ -2,15 +2,20 @@ import ConfirmModal from "@/modals/confirm/ConfirmModal";
 import ContextMenuModal from "@/modals/context/ContextMenuModal";
 import ToastModal from "@/modals/toast/ToastModal";
 import NiceModal from "@ebay/nice-modal-react";
+import BannerModal from "./admin/banner/BannerModal";
 import BrandModal from "./admin/brand/BrandModal";
 import CategoriesModal from "./admin/category/CategoriesModal";
 import CategoryList from "./admin/category/CategoryListModal";
 import CategoryModal from "./admin/category/CategoryModal";
 import LoadingModal from "./admin/LoadingModal";
+import NoticeModal from "./admin/notice/NtoiceModal";
 import OrderDetailModal from "./admin/order/OrderDetailModal";
 import ProductModal from "./admin/product/ProductModal";
 import VariantListModal from "./admin/product/VariantListModal";
 import VariantModal from "./admin/product/VariantModal";
+import PromotionModal from "./admin/promotion/PromotionModal";
+import PromotionOptionListModal from "./admin/promotion/PromotionOptionListModal";
+import PromotionOptionModal from "./admin/promotion/PromotionOptionModal";
 import ShippingMethodDetailModal from "./admin/shipping_method/ShippingMethodDetailModal";
 import ShippingMethodListModal from "./admin/shipping_method/ShippingMethodListModal";
 import StoreModal from "./admin/store/StoreModal";
@@ -23,6 +28,8 @@ import AddressModal from "./main/address/AddressModal";
 import PostalCodeModal from "./main/address/PostaCodelModal";
 import OptionChangeModal from "./main/product/OptionChangeModal";
 import PurchaseModal from "./main/product/PurchaseModal";
+import SearchModal from "./main/search/SearchModal";
+import SelectModal from "./main/select/SelectModal";
 import TableModal from "./table/TableModal";
 
 function ModalHandler() {
@@ -34,16 +41,23 @@ function ModalHandler() {
   NiceModal.register("input", InputModal);
   NiceModal.register("loading", LoadingModal);
   // main
+  NiceModal.register("select", SelectModal);
   NiceModal.register("address", AddressModal);
   NiceModal.register("addressList", AddressListModal);
+  NiceModal.register("search", SearchModal);
   NiceModal.register("purchase", PurchaseModal);
   NiceModal.register("postalcode", PostalCodeModal);
   NiceModal.register("optionChange", OptionChangeModal);
   // admin
+  NiceModal.register("bannerDetail", BannerModal);
+  NiceModal.register("noticeDetail", NoticeModal);
   NiceModal.register("orderDetail", OrderDetailModal);
   NiceModal.register("orderList", OrderListModal);
   NiceModal.register("userDetail", UserModal);
   NiceModal.register("productDetail", ProductModal);
+  NiceModal.register("promotionDetail", PromotionModal);
+  NiceModal.register("promotionOptionList", PromotionOptionListModal);
+  NiceModal.register("promotionOption", PromotionOptionModal);
   NiceModal.register("variantList", VariantListModal);
   NiceModal.register("variantDetail", VariantModal);
   NiceModal.register("storeDetail", StoreModal);

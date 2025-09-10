@@ -35,7 +35,7 @@ export function HeaderCatgeory({CaOpen} : {CaOpen : boolean}) { // 카테고리�
 
    return (
       <Div 
-         className={clsx(style.overlay, "desktop_container", {
+         className={clsx(style.overlay, "page_container", {
             [style.isOverlayVisible]: CaOpen,
          })}
 

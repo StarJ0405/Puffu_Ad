@@ -546,3 +546,32 @@ export function openTrackingNumber(
   // 팝업창 열기
   window.open(trackingUrl, "ShippingStatusPopup", popupOptions);
 }
+
+export function isSame(v1: any, v2: any): boolean {
+  if (typeof v1 === typeof v2) {
+    switch (typeof v1) {
+      case "string":
+      case "number":
+      case "bigint":
+      case "boolean":
+        return v1 === v2;
+      case "object":
+        return JSON.stringify(v1) === JSON.stringify(v2);
+      default:
+        return v1 === v2;
+    }
+  }
+  return false;
+}
+
+//이메일 마스킹 앞네자리보이고 뒷자린 "*" 표시
+export function maskEmail(email: string): string {
+  const [local, domain] = email.split("@");
+  if (!local || !domain) return email;
+
+  if (local.length <= 4) {
+    return "*".repeat(local.length) + "@" + domain;
+  }
+
+  return local.slice(0, 4) + "*".repeat(local.length - 4) + "@" + domain;
+}

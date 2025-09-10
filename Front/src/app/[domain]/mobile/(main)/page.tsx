@@ -16,7 +16,7 @@ export default async function () {
     <section className='root'>
       <MainBanner />
 
-      <VerticalFlex marginTop={'35px'} marginBottom={'100px'} gap={80} className="desktop_container">
+      <VerticalFlex marginTop={'35px'} marginBottom={'100px'} gap={80} className="page_container">
         <VerticalFlex className={styles.category_sec}>
           <VerticalFlex className={styles.ca_title}>
             <Image 

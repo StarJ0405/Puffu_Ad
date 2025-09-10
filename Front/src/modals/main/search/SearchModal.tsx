@@ -3,7 +3,7 @@ import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import Input from "@/components/inputs/Input";
-import ProductCard from "@/components/main/card/ProductCard";
+import ProductCard from "@/components/card/ProductCard";
 import P from "@/components/P/P";
 import ModalBase from "@/modals/ModalBase";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
@@ -100,31 +100,30 @@ const SearchModal = NiceModal.create(() => {
               }}
             />
             <Div className={styles.inputWrapper}>
-                <Input
+              <Input
                 value={search}
                 onChange={(value) => setSearch(value as string)}
                 width={"100%"}
                 className={styles.input}
                 placeHolder="원하시는 상품을 검색해보세요"
                 onKeyDown={(e) => {
-                    if (e.key === "Enter") onSearch();
+                  if (e.key === "Enter") onSearch();
                 }}
-                />
-                <Image
+              />
+              <Image
                 hidden={!search}
                 src="/resources/icons/closeCircle.png"
                 size={14}
                 className={styles.close}
                 onClick={() => setSearch("")}
-                />
-                <Image
+              />
+              <Image
                 src={"/resources/icons/search_gray.png"}
                 size={16}
                 className={styles.search}
                 onClick={() => onSearch()}
-                />
+              />
             </Div>
-            
           </FlexChild>
 
           <FlexChild

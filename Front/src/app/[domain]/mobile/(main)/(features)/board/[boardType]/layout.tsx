@@ -11,7 +11,7 @@ export default function Layout({
   const hideHeader = params.boardType === "photoReview";
 
   return (
-    <section className="root desktop_container">
+    <section className="root page_container">
       {!hideHeader && <BoardHeader />}
       {children}
     </section>
