@@ -1,6 +1,12 @@
 .mypage_wrap {
-   align-items: start !important;
    padding-top: 50px;
+   gap: 30px;
+}
+
+.mypage_wrap > .title h3 {
+   font-size: 35px;
+   color: #fff;
+   font-weight: 600;
 }
 
 
@@ -22,6 +28,8 @@
    width: 300px;
    min-width: 300px;
    flex: unset;
+   height: auto;
+   position: sticky; top: 70px;
 }
 
 
@@ -52,6 +60,7 @@
    font-size: 20px;
    font-weight: 600;
    padding: 15px 5px;
+   border: none;
 }
 
 .profile .setting_btn {
@@ -114,7 +123,7 @@
 .box_frame .box_header {
    border-bottom: 1px solid #6B6B6B;
    padding-bottom: 15px;
-   font-size: 20px; 
+   font-size: 25px; 
    font-weight: 600;
    color: #fff;
    gap: 20px;

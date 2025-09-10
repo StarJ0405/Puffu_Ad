@@ -1,19 +1,11 @@
 import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import { Params } from "next/dist/server/request/params";
-import Container from "@/components/container/Container";
-import styles from "./page.module.css";
-import mypage from "../mypage.module.css";
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
-import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
-import Button from "@/components/buttons/Button";
-import Link from "next/link";
-import Span from "@/components/span/Span";
 import clsx from "clsx";
+import mypage from "../mypage.module.css";
+import styles from "./page.module.css";
 
 import { ReviewList } from "./client";
-import NoContent from "@/components/noContent/noContent";
 
 export default async function () {
 

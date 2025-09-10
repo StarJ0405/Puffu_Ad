@@ -11,8 +11,8 @@
 }
 
 .confirmButton.main {
-  background-color: var(--main-color, var(--admin-color));
-  border: 1px solid var(--main-color, var(--admin-border-color));
+  background-color: var(--main-color2, var(--admin-color));
+  border: 1px solid var(--main-color2, var(--admin-border-color));
 }
 
 .confirmButton.admin {

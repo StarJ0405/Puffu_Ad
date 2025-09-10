@@ -269,7 +269,7 @@ input[type='search']:focus-visible {
 /* 기본 인풋 스타일 */
 .web_input {
   background: #111111 !important;
-  color: #fff !important;
+  color: #ddd !important;
   border-radius: 5px !important;
   border: 1px solid #4c4c4c !important;
 }
@@ -330,5 +330,9 @@ input[type='search']:focus-visible {
   color: #BFBFBF;
 }
 
+
+.modal_body {
+  color: #000 !important;
+}
 
 /* 컴포넌트 공통 css end ------------------ */

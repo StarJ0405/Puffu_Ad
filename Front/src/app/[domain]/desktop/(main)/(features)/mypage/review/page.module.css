@@ -1,3 +1,7 @@
+.review_edit p:hover {
+   text-decoration: underline;
+}
+
 .review_list .item {
    align-items: start !important;
    border-bottom: 1px solid #535353;

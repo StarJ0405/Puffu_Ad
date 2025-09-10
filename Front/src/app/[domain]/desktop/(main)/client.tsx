@@ -295,14 +295,14 @@ export function MainCategory() { // 카테고리메뉴
    const pathname = usePathname();
 
    const ca_test = [
-      {name: 'BDSM 토이', thumbnail: '/resources/images/category/gif_ca_Img.gif',},
-      {name: '악세서리', thumbnail: '/resources/images/category/ca_img01.png',},
-      {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
-      {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
-      {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
-      {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
-      {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
-      {name: '윤활제/젤', thumbnail: '/resources/images/category/ca_img01.png',},
+      {name: '남성토이', thumbnail: '/resources/images/category/gif_ca_Img_01.gif',},
+      {name: '여성토이', thumbnail: '/resources/images/category/gif_ca_Img_02.gif',},
+      {name: '윤활제/젤', thumbnail: '/resources/images/category/gif_ca_Img_03.gif',},
+      {name: '콘돔', thumbnail: '/resources/images/category/gif_ca_Img_04.gif',},
+      {name: '의류', thumbnail: '/resources/images/category/gif_ca_Img_05.gif',},
+      {name: 'BDSM 토이', thumbnail: '/resources/images/category/gif_ca_Img_06.gif',},
+      {name: 'LGBT 토이', thumbnail: '/resources/images/category/gif_ca_Img_07.gif',},
+      {name: '악세서리', thumbnail: '/resources/images/category/ca_img08.png',},
    ]
 
    return (
@@ -469,7 +469,7 @@ export function ProductList({id, lineClamp }: { id: string, lineClamp?: number }
    return (
       <>
          {ListProduct.length > 0 ? (
-         <VerticalFlex>
+         <VerticalFlex gap={10}>
             <MasonryGrid gap={20} breakpoints={6}>
                {
                   ListProduct.map((product, i) => {
@@ -500,9 +500,9 @@ export function ProductList({id, lineClamp }: { id: string, lineClamp?: number }
                               currency_unit="₩"
                            /> */}
             <Button className={styles.list_more_btn}>
-               <FlexChild gap={5}>
-                  <Span>더보기</Span>
-                  <Image src={'/resources/icons/arrow/arrow_bottom_icon.png'} width={16} />
+               <FlexChild gap={10}>
+                  <Span>상품 더보기</Span>
+                  <Image src={'/resources/icons/arrow/arrow_bottom_icon.png'} width={10} />
                </FlexChild>
             </Button>
          </VerticalFlex>

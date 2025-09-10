@@ -25,6 +25,7 @@ export function NoContent({type} : {type : string}) {
                   {type === '게시판' && ('등록된 게시물이 없습니다.')}
                   {type === '문의' && ('등록된 문의내역이 없습니다.')}
                   {type === '배송지' && ('등록된 배송지가 없습니다.')}
+                  {type === '장바구니' && ('등록된 주문내역이 없습니다.')}
                </P>
             </FlexChild>
          </VerticalFlex>

@@ -1,0 +1,79 @@
+.delivery_box .top_box > * {
+   width: auto;
+}
+
+.delivery_box .top_box .all_txt {
+   font-size: 20px;
+   color: #fff;
+   font-weight: 600;
+   gap: 5px;
+}
+
+.delivery_box .top_box .all_txt span {
+   font-size: 0.9em !important;
+   font-weight: 400 !important;
+}
+
+.delivery_box .top_box .add_btn button {
+   padding: 10px 13px;
+   background: var(--main-color2);
+   border-radius: 5px;
+   color: #fff;
+   transition: all 0.2s;
+   font-size: 16px;
+}
+
+
+/* 리스트 */
+/* .delivery_list {gap: 30px;} */
+
+.delivery_list .item {
+   gap: 20px;
+   padding: 40px 0;
+   border-bottom: 1px solid #6b6b6b;
+}
+
+.delivery_list .item:hover .address p {
+   text-decoration: underline;
+}
+
+.delivery_list .item > * {width: auto;}
+
+.delivery_list .item .number {
+   background: #050505;
+   padding: 7px 10px;
+   border-radius: 3px;
+}
+
+.delivery_list .item .content {gap: 10px;}
+.delivery_list .item .content .default {
+   font-size: 16px;
+   color: #7d7d7d;
+}
+
+.delivery_list .item .content .address {
+   font-size: 20px; color: #ddd;
+   font-weight: 500;
+}
+
+.delivery_list .item .content .name {
+   font-size: 14px; gap: 5px;
+   color: #eaeaea;
+}
+
+.delivery_list .item .content span {
+   color: #7d7d7d;
+}
+
+
+.delivery_list .item .edit_btn button {
+   padding: 10px; background: transparent;
+   border: 1px solid #aaa;
+   font-size: 13px;
+   transition: all 0.1s;
+   color: #fff;
+}
+
+.delivery_list .item .edit_btn button:hover {
+   background: #050505;
+}

@@ -1,53 +1,75 @@
 "use client";
 import Button from "@/components/buttons/Button";
+import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
+import TopButton from "@/components/buttons/TopButton";
 import styles from "./footer.module.css";
+import Link from "next/link";
+
+import { AnimatePresence, motion } from "framer-motion";
+import { usePathname } from "next/navigation";
 
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import ModalBase from "@/modals/ModalBase";
+import AdminChatModal from "@/modals/adminChat/adminChat";
+import { useState } from "react";
 
 // const navigate = useNavigate();
 
+{/* 사이드 네비 */}
+export function NaviMenu() {
 
-// const AdminChatModal = NiceModal.create(() => {
-//   const modal = useModal();
+  const pathname = usePathname();
 
-//   return (
-//     <ModalBase
-//       withHeader
-//       title="관리자 문의하기"
-//       withFooter
-//       buttonText="닫기"
-//       onClose={modal.remove} // 닫기 연동
-//     >
-//       <div style={{ padding: 20 }}>
-//         <p>이곳에 원하는 내용을 넣을 수 있습니다.</p>
-//       </div>
-//     </ModalBase>
-//   );
-// });
+  return (
+    <nav id={styles.sideNavi}>
+      <VerticalFlex className={styles.outer_box}>
+          <Link href={"/sale"} className={styles.hotDeal_link}>
+            <Image
+            src={"/resources/images/footer/sidenavi_hotDeal.png"}
+            width={43}
+            />
+            <h4 className="SacheonFont">데이 HOT딜</h4>
+          </Link>
+
+          <ul className={styles.link_list}>
+            <li>
+                <Link href={"/mypage"}>마이페이지</Link>
+            </li>
+
+            <li>
+                <Link href={"/cart"}>장바구니</Link>
+            </li>
+
+            <li>
+                <Link href={"/wishList"}>위시리스트</Link>
+            </li>
+
+            <li>
+                <Link href={"/board/faq"}>1:1문의</Link>
+            </li>
+          </ul>
+      </VerticalFlex>
+
+      <TopButton />
+    </nav>
+  );
+}
 
 
 export function ChatToggle() {
+
+  const [chatToggle, setChatToggle] = useState(false);
+
+  const chatToggleClick = () => {
+    setChatToggle(prev => !prev)
+  }
+
   return (
     <Button
     className={styles.chat_btn}
-   //  onClick={() => {
-   //    NiceModal.show(AdminChatModal)
-   //  }}
-    // onClick={() => {
-      // //   if (requireLogin && !userData) {
-      //     NiceModal.show("confirm", {
-      //       confirmText: "로그인하기",
-      //       cancelText: "취소",
-      //       message: "로그인이 필요합니다.",
-      //       onConfirm: () => {
-      //         navigate("/login");
-      //       },
-      //     });
-      // //   }
-      // //   else if (to) navigate(to);
-      // }}
+    // onClick={() => {NiceModal.show(AdminChatModal)}}
+    onClick={()=> chatToggleClick()}
     >
       <Image src={"/resources/images/footer/chat_toggle_icon.png"} width={56} />
     </Button>

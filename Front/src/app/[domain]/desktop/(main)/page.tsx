@@ -40,7 +40,7 @@ export default async function () {
 
         <FlexChild>
           <VerticalFlex>
-            <HorizontalFlex className={clsx(styles.titleBox, styles.titleBox1)} justifyContent="start" alignItems="end" gap={50}>
+            <HorizontalFlex className={clsx(styles.titleBox, styles.titleBox1)} justifyContent="start" alignItems="end" gap={20}>
               <div className={styles.title}>
                 <h2 className="SacheonFont" style={{marginBottom: '12px'}}>
                   <Image 
@@ -66,7 +66,7 @@ export default async function () {
 
         <FlexChild>
           <VerticalFlex>
-            <HorizontalFlex className={styles.titleBox} justifyContent="start" alignItems="end" gap={50}>
+            <HorizontalFlex className={styles.titleBox} justifyContent="start" alignItems="end" gap={20}>
               <div className={styles.title}>
                 <h2 className="SacheonFont">
                   <Span>따끈따끈</Span> 신상품
