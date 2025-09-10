@@ -104,11 +104,15 @@ interface StoreDataFrame {
   adult: boolean;
   thumbnail?: string;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b50027b689a2d429d8377b4aa31ed8429eb26e03
   logo?:any;
   description?: string;
   metadata?: Record<string, unknown> | null;
   index?: number;
   subdomain?:string | null;
+<<<<<<< HEAD
 =======
   logo?: any;
   description?: string;
@@ -116,6 +120,8 @@ interface StoreDataFrame {
   index?: number;
   subdomain?: string | null;
 >>>>>>> f720ef148bdd49eca0b44dc727c41f21888a60dc
+=======
+>>>>>>> b50027b689a2d429d8377b4aa31ed8429eb26e03
 }
 interface StoreData extends BaseEntity, StoreDataFrame {
   index: number;
