@@ -70,8 +70,6 @@
 }
 
 
-
-
 /* 카드가 슬라이드로 불러와졌을 때 */
 
 .slide_item {gap: 10px;}
@@ -89,4 +87,31 @@
 
 .slide_item .prodcut_data .img img {
    width: 45px !important;
+}
+
+
+
+
+/* 모바일 스타일 */
+@media (max-width: 768px) {
+
+   .review_item .text_box .content {
+      font-size: 13px;
+      color: #fff;
+      line-height: 1.2;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #6B6B6B;
+      cursor: pointer;
+      align-items: start !important;
+   }
+
+   .review_item .text_box .title_box .date {
+      color: #898989; font-weight: 600;
+      font-size: 12px;
+   }
+
+   .review_item .text_box .title_box .name {
+      color: #fff; font-weight: 600;
+      font-size: 12px;
+   }
 }

@@ -29,36 +29,29 @@ export default async function () {
       <MainBanner />
 
       <VerticalFlex
-        marginTop={"35px"}
-        marginBottom={"100px"}
-        gap={80}
+        marginTop={"25px"}
+        marginBottom={"30px"}
+        gap={30}
         className="page_container"
       >
-        <VerticalFlex className={styles.category_sec}>
-          <VerticalFlex className={styles.ca_title}>
-            <Image
-              src="/resources/images/category_main_icon.png"
-              width={65}
-              height={"auto"}
-            />
-            <P className="SacheonFont">카테고리 메뉴</P>
-          </VerticalFlex>
-          <MainCategory /> {/* 카테고리 */}
-        </VerticalFlex>
+
+        <MainCategory /> {/* 카테고리 */}
+
+
         <LinkBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
-        <FlexChild>
+
+        <FlexChild marginBottom={20}>
           <VerticalFlex>
             <HorizontalFlex
               className={clsx(styles.titleBox, styles.titleBox1)}
-              justifyContent="start"
               alignItems="end"
               gap={20}
             >
               <div className={styles.title}>
-                <h2 className="SacheonFont" style={{ marginBottom: "12px" }}>
+                <h2 className="SacheonFont">
                   <Image
                     src="/resources/images/header/HotDeal_icon.png"
-                    width={24}
+                    width={15}
                     height={"auto"}
                   />
                   이 달의 <Span color={"#FF4A4D"}>HOT</Span>딜
@@ -76,17 +69,22 @@ export default async function () {
             <NewProducts initProducts={newProducts} /> {/* 메인, 상세 리스트 */}
           </VerticalFlex>
         </FlexChild>
-        <FlexChild>
+
+        <FlexChild marginBottom={20}>
           <VerticalFlex>
             <HorizontalFlex
               className={styles.titleBox}
-              justifyContent="start"
               alignItems="end"
               gap={20}
             >
               <div className={styles.title}>
+                <Image
+                  src="/resources/images/header/Logo.png"
+                  width={50}
+                  height={"auto"}
+                />
                 <h2 className="SacheonFont">
-                  <Span>따끈따끈</Span> 신상품
+                  <Span>PICK!</Span> 추천 상품
                 </h2>
               </div>
 
@@ -100,7 +98,8 @@ export default async function () {
           </VerticalFlex>
         </FlexChild>
         <MiniBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
-        <FlexChild>
+
+        <FlexChild marginTop={30}>
           <VerticalFlex>
             <HorizontalFlex
               className={styles.titleBox}
@@ -115,7 +114,7 @@ export default async function () {
 
             <ProductSlider id={"new"} />
 
-            <FlexChild marginTop={35} justifyContent="center">
+            <FlexChild justifyContent="center">
               <Link href={"/photoReview"} className={styles.link_more_btn}>
                 후기 더보기
               </Link>

@@ -23,6 +23,8 @@ import ProductCard from "@/components/card/ProductCard";
 import { usePathname } from "next/navigation";
 import style from "./ProductCard.module.css";
 import Link from "next/link";
+import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
+
 
 
 type ListItem = {
@@ -49,6 +51,7 @@ export function TestProductCard(
       specialType? : string;
    }) 
 {
+   const { isMobile } = useBrowserEvent();
 
 
    // 프로덕트 카드 쓰면 다 지워도 됨.
@@ -70,7 +73,8 @@ export function TestProductCard(
          className={style.prodcut_item}
       >
          <FlexChild className={style.imgBox}>
-            <Link href={'/products/detail'}> {/* 링크 상품 링크로 바꾸기 */}
+            {/* <Link href={'/products/detail'}> */}
+             {/* 링크 상품 링크로 바꾸기 */}
 
                { // 프로덕트 페이지가 best일때만 나타나기. 제품 인기순 표시임.
                   specialType === 'best' && (
@@ -94,7 +98,7 @@ export function TestProductCard(
                      <Image className={style.specialTypeImg} src={'/resources/images/commingSoon_img.png'} width={"101%"} height={"auto"}/>
                   )
                }
-            </Link>
+            {/* </Link> */}
          </FlexChild>
 
          <FlexChild padding={"0 5px"} className={style.text_box}>
@@ -141,7 +145,7 @@ export function TestProductCard(
                         src={`/resources/icons/main/product_heart_icon${heartCheck === true ? '_active' : ''}.png`}
                         width={23}
                      />
-                     <Span>{heartCount}</Span>
+                     <Span>0</Span>
                   </FlexChild>
                   {/* <Span fontSize={14} weight={600}>
                      {currency_unit}

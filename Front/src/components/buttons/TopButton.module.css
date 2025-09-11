@@ -29,5 +29,13 @@
    .topToggleBtn {
       width: 45px;
       min-height: 45px;
+      font-size: 11px;
+      background: #2F2F2F;
+      box-shadow: none;
+      border: 1px solid #fff;
+   }
+
+   .topToggleBtn img {
+      width: 10px !important;
    }
 }

@@ -1,13 +1,24 @@
 .footer {
    background: #1B1B1B;
-   padding: 28px 15px;
+   padding: 0 0 90px;
 }
 
 .footer * {width: auto;}
 
+/* 개인정보처리방침 */
+.footer .info_box .policy_item {
+   gap: 5px; font-size: 12px;
+   font-weight: 500;
+   justify-content: flex-end;
+   width: 100%;
+   padding: 15px 0;
+   border-bottom: 1px solid #535353;
+   color: #dadada;
+}
+
 /* 회사 정보 */
 .footer .info_box {
-   gap: 10px;
+   gap: 15px;
    flex: unset;
 }
 
@@ -16,65 +27,43 @@
 }
 
 .footer .text_box, .footer .cs_days {
-   font-size: 13px;
+   font-size: 12px;
    color: #dadada;
    line-height: 1.2;
 }
 
-.footer .info_box .text_box .txt_item {gap: 10px;}
+.footer .info_box .text_box .txt_item {gap: 10px; flex-wrap: wrap;}
 .footer .info_box .text_box > *:last-child {margin-top: 15px;}
- 
-
-/* 개인정보처리방침 */
-.footer .info_box .policy_item {
-   gap: 5px; font-size: 14px;
-   font-weight: 500;
-}
-
-.footer .info_box .policy_item > a:hover {
-   text-decoration: underline;
-}
 
 
-/* 콜센터 */
-.footer .Cs_center {
-   gap: 5px;
-   flex: unset;
-}
-
-.footer .Cs_center .cs_title {
-   font-size: 13px;
-   color: #fff;
-   font-weight: 600;
-   margin-bottom: 3px !important;
-}
-
-.footer .Cs_center .cs_number {
-   font-size: 25px;
-   color: var(--main-color1);
-   font-weight: 900;
-}
-
-.footer .Cs_center .cs_days {
-   align-items: start !important;
-   gap: 5px;
-}
-
-.footer .Cs_center .cs_days p > span {
-   font-weight: 600 !important;
-}
 
 /* 사이드네비 */
 
 #sideNavi {
    position: fixed;
-   right: 20px;
-   top: 40%;
+   right: 10px;
+   bottom: 12%;
    display: flex;
    flex-direction: column;
    align-items: center;
    gap: 10px;
-   width: 120px;
+   width: auto;
    height: auto;
    z-index: 1000;
+}
+
+.chat_btn {padding: 0;}
+.chat_btn:focus-visible {
+   outline: none !important;
+}
+
+.Btn_frame {
+   opacity: 0;
+   visibility: hidden;
+   transition: all 0.3s;
+}
+
+.scroll {
+   opacity: 1;
+   visibility: visible;
 }
