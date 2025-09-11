@@ -50,13 +50,13 @@ export default function (
       review, 
       lineClamp, 
       width, 
-      autoPlay, 
+      autoPlay,
       board,
       onClick,
    }: { 
       review: ReviewItem;
       lineClamp?: number; 
-      width?: number;
+      width?: number | string;
       autoPlay? : number;
       onClick?: (product: ProductData) => void;
       board? : string;
@@ -66,6 +66,8 @@ export default function (
    const boardValue = board ?? "normal";
 
    const product  = review.thumbnail;
+
+   const [adultCheck, setadultCheck] = useState(false);
 
    return (
       <VerticalFlex
@@ -82,7 +84,13 @@ export default function (
          }}
       >
          <FlexChild className={styles.imgBox}>
-            <Image src={review.thumbnail} width={"100%"} height={"auto"}/>
+            {
+               adultCheck === true ? 
+               <Image src={review.thumbnail} width={"100%"} height={"auto"}/>
+               :
+               // 성인인증 안될때 나오는 이미지
+               <Image src={'/resources/images/19_only.png'} width={"100%"} height={"auto"}/>
+            }
          </FlexChild>
 
          <FlexChild padding={"0 5px"} className={styles.text_box}>
@@ -115,7 +123,13 @@ export default function (
 
          <HorizontalFlex className={styles.prodcut_data}>
             <FlexChild className={styles.img}>
-               <Image src={review.product.thumb} width={boardValue == 'normal' ? 35 : 45} />
+               {
+                  adultCheck === true ? 
+                  <Image src={review.product.thumb} width={boardValue == 'normal' ? 35 : 45} />
+                  :
+                  // 성인인증 안될때 나오는 이미지
+                  <Image src={'/resources/images/19_only.png'} width={boardValue == 'normal' ? 35 : 45}/>
+               }
             </FlexChild>
 
             <VerticalFlex className={styles.info}>

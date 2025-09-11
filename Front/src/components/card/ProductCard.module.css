@@ -54,7 +54,7 @@
    width: auto;
    max-width: 85px;
    color: #CECECE;
-   font-size: 12px;
+   font-size: 10px;
    line-height: 1;
 }
 
@@ -97,4 +97,22 @@
 
 .prodcut_item .content_item .heart_counter > span {
    font-size: 14px; color: #fff;
+}
+
+
+
+
+@media (max-width: 768px) {
+   .prodcut_item {
+      padding-bottom: 20px;
+   }
+   .prodcut_item .content_item .price_box .through_price {font-size: 10px;}
+   .prodcut_item .content_item .price_box .discount_price {font-size: 16px;}
+   
+   .prodcut_item .product_title {
+      margin: 5px 0 10px;
+      font-size: 12px; color: #fff;
+      line-height: 1.2; font-weight: 400;
+      cursor: pointer;
+   }
 }

@@ -168,7 +168,7 @@ a {
 
 /* 모바일 컨테이너 ------------------ */
 
-@media (max-width: 769px) {
+@media (max-width: 768px) {
 
   html {
     max-width: 768px;
@@ -176,9 +176,10 @@ a {
 
   .page_container {
     width: 100%;
-    max-width: 768px;
+    max-width: 992px;
     margin: 0 auto;
     color: var(--default-color);
+    padding: 0 10px;
   }
 
   .root {

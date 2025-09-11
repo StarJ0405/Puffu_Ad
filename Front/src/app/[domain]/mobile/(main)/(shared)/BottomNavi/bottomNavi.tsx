@@ -1,3 +1,4 @@
+"use client"
 import Image from "@/components/Image/Image";
 import styles from "./bottomNavi.module.css";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
@@ -7,10 +8,12 @@ import Div from "@/components/div/Div";
 import Link from "next/link";
 import Span from "@/components/span/Span";
 import clsx from "clsx";
+import { useState } from "react";
+import P from "@/components/P/P";
 
-import TopButton from "@/components/buttons/TopButton";
+export default function BottomNavi() {
 
-export default async function BottomNavi() {
+   const [active, setActive] = useState(true);
 
    const menu1 = [ // 임시 데이터
       { name: 'BEST 상품', link: '/products/best'},
@@ -21,48 +24,41 @@ export default async function BottomNavi() {
    ]
 
    return (
-      <>
-         <header className={styles.header}>
-            <HorizontalFlex className={clsx('page_container',styles.headerTop)}>
-               <FlexChild gap={20}>
-                  <FlexChild gap={10} width={'auto'} cursor="pointer">
-                     <Image 
-                        src='/resources/images/header/category_menu_icon.png'
-                        width={18}
-                     />
-                  </FlexChild>
+      <HorizontalFlex className={styles.bottom_navi}>
+         <VerticalFlex className={styles.item}>
+            <Image src={`/resources/images/bottomNavi/navi_category${active && '_active'}.png`} width={20} />
+            <FlexChild className={clsx(styles.txt)}>
+               <P>카테고리</P>
+            </FlexChild>
+         </VerticalFlex>
 
-                  <FlexChild className={styles.logo}>
-                     <Link href='/'>
-                        <Image
-                           src='/resources/images/header/logo.png'
-                           width={100}
-                           height={'auto'}
-                        />
-                     </Link>
-                  </FlexChild>
+         <VerticalFlex className={styles.item}>
+            <Image src={`/resources/images/bottomNavi/navi_wish${active && '_active'}.png`} width={22} />
+            <FlexChild className={clsx(styles.txt)}>
+               <P>관심 리스트</P>
+            </FlexChild>
+         </VerticalFlex>
 
-               </FlexChild>
+         <VerticalFlex className={styles.item}>
+            <Image src={`/resources/images/bottomNavi/navi_home${active && '_active'}.png`} width={22} />
+            <FlexChild className={clsx(styles.txt)}>
+               <P>홈</P>
+            </FlexChild>
+         </VerticalFlex>
 
-               <FlexChild width={'auto'} className={styles.info_box}>
-                  <VerticalFlex gap={20} alignItems="end">
-                     <HorizontalFlex width={'auto'} gap={10}>
-                        <FlexChild>
-                           <Image src='/resources/images/header/input_search_icon.png' width={22} cursor="pointer"/>
-                        </FlexChild>
+         <VerticalFlex className={styles.item}>
+            <Image src={`/resources/images/bottomNavi/navi_cart${active && '_active'}.png`} width={21} />
+            <FlexChild className={clsx(styles.txt)}>
+               <P>장바구니</P>
+            </FlexChild>
+         </VerticalFlex>
 
-                        <FlexChild>
-                           <Link href={'/orders/cart'}>
-                              <Image src='/resources/icons/main/cart_icon.png' width={25} cursor="pointer"/>
-                           </Link>
-                        </FlexChild>
-                     </HorizontalFlex>
-                  </VerticalFlex>
-               </FlexChild>
-            </HorizontalFlex>
-         </header>
-
-         
-      </>
+         <VerticalFlex className={styles.item}>
+            <Image src={`/resources/images/bottomNavi/navi_login${active && '_active'}.png`} width={22} />
+            <FlexChild className={clsx(styles.txt)}>
+               <P>로그인</P>
+            </FlexChild>
+         </VerticalFlex>
+      </HorizontalFlex>
    )
 }

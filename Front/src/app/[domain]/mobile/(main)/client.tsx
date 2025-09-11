@@ -20,132 +20,14 @@ import { Swiper as SwiperType } from "swiper";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-type ListItem = {
-  thumbnail: string;
-  title: string;
-  price: number;
-  discount_rate: number;
-  discount_price: number;
-  heart_count: number;
-  store_name: string;
-  rank: number;
-};
-
-const ListProduct: ListItem[] = [
-  // 임시
-  {
-    thumbnail: "/resources/images/dummy_img/product_01.png",
-    title: "블랙 골드버스트 바디수트",
-    price: 30000,
-    discount_rate: 12,
-    discount_price: 20000,
-    heart_count: 10,
-    store_name: "키테루 키테루",
-    rank: 0,
-  },
-  {
-    thumbnail: "/resources/images/dummy_img/product_02.png",
-    title: "핑크색 일본 st 로제 베일 가벼움",
-    price: 30000,
-    discount_rate: 12,
-    discount_price: 20000,
-    heart_count: 100,
-    store_name: "키테루 키테루",
-    rank: 1,
-  },
-  {
-    thumbnail: "/resources/images/dummy_img/product_03.png",
-    title: "뒷태 반전 유혹하는 파자마",
-    price: 30000,
-    discount_rate: 12,
-    discount_price: 20000,
-    heart_count: 100,
-    store_name: "키테루 키테루",
-    rank: 2,
-  },
-  {
-    thumbnail: "/resources/images/dummy_img/product_04.jpg",
-    title: "스지망 쿠파 로린코 처녀궁 프리미엄 소프트",
-    price: 30000,
-    discount_rate: 12,
-    discount_price: 20000,
-    heart_count: 70,
-    store_name: "키테루 키테루",
-    rank: 3,
-  },
-  {
-    thumbnail: "/resources/images/dummy_img/product_05.png",
-    title: "[유니더스/얇은콘돔형] 지브라 콘돔 1box(10p) [NR]",
-    price: 30000,
-    discount_rate: 12,
-    discount_price: 20000,
-    heart_count: 4,
-    store_name: "키테루 키테루",
-    rank: 4,
-  },
-  {
-    thumbnail: "/resources/images/dummy_img/product_06.png",
-    title: "블랙 망사 리본 스타킹",
-    price: 30000,
-    discount_rate: 12,
-    discount_price: 20000,
-    heart_count: 1020,
-    store_name: "키테루 키테루",
-    rank: 5,
-  },
-  {
-    thumbnail: "/resources/images/dummy_img/product_07.png",
-    title: "섹시 스트랩 간호사 st 코스튬",
-    price: 30000,
-    discount_rate: 12,
-    discount_price: 20000,
-    heart_count: 1030,
-    store_name: "키테루 키테루",
-    rank: 6,
-  },
-
-  {
-    thumbnail: "/resources/images/dummy_img/product_07.png",
-    title: "섹시 스트랩 간호사 st 코스튬",
-    price: 30000,
-    discount_rate: 12,
-    discount_price: 20000,
-    heart_count: 1030,
-    store_name: "키테루 키테루",
-    rank: 6,
-  },
-
-  {
-    thumbnail: "/resources/images/dummy_img/product_07.png",
-    title: "섹시 스트랩 간호사 st 코스튬",
-    price: 30000,
-    discount_rate: 12,
-    discount_price: 20000,
-    heart_count: 1030,
-    store_name: "키테루 키테루",
-    rank: 6,
-  },
-
-  {
-    thumbnail: "/resources/images/dummy_img/product_07.png",
-    title: "섹시 스트랩 간호사 st 코스튬",
-    price: 30000,
-    discount_rate: 12,
-    discount_price: 20000,
-    heart_count: 1030,
-    store_name: "키테루 키테루",
-    rank: 6,
-  },
-];
-
 export function MainBanner() {
   const swiperRef = useRef<SwiperType | null>(null);
 
   const components = [
     // 임시
-    { img: "/resources/images/dummy_img/main_banner_01.png", link: "/" },
-    { img: "/resources/images/dummy_img/main_banner_02.png", link: "/" },
-    { img: "/resources/images/dummy_img/main_banner_03.png", link: "/" },
+    { img: "/resources/images/dummy_img/mob_banner_01.png", link: "/" },
+    { img: "/resources/images/dummy_img/mob_banner_02.png", link: "/" },
+    { img: "/resources/images/dummy_img/mob_banner_03.png", link: "/" },
   ];
 
   const paintBullets = (swiper: SwiperType) => {
@@ -176,12 +58,12 @@ export function MainBanner() {
   };
 
   return (
-    <FlexChild className={clsx("page_container", styles.main_banner)}>
+    <FlexChild className={clsx(styles.main_banner)}>
       <Swiper
         loop={true}
         slidesPerView={1}
         speed={600}
-        spaceBetween={40}
+        spaceBetween={0}
         modules={[Pagination, Autoplay]}
         pagination={{
           dynamicBullets: true,
@@ -208,10 +90,7 @@ export function MainBanner() {
           return (
             <SwiperSlide key={i} className={`swiper_0${i}`}>
               <Link href={item.link}>
-                <div
-                  className={styles.slideItem}
-                  style={{ backgroundImage: `url(${item.img})` }}
-                ></div>
+                <Image src={item.img} width={'100%'} />
               </Link>
             </SwiperSlide>
           );
@@ -230,15 +109,13 @@ export function LinkBanner() {
   ];
 
   return (
-    <FlexChild width={"auto"}>
-      <div className={styles.link_Banner}>
-        {link_banner.map((item, i) => (
-          <Link href={item.link} key={i}>
-            <Image src={item.src} width={"100%"} height={"auto"} />
-          </Link>
-        ))}
-      </div>
-    </FlexChild>
+    <VerticalFlex className={styles.link_Banner}>
+      {link_banner.map((item, i) => (
+        <Link href={item.link} key={i}>
+          <Image src={item.src} width={"100%"} height={"auto"} />
+        </Link>
+      ))}
+    </VerticalFlex>
   );
 }
 
@@ -281,11 +158,6 @@ export function MainCategory() {
       name: "여성토이",
       thumbnail: "/resources/images/category/gif_ca_Img_02.gif",
     },
-    {
-      name: "윤활제/젤",
-      thumbnail: "/resources/images/category/gif_ca_Img_03.gif",
-    },
-    { name: "콘돔", thumbnail: "/resources/images/category/gif_ca_Img_04.gif" },
     { name: "의류", thumbnail: "/resources/images/category/gif_ca_Img_05.gif" },
     {
       name: "BDSM 토이",
@@ -295,6 +167,11 @@ export function MainCategory() {
       name: "LGBT 토이",
       thumbnail: "/resources/images/category/gif_ca_Img_07.gif",
     },
+    {
+      name: "윤활제/젤",
+      thumbnail: "/resources/images/category/gif_ca_Img_03.gif",
+    },
+    { name: "콘돔", thumbnail: "/resources/images/category/gif_ca_Img_04.gif" },
   ];
 
   return (
@@ -302,7 +179,7 @@ export function MainCategory() {
       {ca_test.map((cat, i) => (
         <VerticalFlex className={styles.ca_item} key={i}>
           <FlexChild className={styles.ca_thumb}>
-            <Image src={cat.thumbnail} width={"auto"} height={120} />
+            <Image src={cat.thumbnail} width={'auto'} height={66} />
           </FlexChild>
           <Span>{cat.name}</Span>
         </VerticalFlex>
@@ -412,37 +289,20 @@ export function ProductSlider({
         <FlexChild id={id} className={styles.ProductSlider}>
           <Swiper
             loop={true}
-            slidesPerView={5}
+            slidesPerView={1.5}
             speed={600}
-            spaceBetween={20}
+            spaceBetween={15}
             modules={[Autoplay, Navigation]}
             autoplay={{ delay: 4000 }}
-            navigation={{
-              prevEl: `#${id} .${styles.prevBtn}`,
-              nextEl: `#${id} .${styles.nextBtn}`,
-            }}
           >
             {reviewTest.map((review, i) => {
               return (
                 <SwiperSlide key={i}>
-                  <ReviewImgCard review={review} lineClamp={lineClamp ?? 2} />
+                  <ReviewImgCard width={'auto'} review={review} lineClamp={lineClamp ?? 2} />
                 </SwiperSlide>
               );
             })}
           </Swiper>
-
-          <div className={clsx(styles.naviBtn, styles.prevBtn)}>
-            <Image
-              src={"/resources/icons/arrow/slide_arrow.png"}
-              width={10}
-            ></Image>
-          </div>
-          <div className={clsx(styles.naviBtn, styles.nextBtn)}>
-            <Image
-              src={"/resources/icons/arrow/slide_arrow.png"}
-              width={10}
-            ></Image>
-          </div>
         </FlexChild>
       ) : (
         <NoContent type="상품" />
@@ -468,7 +328,6 @@ export function NewProducts({ initProducts }: { initProducts: Pageable }) {
       fallbackData:[initProducts]
     }
   );
-  console.log(origin)
 
   return <ProductList id="new" products={newProducts} Load={Load} />;
 }
@@ -485,10 +344,10 @@ export function ProductList({
   Load: () => void;
 }) {
 
-  const [visibleCount, setVisibleCount] = useState(12);
+  const [visibleCount, setVisibleCount] = useState(6);
 
   const showMore = () => {
-    setVisibleCount((prev) => prev + 12); // 12개씩 늘려서 보여주기
+    setVisibleCount((prev) => prev + 6); // 12개씩 늘려서 보여주기
     Load(); // 서버에서도 다음 페이지 로드
   };
 
@@ -496,7 +355,7 @@ export function ProductList({
     <>
       {products.length > 0 ? (
         <VerticalFlex gap={10}>
-          <MasonryGrid gap={20} breakpoints={6}>
+          <MasonryGrid gap={15} width={'100%'}>
             {/* {products.map((product, i) => {
               return (
                 <TestProductCard
@@ -540,7 +399,7 @@ export function ProductList({
                   } as any
                 }
                 lineClamp={2}
-                width={200}
+                width={'auto'}
               />
             );
           })}
