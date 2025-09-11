@@ -22,6 +22,7 @@ import { memo, useCallback, useEffect, useRef, useState } from "react";
 import ProductCard from "@/components/card/ProductCard";
 import { usePathname } from "next/navigation";
 import style from "./ProductCard.module.css";
+import Link from "next/link";
 
 
 type ListItem = {
@@ -39,13 +40,13 @@ type ListItem = {
 // 라인클램프는 제목태그에 달아서 속성 주기.
 
 export function TestProductCard(
-   { product, lineClamp, width, autoPlay, commingSoon }:
+   { product, lineClamp, width, autoPlay, specialType }:
    { 
       product: ListItem;
       lineClamp: number; 
       width?: number | string;
       autoPlay? : number;
-      commingSoon? : boolean;
+      specialType? : string;
    }) 
 {
 
@@ -69,28 +70,31 @@ export function TestProductCard(
          className={style.prodcut_item}
       >
          <FlexChild className={style.imgBox}>
-            {/* { // 프로덕트 페이지가 best일때만 나타나기.
-               store === 'best' && (
-                  <FlexChild 
-                     className={clsx(style.rank, (product.rank < 3 ? style.topRank : ''))}
-                  >
-                     <Span className="SacheonFont">{product.rank + 1}</Span>
-                  </FlexChild>
-               )
-            } */}
-            {
-               adultCheck === true ? 
-               <Image src={product.thumbnail} width={"100%"} height={"auto"}/>
-               :
-               // 성인인증 안될때 나오는 이미지
-               <Image src={'/resources/images/19_only.png'} width={"100%"} height={"auto"}/>
-            }
+            <Link href={'/products/detail'}> {/* 링크 상품 링크로 바꾸기 */}
 
-            {
-               commingSoon && ( // 입고예정 체크
-                  <Image className={style.commingSoonImg} src={'/resources/images/commingSoon_img.png'} width={"101%"} height={"auto"}/>
-               )
-            }
+               { // 프로덕트 페이지가 best일때만 나타나기. 제품 인기순 표시임.
+                  specialType === 'best' && (
+                     <FlexChild 
+                        className={clsx(style.rank, (product.rank < 3 ? style.topRank : ''))}
+                     >
+                        <Span className="SacheonFont">{product.rank + 1}</Span>
+                     </FlexChild>
+                  )
+               }
+               {
+                  adultCheck === true ? 
+                  <Image src={product.thumbnail} width={"100%"} height={"auto"}/>
+                  :
+                  // 성인인증 안될때 나오는 이미지
+                  <Image src={'/resources/images/19_only.png'} width={"100%"} height={"auto"}/>
+               }
+   
+               {
+                  specialType === 'commingSoon' && ( // 입고예정일때만 나오기
+                     <Image className={style.specialTypeImg} src={'/resources/images/commingSoon_img.png'} width={"101%"} height={"auto"}/>
+                  )
+               }
+            </Link>
          </FlexChild>
 
          <FlexChild padding={"0 5px"} className={style.text_box}>

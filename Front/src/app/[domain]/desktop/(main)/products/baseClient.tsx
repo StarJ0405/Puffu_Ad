@@ -182,7 +182,7 @@ const ListProduct: ListItem[] = [ // 임시
    rank: 2,
 },
 {
-   thumbnail: '/resources/images/dummy_img/product_04.jpg',
+   thumbnail: '/resources/images/dummy_img/product_04.png',
    title: '스지망 쿠파 로린코 처녀궁 프리미엄 소프트',
    price: 30000,
    discount_rate: 12,
@@ -223,7 +223,7 @@ const ListProduct: ListItem[] = [ // 임시
 },
 ]
 
-export function BaseProductList({commingSoon} : {commingSoon? : boolean}) {
+export function BaseProductList({specialType} : {specialType? : string}) {
 
    return (
       <>    
@@ -240,7 +240,7 @@ export function BaseProductList({commingSoon} : {commingSoon? : boolean}) {
                               lineClamp={2}
                               key={i}
                               width={244}
-                              commingSoon={commingSoon}
+                              specialType={specialType}
                            />
                         )
                      })

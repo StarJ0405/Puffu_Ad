@@ -24,7 +24,7 @@ export default async function () {
 
 
             <VerticalFlex className={Pstyles.list}>
-               <BaseProductList commingSoon={true} />
+               <BaseProductList specialType={'commingSoon'} />
             </VerticalFlex>
          </Container>
       </section>
