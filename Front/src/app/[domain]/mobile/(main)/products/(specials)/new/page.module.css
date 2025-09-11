@@ -1,0 +1,27 @@
+.titleBox {
+   margin-bottom: 50px;
+}
+
+.titleBox .title {
+   display: flex;
+   flex-direction: column;
+   width: auto;
+}
+
+.titleBox .title h2 {
+   display: flex;
+   align-items: end;
+   color: #fff;
+   font-size: 30px;
+   line-height: 1;
+   gap: 5px;
+}
+
+.titleBox .title h2 span {
+   font-size: 1.36em !important;
+}
+
+.titleBox .title p {
+   font-size: 20px; color: #dfdfdf;
+   line-height: 1.2;
+}

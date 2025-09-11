@@ -1,6 +1,4 @@
 import React from "react";
-import Header from './(shared)/Header/header'
-import Footer from './(shared)/Footer/footer'
 
 export default async function ({
   children,
@@ -10,9 +8,7 @@ export default async function ({
   return (
     <>
       {/*  */}
-      <Header />
       {children}
-      <Footer />
       {/*  */}
     </>
   );

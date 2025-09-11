@@ -1,39 +1,27 @@
 "use client"
 import Button from "@/components/buttons/Button";
-import Div from "@/components/div/Div";
+import TestProductCard from "@/components/card/TestProductCard";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import MasonryGrid from "@/components/masonry/MasonryGrid";
-import TestProductCard from "@/components/card/TestProductCard";
-import Icon from "@/components/icons/Icon";
 import Image from "@/components/Image/Image";
-import P from "@/components/P/P";
-import Select from "@/components/select/Select";
-import Span from "@/components/span/Span";
-import NoContent from "@/components/noContent/noContent";
-import StarRate from "@/components/star/StarRate";
-import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
-import useData from "@/shared/hooks/data/useData";
-import useNavigate from "@/shared/hooks/useNavigate";
-import { requester } from "@/shared/Requester";
-import NiceModal from "@ebay/nice-modal-react";
-import clsx from "clsx";
-import { useParams } from "next/navigation";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
-import styles from "./page.module.css";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import ListPagination from "@/components/listPagination/ListPagination";
+import MasonryGrid from "@/components/masonry/MasonryGrid";
+import NoContent from "@/components/noContent/noContent";
+import P from "@/components/P/P";
+import Span from "@/components/span/Span";
+import clsx from "clsx";
+import { usePathname } from "next/navigation";
+import styles from "./page.module.css";
 
 
 
 
-export function ProdcutCategory() { // 카테고리메뉴
+export function ProdcutCategory() { // 대분류 카테고리
 
    const pathname = usePathname();
    
-   // css : 카테고리 추가되어도 flex-wrap 구조 문제 없게 수정해놓기
+   // css : 카테고리 추가되어도 flex-wrap 구조 문제 없게 수정하기
 
    const ca_test = [
       {name: '남성토이', thumbnail: '/resources/images/category/gif_ca_Img_01.gif',},
@@ -79,7 +67,7 @@ export function ProdcutCategory() { // 카테고리메뉴
 
 
 
-export function SecondCategory() { // 카테고리메뉴
+export function SecondCategory() { // 중분류, 소분류 카테고리
    
 
    const ca_test = [
@@ -111,33 +99,31 @@ export function SecondCategory() { // 카테고리메뉴
 }
 
 
-export function HotDealCategory() {
 
-
-   const hotdeals = [
-      {thumbnail: '/resources/images/dummy_img/hotdeal_banner_01.png', filter: 'daySale'},
-      {thumbnail: '/resources/images/dummy_img/hotdeal_banner_02.png', filter: 'weekSale'},
-      {thumbnail: '/resources/images/dummy_img/hotdeal_banner_03.png', filter: 'setSale'},
-      {thumbnail: '/resources/images/dummy_img/hotdeal_banner_04.png', filter: 'pointSale'},
-      {thumbnail: '/resources/images/dummy_img/hotdeal_banner_05.png', filter: 'specialSale'},
-      {thumbnail: '/resources/images/dummy_img/hotdeal_banner_06.png', filter: 'refuerSale'},
-   ]
+// 인기순, 추천순, 최신순 필터
+export function SortFilter() {
 
    return (
-      <HorizontalFlex>
-         {
-            hotdeals.map((cat, i)=> (
-               <FlexChild cursor="pointer" key={i}>
-                  <Image 
-                     src={cat.thumbnail}
-                     width={216}
-                  />
-               </FlexChild>
-            ))
-         }
+      <HorizontalFlex className={styles.sort_group}>
+         <FlexChild className={styles.count_txt}>
+            <P>
+               <b>38</b>개의 상품
+            </P>
+         </FlexChild>
+
+         <FlexChild width={'auto'}>
+            <HorizontalFlex className={styles.sort_box}>
+               <Button className={styles.sort_btn}>인기순</Button>
+               <Button className={styles.sort_btn}>추천순</Button>
+               <Button className={styles.sort_btn}>최신순</Button>
+            </HorizontalFlex>
+         </FlexChild>
       </HorizontalFlex>
    )
 }
+
+
+
 
 
 type ListItem = {
@@ -184,7 +170,7 @@ const ListProduct: ListItem[] = [ // 임시
    rank: 2,
 },
 {
-   thumbnail: '/resources/images/dummy_img/product_04.jpg',
+   thumbnail: '/resources/images/dummy_img/product_04.png',
    title: '스지망 쿠파 로린코 처녀궁 프리미엄 소프트',
    price: 30000,
    discount_rate: 12,
@@ -225,25 +211,30 @@ const ListProduct: ListItem[] = [ // 임시
 },
 ]
 
-export function ProductList() {
+export function SearchList() {
 
    return (
-      <>
+      <>    
          {ListProduct.length > 0 ? (
-         <MasonryGrid gap={20} breakpoints={5}>
-            {
-               ListProduct.map((product, i) => {
-                  return (
-                     <TestProductCard
-                        product={product}
-                        lineClamp={2}
-                        key={i}
-                        width={244}
-                     />
-                  )
-               })
-            }
-         </MasonryGrid>
+         <>
+            <SortFilter />
+            <VerticalFlex>
+               <MasonryGrid gap={20} breakpoints={5}>
+                  {
+                     ListProduct.map((product, i) => {
+                        return (
+                           <TestProductCard
+                              product={product}
+                              lineClamp={2}
+                              key={i}
+                              width={244}
+                           />
+                        )
+                     })
+                  }
+               </MasonryGrid>
+            </VerticalFlex>
+         </>
          ):(
             <NoContent type={'상품'} />
          )}

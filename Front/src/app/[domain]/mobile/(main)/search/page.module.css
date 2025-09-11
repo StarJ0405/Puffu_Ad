@@ -1,0 +1,122 @@
+.title_box {
+   margin-bottom: 20px;
+}
+
+.title_box h3 {
+   font-size: 30px;
+   margin-bottom: 80px;
+   line-height: 1;
+   font-weight: 700;
+}
+
+
+.sort_group {align-items: end !important; margin-bottom: 20px;}
+
+.sort_group .count_txt {
+   font-size: 16px;
+   color: #fff;
+}
+
+.sort_group .count_txt p > b {
+   font-weight: 600 !important;
+}
+
+.sort_group .sort_box {
+   width: auto;
+   gap: 10px;
+}
+
+.sort_group .sort_box .sort_btn {
+   padding: 5px 9px;
+   border: 1px solid #D4D4D4;
+   border-radius: 3px !important;
+   background: transparent;
+   font-size: 15px;
+   line-height: 1;
+   color: #e4e4e4;
+   transition: all 0.1s;
+}
+
+.sort_group .sort_box .sort_btn:hover,
+.sort_btn.focus {
+   background: #050505;
+   color: var(--main-color1);
+   border-color: var(--main-color1);
+}
+
+/* 제품 카테고리 */
+.category_wrap {
+   display: flex;
+   width: fit-content;
+   justify-content: center;
+   gap: 25px 40px;
+   width: 100%;
+   max-width: 784px;
+   flex-wrap: wrap;
+}
+
+.category_wrap > * {
+   flex: unset !important;
+}
+
+.category_wrap .ca_item {
+   gap: 10px;
+   font-size: 16px;
+   text-align: center;
+   color: #f4f4f4;
+   cursor: pointer;
+   --hover-color : var(--main-color1);
+   transition: all 0.2s;
+   width: auto;
+}
+
+.category_wrap .ca_item .ca_thumb {
+   border: 3px solid transparent;
+   border-radius: 100px;
+   overflow: hidden;
+   transition: inherit;
+   width: 120px;
+   justify-content: center;
+}
+
+.category_wrap .ca_item:hover,
+.category_wrap .ca_item.active {
+   color: var(--hover-color);
+}
+
+.category_wrap .ca_item:hover .ca_thumb,
+.category_wrap .ca_item.active .ca_thumb {
+   border-color: var(--hover-color);
+}
+
+.category_wrap .ca_all .ca_thumb {
+   background: #2D2D2D;
+   justify-content: center !important;
+   font-size: 35px; font-weight: 600;
+}
+
+
+/* 메인 카테고리  end -------------------*/
+
+
+
+/* 중분류, 소분류 카테고리 */
+.category_list {
+   display: flex;
+   gap: 20px;
+   align-self: start;
+   /* margin-bottom: 20px; */
+}
+
+.category_list > li {
+   color: #fff;
+   font-weight: 400;
+   line-height: 1;
+   text-align: center;
+   opacity: 0.5;
+   cursor: pointer;
+}
+
+.category_list > li.active {
+   opacity: 1; font-weight: 500;
+}

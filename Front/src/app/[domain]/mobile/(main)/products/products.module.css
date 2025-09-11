@@ -10,7 +10,7 @@
 }
 
 
-.sort_group {align-items: end !important;}
+.sort_group {align-items: end !important; margin-bottom: 20px;}
 
 .sort_group .count_txt {
    font-size: 16px;

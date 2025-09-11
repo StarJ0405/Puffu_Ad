@@ -170,6 +170,10 @@ a {
 
 @media (max-width: 769px) {
 
+  html {
+    max-width: 768px;
+  }
+
   .page_container {
     width: 100%;
     max-width: 768px;
