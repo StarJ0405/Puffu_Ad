@@ -131,6 +131,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
     address_id,
     shipping_method_id,
     message,
+    payment,
   }: {
     user_id: string;
     cart_id: string;
@@ -138,6 +139,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
     address_id: string;
     shipping_method_id: string;
     message: string;
+    payment: any;
   }): Promise<Order | null> {
     if (
       !user_id ||
@@ -216,6 +218,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
       address: _address,
       shipping_methods: [_shipping_method],
       status: OrderStatus.PENDING,
+      payment_data: payment,
     });
     await Promise.all(
       (items || []).map(async (item) => {

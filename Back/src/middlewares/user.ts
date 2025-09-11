@@ -7,7 +7,10 @@ const logInUser = async (req: Request, res: Response, next: NextFunction) => {
   const authorization = req.headers.authorization;
   if (authorization) {
     const token = verifyToken(authorization);
-    if (!token.keep || token.exp > new Date().getTime() / 1000) {
+    if (
+      token?.user_id &&
+      (!token?.keep || token?.exp > new Date().getTime() / 1000)
+    ) {
       const user_id = token.user_id;
       const service = container.resolve(UserService);
       req.user = await service.getUser(user_id);

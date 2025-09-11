@@ -27,8 +27,8 @@ interface InputImageProps {
   maxFiles?: number;
   minFiles?: number;
   frame?: boolean; // 디자인 부분 제거
-  backgroundColor?:React.CSSProperties['backgroundColor']
-  color?:React.CSSProperties['color']
+  backgroundColor?: React.CSSProperties["backgroundColor"];
+  color?: React.CSSProperties["color"];
 }
 
 const InputImage = forwardRef(
@@ -43,6 +43,8 @@ const InputImage = forwardRef(
       maxFiles,
       minFiles,
       frame = true,
+      backgroundColor,
+      color,
     }: InputImageProps,
     ref
   ) => {
@@ -237,6 +239,8 @@ const InputImage = forwardRef(
               fileInputRef.current?.click();
             }}
             onChange={handleImageChange}
+            backgroundColor={backgroundColor}
+            color={color}
           >
             {images?.length === 0 ? (
               <VerticalFlex justifyContent="center" gap={10}>
@@ -319,6 +323,8 @@ export function DropZone({
   classNames,
   onChange,
   onClick,
+  backgroundColor,
+  color,
 }: {
   children: React.ReactNode;
   disabled?: boolean;
@@ -329,6 +335,8 @@ export function DropZone({
   };
   onChange?: (files: File[]) => void;
   onClick?: () => void;
+  backgroundColor?: React.CSSProperties["backgroundColor"];
+  color?: React.CSSProperties["color"];
 }) {
   const [isDragOver, setIsDragOver] = useState(false);
   const handleClick = useCallback(
@@ -374,6 +382,10 @@ export function DropZone({
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
+      style={{
+        backgroundColor,
+        color,
+      }}
     >
       {children}
     </div>

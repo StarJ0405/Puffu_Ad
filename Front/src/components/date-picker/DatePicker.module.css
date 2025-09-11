@@ -29,6 +29,18 @@
   box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
 }
 
+.dateDisplay.disabled {
+  cursor: default;
+  background-color: #ccc;
+  color: #777;
+}
+.dateDisplay.disabled:hover {
+  border-color: #ccc;
+}
+.dateDisplay.disabed:focus {
+  border-color: #ccc;
+}
+
 /* Portal로 렌더링되는 캘린더 컨테이너 */
 .calendarPortal {
   position: absolute; /* DatePicker 컴포넌트의 위치와 무관하게 body 기준으로 배치 */

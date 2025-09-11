@@ -29,7 +29,14 @@ export const GET: ApiHandler = async (req, res) => {
 
 export const DELETE: ApiHandler = async (req, res) => {
   const user = req.user;
+  const { reason } = req.parsedQuery;
   const service = container.resolve(UserService);
+  await service.update(
+    { id: user.id },
+    {
+      metadata: () => `metadata || '{"reason":"${reason}"}'::jsonb`,
+    }
+  );
   await service.delete({ id: user.id });
   return res.json({ message: "success" });
 };

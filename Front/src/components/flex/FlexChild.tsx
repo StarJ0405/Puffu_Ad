@@ -18,12 +18,14 @@ function FlexChild({
   maxWidth,
   minHeight,
   maxHeight,
+  overflow,
   overflowX,
   overflowY,
   alignItems = "center",
   flexStart,
   alignSelf,
   justifySelf,
+  flexDirection,
   gap,
   justifyContent,
   backgroundColor,
@@ -58,6 +60,7 @@ function FlexChild({
   zIndex,
   flexShrink,
   scrollMarginTop,
+  transform,
   hidden,
   onClick,
   onContextMenu,
@@ -111,6 +114,11 @@ function FlexChild({
       if (borderBottom) styles.borderBottom = borderBottom;
       if (borderLeft) styles.borderLeft = borderLeft;
     }
+    if (overflow || overflowX || overflowY) {
+      if (overflow) styles.overflow = overflow;
+      if (overflowX) styles.overflowX = overflowX;
+      if (overflowY) styles.overflowY = overflowY;
+    }
 
     return styles;
   };
@@ -143,6 +151,7 @@ function FlexChild({
         flex,
         flexBasis,
         flexGrow,
+        flexDirection,
         cursor,
         position,
         top,
@@ -154,6 +163,7 @@ function FlexChild({
         fontSize,
         scrollbarGutter,
         color,
+        transform,
         flexShrink,
         boxShadow,
         scrollMarginTop,

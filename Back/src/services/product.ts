@@ -40,19 +40,28 @@ export class ProductService extends BaseService<Product, ProductRepository> {
       .leftJoinAndSelect("p.discounts", "ds")
       .leftJoinAndSelect("ds.discount", "dc")
       .leftJoinAndSelect("p.wishlists", "wis")
+      .leftJoin("p.category", "ct")
       .where("p.visible IS TRUE")
       .andWhere("v.visible IS TRUE");
 
     const where: any = options?.where;
 
     if (where) {
+      if (where.ids) {
+        builder = builder.andWhere(
+          `p.id in (${String(where.ids)
+            .split(",")
+            .map((id: string) => `'${id}'`)
+            .join(",")})`
+        );
+      }
       if (where.store_id) {
         builder = builder.andWhere("p.store_id = :store_id", {
           store_id: where.store_id,
         });
       }
       if ("adult" in where) {
-        builder = builder.andWhere("p.adult is :adult", { adult: where.adult });
+        builder = builder.andWhere(`p.adult is ${where.adult}`);
       }
       if (where.user_id) {
         builder = builder.andWhere(
@@ -64,12 +73,15 @@ export class ProductService extends BaseService<Product, ProductRepository> {
         );
       }
       if (where.category_id) {
-        builder = builder.andWhere(
-          "p.category_id in (SELECT id FROM public.category WHERE mpath like :category_id)",
-          {
-            category_id: `%${where.category_id}%`,
-          }
-        );
+        // builder = builder.andWhere(
+        //   "p.category_id in (SELECT id FROM public.category WHERE mpath like :category_id)",
+        // {
+        //   category_id: `%${where.category_id}%`,
+        // }
+        // );
+        builder = builder.andWhere(`ct.mpath like :category_id`, {
+          category_id: `%${where.category_id}%`,
+        });
       }
       if (where.q) {
         const q = where.q;
@@ -113,7 +125,7 @@ export class ProductService extends BaseService<Product, ProductRepository> {
               "discount.id = p.id"
             )
             .addSelect(
-              `p.price * (100.0 - COALESCE(discount.value))/100.0`,
+              `p.price * (100.0 - COALESCE(discount.value,0))/100.0`,
               "dpc"
             )
             .orderBy("dpc", "ASC")
@@ -128,7 +140,7 @@ export class ProductService extends BaseService<Product, ProductRepository> {
               "discount.id = p.id"
             )
             .addSelect(
-              `p.price * (100.0 - COALESCE(discount.value))/100.0`,
+              `p.price * (100.0 - COALESCE(discount.value,0))/100.0`,
               "dpc"
             )
             .orderBy("dpc", "DESC")
@@ -191,6 +203,13 @@ export class ProductService extends BaseService<Product, ProductRepository> {
             .addOrderBy("p.created_at", "DESC");
           break;
         }
+        case "random": {
+          builder
+            .addSelect("Random()", "rand")
+            .orderBy("rand", "DESC")
+            .addOrderBy("p.created_at", "DESC");
+          break;
+        }
         default: {
           builder = builder.orderBy("p.created_at", "DESC");
           break;
@@ -219,7 +238,7 @@ export class ProductService extends BaseService<Product, ProductRepository> {
         last,
       };
     } else {
-      return { content: await builder.getMany() };
+      return await builder.getMany();
     }
   }
   async getPageable(

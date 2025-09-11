@@ -255,6 +255,7 @@ function Icon({
       className={className}
       opacity={opacity}
       hidden={hidden}
+      cursor={cursor}
       {...getDirectionalStyles()}
     >
       {center ? (

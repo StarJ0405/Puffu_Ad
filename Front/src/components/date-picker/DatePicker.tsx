@@ -1,4 +1,5 @@
 "use client";
+import clsx from "clsx";
 import React, {
   CSSProperties,
   useCallback,
@@ -26,6 +27,7 @@ interface DatePickerProps {
   ) => string;
   showTimePicker?: boolean; // 시간 선택기 표시 여부
   zIndex?: CSSProperties["zIndex"];
+  disabled?: boolean;
 }
 
 // 날짜/시간 포맷 함수 (YYYY-MM-DD HH:MM)
@@ -71,6 +73,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
   dateFormat = defaultDateFormat,
   showTimePicker = false,
   zIndex = 1000,
+  disabled = false,
 }) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedSingleDate, setSelectedSingleDate] = useState<Date | null>(
@@ -219,8 +222,9 @@ const DatePicker: React.FC<DatePickerProps> = ({
     <div className={styles.datePickerContainer}>
       <div
         ref={pickerRef}
-        className={styles.dateDisplay}
+        className={clsx(styles.dateDisplay, { [styles.disabled]: disabled })}
         onClick={() => {
+          if (disabled) return;
           setIsCalendarOpen((prev) => !prev);
           updateCalendarPosition();
         }}

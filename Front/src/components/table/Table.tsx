@@ -569,7 +569,9 @@ const PageableTable = forwardRef(
         return data;
       },
       getData() {
-        return selectable ? selected.flat() : data;
+        let _data = selectable ? selected.flat() : data;
+        if (Array.isArray(_data)) _data = _data.filter(Boolean);
+        return _data;
       },
       async getAllData() {
         const data = await onSearch(condition);

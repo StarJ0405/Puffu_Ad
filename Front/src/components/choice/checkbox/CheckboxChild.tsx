@@ -39,10 +39,10 @@ interface CheckboxChildProps
   style?: React.CSSProperties;
   children?: React.ReactNode;
   images?: {
-    on?: string;
-    off?: string;
-    onHover?: string;
-    offHover?: string;
+    on?: string | React.ReactNode;
+    off?: string | React.ReactNode;
+    onHover?: string | React.ReactNode;
+    offHover?: string | React.ReactNode;
   };
 }
 
@@ -70,9 +70,13 @@ const CheckboxChild = forwardRef<HTMLInputElement, CheckboxChildProps>(
     // 이미지 경로 결정 로직
     const currentImages = images || groupImages;
     const hasImages = currentImages?.on && currentImages?.off;
+    const isBackgroundImage =
+      hasImages &&
+      typeof currentImages.on === "string" &&
+      typeof currentImages.off === "string";
 
     const backgroundImage = useMemo(() => {
-      if (hasImages) {
+      if (hasImages && isBackgroundImage) {
         if (isChecked) {
           if (isHovered && currentImages?.onHover)
             return `url(${currentImages.onHover})`;
@@ -84,7 +88,7 @@ const CheckboxChild = forwardRef<HTMLInputElement, CheckboxChildProps>(
         }
       }
       return "none";
-    }, [isChecked, isHovered, hasImages, currentImages]);
+    }, [isChecked, isHovered, hasImages, currentImages, isBackgroundImage]);
     // 마운트 시 체크박스 등록, 언마운트 시 등록 해제
     useEffect(() => {
       registerCheckbox(id);
@@ -115,9 +119,9 @@ const CheckboxChild = forwardRef<HTMLInputElement, CheckboxChildProps>(
           display: "inline-block", // 또는 'flex', 'inline-flex' 등 적절한 값
           cursor: "pointer",
           backgroundImage: backgroundImage,
-          backgroundSize: hasImages ? "contain" : undefined,
-          backgroundRepeat: hasImages ? "no-repeat" : undefined,
-          backgroundPosition: hasImages ? "center" : undefined,
+          backgroundSize: isBackgroundImage ? "contain" : undefined,
+          backgroundRepeat: isBackgroundImage ? "no-repeat" : undefined,
+          backgroundPosition: isBackgroundImage ? "center" : undefined,
         }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -143,6 +147,9 @@ const CheckboxChild = forwardRef<HTMLInputElement, CheckboxChildProps>(
           {...rest}
         />
         {!hasImages && children} {/* 이미지가 없으면 children 렌더링 */}
+        {!isBackgroundImage &&
+          hasImages &&
+          (isChecked ? currentImages.on : currentImages.off)}
       </div>
     );
   }

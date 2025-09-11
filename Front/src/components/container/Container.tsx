@@ -1,5 +1,6 @@
-import clsx from "clsx";
 import style from "./Container.module.css";
+
+import clsx from "clsx";
 
 function Container({
   width,

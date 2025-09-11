@@ -99,6 +99,9 @@ export class ChatroomService extends BaseService<Chatroom, ChatroomRepository> {
       return w;
     });
     _options.where = where;
+    _options.order = {
+      created_at: "desc",
+    };
 
     return await this.chatRepository.findAll(_options);
   }
@@ -124,7 +127,9 @@ export class ChatroomService extends BaseService<Chatroom, ChatroomRepository> {
       _options.relations = Array.isArray(_options.relations)
         ? _options.relations
         : ([_options.relations] as any);
-
+    _options.order = {
+      created_at: "desc",
+    };
     return await this.chatRepository.findPaging(page, _options);
   }
 

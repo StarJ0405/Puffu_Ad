@@ -88,20 +88,22 @@ export class LineItem extends BaseEntity {
   discount_price?: number;
 
   get total(): number | undefined {
-    if (
-      typeof this.unit_price !== "undefined" &&
-      typeof this.tax_rate !== "undefined"
-    )
-      return this.quantity * this.unit_price * (1 + this.tax_rate);
+    if (typeof this.unit_price !== "undefined")
+      return this.quantity * this.unit_price;
     return undefined;
   }
-
-  get total_discount(): number | undefined {
+  get total_tax(): number | undefined {
     if (
       typeof this.discount_price !== "undefined" &&
       typeof this.tax_rate !== "undefined"
     )
-      return this.quantity * this.discount_price * (1 + this.tax_rate);
+      return (this.quantity * this.discount_price * this.tax_rate) / 100.0;
+    return undefined;
+  }
+
+  get total_discount(): number | undefined {
+    if (typeof this.discount_price !== "undefined")
+      return this.quantity * this.discount_price;
     return undefined;
   }
 

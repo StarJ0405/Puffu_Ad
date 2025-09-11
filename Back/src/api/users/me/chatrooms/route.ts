@@ -1,4 +1,3 @@
-import { Chat } from "models/chat";
 import { ChatroomService } from "services/chatroom";
 import { container } from "tsyringe";
 

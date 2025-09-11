@@ -29,9 +29,7 @@
   font-size: 20px;
   font-weight: bold;
 }
-.checkbox {
-  width: max-content;
-}
+
 .index {
   width: 100px;
   min-width: 100px;
@@ -53,6 +51,11 @@
 .headerCell {
 }
 .columnCell {
+  min-width: 0;
+}
+.checkbox {
+  width: max-content;
+  min-width: 24px;
 }
 .pageLine {
   padding-top: 20px;

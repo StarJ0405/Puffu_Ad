@@ -75,6 +75,17 @@ export class Order extends BaseEntity {
       }, 0.0) || 0.0
     );
   }
+  get total_tax(): number {
+    return (
+      this.items?.reduce((acc, now) => {
+        return (
+          acc +
+          ((now.discount_price || 0) * now.quantity * (now.tax_rate || 0)) /
+            100.0
+        );
+      }, 0.0) || 0.0
+    );
+  }
 
   get total_discounted(): number {
     return (
@@ -108,6 +119,7 @@ export class Order extends BaseEntity {
       ...this,
       total: this.total,
       total_discounted: this.total_discounted,
+      total_tax: this.total_tax,
     };
   }
 }

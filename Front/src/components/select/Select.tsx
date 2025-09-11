@@ -40,8 +40,12 @@ interface SelectProps<T extends string | number> {
   placeholder?: string;
   multiple?: boolean;
   onChange?: (selectedValue: T | T[] | undefined) => void;
-  width?: React.CSSProperties["width"];
+  height?: React.CSSProperties["height"];
+  minHeight?: React.CSSProperties["maxHeight"];
   maxHeight?: React.CSSProperties["maxHeight"];
+  width?: React.CSSProperties["width"];
+  maxWidth?: React.CSSProperties["maxWidth"];
+  minWidth?: React.CSSProperties["maxWidth"];
   classNames?: {
     line?: React.HTMLAttributes<HTMLElement>["className"];
     placeholder?: React.HTMLAttributes<HTMLElement>["className"];
@@ -63,6 +67,7 @@ interface SelectProps<T extends string | number> {
   onOpenChange?: (isOpen: boolean) => void;
   isOpen?: boolean;
   inside?: boolean; // true시 포탈 대신 박스 아래에 연장됨
+  hideScroll?: boolean;
   onClick?: ({
     disabled,
     isOpen,
@@ -81,7 +86,12 @@ function Select<T extends string | number>({
   placeholder = "선택하세요",
   multiple = false,
   onChange,
-  width = "100%",
+  width = "250px",
+  minWidth,
+  maxWidth,
+  hideScroll,
+  height,
+  minHeight,
   maxHeight = "200px",
   classNames,
   disabled = false,
@@ -290,6 +300,7 @@ function Select<T extends string | number>({
         width: dropdownPosition.width,
         maxHeight: maxHeight,
         zIndex: zIndex ? zIndex : undefined,
+        scrollbarWidth: hideScroll ? "none" : undefined,
       }}
     >
       <Options />
@@ -340,7 +351,7 @@ function Select<T extends string | number>({
       <div
         ref={selectRef}
         className={clsx(styles.selectContainer)}
-        style={{ width }}
+        style={{ width, height, minWidth }}
       >
         <div
           id={id}
@@ -371,7 +382,7 @@ function Select<T extends string | number>({
               onChange={(e) => setKeyword(e.target.value)}
             />
           ) : (
-            <div className={clsx(styles.selectedItemsDisplay, classNames?.search)}>
+            <div className={styles.selectedItemsDisplay}>
               {getDisplayValue()}
             </div>
           )}
@@ -403,7 +414,7 @@ function Select<T extends string | number>({
       <div
         ref={selectRef}
         className={clsx(styles.selectContainer)}
-        style={{ width }}
+        style={{ width, height, minWidth }}
       >
         <div
           id={id}
@@ -439,7 +450,7 @@ function Select<T extends string | number>({
               onChange={(e) => setKeyword(e.target.value)}
             />
           ) : (
-            <div className={clsx(styles.selectedItemsDisplay, classNames?.search)}>
+            <div className={styles.selectedItemsDisplay}>
               {getDisplayValue()}
             </div>
           )}

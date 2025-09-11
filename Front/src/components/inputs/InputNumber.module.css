@@ -4,18 +4,16 @@
   width: initial;
   display: flex;
   flex-direction: column;
-
-  --button-hover-bg : #707070;
+  border: 1px solid var(--line-color, #eaeaea);
+  border-radius: 4px;
 }
 
 .inputContainer {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   flex-grow: 1;
   width: max-content;
-  /* border: 1px solid var(--line-color, #ccc); */
-  border: 1px solid #D8D8D8;
-  border-radius: 4px;
+  height: 37px;
 }
 
 .mobileInputContainer {
@@ -33,22 +31,24 @@
   display: flex;
   align-items: center;
   flex-grow: 1;
+  height: 100%;
 }
 
 .input {
   width: 100%;
-  padding: 6px 12px;
+  height: 100%;
+  /* padding: 10px 12px; */
   font-size: 15px;
-  /* border: 1px solid var(--line-color, #ccc); */
+  font-weight: 600;
+  border: 1px solid var(--line-color, #ccc);
   border-radius: 0;
   box-shadow: none;
   outline: none;
   transition: border-color 0.2s ease-in-out;
-  /* background-color: var(--field-bg, #fff); */
-  background-color: #222;
+  background-color: var(--field-bg, #fff);
   -moz-appearance: textfield; /* Hide arrows for Firefox */
   text-align: center;
-  color: #fff;
+  color: #474747;
 }
 
 /* Hide default arrows for Chrome, Safari, Edge */
@@ -77,9 +77,16 @@
 
 .prefix,
 .suffix {
+  position: absolute;
   padding: 10px 0;
   color: var(--text-color, #333);
   white-space: nowrap;
+}
+.suffix {
+  right: 2px;
+}
+.prefix {
+  left: 2px;
 }
 
 .prefix.borderless,
@@ -92,12 +99,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 33px;
-  /* border: 1px solid var(--line-color, #ccc); */
+  width: 40px;
+  height: 37px;
+  border: 1px solid var(--line-color, #eaeaea);
   cursor: pointer;
-  /* background-color: var(--button-bg, #fff); */
-  background: #222;
+  background-color: var(--button-bg, #fff);
   transition: background-color 0.2s ease-in-out, opacity 0.2s ease-in-out;
 }
 
@@ -111,8 +117,7 @@
   border-top: none;
   border-bottom: none;
   /* border-right: none; */
-  border-radius: 4px 0 0 4px;
-  border-right: 1px solid #D8D8D8;
+  /* border-radius: 4px 0 0 4px; */
 }
 
 .rightArrow {
@@ -120,13 +125,12 @@
   border-top: none;
   border-bottom: none;
   /* border-left: none; */
-  border-radius: 0 4px 4px 0;
-  border-left: 1px solid #D8D8D8;
+  /* border-radius: 0 4px 4px 0; */
 }
 
 .leftArrow:not(.active),
 .rightArrow:not(.active) {
-  opacity: 1;
+  opacity: 0.5;
   cursor: not-allowed;
   background-color: var(--button-disabled-bg, #f8f8f8);
 }

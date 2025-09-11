@@ -108,6 +108,7 @@ export class UserService extends BaseService<User, UserRepository> {
     return await this.repository
       .builder("u")
       .leftJoinAndSelect("u.points", "pt")
+      .leftJoinAndSelect("u.accounts", "acc")
       .where(`u.id = :id`, { id })
       .andWhere(
         `(pt is null OR ((pt.ends_at IS NULL OR pt.ends_at > NOW()) AND pt.point - pt.used_point > 0))`

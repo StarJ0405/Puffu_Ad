@@ -1,7 +1,8 @@
 "use client";
+import styles from "./Accordion.module.css"; // Accordion.module.css는 그대로 사용
+
 import clsx from "clsx";
 import React, { ReactNode, useContext, useEffect, useMemo } from "react";
-import styles from "./Accordion.module.css"; // Accordion.module.css는 그대로 사용
 import { AccordionGroupContext } from "./AccordionGroup";
 
 // 기존의 P, Icon, useBrowserEvent 등은 임시로 주석 처리하거나 필요에 맞게 수정

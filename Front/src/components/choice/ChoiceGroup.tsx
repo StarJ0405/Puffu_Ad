@@ -13,18 +13,18 @@ import { defaultCheckboxImages } from "./checkbox/CheckboxGroup";
 // 이미지 타입 정의 (체크박스용)
 interface ChoiceImages {
   // 이름 변경: CheckboxImages -> ChoiceImages
-  on?: string;
-  off?: string;
-  onHover?: string;
-  offHover?: string;
+  on?: string | React.ReactNode;
+  off?: string | React.ReactNode;
+  onHover?: string | React.ReactNode;
+  offHover?: string | React.ReactNode;
 }
 
 // 이미지 타입 정의 (라디오용)
 interface RadioImages {
-  on?: string;
-  off?: string;
-  onHover?: string;
-  offHover?: string;
+  on?: string | React.ReactNode;
+  off?: string | React.ReactNode;
+  onHover?: string | React.ReactNode;
+  offHover?: string | React.ReactNode;
 }
 
 // ChoiceGroupContext 타입 정의

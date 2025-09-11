@@ -1,4 +1,6 @@
 "use client";
+import Icon from "@/components/icons/Icon";
+import Image from "@/components/Image/Image";
 import React, {
   createContext,
   ReactNode,
@@ -18,10 +20,10 @@ interface CheckboxGroupContextType {
   setAllChecked: (checked: boolean) => void;
   groupRefs: React.MutableRefObject<Set<string>>;
   groupImages?: {
-    on?: string;
-    off?: string;
-    onHover?: string;
-    offHover?: string;
+    on?: string | React.ReactNode;
+    off?: string | React.ReactNode;
+    onHover?: string | React.ReactNode;
+    offHover?: string | React.ReactNode;
   };
 }
 
@@ -40,10 +42,10 @@ interface CheckboxGroupProps {
   className?: string;
   style?: React.CSSProperties;
   images?: {
-    on?: string;
-    off?: string;
-    onHover?: string;
-    offHover?: string;
+    on?: string | React.ReactNode;
+    off?: string | React.ReactNode;
+    onHover?: string | React.ReactNode;
+    offHover?: string | React.ReactNode;
   };
 }
 
@@ -56,8 +58,26 @@ export const defaultCheckboxImages = {
   // off: "/resources/images/checkbox_off.png",
   // onHover: "/resources/images/checkbox_on.png",
   // offHover: "/resources/images/checkbox_hover.png",
-  off: "/resources/images/login_radio_off.png",
-  on: "/resources/icons/radio_on.svg",
+
+  // off: "/resources/images/login_radio_off.png",
+  // on: "/resources/icons/radio_on.svg",
+  off: (
+    <Image
+      src={"/resources/icons/radio_off.png"}
+      width={"100%"}
+      height={"100%"}
+    />
+  ),
+  on: (
+    <Icon
+      type="svg"
+      name="radio_on"
+      fill="none"
+      // src={"/resources/icons/radio_on.svg"}
+      width={"100%"}
+      height={"100%"}
+    />
+  ),
 };
 
 const CheckboxGroup: React.FC<CheckboxGroupProps> = ({

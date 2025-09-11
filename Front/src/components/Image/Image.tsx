@@ -27,6 +27,7 @@ const Image = ({
   borderRight,
   borderBottom,
   borderLeft,
+  boxShadow,
   padding,
   paddingTop,
   paddingRight,
@@ -185,6 +186,7 @@ const Image = ({
               bottom,
               left,
               transform,
+              boxShadow,
             },
             errorStyle,
             { ...getDirectionalStyles() }
@@ -240,6 +242,7 @@ const Image = ({
               left,
               aspectRatio,
               transform,
+              boxShadow,
             },
             successStyle,
             { ...getDirectionalStyles() }

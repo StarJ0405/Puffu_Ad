@@ -1,4 +1,6 @@
 "use client";
+import Icon from "@/components/icons/Icon";
+import Image from "@/components/Image/Image";
 import React, { createContext, useCallback, useRef, useState } from "react";
 
 // RadioGroupContext 타입 정의
@@ -10,15 +12,32 @@ interface RadioGroupContextType {
   unregisterRadio: (id: string) => void; // 자식 라디오 버튼 등록 해제
   groupRefs: React.MutableRefObject<Set<string>>; // 등록된 라디오 버튼 ID 관리
   groupImages?: {
-    on?: string;
-    off?: string;
-    onHover?: string;
-    offHover?: string;
+    on?: string | React.ReactNode;
+    off?: string | React.ReactNode;
+    onHover?: string | React.ReactNode;
+    offHover?: string | React.ReactNode;
   };
 }
 export const defaultRadioImages = {
-  on: "/resources/images/radio_on.png",
-  off: "/resources/images/radio_off.png",
+  // on: "/resources/images/radio_on.png",
+  // off: "/resources/images/radio_off.png",
+  off: (
+    <Image
+      src={"/resources/icons/radio_off.png"}
+      width={"100%"}
+      height={"100%"}
+    />
+  ),
+  on: (
+    <Icon
+      type="svg"
+      name="radio_on"
+      fill="none"
+      // src={"/resources/icons/radio_on.svg"}
+      width={"100%"}
+      height={"100%"}
+    />
+  ),
   //     onHover: "/resources/images/checkbox_on.png",
   //     offHover: "/resources/images/checkbox_hover.png",
 };
@@ -34,10 +53,10 @@ interface RadioGroupProps extends React.HTMLAttributes<HTMLDivElement> {
   onValueChange?: (value: string) => void; // 값이 변경될 때 호출될 콜백
   children: React.ReactNode;
   images?: {
-    on?: string;
-    off?: string;
-    onHover?: string;
-    offHover?: string;
+    on?: string | React.ReactNode;
+    off?: string | React.ReactNode;
+    onHover?: string | React.ReactNode;
+    offHover?: string | React.ReactNode;
   };
 }
 

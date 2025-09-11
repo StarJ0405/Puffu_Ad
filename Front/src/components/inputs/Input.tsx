@@ -83,6 +83,7 @@ const Input = forwardRef(
       id,
       regExp,
       placeHolder,
+      placeHolderClassName,
       className, // This will be merged with styles.input
       label,
       style, // This will be merged with defaultInputStyle
@@ -116,6 +117,7 @@ const Input = forwardRef(
       id?: string;
       regExp?: { exp: { test: (value: any) => boolean }; feedback?: string }[];
       placeHolder?: string;
+      placeHolderClassName?: React.HTMLAttributes<HTMLDivElement>["className"];
       className?: string;
       label?: string;
       style?: CSSProperties;
@@ -375,7 +377,9 @@ const Input = forwardRef(
 
           {placeHolder && !value && value !== 0 && (
             <div className={styles.placeHolderArea}>
-              <div className={clsx(styles.placeHolder)}>{t(placeHolder)}</div>
+              <div className={clsx(styles.placeHolder, placeHolderClassName)}>
+                {t(placeHolder)}
+              </div>
             </div>
           )}
 

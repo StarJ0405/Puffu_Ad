@@ -5,7 +5,11 @@ import style from "./HorizontalFlex.module.css";
 function HorizontalFlex({
   flexStart,
   width,
+  maxWidth,
+  minWidth,
   height,
+  minHeight,
+  maxHeight,
   overflow,
   overflowX,
   overflowY,
@@ -29,6 +33,7 @@ function HorizontalFlex({
   marginRight,
   marginBottom,
   marginLeft,
+  hideScrollbar,
   justifyContent,
   color,
   flexGrow,
@@ -44,13 +49,17 @@ function HorizontalFlex({
   cursor,
   onClick,
   onContextMenu,
+  onMouseEnter,
+  onMouseLeave,
   hidden,
   children,
 }: ComponentProps<HTMLDivElement> & {
   flexStart?: boolean;
+  hideScrollbar?: boolean;
 }) {
   const childrenWithProps = Children.map(children, (child) => {
     if (React.isValidElement(child)) {
+      // if (String(child.type) === "Symbol(react.fragment)") return child;
       return React.cloneElement(child, {
         parentclass: "horizontal",
       } as any);
@@ -86,6 +95,11 @@ function HorizontalFlex({
       if (borderBottom) styles.borderBottom = borderBottom;
       if (borderLeft) styles.borderLeft = borderLeft;
     }
+    if (overflow || overflowX || overflowY) {
+      if (overflow) styles.overflow = overflow;
+      if (overflowY) styles.overflowY = overflowY;
+      if (overflowX) styles.overflowX = overflowX;
+    }
 
     return styles;
   };
@@ -102,21 +116,22 @@ function HorizontalFlex({
         className
       )}
       style={{
-        width: width,
-        height: height,
-        overflow: overflow,
-        overflowX: overflowX,
-        overflowY: overflowY,
-        gap: gap,
+        width,
+        maxWidth,
+        minWidth,
+        height,
+        maxHeight,
+        minHeight,
+        gap,
         alignItems: flexStart ? "flex-start" : alignItems,
-        backgroundColor: backgroundColor,
+        backgroundColor,
         color,
-        borderRadius: borderRadius,
-        flexWrap: flexWrap,
-        borderBottom: borderBottom,
-        justifyContent: justifyContent,
-        flexGrow: flexGrow,
-        flexBasis: flexBasis,
+        borderRadius,
+        flexWrap,
+        borderBottom,
+        justifyContent,
+        flexGrow,
+        flexBasis,
         fontSize,
         fontWeight,
         position,
@@ -125,10 +140,14 @@ function HorizontalFlex({
         left,
         right,
         cursor,
+        scrollbarWidth: hideScrollbar ? "none" : undefined,
+        msOverflowStyle: hideScrollbar ? "none" : undefined,
         ...getDirectionalStyles(), // 방향성 스타일 적용
       }}
       onClick={onClick}
       onContextMenu={onContextMenu}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       {childrenWithProps}
     </div>

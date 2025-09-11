@@ -8,6 +8,7 @@ function VerticalFlex({
   flexDirection,
   Ref,
   width,
+  minWidth,
   height,
   maxHeight,
   minHeight,
@@ -17,6 +18,7 @@ function VerticalFlex({
   overscrollBehavior,
   gap,
   alignItems,
+  alignSelf,
   color,
   backgroundColor,
   padding,
@@ -114,6 +116,7 @@ function VerticalFlex({
       style={{
         display,
         width: width,
+        minWidth,
         height: height,
         maxHeight: maxHeight,
         minHeight: minHeight,
@@ -130,6 +133,7 @@ function VerticalFlex({
           : flexStart
           ? "flex-start"
           : "center",
+        alignSelf,
         color,
         cursor,
         backgroundColor: backgroundColor,

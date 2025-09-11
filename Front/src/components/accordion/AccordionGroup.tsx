@@ -1,4 +1,6 @@
 "use client";
+import styles from "./Accordion.module.css"; // Accordion.module.css는 그대로 사용
+
 import React, {
   createContext,
   forwardRef,
@@ -9,7 +11,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import styles from "./Accordion.module.css"; // Accordion.module.css는 그대로 사용
 
 // AccordionGroup Context 타입 정의
 interface AccordionGroupContextType {

@@ -61,7 +61,7 @@ function StarRate({
   // displayScore는 이제 internalScore만 참조 (호버 없음)
   const displayScore = internalScore;
   const ratesResArr = calculateStarFillWidths(displayScore);
-  console.log(ratesResArr);
+
   const scoreUnitPerStar = maxScoreScale / starCount;
   const halfScoreUnitValue = 0.5 * scoreUnitPerStar;
 

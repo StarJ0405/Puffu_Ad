@@ -6,6 +6,7 @@ export const POST: ApiHandler = async (req, res) => {
   const {
     name,
     thumbnail,
+    logo,
     description,
     currency_unit,
     adult,
@@ -22,6 +23,7 @@ export const POST: ApiHandler = async (req, res) => {
     const _data = {
       name,
       thumbnail,
+      logo,
       description,
       currency_unit,
       adult,

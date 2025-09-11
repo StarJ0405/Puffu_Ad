@@ -36,10 +36,10 @@ interface RadioChildProps extends React.InputHTMLAttributes<HTMLInputElement> {
   style?: React.CSSProperties;
   children?: React.ReactNode;
   images?: {
-    on?: string; // 선택되었을 때 이미지
-    off?: string; // 선택되지 않았을 때 이미지
-    onHover?: string; // 선택되었을 때 호버 이미지
-    offHover?: string; // 선택되지 않았을 때 호버 이미지
+    on?: string | React.ReactNode; // 선택되었을 때 이미지
+    off?: string | React.ReactNode; // 선택되지 않았을 때 이미지
+    onHover?: string | React.ReactNode; // 선택되었을 때 호버 이미지
+    offHover?: string | React.ReactNode; // 선택되지 않았을 때 호버 이미지
   };
 }
 
@@ -66,9 +66,12 @@ const RadioChild = forwardRef<HTMLInputElement, RadioChildProps>(
     // 이미지 경로 결정 로직
     const currentImages = images || groupImages;
     const hasImages = currentImages?.on && currentImages?.off;
-
+    const isBackgroundImage =
+      hasImages &&
+      typeof currentImages.on === "string" &&
+      typeof currentImages.off === "string";
     const backgroundImage = useMemo(() => {
-      if (hasImages) {
+      if (hasImages && isBackgroundImage) {
         if (isChecked) {
           if (isHovered && currentImages?.onHover)
             return `url(${currentImages.onHover})`;
@@ -80,7 +83,7 @@ const RadioChild = forwardRef<HTMLInputElement, RadioChildProps>(
         }
       }
       return "none";
-    }, [isChecked, isHovered, hasImages, currentImages]);
+    }, [isChecked, isHovered, hasImages, currentImages, isBackgroundImage]);
 
     // 마운트 시 라디오 버튼 등록, 언마운트 시 등록 해제
     useEffect(() => {
@@ -103,6 +106,7 @@ const RadioChild = forwardRef<HTMLInputElement, RadioChildProps>(
 
     return (
       <div
+        id={id}
         className={className}
         style={{
           ...style,
@@ -112,9 +116,9 @@ const RadioChild = forwardRef<HTMLInputElement, RadioChildProps>(
           height: hasImages ? "24px" : undefined,
           cursor: "pointer",
           backgroundImage: backgroundImage,
-          backgroundSize: hasImages ? "contain" : undefined,
-          backgroundRepeat: hasImages ? "no-repeat" : undefined,
-          backgroundPosition: hasImages ? "center" : undefined,
+          backgroundSize: isBackgroundImage ? "contain" : undefined,
+          backgroundRepeat: isBackgroundImage ? "no-repeat" : undefined,
+          backgroundPosition: isBackgroundImage ? "center" : undefined,
         }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -139,6 +143,9 @@ const RadioChild = forwardRef<HTMLInputElement, RadioChildProps>(
           {...rest}
         />
         {!hasImages && children} {/* 이미지가 없으면 children 렌더링 */}
+        {!isBackgroundImage &&
+          hasImages &&
+          (isChecked ? currentImages.on : currentImages.off)}
       </div>
     );
   }

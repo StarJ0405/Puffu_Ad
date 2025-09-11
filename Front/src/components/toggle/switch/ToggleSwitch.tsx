@@ -43,6 +43,7 @@ interface ToggleProps {
    * @default () => {}
    */
   onChange?: (newStatus: boolean) => void;
+  onClick?: React.HTMLAttributes<HTMLInputElement>["onClick"];
   /**
    * 토글의 초기 상태 또는 제어되는 상태를 설정합니다.
    * @default false
@@ -82,6 +83,7 @@ const Toggle = forwardRef<ToggleHandle, ToggleProps>(
         offSrc: "/resources/images/switch_off.png",
       }, // 객체 형태로 이미지 src들을 받음
       onChange = () => {},
+      onClick,
       status: controlledStatus = false,
       disabled = false,
       className,
@@ -171,7 +173,7 @@ const Toggle = forwardRef<ToggleHandle, ToggleProps>(
           shouldUseImages && styles.hasImageConfig,
           className
         )}
-        onClick={handleClick}
+        onClick={onClick || handleClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         style={

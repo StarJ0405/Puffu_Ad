@@ -10,8 +10,11 @@ export class Store extends BaseEntity {
   @Column({ type: "character varying", nullable: false })
   name?: string;
 
+  @Column({ type: "character varying", nullable: true })
+  thumbnail?: string;
+
   @Column({ type: "jsonb", default: {} })
-  thumbnail?: Record<string, unknown> | null;
+  logo?: Record<string, unknown> | null;
 
   @Column({ type: "character varying", nullable: true })
   description?: string;
