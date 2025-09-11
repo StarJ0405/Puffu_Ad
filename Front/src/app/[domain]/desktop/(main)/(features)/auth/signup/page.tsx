@@ -116,6 +116,8 @@ export default async function () {
    
    
             {/* 2단계 */}
+            {
+               1 < 0 &&(
             <VerticalFlex width={'100%'} maxWidth={600}>
                <FlexChild className={styles.step_title}>
                   <P>기본 정보</P>
@@ -188,6 +190,7 @@ export default async function () {
                               arrow: 'web_select_arrow',
                               search: 'web_select_search',
                            }}
+                           width={'100%'}
                            options={[
                               { value: "가장 좋아하는 동물은?", display: "가장 좋아하는 동물은?" },
                               { value: "어릴적 별명은?", display: "어릴적 별명은?" },
@@ -209,25 +212,31 @@ export default async function () {
                   <ContinueGroup />
                </FlexChild>
             </VerticalFlex>
+               )
+            }
    
    
             {/* 3단계 */}
-            <VerticalFlex className={styles.signup_completed}>
-               <FlexChild className={styles.completed_ttitle}>
-                  <P>회원가입 완료</P>
-               </FlexChild>
+            {
+            1 < 0 && (
+               <VerticalFlex className={styles.signup_completed}>
+                  <FlexChild className={styles.completed_ttitle}>
+                     <P>회원가입 완료</P>
+                  </FlexChild>
 
-               <FlexChild className={styles.completed_txt}>
-                  <P>
-                     회원가입을 축하드립니다. <br />
-                     푸푸토이와 함께 더 특별한 경험을 시작해 보세요!
-                  </P>
-               </FlexChild>
+                  <FlexChild className={styles.completed_txt}>
+                     <P>
+                        회원가입을 축하드립니다. <br />
+                        푸푸토이와 함께 더 특별한 경험을 시작해 보세요!
+                     </P>
+                  </FlexChild>
 
-               <FlexChild>
-                  <ContinueGroup />
-               </FlexChild>
-            </VerticalFlex>
+                  <FlexChild>
+                     <ContinueGroup />
+                  </FlexChild>
+               </VerticalFlex>
+               )
+            }
          </VerticalFlex>
 
 

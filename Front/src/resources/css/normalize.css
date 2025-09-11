@@ -285,6 +285,7 @@ input[type='search']:focus-visible {
   background-color: #222 !important;
   border-radius: 4px !important;
   border: 1px solid #4c4c4c !important;
+  color: #fff !important;
 }
 
 .web_select_search {
@@ -314,6 +315,12 @@ input[type='search']:focus-visible {
   background-color: #000 !important;
   font-weight: 600 !important;
 }
+
+
+.web_search_select {
+  width: 100px;
+}
+
 
 
 .agree_content {

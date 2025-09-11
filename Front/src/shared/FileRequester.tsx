@@ -24,7 +24,7 @@ class _FileRequester {
     });
   }
 
-  async upload(data: any, path?: string) {
+  async upload(data: any, path?: string): Promise<any> {
     try {
       let promise = new Promise((resolve, reject) => {
         let result = "";
@@ -50,7 +50,7 @@ class _FileRequester {
       return await promise;
     } catch (e) {}
   }
-  async download(url: string, name: string) {
+  async download(url: string, name: string): Promise<any> {
     fetch(url, {
       method: "GET",
       mode: "cors",
@@ -99,3 +99,4 @@ if (process.env.NEXT_PUBLIC_DEV) {
 }
 
 export { fileRequester };
+

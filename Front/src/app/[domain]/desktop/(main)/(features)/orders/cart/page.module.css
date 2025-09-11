@@ -249,7 +249,7 @@
 
 .payment_block .total_pay_txt {
    margin-top: 63px;
-   justify-content: end;
+   justify-content: flex-end;
    align-items: center;
    gap: 15px;
 }

@@ -1,18 +1,11 @@
-import PrivacyContent from "@/components/agreeContent/privacyContent";
-import TermContent from "@/components/agreeContent/TermContent";
-import FlexChild from "@/components/flex/FlexChild";
-import Route from './client'
+import { Params } from "next/dist/server/request/params";
+import Route from "./client";
 
 interface PageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<Params>;
 }
 
 export default async function Policies({ params }: PageProps) {
-
-  console.log(params.id);
-
   return (
     <section className="root page_container">
       <Route />

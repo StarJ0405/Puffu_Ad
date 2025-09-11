@@ -52,7 +52,7 @@
 }
 
 .sign_features .find_box {
-   gap: 7px; justify-content: end;
+   gap: 7px; justify-content: flex-end;
 }
 
 .sign_features .find_box > * {width: auto;}

@@ -1,14 +1,16 @@
+import { Params } from "next/dist/server/request/params";
 import React from "react";
 import BoardHeader from "./boardHeader";
 
-export default function Layout({
+export default async function Layout({
   children,
   params,
 }: {
   children: React.ReactNode;
-  params: { boardType?: string };
+  params: Promise<Params>;
 }) {
-  const hideHeader = params.boardType === "photoReview";
+  const { boardType } = await params; // 비동기 해제
+  const hideHeader = boardType === "photoReview";
 
   return (
     <section className="root page_container">
