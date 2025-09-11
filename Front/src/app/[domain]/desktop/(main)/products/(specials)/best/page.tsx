@@ -34,7 +34,7 @@ export default async function () {
 
 
             <VerticalFlex className={Pstyles.list}>
-               <BaseProductList />
+               <BaseProductList specialType={'best'} />
             </VerticalFlex>
          </Container>
       </section>
