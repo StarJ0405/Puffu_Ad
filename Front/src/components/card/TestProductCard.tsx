@@ -39,12 +39,13 @@ type ListItem = {
 // 라인클램프는 제목태그에 달아서 속성 주기.
 
 export function TestProductCard(
-   { product, lineClamp, width, autoPlay }:
+   { product, lineClamp, width, autoPlay, commingSoon }:
    { 
       product: ListItem;
       lineClamp: number; 
       width?: number | string;
       autoPlay? : number;
+      commingSoon? : boolean;
    }) 
 {
 
@@ -60,8 +61,6 @@ export function TestProductCard(
    };
 
    const [adultCheck, setadultCheck] = useState(true);
-
-   const productType:string = '입고 예정 체크. (기능 넣을때 참고만 하고 이건 지우면 됨.)'
 
    return (
       <VerticalFlex
@@ -88,9 +87,9 @@ export function TestProductCard(
             }
 
             {
-               productType === 'comingSoon' ?
-               <Image src={'/resources/images/ComingSoon.png'} width={"100%"} height={"auto"}/>
-               : null
+               commingSoon && ( // 입고예정 체크
+                  <Image className={style.commingSoonImg} src={'/resources/images/commingSoon_img.png'} width={"101%"} height={"auto"}/>
+               )
             }
          </FlexChild>
 

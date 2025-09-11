@@ -24,12 +24,12 @@ export function NaviMenu() {
   return (
     <nav id={styles.sideNavi}>
       <VerticalFlex className={styles.outer_box}>
-          <Link href={"/products/sales"} className={styles.hotDeal_link}>
+          <Link href={"/products/hot"} className={styles.hotDeal_link}>
             <Image
             src={"/resources/images/footer/sidenavi_hotDeal.png"}
             width={43}
             />
-            <h4 className="SacheonFont">데이 HOT딜</h4>
+            <h4 className="SacheonFont">이달의 HOT딜</h4>
           </Link>
 
           <ul className={styles.link_list}>

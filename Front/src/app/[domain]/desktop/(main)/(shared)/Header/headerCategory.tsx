@@ -30,7 +30,6 @@ export function HeaderCatgeory({CaOpen} : {CaOpen : boolean}) { // 카테고리�
       {name: '의류', thumbnail: '/resources/images/dummy_img/ca_menu_04.png'},
       {name: 'BDSM토이', thumbnail: '/resources/images/dummy_img/ca_menu_04.png'},
       {name: 'LGBT토이', thumbnail: '/resources/images/dummy_img/ca_menu_04.png'},
-      {name: '악세서리', thumbnail: '/resources/images/dummy_img/ca_menu_04.png'},
    ]
 
    return (

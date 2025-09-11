@@ -16,10 +16,10 @@ import NoContent from "@/components/noContent/noContent";
 import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import DeliveryGuide from "./deliveryGuide/deliveryGuide";
-import Description from "./description/description";
-import Inquiry from "./inquiry/inquiry";
-import Review from "./review/review";
+import DeliveryGuide from "./_deliveryGuide/deliveryGuide";
+import Description from "./_description/description";
+import Inquiry from "./_inquiry/inquiry";
+import Review from "./_review/review";
 
 type Option = {
   name: string;

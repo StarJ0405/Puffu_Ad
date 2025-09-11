@@ -4,6 +4,7 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
+import { requester } from "@/shared/Requester";
 import clsx from "clsx";
 import Link from "next/link";
 import {
@@ -11,12 +12,18 @@ import {
   MainBanner,
   MainCategory,
   MiniBanner,
+  NewProducts,
   ProductList,
   ProductSlider,
 } from "./client";
 import styles from "./page.module.css";
 
 export default async function () {
+  const condition: any = {
+    pageSize: 30,
+  };
+
+  const newProducts = await requester.getProducts(condition);
   return (
     <section className="root">
       <MainBanner />
@@ -54,9 +61,9 @@ export default async function () {
                     width={24}
                     height={"auto"}
                   />
-                  데이 <Span color={"#FF4A4D"}>HOT</Span>딜
+                  이 달의 <Span color={"#FF4A4D"}>HOT</Span>딜
                 </h2>
-                <P width={"auto"}>매일 매일 갱신되는 Hot Deal 상품!</P>
+                <P width={"auto"}>매달 갱신되는 Hot Deal 상품!</P>
               </div>
 
               <FlexChild width={"auto"}>
@@ -65,8 +72,8 @@ export default async function () {
                 </Link>
               </FlexChild>
             </HorizontalFlex>
-            {/* <ProductSlider id={'sale'} lineClamp={1} /> */}
-            <ProductList id={"sale"} lineClamp={1} /> {/* 메인, 상세 리스트 */}
+            {/* <ProductList id={"sale"} lineClamp={1} /> 메인, 상세 리스트 */}
+            <NewProducts initProducts={newProducts} /> {/* 메인, 상세 리스트 */}
           </VerticalFlex>
         </FlexChild>
         <FlexChild>
@@ -89,8 +96,7 @@ export default async function () {
                 </Link>
               </FlexChild>
             </HorizontalFlex>
-            {/* <ProductSlider id={'new'} /> */}
-            <ProductList id={"new"} /> {/* 메인, 상세 리스트 */}
+            <NewProducts initProducts={newProducts} /> {/* 메인, 상세 리스트 */}
           </VerticalFlex>
         </FlexChild>
         <MiniBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
