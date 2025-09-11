@@ -67,6 +67,10 @@ const StoreModal = NiceModal.create(
 
         if (
           domain !== store.subdomain &&
+          !(
+            domain === "" &&
+            (store.subdomain === null || store.subdomain === "")
+          ) &&
           (
             await adminRequester.getStores({
               subdomain: domain ? domain : null,
@@ -96,9 +100,9 @@ const StoreModal = NiceModal.create(
               adult,
               index,
             };
-            _data.logo = logo;
-            _data.subdomain = domain || null;
             _data.thumbnail = thumbnail;
+            _data.subdomain = domain || null;
+            _data.logo = logo;
             if (description) _data.description = description;
             _data.metadata = {
               colors: colors.map((color) => {
@@ -166,44 +170,14 @@ const StoreModal = NiceModal.create(
               <HorizontalFlex justifyContent="center" gap={10}>
                 <FlexChild width={"max-content"}>
                   <VerticalFlex gap={5}>
-                    <P>로고(컬러)</P>
+                    <P>썸네일</P>
                     <Div width={280}>
                       <InputImage
                         ref={(el) => {
-                          images.current[0] = el;
+                          images.current[3] = el;
                         }}
-                        value={store?.thumbnail?.color}
-                        placeHolder="4:1 비율의 이미지를 권장합니다."
-                      />
-                    </Div>
-                  </VerticalFlex>
-                </FlexChild>
-                <FlexChild width={"max-content"}>
-                  <VerticalFlex gap={5}>
-                    <P>로고(흰색)</P>
-                    <Div width={280}>
-                      <InputImage
-                        backgroundColor="#1c2b3f"
-                        color="#fff"
-                        ref={(el) => {
-                          images.current[1] = el;
-                        }}
-                        value={store?.thumbnail?.white}
-                        placeHolder="4:1 비율의 이미지를 권장합니다."
-                      />
-                    </Div>
-                  </VerticalFlex>
-                </FlexChild>
-                <FlexChild width={"max-content"}>
-                  <VerticalFlex gap={5}>
-                    <P>로고(검정)</P>
-                    <Div width={280}>
-                      <InputImage
-                        ref={(el) => {
-                          images.current[2] = el;
-                        }}
-                        value={store?.thumbnail?.black}
-                        placeHolder="4:1 비율의 이미지를 권장합니다."
+                        value={store?.thumbnail}
+                        placeHolder="1:1 비율의 이미지를 권장합니다."
                       />
                     </Div>
                   </VerticalFlex>
@@ -213,43 +187,10 @@ const StoreModal = NiceModal.create(
               <HorizontalFlex justifyContent="center" gap={10}>
                 <FlexChild width={"max-content"}>
                   <VerticalFlex gap={5}>
-                    <P>로고(컬러)</P>
+                    <P>썸네일</P>
                     <Image
                       className={styles.image}
-                      src={
-                        store?.thumbnail?.color ||
-                        "/resources/images/no-img.png"
-                      }
-                      padding={10}
-                      size={200}
-                    />
-                  </VerticalFlex>
-                </FlexChild>
-                <FlexChild width={"max-content"}>
-                  <VerticalFlex gap={5}>
-                    <P>로고(흰색)</P>
-                    <Div backgroundColor="#1c2b3f" color="#fff">
-                      <Image
-                        className={styles.image}
-                        src={
-                          store?.thumbnail?.white ||
-                          "/resources/images/no-img.png"
-                        }
-                        padding={10}
-                        size={200}
-                      />
-                    </Div>
-                  </VerticalFlex>
-                </FlexChild>
-                <FlexChild width={"max-content"}>
-                  <VerticalFlex gap={5}>
-                    <P>로고(검정)</P>
-                    <Image
-                      className={styles.image}
-                      src={
-                        store?.thumbnail?.black ||
-                        "/resources/images/no-img.png"
-                      }
+                      src={store?.logo?.color || "/resources/images/no-img.png"}
                       padding={10}
                       size={200}
                     />
@@ -445,6 +386,96 @@ const StoreModal = NiceModal.create(
                 </VerticalFlex>
               </FlexChild>
             </HorizontalFlex>
+          </FlexChild>
+          <FlexChild>
+            {edit ? (
+              <HorizontalFlex justifyContent="center" gap={10}>
+                <FlexChild width={"max-content"}>
+                  <VerticalFlex gap={5}>
+                    <P>로고(컬러)</P>
+                    <Div width={280}>
+                      <InputImage
+                        ref={(el) => {
+                          images.current[0] = el;
+                        }}
+                        value={store?.logo?.color}
+                        placeHolder="4:1 비율의 이미지를 권장합니다."
+                      />
+                    </Div>
+                  </VerticalFlex>
+                </FlexChild>
+                <FlexChild width={"max-content"}>
+                  <VerticalFlex gap={5}>
+                    <P>로고(흰색)</P>
+                    <Div width={280}>
+                      <InputImage
+                        backgroundColor="#1c2b3f"
+                        color="#fff"
+                        ref={(el) => {
+                          images.current[1] = el;
+                        }}
+                        value={store?.logo?.white}
+                        placeHolder="4:1 비율의 이미지를 권장합니다."
+                      />
+                    </Div>
+                  </VerticalFlex>
+                </FlexChild>
+                <FlexChild width={"max-content"}>
+                  <VerticalFlex gap={5}>
+                    <P>로고(검정)</P>
+                    <Div width={280}>
+                      <InputImage
+                        ref={(el) => {
+                          images.current[2] = el;
+                        }}
+                        value={store?.logo?.black}
+                        placeHolder="4:1 비율의 이미지를 권장합니다."
+                      />
+                    </Div>
+                  </VerticalFlex>
+                </FlexChild>
+              </HorizontalFlex>
+            ) : (
+              <HorizontalFlex justifyContent="center" gap={10}>
+                <FlexChild width={"max-content"}>
+                  <VerticalFlex gap={5}>
+                    <P>로고(컬러)</P>
+                    <Image
+                      className={styles.image}
+                      src={store?.logo?.color || "/resources/images/no-img.png"}
+                      padding={10}
+                      size={200}
+                    />
+                  </VerticalFlex>
+                </FlexChild>
+                <FlexChild width={"max-content"}>
+                  <VerticalFlex gap={5}>
+                    <P>로고(흰색)</P>
+                    <Div backgroundColor="#1c2b3f" color="#fff">
+                      <Image
+                        className={styles.image}
+                        src={
+                          store?.logo?.white || "/resources/images/no-img.png"
+                        }
+                        padding={10}
+                        size={200}
+                      />
+                    </Div>
+                  </VerticalFlex>
+                </FlexChild>
+                <FlexChild width={"max-content"}>
+                  <VerticalFlex gap={5}>
+                    <P>로고(검정)</P>
+                    <Image
+                      className={styles.image}
+                      src={store?.logo?.black || "/resources/images/no-img.png"}
+                      padding={10}
+                      size={200}
+                    />
+                  </VerticalFlex>
+                </FlexChild>
+              </HorizontalFlex>
+            )}
           </FlexChild>
           {edit ? (
             <FlexChild justifyContent="center" gap={5}>
