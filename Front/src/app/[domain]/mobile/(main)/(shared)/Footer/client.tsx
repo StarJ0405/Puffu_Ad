@@ -2,6 +2,7 @@
 import Button from "@/components/buttons/Button";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
+import TopButton from "@/components/buttons/TopButton";
 import styles from "./footer.module.css";
 import Link from "next/link";
 
@@ -14,6 +15,19 @@ import ModalBase from "@/modals/ModalBase";
 import { useState } from "react";
 
 // const navigate = useNavigate();
+
+{/* 사이드 네비 */}
+export function SideToggle() {
+
+  const pathname = usePathname();
+
+  return (
+    <nav id={styles.sideNavi}>
+      <TopButton />
+      <ChatToggle />
+    </nav>
+  );
+}
 
 
 export function ChatToggle() {

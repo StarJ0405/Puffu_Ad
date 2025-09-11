@@ -27,8 +27,7 @@
 
 @media (max-width: 769px) {
    .topToggleBtn {
-      position: fixed;
-      bottom: 20%;
-      right: 5%;
+      width: 45px;
+      min-height: 45px;
    }
 }
