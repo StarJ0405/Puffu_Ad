@@ -242,7 +242,7 @@ export function BoardTable() {
                </tbody>
             </table>
             {
-               boardData.length > 0 ? null : <NoContent/> 
+               boardData.length > 0 ? null : <NoContent type={'상품'}/> 
             }
          </FlexChild>
          <FlexChild className={boardStyle.list_bottom_box}>

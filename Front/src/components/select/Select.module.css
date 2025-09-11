@@ -44,7 +44,8 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis; /* 내용이 넘칠 경우 ... 처리 */
-  color: #333;
+  /* color: #333; */
+  color: #eee;
 }
 
 .placeholder {

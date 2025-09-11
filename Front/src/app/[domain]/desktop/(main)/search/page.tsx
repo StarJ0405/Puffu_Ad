@@ -5,7 +5,6 @@ import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import P from "@/components/P/P";
 import styles from './page.module.css';
-import { } from './client';
 
 import {SecondCategory, SearchList, ProdcutCategory } from "./client";
 

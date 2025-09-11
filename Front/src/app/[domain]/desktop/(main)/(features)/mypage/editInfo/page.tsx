@@ -98,6 +98,7 @@ export default async function () {
                         arrow: 'web_select_arrow',
                         search: 'web_select_search',
                      }}
+                     width={'100%'}
                      options={[
                         { value: "가장 좋아하는 동물은?", display: "가장 좋아하는 동물은?" },
                         { value: "어릴적 별명은?", display: "어릴적 별명은?" },

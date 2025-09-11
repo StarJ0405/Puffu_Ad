@@ -81,7 +81,8 @@ const StoreModal = NiceModal.create(
             const color = images.current[0].getValue();
             const white = images.current[1].getValue();
             const black = images.current[2].getValue();
-            const thumbnail = {
+            const thumbnail = images.current[3].getValue();
+            const logo = {
               color,
               white,
               black,
@@ -95,6 +96,7 @@ const StoreModal = NiceModal.create(
               adult,
               index,
             };
+            _data.logo = logo;
             _data.subdomain = domain || null;
             _data.thumbnail = thumbnail;
             if (description) _data.description = description;

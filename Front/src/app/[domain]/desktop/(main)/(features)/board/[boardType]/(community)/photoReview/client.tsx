@@ -34,13 +34,13 @@ export function BoardTitleBox() {
             <FlexChild width={'auto'}>
                <Select
                   classNames={{
-                     header: boardStyle.search_select_body,
-                     // header: 'web_select',
-                     // placeholder: 'web_select_placholder',
-                     // line: 'web_select_line',
-                     // arrow: 'web_select_arrow',
-                     // search: 'web_select_search',
+                     header: 'web_select',
+                     placeholder: 'web_select_placholder',
+                     line: 'web_select_line',
+                     arrow: 'web_select_arrow',
+                     search: 'web_select_search',
                   }}
+                  width={100}
                   options={[
                      { value: "제목", display: "제목" },
                      { value: "내용", display: "내용" },
