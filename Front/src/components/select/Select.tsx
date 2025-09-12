@@ -410,7 +410,7 @@ function Select<T extends string | number>({
       </div>
     </div>
   ) : (
-    <>
+    <div style={{position: 'relative'}}>
       <div
         ref={selectRef}
         className={clsx(styles.selectContainer)}
@@ -467,7 +467,7 @@ function Select<T extends string | number>({
         </div>
       </div>
       {portalNode && createPortal(dropdownContent, portalNode)}
-    </>
+    </div>
   );
 }
 

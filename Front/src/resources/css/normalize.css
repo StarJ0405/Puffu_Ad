@@ -286,6 +286,7 @@ input[type='search']:focus-visible {
   border-radius: 4px !important;
   border: 1px solid #4c4c4c !important;
   color: #fff !important;
+  width: 100%;
 }
 
 .web_select_search {
@@ -316,7 +317,7 @@ input[type='search']:focus-visible {
   font-weight: 600 !important;
 }
 
-
+/* 검색창 왼쪽 셀렉트 */
 .web_search_select {
   width: 100px;
 }
@@ -341,5 +342,45 @@ input[type='search']:focus-visible {
 .modal_body {
   color: #000 !important;
 }
+
+
+
+/* 모달용 셀렉트(임시) */
+
+.modal_select_body {
+  position: relative;
+}
+
+.modal_select_body .select_arrow {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  filter: brightness(0.5);
+}
+
+.modal_select {
+  width: 100%;
+  padding: 13px 12px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  background: #fff;
+  box-shadow: none;
+  outline: none;
+  color: #333;
+  appearance: none;
+}
+
+
+.custom-toast-body {
+  background: #111;
+  border: none;
+}
+
+.custom-toast {
+  margin: 5px 0 0;
+}
+
+
 
 /* 컴포넌트 공통 css end ------------------ */
