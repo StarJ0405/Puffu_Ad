@@ -8,11 +8,12 @@ import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
 import { useState } from "react";
 import style from "./page.module.css";
+import { useCart } from "@/providers/StoreProvider/StorePorivderClient";
 
 
 
 export function SelectBox() {
-
+   const {cartData} =useCart()
    const [selectedMessageOption, setSelectedMessageOption] = useState("");
 
 //    const handleMessageOptionChange = (value) => {

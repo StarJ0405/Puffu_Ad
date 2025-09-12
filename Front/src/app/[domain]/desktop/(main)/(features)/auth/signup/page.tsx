@@ -762,10 +762,11 @@ function SMS({ setStep, handleUpdate }: StepProps) {
         position="relative"
         hidden={phoneApprove === "ready"}
         margin={12}
+        gap={10}
       >
         <Input
           id="code"
-          className={styles.input}
+          className={'web_input'}
           placeHolder="인증번호를 입력하세요"
           width={"100%"}
           maxLength={6}
@@ -1033,6 +1034,7 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
               placeHolder="이름을 입력하세요"
               readOnly
               value={data?.current?.userName}
+              className="web_input"
             />
           </FlexChild>
         </VerticalFlex>
@@ -1042,7 +1044,7 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
             <P>이메일</P>
             <Span>(필수)</Span>
           </HorizontalFlex>
-          <FlexChild>
+          <FlexChild gap={10}>
             <Input
               type="text"
               width={"100%"}
@@ -1055,11 +1057,12 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
               }}
               onFeedBackChange={(feedback) => setEmailError(feedback)}
               feedbackHide
+              className="web_input"
             />
             <Button
               disabled={!!emailError || !email}
-              width={107}
-              minWidth={107}
+              width={130}
+              minWidth={130}
               height={50}
               onClick={() => {
                 setIsLoading(true);
@@ -1165,6 +1168,7 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
                     if (String(value).length === 6)
                       document.getElementById("password")?.click();
                   }}
+                  className="web_input"
                 />
               </FlexChild>
             )}
@@ -1182,6 +1186,7 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
               width={"100%"}
               readOnly
               value={data?.current?.userPhoneNum}
+              className="web_input"
             />
           </FlexChild>
         </VerticalFlex>
@@ -1198,6 +1203,7 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
               placeHolder="아이디를 입력하세요"
               value={username}
               onChange={(value) => setUsername(value as string)}
+              className="web_input"
             />
           </FlexChild>
         </VerticalFlex>
@@ -1217,6 +1223,7 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
               onChange={(value) => setPassword(value as string)}
               onFeedBackChange={(feedback) => setPasswordError(feedback)}
               feedbackHide
+              className="web_input"
             />
           </FlexChild>
           <FlexChild>
@@ -1235,6 +1242,7 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
               onChange={(value) => setPassword2(value as string)}
               onFeedBackChange={(feedback) => setPasswordError2(feedback)}
               feedbackHide
+              className="web_input"
             />
           </FlexChild>
         </VerticalFlex>
