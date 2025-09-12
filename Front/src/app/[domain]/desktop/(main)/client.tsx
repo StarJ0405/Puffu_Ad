@@ -14,8 +14,10 @@ import { useRef, useState } from "react";
 import styles from "./page.module.css";
 
 import NoContent from "@/components/noContent/noContent";
+import useData from "@/shared/hooks/data/useData";
 import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
 import { requester } from "@/shared/Requester";
+import { log } from "@/shared/utils/Functions";
 import { Swiper as SwiperType } from "swiper";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -138,7 +140,17 @@ const ListProduct: ListItem[] = [
   },
 ];
 
-export function MainBanner() {
+export function MainBanner({ initBanners }: { initBanners: Pageable }) {
+  const { banners } = useData(
+    "banners",
+    {},
+    (condition) => requester.getBanners(condition),
+    {
+      onReprocessing: (data) => data?.content || [],
+      fallbackData: initBanners,
+    }
+  );
+  log(banners);
   const swiperRef = useRef<SwiperType | null>(null);
 
   const components = [
@@ -451,11 +463,21 @@ export function ProductSlider({
   );
 }
 
-// 상품 리스트
-export function NewProducts({ initProducts }: { initProducts: Pageable }) {
-  const { newProducts, Load, origin } = useInfiniteData(
-    "newProducts",
+export function ProductList({
+  id,
+  lineClamp,
+  initProducts,
+  initCondition,
+}: {
+  id: string;
+  lineClamp?: number;
+  initProducts: Pageable;
+  initCondition: any;
+}) {
+  const { [id]: products, Load } = useInfiniteData(
+    id,
     (pageNumber) => ({
+      ...initCondition,
       pageSize: 30,
       pageNumber,
     }),
@@ -467,20 +489,6 @@ export function NewProducts({ initProducts }: { initProducts: Pageable }) {
     }
   );
 
-  return <ProductList id="new" products={newProducts} Load={Load} />;
-}
-
-export function ProductList({
-  id,
-  lineClamp,
-  products,
-  Load,
-}: {
-  id: string;
-  lineClamp?: number;
-  products: ProductData[];
-  Load: () => void;
-}) {
   const [visibleCount, setVisibleCount] = useState(12);
 
   const showMore = () => {
@@ -519,27 +527,29 @@ export function ProductList({
             }}
             currency_unit="₩"
           /> */}
-            {products.slice(0, visibleCount).map((product, i) => {
-              return (
-                <TestProductCard
-                  key={product.id}
-                  product={
-                    {
-                      id: product.id,
-                      title: product.title,
-                      thumbnail: product.thumbnail,
-                      price: product.price,
-                      discount_price: product.discount_price,
-                      discount_rate: product.discount_rate,
-                      store_name: product.brand.name,
-                      variants: product.variants,
-                    } as any
-                  }
-                  lineClamp={2}
-                  width={200}
-                />
-              );
-            })}
+            {products
+              .slice(0, visibleCount)
+              .map((product: ProductData, i: number) => {
+                return (
+                  <TestProductCard
+                    key={product.id}
+                    product={
+                      {
+                        id: product.id,
+                        title: product.title,
+                        thumbnail: product.thumbnail,
+                        price: product.price,
+                        discount_price: product.discount_price,
+                        discount_rate: product.discount_rate,
+                        store_name: product.brand.name,
+                        variants: product.variants,
+                      } as any
+                    }
+                    lineClamp={2}
+                    width={200}
+                  />
+                );
+              })}
           </MasonryGrid>
           <Button className={styles.list_more_btn}>
             <FlexChild gap={10} onClick={showMore}>
