@@ -451,11 +451,9 @@ export function ProductSlider({
   );
 }
 
-
-
 // 상품 리스트
 export function NewProducts({ initProducts }: { initProducts: Pageable }) {
-  const { newProducts, Load,origin } = useInfiniteData(
+  const { newProducts, Load, origin } = useInfiniteData(
     "newProducts",
     (pageNumber) => ({
       pageSize: 30,
@@ -465,10 +463,9 @@ export function NewProducts({ initProducts }: { initProducts: Pageable }) {
     (data) => data?.totalPages || 0,
     {
       onReprocessing: (data) => data?.content || [],
-      fallbackData:[initProducts]
+      fallbackData: [initProducts],
     }
   );
-  console.log(origin)
 
   return <ProductList id="new" products={newProducts} Load={Load} />;
 }
@@ -484,7 +481,6 @@ export function ProductList({
   products: ProductData[];
   Load: () => void;
 }) {
-
   const [visibleCount, setVisibleCount] = useState(12);
 
   const showMore = () => {
@@ -507,8 +503,8 @@ export function ProductList({
                 />
               );
             })} */}
-          {/* </MasonryGrid> */}
-          {/* <ProductCard
+            {/* </MasonryGrid> */}
+            {/* <ProductCard
             product={{
               id: "123",
               title: "테스트 상품",
@@ -523,27 +519,27 @@ export function ProductList({
             }}
             currency_unit="₩"
           /> */}
-          {products.slice(0, visibleCount).map((product, i) => {
-            return (
-              <TestProductCard
-                key={product.id}
-                product={
-                  {
-                    id: product.id,
-                    title: product.title,
-                    thumbnail: product.thumbnail,
-                    price: product.price,
-                    discount_price: product.discount_price,
-                    discount_rate: product.discount_rate,
-                    store_name: product.brand.name,
-                    variants: product.variants,
-                  } as any
-                }
-                lineClamp={2}
-                width={200}
-              />
-            );
-          })}
+            {products.slice(0, visibleCount).map((product, i) => {
+              return (
+                <TestProductCard
+                  key={product.id}
+                  product={
+                    {
+                      id: product.id,
+                      title: product.title,
+                      thumbnail: product.thumbnail,
+                      price: product.price,
+                      discount_price: product.discount_price,
+                      discount_rate: product.discount_rate,
+                      store_name: product.brand.name,
+                      variants: product.variants,
+                    } as any
+                  }
+                  lineClamp={2}
+                  width={200}
+                />
+              );
+            })}
           </MasonryGrid>
           <Button className={styles.list_more_btn}>
             <FlexChild gap={10} onClick={showMore}>

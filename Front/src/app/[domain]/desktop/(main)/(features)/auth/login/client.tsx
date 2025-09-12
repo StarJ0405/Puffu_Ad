@@ -1,20 +1,23 @@
 "use client";
+import Button from "@/components/buttons/Button";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Input from "@/components/inputs/Input";
 import P from "@/components/P/P";
-import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
 import ConfirmModal from "@/modals/confirm/ConfirmModal";
 import ToastModal from "@/modals/toast/ToastModal";
+import useNavigate from "@/shared/hooks/useNavigate";
+import { requester } from "@/shared/Requester";
+import { Cookies } from "@/shared/utils/Data";
+import { getCookieOption } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
-import styles from "./page.module.css";
-import Image from "@/components/Image/Image";
-import { useState } from "react";
-import Button from "@/components/buttons/Button";
 import clsx from "clsx";
 import Link from "next/link";
+import { useState } from "react";
+import { useCookies } from "react-cookie";
+import styles from "./page.module.css";
 
 export function SignFeatures() {
   const [idStep, setidStep] = useState(0);
@@ -51,7 +54,7 @@ export function SignFeatures() {
 
   return (
     <HorizontalFlex className={styles.sign_features}>
-      <FlexChild className={styles.login_and} width={'auto'}>
+      <FlexChild className={styles.login_and} width={"auto"}>
         {/* <CheckboxChild id={'11'} /> */}
         <Span cursor="poointer">로그인 상태 유지</Span>
       </FlexChild>
@@ -116,7 +119,12 @@ export function LostId({ idStep }: { idStep: number }) {
         idStep === 1 && (
           <FlexChild>
             <VerticalFlex alignItems="center" gap={30}>
-              <VerticalFlex className={"input_box"} alignItems="center" gap={10} marginBottom={30}>
+              <VerticalFlex
+                className={"input_box"}
+                alignItems="center"
+                gap={10}
+                marginBottom={30}
+              >
                 <P size={18} color="#333" weight={600}>
                   회원님의 아이디는
                 </P>
@@ -218,28 +226,55 @@ export function Lostpassword({ passwordStep }: { passwordStep: number }) {
   );
 }
 
+export function SubmitGroup() {
+  const [, setCookies] = useCookies([Cookies.JWT]);
+  const navigate = useNavigate();
+  const onClick = async () => {
+    const _username = document.getElementById("username");
+    const _password = document.getElementById("password");
+    if (
+      _username instanceof HTMLInputElement &&
+      _password instanceof HTMLInputElement
+    ) {
+      const username = _username.value;
+      const password = _password.value;
+      if (username && password) {
+        const { access_token } = await requester.login({
+          username,
+          password,
+        });
+        if (access_token) {
+          setCookies(Cookies.JWT, access_token, getCookieOption());
+          return navigate("/");
+        } else {
+          return NiceModal.show(ToastModal, {
+            message: "아이디, 비밀번호를 확인해주세요.",
+            className: "custom-toast-body",
+            withCloseButton: true,
+            messageBoxClassName: "custom-toast",
+            autoClose: 5000000,
+          });
+        }
+      }
+    }
 
-
-
-export function SubmitGroup () {
-
-   const Toast = () => {
     NiceModal.show(ToastModal, {
-      // title: '아이디 찾기',
-      message: '아이디, 비밀번호를 입력해 주세요.',
-      className: 'custom-toast-body',
+      message: "아이디, 비밀번호를 입력해주세요.",
+      className: "custom-toast-body",
       withCloseButton: true,
-      messageBoxClassName: 'custom-toast',
+      messageBoxClassName: "custom-toast",
       autoClose: 5000000,
     });
   };
 
-   return (
-      <>
-         <Button onClick={Toast} className={clsx(styles.login_btn, styles.btn)}>로그인</Button>
-         <Button className={clsx(styles.join_btn, styles.btn)}>
-            <Link href={'/auth/signup'}>회원가입</Link>
-         </Button>
-      </>
-   )
+  return (
+    <>
+      <Button onClick={onClick} className={clsx(styles.login_btn, styles.btn)}>
+        로그인
+      </Button>
+      <Button className={clsx(styles.join_btn, styles.btn)}>
+        <Link href={"/auth/signup"}>회원가입</Link>
+      </Button>
+    </>
+  );
 }
