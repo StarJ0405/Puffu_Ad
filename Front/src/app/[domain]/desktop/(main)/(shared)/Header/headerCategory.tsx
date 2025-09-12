@@ -27,7 +27,7 @@ export function HeaderCategory({ CaOpen }: { CaOpen: boolean }) {
   // 카테고리메뉴
   const { categoriesData } = useCategories();
 
-  console.log("카테고리", categoriesData);
+  // console.log("카테고리", categoriesData);
 
   const [activeDepth1, setActiveDepth1] = useState<string | null>(null);
 

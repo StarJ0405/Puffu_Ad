@@ -3,7 +3,7 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
-import { BaseProductList } from "../../baseClient";
+// import { HotList } from "./client";
 import Pstyles from "../../products.module.css";
 import {} from "./client";
 import styles from "./page.module.css";
@@ -34,7 +34,10 @@ export default async function () {
         </VerticalFlex>
 
         <VerticalFlex className={Pstyles.list}>
-          <BaseProductList />
+          {/* <HotList
+            initProducts={hotProducts}
+            initConiditon={hotCondition}
+          /> */}
         </VerticalFlex>
       </Container>
     </section>

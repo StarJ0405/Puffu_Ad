@@ -9,6 +9,10 @@ import { requester } from "@/shared/Requester";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import Pstyles from "../../products.module.css";
+import MasonryGrid from "@/components/masonry/MasonryGrid";
+import TestProductCard from "@/components/card/TestProductCard";
+import NoContent from "@/components/noContent/noContent";
+import {BaseProductList} from "../../baseClient";
 
 export function ProdcutCategory() {
   // 카테고리메뉴
@@ -94,7 +98,7 @@ export function SecondCategory() {
   );
 }
 
-export function BaseProductList({
+export function BestList({
   initProducts,
   initConiditon,
 }: {
@@ -105,6 +109,7 @@ export function BaseProductList({
     "best",
     (pageNumber) => ({
       ...initConiditon,
+      pageSize: 24,
       pageNumber,
     }),
     (condition) => requester.getProducts(condition),
@@ -116,9 +121,7 @@ export function BaseProductList({
   );
   return (
     <>
-      {best.map((product: ProductData) => (
-        <P key={product.id}> {product.title}</P>
-      ))}
+      <BaseProductList listArray={best} />
     </>
   );
 }

@@ -8,7 +8,7 @@ import Span from "@/components/span/Span";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import Pstyles from "../../products.module.css";
-
+import {BaseProductList} from "../../baseClient";
 
 
 export function HotDealCategory() {
@@ -38,3 +38,32 @@ export function HotDealCategory() {
       </HorizontalFlex>
    )
 }
+
+
+// export function HotList({
+//   initProducts,
+//   initConiditon,
+// }: {
+//   initProducts: Pageable;
+//   initConiditon: any;
+// }) {
+//   const { discount, maxPage, page, setPage, mutate } = usePageData(
+//     "discount",
+//     (pageNumber) => ({
+//       ...initConiditon,
+//       pageSize: 24,
+//       pageNumber,
+//     }),
+//     (condition) => requester.getProducts(condition),
+//     (data: Pageable) => data?.totalPages || 0,
+//     {
+//       onReprocessing: (data) => data?.content || [],
+//       fallbackData: initProducts,
+//     }
+//   );
+//   return (
+//     <>
+//       <BaseProductList listArray={discount} />
+//     </>
+//   );
+// }
