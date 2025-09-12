@@ -8,7 +8,7 @@ import InputNumber from "@/components/inputs/InputNumber";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import clsx from "clsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 
 import TestProductCard from "@/components/card/TestProductCard";
@@ -28,6 +28,7 @@ import {
   useStore,
 } from "@/providers/StoreProvider/StorePorivderClient";
 import useNavigate from "@/shared/hooks/useNavigate";
+import { Storage } from "@/shared/utils/Data";
 
 type Option = {
   name: string;
@@ -397,6 +398,17 @@ export function Product({
       }
     }
   };
+  useEffect(() => {
+    let recents: any = localStorage.getItem(Storage.RECENTS);
+    if (recents) recents = JSON.parse(recents);
+    else recents = [];
+    localStorage.setItem(
+      Storage.RECENTS,
+      JSON.stringify(
+        Array.from(new Set([initProduct.content.id, ...recents])).slice(0, 30)
+      )
+    );
+  }, []);
 
   return <></>;
 }

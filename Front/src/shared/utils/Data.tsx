@@ -1,18 +1,18 @@
 export const Cookies = {
-  JWT: "_puffu_official_jwt",
-  ADMIN_JWT: "_puffu_admin_jwt",
-  ID: "_puffu_official_id",
-  HISTORY: "_puffu_history",
-  VISIT: "_puffu_visity",
-  SUBDOMAIN: "_puffu_subdomain",
-  LOGIN_REDIRECT_URL: "_puffu_login_redirect_url",
+  JWT: "_toy_official_jwt",
+  ADMIN_JWT: "_toy_admin_jwt",
+  ID: "_toy_official_id",
+  HISTORY: "_toy_history",
+  VISIT: "_toy_visity",
+  SUBDOMAIN: "_toy_subdomain",
+  LOGIN_REDIRECT_URL: "_toy_login_redirect_url",
 };
 export const Sessions = {
-  SELECTED_ITEMS: "_puffu_selected_items",
-  ORDER: "_puffu_order",
-  PAYMENT: "_puffu_payment",
+  SELECTED_ITEMS: "_toy_selected_items",
+  ORDER: "_toy_order",
+  PAYMENT: "_toy_payment",
 };
 export const Storage = {
-  KEYWORDS: "_puffu_keywords",
-  RECENTS: "_puffu_recents",
+  KEYWORDS: "_toy_keywords",
+  RECENTS: "_toy_recents",
 };

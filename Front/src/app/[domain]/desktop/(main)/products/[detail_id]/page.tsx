@@ -19,6 +19,7 @@ import {
 } from "./client";
 import styles from "./page.module.css";
 import { log } from "@/shared/utils/Functions";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivder";
 
 export default async function ({ params }: { params: Promise<Params> }) {
   const { detail_id } = await params;
@@ -36,7 +37,13 @@ export default async function ({ params }: { params: Promise<Params> }) {
     initCondition
   );
   if (!initProduct?.content?.id) return notFound();
-
+  const { userData } = await useAuth();
+  if (userData?.id) {
+    requester.addRecent({
+      user_id: userData.id,
+      detail_id,
+    });
+  }
   const optionTest = [
     { name: "블랙 망사 리본 스타킹", quantity: 1, price: "0" },
     { name: "크리스마스 요정님 선물 담는 양말", quantity: 2, price: "1,000" },

@@ -3,7 +3,9 @@ import TestProductCard from "@/components/card/TestProductCard";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import MasonryGrid from "@/components/masonry/MasonryGrid";
 import NoContent from "@/components/noContent/noContent";
-
+import useData from "@/shared/hooks/data/useData";
+import { requester } from "@/shared/Requester";
+import { Storage } from "@/shared/utils/Data";
 
 export function RecentlyViewTable() {
   type ListItem = {
@@ -16,6 +18,20 @@ export function RecentlyViewTable() {
     store_name: string;
     rank: number;
   };
+  const { recents, mutate } = useData(
+    "recents",
+    {},
+    (condition) => {
+      const item = localStorage.getItem(Storage.RECENTS);
+      if (item) {
+        const ids = JSON.parse(item) || [];
+        condition.ids = ids;
+      } else condition.ids = ["", ""];
+      return requester.getProducts(condition);
+    },
+    { onReprocessing: (data) => data?.content || [] }
+  );
+  console.log(recents);
 
   const ListProduct: ListItem[] = [
     // 임시
