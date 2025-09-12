@@ -20,6 +20,14 @@ import DeliveryGuide from "./_deliveryGuide/deliveryGuide";
 import Description from "./_description/description";
 import Inquiry from "./_inquiry/inquiry";
 import Review from "./_review/review";
+import useData from "@/shared/hooks/data/useData";
+import { requester } from "@/shared/Requester";
+import { log, toast } from "@/shared/utils/Functions";
+import {
+  useCart,
+  useStore,
+} from "@/providers/StoreProvider/StorePorivderClient";
+import useNavigate from "@/shared/hooks/useNavigate";
 
 type Option = {
   name: string;
@@ -321,4 +329,74 @@ export function DetailTabContainer() {
       </VerticalFlex>
     </>
   );
+}
+
+export function Product({
+  initProduct,
+  initCondition,
+}: {
+  initProduct: any;
+  initCondition: any;
+}) {
+  const navigate = useNavigate();
+  const { storeData } = useStore();
+  const { reload } = useCart();
+  const { [initProduct.content.id]: product, mutate } = useData(
+    initProduct?.content?.id,
+    { ...initCondition, id: initCondition?.content?.id },
+    (condition) => {
+      const id = condition.id;
+      delete condition.id;
+      return requester.getProduct(id, condition);
+    },
+    {
+      onReprocessing: (data) => data.content,
+      fallbackData: initProduct,
+    }
+  );
+  log("상품", product);
+
+  // 배송정보
+  log("배송정보 : ", storeData?.methods);
+
+  // 좋아요
+  const onWishClick = () => {
+    if (product.wish) {
+      requester.deleteWishList(
+        product.wish.id,
+        {
+          soft: false,
+        },
+        () => {
+          mutate();
+        }
+      );
+    } else {
+      requester.createWishList(
+        {
+          product_id: product.id,
+        },
+        () => {
+          mutate();
+        }
+      );
+    }
+  };
+  const onCartClick = async () => {
+    const variants: { variant_id: string; quantity: number }[] = [];
+    if (variants.length > 0) {
+      const { message, error } = await requester.addItem({
+        store_id: storeData?.id,
+        variants: variants,
+      });
+      if (message) {
+        reload();
+        // .then(() => navigate("/cart")); // 카트 이동시
+      } else {
+        toast({ message: error });
+      }
+    }
+  };
+
+  return <></>;
 }

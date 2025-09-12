@@ -54,30 +54,30 @@ interface CheckboxGroupProps {
  * @param {CheckboxGroupProps} props - name, children, initialValues, onChange, className, style, images
  */
 export const defaultCheckboxImages = {
-  // on: "/resources/images/checkbox_on.png",
-  // off: "/resources/images/checkbox_off.png",
+  on: "/resources/images/checkbox_on.png",
+  off: "/resources/images/checkbox_off.png",
   // onHover: "/resources/images/checkbox_on.png",
   // offHover: "/resources/images/checkbox_hover.png",
 
   // off: "/resources/images/login_radio_off.png",
   // on: "/resources/icons/radio_on.svg",
-  off: (
-    <Image
-      src={"/resources/icons/radio_off.png"}
-      width={"100%"}
-      height={"100%"}
-    />
-  ),
-  on: (
-    <Icon
-      type="svg"
-      name="radio_on"
-      fill="none"
-      // src={"/resources/icons/radio_on.svg"}
-      width={"100%"}
-      height={"100%"}
-    />
-  ),
+  // off: (
+  //   <Image
+  //     src={"/resources/icons/radio_off.png"}
+  //     width={"100%"}
+  //     height={"100%"}
+  //   />
+  // ),
+  // on: (
+  //   <Icon
+  //     type="svg"
+  //     name="radio_on"
+  //     fill="none"
+  //     // src={"/resources/icons/radio_on.svg"}
+  //     width={"100%"}
+  //     height={"100%"}
+  //   />
+  // ),
 };
 
 const CheckboxGroup: React.FC<CheckboxGroupProps> = ({

@@ -10,12 +10,14 @@ import Span from "@/components/span/Span";
 import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import styles from "./page.module.css";
 
 import NoContent from "@/components/noContent/noContent";
+import useData from "@/shared/hooks/data/useData";
 import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
 import { requester } from "@/shared/Requester";
+import { log } from "@/shared/utils/Functions";
 import { Swiper as SwiperType } from "swiper";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -138,7 +140,17 @@ const ListProduct: ListItem[] = [
   },
 ];
 
-export function MainBanner() {
+export function MainBanner({ initBanners }: { initBanners: Pageable }) {
+  const { banners } = useData(
+    "banners",
+    {},
+    (condition) => requester.getBanners(condition),
+    {
+      onReprocessing: (data) => data?.content || [],
+      fallbackData: initBanners,
+    }
+  );
+  log(banners);
   const swiperRef = useRef<SwiperType | null>(null);
 
   const components = [
@@ -451,44 +463,33 @@ export function ProductSlider({
   );
 }
 
-
-
-// 상품 리스트
-export function NewProducts({ initProducts }: { initProducts: Pageable }) {
-  const { newProducts, Load,origin } = useInfiniteData(
-    "newProducts",
+export function ProductList({
+  id,
+  lineClamp,
+  initProducts,
+  initCondition,
+}: {
+  id: string;
+  lineClamp?: number;
+  initProducts: Pageable;
+  initCondition: any;
+}) {
+  const { [id]: products, Load } = useInfiniteData(
+    id,
     (pageNumber) => ({
-      pageSize: 30,
+      ...initCondition,
+      pageSize: 12,
       pageNumber,
     }),
     (condition) => requester.getProducts(condition),
     (data) => data?.totalPages || 0,
     {
       onReprocessing: (data) => data?.content || [],
-      fallbackData:[initProducts]
+      fallbackData: [initProducts],
     }
   );
-  console.log(origin)
-
-  return <ProductList id="new" products={newProducts} Load={Load} />;
-}
-
-export function ProductList({
-  id,
-  lineClamp,
-  products,
-  Load,
-}: {
-  id: string;
-  lineClamp?: number;
-  products: ProductData[];
-  Load: () => void;
-}) {
-
-  const [visibleCount, setVisibleCount] = useState(12);
 
   const showMore = () => {
-    setVisibleCount((prev) => prev + 12); // 12개씩 늘려서 보여주기
     Load(); // 서버에서도 다음 페이지 로드
   };
 
@@ -507,8 +508,8 @@ export function ProductList({
                 />
               );
             })} */}
-          {/* </MasonryGrid> */}
-          {/* <ProductCard
+            {/* </MasonryGrid> */}
+            {/* <ProductCard
             product={{
               id: "123",
               title: "테스트 상품",
@@ -523,27 +524,27 @@ export function ProductList({
             }}
             currency_unit="₩"
           /> */}
-          {products.slice(0, visibleCount).map((product, i) => {
-            return (
-              <TestProductCard
-                key={product.id}
-                product={
-                  {
-                    id: product.id,
-                    title: product.title,
-                    thumbnail: product.thumbnail,
-                    price: product.price,
-                    discount_price: product.discount_price,
-                    discount_rate: product.discount_rate,
-                    store_name: product.brand.name,
-                    variants: product.variants,
-                  } as any
-                }
-                lineClamp={2}
-                width={200}
-              />
-            );
-          })}
+            {products.map((product: ProductData, i: number) => {
+              return (
+                <TestProductCard
+                  key={product.id}
+                  product={
+                    {
+                      id: product.id,
+                      title: product.title,
+                      thumbnail: product.thumbnail,
+                      price: product.price,
+                      discount_price: product.discount_price,
+                      discount_rate: product.discount_rate,
+                      store_name: product.brand.name,
+                      variants: product.variants,
+                    } as any
+                  }
+                  lineClamp={2}
+                  width={200}
+                />
+              );
+            })}
           </MasonryGrid>
           <Button className={styles.list_more_btn}>
             <FlexChild gap={10} onClick={showMore}>

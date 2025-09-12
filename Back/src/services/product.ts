@@ -191,6 +191,17 @@ export class ProductService extends BaseService<Product, ProductRepository> {
             .addOrderBy("p.created_at", "DESC");
           break;
         }
+        case "discount": {
+          builder = builder
+            .leftJoin(
+              `(SELECT dp.product_id AS id, MAX(ed.value) AS discount FROM public.discount_product dp LEFT JOIN public.event_discount ed ON ed.id = dp.discount_id GROUP BY dp.product_id)`,
+              "discount",
+              "discount.id = p.id"
+            )
+            .addSelect(`COALESCE(discount.discount,0)`, "discount")
+            .orderBy("discount", "DESC")
+            .addOrderBy("p.created_at", "DESC");
+        }
         case "hot": {
           builder = builder
             .leftJoin(

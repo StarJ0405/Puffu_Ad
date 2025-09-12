@@ -28,12 +28,12 @@ import {
   passwordFormat,
 } from "@/shared/regExp";
 import { requester } from "@/shared/Requester";
+import { Cookies } from "@/shared/utils/Data";
 import { getCookieOption, toast } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { useCookies } from "react-cookie";
-import { Cookies } from "@/shared/utils/Data";
 
 interface UpdateValue {
   key: string;
@@ -997,7 +997,6 @@ function PassReady({ setStep, data }: StepProps) {
 }
 
 function Info({ setStep, handleUpdate, data }: StepProps) {
-  console.log(data);
   const navigate = useNavigate();
   const [username, setUsername] = useState<string>(
     data?.current?.username || ""
@@ -1066,9 +1065,15 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
                 setIsLoading(true);
                 requester.isExistUser(
                   {
-                    username: email,
+                    email,
                   },
-                  ({ exist }: { exist: boolean }) => {
+                  ({
+                    exist,
+                    username,
+                  }: {
+                    exist: boolean;
+                    username: string;
+                  }) => {
                     if (exist) {
                       NiceModal.show("confirm", {
                         clickOutsideToClose: true,
@@ -1099,7 +1104,7 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
                                   아이디
                                 </Span>
                                 <Span className={styles.duplicateInfoValue}>
-                                  {email}
+                                  {username}
                                 </Span>
                               </P>
                             </FlexChild>
@@ -1107,13 +1112,13 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
                         ),
                         confirmText: "기존 계정으로 로그인하기",
                         onConfirm: () => {
-                          navigate(`/login?id=${email}`);
+                          navigate(`/login?id=${username}`);
                         },
                       });
                     } else {
                       requester.sendEmail(
                         {
-                          email: email,
+                          email,
                         },
                         ({
                           message,
@@ -1191,6 +1196,7 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
               type="text"
               width={"100%"}
               placeHolder="아이디를 입력하세요"
+              value={username}
               onChange={(value) => setUsername(value as string)}
             />
           </FlexChild>
@@ -1286,9 +1292,10 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
               !password2 ||
               !!passwordError ||
               !!passwordError2 ||
-              password !== password2 ||
-              !code ||
-              !inputCode
+              password !== password2
+              //   ||
+              //   !code ||
+              //   !inputCode
             }
             onClick={() => {
               if (code !== inputCode) {
@@ -1312,7 +1319,7 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
                 .then(
                   ({
                     exist,
-                    username,
+                    username: _username,
                   }: {
                     exist: boolean;
                     username: string;
@@ -1347,7 +1354,7 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
                                   아이디
                                 </Span>
                                 <Span className={styles.duplicateInfoValue}>
-                                  {username}
+                                  {_username}
                                 </Span>
                               </P>
                             </FlexChild>
@@ -1355,7 +1362,7 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
                         ),
                         confirmText: "기존 계정으로 로그인하기",
                         onConfirm: () => {
-                          navigate(`/login?id=${username}`);
+                          navigate(`/login?id=${_username}`);
                         },
                       });
                     } else {

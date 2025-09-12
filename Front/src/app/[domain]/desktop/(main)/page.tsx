@@ -12,21 +12,26 @@ import {
   MainBanner,
   MainCategory,
   MiniBanner,
-  NewProducts,
   ProductList,
   ProductSlider,
 } from "./client";
 import styles from "./page.module.css";
 
 export default async function () {
-  const condition: any = {
-    pageSize: 30,
+  const banners = await requester.getBanners();
+  const hotCondition: any = {
+    pageSize: 12,
+    order: "discount",
   };
-
-  const newProducts = await requester.getProducts(condition);
+  const hotProducts = await requester.getProducts(hotCondition);
+  const newCondition: any = {
+    pageSize: 12,
+    order: "new",
+  };
+  const newProducts = await requester.getProducts(newCondition);
   return (
     <section className="root">
-      <MainBanner />
+      <MainBanner initBanners={banners} />
 
       <VerticalFlex
         marginTop={"35px"}
@@ -72,8 +77,13 @@ export default async function () {
                 </Link>
               </FlexChild>
             </HorizontalFlex>
-            {/* <ProductList id={"sale"} lineClamp={1} /> 메인, 상세 리스트 */}
-            <NewProducts initProducts={newProducts} /> {/* 메인, 상세 리스트 */}
+            {/* 메인, 상세 리스트 */}
+            <ProductList
+              id={"sale"}
+              lineClamp={1}
+              initProducts={hotProducts}
+              initCondition={hotCondition}
+            />
           </VerticalFlex>
         </FlexChild>
         <FlexChild>
@@ -96,7 +106,13 @@ export default async function () {
                 </Link>
               </FlexChild>
             </HorizontalFlex>
-            <NewProducts initProducts={newProducts} /> {/* 메인, 상세 리스트 */}
+            {/* 메인, 상세 리스트 */}
+            <ProductList
+              id={"new"}
+              lineClamp={1}
+              initProducts={newProducts}
+              initCondition={newCondition}
+            />
           </VerticalFlex>
         </FlexChild>
         <MiniBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
