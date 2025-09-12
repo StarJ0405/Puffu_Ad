@@ -1,0 +1,26 @@
+.btn {
+   width: 200px;
+   padding: 13px 10px;
+   background: #444;
+   justify-content: center !important;
+   border-radius: 5px;
+   color: #fff;
+   cursor: pointer;
+   transition: all 0.2s;
+}
+
+.Back_btn {
+   border: 1px solid #777;
+}
+
+.home_btn {
+   background: var(--main-color1);
+}
+
+.Back_btn:hover {
+   background: #222;
+}
+
+.home_btn:hover {
+   background: var(--main-color2);
+}
