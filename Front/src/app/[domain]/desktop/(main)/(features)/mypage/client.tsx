@@ -119,7 +119,7 @@ export function MypageNavi() {
         <ul className={styles.inner_menu}>
           <li>
             <Link className={styles.inner_btn} href={"/mypage/editInfo"}
-              // onClick={editInfoModal}
+              onClick={editInfoModal}
             >
               <Span>개인정보 수정</Span>
               <Image
@@ -128,6 +128,7 @@ export function MypageNavi() {
               />
             </Link>
           </li>
+
           {myInfoMenu.map((item, i) => (
             <li key={i}>
               <Link className={styles.inner_btn} href={item.link}>

@@ -142,6 +142,61 @@
 
 
 /* 2단계 */
+.auth_btn_box {
+  border-bottom: 3px solid #ededed;
+}
+
+.auth_check_group .auth_btn {
+  padding: 15px 0;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.auth_check_group .auth_btn p {
+  color: #fff !important;
+}
+
+.auth_check_group .auth_btn.active {
+  background: #353535;
+}
+
+
+
+/* 2단계 pass, sms 인증 폼 */
+
+.auth_root_box {
+  padding: 40px 20px 0;
+}
+
+.auth_root_box .phone_input_group {
+  justify-content: start !important;
+}
+
+.auth_root_box .phone_input_group > div:nth-child(1) {
+  width: auto !important;
+}
+
+.auth_root_box .phone_input_group > div:nth-child(1) select {
+  height: 50px;
+}
+
+.phone_select_header {
+  background-color: #222 !important;
+  border-radius: 4px !important;
+  border: 1px solid #4c4c4c !important;
+  color: #fff !important;
+  width: 100%;
+  padding: 17px 15px;
+}
+
+.auth_root_box .icon_filter {
+  filter: brightness(10);
+}
+
+
+
+
+/* 3단계 */
 
 .input_box {gap: 30px; margin-bottom: 100px;}
 
@@ -160,7 +215,7 @@
 
 
 
-/* 3단계 */
+/* 4단계 */
 .signup_completed {
   padding: 50px 0;
 }
@@ -196,7 +251,7 @@
   gap: 10px;
 }
 
-.continue_box > button {
+.continue_box button {
   width: 180px;
   padding: 13px 10px;
   border-radius: 5px;
@@ -206,26 +261,26 @@
   transition: all 0.2s;
 }
 
-.continue_box > .prev_btn {
+.continue_box .prev_btn {
   background: #ccc;
   color: #4D4D4D;
 }
 
-.continue_box > .prev_btn:hover {
+.continue_box .prev_btn:hover {
   background: #858484;
   color: #fff;
 }
 
-.continue_box > .prev_btn.disabled {
+.continue_box .prev_btn.disabled {
   color: #aaa;
 }
 
-.continue_box > .next_btn {
+.continue_box .next_btn {
   background: #fff;
   color: var(--main-color1);
 }
 
-.continue_box > .next_btn:hover {
+.continue_box .next_btn:hover {
   background: var(--main-color1);
   color: #fff;
 }
@@ -233,20 +288,20 @@
 
 /* 회원가입 완료 시 */
 
-.continue_box > .home_btn {
+.continue_box .home_btn {
   background: transparent;
   border: 1px solid #fff;
 }
 
-.continue_box > .login_btn {
+.continue_box .login_btn {
   background: var(--main-color1);
 }
 
-.continue_box > .home_btn:hover {
+.continue_box .home_btn:hover {
   color: var(--main-color1);
   border-color: var(--main-color1);
 }
 
-.continue_box > .login_btn:hover {
+.continue_box .login_btn:hover {
   background: var(--main-color2);
 }

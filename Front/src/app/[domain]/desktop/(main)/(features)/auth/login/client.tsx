@@ -262,8 +262,7 @@ export function SubmitGroup() {
       message: "아이디, 비밀번호를 입력해주세요.",
       className: "custom-toast-body",
       withCloseButton: true,
-      messageBoxClassName: "custom-toast",
-      autoClose: 5000000,
+      messageBoxClassName: 'custom-toast',
     });
   };
 

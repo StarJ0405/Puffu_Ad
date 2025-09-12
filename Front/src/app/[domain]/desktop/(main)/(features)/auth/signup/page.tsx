@@ -210,28 +210,34 @@ function Agree({ setStep }: { setStep: Dispatch<SetStateAction<string>> }) {
 function Certification({ setStep, handleUpdate }: StepProps) {
   const [type, setType] = useState<"pass" | "sms">("pass");
   return (
-    <VerticalFlex backgroundColor="#d0d0d0">
+    <VerticalFlex width={'100%'} maxWidth={600} className={styles.auth_check_group}>
       <FlexChild justifyContent="center">
-        <HorizontalFlex width={600} maxWidth={600} minWidth={600}>
-          <FlexChild gap={10} onClick={() => setType("pass")}>
-            <Image
+        <HorizontalFlex className={styles.auth_btn_box}>
+          <FlexChild 
+            gap={10} onClick={() => setType("pass")} justifyContent="center" 
+            className={clsx(styles.auth_btn, {
+                [styles.active]: type !== "sms",
+            })}
+          >
+            {/* <Image
               src="/resources/images/PASS.png"
               height={36}
               width={"auto"}
-            />
-            <P size={18} weight={600} color="#1C1B1F">
+            /> */}
+            <P size={25} weight={600}>
               PASS 인증
             </P>
           </FlexChild>
           <FlexChild
-            className={clsx(styles.certificationBox, {
-              [styles.selected]: type === "sms",
+            justifyContent="center"
+            className={clsx(styles.auth_btn, {
+              [styles.active]: type === "sms",
             })}
             gap={10}
             onClick={() => setType("sms")}
           >
-            <Image src="/resources/images/SMS.png" height={36} width={"auto"} />
-            <P size={18} weight={600} color="#1C1B1F">
+            {/* <Image src="/resources/images/SMS.png" height={36} width={"auto"} /> */}
+            <P size={25} weight={600}>
               SMS 인증
             </P>
           </FlexChild>
@@ -262,8 +268,8 @@ function PASS({ setStep, handleUpdate }: StepProps) {
   const [phone, setPhone] = useState<string>("");
   const [phoneStation, setPhoneStation] = useState(phoneStations[0]);
   return (
-    <VerticalFlex>
-      <FlexChild paddingBottom={20}>
+    <VerticalFlex className={styles.auth_root_box}>
+      <FlexChild paddingBottom={30}>
         <VerticalFlex gap={9}>
           <FlexChild>
             <P className={styles.inputLabel}>이름</P>
@@ -271,16 +277,16 @@ function PASS({ setStep, handleUpdate }: StepProps) {
           <FlexChild>
             <Input
               id="name"
-              className={styles.input}
+              className={'web_input'}
               placeHolder="이름을 입력하세요"
-              width={512}
+              width={'100%'}
               noWhiteSpace
               onChange={(value) => setName(value as string)}
             />
           </FlexChild>
         </VerticalFlex>
       </FlexChild>
-      <FlexChild paddingBottom={20}>
+      <FlexChild paddingBottom={30}>
         <VerticalFlex gap={9}>
           <FlexChild>
             <P className={styles.inputLabel}>생년월일</P>
@@ -288,9 +294,9 @@ function PASS({ setStep, handleUpdate }: StepProps) {
           <FlexChild>
             <Input
               id="birthday"
-              className={styles.input}
+              className={'web_input'}
               placeHolder="YYYYMMDD"
-              width={512}
+              width={'100%'}
               onFilter={(value: any) => value.replace(numberOnlyFormat.exp, "")}
               maxLength={8}
               noWhiteSpace
@@ -306,20 +312,21 @@ function PASS({ setStep, handleUpdate }: StepProps) {
         </VerticalFlex>
       </FlexChild>
       <FlexChild paddingBottom={30}>
-        <VerticalFlex gap={9}>
+        <VerticalFlex gap={9} width={'auto'}>
           <FlexChild>
             <P className={styles.inputLabel}>휴대폰 번호</P>
           </FlexChild>
           <FlexChild>
-            <HorizontalFlex gap={10}>
+            <HorizontalFlex gap={10} width={'auto'} className={styles.phone_input_group}>
               <Select
                 hideScroll
                 id="phoneStation"
                 classNames={{
-                  header: styles.phoneStationBox,
-                  line: styles.phoneStationBox,
-                  placeholder: styles.phoneStationBox,
-                  search: styles.phoneStationBox,
+                  header: styles.phone_select_header,
+                  placeholder: 'web_select_placholder',
+                  line: 'web_select_line',
+                  arrow: 'web_select_arrow',
+                  search: 'web_select_search',
                 }}
                 value={phoneStation.value}
                 options={phoneStations.map((phone) => ({
@@ -340,9 +347,9 @@ function PASS({ setStep, handleUpdate }: StepProps) {
               <FlexChild>
                 <Input
                   id="phone"
-                  className={styles.input}
+                  className={'web_input'}
                   placeHolder="'-' 없이 숫자만 입력"
-                  width={388}
+                  width={'100%'}
                   onFilter={(value: any) =>
                     value.replace(numberOnlyFormat.exp, "")
                   }
@@ -359,12 +366,12 @@ function PASS({ setStep, handleUpdate }: StepProps) {
           </FlexChild>
         </VerticalFlex>
       </FlexChild>
-      <FlexChild justifyContent="center" width={600} maxWidth={600}>
-        <HorizontalFlex gap={7} width={363} maxWidth={363}>
+      <FlexChild justifyContent="center" width={600} maxWidth={600} paddingTop={30}>
+        <HorizontalFlex gap={10} width={363} maxWidth={363} className={styles.continue_box}>
           <FlexChild>
             <Button
               width={"100%"}
-              className={clsx(styles.button, styles.white)}
+              className={clsx(styles.prev_btn, styles.white)}
               onClick={() => {
                 setStep("agree");
               }}
@@ -375,7 +382,7 @@ function PASS({ setStep, handleUpdate }: StepProps) {
           <FlexChild>
             <Button
               width={"100%"}
-              className={styles.button}
+              className={styles.next_btn}
               onClick={async () => {
                 const { mokToken: token } = await requester.getToken();
                 const data = handleUpdate?.([
@@ -500,8 +507,8 @@ function SMS({ setStep, handleUpdate }: StepProps) {
     }
   }, [time]);
   return (
-    <VerticalFlex>
-      <FlexChild paddingBottom={20}>
+    <VerticalFlex className={styles.auth_root_box}>
+      <FlexChild paddingBottom={30}>
         <VerticalFlex gap={9}>
           <FlexChild>
             <P className={styles.inputLabel}>이름</P>
@@ -509,9 +516,9 @@ function SMS({ setStep, handleUpdate }: StepProps) {
           <FlexChild>
             <Input
               id="name"
-              className={styles.input}
+              className={'web_input'}
               placeHolder="이름을 입력하세요"
-              width={512}
+              width={'100%'}
               noWhiteSpace
               onChange={(value) => {
                 setPhoneApprove("ready");
@@ -521,19 +528,19 @@ function SMS({ setStep, handleUpdate }: StepProps) {
           </FlexChild>
         </VerticalFlex>
       </FlexChild>
-      <FlexChild paddingBottom={20}>
+      <FlexChild paddingBottom={30}>
         <VerticalFlex gap={9}>
           <FlexChild>
             <P className={styles.inputLabel}>주민등록번호 7자리</P>
           </FlexChild>
           <FlexChild>
-            <HorizontalFlex gap={23}>
+            <HorizontalFlex gap={10}>
               <FlexChild>
                 <Input
                   id="identification"
-                  className={styles.input}
+                  className={'web_input'}
                   placeHolder="YYMMDD"
-                  width={218}
+                  width={'100%'}
                   onFilter={(value: any) =>
                     value.replace(numberOnlyFormat.exp, "")
                   }
@@ -552,13 +559,14 @@ function SMS({ setStep, handleUpdate }: StepProps) {
                   src="/resources/icons/minus.png"
                   width={12}
                   height={"auto"}
+                  className={styles.icon_filter}
                 />
               </FlexChild>
               <FlexChild gap={8}>
                 <Input
                   id="gender"
-                  className={styles.input}
-                  width={49}
+                  className={'web_input'}
+                  width={'100%'}
                   onFilter={(value: any) =>
                     value.replace(numberOnlyFormat.exp, "")
                   }
@@ -580,6 +588,7 @@ function SMS({ setStep, handleUpdate }: StepProps) {
                       src="/resources/icons/dot.png"
                       width={10}
                       height={"auto"}
+                      className={styles.icon_filter}
                     />
                   ))}
                 </FlexChild>
@@ -588,21 +597,22 @@ function SMS({ setStep, handleUpdate }: StepProps) {
           </FlexChild>
         </VerticalFlex>
       </FlexChild>
-      <FlexChild>
+      <FlexChild paddingBottom={30}>
         <VerticalFlex gap={9}>
           <FlexChild>
             <P className={styles.inputLabel}>휴대폰 번호</P>
           </FlexChild>
           <FlexChild>
-            <HorizontalFlex gap={10}>
+            <HorizontalFlex gap={10} width={'auto'} className={styles.phone_input_group}>
               <Select
                 hideScroll
                 id="phoneStation"
                 classNames={{
-                  header: styles.phoneStationBox,
-                  line: styles.phoneStationBox,
-                  placeholder: styles.phoneStationBox,
-                  search: styles.phoneStationBox,
+                  header: styles.phone_select_header,
+                  placeholder: 'web_select_placholder',
+                  line: 'web_select_line',
+                  arrow: 'web_select_arrow',
+                  search: 'web_select_search',
                 }}
                 value={phoneStation.value}
                 options={phoneStations.map((phone) => ({
@@ -624,7 +634,7 @@ function SMS({ setStep, handleUpdate }: StepProps) {
               <FlexChild position="relative">
                 <Input
                   id="phone"
-                  className={styles.input}
+                  className={'web_input'}
                   placeHolder="'-' 없이 숫자만 입력"
                   width={271}
                   onFilter={(value: any) =>
@@ -644,6 +654,7 @@ function SMS({ setStep, handleUpdate }: StepProps) {
                   marginLeft={10}
                   width={107}
                   className={styles.button}
+                  backgroundColor="var(--main-color2)"
                   disabled={
                     !mobileNoFormat.exp.test(phone) ||
                     !birthday6Format.exp.test(identification) ||
@@ -768,12 +779,12 @@ function SMS({ setStep, handleUpdate }: StepProps) {
           time / 60
         )}:${String(time % 60).padStart(2, "0")}`}</P>
       </FlexChild>
-      <FlexChild paddingTop={30} justifyContent="center">
-        <HorizontalFlex gap={7} width={363} maxWidth={363}>
+      <FlexChild paddingTop={30} justifyContent="center" width={600} maxWidth={600}>
+        <HorizontalFlex gap={10} width={363} maxWidth={363} className={styles.continue_box}>
           <FlexChild>
             <Button
               width={"100%"}
-              className={clsx(styles.button, styles.white)}
+              className={clsx(styles.prev_btn, styles.white)}
               onClick={() => {
                 setStep("agree");
               }}
@@ -784,7 +795,7 @@ function SMS({ setStep, handleUpdate }: StepProps) {
           <FlexChild>
             <Button
               width={"100%"}
-              className={styles.button}
+              className={styles.next_btn}
               onClick={() => {
                 const { token, verification, userPhoneNum } = dataRef.current;
                 requester.verificationCheck(

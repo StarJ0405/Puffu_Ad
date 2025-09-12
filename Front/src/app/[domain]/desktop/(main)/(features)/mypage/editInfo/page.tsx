@@ -85,38 +85,6 @@ export default async function () {
                      value={'마이네임이즈토니'}
                   />
                </VerticalFlex>
-
-               <VerticalFlex className={styles.input_box} >
-                  <P className={styles.input_label}>
-                     비밀번호 질문
-                  </P>
-                  <Select
-                     classNames={{
-                        header: 'web_select',
-                        placeholder: 'web_select_placholder',
-                        line: 'web_select_line',
-                        arrow: 'web_select_arrow',
-                        search: 'web_select_search',
-                     }}
-                     width={'100%'}
-                     options={[
-                        { value: "가장 좋아하는 동물은?", display: "가장 좋아하는 동물은?" },
-                        { value: "어릴적 별명은?", display: "어릴적 별명은?" },
-                        { value: "어머니 성함은?", display: "어머니 성함은?" },
-                        { value: "출생 도시는?", display: "출생 도시는?" },
-                        { value: "졸업한 초등학교는?", display: "졸업한 초등학교는?" },
-                     ]}
-                     placeholder={'질문을 선택하세요'}
-                     // value={selectedMessageOption}
-                  />
-
-                  <Input
-                     className="web_input"
-                     type="text"
-                     width={"100%"}
-                     placeHolder="질문의 정답을 입력하세요"
-                  />
-               </VerticalFlex>
             </VerticalFlex>
 
             <FlexChild className={styles.button_group}>
