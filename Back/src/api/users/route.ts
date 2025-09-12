@@ -4,12 +4,14 @@ import { container } from "tsyringe";
 import { generateToken } from "utils/functions";
 
 export const POST: ApiHandler = async (req, res) => {
-  const { username, password, name, phone, birthday, metadata } = req.body;
+  const { username, password, email, name, phone, birthday, metadata } =
+    req.body;
 
   const service: UserService = container.resolve(UserService);
   const user = await service.create({
     username,
     password,
+    email,
     name,
     phone,
     birthday,

@@ -53,7 +53,7 @@ export const GET: ApiHandler = async (req, res) => {
       product_id: content?.id,
     },
   });
-  content.wishes = count;
+  content.wishes = count || 0;
   if (req.user) {
     if (content?.wishlists && content.wishlists?.length > 0) {
       const wish = content.wishlists.find(
