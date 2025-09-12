@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LOG=/puffu/front.log
+LOG=/adult/front.log
 
 PID=$(ps -ef | grep next | grep server | awk '{print $2}')
 

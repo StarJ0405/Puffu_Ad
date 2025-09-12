@@ -2,6 +2,7 @@ import AuthProvider from "@/providers/AuthPorivder/AuthPorivder";
 import ModalProvider from "@/providers/ModalProvider/ModalProvider";
 import React from "react";
 import LayoutClient from "./layoutClient";
+import StoreProvider from "@/providers/StoreProvider/StorePorivder";
 
 export default async function ({
   children,
@@ -10,13 +11,15 @@ export default async function ({
 }>) {
   return (
     <AuthProvider>
-      <ModalProvider>
-        <LayoutClient>
-          {/*  */}
-          {children}
-          {/*  */}
-        </LayoutClient>
-      </ModalProvider>
+      <StoreProvider>
+        <ModalProvider>
+          <LayoutClient>
+            {/*  */}
+            {children}
+            {/*  */}
+          </LayoutClient>
+        </ModalProvider>
+      </StoreProvider>
     </AuthProvider>
   );
 }

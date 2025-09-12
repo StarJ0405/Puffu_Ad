@@ -1,5 +1,12 @@
 export default function () {
   `
+  CREATE OR REPLACE FUNCTION fn_text_to_char_array(p_text TEXT)
+        RETURNS TEXT[]
+        LANGUAGE sql
+        IMMUTABLE
+        AS $$
+          SELECT string_to_array(LOWER(REPLACE(p_text, ' ', '')), NULL);
+        $$;
   CREATE INDEX IF NOT EXISTS idx_brand_name ON public.brand USING GIN (fn_text_to_char_array(name));
   CREATE INDEX IF NOT EXISTS idx_category_name ON public.category USING GIN (fn_text_to_char_array(name));
   CREATE INDEX IF NOT EXISTS idx_store_name ON public.store USING GIN (fn_text_to_char_array(name));
@@ -22,8 +29,9 @@ export default function () {
   CREATE INDEX IF NOT EXISTS idx_log_name ON public.log USING GIN (fn_text_to_char_array(name));
   CREATE INDEX IF NOT EXISTS idx_log_type ON public.log USING GIN (fn_text_to_char_array(type));
   CREATE INDEX IF NOT EXISTS idx_qa_title ON public.qa USING GIN (fn_text_to_char_array(title));
-  CREATE INDEX IF NOT EXISTS idx_qa_type ON public.qa USING GIN (fn_text_to_char_array(type));
+  -- CREATE INDEX IF NOT EXISTS idx_qa_type ON public.qa USING GIN (fn_text_to_char_array(type));
   CREATE INDEX IF NOT EXISTS idx_qa_content ON public.qa USING GIN (fn_text_to_char_array(content));
+  CREATE INDEX IF NOT EXISTS idx_user_email ON public.user USING GIN (fn_text_to_char_array(email));
   CREATE INDEX IF NOT EXISTS idx_chatroom_title ON public.chatroom USING GIN (fn_text_to_char_array(title));
   `;
 }

@@ -20,9 +20,13 @@ export enum UserRole {
 // CREATE INDEX IF NOT EXISTS idx_user_name ON public.user USING GIN (fn_text_to_char_array(name));
 // CREATE INDEX IF NOT EXISTS idx_user_phone ON public.user USING GIN (fn_text_to_char_array(phone));
 // CREATE INDEX IF NOT EXISTS idx_user_nickname ON public.user USING GIN (fn_text_to_char_array(nickname));
+// CREATE INDEX IF NOT EXISTS idx_user_email ON public.user USING GIN (fn_text_to_char_array(email));
 export class User extends BaseEntity {
   @Column({ type: "character varying", unique: true })
   username?: string;
+
+  @Column({ type: "character varying", nullable: true })
+  email?: string;
 
   @Column({ type: "character varying" })
   password_hash!: string;

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LOG=/puffu/back.log
+LOG=/adult/back.log
 
 PID=$(ps -ef | grep app.js | grep usr | awk '{print $2}')
 

@@ -70,14 +70,14 @@ export const POST: ApiHandler = async (req, res) => {
 };
 
 export const GET: ApiHandler = async (req, res) => {
-  const { phone, username } = req.parsedQuery;
+  const { phone, username, email } = req.parsedQuery;
 
-  if (!phone && !username)
+  if (!phone && !username && !email)
     return res.status(404).json({ erorr: "조건이 부족합니다.", status: 404 });
 
   const service = container.resolve(UserService);
   const user = await service.get({
-    where: [{ phone }, { username }],
+    where: [{ phone }, { username }, { email }],
   });
 
   return res.json({ exist: !!user, username: user?.username });

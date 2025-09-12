@@ -46,7 +46,7 @@ export const POST: ApiHandler = async (req, res) => {
                       
                       <div style="background-color: #f2f2f2; border-radius: 6px; padding: 20px; margin-top: 30px; text-align: center;">
                         <p style="font-size: 32px; font-weight: bold; color: #333333; letter-spacing: 2px; margin: 0;">
-                          KLIJweF
+                          ${code}
                         </p>
                       </div>
                       
