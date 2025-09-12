@@ -16,55 +16,42 @@ import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
 import Link from "next/link";
 import clsx from "clsx";
-import style from './page.module.css'
+import styles from './page.module.css'
+import {SignFeatures, SubmitGroup} from './client' 
+
 
 export default async function () {
+   
    return (
       <>
-         <Container className={clsx('page_container', style.container)}>
-            <VerticalFlex className={style.loginBox}>
-               <FlexChild className={style.logo}>
+         <Container className={clsx('page_container', styles.container)}>
+            <VerticalFlex className={styles.loginBox}>
+               <FlexChild className={styles.logo}>
                   <Link href={'/'}>
                      <Image src={'/resources/images/header/logo.png'} width={180} />
                   </Link>
                </FlexChild>
 
-               <FlexChild className={style.signup}>
+               <FlexChild className={styles.signup}>
                   <VerticalFlex gap={30}>
                      <VerticalFlex gap={30} width={'100%'}>
-                        <FlexChild className={style.input_box}>
+                        <FlexChild className={styles.input_box}>
                            <Span>아이디</Span>
                            <Input placeHolder="아이디" width={'100%'} />
                         </FlexChild>
    
-                        <FlexChild className={style.input_box}>
+                        <FlexChild className={styles.input_box}>
                            <Span>비밀번호</Span>
                            <Input type="password" placeHolder="비밀번호" width={'100%'} />
                         </FlexChild>
                      </VerticalFlex>
 
-                     <HorizontalFlex className={style.sign_features}>
-                        <FlexChild>
-                           {/* <CheckboxChild id={'11'} /> */}
-                           <Span cursor="poointer">로그인 상태 유지</Span>
-                        </FlexChild>
-
-                        <FlexChild className={style.find_box}>
-                           <FlexChild>
-                              <Span>이메일 찾기</Span>
-                           </FlexChild>
-
-                           <Span>|</Span>
-
-                           <FlexChild>
-                              <Span>비밀번호 찾기</Span>
-                           </FlexChild>
-                        </FlexChild>
-                     </HorizontalFlex>
+                     {/* 이메일 비밀번호 찾기, 로그인 상태 유지 */}
+                     <SignFeatures />
 
                      <VerticalFlex gap={15}>
-                        <Button className={clsx(style.login_btn, style.btn)}>로그인</Button>
-                        <Button className={clsx(style.join_btn, style.btn)}>회원가입</Button>
+                        {/* 로그인, 회원가입 버튼 */}
+                        <SubmitGroup/>
                      </VerticalFlex>
                   </VerticalFlex>
                </FlexChild>
