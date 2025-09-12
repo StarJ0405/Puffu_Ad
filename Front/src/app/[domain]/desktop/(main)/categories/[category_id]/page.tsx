@@ -4,34 +4,42 @@ import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import P from "@/components/P/P";
-import styles from './page.module.css';
-import { } from './client';
+import styles from "./page.module.css";
+import {} from "./client";
 
-import {SecondCategory, CategoryList, ProdcutCategory } from "./client";
+import { SecondCategory, CategoryList, ProdcutCategory } from "./client";
+import { Params } from "next/dist/server/request/params";
+import { requester } from "@/shared/Requester";
+import { log } from "@/shared/utils/Functions";
 
+export default async function ({ params }: { params: Promise<Params> }) {
+  const { category_id } = await params;
 
+  const initCondition = {
+    category_id,
+    pageSize: 12,
+  };
+  const initProducts = await requester.getProducts(initCondition);
 
-export default async function () {
+  return (
+    <section className="root">
+      <Container className="page_container" marginTop={80}>
+        <VerticalFlex className={styles.title_box}>
+          <h3>남성토이</h3>
 
-   return (
-      <section className="root">
-         <Container className="page_container" marginTop={80}>
-            <VerticalFlex className={styles.title_box}>
-               
-               <h3>남성토이</h3>
+          {/* 프로덕트 카테고리 */}
+          <VerticalFlex marginBottom={30}>
+            {/* <SecondCategory /> 중분류 있을때, 중분류 안에 소분류 있을때만 나오기. */}
+          </VerticalFlex>
+        </VerticalFlex>
 
-               {/* 프로덕트 카테고리 */}
-               <VerticalFlex marginBottom={30}>
-                  {/* <SecondCategory /> 중분류 있을때, 중분류 안에 소분류 있을때만 나오기. */}
-               </VerticalFlex>
-
-            </VerticalFlex>
-
-
-            <VerticalFlex className={styles.list}>
-               <CategoryList />
-            </VerticalFlex>
-         </Container>
-      </section>
-   )
+        <VerticalFlex className={styles.list}>
+          <CategoryList
+            initCondition={initCondition}
+            initProducts={initProducts}
+          />
+        </VerticalFlex>
+      </Container>
+    </section>
+  );
 }
