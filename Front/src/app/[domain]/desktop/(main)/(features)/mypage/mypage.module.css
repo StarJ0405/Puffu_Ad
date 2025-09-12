@@ -27,6 +27,7 @@
 .left_bar {
    width: 300px;
    min-width: 300px;
+   max-width: 300px;
    flex: unset;
    height: auto;
    position: sticky; top: 70px;

@@ -230,7 +230,6 @@ export function SubmitGroup () {
       className: 'custom-toast-body',
       withCloseButton: true,
       messageBoxClassName: 'custom-toast',
-      autoClose: 5000000,
     });
   };
 
