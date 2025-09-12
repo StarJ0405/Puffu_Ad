@@ -421,6 +421,10 @@ class _Requester {
     if (callback) callback(await this.get(`/users/me/order/status`, data));
     else return await this.get(`/users/me/order/status`, data);
   }
+  async cancelOrder(id: string, data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.delete(`/users/me/order/${id}`, data));
+    else return await this.delete(`/users/me/order/${id}`, data);
+  }
 
   // 키워드 관련
   async addKeyword(data?: any, callback?: Function): Promise<any> {

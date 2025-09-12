@@ -107,6 +107,14 @@ export class Order extends BaseEntity {
   @Column({ type: "jsonb", default: {} })
   payment_data?: Record<string, unknown> | null;
 
+  @Column({
+    type: "timestamp with time zone",
+    nullable: true,
+  })
+  canceled_at?: Date;
+
+  @Column({ type: "jsonb", default: {} })
+  cancel_data?: Record<string, unknown> | null;
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;
 

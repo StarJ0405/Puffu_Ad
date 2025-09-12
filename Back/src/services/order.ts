@@ -17,6 +17,7 @@ import {
   MoreThanOrEqual,
 } from "typeorm";
 import { PointService } from "./point";
+import axios from "axios";
 
 @injectable()
 export class OrderService extends BaseService<Order, OrderRepository> {
@@ -180,6 +181,70 @@ export class OrderService extends BaseService<Order, OrderRepository> {
       );
       if (order?.payment_data) {
         // 환불 처리
+        const payment_data = order.payment_data;
+        if (payment_data.trackId) {
+          // NESTPAY
+          const NESTPAY_BASE_URL = process.env.NESTPAY_BASE_URL;
+          const NESTPAY_SECRET_KEY = process.env.NESTPAY_SECRET_KEY;
+
+          const nestpayAxios = axios.create({
+            timeout: 30000,
+            maxRedirects: 5,
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              Authorization: NESTPAY_SECRET_KEY,
+            },
+          });
+          const trackId = payment_data.trackId;
+          const rootTrxId = payment_data.trxId;
+          const amount = payment_data.amount;
+          const reason = "구매자가 취소를 원함";
+          const response = await nestpayAxios.post(
+            `${NESTPAY_BASE_URL}/api/refund`,
+            { refund: { trackId, rootTrxId, amount, reason } }
+          );
+          if (response.data) {
+            const data = await response.data;
+            await this.repository.update(
+              {
+                id: order.id,
+              },
+              {
+                cancel_data: data,
+                canceled_at: new Date(),
+              }
+            );
+          }
+        } else if (payment_data.type === "BRANDPAY") {
+          // TOSS
+          const secret = process.env.BRAND_PAY_SECRET_KEY?.trim();
+          const auth = "Basic " + Buffer.from(`${secret}:`).toString("base64");
+          // 부분취소시 cancelAmount
+          const response = await fetch(
+            `https://api.tosspayments.com/v1/payments/${payment_data.paymentKey}/cancel`,
+            {
+              method: "POST",
+              headers: {
+                Authorization: auth,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                cancelReason: "구매자가 취소를 원함",
+              }),
+            }
+          );
+          const data = await response.json();
+          await this.repository.update(
+            {
+              id: order.id,
+            },
+            {
+              cancel_data: data,
+              canceled_at: new Date(),
+            }
+          );
+        }
       }
       if (order?.store?.currency_unit === "P") {
         await this.pointService.create({
