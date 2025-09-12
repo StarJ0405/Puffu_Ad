@@ -18,172 +18,76 @@ import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import { useParams } from "next/navigation";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
-import style from "./headerCategory.module.css";
+import styles from "./headerCategory.module.css";
 import { useCategories } from "@/providers/StoreProvider/StorePorivderClient";
 import { log } from "@/shared/utils/Functions";
+import Link from "next/link";
 
-export function HeaderCatgeory({ CaOpen }: { CaOpen: boolean }) {
+export function HeaderCategory({ CaOpen }: { CaOpen: boolean }) {
   // 카테고리메뉴
   const { categoriesData } = useCategories();
-  log(categoriesData);
-  const ca_test = [
-    {
-      name: "남성토이",
-      thumbnail: "/resources/images/dummy_img/ca_menu_01.png",
-    },
-    {
-      name: "여성토이",
-      thumbnail: "/resources/images/dummy_img/ca_menu_02.png",
-    },
-    {
-      name: "윤활제/젤",
-      thumbnail: "/resources/images/dummy_img/ca_menu_03.png",
-    },
-    { name: "콘돔", thumbnail: "/resources/images/dummy_img/ca_menu_04.png" },
-    { name: "의류", thumbnail: "/resources/images/dummy_img/ca_menu_04.png" },
-    {
-      name: "BDSM토이",
-      thumbnail: "/resources/images/dummy_img/ca_menu_04.png",
-    },
-    {
-      name: "LGBT토이",
-      thumbnail: "/resources/images/dummy_img/ca_menu_04.png",
-    },
-  ];
+
+  console.log("카테고리", categoriesData);
+
+  const [activeDepth1, setActiveDepth1] = useState<string | null>(null);
 
   return (
     <Div
-      className={clsx(style.overlay, "desktop_container", {
-        [style.isOverlayVisible]: CaOpen,
-      })}
-
-      // onMouseLeave={toggleOverlay}
-      // onMouseEnter={() => {
-      // setCategoryListHover(true);
-      // }}
-      // onMouseLeave={() => {
-      // setCategoryListHover(false);
-      // }}
-      // top={`${headerH}px`}
+      className={clsx(styles.overlay, {[styles.isOverlayVisible]: CaOpen,})}
     >
-      <HorizontalFlex className={style.category_wrap}>
-        <nav className={style.ca_tab1}>
-          {ca_test.map((cat, i) => (
-            <FlexChild
-              key={i}
-              // key={cat.id}
-              className={style.tab_item}
-              backgroundColor={"#262626"}
-              // backgroundColor={
-              //   cat.id === activeDepth1
-              //     ? "var(--main-color)"
-              //     : "#F7F8F9"
-              // }
-              // onMouseEnter={() => {
-              //   setActiveDepth1(cat.id);
-              //   setActiveDepth2(null);
-              // }}
-              // onClick={() => {
-              //   handleCategoryClick(cat, !hasChild(cat));
-              // }}
-            >
-              <P
-              // color={
-              //   cat.id === activeDepth1
-              //     ? "#fff"
-              //     : "var(--normal-color1)"
-              // }
+      <HorizontalFlex className={styles.ca_wrap}>
+
+        {/* 대분류 */}
+        <nav className={clsx(styles.ca_tab1, styles.ca_box)}>
+          {categoriesData
+            .sort((c1, c2) => c1.index - c2.index)
+            .map((cat, i) => (
+              <FlexChild
+                key={i}
+                className={clsx(styles.tab_item, 
+                  {[styles.active]: activeDepth1 === cat.id,}
+                )}
+
+                onMouseEnter={()=> setActiveDepth1(cat.id)}
+                onMouseLeave={() => setActiveDepth1(null)}
               >
-                {cat.name}
-              </P>
-            </FlexChild>
-          ))}
+                <Link href={`/categories/${cat.id}`}>
+                  <P>
+                    {cat.name}
+                  </P>
+                </Link>
+              </FlexChild>
+            ))}
         </nav>
 
-        <VerticalFlex className={style.ca_tabBox}>
-          <FlexChild
-            className={style.tab_title}
-            // onClick={() =>
-            //   handleCategoryClick(
-            //     categories.find((c) => c.id === activeDepth1),
-            //     true
-            //   )
-            // }
-          >
-            <P>
-              {/* {flagCode === "cn"
-                     ? categories.find((c) => c.id === activeDepth1)
-                        ?.name
-                     : categories.find((c) => c.id === activeDepth1)
-                        ?.metadata?.name ||
-                        categories.find((c) => c.id === activeDepth1)
-                        ?.name} */}
-              대분류명
-            </P>
-            <Image src={"/resources/icons/arrow/foldBtn_black.png"} width={7} />
-          </FlexChild>
+        <VerticalFlex className={clsx(styles.child_wrap)}>
+          <VerticalFlex>
+            {categoriesData
+              .sort((c1, c2) => c1.index - c2.index)
+              .filter((cat1) => cat1.children && cat1.children.length > 0)
+              .map((cat1, i) => (
+                <VerticalFlex key={cat1.id ?? i} 
+                  className={clsx(styles.ca_child, {
+                    [styles.active]: activeDepth1 === cat1.id,
+                  })}
 
-          <FlexChild className={style.itemBox}>
-            <VerticalFlex
-              className={style.ca_item}
-              // onClick={() =>
-              //   handleCategoryClick(
-              //     categories.find(
-              //       (c) => c.id === activeDepth1
-              //     ),
-              //     true
-              //   )
-              // }
-            >
-              <Image src={ca_test[0].thumbnail} width={60} />
-              <P>{ca_test[0].name}</P>
-            </VerticalFlex>
-          </FlexChild>
-        </VerticalFlex>
-
-        <VerticalFlex className={clsx(style.ca_tabBox, style.depth3List)}>
-          <FlexChild
-            className={style.tab_title}
-            // onClick={() =>
-            //   handleCategoryClick(
-            //     categories.find((c) => c.id === activeDepth1),
-            //     true
-            //   )
-            // }
-          >
-            <P>
-              {/* {flagCode === "cn"
-                     ? categories.find((c) => c.id === activeDepth1)
-                        ?.name
-                     : categories.find((c) => c.id === activeDepth1)
-                        ?.metadata?.name ||
-                        categories.find((c) => c.id === activeDepth1)
-                        ?.name} */}
-              중분류명
-            </P>
-            <Image src={"/resources/icons/arrow/foldBtn_black.png"} width={7} />
-          </FlexChild>
-
-          <FlexChild className={style.itemBox}>
-            {ca_test.map((cat, i) => (
-              <VerticalFlex
-                key={i}
-                // key={cat.id}
-                className={clsx(style.ca_item)}
-                // onClick={() => {
-                //   handleCategoryClick(cat, true);
-                // }}
-              >
-                <Image src={cat?.thumbnail} width={60} />
-                <P color="inherit">
-                  {/* {flagCode === "cn"
-                                 ? cat.name
-                                 : cat.metadata?.name || cat.name} */}
-                  {cat.name}
-                </P>
-              </VerticalFlex>
-            ))}
-          </FlexChild>
+                  onMouseEnter={() => setActiveDepth1(cat1.id)}
+                  onMouseLeave={() => setActiveDepth1(null)}
+                >
+                  {cat1.children
+                    ?.slice()
+                    .reverse()
+                    .map((child2, j) => (
+                      <FlexChild key={child2.id ?? j} cursor="pointer" className={styles.child_item}>
+                        <Link href={`/categories/${child2.id}`}>
+                          <P>{child2.name}</P>
+                          <Image src={'/resources/icons/arrow/foldBtn_black.png'} width={7} />
+                        </Link>
+                      </FlexChild>
+                    ))}
+                </VerticalFlex>
+              ))}
+          </VerticalFlex>
         </VerticalFlex>
       </HorizontalFlex>
     </Div>

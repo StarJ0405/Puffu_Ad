@@ -12,7 +12,8 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useCookies } from "react-cookie";
 import styles from "./header.module.css";
-import { HeaderCatgeory } from "./headerCategory";
+import { HeaderCategory } from "./headerCategory";
+import { useCart } from "@/providers/StoreProvider/StorePorivderClient";
 
 interface ShopMenuItem {
   name: string;
@@ -34,6 +35,21 @@ interface CommunityMenuItem {
 interface HeaderBottomProps {
   menu1: ShopMenuItem[];
   menu2: CommunityMenuItem[];
+}
+
+export function CartLength() {
+  const { cartData } = useCart();
+  const [length, setLength] = useState<number>(0);
+
+  useEffect(() => {
+    setLength(cartData?.items.length ?? 0);
+  }, [cartData]);
+  
+  return (
+    <FlexChild className={styles.cart_length}>
+      {length}
+    </FlexChild>
+  )
 }
 
 export function SearchBox() {
@@ -97,7 +113,7 @@ export function HeaderBottom({ menu1, menu2 }: HeaderBottomProps) {
                 />
                 <span className="SacheonFont">카테고리</span>
               </FlexChild>
-              <HeaderCatgeory CaOpen={CaOpen} />
+              <HeaderCategory CaOpen={CaOpen} />
             </FlexChild>
 
             <FlexChild width={"auto"}>
@@ -161,6 +177,8 @@ export function Auth() {
       <P
         onClick={() => removeCookie(Cookies.JWT, getCookieOption())}
         hidden={!userData?.id}
+        cursor="pointer"
+        className={styles.logout_txt}
       >
         로그아웃
       </P>
