@@ -3,7 +3,7 @@ import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import Link from "next/link";
-import { Auth, HeaderBottom, SearchBox } from "./client";
+import { Auth, HeaderBottom, SearchBox, CartLength } from "./client";
 import styles from "./header.module.css";
 
 export default async function Header() {
@@ -75,13 +75,14 @@ export default async function Header() {
                 </FlexChild>
 
                 <FlexChild>
-                  <Link href={"/orders/cart"}>
+                  <Link href={"/orders/cart"} className={styles.cart_btn}>
                     <Image
                       src="/resources/icons/main/cart_icon.png"
                       width={30}
                       height={"auto"}
                       cursor="pointer"
                     />
+                    <CartLength />
                   </Link>
                 </FlexChild>
 
