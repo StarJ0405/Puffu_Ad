@@ -10,7 +10,7 @@ import Span from "@/components/span/Span";
 import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import styles from "./page.module.css";
 
 import NoContent from "@/components/noContent/noContent";
@@ -478,7 +478,7 @@ export function ProductList({
     id,
     (pageNumber) => ({
       ...initCondition,
-      pageSize: 30,
+      pageSize: 12,
       pageNumber,
     }),
     (condition) => requester.getProducts(condition),
@@ -489,10 +489,7 @@ export function ProductList({
     }
   );
 
-  const [visibleCount, setVisibleCount] = useState(12);
-
   const showMore = () => {
-    setVisibleCount((prev) => prev + 12); // 12개씩 늘려서 보여주기
     Load(); // 서버에서도 다음 페이지 로드
   };
 
@@ -527,29 +524,27 @@ export function ProductList({
             }}
             currency_unit="₩"
           /> */}
-            {products
-              .slice(0, visibleCount)
-              .map((product: ProductData, i: number) => {
-                return (
-                  <TestProductCard
-                    key={product.id}
-                    product={
-                      {
-                        id: product.id,
-                        title: product.title,
-                        thumbnail: product.thumbnail,
-                        price: product.price,
-                        discount_price: product.discount_price,
-                        discount_rate: product.discount_rate,
-                        store_name: product.brand.name,
-                        variants: product.variants,
-                      } as any
-                    }
-                    lineClamp={2}
-                    width={200}
-                  />
-                );
-              })}
+            {products.map((product: ProductData, i: number) => {
+              return (
+                <TestProductCard
+                  key={product.id}
+                  product={
+                    {
+                      id: product.id,
+                      title: product.title,
+                      thumbnail: product.thumbnail,
+                      price: product.price,
+                      discount_price: product.discount_price,
+                      discount_rate: product.discount_rate,
+                      store_name: product.brand.name,
+                      variants: product.variants,
+                    } as any
+                  }
+                  lineClamp={2}
+                  width={200}
+                />
+              );
+            })}
           </MasonryGrid>
           <Button className={styles.list_more_btn}>
             <FlexChild gap={10} onClick={showMore}>

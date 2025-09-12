@@ -19,25 +19,25 @@ interface RadioGroupContextType {
   };
 }
 export const defaultRadioImages = {
-  // on: "/resources/images/radio_on.png",
-  // off: "/resources/images/radio_off.png",
-  off: (
-    <Image
-      src={"/resources/icons/radio_off.png"}
-      width={"100%"}
-      height={"100%"}
-    />
-  ),
-  on: (
-    <Icon
-      type="svg"
-      name="radio_on"
-      fill="none"
-      // src={"/resources/icons/radio_on.svg"}
-      width={"100%"}
-      height={"100%"}
-    />
-  ),
+  on: "/resources/images/radio_on.png",
+  off: "/resources/images/radio_off.png",
+  // off: (
+  //   <Image
+  //     src={"/resources/icons/radio_off.png"}
+  //     width={"100%"}
+  //     height={"100%"}
+  //   />
+  // ),
+  // on: (
+  //   <Icon
+  //     type="svg"
+  //     name="radio_on"
+  //     fill="none"
+  //     // src={"/resources/icons/radio_on.svg"}
+  //     width={"100%"}
+  //     height={"100%"}
+  //   />
+  // ),
   //     onHover: "/resources/images/checkbox_on.png",
   //     offHover: "/resources/images/checkbox_hover.png",
 };
