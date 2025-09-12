@@ -1,32 +1,43 @@
-import Button from "@/components/buttons/Button";
 import Container from "@/components/container/Container";
-import FlexChild from "@/components/flex/FlexChild";
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import P from "@/components/P/P";
-import styles from './page.module.css';
+import styles from "./page.module.css";
 
-import {SecondCategory, SearchList, ProdcutCategory } from "./client";
+import { requester } from "@/shared/Requester";
+import { SearchParams } from "next/dist/server/request/search-params";
+import { SearchList } from "./client";
 
+export default async function ({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const { q } = await searchParams;
+  const initCondition = {
+    q,
+    pageSize: 12,
+  };
+  const initProducts = await requester.getProducts(initCondition);
 
+  return (
+    <section className="root">
+      <Container className="page_container" marginTop={80}>
+        <VerticalFlex className={styles.title_box}>
+          <h3>"{q}" 검색결과</h3>
 
-export default async function () {
+          <P>
+            {initProducts?.NumberOfTotalElements || 0}개의 상품이
+            검색되었습니다.
+          </P>
+        </VerticalFlex>
 
-   return (
-      <section className="root">
-         <Container className="page_container" marginTop={80}>
-            <VerticalFlex className={styles.title_box}>
-               
-               <h3>"검색한 상품명" 검색결과</h3>
-
-               <P>0개의 상품이 검색되었습니다.</P>
-            </VerticalFlex>
-
-
-            <VerticalFlex className={styles.list}>
-               <SearchList />
-            </VerticalFlex>
-         </Container>
-      </section>
-   )
+        <VerticalFlex className={styles.list}>
+          <SearchList
+            initCondition={initCondition}
+            initProducts={initProducts}
+          />
+        </VerticalFlex>
+      </Container>
+    </section>
+  );
 }
