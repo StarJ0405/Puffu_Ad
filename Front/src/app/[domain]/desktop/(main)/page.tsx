@@ -20,12 +20,12 @@ import styles from "./page.module.css";
 export default async function () {
   const banners = await requester.getBanners();
   const hotCondition: any = {
-    pageSize: 30,
+    pageSize: 12,
     order: "discount",
   };
   const hotProducts = await requester.getProducts(hotCondition);
   const newCondition: any = {
-    pageSize: 30,
+    pageSize: 12,
     order: "new",
   };
   const newProducts = await requester.getProducts(newCondition);
