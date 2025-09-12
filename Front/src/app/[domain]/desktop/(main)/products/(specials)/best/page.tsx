@@ -1,7 +1,7 @@
 import Container from "@/components/container/Container";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Pstyles from "../../products.module.css";
-import { BaseProductList } from "./client";
+import { BestList } from "./client";
 import styles from "./page.module.css";
 
 import Image from "@/components/Image/Image";
@@ -30,7 +30,7 @@ export default async function () {
         </VerticalFlex>
 
         <VerticalFlex className={Pstyles.list}>
-          <BaseProductList
+          <BestList
             initProducts={bestProducts}
             initConiditon={bestCondition}
           />

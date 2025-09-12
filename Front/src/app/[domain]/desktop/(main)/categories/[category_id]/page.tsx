@@ -7,7 +7,7 @@ import P from "@/components/P/P";
 import styles from "./page.module.css";
 import {} from "./client";
 
-import { SecondCategory, CategoryList, ProdcutCategory } from "./client";
+import { SecondCategory, CategoryList, TitleBox } from "./client";
 import { Params } from "next/dist/server/request/params";
 import { requester } from "@/shared/Requester";
 import { log } from "@/shared/utils/Functions";
@@ -19,19 +19,15 @@ export default async function ({ params }: { params: Promise<Params> }) {
     category_id,
     pageSize: 12,
   };
-  const initProducts = await requester.getProducts(initCondition);
 
+  const initProducts = await requester.getProducts(initCondition);
+  console.log('카테고리명', initProducts);
+  
   return (
     <section className="root">
       <Container className="page_container" marginTop={80}>
-        <VerticalFlex className={styles.title_box}>
-          <h3>남성토이</h3>
 
-          {/* 프로덕트 카테고리 */}
-          <VerticalFlex marginBottom={30}>
-            {/* <SecondCategory /> 중분류 있을때, 중분류 안에 소분류 있을때만 나오기. */}
-          </VerticalFlex>
-        </VerticalFlex>
+        <TitleBox category_id={category_id} />
 
         <VerticalFlex className={styles.list}>
           <CategoryList

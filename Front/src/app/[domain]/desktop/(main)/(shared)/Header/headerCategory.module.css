@@ -5,8 +5,8 @@
     position: absolute;
     height: auto;
     z-index: 101;
-    opacity: 1;
-    visibility: visible;
+    opacity: 0;
+    visibility: hidden;
     overflow: hidden;
     background-color: #F4F4F4;
     transition: all 0.2s;
