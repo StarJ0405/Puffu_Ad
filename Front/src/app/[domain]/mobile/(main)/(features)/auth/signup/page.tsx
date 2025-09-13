@@ -895,7 +895,7 @@ function PassReady({ setStep, data }: StepProps) {
   const navigate = useNavigate();
   return (
     <VerticalFlex>
-      <P className={styles.title} paddingTop={80} paddingBottom={45}>
+      <P className={styles.title} paddingBottom={30}>
         {"PASS앱에서 인증 후\n인증완료 버튼을 눌러주세요"}
       </P>
 
@@ -906,17 +906,17 @@ function PassReady({ setStep, data }: StepProps) {
         // height={"auto"}
       />
 
-      <FlexChild width={"max-content"} gap={7} paddingTop={60}>
+      <FlexChild width={"max-content"} gap={7} padding={'40px 10px 0'}>
         <Button
-          className={clsx(styles.button, styles.white)}
-          width={180}
+          className={clsx(styles.prev_button, styles.white)}
+          width={'100%'}
           onClick={() => setStep("certification")}
         >
           이전
         </Button>
         <Button
-          width={180}
-          className={styles.button}
+          width={'100%'}
+          className={styles.next_button}
           onClick={() => {
             const { token, verification, userPhoneNum } = data.current;
             requester.verificationCheck(
@@ -1066,7 +1066,8 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
             <Button
               disabled={!!emailError || !email}
               width={110}
-              minWidth={100}
+              minWidth={110}
+              backgroundColor="var(--main-color1)"
               onClick={() => {
                 setIsLoading(true);
                 requester.isExistUser(
