@@ -31,7 +31,7 @@ export default async function () {
         </VerticalFlex>
 
         <VerticalFlex className={Pstyles.list}>
-          <BaseProductList />
+          <BaseProductList listArray={newProducts} />
         </VerticalFlex>
       </Container>
     </section>

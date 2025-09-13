@@ -8,10 +8,11 @@ import Pstyles from "../../products.module.css";
 import {} from "./client";
 import styles from "./page.module.css";
 import { requester } from "@/shared/Requester";
+import { BaseProductList } from "../../baseClient";
 
 export default async function () {
   const hotCondition: any = {
-    pageSize: 12,
+    pageSize: 24,
     order: "discount",
   };
   const hotProducts = await requester.getProducts(hotCondition);
@@ -34,10 +35,7 @@ export default async function () {
         </VerticalFlex>
 
         <VerticalFlex className={Pstyles.list}>
-          {/* <HotList
-            initProducts={hotProducts}
-            initConiditon={hotCondition}
-          /> */}
+          <BaseProductList listArray={hotProducts} />
         </VerticalFlex>
       </Container>
     </section>

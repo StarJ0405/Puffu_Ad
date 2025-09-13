@@ -36,22 +36,26 @@ type ListItem = {
    heart_count: number;
    store_name: string;
    rank: number;
+   id: string;
 }
 
 // lineClamp 구별해주기, TestProdcutCard는 임시로 만든거임. 나중에 프로덕트카드에 스타일만 입히면 됨.
 // 라인클램프는 제목태그에 달아서 속성 주기.
 
 export function TestProductCard(
-   { product, lineClamp, width, autoPlay, specialType }:
+   { product, lineClamp, width, autoPlay, commingSoon, specialType }:
    { 
       product: ListItem;
-      lineClamp: number; 
+      lineClamp?: number; 
+      commingSoon? : boolean;
       width?: number | string;
       autoPlay? : number;
       specialType? : string;
    }) 
 {
    const { isMobile } = useBrowserEvent();
+
+   const product_link = `/products/${product.id}`;
 
 
    // 프로덕트 카드 쓰면 다 지워도 됨.
@@ -73,7 +77,7 @@ export function TestProductCard(
          className={style.prodcut_item}
       >
          <FlexChild className={style.imgBox}>
-            {/* <Link href={'/products/detail'}> */}
+            <Link href={product_link}>
              {/* 링크 상품 링크로 바꾸기 */}
 
                { // 프로덕트 페이지가 best일때만 나타나기. 제품 인기순 표시임.
@@ -94,11 +98,11 @@ export function TestProductCard(
                }
    
                {
-                  specialType === 'commingSoon' && ( // 입고예정일때만 나오기
+                  commingSoon && ( // 입고예정일때만 나오기
                      <Image className={style.specialTypeImg} src={'/resources/images/commingSoon_img.png'} width={"101%"} height={"auto"}/>
                   )
                }
-            {/* </Link> */}
+            </Link>
          </FlexChild>
 
          <FlexChild padding={"0 5px"} className={style.text_box}>
@@ -108,14 +112,16 @@ export function TestProductCard(
                </FlexChild>
 
                <FlexChild className={style.product_title}>
-                  <P 
-                     textOverflow={"ellipsis"}
-                     display={"webkit-box"}
-                     overflow={"hidden"}
-                     lineClamp={lineClamp}
-                  >
-                     {product.title}
-                  </P>
+                  <Link href={product_link}>
+                     <P 
+                        textOverflow={"ellipsis"}
+                        display={"webkit-box"}
+                        overflow={"hidden"}
+                        lineClamp={lineClamp}
+                     >
+                        {product.title}
+                     </P>
+                  </Link>
                </FlexChild>
                
                <HorizontalFlex className={style.content_item}>

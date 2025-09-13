@@ -14,7 +14,7 @@ import {
   DetailTabContainer,
   MiniInfoBox,
   OptionItem,
-  Product,
+  DetailFrame,
   ProductSlider,
 } from "./client";
 import styles from "./page.module.css";
@@ -57,105 +57,15 @@ export default async function ({ params }: { params: Promise<Params> }) {
     category_id: initProduct.content.category_id,
     pageSize: 12,
   });
-  log(relationProducts);
+  console.log('상품 정보', relationProducts);
 
   return (
     <section className="root">
-      {/*  */}
-      {/*  */}
-      {/*  */}
-      <Product initCondition={initCondition} initProduct={initProduct} />;
-      {/*  */}
-      {/*  */}
-      {/*  */}
       <Container
         className={clsx("page_container", styles.detail_container)}
         marginTop={100}
       >
-        <HorizontalFlex gap={60} alignItems="start">
-          <FlexChild className={styles.detail_thumbnail}>
-            <Image
-              src={"/resources/images/dummy_img/review_img_01.png"}
-              width={600}
-              height={"auto"}
-            />
-          </FlexChild>
-
-          <VerticalFlex className={styles.detail_infoBox} alignItems="start">
-            <FlexChild className={styles.brand}>
-              <Span>브랜드정보</Span>
-            </FlexChild>
-
-            <FlexChild className={styles.detail_title}>
-              <P lineClamp={2} display="--webkit-box" overflow="hidden">
-                상품제목
-              </P>
-            </FlexChild>
-
-            <HorizontalFlex marginBottom={17} gap={10}>
-              <FlexChild className={styles.price} marginLeft={5}>
-                <P>25,000</P> ₩
-              </FlexChild>
-
-              <FlexChild className={styles.sale_price}>
-                <P>15%</P>
-              </FlexChild>
-
-              <FlexChild className={styles.regular_price}>
-                <P>28,000₩</P>
-              </FlexChild>
-            </HorizontalFlex>
-
-            <HorizontalFlex className={styles.delivery_share_box}>
-              <FlexChild className={styles.delivery_info}>
-                <P>배송정보</P>
-                <Image src={"/resources/icons/cart/cj_icon.png"} width={22} />
-              </FlexChild>
-
-              <FlexChild cursor="pointer">
-                {/* 링크 공유 버튼 */}
-                <Image
-                  src={"/resources/icons/main/share_icon.png"}
-                  width={25}
-                />
-                {/* <Image share 액티브 아이콘
-                          src={'/resources/icons/main/share_icon_action.png'}
-                          width={25}
-                        /> */}
-              </FlexChild>
-            </HorizontalFlex>
-
-            <VerticalFlex className={styles.delivery_admin_write_data}>
-              <VerticalFlex alignItems="start" gap={5}>
-                <P size={16} color="#bbb" weight={600}>
-                  배송
-                </P>
-                <P size={14} color="#ddd">
-                  오후 2시 이전 주문 결제시 오늘 출발! ( 영업일 기준 )
-                </P>
-                <P size={14} color="#ddd">
-                  30,000원 이상 구매시 무료배송
-                </P>
-              </VerticalFlex>
-            </VerticalFlex>
-
-            <VerticalFlex className={styles.option_box}>
-              {optionTest.map((item, i) => (
-                <OptionItem item={item} key={i} />
-              ))}
-            </VerticalFlex>
-
-            <HorizontalFlex className={styles.total_box}>
-              <P className={styles.total_txt}>총 상품 금액</P>
-
-              <FlexChild className={styles.price} width={"auto"}>
-                <P>25,000</P> ₩
-              </FlexChild>
-            </HorizontalFlex>
-
-            <BuyButtonGroup />
-          </VerticalFlex>
-        </HorizontalFlex>
+        <DetailFrame initCondition={initCondition} initProduct={initProduct} />
 
         <VerticalFlex position="relative" marginTop={40} alignItems="start">
           <FlexChild marginBottom={20}>

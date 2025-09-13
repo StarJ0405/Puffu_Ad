@@ -4,10 +4,16 @@ import Pstyles from '../../products.module.css';
 import { } from './client';
 
 import { BaseProductList } from "../../baseClient";
+import { requester } from "@/shared/Requester";
 
 
 
 export default async function () {
+   const newCondition: any = {
+    pageSize: 24,
+    order: "new",
+  };
+  const newProducts = await requester.getProducts(newCondition);
 
    return (
       <section className="root">
@@ -19,7 +25,7 @@ export default async function () {
 
 
             <VerticalFlex className={Pstyles.list}>
-               <BaseProductList />
+               <BaseProductList listArray={newProducts} />
             </VerticalFlex>
          </Container>
       </section>

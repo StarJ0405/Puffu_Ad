@@ -136,9 +136,11 @@ export function SortFilter({length} : {length : number}) {
 
 
 export function BaseProductList({
-   listArray
+   listArray,
+   commingSoon // 입고예정 임시용
 } : {
    listArray : ProductData[];
+   commingSoon? : boolean
 }) {
 
    const listLength = listArray.length;
@@ -167,6 +169,7 @@ export function BaseProductList({
                                  variants: product.variants,
                                  } as any
                               }
+                              commingSoon={commingSoon}
                               lineClamp={2}
                               width={200}
                            />

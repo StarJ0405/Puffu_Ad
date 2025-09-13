@@ -12,6 +12,7 @@ import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
 import Link from "next/link";
 import boardStyle from "../boardGrobal.module.css";
+import {SelectBox} from "../client"
 
 // const pathname = usePathname();
 
@@ -30,30 +31,7 @@ export function BoardTitleBox() {
         <h3>공지사항</h3>
       </FlexChild>
 
-      <FlexChild gap={10} className={boardStyle.search_box}>
-        <FlexChild width={"auto"}>
-          <Select
-            classNames={{
-              header: boardStyle.search_select_body,
-            }}
-            options={[
-              { value: "제목", display: "제목" },
-              { value: "내용", display: "내용" },
-              { value: "작성자", display: "작성자" },
-            ]}
-            // placeholder={'선택 안함'}
-            // value={selectedMessageOption}
-          />
-        </FlexChild>
-
-        <Input
-          type={"search"}
-          placeHolder={"검색 내용을 입력해 주세요."}
-        ></Input>
-        <Link href={"/board/notice/noticeWrite"}>
-          <Button className={boardStyle.searchBtn}>검색</Button>
-        </Link>
-      </FlexChild>
+      <SelectBox />
     </HorizontalFlex>
   );
 }
