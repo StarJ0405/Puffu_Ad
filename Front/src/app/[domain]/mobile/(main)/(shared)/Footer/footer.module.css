@@ -52,7 +52,7 @@
    z-index: 1000;
 }
 
-.chat_btn {padding: 0;}
+.chat_btn {padding: 0; background: transparent;}
 .chat_btn:focus-visible {
    outline: none !important;
 }

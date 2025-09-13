@@ -60,7 +60,7 @@ export default async function () {
               </div>
 
               <FlexChild width={"auto"}>
-                <Link className={styles.linkBtn} href={"/Sale"}>
+                <Link className={styles.linkBtn} href={"/products/hot"}>
                   더보기
                 </Link>
               </FlexChild>
@@ -89,7 +89,7 @@ export default async function () {
               </div>
 
               <FlexChild width={"auto"}>
-                <Link className={styles.linkBtn} href={"/Sale"}>
+                <Link className={styles.linkBtn} href={"/products/best"}>
                   더보기
                 </Link>
               </FlexChild>

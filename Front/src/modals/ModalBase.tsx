@@ -213,6 +213,7 @@ const ModalBase = forwardRef((props: any, ref) => {
             transform: props.topModal ? `translateY(0%)` : "",
             width: props.width,
             maxWidth: props.maxWidth,
+            minWidth: props.minWidth,
             maxHeight: props.maxHeight,
             height: props.height,
             minHeight: props.minHeight,

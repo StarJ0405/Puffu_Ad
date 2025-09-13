@@ -1,0 +1,93 @@
+
+.sideMenu {
+   background: #222;
+   width: 100%;
+   height: 100%;
+   padding-bottom: 30px;
+   height: 100%;
+   overflow-y: auto;
+}
+
+.menu_header {
+   padding: 15px;
+   height: auto;
+   flex: unset;
+   border-bottom: 5px solid #333333;
+}
+
+.menu_header > * {
+   width: auto;
+}
+
+.menu_header .title {
+   font-size: 18px;
+   color: #fff;
+   font-weight: 600;
+}
+
+.tab_wrap {
+   flex: unset;
+   padding-bottom: 13px;
+   justify-content: center !important;
+}
+
+.tab_wrap .tab_btn {
+   --active-color: #cdcdcd;
+   justify-content: center;
+   color: #595959;
+   font-size: 16px;
+   transition: all 0.2s;
+   flex: unset;
+   cursor: pointer;
+   padding: 15px;
+   width: auto;
+}
+
+.tab_wrap .tab_btn p {
+   position: relative;
+   padding-bottom: 5px !important;
+}
+
+.tab_wrap .tab_btn p::after {
+   content: ''; position: absolute;
+   bottom: 0; left: 50%;
+   transform: translateX(-50%);
+   width: 0; height: 2px;
+   background: var(--active-color);
+   transition: 0.5s;
+}
+
+/* active 시 */
+.tab_wrap .tab_btn.active {color: var(--active-color);}
+.tab_wrap .tab_btn.active p::after {width: 100%;}
+
+
+
+.menu_inner {
+   padding: 0 15px;
+   gap: 20px;
+}
+
+.menu_inner .inner_wrap {gap: 10px; flex: unset;}
+.menu_inner .inner_wrap > * {width: auto;}
+
+.menu_inner .inner_wrap .inner_title {
+   color: #a1a1a1; font-size: 13px;
+   font-weight: 500;
+}
+
+.menu_inner .inner_wrap .inner_box {
+   background: #2A2A2A;
+   width: 100%;
+   flex: unset;
+   padding: 15px 15px 20px;
+   border-radius: 15px;
+   gap: 25px;
+}
+
+.inner_box .inner_btn {cursor: pointer;}
+.inner_box .inner_btn .inner_txt {
+   color: #cdcdcd;
+   font-size: 14px;
+   font-weight: normal;
+}
