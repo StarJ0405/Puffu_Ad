@@ -404,8 +404,8 @@ export function ProductList({
             );
           })}
           </MasonryGrid>
-          <Button className={styles.list_more_btn}>
-            <FlexChild gap={10} onClick={showMore}>
+          <Button className={styles.list_more_btn} onClick={showMore}>
+            <FlexChild gap={10}>
               <Span>상품 더보기</Span>
               <Image
                 src={"/resources/icons/arrow/arrow_bottom_icon.png"}

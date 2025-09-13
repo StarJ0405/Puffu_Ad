@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import styles from "./header.module.css";
 import NiceModal from "@ebay/nice-modal-react";
-import SideMenu from "./slideMenu";
+import SideMenu from "./sideMenu";
 
 
 // 햄버거 메뉴

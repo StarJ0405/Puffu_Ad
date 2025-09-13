@@ -72,7 +72,7 @@ export default async function () {
               </div>
 
               <FlexChild width={"auto"}>
-                <Link className={styles.linkBtn} href={"/Sale"}>
+                <Link className={styles.linkBtn} href={"/products/hot"}>
                   더보기
                 </Link>
               </FlexChild>
@@ -101,7 +101,7 @@ export default async function () {
               </div>
 
               <FlexChild width={"auto"}>
-                <Link className={styles.linkBtn} href={"/Sale"}>
+                <Link className={styles.linkBtn} href={"/products/new"}>
                   더보기
                 </Link>
               </FlexChild>
@@ -132,7 +132,7 @@ export default async function () {
             <ProductSlider id={"new"} />
 
             <FlexChild marginTop={35} justifyContent="center">
-              <Link href={"/photoReview"} className={styles.link_more_btn}>
+              <Link href={"/board/photoReview"} className={styles.link_more_btn}>
                 후기 더보기
               </Link>
             </FlexChild>

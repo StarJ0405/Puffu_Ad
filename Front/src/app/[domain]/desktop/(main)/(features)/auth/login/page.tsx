@@ -18,7 +18,7 @@ export default async function () {
   }
   return (
     <>
-      <Container className={clsx("page_container", styles.container)}>
+      <section className={clsx("root ","page_container", styles.container)}>
         <VerticalFlex className={styles.loginBox}>
           <FlexChild className={styles.logo}>
             <Link href={"/"}>
@@ -55,7 +55,7 @@ export default async function () {
             </VerticalFlex>
           </FlexChild>
         </VerticalFlex>
-      </Container>
+      </section>
     </>
   );
 }
