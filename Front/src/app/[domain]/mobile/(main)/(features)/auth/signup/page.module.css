@@ -6,10 +6,10 @@
   margin: 0 auto;
 }
 
-.page_title {justify-content: center; margin-bottom: 50px;}
+.page_title {justify-content: center; margin-bottom: 40px;}
 
 .page_title h3{
-  font-size: 50px;
+  font-size: 30px;
   color: #fff;
   font-weight: 700;
 }
@@ -17,7 +17,7 @@
 .step_root {
   width: 100%;
   max-width: 570px;
-  margin: 0 auto 100px;
+  margin: 0 auto 70px;
   position: relative;
 }
 
@@ -53,11 +53,11 @@
 }
 
 .step_title {
-  font-size: 30px;
+  font-size: 20px;
   font-weight: 600;
   color: #fff;
   justify-content: center;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 }
 
 
@@ -70,7 +70,7 @@
 .agree_box {
   display: flex;
   flex-direction: column;
-  gap: 50px;
+  gap: 30px;
 }
 
 .agree_item {
@@ -84,7 +84,7 @@
 }
 
 .agree_item .checkbox label span {
-  font-size: 20px !important; color: #fff;
+  font-size: 16px !important; color: #fff;
   font-weight: 500 !important;
 }
 
@@ -165,7 +165,7 @@
 /* 2단계 pass, sms 인증 폼 */
 
 .auth_root_box {
-  padding: 40px 20px 0;
+  padding: 40px 0 0;
 }
 
 .auth_root_box .phone_input_group {
@@ -186,7 +186,7 @@
   border: 1px solid #4c4c4c !important;
   color: #fff !important;
   width: 100%;
-  padding: 17px 15px;
+  padding: 11px 15px;
 }
 
 .auth_root_box .icon_filter {
@@ -210,7 +210,7 @@
 }
 
 .input_box .input_item .label > span {
-  color: #da1e1e;
+  color: var(--main-color2);
 }
 
 
@@ -252,10 +252,11 @@
 }
 
 .continue_box button {
-  width: 180px;
-  padding: 13px 10px;
+  width: 100%;
+  max-width: 180px;
+  padding: 10px 10px;
   border-radius: 5px;
-  font-size: 18px;
+  font-size: 16px;
   color: #fff;
   font-weight: 600;
   transition: all 0.2s;
@@ -280,11 +281,6 @@
   color: var(--main-color1);
 }
 
-.continue_box .next_btn:hover {
-  background: var(--main-color1);
-  color: #fff;
-}
-
 
 /* 회원가입 완료 시 */
 
@@ -295,13 +291,4 @@
 
 .continue_box .login_btn {
   background: var(--main-color1);
-}
-
-.continue_box .home_btn:hover {
-  color: var(--main-color1);
-  border-color: var(--main-color1);
-}
-
-.continue_box .login_btn:hover {
-  background: var(--main-color2);
 }

@@ -8,7 +8,7 @@
 .loginBox {
    width: 100%;
    max-width: 460px;
-   gap: 50px;
+   gap: 10px;
 }
 
 .loginBox .logo {
@@ -18,10 +18,8 @@
 /* .loginBox div {width: auto;} */
 
 .signup {
-   border: 1px solid rgba(255,255,255,0.5);
    border-radius: 10px;
-   padding: 45px;
-   background: #222;
+   padding: 20px;
 }
 
 .signup .input_box {
@@ -37,7 +35,7 @@
    border-radius: 5px;
    color: #fff;
    border: 1px solid rgba(255,255,255,0.5);
-   padding: 13px 12px;
+   padding: 10px 12px;
 }
 .signup .input_box input:focus {
    border-color: #eb5353;
@@ -51,6 +49,8 @@
    color: #c7c7c7;
 }
 
+.sign_features > * {width: auto;}
+
 .sign_features .find_box {
    gap: 7px; justify-content: flex-end;
 }
@@ -58,7 +58,7 @@
 .sign_features .find_box > * {width: auto;}
 
 .sign_features .find_box span {cursor: pointer !important;}
-.sign_features .find_box span:hover {text-decoration: underline;}
+
 
 .sign_features .login_and:hover span {
    color: var(--main-color2);
@@ -69,11 +69,12 @@
 .btn {
    width: 100%;
    border-radius: 5px !important;
-   font-size: 20px;
+   font-size: 18px;
    padding: 13px 8px;
    font-weight: 600;
-   transition: all 0.2s;
 }
+
+.btn a {font-weight: normal !important;}
 
 .login_btn {
    background: var(--main-color1);
@@ -84,12 +85,11 @@
    border: 1px solid #c7c7c7;
 }
 
-.login_btn:hover {
-   background: #050505;
-   color: var(--main-color1);
-}
 
-.join_btn:hover {
-   border-color: var(--main-color1);
-   color: var(--main-color1);
+
+@media (max-width: 335px) {
+   .sign_features {
+      flex-direction: column;
+      justify-content: center !important;
+   }
 }

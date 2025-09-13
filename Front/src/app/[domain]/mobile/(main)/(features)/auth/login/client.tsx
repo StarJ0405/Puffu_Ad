@@ -53,7 +53,7 @@ export function SignFeatures() {
   };
 
   return (
-    <HorizontalFlex className={styles.sign_features}>
+    <HorizontalFlex className={styles.sign_features} gap={10}>
       <FlexChild className={styles.login_and} width={"auto"}>
         {/* <CheckboxChild id={'11'} /> */}
         <Span cursor="poointer">로그인 상태 유지</Span>
