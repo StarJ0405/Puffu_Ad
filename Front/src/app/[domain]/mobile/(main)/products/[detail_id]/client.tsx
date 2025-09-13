@@ -8,7 +8,7 @@ import InputNumber from "@/components/inputs/InputNumber";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import clsx from "clsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 
 import TestProductCard from "@/components/card/TestProductCard";
@@ -20,12 +20,212 @@ import DeliveryGuide from "./_deliveryGuide/deliveryGuide";
 import Description from "./_description/description";
 import Inquiry from "./_inquiry/inquiry";
 import Review from "./_review/review";
+import useData from "@/shared/hooks/data/useData";
+import { requester } from "@/shared/Requester";
+import { log, toast } from "@/shared/utils/Functions";
+import {
+  useCart,
+  useStore,
+} from "@/providers/StoreProvider/StorePorivderClient";
+import useNavigate from "@/shared/hooks/useNavigate";
+import { Storage } from "@/shared/utils/Data";
 
 type Option = {
   name: string;
   quantity: number;
   price: string;
 };
+
+
+const optionTest = [
+  {
+    name: '섹시한 색깔 양말',
+    quantity: 1,
+    price: '2000'
+  },
+  {
+    name: '섹시 속옷 여벌',
+    quantity: 3,
+    price: '0'
+  },
+  {
+    name: '다용도 세정 클린 장갑',
+    quantity: 1,
+    price: '500'
+  }
+]
+
+
+
+export function DetailFrame({
+  initProduct,
+  initCondition,
+}: {
+  initProduct: any;
+  initCondition: any;
+}) {
+  const navigate = useNavigate();
+  const { storeData } = useStore();
+  const { reload } = useCart();
+  const { [initProduct.content.id]: product, mutate } = useData(
+    initProduct?.content?.id,
+    { ...initCondition, id: initCondition?.content?.id },
+    (condition) => {
+      const id = condition.id;
+      delete condition.id;
+      return requester.getProduct(id, condition);
+    },
+    {
+      onReprocessing: (data) => data.content,
+      fallbackData: initProduct?.content,
+    }
+  );
+  log("상품", product);
+
+  // 배송정보
+  log("배송정보 : ", storeData?.methods);
+
+  // 좋아요
+  const onWishClick = () => {
+    if (product.wish) {
+      requester.deleteWishList(
+        product.wish.id,
+        {
+          soft: false,
+        },
+        () => {
+          mutate();
+        }
+      );
+    } else {
+      requester.createWishList(
+        {
+          product_id: product.id,
+        },
+        () => {
+          mutate();
+        }
+      );
+    }
+  };
+  const onCartClick = async () => {
+    const variants: { variant_id: string; quantity: number }[] = [];
+    if (variants.length > 0) {
+      const { message, error } = await requester.addItem({
+        store_id: storeData?.id,
+        variants: variants,
+      });
+      if (message) {
+        reload();
+        // .then(() => navigate("/cart")); // 카트 이동시
+      } else {
+        toast({ message: error });
+      }
+    }
+  };
+  useEffect(() => {
+    let recents: any = localStorage.getItem(Storage.RECENTS);
+    if (recents) recents = JSON.parse(recents);
+    else recents = [];
+    localStorage.setItem(
+      Storage.RECENTS,
+      JSON.stringify(
+        Array.from(new Set([initProduct.content.id, ...recents])).slice(0, 30)
+      )
+    );
+  }, []);
+
+  return (
+    <HorizontalFlex gap={60} alignItems="start">
+        <FlexChild className={styles.detail_thumbnail}>
+          <Image
+            src={"/resources/images/dummy_img/review_img_01.png"}
+            width={600}
+            height={"auto"}
+          />
+        </FlexChild>
+
+        <VerticalFlex className={styles.detail_infoBox} alignItems="start">
+          <FlexChild className={styles.brand}>
+            <Span>{product?.title}</Span>
+          </FlexChild>
+
+          <FlexChild className={styles.detail_title}>
+            <P lineClamp={2} display="--webkit-box" overflow="hidden">
+              상품제목
+            </P>
+          </FlexChild>
+
+          <HorizontalFlex marginBottom={17} gap={10}>
+            <FlexChild className={styles.price} marginLeft={5}>
+              <P>25,000</P> ₩
+            </FlexChild>
+
+            <FlexChild className={styles.sale_price}>
+              <P>15%</P>
+            </FlexChild>
+
+            <FlexChild className={styles.regular_price}>
+              <P>28,000₩</P>
+            </FlexChild>
+          </HorizontalFlex>
+
+          <HorizontalFlex className={styles.delivery_share_box}>
+            <FlexChild className={styles.delivery_info}>
+              <P>배송정보</P>
+              <Image src={"/resources/icons/cart/cj_icon.png"} width={22} />
+            </FlexChild>
+
+            <FlexChild cursor="pointer">
+              {/* 링크 공유 버튼 */}
+              <Image
+                src={"/resources/icons/main/share_icon.png"}
+                width={25}
+              />
+              {/* <Image share 액티브 아이콘
+                        src={'/resources/icons/main/share_icon_action.png'}
+                        width={25}
+                      /> */}
+            </FlexChild>
+          </HorizontalFlex>
+
+          <VerticalFlex className={styles.delivery_admin_write_data}>
+            <VerticalFlex alignItems="start" gap={5}>
+              <P size={16} color="#bbb" weight={600}>
+                배송
+              </P>
+              <P size={14} color="#ddd">
+                오후 2시 이전 주문 결제시 오늘 출발! ( 영업일 기준 )
+              </P>
+              <P size={14} color="#ddd">
+                30,000원 이상 구매시 무료배송
+              </P>
+            </VerticalFlex>
+          </VerticalFlex>
+          
+          <VerticalFlex className={styles.option_box}>
+            {optionTest.map((item, i) => (
+              <OptionItem item={item} key={i} />
+            ))}
+          </VerticalFlex>
+
+          <HorizontalFlex className={styles.total_box}>
+            <P className={styles.total_txt}>총 상품 금액</P>
+
+            <FlexChild className={styles.price} width={"auto"}>
+              <P>25,000</P> ₩
+            </FlexChild>
+          </HorizontalFlex>
+
+          <BuyButtonGroup />
+        </VerticalFlex>
+      </HorizontalFlex>
+  );
+}
+
+
+
+
 
 // 미니 구매란
 export function MiniInfoBox({ optionTest }: { optionTest: Option[] }) {
@@ -110,6 +310,7 @@ type ListItem = {
   heart_count: number;
   store_name: string;
   rank: number;
+  id: string;
 };
 
 export function ProductSlider({
@@ -130,6 +331,7 @@ export function ProductSlider({
       heart_count: 10,
       store_name: "키테루 키테루",
       rank: 0,
+      id: 'detail_id',
     },
     {
       thumbnail: "/resources/images/dummy_img/product_02.png",
@@ -140,6 +342,7 @@ export function ProductSlider({
       heart_count: 100,
       store_name: "키테루 키테루",
       rank: 1,
+      id: 'detail_id',
     },
     {
       thumbnail: "/resources/images/dummy_img/product_03.png",
@@ -150,9 +353,10 @@ export function ProductSlider({
       heart_count: 100,
       store_name: "키테루 키테루",
       rank: 2,
+      id: 'detail_id',
     },
     {
-      thumbnail: "/resources/images/dummy_img/product_04.jpg",
+      thumbnail: "/resources/images/dummy_img/product_04.png",
       title: "스지망 쿠파 로린코 처녀궁 프리미엄 소프트",
       price: 30000,
       discount_rate: 12,
@@ -160,6 +364,7 @@ export function ProductSlider({
       heart_count: 70,
       store_name: "키테루 키테루",
       rank: 3,
+      id: 'detail_id',
     },
     {
       thumbnail: "/resources/images/dummy_img/product_05.png",
@@ -170,6 +375,7 @@ export function ProductSlider({
       heart_count: 4,
       store_name: "키테루 키테루",
       rank: 4,
+      id: 'detail_id',
     },
     {
       thumbnail: "/resources/images/dummy_img/product_06.png",
@@ -180,6 +386,7 @@ export function ProductSlider({
       heart_count: 1020,
       store_name: "키테루 키테루",
       rank: 5,
+      id: 'detail_id',
     },
     {
       thumbnail: "/resources/images/dummy_img/product_07.png",
@@ -190,17 +397,7 @@ export function ProductSlider({
       heart_count: 1030,
       store_name: "키테루 키테루",
       rank: 6,
-    },
-
-    {
-      thumbnail: "/resources/images/dummy_img/product_07.png",
-      title: "섹시 스트랩 간호사 st 코스튬",
-      price: 30000,
-      discount_rate: 12,
-      discount_price: 20000,
-      heart_count: 1030,
-      store_name: "키테루 키테루",
-      rank: 6,
+      id: 'detail_id',
     },
 
     {
@@ -212,6 +409,7 @@ export function ProductSlider({
       heart_count: 1030,
       store_name: "키테루 키테루",
       rank: 6,
+      id: 'detail_id',
     },
 
     {
@@ -223,6 +421,19 @@ export function ProductSlider({
       heart_count: 1030,
       store_name: "키테루 키테루",
       rank: 6,
+      id: 'detail_id',
+    },
+
+    {
+      thumbnail: "/resources/images/dummy_img/product_07.png",
+      title: "섹시 스트랩 간호사 st 코스튬",
+      price: 30000,
+      discount_rate: 12,
+      discount_price: 20000,
+      heart_count: 1030,
+      store_name: "키테루 키테루",
+      rank: 6,
+      id: 'detail_id',
     },
   ];
 

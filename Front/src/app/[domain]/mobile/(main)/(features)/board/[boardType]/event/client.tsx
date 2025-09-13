@@ -95,7 +95,7 @@ export function GalleryTable() {
             ))}
           </div>
         ) : (
-          <NoContent type="게시판" />
+          <NoContent type={'게시판'} />
         )}
       </FlexChild>
 

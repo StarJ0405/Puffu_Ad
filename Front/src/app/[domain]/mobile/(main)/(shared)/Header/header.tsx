@@ -1,15 +1,12 @@
-import Image from "@/components/Image/Image";
-import styles from "./header.module.css";
-import {SearchBox, HeaderBottom} from './client'
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import FlexChild from "@/components/flex/FlexChild";
+import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import Div from "@/components/div/Div";
-import Link from "next/link";
-import Span from "@/components/span/Span";
+import Image from "@/components/Image/Image";
 import clsx from "clsx";
+import Link from "next/link";
+import { HeaderBottom, SideMenuBtn } from './client';
+import styles from "./header.module.css";
 
-import TopButton from "@/components/buttons/TopButton";
 
 export default async function MobileHeader() {
 
@@ -26,12 +23,8 @@ export default async function MobileHeader() {
          <header className={styles.header}>
             <HorizontalFlex className={clsx('page_container',styles.headerTop)}>
                <FlexChild gap={20}>
-                  <FlexChild gap={10} width={'auto'} cursor="pointer">
-                     <Image 
-                        src='/resources/images/header/category_menu_icon.png'
-                        width={18}
-                     />
-                  </FlexChild>
+                  
+                  <SideMenuBtn/>
 
                   <FlexChild className={styles.logo}>
                      <Link href='/'>
@@ -64,8 +57,6 @@ export default async function MobileHeader() {
 
             <HeaderBottom menu1={menu1}/>
          </header>
-
-         
       </>
    )
 }

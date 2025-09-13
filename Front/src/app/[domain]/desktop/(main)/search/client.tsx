@@ -17,6 +17,7 @@ import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import styles from "./page.module.css";
+import { BaseProductList } from "../products/baseClient";
 
 export function ProdcutCategory() {
   // 대분류 카테고리
@@ -249,7 +250,8 @@ export function SearchList({
   log("검색 결과 : ", products);
   return (
     <>
-      {ListProduct.length > 0 ? (
+      <BaseProductList listArray={products} />
+      {/* {ListProduct.length > 0 ? (
         <>
           <SortFilter />
           <VerticalFlex>
@@ -271,7 +273,7 @@ export function SearchList({
         <NoContent type={"상품"} />
       )}
 
-      <ListPagination />
+      <ListPagination /> */}
     </>
   );
 }

@@ -60,6 +60,10 @@
 .sign_features .find_box span {cursor: pointer !important;}
 .sign_features .find_box span:hover {text-decoration: underline;}
 
+.sign_features .login_and:hover span {
+   color: var(--main-color2);
+}
+
 
 /* 로그인 회원가입 버튼 */
 .btn {

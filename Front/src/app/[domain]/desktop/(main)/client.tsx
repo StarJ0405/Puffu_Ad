@@ -376,6 +376,8 @@ export function ProductList({
     Load(); // 서버에서도 다음 페이지 로드
   };
 
+  // console.log('상품', products);
+
   return (
     <>
       {products.length > 0 ? (

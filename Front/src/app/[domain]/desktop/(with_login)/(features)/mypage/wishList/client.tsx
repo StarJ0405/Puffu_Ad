@@ -27,6 +27,7 @@ export function WishListTable({ initWishList }: { initWishList: Pageable }) {
     heart_count: number;
     store_name: string;
     rank: number;
+    id: string,
   };
 
   const ListProduct: ListItem[] = [
@@ -40,6 +41,7 @@ export function WishListTable({ initWishList }: { initWishList: Pageable }) {
       heart_count: 10,
       store_name: "키테루 키테루",
       rank: 0,
+      id: '콘돔',
     },
     {
       thumbnail: "/resources/images/dummy_img/product_02.png",
@@ -50,6 +52,7 @@ export function WishListTable({ initWishList }: { initWishList: Pageable }) {
       heart_count: 100,
       store_name: "키테루 키테루",
       rank: 1,
+      id: '콘돔',
     },
     {
       thumbnail: "/resources/images/dummy_img/product_03.png",
@@ -60,6 +63,7 @@ export function WishListTable({ initWishList }: { initWishList: Pageable }) {
       heart_count: 100,
       store_name: "키테루 키테루",
       rank: 2,
+      id: '콘돔',
     },
 
     {
@@ -71,6 +75,7 @@ export function WishListTable({ initWishList }: { initWishList: Pageable }) {
       heart_count: 100,
       store_name: "키테루 키테루",
       rank: 2,
+      id: '콘돔',
     },
   ];
 

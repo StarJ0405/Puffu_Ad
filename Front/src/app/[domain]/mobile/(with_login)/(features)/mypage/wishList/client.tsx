@@ -3,9 +3,21 @@ import TestProductCard from "@/components/card/TestProductCard";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import MasonryGrid from "@/components/masonry/MasonryGrid";
 import NoContent from "@/components/noContent/noContent";
+import useData from "@/shared/hooks/data/useData";
+import usePageData from "@/shared/hooks/data/usePageData";
+import { requester } from "@/shared/Requester";
 
-
-export function RecentlyViewTable() {
+export function WishListTable({ initWishList }: { initWishList: Pageable }) {
+  const { wishes, page, setPage, maxPage } = usePageData(
+    "wishes",
+    (pageNumber) => ({ relations: ["product"], pageSize: 10, pageNumber }),
+    (condition) => requester.getWishlists(condition),
+    (data: Pageable) => data?.totalPages || 0,
+    {
+      onReprocessing: (data) => data?.content || [],
+      fallbackData: initWishList,
+    }
+  );
   type ListItem = {
     thumbnail: string;
     title: string;
@@ -15,6 +27,7 @@ export function RecentlyViewTable() {
     heart_count: number;
     store_name: string;
     rank: number;
+    id: string,
   };
 
   const ListProduct: ListItem[] = [
@@ -28,6 +41,7 @@ export function RecentlyViewTable() {
       heart_count: 10,
       store_name: "키테루 키테루",
       rank: 0,
+      id: '콘돔',
     },
     {
       thumbnail: "/resources/images/dummy_img/product_02.png",
@@ -38,6 +52,7 @@ export function RecentlyViewTable() {
       heart_count: 100,
       store_name: "키테루 키테루",
       rank: 1,
+      id: '콘돔',
     },
     {
       thumbnail: "/resources/images/dummy_img/product_03.png",
@@ -48,6 +63,7 @@ export function RecentlyViewTable() {
       heart_count: 100,
       store_name: "키테루 키테루",
       rank: 2,
+      id: '콘돔',
     },
 
     {
@@ -59,6 +75,7 @@ export function RecentlyViewTable() {
       heart_count: 100,
       store_name: "키테루 키테루",
       rank: 2,
+      id: '콘돔',
     },
   ];
 
