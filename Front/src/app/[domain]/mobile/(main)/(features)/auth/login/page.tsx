@@ -22,13 +22,13 @@ export default async function () {
         <VerticalFlex className={styles.loginBox}>
           <FlexChild className={styles.logo}>
             <Link href={"/"}>
-              <Image src={"/resources/images/header/logo.png"} width={180} />
+              <Image src={"/resources/images/header/logo.png"} width={140} />
             </Link>
           </FlexChild>
 
           <FlexChild className={styles.signup}>
             <VerticalFlex gap={30}>
-              <VerticalFlex gap={30} width={"100%"}>
+              <VerticalFlex gap={20} width={"100%"}>
                 <FlexChild className={styles.input_box}>
                   <Span>아이디</Span>
                   <Input id="username" placeHolder="아이디" width={"100%"} />

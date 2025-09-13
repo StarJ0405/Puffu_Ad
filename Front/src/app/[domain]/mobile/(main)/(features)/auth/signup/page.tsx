@@ -61,13 +61,13 @@ export default function () {
   useEffect(() => {
     switch (step) {
       case "agree":
-        setPercent(`${(1 / 6) * 100}%`);
+        setPercent(`${(1.2 / 6) * 100}%`);
         break;
       case "certification":
-        setPercent(`${(3 / 6) * 100}%`);
+        setPercent(`${(3.2 / 6) * 100}%`);
         break;
       case "info":
-        setPercent(`${(5 / 6) * 100}%`);
+        setPercent(`${(5.2 / 6) * 100}%`);
         break;
       case "completed":
         setPercent("100%");
@@ -81,28 +81,30 @@ export default function () {
           <h3>회원가입</h3>
         </FlexChild>
 
-        <HorizontalFlex className={styles.step_root}>
-          <FlexChild className={styles.step_number}>
-            <Span>1</Span>
-          </FlexChild>
-
-          <FlexChild className={styles.step_number}>
-            <Span>2</Span>
-          </FlexChild>
-
-          <FlexChild className={styles.step_number}>
-            <Span>3</Span>
-          </FlexChild>
-
-          <FlexChild className={styles.step_number}>
-            <Span>4</Span>
-          </FlexChild>
-
-          <FlexChild className={styles.step_line}>
-            <div id={styles.line} style={{ width: percent }}></div>
-            {/* 스탭 진행될때마다 width 값 올리면 됨. */}
-          </FlexChild>
-        </HorizontalFlex>
+        <FlexChild padding={'0 20px'}>
+          <HorizontalFlex className={styles.step_root}>
+            <FlexChild className={styles.step_number}>
+              <Span>1</Span>
+            </FlexChild>
+  
+            <FlexChild className={styles.step_number}>
+              <Span>2</Span>
+            </FlexChild>
+  
+            <FlexChild className={styles.step_number}>
+              <Span>3</Span>
+            </FlexChild>
+  
+            <FlexChild className={styles.step_number}>
+              <Span>4</Span>
+            </FlexChild>
+  
+            <FlexChild className={styles.step_line}>
+              <div id={styles.line} style={{ width: percent }}></div>
+              {/* 스탭 진행될때마다 width 값 올리면 됨. */}
+            </FlexChild>
+          </HorizontalFlex>
+        </FlexChild>
 
         {/* 동의 */}
         {step === "agree" && <Agree setStep={setStep} />}
@@ -158,7 +160,7 @@ function Agree({ setStep }: { setStep: Dispatch<SetStateAction<string>> }) {
             </FlexChild>
 
             <FlexChild className={"agree_content"}>
-              <TermContent size={8} />
+              <TermContent size={7} />
             </FlexChild>
           </VerticalFlex>
 
@@ -171,7 +173,7 @@ function Agree({ setStep }: { setStep: Dispatch<SetStateAction<string>> }) {
             </FlexChild>
 
             <FlexChild className={"agree_content"}>
-              <PrivacyContent size={8} />
+              <PrivacyContent size={7} />
             </FlexChild>
           </VerticalFlex>
         </CheckboxGroup>
@@ -224,7 +226,7 @@ function Certification({ setStep, handleUpdate }: StepProps) {
               height={36}
               width={"auto"}
             /> */}
-            <P size={25} weight={600}>
+            <P size={20} weight={600}>
               PASS 인증
             </P>
           </FlexChild>
@@ -237,7 +239,7 @@ function Certification({ setStep, handleUpdate }: StepProps) {
             onClick={() => setType("sms")}
           >
             {/* <Image src="/resources/images/SMS.png" height={36} width={"auto"} /> */}
-            <P size={25} weight={600}>
+            <P size={20} weight={600}>
               SMS 인증
             </P>
           </FlexChild>
@@ -269,7 +271,7 @@ function PASS({ setStep, handleUpdate }: StepProps) {
   const [phoneStation, setPhoneStation] = useState(phoneStations[0]);
   return (
     <VerticalFlex className={styles.auth_root_box}>
-      <FlexChild paddingBottom={30}>
+      <FlexChild paddingBottom={20}>
         <VerticalFlex gap={9}>
           <FlexChild>
             <P className={styles.inputLabel}>이름</P>
@@ -286,7 +288,7 @@ function PASS({ setStep, handleUpdate }: StepProps) {
           </FlexChild>
         </VerticalFlex>
       </FlexChild>
-      <FlexChild paddingBottom={30}>
+      <FlexChild paddingBottom={20}>
         <VerticalFlex gap={9}>
           <FlexChild>
             <P className={styles.inputLabel}>생년월일</P>
@@ -311,7 +313,7 @@ function PASS({ setStep, handleUpdate }: StepProps) {
           </FlexChild>
         </VerticalFlex>
       </FlexChild>
-      <FlexChild paddingBottom={30}>
+      <FlexChild paddingBottom={20}>
         <VerticalFlex gap={9} width={'auto'}>
           <FlexChild>
             <P className={styles.inputLabel}>휴대폰 번호</P>
@@ -339,7 +341,6 @@ function PASS({ setStep, handleUpdate }: StepProps) {
                   );
                   document.getElementById("phone")?.focus();
                 }}
-                height={50}
                 maxHeight={300}
                 width={114}
                 minWidth={114}
@@ -366,8 +367,8 @@ function PASS({ setStep, handleUpdate }: StepProps) {
           </FlexChild>
         </VerticalFlex>
       </FlexChild>
-      <FlexChild justifyContent="center" width={600} maxWidth={600} paddingTop={30}>
-        <HorizontalFlex gap={10} width={363} maxWidth={363} className={styles.continue_box}>
+      <FlexChild justifyContent="center" width={'100%'} paddingTop={30}>
+        <HorizontalFlex gap={10} width={'100%'} className={styles.continue_box}>
           <FlexChild>
             <Button
               width={"100%"}
@@ -508,7 +509,7 @@ function SMS({ setStep, handleUpdate }: StepProps) {
   }, [time]);
   return (
     <VerticalFlex className={styles.auth_root_box}>
-      <FlexChild paddingBottom={30}>
+      <FlexChild paddingBottom={20}>
         <VerticalFlex gap={9}>
           <FlexChild>
             <P className={styles.inputLabel}>이름</P>
@@ -528,7 +529,7 @@ function SMS({ setStep, handleUpdate }: StepProps) {
           </FlexChild>
         </VerticalFlex>
       </FlexChild>
-      <FlexChild paddingBottom={30}>
+      <FlexChild paddingBottom={20}>
         <VerticalFlex gap={9}>
           <FlexChild>
             <P className={styles.inputLabel}>주민등록번호 7자리</P>
@@ -597,164 +598,167 @@ function SMS({ setStep, handleUpdate }: StepProps) {
           </FlexChild>
         </VerticalFlex>
       </FlexChild>
-      <FlexChild paddingBottom={30}>
+      <FlexChild paddingBottom={20}>
         <VerticalFlex gap={9}>
           <FlexChild>
             <P className={styles.inputLabel}>휴대폰 번호</P>
           </FlexChild>
           <FlexChild>
-            <HorizontalFlex gap={10} width={'auto'} className={styles.phone_input_group}>
-              <Select
-                hideScroll
-                id="phoneStation"
-                classNames={{
-                  header: styles.phone_select_header,
-                  placeholder: 'web_select_placholder',
-                  line: 'web_select_line',
-                  arrow: 'web_select_arrow',
-                  search: 'web_select_search',
-                }}
-                value={phoneStation.value}
-                options={phoneStations.map((phone) => ({
-                  display: phone.label,
-                  value: phone.value,
-                }))}
-                onChange={(value) => {
-                  setPhoneApprove("ready");
-                  setPhoneStation(
-                    phoneStations.find((f) => f.value === value) || phoneStation
-                  );
-                  document.getElementById("phone")?.focus();
-                }}
-                height={50}
-                maxHeight={300}
-                width={114}
-                minWidth={114}
-              />
-              <FlexChild position="relative">
-                <Input
-                  id="phone"
-                  className={'web_input'}
-                  placeHolder="'-' 없이 숫자만 입력"
-                  width={271}
-                  onFilter={(value: any) =>
-                    value.replace(numberOnlyFormat.exp, "")
-                  }
-                  maxLength={11}
-                  noWhiteSpace
+            <VerticalFlex gap={10}>
+              <HorizontalFlex gap={10} width={'auto'} className={styles.phone_input_group}>
+                <Select
+                  hideScroll
+                  id="phoneStation"
+                  classNames={{
+                    header: styles.phone_select_header,
+                    placeholder: 'web_select_placholder',
+                    line: 'web_select_line',
+                    arrow: 'web_select_arrow',
+                    search: 'web_select_search',
+                  }}
+                  value={phoneStation.value}
+                  options={phoneStations.map((phone) => ({
+                    display: phone.label,
+                    value: phone.value,
+                  }))}
                   onChange={(value) => {
                     setPhoneApprove("ready");
-                    setPhone(value as string);
-                    if (String(value).length === 11)
-                      document.getElementById("phone")?.blur();
+                    setPhoneStation(
+                      phoneStations.find((f) => f.value === value) || phoneStation
+                    );
+                    document.getElementById("phone")?.focus();
                   }}
+                  maxHeight={300}
+                  width={114}
+                  minWidth={114}
                 />
-
+                <FlexChild position="relative">
+                  <Input
+                    id="phone"
+                    className={'web_input'}
+                    placeHolder="'-' 없이 숫자만 입력"
+                    width={'100%'}
+                    onFilter={(value: any) =>
+                      value.replace(numberOnlyFormat.exp, "")
+                    }
+                    maxLength={11}
+                    noWhiteSpace
+                    onChange={(value) => {
+                      setPhoneApprove("ready");
+                      setPhone(value as string);
+                      if (String(value).length === 11)
+                        document.getElementById("phone")?.blur();
+                    }}
+                  />
+                </FlexChild>
+              </HorizontalFlex>
+              <FlexChild justifyContent="end">
                 <Button
-                  marginLeft={10}
-                  width={107}
-                  className={styles.button}
-                  backgroundColor="var(--main-color2)"
-                  disabled={
-                    !mobileNoFormat.exp.test(phone) ||
-                    !birthday6Format.exp.test(identification) ||
-                    !name ||
-                    !gender
-                  }
-                  onClick={async () => {
-                    if (phoneApprove === "ready") {
-                      setIsLoading(true);
-                      const { mokToken: token } = await requester.getToken();
-                      const data = handleUpdate?.([
-                        {
-                          key: "userPhoneNum",
-                          value: phone,
-                        },
-                        {
-                          key: "providerid",
-                          value: phoneStation.value,
-                        },
-                        {
-                          key: "reqAuthType",
-                          value: "SMS",
-                        },
-                        {
-                          key: "userName",
-                          value: name,
-                        },
-                        {
-                          key: "userBirthday",
-                          value:
-                            (Number(gender) < 3 ? "19" : "20") + identification,
-                        },
-                        {
-                          key: "birthday",
-                          value:
-                            (Number(gender) < 3 ? "19" : "20") + identification,
-                        },
-                        {
-                          key: "userGender",
-                          value: 2 - (Number(gender) % 2),
-                        },
-                        {
-                          key: "userNation",
-                          value: "0",
-                        },
-                        {
-                          key: "sendMsg",
-                          value:
-                            "본인확인 인증번호[000000]를 화면에 입력해주세요.",
-                        },
-                        {
-                          key: "replyNumber",
-                          value: "01048947486",
-                        },
-                        {
-                          key: "MOKAuthRequestData",
-                          value: JSON.stringify({
-                            encryptMOKToken: token.encryptMOKToken,
-                            publicKey: token.publicKey,
-                          }),
-                        },
-                      ]);
-
-                      dataRef.current = {
-                        data,
-                        token,
-                      };
-                      sendSMS();
-                    } else {
-                      setIsLoading(true);
-                      NiceModal.show("confirm", {
-                        confirmText: "재전송",
-                        cancelText: "취소",
-                        message: "인증번호를 재전송하시겠습니까?",
-                        onConfirm: async () => {
-                          const { mokToken: token } =
-                            await requester.getToken();
-                          const data = handleUpdate?.({
+                    marginLeft={10}
+                    width={110}
+                    className={styles.button}
+                    backgroundColor="var(--main-color2)"
+                    disabled={
+                      !mobileNoFormat.exp.test(phone) ||
+                      !birthday6Format.exp.test(identification) ||
+                      !name ||
+                      !gender
+                    }
+                    onClick={async () => {
+                      if (phoneApprove === "ready") {
+                        setIsLoading(true);
+                        const { mokToken: token } = await requester.getToken();
+                        const data = handleUpdate?.([
+                          {
+                            key: "userPhoneNum",
+                            value: phone,
+                          },
+                          {
+                            key: "providerid",
+                            value: phoneStation.value,
+                          },
+                          {
+                            key: "reqAuthType",
+                            value: "SMS",
+                          },
+                          {
+                            key: "userName",
+                            value: name,
+                          },
+                          {
+                            key: "userBirthday",
+                            value:
+                              (Number(gender) < 3 ? "19" : "20") + identification,
+                          },
+                          {
+                            key: "birthday",
+                            value:
+                              (Number(gender) < 3 ? "19" : "20") + identification,
+                          },
+                          {
+                            key: "userGender",
+                            value: 2 - (Number(gender) % 2),
+                          },
+                          {
+                            key: "userNation",
+                            value: "0",
+                          },
+                          {
+                            key: "sendMsg",
+                            value:
+                              "본인확인 인증번호[000000]를 화면에 입력해주세요.",
+                          },
+                          {
+                            key: "replyNumber",
+                            value: "01048947486",
+                          },
+                          {
                             key: "MOKAuthRequestData",
                             value: JSON.stringify({
                               encryptMOKToken: token.encryptMOKToken,
                               publicKey: token.publicKey,
                             }),
-                          });
-                          dataRef.current = {
-                            data,
-                            token,
-                          };
-                          sendSMS();
-                        },
-                      });
-                    }
-                  }}
-                >
-                  <P fontSize={15}>
-                    {phoneApprove === "ready" ? "인증번호 받기" : "재전송"}
-                  </P>
-                </Button>
+                          },
+                        ]);
+  
+                        dataRef.current = {
+                          data,
+                          token,
+                        };
+                        sendSMS();
+                      } else {
+                        setIsLoading(true);
+                        NiceModal.show("confirm", {
+                          confirmText: "재전송",
+                          cancelText: "취소",
+                          message: "인증번호를 재전송하시겠습니까?",
+                          onConfirm: async () => {
+                            const { mokToken: token } =
+                              await requester.getToken();
+                            const data = handleUpdate?.({
+                              key: "MOKAuthRequestData",
+                              value: JSON.stringify({
+                                encryptMOKToken: token.encryptMOKToken,
+                                publicKey: token.publicKey,
+                              }),
+                            });
+                            dataRef.current = {
+                              data,
+                              token,
+                            };
+                            sendSMS();
+                          },
+                        });
+                      }
+                    }}
+                  >
+                    <P fontSize={14}>
+                      {phoneApprove === "ready" ? "인증번호 받기" : "재전송"}
+                    </P>
+                  </Button>
               </FlexChild>
-            </HorizontalFlex>
+            </VerticalFlex>
+            
           </FlexChild>
         </VerticalFlex>
       </FlexChild>
@@ -780,8 +784,8 @@ function SMS({ setStep, handleUpdate }: StepProps) {
           time / 60
         )}:${String(time % 60).padStart(2, "0")}`}</P>
       </FlexChild>
-      <FlexChild paddingTop={30} justifyContent="center" width={600} maxWidth={600}>
-        <HorizontalFlex gap={10} width={363} maxWidth={363} className={styles.continue_box}>
+      <FlexChild paddingTop={30} justifyContent="center" width={'100%'}>
+        <HorizontalFlex gap={10} width={'100%'} className={styles.continue_box}>
           <FlexChild>
             <Button
               width={"100%"}
@@ -796,7 +800,7 @@ function SMS({ setStep, handleUpdate }: StepProps) {
           <FlexChild>
             <Button
               width={"100%"}
-              className={styles.next_btn}
+              className={clsx(styles.next_btn, styles.white)}
               onClick={() => {
                 const { token, verification, userPhoneNum } = dataRef.current;
                 requester.verificationCheck(
@@ -1061,9 +1065,8 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
             />
             <Button
               disabled={!!emailError || !email}
-              width={130}
-              minWidth={130}
-              height={50}
+              width={110}
+              minWidth={100}
               onClick={() => {
                 setIsLoading(true);
                 requester.isExistUser(
@@ -1149,7 +1152,7 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
                 );
               }}
             >
-              <P fontWeight={600} fontSize={15} lineHeight={1.3}>
+              <P fontWeight={600} fontSize={14} lineHeight={1.3}>
                 {code ? "재전송" : "인증코드 받기"}
               </P>
             </Button>
