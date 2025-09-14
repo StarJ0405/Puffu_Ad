@@ -11,8 +11,9 @@ import { usePathname } from "next/navigation";
 
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import ModalBase from "@/modals/ModalBase";
-// import AdminChatModal from "@/modals/adminChat/adminChat";
+import AdminChat from "@/modals/adminChat/adminChat";
 import { useState } from "react";
+import FlexChild from "@/components/flex/FlexChild";
 
 // const navigate = useNavigate();
 
@@ -66,13 +67,29 @@ export function ChatToggle() {
   }
 
   return (
-    <Button
-    className={styles.chat_btn}
-    // onClick={() => {NiceModal.show(AdminChatModal)}}
-    onClick={()=> chatToggleClick()}
-    >
-      <Image src={"/resources/images/footer/chat_toggle_icon.png"} width={56} />
-    </Button>
+    <FlexChild className={styles.chat_btn}>
+      <AnimatePresence>
+      {
+        chatToggle && (
+          <motion.div
+            key='chat'
+            initial={{ opacity: 0}}
+            animate={{ opacity: 1}}
+            exit={{ opacity: 0}}
+            transition={{ duration: 0.2 }}
+          >
+            <AdminChat onClose={() => setChatToggle(false)} />
+          </motion.div>
+        )
+      }
+      </AnimatePresence>
+      <Button
+        // onClick={() => {NiceModal.show(AdminChatModal)}}
+        onClick={()=> chatToggleClick()}
+      >
+        <Image src={"/resources/images/footer/chat_toggle_icon.png"} width={56} />
+      </Button>
+    </FlexChild>
   );
 }
 
