@@ -1,50 +1,29 @@
 "use client"
 import Button from "@/components/buttons/Button";
-import Div from "@/components/div/Div";
+import TestProductCard from "@/components/card/TestProductCard";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import MasonryGrid from "@/components/masonry/MasonryGrid";
-import TestProductCard from "@/components/card/TestProductCard";
-import Icon from "@/components/icons/Icon";
 import Image from "@/components/Image/Image";
-import P from "@/components/P/P";
-import Select from "@/components/select/Select";
-import Span from "@/components/span/Span";
-import NoContent from "@/components/noContent/noContent";
-import StarRate from "@/components/star/StarRate";
-import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
-import useData from "@/shared/hooks/data/useData";
-import useNavigate from "@/shared/hooks/useNavigate";
-import { requester } from "@/shared/Requester";
-import NiceModal from "@ebay/nice-modal-react";
-import clsx from "clsx";
-import { useParams } from "next/navigation";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
-import Pstyles from "./products.module.css";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import ListPagination from "@/components/listPagination/ListPagination";
-
+import MasonryGrid from "@/components/masonry/MasonryGrid";
+import NoContent from "@/components/noContent/noContent";
+import P from "@/components/P/P";
+import Span from "@/components/span/Span";
+import clsx from "clsx";
+import { usePathname } from "next/navigation";
+import Pstyles from "./products.module.css";
+import { useCategories } from "@/providers/StoreProvider/StorePorivderClient";
+import Link from "next/link";
 
 
 
 export function ProdcutCategory() { // 대분류 카테고리
 
    const pathname = usePathname();
+   const { categoriesData } = useCategories();
    
    // css : 카테고리 추가되어도 flex-wrap 구조 문제 없게 수정하기
-
-   const ca_test = [
-      {name: '남성토이', thumbnail: '/resources/images/category/gif_ca_Img_01.gif',},
-      {name: '여성토이', thumbnail: '/resources/images/category/gif_ca_Img_02.gif',},
-      {name: '윤활제/젤', thumbnail: '/resources/images/category/gif_ca_Img_03.gif',},
-      {name: '콘돔', thumbnail: '/resources/images/category/gif_ca_Img_04.gif',},
-      {name: '의류', thumbnail: '/resources/images/category/gif_ca_Img_05.gif',},
-      {name: 'BDSM 토이', thumbnail: '/resources/images/category/gif_ca_Img_06.gif',},
-      {name: 'LGBT 토이', thumbnail: '/resources/images/category/gif_ca_Img_07.gif',},
-      {name: '악세서리', thumbnail: '/resources/images/category/ca_img08.png',},
-   ]
 
    return (
       <nav className={Pstyles.category_wrap}>
@@ -59,16 +38,21 @@ export function ProdcutCategory() { // 대분류 카테고리
             </VerticalFlex>
             : null
          }
+
          {
-            ca_test.map((cat, i)=> (
+            categoriesData
+            .sort((c1, c2) => c1.index - c2.index)
+            .map((cat, i) => (
                <VerticalFlex className={Pstyles.ca_item} key={i}>
-                  <FlexChild className={Pstyles.ca_thumb}>
-                     <Image 
-                        src={cat.thumbnail}
-                        width={'auto'}
-                        height={120}
-                     />
-                  </FlexChild>
+                  <Link href={`/categories/${cat.id}`}>
+                     <FlexChild className={Pstyles.ca_thumb}>
+                        <Image 
+                           src={cat.thumbnail}
+                           width={'auto'}
+                           height={120}
+                        />
+                     </FlexChild>
+                  </Link>
                   <Span>{cat.name}</Span>
                </VerticalFlex>
             ))
@@ -79,41 +63,21 @@ export function ProdcutCategory() { // 대분류 카테고리
 
 
 
-export function SecondCategory() { // 중분류, 소분류 카테고리
-   
-
-   const ca_test = [
-      {name: '세척/세정'},
-      {name: '관리/파우더'},
-      {name: '워머/히팅',},
-      {name: '드라이/건조',},
-      {name: '보관/파우치',},
-      {name: '오나홀 보조',},
-      {name: '기타용품',},
-   ]
-
-   return (
-      <>
-         <ul className={Pstyles.category_list}>
-            <li className={Pstyles.active}>
-               <Span>전체</Span>
-            </li>
-            {
-               ca_test.map((cat, i)=> (
-                  <li key={i}>
-                     <Span>{cat.name}</Span>
-                  </li>
-               ))
-            }
-         </ul>
-      </>
-   )
-}
-
-
 
 // 인기순, 추천순, 최신순 필터
-export function SortFilter({length} : {length : number}) {
+export function SortFilter({
+   length, 
+   // sortOptions
+   sortConfig
+} : {
+   length : number, 
+   sortConfig?: {
+     sort: { id: string; display: string };
+     setSort: (opt: { id: string; display: string }) => void;
+     sortOptions: { id: string; display: string }[];
+   };
+   // sortOptions: { id: string; display: string }[]
+}) {
 
    return (
       <HorizontalFlex className={Pstyles.sort_group}>
@@ -124,11 +88,26 @@ export function SortFilter({length} : {length : number}) {
          </FlexChild>
 
          <FlexChild width={'auto'}>
-            <HorizontalFlex className={Pstyles.sort_box}>
-               <Button className={Pstyles.sort_btn}>인기순</Button>
-               <Button className={Pstyles.sort_btn}>추천순</Button>
-               <Button className={Pstyles.sort_btn}>최신순</Button>
-            </HorizontalFlex>
+            {
+               sortConfig && (
+                  <HorizontalFlex className={Pstyles.sort_box}>
+                     {
+                        sortConfig.sortOptions.map((opt)=> (
+                           <Button 
+                              key={opt.id} 
+                              className={clsx(
+                                Pstyles.sort_btn,
+                                sortConfig.sort.id === opt.id && Pstyles.active
+                              )}
+                              onClick={() => sortConfig.setSort(opt)}
+                           >
+                              {opt.display}
+                           </Button>
+                        ))
+                     }
+                  </HorizontalFlex>
+               )
+            }
          </FlexChild>
       </HorizontalFlex>
    )
@@ -137,19 +116,28 @@ export function SortFilter({length} : {length : number}) {
 
 export function BaseProductList({
    listArray,
-   commingSoon // 입고예정 임시용
+   // sortOptions,
+   sortConfig,
+   commingSoon, // 입고예정 임시용
 } : {
    listArray : ProductData[];
-   commingSoon? : boolean
+   // sortOptions: { id: string; display: string }[];
+   sortConfig?: {
+     sort: { id: string; display: string };
+     setSort: (opt: { id: string; display: string }) => void;
+     sortOptions: { id: string; display: string }[];
+   };
+   commingSoon? : boolean;
 }) {
-
+   // const [sort, setSort] = useState(sortOptions?.[0]); // 정렬 상태 관리
    const listLength = listArray.length;
 
    return (
       <>    
          {listLength > 0 ? (
          <>
-            <SortFilter length={listLength}/>
+            <SortFilter length={listLength} sortConfig={sortConfig}/>
+            {/* sortOptions={sortOptions} */}
             <VerticalFlex alignItems="start">
                <MasonryGrid gap={20}>
                   {
@@ -178,12 +166,11 @@ export function BaseProductList({
                   }
                </MasonryGrid>
             </VerticalFlex>
+            <ListPagination />
          </>
          ):(
             <NoContent type={'상품'} />
          )}
-         
-         <ListPagination />
       </>
    )
 }

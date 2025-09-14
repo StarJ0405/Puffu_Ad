@@ -10,10 +10,8 @@ import clsx from "clsx";
 import { Params } from "next/dist/server/request/params";
 import { notFound } from "next/navigation";
 import {
-  BuyButtonGroup,
   DetailTabContainer,
   MiniInfoBox,
-  OptionItem,
   DetailFrame,
   ProductSlider,
 } from "./client";
@@ -44,20 +42,11 @@ export default async function ({ params }: { params: Promise<Params> }) {
       detail_id,
     });
   }
-  const optionTest = [
-    { name: "블랙 망사 리본 스타킹", quantity: 1, price: "0" },
-    { name: "크리스마스 요정님 선물 담는 양말", quantity: 2, price: "1,000" },
-    {
-      name: "모에모에 매직 에로카와 태닝 바디 세트 상품",
-      quantity: 1,
-      price: "0",
-    },
-  ];
   const relationProducts = await requester.getProducts({
     category_id: initProduct.content.category_id,
-    pageSize: 12,
+    pageSize: 24,
   });
-  console.log('상품 정보', relationProducts);
+  // console.log('상품 정보', relationProducts);
 
   return (
     <section className="root">
@@ -74,15 +63,15 @@ export default async function ({ params }: { params: Promise<Params> }) {
             </h3>
           </FlexChild>
 
-          <ProductSlider id={"pick"} />
+          <ProductSlider id={"relation"} lineClamp={1} listArray={relationProducts.content} />
         </VerticalFlex>
 
         <HorizontalFlex marginTop={30} alignItems="start" gap={40}>
           <VerticalFlex className={styles.contents_container} width={850}>
-            <DetailTabContainer />
+            <DetailTabContainer initCondition={initCondition} initProduct={initProduct} />
           </VerticalFlex>
 
-          <MiniInfoBox optionTest={optionTest} />
+          <MiniInfoBox initCondition={initCondition} initProduct={initProduct} />
         </HorizontalFlex>
       </Container>
     </section>
