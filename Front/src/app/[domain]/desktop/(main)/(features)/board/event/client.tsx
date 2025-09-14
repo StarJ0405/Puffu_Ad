@@ -125,7 +125,7 @@ export function GalleryItem({item} : {item :  EventItem}) {
   return (
     <VerticalFlex gap={17} className={styles.gallery_item}>
       <FlexChild className={styles.thumb_frame}>
-        <Link href={'리스트 아이템 아이디 넣기'}>
+        {/* <Link href={'/board/detail/event_01'}> */}
            <Image src={item.thumbnail} width={"100%"} height={"auto"} />
            {/* {item.durationEnd && (
              // 현재 날짜가 이벤트 종료기간을 지났을때 이 이미지가 나타나기
@@ -138,12 +138,14 @@ export function GalleryItem({item} : {item :  EventItem}) {
                height={"auto"}
              />
            )} */}
-        </Link>
+        {/* </Link> */}
       </FlexChild>
 
       <VerticalFlex className={styles.item_content}>
         <FlexChild className={styles.title}>
-          <Link href={'리스트 아이템 아이디 넣기'}><P>{ detail_id ?? item.title}</P></Link>
+          {/* <Link href={'/board/detail/event_01'}> */}
+            <P>{ detail_id ?? item.title}</P>
+          {/* </Link> */}
         </FlexChild>
 
         <FlexChild className={styles.subTitle}>
