@@ -21,8 +21,9 @@ export default async function () {
          <FlexChild>
             <CommentFrame />
          </FlexChild>
-         {/* 게시판 불러오기 */}
 
+
+         {/* 게시판 불러오기 */}
          <FlexChild marginTop={60}>
             <BoardTable />
          </FlexChild>

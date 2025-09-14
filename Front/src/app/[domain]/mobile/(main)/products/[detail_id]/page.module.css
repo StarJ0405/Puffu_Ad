@@ -104,17 +104,25 @@
    margin-bottom: 25px;
 }
 
+.option_box .option_item {
+   /* justify-content: start !important; */
+   gap: 20px;
+}
+
 .option_box .txt_item {
    align-items: center;
    gap: 5px;
-   width: auto;
    font-size: 14px;
    color: #fff;
-}
-
-.option_box .txt_item p {
+   flex: 1;
    line-height: 1.2;
    text-align: right;
+   justify-content: space-between;
+}
+
+.option_box .txt_item .op_name {
+   max-width: 200px;
+   text-align: left !important;
 }
 
 .total_box {

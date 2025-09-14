@@ -115,8 +115,10 @@
    text-align: center;
    opacity: 0.5;
    cursor: pointer;
+   transition: 0.2s;
 }
 
-.category_list > li.active {
+.category_list > li.active,
+.category_list > li:hover {
    opacity: 1; font-weight: 500;
 }
