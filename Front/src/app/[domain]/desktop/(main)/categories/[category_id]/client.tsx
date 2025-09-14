@@ -1,23 +1,18 @@
 "use client";
-import Button from "@/components/buttons/Button";
-import TestProductCard from "@/components/card/TestProductCard";
 import FlexChild from "@/components/flex/FlexChild";
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
-import ListPagination from "@/components/listPagination/ListPagination";
-import MasonryGrid from "@/components/masonry/MasonryGrid";
-import NoContent from "@/components/noContent/noContent";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
+import { useCategories } from "@/providers/StoreProvider/StorePorivderClient";
 import usePageData from "@/shared/hooks/data/usePageData";
+import useNavigate from "@/shared/hooks/useNavigate";
 import { requester } from "@/shared/Requester";
 import clsx from "clsx";
-import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { BaseProductList } from "../../products/baseClient";
 import styles from "./page.module.css";
-import { log } from "@/shared/utils/Functions";
-import { useCategories } from "@/providers/StoreProvider/StorePorivderClient";
-import {SortFilter, BaseProductList} from "../../products/baseClient";
+import { useState } from "react";
 
 
 function findCategoryById(categories: any[], id: string): any | undefined {
@@ -38,6 +33,9 @@ export function TitleBox({category_id} : {category_id: any}) {
 
   const { categoriesData } = useCategories();
   const category = findCategoryById(categoriesData, category_id);
+  const navigate = useNavigate();
+
+  // console.log('카테고리!', category);
 
   return (
     <VerticalFlex className={styles.title_box}>
@@ -45,35 +43,43 @@ export function TitleBox({category_id} : {category_id: any}) {
 
       {/* 프로덕트 카테고리 */}
       <VerticalFlex marginBottom={30}>
-        {/* <SecondCategory /> 중분류 있을때, 중분류 안에 소분류 있을때만 나오기. */}
+        {category?.children?.length > 0 ? (
+              <SecondCategory categoryId={category_id} childrenData={category.children} parent={category} />
+            ) : (
+              <FlexChild onClick={()=> navigate(-1)} gap={10} cursor="pointer" width={'auto'} alignSelf="start">
+                <Image src={'/resources/images/back.png'} width={20} />
+                <P color="#aaa">이전으로</P>
+              </FlexChild>
+          )
+        }
       </VerticalFlex>
     </VerticalFlex>
   )
 }
 
-
-export function SecondCategory() {
-  // 중분류, 소분류 카테고리
-
-  const ca_test = [
-    { name: "세척/세정" },
-    { name: "관리/파우더" },
-    { name: "워머/히팅" },
-    { name: "드라이/건조" },
-    { name: "보관/파우치" },
-    { name: "오나홀 보조" },
-    { name: "기타용품" },
-  ];
+// 중분류, 소분류 카테고리
+export function SecondCategory(
+  { childrenData, parent, categoryId } :
+  {
+    childrenData: CategoryData[]; 
+    parent: CategoryData;
+    categoryId: any;
+  }
+) {
 
   return (
     <>
       <ul className={styles.category_list}>
-        <li className={styles.active}>
-          <Span>전체</Span>
+        <li className={clsx(parent.id === categoryId && styles.active)}>
+          <Link href={`/categories/${parent.id}`}>
+            <Span>전체</Span>
+          </Link>
         </li>
-        {ca_test.map((cat, i) => (
+        {childrenData.map((child, i) => (
           <li key={i}>
-            <Span>{cat.name}</Span>
+            <Link href={`/categories/${child.id}`}>
+              <Span>{child.name}</Span>
+            </Link>
           </li>
         ))}
       </ul>
@@ -88,13 +94,29 @@ export function CategoryList({
   initCondition: any;
   initProducts: Pageable;
 }) {
+  const sortOptions = [
+    {
+      id: "new",
+      display: "최신순",
+    },
+    {
+      id: "best",
+      display: "인기순",
+    },
+    {
+      id: "recommend",
+      display: "추천순",
+    },
+  ];
   const { categoriesData } = useCategories();
+  const [sort, setSort] = useState(sortOptions[0]);
   const { categories } = usePageData(
     "categories",
     (pageNumber) => ({
       ...initCondition,
       pageSize: 24,
       pageNumber,
+      order: sort?.id 
     }),
     (condition) => requester.getProducts(condition),
     (data: Pageable) => data?.totalPages || 0,
@@ -106,7 +128,8 @@ export function CategoryList({
   // log(categories);
   return (
     <>
-      <BaseProductList listArray={categories} />
+      <BaseProductList listArray={categories} sortConfig={{sort, setSort, sortOptions}} />
+      {/* sortOptions={sortOptions} */}
     </>
   );
 }

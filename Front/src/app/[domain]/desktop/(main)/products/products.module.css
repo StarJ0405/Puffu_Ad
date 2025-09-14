@@ -38,7 +38,7 @@
 }
 
 .sort_group .sort_box .sort_btn:hover,
-.sort_btn.focus {
+.sort_group .sort_box .sort_btn.active {
    background: #050505;
    color: var(--main-color1);
    border-color: var(--main-color1);

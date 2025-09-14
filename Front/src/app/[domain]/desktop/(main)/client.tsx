@@ -14,10 +14,10 @@ import { useRef } from "react";
 import styles from "./page.module.css";
 
 import NoContent from "@/components/noContent/noContent";
+import { useCategories } from "@/providers/StoreProvider/StorePorivderClient";
 import useData from "@/shared/hooks/data/useData";
 import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
 import { requester } from "@/shared/Requester";
-import { log } from "@/shared/utils/Functions";
 import { Swiper as SwiperType } from "swiper";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -33,15 +33,8 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
       fallbackData: initBanners,
     }
   );
-  log(banners);
+  // log(banners); 베너 정보
   const swiperRef = useRef<SwiperType | null>(null);
-
-  const components = [
-    // 임시
-    { img: "/resources/images/dummy_img/main_banner_01.png", link: "/" },
-    { img: "/resources/images/dummy_img/main_banner_02.png", link: "/" },
-    { img: "/resources/images/dummy_img/main_banner_03.png", link: "/" },
-  ];
 
   const paintBullets = (swiper: SwiperType) => {
     // 페이지네이션 스타일 설정
@@ -99,15 +92,19 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
           paintBullets(swiper);
         }}
       >
-        {components.map((item, i) => {
+        {[...banners]?.reverse().map((item: BannerDataFrame, i: number) => {
+          // reverse는 임시
           return (
             <SwiperSlide key={i} className={`swiper_0${i}`}>
-              <Link href={item.link}>
-                <div
-                  className={styles.slideItem}
-                  style={{ backgroundImage: `url(${item.img})` }}
-                ></div>
-              </Link>
+              {
+                item.to ? (
+                  <Link href={item.to}>
+                    <Image src={item.thumbnail.pc} width={'100%'} />
+                  </Link>
+                ) : (
+                  <Image src={item.thumbnail.pc} width={'100%'} />
+                )
+              }
             </SwiperSlide>
           );
         })}
@@ -162,43 +159,26 @@ export function MiniBanner() {
   );
 }
 
+
+
+
 export function MainCategory() {
   // 카테고리메뉴
 
-  const pathname = usePathname();
-
-  const ca_test = [
-    {
-      name: "남성토이",
-      thumbnail: "/resources/images/category/gif_ca_Img_01.gif",
-    },
-    {
-      name: "여성토이",
-      thumbnail: "/resources/images/category/gif_ca_Img_02.gif",
-    },
-    {
-      name: "윤활제/젤",
-      thumbnail: "/resources/images/category/gif_ca_Img_03.gif",
-    },
-    { name: "콘돔", thumbnail: "/resources/images/category/gif_ca_Img_04.gif" },
-    { name: "의류", thumbnail: "/resources/images/category/gif_ca_Img_05.gif" },
-    {
-      name: "BDSM 토이",
-      thumbnail: "/resources/images/category/gif_ca_Img_06.gif",
-    },
-    {
-      name: "LGBT 토이",
-      thumbnail: "/resources/images/category/gif_ca_Img_07.gif",
-    },
-  ];
+  const { categoriesData } = useCategories();
 
   return (
     <nav className={styles.category_wrap}>
-      {ca_test.map((cat, i) => (
+      {categoriesData
+      .sort((c1, c2) => c1.index - c2.index)
+      .map((cat, i) => (
+
         <VerticalFlex className={styles.ca_item} key={i}>
-          <FlexChild className={styles.ca_thumb}>
-            <Image src={cat.thumbnail} width={"auto"} height={120} />
-          </FlexChild>
+          <Link href={`/categories/${cat.id}`}>
+            <FlexChild className={styles.ca_thumb}>
+              <Image src={cat.thumbnail} width={"auto"} height={120} />
+            </FlexChild>
+          </Link>
           <Span>{cat.name}</Span>
         </VerticalFlex>
       ))}
