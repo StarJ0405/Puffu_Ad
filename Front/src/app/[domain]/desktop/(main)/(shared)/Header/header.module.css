@@ -110,12 +110,13 @@
    transition: all 0.2s;
 }
 
-.outerMenu > li:hover > .active_line, 
-.active_line.active {
+.outerMenu > li:hover > .active_line,
+.outerMenu > li.active > .active_line {
    left: 0; right: unset; width: 100%;
 }
 
-.outerMenu > li:hover > a {
+.outerMenu > li:hover > a,
+.outerMenu > li.active > a {
    color: var(--main-color1);
 }
 
@@ -137,7 +138,7 @@
 }
 
 /* 서브메뉴 */
-.commu_outer > li > .subMenu {
+/* .commu_outer > li > .subMenu {
    position: absolute;
    top: 80%;
    left: 50%;
@@ -171,4 +172,4 @@
 
 .commu_outer > li > .subMenu > li a:hover {
    color: var(--main-color1);
-}
+} */

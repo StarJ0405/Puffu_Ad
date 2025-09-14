@@ -13,6 +13,7 @@ import Span from "@/components/span/Span";
 import Link from "next/link";
 import boardStyle from "../boardGrobal.module.css";
 import {SelectBox} from "../client"
+import useNavigate from "@/shared/hooks/useNavigate";
 
 // const pathname = usePathname();
 
@@ -112,6 +113,8 @@ export function BoardTable() {
     },
   ];
 
+  const navigate = useNavigate();
+
   return (
     <VerticalFlex>
       <FlexChild>
@@ -151,6 +154,7 @@ export function BoardTable() {
                     height={"100%"}
                     className={boardStyle.td_title}
                     width={"fit-content"}
+                    onClick={()=> navigate('/board/detail/board_01')}
                   >
                     <P lineClamp={1} overflow="hidden" display="--webkit-box">
                       {list.title}
@@ -202,9 +206,6 @@ export function BoardTable() {
       </FlexChild>
       <FlexChild className={boardStyle.list_bottom_box}>
         <ListPagination />
-
-        {/* 누르면 글쓰기로 연결 */}
-        <Button className={boardStyle.write_btn}>글쓰기</Button>
       </FlexChild>
     </VerticalFlex>
   );
