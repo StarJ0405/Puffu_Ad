@@ -12,6 +12,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import boardStyle from "../boardGrobal.module.css";
 import styles from "./event.module.css";
+import { useParams } from "next/navigation";
 
 // 게시판 리스트 -----------------------------------------------
 export function BoardTitleBox() {
@@ -101,9 +102,6 @@ export function GalleryTable() {
 
       <FlexChild className={boardStyle.list_bottom_box}>
         <ListPagination />
-
-        {/* 누르면 글쓰기로 연결 관리자만 보이게 하기 */}
-        <Button className={boardStyle.write_btn}>글쓰기</Button>
       </FlexChild>
     </VerticalFlex>
   );
@@ -121,6 +119,9 @@ type EventItem = { // 고칠때 지워도 무방함
 
 // 갤러리 아이템
 export function GalleryItem({item} : {item :  EventItem}) {
+
+  const { detail_id } = useParams();
+
   return (
     <VerticalFlex gap={17} className={styles.gallery_item}>
       <FlexChild className={styles.thumb_frame}>
@@ -142,7 +143,7 @@ export function GalleryItem({item} : {item :  EventItem}) {
 
       <VerticalFlex className={styles.item_content}>
         <FlexChild className={styles.title}>
-          <Link href={'리스트 아이템 아이디 넣기'}><P>{item.title}</P></Link>
+          <Link href={'리스트 아이템 아이디 넣기'}><P>{ detail_id ?? item.title}</P></Link>
         </FlexChild>
 
         <FlexChild className={styles.subTitle}>

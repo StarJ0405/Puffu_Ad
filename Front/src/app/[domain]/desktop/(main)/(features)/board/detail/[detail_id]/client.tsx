@@ -28,6 +28,7 @@ import Input from "@/components/inputs/Input";
 import ListPagination from "@/components/listPagination/ListPagination";
 import Link from "next/link";
 import PrivacyContent from "@/components/agreeContent/privacyContent";
+import {SelectBox} from "../../client"
 
 import ChoiceChild from "@/components/choice/ChoiceChild";
 import ChoiceGroup from "@/components/choice/ChoiceGroup";
@@ -153,27 +154,7 @@ export function BoardTable() {
    return (
       <VerticalFlex>
         <HorizontalFlex className={boardStyle.board_titleBox} justifyContent="end">
-          <FlexChild gap={10} className={boardStyle.search_box} width={'auto'} alignSelf="end">
-              <FlexChild width={'auto'}>
-                <Select
-                  classNames={{
-                      header: boardStyle.search_select_body,
-                  }}
-                  options={[
-                      { value: "제목", display: "제목" },
-                      { value: "내용", display: "내용" },
-                      { value: "작성자", display: "작성자" },
-                  ]}
-                  // placeholder={'선택 안함'}
-                  //  value={selectedMessageOption}
-                />
-              </FlexChild>
-
-              <Input type={'search'} placeHolder={'검색 내용을 입력해 주세요.'}></Input>
-              <Link href={'/board/notice/noticeWrite'}>
-                <Button className={boardStyle.searchBtn}>검색</Button>
-              </Link>
-          </FlexChild>
+          <SelectBox />
         </HorizontalFlex>
 
          <FlexChild>
@@ -247,9 +228,6 @@ export function BoardTable() {
          </FlexChild>
          <FlexChild className={boardStyle.list_bottom_box}>
             <ListPagination />
-
-            {/* 누르면 글쓰기로 연결 */}
-            <Button className={boardStyle.write_btn}>글쓰기</Button>
          </FlexChild>
       </VerticalFlex>
    )

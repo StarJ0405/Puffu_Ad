@@ -1,3 +1,4 @@
+'use client'
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
@@ -6,8 +7,17 @@ import clsx from "clsx";
 import Link from "next/link";
 import styles from "./boardHeader.module.css";
 import {BoardNavi} from "./client";
+import { usePathname } from "next/navigation";
 
-export default async function () {
+export default function BoardHeader() {
+
+   const pathname = usePathname();
+
+   // header를 보여줄 path들
+   const showHeaderPaths = ["/board/notice", "/board/event", "/board/faq", "/board/inquiry"];
+
+   // 현재 경로가 위 목록에 포함되면 true
+   const showHeader = showHeaderPaths.includes(pathname);
 
    const menu1 = [ // 임시 데이터
       { name: 'BEST 상품', link: '/product'},
@@ -45,24 +55,32 @@ export default async function () {
    ]
 
    return (
-      <VerticalFlex className={styles.board_header}>
-         <VerticalFlex className={styles.customer_info}>
-            <FlexChild>
-               <h3>고객센터</h3>
-            </FlexChild>
+      <>
+         {
+            showHeader ? (
+               <VerticalFlex className={styles.board_header}>
+                  <VerticalFlex className={styles.customer_info}>
+                     <FlexChild>
+                        <h3>고객센터</h3>
+                     </FlexChild>
+            
+                     <FlexChild className={styles.call_number}>
+                        <P>010-7627-3243</P>
+                     </FlexChild>
+            
+                     <VerticalFlex className={styles.business_time} gap={5}>
+                        <P>평일 : 09:30 ~ 18:30</P>
+                        <P>점심시간 : 12:00 ~ 13:00</P>
+                     </VerticalFlex>
+                  </VerticalFlex>
    
-            <FlexChild className={styles.call_number}>
-               <P>010-7627-3243</P>
-            </FlexChild>
    
-            <VerticalFlex className={styles.business_time} gap={5}>
-               <P>평일 : 09:30 ~ 18:30</P>
-               <P>점심시간 : 12:00 ~ 13:00</P>
-            </VerticalFlex>
-         </VerticalFlex>
-
-
-         <BoardNavi />
-      </VerticalFlex>
+                  <BoardNavi />
+               </VerticalFlex>
+            ) : (
+               <div></div>
+            )
+         }
+      </>
    )
 }

@@ -15,6 +15,7 @@ import styles from "./header.module.css";
 import { HeaderCategory } from "./headerCategory";
 import { useCart } from "@/providers/StoreProvider/StorePorivderClient";
 import useNavigate from "@/shared/hooks/useNavigate";
+import { usePathname } from "next/navigation";
 
 interface ShopMenuItem {
   name: string;
@@ -31,11 +32,6 @@ interface CommunityMenuItem {
   name: string;
   link: string;
   inner?: SubMenuItem[]; // menu2는 inner 조건 처리
-}
-
-interface HeaderBottomProps {
-  menu1: ShopMenuItem[];
-  menu2: CommunityMenuItem[];
 }
 
 export function CartLength() {
@@ -87,7 +83,40 @@ export function SearchBox() {
   );
 }
 
-export function HeaderBottom({ menu1, menu2 }: HeaderBottomProps) {
+export function HeaderBottom() {
+
+  const menu1 = [
+    // 임시 데이터
+    { name: "BEST 상품", link: "/products/best" },
+    { name: "입고예정", link: "/products/commingSoon" },
+    { name: "신상품", link: "/products/new" },
+    {
+      name: "데이 핫딜",
+      link: "/products/hot",
+      icon: "/resources/images/header/HotDeal_icon.png",
+    },
+    { name: "세트메뉴", link: "/products/set" },
+    { name: "랜덤박스", link: "/products/randomBox" },
+  ];
+
+  const menu2 = [
+    // 임시 데이터
+    { name: "포토 사용후기", link: "/board/photoReview" },
+    { name: "공지사항", link: "/board/notice" },
+    { name: "1:1문의", link: "/board/inquiry" },
+    { name: "이벤트", link: "/board/event" },
+    // {
+    //   name: "고객센터",
+    //   link: "/board/notice",
+    //   inner: [
+    //     { name: "공지사항", link: "/board/notice" },
+    //     { name: "1:1문의", link: "/board/inquiry" },
+    //     { name: "이벤트", link: "/board/event" },
+    //   ],
+    // },
+  ];
+
+  const pathname = usePathname();
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const [fixed, setFixed] = useState(false);
   const [CaOpen, SetCaOpen] = useState(false);
@@ -105,8 +134,7 @@ export function HeaderBottom({ menu1, menu2 }: HeaderBottomProps) {
 
   return (
     <>
-      <div ref={bottomRef}></div>
-      {/* 헤더 높이계산용 더미 */}
+      <div ref={bottomRef}></div>{/* 헤더 높이계산용 더미 */}
       <div className={`${fixed ? styles.fixed : ""}`}>
         <HorizontalFlex className="page_container" position="relative">
           <HorizontalFlex gap={25} justifyContent="start">
@@ -134,7 +162,7 @@ export function HeaderBottom({ menu1, menu2 }: HeaderBottomProps) {
               <nav>
                 <ul className={clsx(styles.outerMenu, styles.shop_outer)}>
                   {menu1.map((item, i) => (
-                    <li key={i}>
+                    <li key={i} className={clsx({[styles.active]: pathname === item.link})}>
                       <Link href={item.link} className="SacheonFont">
                         {item.name}
                         {item.icon ? (
@@ -152,7 +180,13 @@ export function HeaderBottom({ menu1, menu2 }: HeaderBottomProps) {
           <FlexChild gap={20} width={"auto"}>
             <ul className={clsx(styles.outerMenu, styles.commu_outer)}>
               {menu2.map((item, i) => (
-                <li key={i}>
+                <li key={i} className={clsx({[styles.active]: pathname === item.link})}>
+                  <Link href={item.link}>
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+              {/* <li key={i} className={clsx({[styles.active]: pathname === item.link})}>
                   <Link href={item.link}>
                     {item.name}
                     {item.inner ? (
@@ -173,8 +207,7 @@ export function HeaderBottom({ menu1, menu2 }: HeaderBottomProps) {
                       ))}
                     </ul>
                   )}
-                </li>
-              ))}
+                </li> */}
             </ul>
           </FlexChild>
         </HorizontalFlex>
