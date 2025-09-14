@@ -42,15 +42,6 @@ export default async function ({ params }: { params: Promise<Params> }) {
       detail_id,
     });
   }
-  const optionTest = [
-    { name: "블랙 망사 리본 스타킹", quantity: 1, price: "0" },
-    { name: "크리스마스 요정님 선물 담는 양말", quantity: 2, price: "1,000" },
-    {
-      name: "모에모에 매직 에로카와 태닝 바디 세트 상품",
-      quantity: 1,
-      price: "0",
-    },
-  ];
   const relationProducts = await requester.getProducts({
     category_id: initProduct.content.category_id,
     pageSize: 24,

@@ -32,6 +32,7 @@ import { Storage } from "@/shared/utils/Data";
 
 
 
+
 export function DetailFrame({
   initProduct,
   initCondition,
@@ -58,7 +59,7 @@ export function DetailFrame({
       fallbackData: initProduct,
     }
   );
-  log("상품", product);
+  console.log("상품", product);
 
   // 배송정보
   log("배송정보 : ", storeData?.methods);
@@ -200,7 +201,7 @@ export function DetailFrame({
             <P className={styles.total_txt}>총 상품 금액</P>
 
             <FlexChild className={styles.price} width={"auto"}>
-              <P>25,000</P> ₩
+              <P>{product?.price}</P> ₩
             </FlexChild>
           </HorizontalFlex>
 
@@ -319,20 +320,22 @@ export function MiniInfoBox({
 // 옵션 개수 계산기
 export function OptionItem({ product }: {product: any }) {
 
-  const [quantity, setQuantity] = useState(1);
+  const [defaultQuantity, setDefaultQuantity] = useState(1);
+  const [quantities, setQuantities] = useState<number[]>(() =>
+    product?.variants?.map(() => 0) ?? []
+  );
 
   return (
     <>
       {/* 기본 상품 수량 */}
       <HorizontalFlex className={styles.option_item}>
         <InputNumber
-          value={quantity}
+          value={defaultQuantity}
           min={1}
           max={100}
           step={1}
           onChange={(val) => {
-            setQuantity(val);    // 외부 state 업데이트
-            console.log("외부로 공유된 값:", val);
+            setDefaultQuantity(val); // 외부 state 업데이트
           }}
         />
         <HorizontalFlex className={styles.txt_item} gap={10} width={"auto"}>
@@ -341,28 +344,42 @@ export function OptionItem({ product }: {product: any }) {
           </FlexChild>
 
           <FlexChild width={"auto"} gap={5}>
-            <Span>{quantity}개</Span>
-            <Span>+ {product?.price}원</Span>
+            <Span>{defaultQuantity}개</Span>
+            <Span>+ {defaultQuantity * product?.price}원</Span>
           </FlexChild>
         </HorizontalFlex>
       </HorizontalFlex>
       
-      
-      {product?.variants.map((opt: any, i:number) => (
-        <HorizontalFlex className={styles.option_item} key={i}>
-          <InputNumber />
-          <FlexChild className={styles.txt_item} gap={10} width={"auto"}>
-            <FlexChild className={styles.op_name}>
-              <P>{opt.title}</P>
+      {/* 옵션 추가 시 내용 */}
+      {product?.variants?.map((opt: any, i: number) =>
+        opt.title && opt.title.length > 0 ? (
+          <HorizontalFlex className={styles.option_item} key={i}>
+            <InputNumber
+              value={quantities[i]}
+              min={0}
+              max={100}
+              step={1}
+              onChange={(val) => {
+                setQuantities((prev) => {
+                  const next = [...prev];
+                  next[i] = val;
+                  return next;
+                });
+              }}
+            />
+            <FlexChild className={styles.txt_item} gap={10} width="auto">
+              <FlexChild className={styles.op_name}>
+                <P>{opt.title}</P>
+              </FlexChild>
+
+              <FlexChild width="auto" gap={5}>
+                <Span>{quantities[i]}개</Span>
+                <Span>+ {quantities[i] * opt.price}원</Span>
+              </FlexChild>
             </FlexChild>
-            
-            <FlexChild width={"auto"} gap={5}>
-              <Span>0개</Span>
-              <Span>+ {opt.price}원</Span>
-            </FlexChild>
-          </FlexChild>
-        </HorizontalFlex>
-      ))}
+          </HorizontalFlex>
+        ) : null
+      )}
     </>
   );
 }
@@ -372,7 +389,7 @@ export function BuyButtonGroup({onWishClick} : {onWishClick : ()=> void}) {
   return (
     <HorizontalFlex className={styles.buyButton_box}>
       <FlexChild width={"auto"}>
-        <Button className={styles.heart_btn} onClick={onWishClick}>
+        <Button className={styles.heart_btn}>
           <Image
             src={"/resources/icons/main/product_heart_icon.png"}
             width={30}
