@@ -14,6 +14,7 @@ import { useCookies } from "react-cookie";
 import styles from "./header.module.css";
 import { HeaderCategory } from "./headerCategory";
 import { useCart } from "@/providers/StoreProvider/StorePorivderClient";
+import useNavigate from "@/shared/hooks/useNavigate";
 
 interface ShopMenuItem {
   name: string;
@@ -53,13 +54,25 @@ export function CartLength() {
 }
 
 export function SearchBox() {
+
+  const [value, setValue] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = () => {
+    if (value.trim()) {
+      navigate(`/search?q=${value}`);
+    }
+  };
+
   return (
     <FlexChild gap={10} className={`searchInput_Box ${styles.search_Box}`}>
       <input
         type="search"
         placeholder="2025 신제품"
-        onClick={() => {
-          "검색창 클릭";
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") handleSearch();
         }}
       />
 
@@ -68,6 +81,7 @@ export function SearchBox() {
         width={18}
         height="auto"
         cursor="pointer"
+        onClick={()=>handleSearch()}
       />
     </FlexChild>
   );

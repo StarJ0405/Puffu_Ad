@@ -1,3 +1,4 @@
+'use client'
 import Button from "@/components/buttons/Button";
 import Div from "@/components/div/Div";
 import Container from "@/components/container/Container";
@@ -17,11 +18,11 @@ import Link from "next/link";
 import clsx from "clsx";
 import styles from './description.module.css'
 
-export default function Description() {
+export default function Description({product} : {product : any}) {
    return (
       <VerticalFlex className={styles.description_box}>
          <FlexChild>
-            <Image src={'/resources/images/dummy_img/description_img.png'} width={'100%'} />
+            <div className={styles.detail_thumb_box} dangerouslySetInnerHTML={{ __html: product.detail }} />
          </FlexChild>
       </VerticalFlex>
    )

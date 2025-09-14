@@ -75,8 +75,7 @@ export function HeaderCategory({ CaOpen }: { CaOpen: boolean }) {
                   onMouseLeave={() => setActiveDepth1(null)}
                 >
                   {cat1.children
-                    ?.slice()
-                    .reverse()
+                    ?.sort((c1, c2) => c1.index - c2.index)
                     .map((child2, j) => (
                       <FlexChild key={child2.id ?? j} cursor="pointer" className={styles.child_item}>
                         <Link href={`/categories/${child2.id}`}>
