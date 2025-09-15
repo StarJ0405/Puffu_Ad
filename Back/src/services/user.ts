@@ -1,7 +1,7 @@
 import { BaseService } from "data-source";
 import { User } from "models/user";
 import { UserRepository } from "repositories/user";
-import { container, inject, injectable } from "tsyringe";
+import { inject, injectable } from "tsyringe";
 import {
   DeepPartial,
   FindManyOptions,
@@ -10,7 +10,6 @@ import {
 } from "typeorm";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 import { comparePasswords, hashPassword } from "utils/functions";
-import { PointService } from "./point";
 
 @injectable()
 export class UserService extends BaseService<User, UserRepository> {
@@ -102,9 +101,6 @@ export class UserService extends BaseService<User, UserRepository> {
     return super.update(where, data, returnEnttiy);
   }
   async getUser(id: string): Promise<User | null> {
-    const service = container.resolve(PointService);
-    await service.usePoint(id, 0);
-
     return await this.repository
       .builder("u")
       .leftJoinAndSelect("u.points", "pt")

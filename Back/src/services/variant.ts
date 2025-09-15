@@ -6,7 +6,13 @@ import { OptionValueRepository } from "repositories/option-value";
 import { ProductRepository } from "repositories/product";
 import { VariantRepository } from "repositories/variant";
 import { inject, injectable } from "tsyringe";
-import { FindManyOptions, FindOneOptions, FindOptionsWhere, In } from "typeorm";
+import {
+  FindManyOptions,
+  FindOneOptions,
+  FindOptionsWhere,
+  In,
+  IsNull,
+} from "typeorm";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 
 @injectable()
@@ -56,6 +62,7 @@ export class VariantService extends BaseService<Variant, VariantRepository> {
             async (variant) =>
               await this.lineItemRepository.delete({
                 variant_id: variant.id,
+                order_id: IsNull(),
               })
           )
         );
@@ -114,7 +121,9 @@ export class VariantService extends BaseService<Variant, VariantRepository> {
                 typeof relation === "string" && relation.includes("product")
             )
           ) {
-            _where.push(this.Search({}, ["product.title"], q, true));
+            _where.push(
+              this.Search({}, ["product.title", "product.id"], q, true)
+            );
             _relations.push("product");
           }
 
@@ -224,6 +233,7 @@ export class VariantService extends BaseService<Variant, VariantRepository> {
         async (variant) =>
           await this.lineItemRepository.delete({
             variant_id: variant.id,
+            order_id: IsNull(),
           })
       )
     );

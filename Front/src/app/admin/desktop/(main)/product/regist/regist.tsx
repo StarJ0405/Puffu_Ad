@@ -60,14 +60,14 @@ export default function ({
     }
     return category?.name;
   };
-  useClientEffect(() => {
-    const _store = stores.find((_store) => _store.id === store);
-    if (_store?.currency_unit === "P") {
-      setRadio((prev) => [prev[0], prev[1], true]);
-    } else {
-      setRadio((prev) => [prev[0], prev[1], false]);
-    }
-  }, [store]);
+  // useClientEffect(() => {
+  //   const _store = stores.find((_store) => _store.id === store);
+  //   if (_store?.currency_unit === "P") {
+  //     setRadio((prev) => [prev[0], prev[1], true]);
+  //   } else {
+  //     setRadio((prev) => [prev[0], prev[1], false]);
+  //   }
+  // }, [store]);
   const handleSave = async () => {
     if (!store) return scrollTo("store", "스토어를 설정해주세요.");
     if (!brand) return scrollTo("brand", "입점사를 설정해주세요.");
@@ -94,12 +94,13 @@ export default function ({
           title: title,
           description: inputs.current[1].getValue(),
           price: inputs.current[2].getValue(),
-          thumbnail: inputs.current[4].getValue(),
-          tags: inputs.current[5].getValue(),
+          thumbnail: inputs.current[3].getValue(),
+          tags: inputs.current[4].getValue(),
           detail,
           variants,
           options,
-          tax_rate: !radio[2] ? inputs.current[3].getValue() : 0,
+          // tax_rate: !radio[2] ? inputs.current[3].getValue() : 0,
+          tax_rate: 0,
         };
 
         adminRequester.createProduct(
@@ -486,7 +487,7 @@ export default function ({
                         </HorizontalFlex>
                       </FlexChild>
                     </VerticalFlex>
-                    <FlexChild
+                    {/* <FlexChild
                       marginTop={20}
                       hidden={
                         stores.find((_store) => _store.id === store)
@@ -564,7 +565,7 @@ export default function ({
                           </RadioGroup>
                         </FlexChild>
                       </VerticalFlex>
-                    </FlexChild>
+                    </FlexChild> */}
                   </VerticalFlex>
                 </div>
               </FlexChild>
@@ -605,7 +606,7 @@ export default function ({
                         <FlexChild padding={"15px 20px 15px 0"}>
                           <InputImage
                             ref={(el) => {
-                              inputs.current[4] = el;
+                              inputs.current[3] = el;
                             }}
                             name={"상품_썸네일"}
                             path={"/product/thumbnail"}
@@ -633,7 +634,7 @@ export default function ({
                         <FlexChild>
                           <InputHashTag
                             ref={(el) => {
-                              inputs.current[5] = el;
+                              inputs.current[4] = el;
                             }}
                             width="100%"
                             name={"태그"}
