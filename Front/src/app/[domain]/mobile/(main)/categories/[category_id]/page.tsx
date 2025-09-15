@@ -24,8 +24,8 @@ export default async function ({ params }: { params: Promise<Params> }) {
   // console.log('전체 카테고리', initProducts);
   
   return (
-    <section className="root">
-      <Container className="page_container" marginTop={80}>
+    <section className="root page_container">
+      <Container marginTop={35}>
 
         <TitleBox category_id={category_id} />
 

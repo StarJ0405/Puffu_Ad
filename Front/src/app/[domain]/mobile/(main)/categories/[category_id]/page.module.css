@@ -103,8 +103,9 @@
 /* 중분류, 소분류 카테고리 */
 .category_list {
    display: flex;
-   gap: 20px;
+   gap: 15px;
    align-self: start;
+   flex-wrap: wrap;
    /* margin-bottom: 20px; */
 }
 
@@ -116,6 +117,10 @@
    opacity: 0.5;
    cursor: pointer;
    transition: 0.2s;
+}
+
+.category_list > li a {
+   font-size: 14px !important;
 }
 
 .category_list > li.active,

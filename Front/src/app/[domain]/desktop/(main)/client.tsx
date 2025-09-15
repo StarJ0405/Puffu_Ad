@@ -9,7 +9,6 @@ import MasonryGrid from "@/components/masonry/MasonryGrid";
 import Span from "@/components/span/Span";
 import clsx from "clsx";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useRef } from "react";
 import styles from "./page.module.css";
 

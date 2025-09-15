@@ -14,7 +14,7 @@ export default async function MobileHeader() {
       { name: 'BEST 상품', link: '/products/best'},
       { name: '입고예정', link: '/products/commingSoon'},
       { name: '신상품', link: '/products/new'},
-      { name: '데이 핫딜', link: '/products/sales', icon: '/resources/images/header/HotDeal_icon.png'},
+      { name: '이달의 핫딜', link: '/products/hot', icon: '/resources/images/header/HotDeal_icon.png'},
       { name: '랜덤박스', link: '/products/randomBox'},
    ]
 

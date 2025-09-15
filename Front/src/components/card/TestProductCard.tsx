@@ -1,29 +1,15 @@
 "use client"
-import Button from "@/components/buttons/Button";
-import Div from "@/components/div/Div";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import Icon from "@/components/icons/Icon";
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
-import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
-import MasonryGrid from "@/components/masonry/MasonryGrid";
-import StarRate from "@/components/star/StarRate";
-import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
-import useData from "@/shared/hooks/data/useData";
-import useNavigate from "@/shared/hooks/useNavigate";
-import { requester } from "@/shared/Requester";
-import NiceModal from "@ebay/nice-modal-react";
-import clsx from "clsx";
-import { useParams } from "next/navigation";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
-import ProductCard from "@/components/card/ProductCard";
-import { usePathname } from "next/navigation";
-import style from "./ProductCard.module.css";
-import Link from "next/link";
 import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
+import clsx from "clsx";
+import Link from "next/link";
+import { useState } from "react";
+import styles from "./ProductCard.module.css";
 
 
 
@@ -37,6 +23,7 @@ type ListItem = {
    store_name: string;
    rank: number;
    id: string;
+   wishes: number,
 }
 
 // lineClamp 구별해주기, TestProdcutCard는 임시로 만든거임. 나중에 프로덕트카드에 스타일만 입히면 됨.
@@ -70,54 +57,66 @@ export function TestProductCard(
 
    const [adultCheck, setadultCheck] = useState(true);
 
+   console.log('상품222', product);
+
    return (
       <VerticalFlex
-         width={width ?? 200}
+         width={width ?? isMobile ? 'auto' : 200}
          // margin={product.margin}
-         className={style.prodcut_item}
+         className={styles.prodcut_item}
       >
-         <FlexChild 
-            className={style.imgBox}
-         >
-            <Link href={product_link} 
-               style={{
-                 pointerEvents: commingSoon ? "none" : "auto",
-               }}
-            >
-             {/* 링크 상품 링크로 바꾸기 */}
+         <FlexChild className={styles.imgBox}>
+               <Link 
+                  href={product_link} 
+                  className={styles.link_Frame}
+                  style={{
+                    pointerEvents: commingSoon ? "none" : "auto",
+                  }}
+               >
+                  { // 프로덕트 페이지가 best일때만 나타나기. 제품 인기순 표시임.
+                     specialType === 'best' && (
+                        <FlexChild 
+                           className={clsx(styles.rank, (product.rank < 3 ? styles.topRank : ''))}
+                        >
+                           <Span className="SacheonFont">{product.rank + 1}</Span>
+                        </FlexChild>
+                     )
+                  }
+                  {
+                     adultCheck === true ? 
+                     <Image src={product.thumbnail} width={"100%"} height={"auto"}/>
+                     :
+                     // 성인인증 안될때 나오는 이미지
+                     <Image src={'/resources/images/19_only.png'} width={"100%"} height={"auto"}/>
+                  }
+      
+                  {
+                     commingSoon && ( // 입고예정일때만 나오기
+                        <Image className={styles.specialTypeImg} src={'/resources/images/commingSoon_img.png'} width={"101%"} height={"auto"}/>
+                     )
+                  }
+               </Link>
 
-               { // 프로덕트 페이지가 best일때만 나타나기. 제품 인기순 표시임.
-                  specialType === 'best' && (
-                     <FlexChild 
-                        className={clsx(style.rank, (product.rank < 3 ? style.topRank : ''))}
-                     >
-                        <Span className="SacheonFont">{product.rank + 1}</Span>
+               {
+                  isMobile && (
+                     <FlexChild onClick={toggleHeart} className={styles.heart_counter}>
+                        <Image
+                           src={`/resources/icons/main/mob_heart${heartCheck === true ? '_active' : ''}.png`}
+                           width={20}
+                        />
+                        <Span>{product.wishes}0</Span>
                      </FlexChild>
                   )
                }
-               {
-                  adultCheck === true ? 
-                  <Image src={product.thumbnail} width={"100%"} height={"auto"}/>
-                  :
-                  // 성인인증 안될때 나오는 이미지
-                  <Image src={'/resources/images/19_only.png'} width={"100%"} height={"auto"}/>
-               }
-   
-               {
-                  commingSoon && ( // 입고예정일때만 나오기
-                     <Image className={style.specialTypeImg} src={'/resources/images/commingSoon_img.png'} width={"101%"} height={"auto"}/>
-                  )
-               }
-            </Link>
          </FlexChild>
 
-         <FlexChild padding={"0 5px"} className={style.text_box}>
+         <FlexChild padding={"0 5px"} className={styles.text_box}>
             <VerticalFlex gap={2} alignItems={'start'}>
-               <FlexChild className={style.store_name}>
+               <FlexChild className={styles.store_name}>
                   <Span>{product.store_name}</Span>
                </FlexChild>
 
-               <FlexChild className={style.product_title}>
+               <FlexChild className={styles.product_title}>
                   <Link 
                      href={product_link}
                      style={{
@@ -135,7 +134,7 @@ export function TestProductCard(
                   </Link>
                </FlexChild>
                
-               <HorizontalFlex className={style.content_item}>
+               <HorizontalFlex className={styles.content_item}>
                   {/* <Span
                      color="var(--main-color)"
                      weight={600}
@@ -143,27 +142,30 @@ export function TestProductCard(
                      hidden={product.discount_rate >= 1}
                      paddingRight={"0.5em"}
                   >
-                     {product.discount_rate}
+                     {product.discount_rate}%
                   </Span> */}
-                  <VerticalFlex className={style.price_box}>
+                  <VerticalFlex className={styles.price_box}>
                      <Span
-                        className={style.through_price}
-                        textDecoration={"line-through"}
+                        className={styles.through_price}
                      >
-                        {product.price}원
+                        {product.price}
                      </Span>
-                     <Span className={style.discount_price} >
-                        {product.discount_price}원
+                     <Span className={styles.discount_price} >
+                        {product.discount_price}₩
                      </Span>
                   </VerticalFlex>
-
-                  <FlexChild onClick={toggleHeart} className={style.heart_counter}>
-                     <Image
-                        src={`/resources/icons/main/product_heart_icon${heartCheck === true ? '_active' : ''}.png`}
-                        width={23}
-                     />
-                     <Span>0</Span>
-                  </FlexChild>
+                  
+                  {
+                     !isMobile && (
+                        <FlexChild onClick={toggleHeart} className={styles.heart_counter}>
+                           <Image
+                              src={`/resources/icons/main/product_heart_icon${heartCheck === true ? '_active' : ''}.png`}
+                              width={23}
+                           />
+                           <Span>{product.wishes}0</Span>
+                        </FlexChild>     
+                     )
+                  }
                   {/* <Span fontSize={14} weight={600}>
                      {currency_unit}
                   </Span> */}

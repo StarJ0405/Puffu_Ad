@@ -31,7 +31,7 @@ export function ProdcutCategory() { // 대분류 카테고리
          {
             pathname !== "/" ?
             <VerticalFlex className={clsx(Pstyles.ca_item, Pstyles.ca_all)}>
-               <FlexChild className={Pstyles.ca_thumb} width={120} height={120}>
+               <FlexChild className={Pstyles.ca_thumb} width={66} height={66}>
                   <P>ALL</P>
                </FlexChild>
               <Span>전체</Span>
@@ -49,7 +49,7 @@ export function ProdcutCategory() { // 대분류 카테고리
                         <Image 
                            src={cat.thumbnail}
                            width={'auto'}
-                           height={120}
+                           height={66}
                         />
                      </FlexChild>
                   </Link>
@@ -166,7 +166,17 @@ export function BaseProductList({
                   }
                </MasonryGrid>
             </VerticalFlex>
-            <ListPagination />
+            <Button className={Pstyles.list_more_btn}>
+              <FlexChild gap={10}>
+               {/* onClick={showMore} */}
+                <Span>상품 더보기</Span>
+                <Image
+                  src={"/resources/icons/arrow/arrow_bottom_icon.png"}
+                  width={10}
+                />
+              </FlexChild>
+            </Button>
+
          </>
          ):(
             <NoContent type={'상품'} />

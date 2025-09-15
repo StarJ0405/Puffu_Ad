@@ -8,7 +8,7 @@ import Pstyles from "../../products.module.css";
 import {} from "./client";
 import styles from "./page.module.css";
 import { requester } from "@/shared/Requester";
-import { BaseProductList } from "../../baseClient";
+import {HotList} from './client'
 
 export default async function () {
   const hotCondition: any = {
@@ -17,9 +17,11 @@ export default async function () {
   };
   const hotProducts = await requester.getProducts(hotCondition);
 
+  console.log('핫',hotProducts.conent);
+
   return (
-    <section className="root">
-      <Container className="page_container" marginTop={80}>
+    <section className="root page_container">
+      <Container marginTop={35}>
         <VerticalFlex className={styles.titleBox}>
           <VerticalFlex className={styles.title}>
             <h2 className="SacheonFont" style={{ marginBottom: "12px" }}>
@@ -35,7 +37,10 @@ export default async function () {
         </VerticalFlex>
 
         <VerticalFlex className={Pstyles.list}>
-          <BaseProductList listArray={hotProducts} />
+          <HotList
+            initProducts={hotProducts}
+            initConiditon={hotCondition}
+          />
         </VerticalFlex>
       </Container>
     </section>

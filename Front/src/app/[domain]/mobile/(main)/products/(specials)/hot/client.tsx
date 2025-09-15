@@ -3,6 +3,8 @@ import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
+import usePageData from "@/shared/hooks/data/usePageData";
+import { requester } from "@/shared/Requester";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import clsx from "clsx";
@@ -40,30 +42,30 @@ export function HotDealCategory() {
 }
 
 
-// export function HotList({
-//   initProducts,
-//   initConiditon,
-// }: {
-//   initProducts: Pageable;
-//   initConiditon: any;
-// }) {
-//   const { discount, maxPage, page, setPage, mutate } = usePageData(
-//     "discount",
-//     (pageNumber) => ({
-//       ...initConiditon,
-//       pageSize: 24,
-//       pageNumber,
-//     }),
-//     (condition) => requester.getProducts(condition),
-//     (data: Pageable) => data?.totalPages || 0,
-//     {
-//       onReprocessing: (data) => data?.content || [],
-//       fallbackData: initProducts,
-//     }
-//   );
-//   return (
-//     <>
-//       <BaseProductList listArray={discount} />
-//     </>
-//   );
-// }
+export function HotList({
+  initProducts,
+  initConiditon,
+}: {
+  initProducts: Pageable;
+  initConiditon: any;
+}) {
+  const { discount, maxPage, page, setPage, mutate } = usePageData(
+    "discount",
+    (pageNumber) => ({
+      ...initConiditon,
+      pageSize: 24,
+      pageNumber,
+    }),
+    (condition) => requester.getProducts(condition),
+    (data: Pageable) => data?.totalPages || 0,
+    {
+      onReprocessing: (data) => data?.content || [],
+      fallbackData: initProducts,
+    }
+  );
+  return (
+    <>
+      <BaseProductList listArray={discount} />
+    </>
+  );
+}
