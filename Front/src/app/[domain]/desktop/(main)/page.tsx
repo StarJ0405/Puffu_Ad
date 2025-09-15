@@ -55,7 +55,7 @@ export default async function () {
 
         {/* 이 달의 핫딜 */}
         <HotDealWrapper
-          id={"sale"}
+          id={"hot"}
           lineClamp={1}
           initProducts={hotProducts}
           initCondition={hotCondition}
