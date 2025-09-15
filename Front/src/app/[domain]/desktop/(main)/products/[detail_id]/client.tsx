@@ -8,7 +8,7 @@ import InputNumber from "@/components/inputs/InputNumber";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styles from "./page.module.css";
 
 import ProductCard from "@/components/card/ProductCard";
@@ -16,36 +16,45 @@ import NoContent from "@/components/noContent/noContent";
 import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import DeliveryGuide from "./_deliveryGuide/deliveryGuide";
-import Description from "./_description/description";
-import Inquiry from "./_inquiry/inquiry";
-import Review from "./_review/review";
-import useData from "@/shared/hooks/data/useData";
-import { requester } from "@/shared/Requester";
-import { log, toast } from "@/shared/utils/Functions";
+import Container from "@/components/container/Container";
 import {
   useCart,
   useStore,
 } from "@/providers/StoreProvider/StorePorivderClient";
+import useData from "@/shared/hooks/data/useData";
 import useNavigate from "@/shared/hooks/useNavigate";
+import { requester } from "@/shared/Requester";
 import { Storage } from "@/shared/utils/Data";
+import { toast } from "@/shared/utils/Functions";
+import DeliveryGuide from "./_deliveryGuide/deliveryGuide";
+import Description from "./_description/description";
+import Inquiry from "./_inquiry/inquiry";
+import Review from "./_review/review";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
+import NiceModal from "@ebay/nice-modal-react";
+import { animateValue } from "framer-motion";
 
-
-
-
-export function DetailFrame({
+interface Variant {
+  variant_id: string;
+  quantity: number;
+}
+export function ProductWrapper({
   initProduct,
   initCondition,
+  children,
 }: {
   initProduct: any;
   initCondition: any;
+  children: React.ReactNode;
 }) {
+  const { userData } = useAuth();
   const navigate = useNavigate();
   const { storeData } = useStore();
   const { reload } = useCart();
-  const { [initProduct.content.id]: product, mutate } = useData(
-    initProduct?.content?.id,
-    // { ...initCondition, id: initCondition?.content?.id },
+  const [shipping, setShipping] = useState<ShippingMethodData>();
+  const [freeShipping, setFreeShipping] = useState<ShippingMethodData>();
+  const { product, mutate } = useData(
+    "product",
     { ...initCondition, id: initProduct?.content?.id },
     (condition) => {
       const id = condition.id;
@@ -53,18 +62,17 @@ export function DetailFrame({
       return requester.getProduct(id, condition);
     },
     {
-      // onReprocessing: (data) => data.content,
-      // fallbackData: initProduct?.content,
-      onReprocessing: (data) => data.content,  // ✅ getProduct 응답이 { content: {...} } 형태라면 유지
+      onReprocessing: (data) => data.content,
       fallbackData: initProduct,
     }
   );
-  console.log("상품", product);
+  const [selected, setSelected] = useState<Variant[]>(
+    product.variants.map((v: VariantData) => ({
+      variant_id: v.id,
+      quantity: 0,
+    }))
+  );
 
-  // 배송정보
-  log("배송정보 : ", storeData?.methods);
-
-  // 좋아요
   const onWishClick = () => {
     if (product.wish) {
       requester.deleteWishList(
@@ -87,21 +95,6 @@ export function DetailFrame({
       );
     }
   };
-  const onCartClick = async () => {
-    const variants: { variant_id: string; quantity: number }[] = [];
-    if (variants.length > 0) {
-      const { message, error } = await requester.addItem({
-        store_id: storeData?.id,
-        variants: variants,
-      });
-      if (message) {
-        reload();
-        // .then(() => navigate("/cart")); // 카트 이동시
-      } else {
-        toast({ message: error });
-      }
-    }
-  };
   useEffect(() => {
     let recents: any = localStorage.getItem(Storage.RECENTS);
     if (recents) recents = JSON.parse(recents);
@@ -113,61 +106,165 @@ export function DetailFrame({
       )
     );
   }, []);
+  useEffect(() => {
+    const _product: ProductData = product;
+    const price = _product?.price;
 
-  const totalSale = Math.round(
-    ((product?.discount_price - product?.price) / product?.discount_price) * 100
-  );
+    const shippingMethod = storeData?.methods
+      ?.filter((f) => {
+        return f.min <= price && (f.max === -1 || f.max > price);
+      })
+      .sort((m1, m2) => m1.amount - m2.amount)?.[0];
+    const free = storeData?.methods
+      ?.filter((f) => f.amount === 0)
+      ?.sort((m1, m2) => m1.amount - m2.amount)?.[0];
+    setFreeShipping(free);
+    setShipping(shippingMethod);
+  }, [product, storeData]);
+
+  const onCartClick = async (): Promise<any> => {
+    if (!userData)
+      return NiceModal.show("confirm", {
+        message: "로그인 필요합니다.",
+        confirmText: "로그인하기",
+        cancelText: "취소",
+        onConfirm: () => navigate("/auth/login"),
+      });
+    if (!selected.some((f) => f.quantity > 0))
+      return toast({ message: "상품을 최소 1개 이상 담아주세요" });
+
+    if (selected.length > 0) {
+      const { message, error } = await requester.addItem({
+        store_id: storeData?.id,
+        variants: selected,
+      });
+      if (message) {
+        reload();
+        toast({ message: "장바구니 물건을 담았습니다." });
+        setSelected([
+          ...selected.map((s) => ({ variant_id: s.variant_id, quantity: 0 })),
+        ]);
+      } else {
+        toast({ message: error });
+      }
+    }
+  };
+  const onPurchaseClick = async (): Promise<any> => {
+    if (!userData)
+      return NiceModal.show("confirm", {
+        message: "로그인 필요합니다.",
+        confirmText: "로그인하기",
+        cancelText: "취소",
+        onConfirm: () => navigate("/auth/login"),
+      });
+    if (!selected.some((f) => f.quantity > 0))
+      return toast({ message: "상품을 최소 1개 이상 담아주세요" });
+
+    if (selected.length > 0) {
+      const { message, error } = await requester.addItem({
+        store_id: storeData?.id,
+        variants: selected,
+      });
+      if (message) {
+        reload().then(() => navigate("/cart"));
+      } else {
+        toast({ message: error });
+      }
+    }
+  };
 
   return (
-    <HorizontalFlex gap={60} alignItems="start">
-        <FlexChild className={styles.detail_thumbnail}>
-          <Image
-            src={product?.thumbnail}
-            width={600}
-            height={"auto"}
+    <section className="root">
+      <Container
+        className={clsx("page_container", styles.detail_container)}
+        marginTop={100}
+      >
+        <DetailFrame
+          product={product}
+          freeShipping={freeShipping}
+          shipping={shipping}
+          setSelected={setSelected}
+          selected={selected}
+          onCartClick={onCartClick}
+          onPurchaseClick={onPurchaseClick}
+        />
+
+        {children}
+
+        <HorizontalFlex marginTop={30} alignItems="start" gap={40}>
+          <DetailTabContainer product={product} />
+          <MiniInfoBox
+            product={product}
+            selected={selected}
+            setSelected={setSelected}
           />
+        </HorizontalFlex>
+      </Container>
+    </section>
+  );
+}
+
+export function DetailFrame({
+  product,
+  freeShipping,
+  shipping,
+  selected,
+  setSelected,
+  onCartClick,
+  onPurchaseClick,
+}: {
+  product: ProductData;
+  freeShipping?: ShippingMethodData;
+  shipping?: ShippingMethodData;
+  selected: Variant[];
+  setSelected: Dispatch<SetStateAction<Variant[]>>;
+  onCartClick: () => Promise<any>;
+  onPurchaseClick: () => Promise<any>;
+}) {
+  const { storeData } = useStore();
+  return (
+    <HorizontalFlex gap={60} alignItems="start">
+      <FlexChild className={styles.detail_thumbnail}>
+        <Image src={product?.thumbnail} width={600} height={"auto"} />
+      </FlexChild>
+
+      <VerticalFlex className={styles.detail_infoBox} alignItems="start">
+        <FlexChild className={styles.brand}>
+          <Span>{product?.brand.name}</Span>
         </FlexChild>
 
-        <VerticalFlex className={styles.detail_infoBox} alignItems="start">
-          <FlexChild className={styles.brand}>
-            <Span>{product?.brand.name}</Span>
+        <FlexChild className={styles.detail_title}>
+          <P lineClamp={2} display="--webkit-box" overflow="hidden">
+            {product?.title}
+          </P>
+        </FlexChild>
+
+        <HorizontalFlex marginBottom={17} gap={10}>
+          <FlexChild className={styles.price} marginLeft={5}>
+            <P>{product?.price}</P> ₩
           </FlexChild>
 
-          <FlexChild className={styles.detail_title}>
-            <P lineClamp={2} display="--webkit-box" overflow="hidden">
-              {product?.title}
-            </P>
+          {product.discount_rate > 0 && (
+            <>
+              <FlexChild className={styles.sale_price}>
+                <P>{product.discount_rate}%</P>
+              </FlexChild>
+
+              <FlexChild className={styles.regular_price}>
+                <P>{product?.discount_price}</P>₩
+              </FlexChild>
+            </>
+          )}
+        </HorizontalFlex>
+
+        <HorizontalFlex className={styles.delivery_share_box}>
+          <FlexChild className={styles.delivery_info}>
+            <P>배송정보</P>
+            <Image src={"/resources/icons/cart/cj_icon.png"} width={22} />
           </FlexChild>
 
-          <HorizontalFlex marginBottom={17} gap={10}>
-            <FlexChild className={styles.price} marginLeft={5}>
-              <P>{product?.price}</P> ₩
-            </FlexChild>
-
-            {totalSale > 0 && (
-              <>
-                <FlexChild className={styles.sale_price}>
-                  <P>
-  
-                    {totalSale}%
-                  </P>
-                </FlexChild>
-  
-                <FlexChild className={styles.regular_price}>
-                  <P>{product?.discount_price}</P>₩
-                </FlexChild>
-              </>
-            )}
-          </HorizontalFlex>
-
-          <HorizontalFlex className={styles.delivery_share_box}>
-            <FlexChild className={styles.delivery_info}>
-              <P>배송정보</P>
-              <Image src={"/resources/icons/cart/cj_icon.png"} width={22} />
-            </FlexChild>
-
-            {/* 링크 공유 버튼 */}
-            {/* <FlexChild cursor="pointer">
+          {/* 링크 공유 버튼 */}
+          {/* <FlexChild cursor="pointer">
               <Image
                 src={"/resources/icons/main/share_icon.png"}
                 width={25}
@@ -177,215 +274,166 @@ export function DetailFrame({
                         width={25}
                       />
             </FlexChild> */}
-          </HorizontalFlex>
+        </HorizontalFlex>
 
-          <VerticalFlex className={styles.delivery_admin_write_data}>
-            <VerticalFlex alignItems="start" gap={5}>
-              <P size={16} color="#bbb" weight={600}>
-                배송
-              </P>
-              <P size={14} color="#ddd">
-                오후 2시 이전 주문 결제시 오늘 출발! ( 영업일 기준 )
-              </P>
-              <P size={14} color="#ddd">
-                30,000원 이상 구매시 무료배송
-              </P>
-            </VerticalFlex>
+        <VerticalFlex className={styles.delivery_admin_write_data}>
+          <VerticalFlex alignItems="start" gap={5}>
+            <P size={16} color="#bbb" weight={600}>
+              <Span>배송비 </Span>
+              {shipping?.amount === 0 ? (
+                <Span>무료</Span>
+              ) : (
+                <>
+                  <Span>{shipping?.amount || 0}</Span>
+                  <Span>{storeData?.currency_unit}</Span>
+                </>
+              )}
+            </P>
+            <P size={14} color="#ddd" whiteSpace="prewrap">
+              {shipping?.description}
+            </P>
+            <P
+              size={14}
+              color="#ddd"
+              hidden={!freeShipping || freeShipping.min === 0}
+            >
+              <Span>{freeShipping?.min}</Span>
+              <Span>원 이상 구매시 무료배송</Span>
+            </P>
           </VerticalFlex>
-          
-          <VerticalFlex className={styles.option_box}>
-            <OptionItem product={product} />
-          </VerticalFlex>
-
-          <HorizontalFlex className={styles.total_box}>
-            <P className={styles.total_txt}>총 상품 금액</P>
-
-            <FlexChild className={styles.price} width={"auto"}>
-              <P>{product?.price}</P> ₩
-            </FlexChild>
-          </HorizontalFlex>
-
-          <BuyButtonGroup onWishClick={onWishClick} />
         </VerticalFlex>
-      </HorizontalFlex>
+
+        <VerticalFlex className={styles.option_box}>
+          <OptionItem
+            product={product}
+            setSelected={setSelected}
+            selected={selected}
+          />
+        </VerticalFlex>
+
+        <HorizontalFlex className={styles.total_box}>
+          <P className={styles.total_txt}>총 상품 금액</P>
+
+          <FlexChild className={styles.price} width={"auto"}>
+            <P>
+              {product.variants.reduce((acc, now) => {
+                const quantity =
+                  selected.find((f) => f.variant_id === now.id)?.quantity || 0;
+
+                return acc + now.discount_price * quantity;
+              }, 0)}
+            </P>
+            ₩
+          </FlexChild>
+        </HorizontalFlex>
+
+        <BuyButtonGroup
+          onCartClick={onCartClick}
+          onPurchaseClick={onPurchaseClick}
+        />
+      </VerticalFlex>
+    </HorizontalFlex>
   );
 }
 
-
-
-
-
 // 미니 구매란
 export function MiniInfoBox({
-  initProduct,
-  initCondition,
+  product,
+  selected,
+  setSelected,
 }: {
-  initProduct: any;
-  initCondition: any;
+  product: ProductData;
+  selected: Variant[];
+  setSelected: Dispatch<SetStateAction<Variant[]>>;
 }) {
-  const navigate = useNavigate();
-  const { storeData } = useStore();
-  const { reload } = useCart();
-  const { [initProduct.content.id]: product, mutate } = useData(
-    initProduct?.content?.id,
-    // { ...initCondition, id: initCondition?.content?.id },
-    { ...initCondition, id: initProduct?.content?.id },
-    (condition) => {
-      const id = condition.id;
-      delete condition.id;
-      return requester.getProduct(id, condition);
-    },
-    {
-      // onReprocessing: (data) => data.content,
-      // fallbackData: initProduct?.content,
-      onReprocessing: (data) => data.content,  // ✅ getProduct 응답이 { content: {...} } 형태라면 유지
-      fallbackData: initProduct,
-    }
-  );
-  // 좋아요
-  const onWishClick = () => {
-    if (product.wish) {
-      requester.deleteWishList(
-        product.wish.id,
-        {
-          soft: false,
-        },
-        () => {
-          mutate();
-        }
-      );
-    } else {
-      requester.createWishList(
-        {
-          product_id: product.id,
-        },
-        () => {
-          mutate();
-        }
-      );
-    }
-  };
-  const onCartClick = async () => {
-    const variants: { variant_id: string; quantity: number }[] = [];
-    if (variants.length > 0) {
-      const { message, error } = await requester.addItem({
-        store_id: storeData?.id,
-        variants: variants,
-      });
-      if (message) {
-        reload();
-        // .then(() => navigate("/cart")); // 카트 이동시
-      } else {
-        toast({ message: error });
-      }
-    }
-  };
-  useEffect(() => {
-    let recents: any = localStorage.getItem(Storage.RECENTS);
-    if (recents) recents = JSON.parse(recents);
-    else recents = [];
-    localStorage.setItem(
-      Storage.RECENTS,
-      JSON.stringify(
-        Array.from(new Set([initProduct.content.id, ...recents])).slice(0, 30)
-      )
-    );
-  }, []);
-
-  return(
+  return (
     <FlexChild width={"auto"} className={styles.mini_infoBox}>
       <VerticalFlex>
-        <VerticalFlex gap={20} marginBottom={30}>
-          <OptionItem product={product}/>
-        </VerticalFlex>
+        <OptionItem
+          product={product}
+          setSelected={setSelected}
+          selected={selected}
+        />
 
         <HorizontalFlex className={styles.total_box} gap={10}>
           <P className={styles.total_txt}>총 상품 금액</P>
-          {/* 총 상품 금액은 옵션이랑 현재 계산기로 계산된 총 값을 useState로 관리해서 여기로 쏴주면 됨. */}
           <FlexChild
             className={styles.price}
             width={"auto"}
             justifyContent="end"
           >
-            <P>{product?.price}</P> ₩
+            <P>
+              {product.variants.reduce((acc, now) => {
+                const quantity =
+                  selected.find((f) => f.variant_id === now.id)?.quantity || 0;
+
+                return acc + now.discount_price * quantity;
+              }, 0)}
+            </P>
+            ₩
           </FlexChild>
         </HorizontalFlex>
 
-        <BuyButtonGroup onWishClick={onWishClick} />
+        {/* <BuyButtonGroup onWishClick={onWishClick} /> */}
       </VerticalFlex>
     </FlexChild>
   );
 }
 
 // 옵션 개수 계산기
-export function OptionItem({ product }: {product: any }) {
-
-  const [defaultQuantity, setDefaultQuantity] = useState(1);
-  const [quantities, setQuantities] = useState<number[]>(() =>
-    product?.variants?.map(() => 0) ?? []
-  );
-
+export function OptionItem({
+  product,
+  selected,
+  setSelected,
+}: {
+  product: any;
+  selected: Variant[];
+  setSelected: Dispatch<SetStateAction<Variant[]>>;
+}) {
   return (
-    <>
+    <VerticalFlex gap={20} marginBottom={30}>
       {/* 기본 상품 수량 */}
-      <HorizontalFlex className={styles.option_item}>
-        <InputNumber
-          value={defaultQuantity}
-          min={1}
-          max={100}
-          step={1}
-          onChange={(val) => {
-            setDefaultQuantity(val); // 외부 state 업데이트
-          }}
-        />
-        <HorizontalFlex className={styles.txt_item} gap={10} width={"auto"}>
-          <FlexChild className={styles.op_name}>
-            <P>{product?.title}</P>
-          </FlexChild>
-
-          <FlexChild width={"auto"} gap={5}>
-            <Span>{defaultQuantity}개</Span>
-            <Span>+ {defaultQuantity * product?.price}원</Span>
-          </FlexChild>
-        </HorizontalFlex>
-      </HorizontalFlex>
-      
-      {/* 옵션 추가 시 내용 */}
-      {product?.variants?.map((opt: any, i: number) =>
-        opt.title && opt.title.length > 0 ? (
-          <HorizontalFlex className={styles.option_item} key={i}>
+      {product.variants.map((v: VariantData) => {
+        const index = selected.findIndex((f) => f.variant_id === v.id);
+        const select = selected[index];
+        return (
+          <HorizontalFlex className={styles.option_item} key={v.id}>
             <InputNumber
-              value={quantities[i]}
+              value={select?.quantity}
               min={0}
               max={100}
               step={1}
               onChange={(val) => {
-                setQuantities((prev) => {
-                  const next = [...prev];
-                  next[i] = val;
-                  return next;
-                });
+                select.quantity = val;
+                selected[index] = select;
+                setSelected([...selected]);
               }}
             />
-            <FlexChild className={styles.txt_item} gap={10} width="auto">
+            <HorizontalFlex className={styles.txt_item} gap={10} width={"auto"}>
               <FlexChild className={styles.op_name}>
-                <P>{opt.title}</P>
+                <P>{v?.title}</P>
               </FlexChild>
 
-              <FlexChild width="auto" gap={5}>
-                <Span>{quantities[i]}개</Span>
-                <Span>+ {quantities[i] * opt.price}원</Span>
+              <FlexChild width={"auto"} gap={5}>
+                <Span>{select.quantity}개</Span>
+                <Span>+ {select.quantity * product?.discount_price}원</Span>
               </FlexChild>
-            </FlexChild>
+            </HorizontalFlex>
           </HorizontalFlex>
-        ) : null
-      )}
-    </>
+        );
+      })}
+    </VerticalFlex>
   );
 }
 
 // 좋아요 장바구니 구매버튼 묶음
-export function BuyButtonGroup({onWishClick} : {onWishClick : ()=> void}) {
+export function BuyButtonGroup({
+  onCartClick,
+  onPurchaseClick,
+}: {
+  onCartClick: () => Promise<any>;
+  onPurchaseClick: () => Promise<any>;
+}) {
   return (
     <HorizontalFlex className={styles.buyButton_box}>
       <FlexChild width={"auto"}>
@@ -399,13 +447,13 @@ export function BuyButtonGroup({onWishClick} : {onWishClick : ()=> void}) {
       </FlexChild>
 
       <FlexChild className={styles.cart_box}>
-        <Button className={styles.cart_btn}>
+        <Button className={styles.cart_btn} onClick={onCartClick}>
           <P>장바구니</P>
         </Button>
       </FlexChild>
 
       <FlexChild className={styles.buy_box}>
-        <Button className={styles.buy_btn}>
+        <Button className={styles.buy_btn} onClick={onPurchaseClick}>
           <P>바로 구매</P>
         </Button>
       </FlexChild>
@@ -416,13 +464,12 @@ export function BuyButtonGroup({onWishClick} : {onWishClick : ()=> void}) {
 export function ProductSlider({
   id,
   lineClamp,
-  listArray
+  listArray,
 }: {
   id: string;
   lineClamp?: number;
   listArray: any;
 }) {
-
   return (
     <>
       {listArray.length > 0 ? (
@@ -443,18 +490,7 @@ export function ProductSlider({
               return (
                 <SwiperSlide key={i}>
                   <ProductCard
-                    product={
-                      {
-                        id: product.id,
-                        title: product.title,
-                        thumbnail: product.thumbnail,
-                        price: product.price,
-                        discount_price: product.discount_price,
-                        discount_rate: product.discount_rate,
-                        store_name: product.brand.name,
-                        variants: product.variants,
-                      } as any
-                    }
+                    product={product}
                     lineClamp={lineClamp ?? 2}
                   />
                 </SwiperSlide>
@@ -483,52 +519,17 @@ export function ProductSlider({
 }
 
 // 제품 정보 및 내용
-export function DetailTabContainer({
-  initProduct,
-  initCondition,
-}: {
-  initProduct: any;
-  initCondition: any;
-}) {
-
-  // const navigate = useNavigate();
-  // const { storeData } = useStore();
-  // const { reload } = useCart();
-  const { [initProduct.content.id]: product, mutate } = useData(
-    initProduct?.content?.id,
-    // { ...initCondition, id: initCondition?.content?.id },
-    { ...initCondition, id: initProduct?.content?.id },
-    (condition) => {
-      const id = condition.id;
-      delete condition.id;
-      return requester.getProduct(id, condition);
-    },
-    {
-      // onReprocessing: (data) => data.content,
-      // fallbackData: initProduct?.content,
-      onReprocessing: (data) => data.content,  // ✅ getProduct 응답이 { content: {...} } 형태라면 유지
-      fallbackData: initProduct,
-    }
-  );
-  useEffect(() => {
-    let recents: any = localStorage.getItem(Storage.RECENTS);
-    if (recents) recents = JSON.parse(recents);
-    else recents = [];
-    localStorage.setItem(
-      Storage.RECENTS,
-      JSON.stringify(
-        Array.from(new Set([initProduct.content.id, ...recents])).slice(0, 30)
-      )
-    );
-  }, []);
-
+export function DetailTabContainer({ product }: { product: ProductData }) {
   const [tabParams, setTabParams] = useState("description");
   const tabParamsChange = (params: string) => {
     setTabParams(params);
   };
-
   const tabAraays = [
-    { name: "상세정보", paramsName: "description", component: <Description product={product} /> },
+    {
+      name: "상세정보",
+      paramsName: "description",
+      component: <Description product={product} />,
+    },
     { name: "사용후기", paramsName: "review", component: <Review /> },
     { name: "상품 Q&A", paramsName: "inquiry", component: <Inquiry /> },
     {
@@ -539,7 +540,7 @@ export function DetailTabContainer({
   ];
 
   return (
-    <>
+    <VerticalFlex className={styles.contents_container} width={850}>
       <HorizontalFlex className={styles.tab_wrap}>
         {tabAraays.map((item) => (
           <FlexChild
@@ -565,6 +566,6 @@ export function DetailTabContainer({
           {tabAraays.find((t) => t.paramsName === tabParams)?.component}
         </article>
       </VerticalFlex>
-    </>
+    </VerticalFlex>
   );
 }
