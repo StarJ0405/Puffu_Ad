@@ -21,6 +21,10 @@ import InputNumber from "@/components/inputs/InputNumber";
 import ConfirmModal from "@/modals/confirm/ConfirmModal";
 import clsx from "clsx";
 import NiceModal from "@ebay/nice-modal-react";
+import TermContent from "@/components/agreeContent/TermContent";
+import PrivacyContent from "@/components/agreeContent/privacyContent";
+import DeliveryAddEdit from '@/modals/DeliveryAddEdit/DeliveryAddEdit';
+import DeliveryListModal from "@/modals/DeliveryListModal/DeliveryListModal";
 
    const cart = [
       {
@@ -47,27 +51,6 @@ import NiceModal from "@ebay/nice-modal-react";
       }
    ]
 
-export function DeliveryAdd() {
-   return (
-      <VerticalFlex className="modal_edit_info">
-         <FlexChild className="title" justifyContent="center">
-           <P size={25} weight={600}>
-             배송지 목록
-           </P>
-         </FlexChild>
-
-         <ChoiceGroup name="carts" value={['value']}>
-          <VerticalFlex>
-             <FlexChild>
-                <ChoiceChild id={'item'} />
-                
-             </FlexChild>
-          </VerticalFlex>
-         </ChoiceGroup>
-      </VerticalFlex>
-   )
-}
-
 
 interface CheckboxGroupProps {
   value: Set<string>;
@@ -83,14 +66,35 @@ export function CartWrap() {
    console.log(CartCheck);
 
 
-   const deliveryModal = () => {
+   const deliveryAddEditModal = () => {
       NiceModal.show(ConfirmModal, {
-         // title: '아이디 찾기',
-         message: <DeliveryAdd/>,
-         // confirmText: ``,
+         message: <DeliveryAddEdit/>,
+         confirmText: '저장',
+         cancelText: "닫기",
          // onclick: setPaswwordStep(1),
          withCloseButton: true,
-         onConfirm: async () => {},
+         onConfirm: async () => {
+          console.log("저장하기");
+         },
+         onCancel: () => {
+          console.log("닫기");
+        },
+      });
+   };
+
+   const deliveryListModal = () => {
+      NiceModal.show(ConfirmModal, {
+         message: <DeliveryListModal />,
+         confirmText: '저장',
+         cancelText: "닫기",
+         // onclick: setPaswwordStep(1),
+         withCloseButton: true,
+         onConfirm: async () => {
+          console.log("저장하기");
+         },
+         onCancel: () => {
+          console.log("닫기");
+        },
       });
    };
 
@@ -200,31 +204,35 @@ export function CartWrap() {
         </CheckboxGroup>
 
         {/* <FlexChild className={style.delivery_root}>
-                     <VerticalFlex alignItems="start">
-                        <article>
-                           <P className={style.list_title}>배송방법</P>
-                        </article>
+            <VerticalFlex alignItems="start">
+              <article>
+                  <P className={style.list_title}>배송방법</P>
+              </article>
 
-                        <HorizontalFlex marginTop={15}>
-                           <FlexChild className={style.delivery_btn}>
-                              <Image src="/resources/icons/cart/delivery_icon.png" width={36} />
-                              <Span>배송</Span>
-                           </FlexChild>
-                        </HorizontalFlex>
-                     </VerticalFlex>
-                  </FlexChild> */}
+              <HorizontalFlex marginTop={15}>
+                  <FlexChild className={style.delivery_btn}>
+                    <Image src="/resources/icons/cart/delivery_icon.png" width={36} />
+                    <Span>배송</Span>
+                  </FlexChild>
+              </HorizontalFlex>
+            </VerticalFlex>
+        </FlexChild> */}
 
         <FlexChild className={style.delivery_info}>
           <VerticalFlex alignItems="start">
             <article>
               <P className={style.list_title}>배송 정보</P>
-              <Button className={style.delivery_list_btn} onClick={deliveryModal} >
-               {
-                  1 < 0 ?
-                  ('배송지 목록')
-                  : ('배송지 추가')
-               }
-              </Button>
+              {
+                  1 < 0 ? (
+                    <Button className={style.delivery_list_btn} onClick={deliveryAddEditModal} >
+                      배송지 목록
+                    </Button>
+                  ) : (
+                    <Button className={style.delivery_list_btn} onClick={deliveryListModal} >
+                      배송지 추가
+                    </Button>
+                  )
+              }
             </article>
                {
                   1 < 0 ? (
@@ -250,7 +258,7 @@ export function CartWrap() {
                            <Span>배송 요청사항 선택</Span>
    
                            <SelectBox />
-                        </VerticalFlex>     
+                        </VerticalFlex>    
                      </VerticalFlex>
                   ) : ( // 배송지 없을 때 
                      <NoContent type="배송지"></NoContent>
@@ -400,6 +408,14 @@ export function SelectBox() {
 }
 
 export function AgreeInfo() {
+
+  const [TermOpen, setTermOpen] = useState(false);
+  const [PrivacyOpen, setPrivacyOpen] = useState(false);
+
+  const agreeToggle = () => {
+
+  }
+
   return (
     <VerticalFlex alignItems="start">
       <article>
@@ -408,32 +424,55 @@ export function AgreeInfo() {
 
       <CheckboxGroup name={'agree_check'}>
          <VerticalFlex className={style.agree_list}>
-           <HorizontalFlex className={style.agree_item}>
-             <FlexChild width={"auto"} gap={10}>
-               <CheckboxAll></CheckboxAll>
-               <Span>전체 이용약관 동의</Span>
-             </FlexChild>
+            <HorizontalFlex className={style.agree_item}>
+              <FlexChild width={"auto"} gap={10}>
+                <CheckboxAll></CheckboxAll>
+                <Span>전체 이용약관 동의</Span>
+              </FlexChild>
+            </HorizontalFlex>
    
-             <Span className={style.more_btn}>자세히보기</Span>
-           </HorizontalFlex>
+           <VerticalFlex gap={10}>
+             <HorizontalFlex className={style.agree_item}>
+               <FlexChild width={"auto"} gap={10}>
+                 <CheckboxChild id={'term_check'} />
+                 <Span>[필수] 구매조건 확인 및 결제진행 동의</Span>
+               </FlexChild>
+     
+               <Span className={style.more_btn} onClick={()=> setTermOpen((prev) => !prev)}>
+                {TermOpen ? "닫기" : "자세히보기"}
+               </Span>
+             </HorizontalFlex>
+
+              {
+                TermOpen && (
+                  <FlexChild className={style.agree_box}>
+                    <TermContent size={7} />
+                  </FlexChild>
+                )
+              }
+           </VerticalFlex>
    
-           <HorizontalFlex className={style.agree_item}>
-             <FlexChild width={"auto"} gap={10}>
-               <CheckboxChild id={'term_check'} />
-               <Span>[필수] 구매조건 확인 및 결제진행 동의</Span>
-             </FlexChild>
-   
-             <Span className={style.more_btn}>자세히보기</Span>
-           </HorizontalFlex>
-   
-           <HorizontalFlex className={style.agree_item}>
-             <FlexChild width={"auto"} gap={10}>
-               <CheckboxChild id={'privacy_check'} />
-               <Span>[필수] 개인정보 수집 및 이용 동의</Span>
-             </FlexChild>
-   
-             <Span className={style.more_btn}>자세히보기</Span>
-           </HorizontalFlex>
+           <VerticalFlex gap={10}>
+             <HorizontalFlex className={style.agree_item}>
+               <FlexChild width={"auto"} gap={10}>
+                 <CheckboxChild id={'privacy_check'} />
+                 <Span>[필수] 개인정보 수집 및 이용 동의</Span>
+               </FlexChild>
+     
+               <Span className={style.more_btn} onClick={()=> setPrivacyOpen((prev) => !prev)}>
+                {PrivacyOpen ? "닫기" : "자세히보기"}
+               </Span>
+             </HorizontalFlex>
+              
+              {
+                PrivacyOpen && (
+                  <FlexChild className={style.agree_box}>
+                    <PrivacyContent size={7} />
+                  </FlexChild>
+                )
+              }
+           </VerticalFlex>
+
          </VerticalFlex>
       </CheckboxGroup>
 

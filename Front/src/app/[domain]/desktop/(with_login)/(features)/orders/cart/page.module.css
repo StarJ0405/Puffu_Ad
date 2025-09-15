@@ -39,8 +39,12 @@
 }
 
 
-.checkbox {
-
+.agree_list .agree_box {
+   height: 200px;
+   overflow-y: auto;
+   align-items: start !important;
+   border: 1px solid #ccc;
+   padding: 15px;
 }
 
 /* 왼쪽 주문 정보 */

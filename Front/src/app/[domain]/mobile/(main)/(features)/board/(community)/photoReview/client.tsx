@@ -294,7 +294,7 @@ export function GalleryTable() {
     <VerticalFlex>
       <FlexChild>
         {reviewTest.length > 0 ? (
-         <MasonryGrid gap={20} breakpoints={5}>
+         <MasonryGrid width={'100%'} gap={20} breakpoints={5}>
             {
                reviewTest.map((item, i) => {
                   return (
