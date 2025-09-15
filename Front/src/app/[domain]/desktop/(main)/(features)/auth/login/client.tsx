@@ -15,7 +15,7 @@ import { getCookieOption } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import styles from "./page.module.css";
 
@@ -229,6 +229,29 @@ export function Lostpassword({ passwordStep }: { passwordStep: number }) {
 export function SubmitGroup() {
   const [, setCookies] = useCookies([Cookies.JWT]);
   const navigate = useNavigate();
+  useEffect(() => {
+    const _username = document.getElementById("username");
+    const _password = document.getElementById("password");
+    const onKeydownId: HTMLElement["onkeydown"] = (e) => {
+      if (e.key === "Enter") {
+        const _password = document.getElementById("password");
+        _password?.focus();
+      }
+    };
+    const onKeydownPassword: HTMLElement["onkeydown"] = (e) => {
+      if (e.key === "Enter") {
+        const _login = document.getElementById("login");
+        _login?.click();
+      }
+    };
+
+    _username?.addEventListener("keydown", onKeydownId);
+    _password?.addEventListener("keydown", onKeydownPassword);
+    return () => {
+      _username?.removeEventListener("keydown", onKeydownId);
+      _password?.removeEventListener("keydown", onKeydownPassword);
+    };
+  }, []);
   const onClick = async () => {
     const _username = document.getElementById("username");
     const _password = document.getElementById("password");
@@ -262,13 +285,17 @@ export function SubmitGroup() {
       message: "아이디, 비밀번호를 입력해주세요.",
       className: "custom-toast-body",
       withCloseButton: true,
-      messageBoxClassName: 'custom-toast',
+      messageBoxClassName: "custom-toast",
     });
   };
 
   return (
     <>
-      <Button onClick={onClick} className={clsx(styles.login_btn, styles.btn)}>
+      <Button
+        id="login"
+        onClick={onClick}
+        className={clsx(styles.login_btn, styles.btn)}
+      >
         로그인
       </Button>
       <Button className={clsx(styles.join_btn, styles.btn)}>
