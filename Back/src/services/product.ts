@@ -120,7 +120,16 @@ export class ProductService extends BaseService<Product, ProductRepository> {
         case "low_price": {
           builder
             .leftJoin(
-              `(SELECT dp.product_id AS id, MAX(value) as value FROM discount_product dp LEFT JOIN event_discount ed ON ed.id = dp.discount_id GROUP BY dp.product_id)`,
+              `(SELECT dp.product_id AS id, MAX(value) as value
+                FROM discount_product dp 
+                  JOIN event_discount ed ON ed.id = dp.discount_id
+                    JOIN public.event ev ON ev.id = ed.event_id 
+                WHERE 
+                  (NOW() BETWEEN ev.starts_at AND ev.ends_at)
+                  OR (ev.starts_at IS NULL AND ev.ends_at > NOW())
+                  OR (ev.ends_at IS NULL AND ev.starts_at < NOW())
+                  OR (ev.starts_at IS NULL AND ev.ends_at IS NULL)
+                GROUP BY dp.product_id)`,
               "discount",
               "discount.id = p.id"
             )
@@ -135,7 +144,16 @@ export class ProductService extends BaseService<Product, ProductRepository> {
         case "high_price": {
           builder
             .leftJoin(
-              `(SELECT dp.product_id AS id, MAX(value) as value FROM discount_product dp LEFT JOIN event_discount ed ON ed.id = dp.discount_id GROUP BY dp.product_id)`,
+              `(SELECT dp.product_id AS id, MAX(value) as value
+                  FROM discount_product dp 
+                    JOIN event_discount ed ON ed.id = dp.discount_id
+                      JOIN public.event ev ON ev.id = ed.event_id 
+                  WHERE 
+                    (NOW() BETWEEN ev.starts_at AND ev.ends_at)
+                    OR (ev.starts_at IS NULL AND ev.ends_at > NOW())
+                    OR (ev.ends_at IS NULL AND ev.starts_at < NOW())
+                    OR (ev.starts_at IS NULL AND ev.ends_at IS NULL)
+                  GROUP BY dp.product_id)`,
               "discount",
               "discount.id = p.id"
             )
@@ -193,8 +211,17 @@ export class ProductService extends BaseService<Product, ProductRepository> {
         }
         case "discount": {
           builder = builder
-            .leftJoin(
-              `(SELECT dp.product_id AS id, MAX(ed.value) AS discount FROM public.discount_product dp LEFT JOIN public.event_discount ed ON ed.id = dp.discount_id GROUP BY dp.product_id)`,
+            .innerJoin(
+              `(SELECT dp.product_id AS id, MAX(ed.value) AS discount 
+                  FROM public.discount_product dp 
+                    JOIN public.event_discount ed ON ed.id = dp.discount_id 
+                    JOIN public.event ev ON ev.id = ed.event_id 
+                  WHERE 
+                    (NOW() BETWEEN ev.starts_at AND ev.ends_at)
+                    OR (ev.starts_at IS NULL AND ev.ends_at > NOW())
+                    OR (ev.ends_at IS NULL AND ev.starts_at < NOW())
+                    OR (ev.starts_at IS NULL AND ev.ends_at IS NULL)
+                  GROUP BY dp.product_id)`,
               "discount",
               "discount.id = p.id"
             )

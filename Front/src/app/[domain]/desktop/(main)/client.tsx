@@ -12,7 +12,9 @@ import Link from "next/link";
 import { useRef } from "react";
 import styles from "./page.module.css";
 
+import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import NoContent from "@/components/noContent/noContent";
+import P from "@/components/P/P";
 import { useCategories } from "@/providers/StoreProvider/StorePorivderClient";
 import useData from "@/shared/hooks/data/useData";
 import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
@@ -20,7 +22,6 @@ import { requester } from "@/shared/Requester";
 import { Swiper as SwiperType } from "swiper";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-
 
 export function MainBanner({ initBanners }: { initBanners: Pageable }) {
   const { banners } = useData(
@@ -95,15 +96,13 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
           // reverse는 임시
           return (
             <SwiperSlide key={i} className={`swiper_0${i}`}>
-              {
-                item.to ? (
-                  <Link href={item.to}>
-                    <Image src={item.thumbnail.pc} width={'100%'} />
-                  </Link>
-                ) : (
-                  <Image src={item.thumbnail.pc} width={'100%'} />
-                )
-              }
+              {item.to ? (
+                <Link href={item.to}>
+                  <Image src={item.thumbnail.pc} width={"100%"} />
+                </Link>
+              ) : (
+                <Image src={item.thumbnail.pc} width={"100%"} />
+              )}
             </SwiperSlide>
           );
         })}
@@ -158,9 +157,6 @@ export function MiniBanner() {
   );
 }
 
-
-
-
 export function MainCategory() {
   // 카테고리메뉴
 
@@ -169,18 +165,17 @@ export function MainCategory() {
   return (
     <nav className={styles.category_wrap}>
       {categoriesData
-      .sort((c1, c2) => c1.index - c2.index)
-      .map((cat, i) => (
-
-        <VerticalFlex className={styles.ca_item} key={i}>
-          <Link href={`/categories/${cat.id}`}>
-            <FlexChild className={styles.ca_thumb}>
-              <Image src={cat.thumbnail} width={"auto"} height={120} />
-            </FlexChild>
-          </Link>
-          <Span>{cat.name}</Span>
-        </VerticalFlex>
-      ))}
+        .sort((c1, c2) => c1.index - c2.index)
+        .map((cat, i) => (
+          <VerticalFlex className={styles.ca_item} key={i}>
+            <Link href={`/categories/${cat.id}`}>
+              <FlexChild className={styles.ca_thumb}>
+                <Image src={cat.thumbnail} width={"auto"} height={120} />
+              </FlexChild>
+            </Link>
+            <Span>{cat.name}</Span>
+          </VerticalFlex>
+        ))}
     </nav>
   );
 }
@@ -324,7 +319,108 @@ export function ProductSlider({
     </>
   );
 }
+export function HotDealWrapper({
+  id,
+  lineClamp,
+  initProducts,
+  initCondition,
+}: {
+  id: string;
+  lineClamp?: number;
+  initProducts: Pageable;
+  initCondition: any;
+}) {
+  const { [id]: products, Load } = useInfiniteData(
+    id,
+    (pageNumber) => ({
+      ...initCondition,
+      pageSize: 12,
+      pageNumber,
+    }),
+    (condition) => requester.getProducts(condition),
+    (data) => data?.totalPages || 0,
+    {
+      onReprocessing: (data) => data?.content || [],
+      fallbackData: [initProducts],
+    }
+  );
 
+  const showMore = () => {
+    Load(); // 서버에서도 다음 페이지 로드
+  };
+
+  return (
+    <FlexChild hidden={!products || products?.length === 0}>
+      <VerticalFlex>
+        <HorizontalFlex
+          className={clsx(styles.titleBox, styles.titleBox1)}
+          justifyContent="start"
+          alignItems="end"
+          gap={20}
+        >
+          <div className={styles.title}>
+            <h2 className="SacheonFont" style={{ marginBottom: "12px" }}>
+              <Image
+                src="/resources/images/header/HotDeal_icon.png"
+                width={24}
+                height={"auto"}
+              />
+              이 달의 <Span color={"#FF4A4D"}>HOT</Span>딜
+            </h2>
+            <P width={"auto"}>매달 갱신되는 Hot Deal 상품!</P>
+          </div>
+
+          <FlexChild width={"auto"}>
+            <Link className={styles.linkBtn} href={"/products/hot"}>
+              더보기
+            </Link>
+          </FlexChild>
+        </HorizontalFlex>
+        {/* 메인, 상세 리스트 */}
+        <>
+          {products.length > 0 ? (
+            <VerticalFlex gap={10}>
+              <MasonryGrid gap={20} breakpoints={6}>
+                {products.map((product: ProductData, i: number) => {
+                  return (
+                    <TestProductCard
+                      key={product.id}
+                      product={
+                        {
+                          id: product.id,
+                          title: product.title,
+                          thumbnail: product.thumbnail,
+                          price: product.price,
+                          discount_price: product.discount_price,
+                          discount_rate: product.discount_rate,
+                          store_name: product.brand.name,
+                          variants: product.variants,
+                        } as any
+                      }
+                      lineClamp={2}
+                      width={200}
+                    />
+                  );
+                })}
+              </MasonryGrid>
+              <Button className={styles.list_more_btn}>
+                <FlexChild gap={10} onClick={showMore}>
+                  <Span>상품 더보기</Span>
+                  <Image
+                    src={"/resources/icons/arrow/arrow_bottom_icon.png"}
+                    width={10}
+                  />
+                </FlexChild>
+              </Button>
+            </VerticalFlex>
+          ) : (
+            <NoContent type="상품" />
+          )}
+        </>
+      </VerticalFlex>
+    </FlexChild>
+  );
+}
 export function ProductList({
   id,
   lineClamp,

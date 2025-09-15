@@ -46,7 +46,7 @@ export default function ({
   const optionRef = useRef<any>(null);
   const optionRadios = useRef<any[]>([]);
   const [category, setCategory] = useState<CategoryData | null>(null);
-  const [adult, setAdult] = useState(false);
+  // const [adult, setAdult] = useState(false);
   const [radio, setRadio] = useState<boolean[]>([true, true, true]);
   const [optionType, setOptionType] = useState<string>("single");
   const [detail, setDetail] = useState("");
@@ -88,7 +88,7 @@ export default function ({
           store_id: store,
           brand_id: brand,
           category_id: category.id,
-          adult,
+          // adult,
           visible: radio[0],
           buyable: radio[1],
           title: title,
@@ -361,7 +361,7 @@ export default function ({
                         </FlexChild>
                       </HorizontalFlex>
                     </FlexChild>
-                    <HorizontalFlex marginTop={20}>
+                    {/* <HorizontalFlex marginTop={20}>
                       <FlexChild
                         border={"1px solid #EFEFEF"}
                         borderRight={"none"}
@@ -394,7 +394,7 @@ export default function ({
                           </HorizontalFlex>
                         </CheckboxGroup>
                       </FlexChild>
-                    </HorizontalFlex>
+                    </HorizontalFlex> */}
                     <VerticalFlex
                       marginTop={20}
                       borderBottom={"1px solid #EFEFEF"}

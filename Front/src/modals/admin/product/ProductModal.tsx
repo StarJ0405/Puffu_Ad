@@ -71,7 +71,7 @@ const ProductModal = NiceModal.create(
     const inputs = useRef<any[]>([]);
     const image = useRef<any>(null);
     const [detail, setDetail] = useState(product.detail);
-    const [adult, setAdult] = useState<boolean>(product.adult);
+    // const [adult, setAdult] = useState<boolean>(product.adult);
     const [radio, setRadio] = useState<boolean[]>([
       product.visible,
       product.buyable,
@@ -102,7 +102,7 @@ const ProductModal = NiceModal.create(
               store_id: product.store_id,
               brand_id: product.brand_id,
               category_id: category.id,
-              adult,
+              // adult,
               visible: radio[0],
               buyable: radio[1],
               title: title,
@@ -440,7 +440,7 @@ const ProductModal = NiceModal.create(
               </FlexChild>
             </HorizontalFlex>
           </FlexChild>
-          <FlexChild hidden={!edit && !adult}>
+          {/* <FlexChild hidden={!edit && !adult}>
             <HorizontalFlex>
               <FlexChild className={styles.head}>
                 <P>성인설정</P>
@@ -465,7 +465,7 @@ const ProductModal = NiceModal.create(
                 )}
               </FlexChild>
             </HorizontalFlex>
-          </FlexChild>
+          </FlexChild> */}
           <FlexChild>
             <HorizontalFlex>
               <FlexChild className={styles.head}>

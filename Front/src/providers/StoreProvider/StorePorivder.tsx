@@ -16,14 +16,11 @@ export default async function StoreProvider({
   });
   const store = initStoreData.content?.[0];
   if (!store) return notFound();
-  const initCategories =
-    (
-      await requester.getCategories({
-        store_id: store.id,
-        parent_id: null,
-        tree: "descendants",
-      })
-    )?.content || [];
+  const initCategories = await requester.getCategories({
+    store_id: store.id,
+    parent_id: null,
+    tree: "descendants",
+  });
   const initCart = await requester.getMyCart({
     store_id: store.id,
   });

@@ -150,6 +150,7 @@ const PromotionModal = NiceModal.create(
               <FlexChild className={styles.content}>
                 {edit ? (
                   <DatePicker
+                    zIndex={10088}
                     selectionMode="range"
                     defaultSelectedRange={dates as any}
                     onChange={(values) => setDates(values as any)}

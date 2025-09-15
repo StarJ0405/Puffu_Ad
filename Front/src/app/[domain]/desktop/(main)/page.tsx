@@ -5,9 +5,9 @@ import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import { requester } from "@/shared/Requester";
-import clsx from "clsx";
 import Link from "next/link";
 import {
+  HotDealWrapper,
   LinkBanner,
   MainBanner,
   MainCategory,
@@ -51,41 +51,12 @@ export default async function () {
           <MainCategory /> {/* 카테고리 */}
         </VerticalFlex>
         <LinkBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
-        <FlexChild>
-          <VerticalFlex>
-            <HorizontalFlex
-              className={clsx(styles.titleBox, styles.titleBox1)}
-              justifyContent="start"
-              alignItems="end"
-              gap={20}
-            >
-              <div className={styles.title}>
-                <h2 className="SacheonFont" style={{ marginBottom: "12px" }}>
-                  <Image
-                    src="/resources/images/header/HotDeal_icon.png"
-                    width={24}
-                    height={"auto"}
-                  />
-                  이 달의 <Span color={"#FF4A4D"}>HOT</Span>딜
-                </h2>
-                <P width={"auto"}>매달 갱신되는 Hot Deal 상품!</P>
-              </div>
-
-              <FlexChild width={"auto"}>
-                <Link className={styles.linkBtn} href={"/products/hot"}>
-                  더보기
-                </Link>
-              </FlexChild>
-            </HorizontalFlex>
-            {/* 메인, 상세 리스트 */}
-            <ProductList
-              id={"sale"}
-              lineClamp={1}
-              initProducts={hotProducts}
-              initCondition={hotCondition}
-            />
-          </VerticalFlex>
-        </FlexChild>
+        <HotDealWrapper
+          id={"sale"}
+          lineClamp={1}
+          initProducts={hotProducts}
+          initCondition={hotCondition}
+        />
         <FlexChild>
           <VerticalFlex>
             <HorizontalFlex
@@ -132,7 +103,10 @@ export default async function () {
             <ProductSlider id={"new"} />
 
             <FlexChild marginTop={35} justifyContent="center">
-              <Link href={"/board/photoReview"} className={styles.link_more_btn}>
+              <Link
+                href={"/board/photoReview"}
+                className={styles.link_more_btn}
+              >
                 후기 더보기
               </Link>
             </FlexChild>
