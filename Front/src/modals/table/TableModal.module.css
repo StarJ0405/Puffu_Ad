@@ -1,0 +1,19 @@
+.input {
+  padding: 8px 29px 8px 12px;
+}
+
+.confirm {
+  background-color: var(--admin-color);
+  padding: 8px 15px;
+  font-weight: 600;
+  font-size: 18px;
+  color: #fff;
+}
+.cancel {
+  border: 1px solid var(--admin-color);
+  background-color: #fff;
+  padding: 8px 15px;
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--admin-color);
+}

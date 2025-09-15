@@ -11,7 +11,6 @@ import { Params } from "next/dist/server/request/params";
 import { notFound } from "next/navigation";
 import {
   DetailTabContainer,
-  MiniInfoBox,
   DetailFrame,
   ProductSlider,
 } from "./client";
@@ -51,12 +50,11 @@ export default async function ({ params }: { params: Promise<Params> }) {
   return (
     <section className="root">
       <Container
-        className={clsx("page_container", styles.detail_container)}
-        marginTop={100}
+        className={clsx(styles.detail_container)}
       >
         <DetailFrame initCondition={initCondition} initProduct={initProduct} />
 
-        <VerticalFlex position="relative" marginTop={40} alignItems="start">
+        <VerticalFlex position="relative" marginTop={20} alignItems="start" className={styles.slide_wrap}>
           <FlexChild marginBottom={20}>
             <h3 className={clsx("SacheonFont", styles.slide_title)}>
               보시는 상품과 비슷한 추천 상품
@@ -66,12 +64,10 @@ export default async function ({ params }: { params: Promise<Params> }) {
           <ProductSlider id={"relation"} lineClamp={1} listArray={relationProducts.content} />
         </VerticalFlex>
 
-        <HorizontalFlex marginTop={30} alignItems="start" gap={40}>
-          <VerticalFlex className={styles.contents_container} width={850}>
+        <HorizontalFlex marginTop={30} alignItems="start" gap={20}>
+          <VerticalFlex className={styles.contents_container}>
             <DetailTabContainer initCondition={initCondition} initProduct={initProduct} />
           </VerticalFlex>
-
-          <MiniInfoBox initCondition={initCondition} initProduct={initProduct} />
         </HorizontalFlex>
       </Container>
     </section>

@@ -166,17 +166,17 @@ export function DetailFrame({
               <Image src={"/resources/icons/cart/cj_icon.png"} width={22} />
             </FlexChild>
 
-            <FlexChild cursor="pointer">
-              {/* 링크 공유 버튼 */}
+            {/* 링크 공유 버튼 */}
+            {/* <FlexChild cursor="pointer">
               <Image
                 src={"/resources/icons/main/share_icon.png"}
                 width={25}
               />
-              {/* <Image share 액티브 아이콘
+              <Image
                         src={'/resources/icons/main/share_icon_action.png'}
                         width={25}
-                      /> */}
-            </FlexChild>
+                      />
+            </FlexChild> */}
           </HorizontalFlex>
 
           <VerticalFlex className={styles.delivery_admin_write_data}>

@@ -119,11 +119,12 @@ export function DetailFrame({
   );
 
   return (
-    <HorizontalFlex gap={60} alignItems="start">
+    <VerticalFlex className={styles.detail_frame}>
         <FlexChild className={styles.detail_thumbnail}>
           <Image
             src={product?.thumbnail}
-            width={600}
+            width={'100%'}
+            maxWidth={'768px'}
             height={"auto"}
           />
         </FlexChild>
@@ -139,26 +140,26 @@ export function DetailFrame({
             </P>
           </FlexChild>
 
-          <HorizontalFlex marginBottom={17} gap={10}>
-            <FlexChild className={styles.price} marginLeft={5}>
-              <P>{product?.price}</P> ₩
+          <VerticalFlex>
+            <FlexChild className={styles.regular_price}>
+              <P>{product?.discount_price}</P>₩
             </FlexChild>
-
-            {totalSale > 0 && (
-              <>
-                <FlexChild className={styles.sale_price}>
-                  <P>
-  
-                    {totalSale}%
-                  </P>
-                </FlexChild>
-  
-                <FlexChild className={styles.regular_price}>
-                  <P>{product?.discount_price}</P>₩
-                </FlexChild>
-              </>
-            )}
-          </HorizontalFlex>
+            <FlexChild>
+              {/* {totalSale > 0 && ( */}
+                <>
+                  <FlexChild className={styles.sale_price}>
+                    <P>
+    
+                      {totalSale}%
+                    </P>
+                  </FlexChild>
+                </>
+              {/* )} */}
+              <FlexChild className={styles.price} marginLeft={5}>
+                <P>{product?.price}</P> ₩
+              </FlexChild>
+            </FlexChild>
+          </VerticalFlex>
 
           <HorizontalFlex className={styles.delivery_share_box}>
             <FlexChild className={styles.delivery_info}>
@@ -166,48 +167,35 @@ export function DetailFrame({
               <Image src={"/resources/icons/cart/cj_icon.png"} width={22} />
             </FlexChild>
 
-            <FlexChild cursor="pointer">
-              {/* 링크 공유 버튼 */}
+            {/* 링크 공유 버튼 */}
+            {/* <FlexChild cursor="pointer">
+              
               <Image
                 src={"/resources/icons/main/share_icon.png"}
                 width={25}
               />
-              {/* <Image share 액티브 아이콘
+              <Image
                         src={'/resources/icons/main/share_icon_action.png'}
                         width={25}
-                      /> */}
-            </FlexChild>
+                      />
+            </FlexChild> */}
           </HorizontalFlex>
 
           <VerticalFlex className={styles.delivery_admin_write_data}>
             <VerticalFlex alignItems="start" gap={5}>
-              <P size={16} color="#bbb" weight={600}>
+              <P size={16} color="#797979" weight={600}>
                 배송
               </P>
-              <P size={14} color="#ddd">
+              <P size={14} color="#797979">
                 오후 2시 이전 주문 결제시 오늘 출발! ( 영업일 기준 )
               </P>
-              <P size={14} color="#ddd">
+              <P size={14} color="#797979">
                 30,000원 이상 구매시 무료배송
               </P>
             </VerticalFlex>
-          </VerticalFlex>
-          
-          <VerticalFlex className={styles.option_box}>
-            <OptionItem product={product} />
-          </VerticalFlex>
-
-          <HorizontalFlex className={styles.total_box}>
-            <P className={styles.total_txt}>총 상품 금액</P>
-
-            <FlexChild className={styles.price} width={"auto"}>
-              <P>{product?.price}</P> ₩
-            </FlexChild>
-          </HorizontalFlex>
-
-          <BuyButtonGroup onWishClick={onWishClick} />
+          </VerticalFlex>          
         </VerticalFlex>
-      </HorizontalFlex>
+      </VerticalFlex>
   );
 }
 
@@ -215,8 +203,8 @@ export function DetailFrame({
 
 
 
-// 미니 구매란
-export function MiniInfoBox({
+// 구매란
+export function ModalinfoBox({
   initProduct,
   initCondition,
 }: {
@@ -413,6 +401,7 @@ export function BuyButtonGroup({onWishClick} : {onWishClick : ()=> void}) {
   );
 }
 
+// 보시는 상품과 비슷한 추천 상품
 export function ProductSlider({
   id,
   lineClamp,
@@ -429,7 +418,7 @@ export function ProductSlider({
         <FlexChild id={id} className={styles.ProductSlider}>
           <Swiper
             loop={false}
-            slidesPerView={6}
+            slidesPerView={2.2}
             speed={600}
             spaceBetween={20}
             modules={[Autoplay, Navigation]}
@@ -531,10 +520,7 @@ export function DetailTabContainer({
     { name: "상세정보", paramsName: "description", component: <Description product={product} /> },
     { name: "사용후기", paramsName: "review", component: <Review /> },
     { name: "상품 Q&A", paramsName: "inquiry", component: <Inquiry /> },
-    {
-      name: "배송/반품/교환/안내",
-      paramsName: "deliveryGuide",
-      component: <DeliveryGuide />,
+    { name: "배송/반품/교환", paramsName: "deliveryGuide", component: <DeliveryGuide />,
     },
   ];
 
