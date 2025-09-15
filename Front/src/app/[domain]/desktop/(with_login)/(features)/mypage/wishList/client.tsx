@@ -83,11 +83,11 @@ export function WishListTable({ initWishList }: { initWishList: Pageable }) {
     <>
       {ListProduct.length > 0 ? (
         <VerticalFlex>
-          <MasonryGrid gap={20} breakpoints={4}>
+          <MasonryGrid width={'100%'} gap={20} breakpoints={4}>
             {ListProduct.map((product, i) => {
               return (
                 <TestProductCard
-                  product={product}
+                  product={wishes}
                   lineClamp={2}
                   key={i}
                   width={"100%"}
