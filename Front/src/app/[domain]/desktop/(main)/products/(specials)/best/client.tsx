@@ -32,11 +32,11 @@ export function SecondCategory() {
     <>
       <ul className={Pstyles.category_list}>
         <li className={Pstyles.active}>
-          <Span>전체</Span>
+          <FlexChild><Span>전체</Span></FlexChild>
         </li>
         {ca_test.map((cat, i) => (
           <li key={i}>
-            <Span>{cat.name}</Span>
+            <FlexChild><Span>{cat.name}</Span></FlexChild>
           </li>
         ))}
       </ul>

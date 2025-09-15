@@ -7,8 +7,9 @@ import P from "@/components/P/P";
 import Pstyles from '../../products.module.css';
 import { } from './client';
 
-import { SortFilter, BaseProductList } from "../../baseClient";
+import { BaseProductList } from "../../baseClient";
 import { requester } from "@/shared/Requester";
+import { CommingSoonList } from "./client";
 
 
 
@@ -20,8 +21,8 @@ export default async function () {
   const newProducts = await requester.getProducts(newCondition);
 
    return (
-      <section className="root">
-         <Container className="page_container" marginTop={80}>
+      <section className="root page_container">
+         <Container marginTop={35}>
             <VerticalFlex className={Pstyles.title_box}>
                
                <h3>입고예정</h3>
@@ -30,7 +31,10 @@ export default async function () {
 
 
             <VerticalFlex className={Pstyles.list}>
-               <BaseProductList listArray={newProducts} commingSoon={true} />
+               <CommingSoonList
+                 initProducts={newProducts}
+                 initConiditon={newCondition}
+               />
             </VerticalFlex>
          </Container>
       </section>

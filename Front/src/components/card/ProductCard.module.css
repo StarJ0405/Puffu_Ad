@@ -82,21 +82,23 @@
 .prodcut_item .content_item .price_box .through_price {
    font-size: 13px; color: rgba(255,255,255, 0.4);
    line-height: 1;
+   text-decoration: line-through;
 }
 
 .prodcut_item .content_item .price_box .discount_price {
    font-size: 18px; color: var(--main-color1);
    line-height: 1; font-weight: 700;
+   word-break: break-all;
 }
 
-.prodcut_item .content_item .heart_counter {
+.prodcut_item .heart_counter {
    align-items: center;
    cursor: pointer;
    gap: 5px;
 }
 
-.prodcut_item .content_item .heart_counter > span {
-   font-size: 14px; color: #fff;
+.prodcut_item .heart_counter > span {
+   font-size: 14px !important; color: #fff !important;
 }
 
 
@@ -121,5 +123,24 @@
       font-size: 12px; color: #fff;
       line-height: 1.2; font-weight: 400;
       cursor: pointer;
+   }
+
+   .prodcut_item .heart_counter {
+      position: absolute; 
+      bottom: 10px;
+      right: 5px;
+      z-index: 10;
+      width: auto;
+   }
+
+   .prodcut_item .heart_counter > span {
+      font-size: 13px !important; color: #fff !important;
+      text-shadow: 0 0 10px #050505;
+   }
+
+   .prodcut_item .content_item .price_box {
+      flex-direction: unset;
+      align-items: center !important;
+      flex-wrap: wrap;
    }
 }

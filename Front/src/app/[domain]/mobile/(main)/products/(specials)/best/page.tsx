@@ -16,11 +16,11 @@ export default async function () {
   };
   const bestProducts = await requester.getProducts(bestCondition);
   return (
-    <section className="root">
-      <Container className="page_container" marginTop={80}>
+    <section className="root page_container">
+      <Container marginTop={35}>
         <VerticalFlex className={styles.titleBox}>
           <VerticalFlex className={styles.title} gap={10}>
-            <Image src={"/resources/images/header/logo.png"} width={100} />
+            <Image src={"/resources/images/header/logo.png"} width={70} />
             <h2 className="SacheonFont">BEST 상품</h2>
           </VerticalFlex>
         </VerticalFlex>

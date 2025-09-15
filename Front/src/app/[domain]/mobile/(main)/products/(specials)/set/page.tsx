@@ -16,8 +16,8 @@ export default async function () {
   const newProducts = await requester.getProducts(newCondition);
 
    return (
-      <section className="root">
-         <Container className="page_container" marginTop={80}>
+      <section className="root page_container">
+         <Container marginTop={35}>
             <VerticalFlex className={Pstyles.title_box}>
                
                <h3>세트 상품</h3>

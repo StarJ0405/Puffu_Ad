@@ -19,6 +19,7 @@ import {
 import styles from "./page.module.css";
 
 export default async function () {
+  const banners = await requester.getBanners();
   const condition: any = {
     pageSize: 30,
   };
@@ -26,7 +27,7 @@ export default async function () {
   const newProducts = await requester.getProducts(condition);
   return (
     <section className="root">
-      <MainBanner />
+      <MainBanner initBanners={banners} />
 
       <VerticalFlex
         marginTop={"25px"}
