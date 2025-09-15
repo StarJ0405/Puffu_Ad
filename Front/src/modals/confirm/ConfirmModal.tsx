@@ -106,7 +106,7 @@ const ConfirmModal = NiceModal.create(
         )}
 
         <FlexChild
-          padding={"50px 24px 24px 24px"}
+          padding={!isMobile ? "50px 15px 15px 24px" : "30px 10px 10px 20px"}
           height={"100%"}
           position="relative"
         >

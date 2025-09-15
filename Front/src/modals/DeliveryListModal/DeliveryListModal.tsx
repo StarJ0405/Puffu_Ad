@@ -10,6 +10,8 @@ import styles from "./DeliveryListModal.module.css";
 import DeliveryAddEdit from "../DeliveryAddEdit/DeliveryAddEdit";
 import NiceModal from "@ebay/nice-modal-react";
 import ConfirmModal from "@/modals/confirm/ConfirmModal";
+import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
+
 
 
 export default function DeliveryListModal() {
@@ -40,6 +42,8 @@ export default function DeliveryListModal() {
   // const Edit = (addr: AddressData, data: AddressDataFrame) => {
   //   requester.updateAddresses(addr.id, data, () => mutate());
   // };
+
+  const { isMobile } = useBrowserEvent();
   
 
   const deliveryAddEditModal = () => {
@@ -61,7 +65,7 @@ export default function DeliveryListModal() {
    return (
       <VerticalFlex className="modal_edit_info">
          <FlexChild className="title" justifyContent="center">
-           <P size={25} weight={600}>
+           <P size={!isMobile ? 25 : 20} weight={600}>
               배송지 목록
            </P>
          </FlexChild>
@@ -69,27 +73,29 @@ export default function DeliveryListModal() {
           {deliveryTest.length > 0 ? (
             <VerticalFlex className={styles.delivery_list}>
               {deliveryTest.map((item, i) => (
-                <HorizontalFlex key={i} className={styles.item}>
-                  <FlexChild className={styles.number}>{i + 1}</FlexChild>
-
-                  <VerticalFlex className={styles.content}>
-                    {item.defaultAdd ? (
-                      <FlexChild className={styles.default}>
-                        <P>[기본배송지]</P>
+                <VerticalFlex gap={10} className={styles.container}>
+                  <HorizontalFlex key={i} className={styles.item}>
+                    <FlexChild className={styles.number}>{i + 1}</FlexChild>
+  
+                    <VerticalFlex className={styles.content}>
+                      {item.defaultAdd ? (
+                        <FlexChild className={styles.default}>
+                          <P>기본배송지</P>
+                        </FlexChild>
+                      ) : null}
+  
+                      <FlexChild className={styles.address}>
+                        <P>{item.address}</P>
                       </FlexChild>
-                    ) : null}
+  
+                      <FlexChild className={styles.name}>
+                        <Span>받는 사람</Span>
+                        <P>{item.name}</P>
+                      </FlexChild>
+                    </VerticalFlex>
+                  </HorizontalFlex>
 
-                    <FlexChild className={styles.address}>
-                      <P>{item.address}</P>
-                    </FlexChild>
-
-                    <FlexChild className={styles.name}>
-                      <Span>받는 사람</Span>
-                      <P>{item.name}</P>
-                    </FlexChild>
-                  </VerticalFlex>
-
-                  <FlexChild gap={10}>
+                  <FlexChild gap={10} justifyContent="end">
                     <FlexChild className={styles.edit_btn} onClick={() => deliveryAddEditModal}>
                       {/* onClick={()=> Edit} */}
                       <Button>배송지 수정</Button>
@@ -100,7 +106,7 @@ export default function DeliveryListModal() {
                       <Button>삭제</Button>
                     </FlexChild>
                   </FlexChild>
-                </HorizontalFlex>
+                </VerticalFlex>
               ))}
             </VerticalFlex>
           ) : (
