@@ -11,7 +11,7 @@ import clsx from "clsx";
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 
-import TestProductCard from "@/components/card/TestProductCard";
+import ProductCard from "@/components/card/ProductCard";
 import NoContent from "@/components/noContent/noContent";
 import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -442,7 +442,7 @@ export function ProductSlider({
             {listArray.map((product: ProductData, i: number) => {
               return (
                 <SwiperSlide key={i}>
-                  <TestProductCard
+                  <ProductCard
                     product={
                       {
                         id: product.id,

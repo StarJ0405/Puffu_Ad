@@ -1,84 +1,152 @@
 "use client";
+import FlexChild from "@/components/flex/FlexChild";
+import HorizontalFlex from "@/components/flex/HorizontalFlex";
+import VerticalFlex from "@/components/flex/VerticalFlex";
+import Image from "@/components/Image/Image";
+import P from "@/components/P/P";
+import Span from "@/components/span/Span";
+import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
+import clsx from "clsx";
+import Link from "next/link";
+import { useState } from "react";
+import styles from "./ProductCard.module.css";
 import useNavigate from "@/shared/hooks/useNavigate";
-import { CSSProperties } from "react";
-import FlexChild from "../flex/FlexChild";
-import VerticalFlex from "../flex/VerticalFlex";
-import Image from "../Image/Image";
-import P from "../P/P";
-import Span from "../span/Span";
+// lineClamp 구별해주기, TestProdcutCard는 임시로 만든거임. 나중에 프로덕트카드에 스타일만 입히면 됨.
+// 라인클램프는 제목태그에 달아서 속성 주기.
 
-
-export default function ({
+export function ProductCard({
   product,
-  currency_unit,
-  margin,
-  onClick,
+  lineClamp,
   width,
+  autoPlay,
+  commingSoon,
+  mutate,
+  onClick,
 }: {
   product: ProductData;
-  currency_unit?: string;
-  margin?: CSSProperties["margin"];
-  onClick?: (product: ProductData) => void;
-  width?: CSSProperties["width"];
+  lineClamp?: number;
+  commingSoon?: boolean;
+  width?: number | string;
+  autoPlay?: number;
+  mutate?: () => void;
+  onClick?: () => void;
 }) {
-  if (!product) return;
+  const { isMobile } = useBrowserEvent();
+
+  const product_link = `/products/${product.id}`;
+
+  const [adultCheck, setadultCheck] = useState(true);
+
   const navigate = useNavigate();
+
+  console.log("상품222", product);
+
   return (
     <VerticalFlex
-      width={width}
-      gap={2}
-      margin={margin}
-      onClick={() => {
-        if (onClick) {
-          onClick(product);
-        } else {
-          navigate(`/product/${product.id}`);
-        }
-      }}
+      width={width ?? isMobile ? "auto" : 200}
+      // margin={product.margin}
+      className={styles.prodcut_item}
     >
-      <FlexChild>
-        <Image src={product.thumbnail} width={"100%"} height={"auto"} />
-      </FlexChild>
-      <FlexChild padding={"8px 15px"}>
-        <VerticalFlex gap={2}>
-          <FlexChild>
-            <P weight={500} fontSize={14} ellipsis>
-              {product.title}
-            </P>
-          </FlexChild>
-          <FlexChild>
-            <P
-              color="#AAA"
-              fontSize={10}
-              weight={500}
-              textDecoration={"line-through"}
-              hidden={product.discount_rate >= 1}
-            >
-              <Span>{product.price}</Span>
-              <Span>{currency_unit}</Span>
-            </P>
-          </FlexChild>
-          <FlexChild>
-            <P>
-              <Span
-                color="var(--main-color)"
-                weight={600}
-                fontSize={14}
-                hidden={product.discount_rate >= 1}
-                paddingRight={"0.5em"}
+      <FlexChild className={styles.imgBox} onClick={()=> onClick ? onClick : navigate(product_link)}>
+          {/* {
+            // 프로덕트 페이지가 best일때만 나타나기. 제품 인기순 표시임
+            specialType === "best" && (
+              <FlexChild
+                className={clsx(
+                  styles.rank,
+                  product.rank < 3 ? styles.topRank : ""
+                )}
               >
-                {product.discount_rate}
-              </Span>
-              <Span fontSize={14} weight={600}>
-                {product.discount_price}
-              </Span>
-              <Span fontSize={14} weight={600}>
-                {currency_unit}
-              </Span>
-            </P>
+                <Span className="SacheonFont">{product.rank + 1}</Span>
+              </FlexChild>
+            )
+          } */}
+          {adultCheck === true ? (
+            <Image src={product.thumbnail} width={"100%"} height={"auto"} />
+          ) : (
+            // 성인인증 안될때 나오는 이미지
+            <Image
+              src={"/resources/images/19_only.png"}
+              width={"100%"}
+              height={"auto"}
+            />
+          )}
+
+          {commingSoon && ( // 입고예정일때만 나오기
+            <Image
+              className={styles.specialTypeImg}
+              src={"/resources/images/commingSoon_img.png"}
+              width={"101%"}
+              height={"auto"}
+            />
+          )}
+
+        {isMobile && (
+          <FlexChild onClick={()=> mutate} className={styles.heart_counter}>
+            <Image
+              src={`/resources/icons/main/mob_heart${
+                true === true ? "_active" : ""
+              }.png`}
+              width={20}
+            />
+            <Span>{product.wishes}0</Span>
           </FlexChild>
+        )}
+      </FlexChild>
+
+      <FlexChild padding={"0 5px"} className={styles.text_box}>
+        <VerticalFlex gap={2} alignItems={"start"}>
+          <FlexChild className={styles.store_name}>
+            {/* <Span>{product.store_name}</Span> */}
+          </FlexChild>
+
+          <FlexChild className={styles.product_title} onClick={()=> onClick ? onClick : navigate(product_link)}>
+              <P
+                textOverflow={"ellipsis"}
+                display={"webkit-box"}
+                overflow={"hidden"}
+                lineClamp={lineClamp}
+              >
+                {product.title}
+              </P>
+          </FlexChild>
+
+          <HorizontalFlex className={styles.content_item}>
+            {/* <Span
+                     color="var(--main-color)"
+                     weight={600}
+                     fontSize={14}
+                     hidden={product.discount_rate >= 1}
+                     paddingRight={"0.5em"}
+                  >
+                     {product.discount_rate}%
+                  </Span> */}
+            <VerticalFlex className={styles.price_box}>
+              <Span className={styles.through_price}>{product.price}</Span>
+              <Span className={styles.discount_price}>
+                {product.discount_price}₩
+              </Span>
+            </VerticalFlex>
+
+            {!isMobile && (
+              <FlexChild onClick={()=> mutate} className={styles.heart_counter}>
+                <Image
+                  src={`/resources/icons/main/product_heart_icon${
+                    true === true ? "_active" : ""
+                  }.png`}
+                  width={23}
+                />
+                <Span>{product.wishes}0</Span>
+              </FlexChild>
+            )}
+            {/* <Span fontSize={14} weight={600}>
+                     {currency_unit}
+                  </Span> */}
+          </HorizontalFlex>
         </VerticalFlex>
       </FlexChild>
     </VerticalFlex>
   );
 }
+
+export default ProductCard;

@@ -1,7 +1,7 @@
 "use client";
 import Button from "@/components/buttons/Button";
 import ReviewImgCard from "@/components/card/reviewImgCard";
-import TestProductCard from "@/components/card/TestProductCard";
+import ProductCard from "@/components/card/ProductCard";
 import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
@@ -371,22 +371,11 @@ export function ProductList({
             }}
             currency_unit="₩"
           /> */}
-          {products.slice(0, visibleCount).map((product, i) => {
+          {products.slice(0, visibleCount).map((product: ProductData, i) => {
             return (
-              <TestProductCard
+              <ProductCard
                 key={product.id}
-                product={
-                  {
-                    id: product.id,
-                    title: product.title,
-                    thumbnail: product.thumbnail,
-                    price: product.price,
-                    discount_price: product.discount_price,
-                    discount_rate: product.discount_rate,
-                    store_name: product.brand.name,
-                    variants: product.variants,
-                  } as any
-                }
+                product={product}
                 lineClamp={2}
                 width={'auto'}
               />

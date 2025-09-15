@@ -3,7 +3,7 @@ import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import Input from "@/components/inputs/Input";
-import ProductCard from "@/components/card/ProductCard";
+import ProductCard from "@/components/card/dummyProductCard";
 import P from "@/components/P/P";
 import ModalBase from "@/modals/ModalBase";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";

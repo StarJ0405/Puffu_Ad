@@ -1,6 +1,6 @@
 "use client"
 import Button from "@/components/buttons/Button";
-import TestProductCard from "@/components/card/TestProductCard";
+import ProductCard from "@/components/card/ProductCard";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
@@ -141,22 +141,11 @@ export function BaseProductList({
             <VerticalFlex alignItems="start">
                <MasonryGrid width={'100%'} gap={20}>
                   {
-                     listArray.map((product, i) => {
+                     listArray.map((product: ProductData, i) => {
                         return (
-                           <TestProductCard
+                           <ProductCard
                               key={product.id}
-                              product={
-                                 {
-                                 id: product.id,
-                                 title: product.title,
-                                 thumbnail: product.thumbnail,
-                                 price: product.price,
-                                 discount_price: product.discount_price,
-                                 discount_rate: product.discount_rate,
-                                 store_name: product.brand.name,
-                                 variants: product.variants,
-                                 } as any
-                              }
+                              product={product}
                               commingSoon={commingSoon}
                               lineClamp={2}
                               width={200}
