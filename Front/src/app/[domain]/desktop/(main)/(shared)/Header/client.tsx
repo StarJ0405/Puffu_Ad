@@ -28,11 +28,11 @@ interface SubMenuItem {
   link: string;
 }
 
-interface CommunityMenuItem {
-  name: string;
-  link: string;
-  inner?: SubMenuItem[]; // menu2는 inner 조건 처리
-}
+// interface CommunityMenuItem {
+//   name: string;
+//   link: string;
+//   inner?: SubMenuItem[]; // menu2는 inner 조건 처리
+// }
 
 export function CartLength() {
   const { cartData } = useCart();
@@ -88,20 +88,20 @@ export function HeaderBottom() {
   const menu1 = [
     // 임시 데이터
     { name: "BEST 상품", link: "/products/best" },
-    { name: "입고예정", link: "/products/commingSoon" },
+    // { name: "입고예정", link: "/products/commingSoon" },
     { name: "신상품", link: "/products/new" },
     {
       name: "데이 핫딜",
       link: "/products/hot",
       icon: "/resources/images/header/HotDeal_icon.png",
     },
-    { name: "세트메뉴", link: "/products/set" },
-    { name: "랜덤박스", link: "/products/randomBox" },
+    // { name: "세트메뉴", link: "/products/set" },
+    // { name: "랜덤박스", link: "/products/randomBox" },
   ];
 
   const menu2 = [
     // 임시 데이터
-    { name: "포토 사용후기", link: "/board/photoReview" },
+    // { name: "포토 사용후기", link: "/board/photoReview" },
     { name: "공지사항", link: "/board/notice" },
     { name: "1:1문의", link: "/board/inquiry" },
     { name: "이벤트", link: "/board/event" },

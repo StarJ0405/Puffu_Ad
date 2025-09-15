@@ -132,6 +132,20 @@ export function LinkBanner() {
   );
 }
 
+
+export function SubBanner() {
+
+  return (
+    <FlexChild width={"100%"}>
+      <Link href={'/'}>
+        <Image src={"/resources/images/dummy_img/sub_banner_01.png"} width={"100%"} height={"auto"} />
+      </Link>
+    </FlexChild>
+  );
+}
+
+
+
 export function MiniBanner() {
   const link_banner = [
     { link: "/", src: "/resources/images/dummy_img/mini_banner_01.png" },
@@ -180,145 +194,9 @@ export function MainCategory() {
   );
 }
 
-type ReviewItem = {
-  thumbnail: string;
-  content: string;
-  name: string;
-  date: string;
-  product: {
-    thumb: string;
-    title: string;
-    rating: string;
-    reviewcount: string;
-  };
-};
 
-export function ProductSlider({
-  id,
-  lineClamp,
-}: {
-  id: string;
-  lineClamp?: number;
-}) {
-  const reviewTest: ReviewItem[] = [
-    {
-      thumbnail: "/resources/images/dummy_img/review_img_01.png",
-      content: "벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.",
-      name: "김한별",
-      date: "2025-08-01",
-      product: {
-        thumb: "/resources/images/dummy_img/review_img_01.png",
-        title: "적나라 생츄어리",
-        rating: "4.8",
-        reviewcount: "4,567",
-      },
-    },
-    {
-      thumbnail: "/resources/images/dummy_img/review_img_01.png",
-      content: "벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.",
-      name: "김한별",
-      date: "2025-08-01",
-      product: {
-        thumb: "/resources/images/dummy_img/review_img_01.png",
-        title: "적나라 생츄어리",
-        rating: "4.8",
-        reviewcount: "4,567",
-      },
-    },
-    {
-      thumbnail: "/resources/images/dummy_img/review_img_01.png",
-      content: "벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.",
-      name: "김한별",
-      date: "2025-08-01",
-      product: {
-        thumb: "/resources/images/dummy_img/review_img_01.png",
-        title: "적나라 생츄어리",
-        rating: "4.8",
-        reviewcount: "4,567",
-      },
-    },
-    {
-      thumbnail: "/resources/images/dummy_img/review_img_01.png",
-      content: "벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.",
-      name: "김한별",
-      date: "2025-08-01",
-      product: {
-        thumb: "/resources/images/dummy_img/review_img_01.png",
-        title: "적나라 생츄어리",
-        rating: "4.8",
-        reviewcount: "4,567",
-      },
-    },
-    {
-      thumbnail: "/resources/images/dummy_img/review_img_01.png",
-      content: "벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.",
-      name: "김한별",
-      date: "2025-08-01",
-      product: {
-        thumb: "/resources/images/dummy_img/review_img_01.png",
-        title: "적나라 생츄어리",
-        rating: "4.8",
-        reviewcount: "4,567",
-      },
-    },
-    {
-      thumbnail: "/resources/images/dummy_img/review_img_01.png",
-      content: "벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.",
-      name: "김한별",
-      date: "2025-08-01",
-      product: {
-        thumb: "/resources/images/dummy_img/review_img_01.png",
-        title: "적나라 생츄어리",
-        rating: "4.8",
-        reviewcount: "4,567",
-      },
-    },
-  ];
 
-  return (
-    <>
-      {reviewTest.length > 0 ? (
-        <FlexChild id={id} className={styles.ProductSlider}>
-          <Swiper
-            loop={true}
-            slidesPerView={5}
-            speed={600}
-            spaceBetween={20}
-            modules={[Autoplay, Navigation]}
-            autoplay={{ delay: 4000 }}
-            navigation={{
-              prevEl: `#${id} .${styles.prevBtn}`,
-              nextEl: `#${id} .${styles.nextBtn}`,
-            }}
-          >
-            {reviewTest.map((review, i) => {
-              return (
-                <SwiperSlide key={i}>
-                  <ReviewImgCard review={review} lineClamp={lineClamp ?? 2} />
-                </SwiperSlide>
-              );
-            })}
-          </Swiper>
-
-          <div className={clsx(styles.naviBtn, styles.prevBtn)}>
-            <Image
-              src={"/resources/icons/arrow/slide_arrow.png"}
-              width={10}
-            ></Image>
-          </div>
-          <div className={clsx(styles.naviBtn, styles.nextBtn)}>
-            <Image
-              src={"/resources/icons/arrow/slide_arrow.png"}
-              width={10}
-            ></Image>
-          </div>
-        </FlexChild>
-      ) : (
-        <NoContent type="상품" />
-      )}
-    </>
-  );
-}
+// 이 달의 핫딜
 export function HotDealWrapper({
   id,
   lineClamp,
@@ -380,7 +258,7 @@ export function HotDealWrapper({
         <>
           {products.length > 0 ? (
             <VerticalFlex gap={10}>
-              <MasonryGrid gap={20} breakpoints={6}>
+              <MasonryGrid gap={20} width={'100%'}>
                 {products.map((product: ProductData, i: number) => {
                   return (
                     <ProductCard
@@ -410,6 +288,10 @@ export function HotDealWrapper({
     </FlexChild>
   );
 }
+
+
+
+// 신상품, 등등
 export function ProductList({
   id,
   lineClamp,
@@ -511,3 +393,148 @@ export function ProductList({
     </>
   );
 }
+
+
+
+// type ReviewItem = {
+//   thumbnail: string;
+//   content: string;
+//   name: string;
+//   date: string;
+//   product: {
+//     thumb: string;
+//     title: string;
+//     rating: string;
+//     reviewcount: string;
+//   };
+// };
+
+
+
+// // 리뷰 슬라이더
+// export function ProductSlider({
+//   id,
+//   lineClamp,
+// }: {
+//   id: string;
+//   lineClamp?: number;
+// }) {
+//   const reviewTest: ReviewItem[] = [
+//     {
+//       thumbnail: "/resources/images/dummy_img/review_img_01.png",
+//       content: "벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.",
+//       name: "김한별",
+//       date: "2025-08-01",
+//       product: {
+//         thumb: "/resources/images/dummy_img/review_img_01.png",
+//         title: "적나라 생츄어리",
+//         rating: "4.8",
+//         reviewcount: "4,567",
+//       },
+//     },
+//     {
+//       thumbnail: "/resources/images/dummy_img/review_img_01.png",
+//       content: "벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.",
+//       name: "김한별",
+//       date: "2025-08-01",
+//       product: {
+//         thumb: "/resources/images/dummy_img/review_img_01.png",
+//         title: "적나라 생츄어리",
+//         rating: "4.8",
+//         reviewcount: "4,567",
+//       },
+//     },
+//     {
+//       thumbnail: "/resources/images/dummy_img/review_img_01.png",
+//       content: "벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.",
+//       name: "김한별",
+//       date: "2025-08-01",
+//       product: {
+//         thumb: "/resources/images/dummy_img/review_img_01.png",
+//         title: "적나라 생츄어리",
+//         rating: "4.8",
+//         reviewcount: "4,567",
+//       },
+//     },
+//     {
+//       thumbnail: "/resources/images/dummy_img/review_img_01.png",
+//       content: "벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.",
+//       name: "김한별",
+//       date: "2025-08-01",
+//       product: {
+//         thumb: "/resources/images/dummy_img/review_img_01.png",
+//         title: "적나라 생츄어리",
+//         rating: "4.8",
+//         reviewcount: "4,567",
+//       },
+//     },
+//     {
+//       thumbnail: "/resources/images/dummy_img/review_img_01.png",
+//       content: "벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.",
+//       name: "김한별",
+//       date: "2025-08-01",
+//       product: {
+//         thumb: "/resources/images/dummy_img/review_img_01.png",
+//         title: "적나라 생츄어리",
+//         rating: "4.8",
+//         reviewcount: "4,567",
+//       },
+//     },
+//     {
+//       thumbnail: "/resources/images/dummy_img/review_img_01.png",
+//       content: "벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.",
+//       name: "김한별",
+//       date: "2025-08-01",
+//       product: {
+//         thumb: "/resources/images/dummy_img/review_img_01.png",
+//         title: "적나라 생츄어리",
+//         rating: "4.8",
+//         reviewcount: "4,567",
+//       },
+//     },
+//   ];
+
+//   return (
+//     <>
+//       {reviewTest.length > 0 ? (
+//         <FlexChild id={id} className={styles.ProductSlider}>
+//           <Swiper
+//             loop={true}
+//             slidesPerView={5}
+//             speed={600}
+//             spaceBetween={20}
+//             modules={[Autoplay, Navigation]}
+//             autoplay={{ delay: 4000 }}
+//             navigation={{
+//               prevEl: `#${id} .${styles.prevBtn}`,
+//               nextEl: `#${id} .${styles.nextBtn}`,
+//             }}
+//           >
+//             {reviewTest.map((review, i) => {
+//               return (
+//                 <SwiperSlide key={i}>
+//                   <ReviewImgCard review={review} lineClamp={lineClamp ?? 2} />
+//                 </SwiperSlide>
+//               );
+//             })}
+//           </Swiper>
+
+//           <div className={clsx(styles.naviBtn, styles.prevBtn)}>
+//             <Image
+//               src={"/resources/icons/arrow/slide_arrow.png"}
+//               width={10}
+//             ></Image>
+//           </div>
+//           <div className={clsx(styles.naviBtn, styles.nextBtn)}>
+//             <Image
+//               src={"/resources/icons/arrow/slide_arrow.png"}
+//               width={10}
+//             ></Image>
+//           </div>
+//         </FlexChild>
+//       ) : (
+//         <NoContent type="상품" />
+//       )}
+//     </>
+//   );
+// }

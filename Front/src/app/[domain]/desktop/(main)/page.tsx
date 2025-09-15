@@ -13,7 +13,8 @@ import {
   MainCategory,
   MiniBanner,
   ProductList,
-  ProductSlider,
+  SubBanner,
+  // ProductSlider,
 } from "./client";
 import styles from "./page.module.css";
 
@@ -51,12 +52,18 @@ export default async function () {
           <MainCategory /> {/* 카테고리 */}
         </VerticalFlex>
         <LinkBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
+
+        {/* 이 달의 핫딜 */}
         <HotDealWrapper
           id={"sale"}
           lineClamp={1}
           initProducts={hotProducts}
           initCondition={hotCondition}
         />
+
+        <SubBanner />
+
+        {/* 신상품 */}
         <FlexChild>
           <VerticalFlex>
             <HorizontalFlex
@@ -87,7 +94,7 @@ export default async function () {
           </VerticalFlex>
         </FlexChild>
         <MiniBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
-        <FlexChild>
+        {/* <FlexChild>
           <VerticalFlex>
             <HorizontalFlex
               className={styles.titleBox}
@@ -111,7 +118,7 @@ export default async function () {
               </Link>
             </FlexChild>
           </VerticalFlex>
-        </FlexChild>
+        </FlexChild> */}
       </VerticalFlex>
     </section>
   );
