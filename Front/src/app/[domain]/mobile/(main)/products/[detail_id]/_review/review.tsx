@@ -4,30 +4,19 @@ import Div from "@/components/div/Div";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import Icon from "@/components/icons/Icon";
 import Image from "@/components/Image/Image";
+import InputTextArea from "@/components/inputs/InputTextArea";
+import ListPagination from "@/components/listPagination/ListPagination";
 import P from "@/components/P/P";
 import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
-import CheckboxAll from "@/components/choice/checkbox/CheckboxAll";
-import CheckboxChild from "@/components/choice/checkbox/CheckboxChild";
-import CheckboxGroup from "@/components/choice/checkbox/CheckboxGroup";
-import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
-import useData from "@/shared/hooks/data/useData";
-import useNavigate from "@/shared/hooks/useNavigate";
-import { requester } from "@/shared/Requester";
-import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
-import { useParams } from "next/navigation";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
-import ProductCard from "@/components/card/dummyProductCard";
-import Input from "@/components/inputs/Input";
-import InputNumber from "@/components/inputs/InputNumber";
-import ListPagination from "@/components/listPagination/ListPagination";
-import styles from './review.module.css'
-import InputTextArea from "@/components/inputs/InputTextArea";
+import styles from './review.module.css';
+import useNavigate from "@/shared/hooks/useNavigate";
 
 export default function Review() {
+
+   const navigate = useNavigate();
 
    const reviewTest = [ // 리뷰 게시글 테스트용
       {
@@ -96,7 +85,7 @@ export default function Review() {
       <VerticalFlex className={styles.review_wrap}>
          <VerticalFlex className={styles.review_top}>
             <FlexChild width={'auto'} gap={10}>
-               <Image src={'/resources/icons/board/review_start_rating.png'} width={35} />
+               <Image src={'/resources/icons/board/review_start_rating.png'} width={30} />
                <P className={styles.rating}>
                   4.5
                </P>
@@ -105,10 +94,16 @@ export default function Review() {
                </P>
             </FlexChild>
             
-            <Button className={styles.link_btn}>
+            <Button className={styles.link_btn} onClick={()=> navigate('/board/photoReview')}>
                포토후기 이동
             </Button>
          </VerticalFlex>
+
+         <FlexChild justifyContent="center">
+            <Button className={styles.review_btn}>
+               리뷰 작성하기
+            </Button>
+         </FlexChild>
 
          <VerticalFlex className={styles.review_board}>
             <VerticalFlex className={styles.review_write}>
