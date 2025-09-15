@@ -9,34 +9,39 @@ import { requester } from "@/shared/Requester";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import Pstyles from "../../products.module.css";
+import styles from "./page.module.css"
 import MasonryGrid from "@/components/masonry/MasonryGrid";
 import TestProductCard from "@/components/card/TestProductCard";
 import NoContent from "@/components/noContent/noContent";
 import {BaseProductList} from "../../baseClient";
+import Link from "next/link";
 
 
-export function SecondCategory() {
-  // 카테고리메뉴
 
-  const ca_test = [
-    { name: "세척/세정" },
-    { name: "관리/파우더" },
-    { name: "워머/히팅" },
-    { name: "드라이/건조" },
-    { name: "보관/파우치" },
-    { name: "오나홀 보조" },
-    { name: "기타용품" },
-  ];
+
+// 중분류, 소분류 카테고리
+export function SecondCategory(
+  { childrenData, parent, categoryId } :
+  {
+    childrenData: CategoryData[]; 
+    parent: CategoryData;
+    categoryId: any;
+  }
+) {
 
   return (
     <>
-      <ul className={Pstyles.category_list}>
-        <li className={Pstyles.active}>
-          <FlexChild><Span>전체</Span></FlexChild>
+      <ul className={styles.category_list}>
+        <li className={clsx(parent.id === categoryId && styles.active)}>
+          <Link href={`/categories/${parent.id}`}>
+            <Span>전체</Span>
+          </Link>
         </li>
-        {ca_test.map((cat, i) => (
+        {childrenData.map((child, i) => (
           <li key={i}>
-            <FlexChild><Span>{cat.name}</Span></FlexChild>
+            <Link href={`/categories/${child.id}`}>
+              <Span>{child.name}</Span>
+            </Link>
           </li>
         ))}
       </ul>

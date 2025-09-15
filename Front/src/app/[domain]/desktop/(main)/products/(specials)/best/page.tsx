@@ -8,6 +8,7 @@ import Image from "@/components/Image/Image";
 import { requester } from "@/shared/Requester";
 import { log } from "console";
 import { ProdcutCategory } from "../../baseClient";
+import {SecondCategory} from "./client"
 
 export default async function () {
   const bestCondition: any = {
