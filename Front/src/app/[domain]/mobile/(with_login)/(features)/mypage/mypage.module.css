@@ -1,37 +1,4 @@
-.mypage_wrap {
-   padding-top: 50px;
-   gap: 30px;
-}
-
-.mypage_wrap > .title h3 {
-   font-size: 35px;
-   color: #fff;
-   font-weight: 600;
-}
-
-
-.box_frame {
-   background: #222;
-   border: 1px solid #7d7d7d7d;
-   border-radius: 10px;
-   padding: 25px 20px 20px;
-}
-
-.box_frame .NolayerBox {
-   min-height: 150px;
-   justify-content: center;
-}
-
-/* 왼쪽메뉴 */
-
-.left_bar {
-   width: 300px;
-   min-width: 300px;
-   max-width: 300px;
-   flex: unset;
-   height: auto;
-   position: sticky; top: 70px;
-}
+.mypage_wrap {gap: 60px; padding-bottom: 40px;}
 
 
 /* 프로필 */
@@ -49,20 +16,31 @@
    gap: 10px;
 }
 
-.profile .link_btn {
-   width: 100%;
-   max-width: 270px;
+.profile .wish_btn {
+   width: auto;
+   border-radius: 5px;
+   background: #050505;
+   border: 1px solid var(--main-color1);
+   color: #fff;
+   font-size: 13px;
+   font-weight: 600;
+   padding: 10px 15px;
+   gap: 4px;
+   cursor: pointer;
+   min-height: 39px;
 }
 
-.profile .link_btn button {
-   width: 100%;
+.profile .setting_btn {
+   width: auto;
    border-radius: 5px;
-   background: var(--main-color2);
+   border: 1px solid #fff;
    color: #fff;
-   font-size: 20px;
+   font-size: 13px;
    font-weight: 600;
-   padding: 15px 5px;
-   border: none;
+   padding: 10px 15px;
+   gap: 4px;
+   cursor: pointer;
+   min-height: 39px;
 }
 
 
@@ -72,7 +50,7 @@
 .mypage_navi {gap: 25px;}
 .mypage_navi .outer_menu {gap: 15px; align-items: start !important;}
 .mypage_navi .outer_menu > p {
-   font-size: 20px !important; font-weight: 600 !important;
+   font-size: 16px !important; font-weight: 600 !important;
    color: #fff !important;
 }
 
@@ -91,7 +69,7 @@
 }
 
 .outer_menu .inner_menu .inner_btn span {
-   font-size: 16px; color: #afafaf;
+   font-size: 14px !important; color: #afafaf;
    transition: all 0.2s;
 }
 
@@ -111,14 +89,11 @@
 
 
 
-/* 오른쪽 */
-
-.right_bar {gap: 25px;}
+/* 배송정보 */
 
 .box_frame .box_header {
-   border-bottom: 1px solid #6B6B6B;
    padding-bottom: 15px;
-   font-size: 25px; 
+   font-size: 20px; 
    font-weight: 600;
    color: #fff;
    gap: 20px;
@@ -126,38 +101,32 @@
 }
 
 .box_frame .box_header .header_subTitle {
-   font-size: 16px; color: #fff;
+   font-size: 14px; color: #ccc;
    font-weight: 400; width: auto;
 }
 
-.delivery_box {gap: 35px;}
+.delivery_box {gap: 25px;}
 
 .delivery_box .deli_itemBox {
-   gap: 50px; align-items: end !important;
+   gap: 30px; align-items: end !important;
    width: fit-content;
 }
 .delivery_box .deli_itemBox .deli_item {
    gap: 10px; width: auto;
 }
 .delivery_box .deli_itemBox .deli_item p {
-   font-size: 35px !important;
+   font-size: 25px !important;
    font-weight: 600 !important;
    color: #fff !important; 
 }
 .delivery_box .deli_itemBox .deli_item > span {
    color: #797979 !important;
-   font-size: 16px !important;
+   font-size: 14px !important;
    font-weight: 600 !important;
    white-space: nowrap;
 }
 
-.link_btn {
-   width: 100%;
-   max-width: 280px;
-   margin: 0 auto;
-}
-
-.link_btn button {
+.delivery_box .link_btn button {
    background: #111;
    border: 1px solid #ababab;
    border-radius: 5px;
