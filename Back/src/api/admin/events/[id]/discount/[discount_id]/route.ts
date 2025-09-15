@@ -26,7 +26,7 @@ export const POST: ApiHandler = async (req, res) => {
     const result: UpdateResult<EventDiscount> = await service.update(
       { id: discount_id },
       _data,
-      true
+      return_data
     );
     return res.json(return_data ? { content: result } : { message: "success" });
   } catch (err: any) {
