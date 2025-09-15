@@ -1,0 +1,17 @@
+.subHeader {
+   position: fixed;
+   z-index: 1100;
+   padding: 12px 15px;
+   height: auto;
+   background: #272727;
+}
+
+.subHeader > * {
+   width: auto;
+}
+
+.subHeader .page_title {
+   font-size: 20px;
+   color: #fff;
+   font-weight: 600;
+}
