@@ -11,6 +11,10 @@ import styles from "./page.module.css";
 import useAddress from "@/shared/hooks/main/useAddress";
 import { requester } from "@/shared/Requester";
 import { log } from "@/shared/utils/Functions";
+import DeliveryAddEdit from '@/modals/DeliveryAddEdit/DeliveryAddEdit';
+import DeliveryListModal from "@/modals/DeliveryListModal/DeliveryListModal";
+import NiceModal from "@ebay/nice-modal-react";
+import ConfirmModal from "@/modals/confirm/ConfirmModal";
 
 export function DeliveryTable({ initAddresses }: { initAddresses: any }) {
   const { addresses, mutate } = useAddress(initAddresses?.content || []);
@@ -36,6 +40,38 @@ export function DeliveryTable({ initAddresses }: { initAddresses: any }) {
   };
   const Edit = (addr: AddressData, data: AddressDataFrame) => {
     requester.updateAddresses(addr.id, data, () => mutate());
+  };
+
+  const deliveryAddEditModal = () => {
+    NiceModal.show(ConfirmModal, {
+        message: <DeliveryAddEdit/>,
+        confirmText: '저장',
+        cancelText: "닫기",
+        // onclick: setPaswwordStep(1),
+        withCloseButton: true,
+        onConfirm: async () => {
+        console.log("저장하기");
+        },
+        onCancel: () => {
+        console.log("닫기");
+      },
+    });
+  };
+
+  const deliveryListModal = () => {
+    NiceModal.show(ConfirmModal, {
+        message: <DeliveryListModal />,
+        confirmText: '저장',
+        cancelText: "닫기",
+        // onclick: setPaswwordStep(1),
+        withCloseButton: true,
+        onConfirm: async () => {
+        console.log("저장하기");
+        },
+        onCancel: () => {
+        console.log("닫기");
+      },
+    });
   };
 
   return (
@@ -65,7 +101,7 @@ export function DeliveryTable({ initAddresses }: { initAddresses: any }) {
               </VerticalFlex>
 
               <FlexChild gap={10}>
-                <FlexChild className={styles.edit_btn} onClick={()=> Edit}>
+                <FlexChild className={styles.edit_btn} onClick={()=> deliveryAddEditModal}>
                   <Button>배송지 수정</Button>
                 </FlexChild>
   
