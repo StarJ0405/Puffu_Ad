@@ -1,6 +1,6 @@
 .detail_container {
    width: 100%;
-
+   max-width: 768px;
    --infoBox-bg : #101113;
    --infoBox-border : #535353;
 }
@@ -16,30 +16,23 @@
 
 /* 오른쪽 정보 패널 */
 .detail_infoBox {
-   border-radius: 10px;
-   background: var(--infoBox-bg);
-   border: 1px solid var(--infoBox-border);
-   padding: 25px;
+   padding: 15px 10px;
    width: 100%;
-   max-width: 615px;
 }
 
 .detail_infoBox > * {width: auto;}
 
 .detail_infoBox .brand {
-   background: #3b3b3b;
-   border-radius: 3px;
-   color: #fff;
-   font-size: 14px;
-   padding: 4px 6px;
-   margin-bottom: 15px;
+   color: #6D6D6D;
+   font-size: 13px;
+   margin-bottom: 5px;
 }
 
 .detail_infoBox .detail_title {
-   color: #fff;
-   font-size: 25px;
+   color: #EDEDED;
+   font-size: 20px;
    font-weight: 600;
-   margin-bottom: 20px;
+   margin-bottom: 24px;
    line-height: 1.2;
 }
 
@@ -73,6 +66,7 @@
    border: 1px solid #535353;
    border-left: none;
    border-right: none;
+   margin-top: 10px;
 }
 
 .detail_infoBox .delivery_share_box > * {
@@ -91,7 +85,7 @@
 }
 
 .delivery_admin_write_data {
-   padding: 20px 0 60px;
+   padding: 20px 0 40px;
 }
 
 /* 옵션 상자 */
@@ -190,9 +184,11 @@
 
 
 /* 프로덕트 슬라이더 */
-
+.slide_wrap {
+   padding: 0 10px;
+}
 .slide_title {
-   font-size: 20px;
+   font-size: 16px;
 }
 
 .ProductSlider {position: relative;}
@@ -283,37 +279,69 @@
 
 .contents_container {
    position: relative;
-   min-width: 850px;
+   width: 100%;
 }
 
 .contents_container .tab_wrap {
-   display: grid;
-   grid-template-columns: repeat(4, 1fr);
+   gap: 20px;
    position: sticky;
    top: 53px;
    z-index: 100;
+   padding: 0 10px;
+   background: #221f22;
 }
 
 .contents_container .tab_wrap .content_tab {
    justify-content: center;
    color: #595959;
-   border: 1px solid #535353;
-   background: #242424;
-   padding: 15px 5px;
    cursor: pointer;
+   font-size: 13px;
+   width: auto;
 }
 
-.contents_container .tab_wrap .content_tab.active {
-   border-color: var(--main-color1);
-   background: #050505;
-   color: #fff;
+.contents_container .tab_wrap .content_tab p {
+   position: relative;
+   padding-bottom: 7px;
+   /* display: flex; */
+   /* flex-direction: column; */
+   gap: 5px;
+   /* align-items: center; */
+   white-space: nowrap;
 }
+
+.contents_container .tab_wrap .content_tab p .list_count {
+   margin-left: 5px !important;
+   padding: 2px 7px;
+   background: #FF2A2A;
+   color: #fff;
+   font-size: 11px;
+   border-radius: 5px;
+   position: absolute;
+   top: -13px;
+   right: -15px;
+   width: fit-content;
+   /* display: block; */
+}
+
+.contents_container .tab_wrap .content_tab p::after {
+   content: '';
+   position: absolute;
+   bottom: 0;
+   left: 50%;
+   transform: translateX(-50%);
+   width: 0;
+   height: 2px;
+   background: #fff;
+}
+
+.contents_container .tab_wrap .content_tab.active {color: #fff;}
+.contents_container .tab_wrap .content_tab.active p::after {width: 100%;}
 
 
 /* 하단 정보 스타일 */
 
 .contents_container .content_view {
-   padding-top: 40px;
+   padding-top: 20px;
 }
 
 /* 탭 내용 바뀔때 애니메이션 변경 */
@@ -327,15 +355,4 @@
    to {
       opacity: 1;
    }
-}
-
-.list_count {
-   margin-left: 5px !important;
-   padding: 2px 7px;
-   background: #FF2A2A;
-   color: #fff;
-   font-size: 12px;
-   border-radius: 5px;
-   position: relative;
-   bottom: 1px;
 }

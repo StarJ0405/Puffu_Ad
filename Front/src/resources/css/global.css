@@ -150,7 +150,7 @@ a {
   --admin-background-color: red;
   --admin-border-color: red;
   --admin-button-color: red;
-  --admin-button-text-color: #fff;
+  --admin-button-text-color: #000;
   --bg-base-color: #f4f4f4;
 }
 
@@ -183,7 +183,7 @@ a {
   }
 
   .root {
-    padding-top: 80px;
+    padding-top: 95px;
     min-height: 70dvh;
     padding-bottom: 20px;
     color: var(--default-color);

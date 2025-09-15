@@ -30,3 +30,8 @@
 .pagingBox > .num_btn.active {
    background: #434343;
 }
+
+
+@media (max-width: 768px) {
+   
+}

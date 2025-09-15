@@ -1,30 +1,37 @@
 'use client'
-import Button from "@/components/buttons/Button";
-import Div from "@/components/div/Div";
-import Container from "@/components/container/Container";
-import Center from "@/components/center/Center";
-import Input from "@/components/inputs/Input";
 import FlexChild from "@/components/flex/FlexChild";
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import CheckboxAll from "@/components/choice/checkbox/CheckboxAll";
-import CheckboxChild from "@/components/choice/checkbox/CheckboxChild";
-import CheckboxGroup from "@/components/choice/checkbox/CheckboxGroup";
-import Icon from "@/components/icons/Icon";
-import Image from "@/components/Image/Image";
-import P from "@/components/P/P";
-import Span from "@/components/span/Span";
-import Link from "next/link";
+import styles from './description.module.css';
+import sanitizeHtml from "sanitize-html";
+import Button from "@/components/buttons/Button";
+import { useState } from "react";
 import clsx from "clsx";
-import styles from './description.module.css'
 
 export default function Description({product} : {product : any}) {
+
+   const cleanHTML = sanitizeHtml(product.detail, {
+     allowedTags: ["p", "b", "i", "strong", "em", "img", "ul", "li", "ol"],
+     allowedAttributes: {
+       img: ["src", "alt"],
+     },
+   });
+
+   const [viewFull, setViewFull] = useState(false);
+
    return (
-      <VerticalFlex className={styles.description_box}>
-         <FlexChild>
-            <div className={styles.detail_thumb_box} dangerouslySetInnerHTML={{ __html: product.detail }} />
-         </FlexChild>
-      </VerticalFlex>
+      <>
+         <VerticalFlex className={styles.description_box}>
+            <FlexChild className={clsx(styles.description_frame, {[styles.full]: viewFull})} alignItems="start">
+               <div className={styles.detail_thumb_box} dangerouslySetInnerHTML={{ __html: cleanHTML }} />
+            </FlexChild>
+            <Button 
+               className={clsx(styles.view_more_btn, {[styles.hidden]: viewFull})}
+               onClick={()=> setViewFull(true)}
+            >
+               자세히 보기
+            </Button>
+         </VerticalFlex>
+      </>
    )
 
 }
