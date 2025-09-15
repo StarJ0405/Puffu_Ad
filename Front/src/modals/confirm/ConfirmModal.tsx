@@ -1,3 +1,5 @@
+"use client";
+
 import P from "@/components/P/P";
 import Button from "@/components/buttons/Button";
 import FlexChild from "@/components/flex/FlexChild";

@@ -26,8 +26,30 @@ import Link from "next/link";
 export function HeaderCategory({ CaOpen }: { CaOpen: boolean }) {
   // 카테고리메뉴
   const { categoriesData } = useCategories();
+   const ca_test = [
+      {name: '남성토이', thumbnail: '/resources/images/dummy_img/ca_menu_01.png'},
+      {name: '여성토이', thumbnail: '/resources/images/dummy_img/ca_menu_02.png'},
+      {name: '윤활제/젤', thumbnail: '/resources/images/dummy_img/ca_menu_03.png'},
+      {name: '콘돔', thumbnail: '/resources/images/dummy_img/ca_menu_04.png'},
+      {name: '의류', thumbnail: '/resources/images/dummy_img/ca_menu_04.png'},
+      {name: 'BDSM토이', thumbnail: '/resources/images/dummy_img/ca_menu_04.png'},
+      {name: 'LGBT토이', thumbnail: '/resources/images/dummy_img/ca_menu_04.png'},
+   ]
+   const [categories, setCategories] = useState<CategoryData[]>([]);
 
-  // console.log("카테고리", categoriesData);
+   useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const result = await requester.getCategories();
+          console.log(result);
+          setCategories(result.content);
+        } catch (error) {
+          console.error("카테고리 데이터를 가져오는 데 실패했습니다:", error);
+        }
+      };
+      fetchData();
+    }, []);
+
 
   const [activeDepth1, setActiveDepth1] = useState<string | null>(null);
 

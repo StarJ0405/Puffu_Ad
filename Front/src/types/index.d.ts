@@ -273,6 +273,7 @@ interface ShippingMethodDataFrame {
 interface ShippingMethodData extends BaseEntity, ShippingMethodDataFrame {}
 
 interface AddressDataFrame {
+  id: string;
   name: string;
   phone: string;
   address1: string;
