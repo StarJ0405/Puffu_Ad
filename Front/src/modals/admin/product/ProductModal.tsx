@@ -75,7 +75,8 @@ const ProductModal = NiceModal.create(
     const [radio, setRadio] = useState<boolean[]>([
       product.visible,
       product.buyable,
-      product.tax_rate === 0,
+      // product.tax_rate === 0,
+      true,
     ]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string>("");
@@ -108,9 +109,10 @@ const ProductModal = NiceModal.create(
               description: inputs.current[1].getValue(),
               price: inputs.current[2].getValue(),
               thumbnail: image.current.getValue(),
-              tags: inputs.current[4].getValue(),
+              tags: inputs.current[3].getValue(),
               detail,
-              tax_rate: !radio[2] ? inputs.current[3].getValue() : 0,
+              // tax_rate: !radio[2] ? inputs.current[3].getValue() : 0,
+              tax_rate: 0,
             };
 
             adminRequester.updateProduct(
@@ -362,7 +364,7 @@ const ProductModal = NiceModal.create(
               </FlexChild>
             </HorizontalFlex>
           </FlexChild>
-          <FlexChild hidden={product?.store?.currency_unit === "P"}>
+          {/* <FlexChild hidden={product?.store?.currency_unit === "P"}>
             <HorizontalFlex>
               <FlexChild className={styles.head}>
                 <P>세금설정</P>
@@ -400,7 +402,7 @@ const ProductModal = NiceModal.create(
                 )}
               </FlexChild>
             </HorizontalFlex>
-          </FlexChild>
+          </FlexChild> */}
           <FlexChild>
             <HorizontalFlex>
               <FlexChild className={styles.head}>
@@ -413,7 +415,7 @@ const ProductModal = NiceModal.create(
                       value={product.tags}
                       width={"100%"}
                       ref={(el) => {
-                        inputs.current[4] = el;
+                        inputs.current[3] = el;
                       }}
                     />
                   </>

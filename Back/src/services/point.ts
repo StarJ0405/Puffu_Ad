@@ -1,9 +1,11 @@
 import { BaseService } from "data-source";
+import { Log } from "models/log";
 import { Point } from "models/point";
 import { LogRepository } from "repositories/log";
 import { PointRepository } from "repositories/point";
 
 import { inject, injectable } from "tsyringe";
+import { FindManyOptions, FindOneOptions } from "typeorm";
 
 @injectable()
 export class PointService extends BaseService<Point, PointRepository> {
@@ -57,13 +59,89 @@ export class PointService extends BaseService<Point, PointRepository> {
       }
       if (used <= 0) break;
     }
-    await this.logRepository.create({
-      type: "point",
-      name: `상품 구매`,
-      data: {
-        point: -point,
-        user_id,
-      },
-    });
+    if (point > 0)
+      await this.logRepository.create({
+        type: "point",
+        name: `상품 구매`,
+        data: {
+          point: -point,
+          user_id,
+        },
+      });
+  }
+  async getPointDates(user_id: string, name?: string) {
+    let builder = this.logRepository
+      .builder("l")
+      .select("EXTRACT(YEAR FROM created_at)", "created_year")
+      .addSelect("EXTRACT(MONTH FROM created_at)", "created_month")
+      .where(`data->>'user_id' = :user_id`, { user_id })
+      .groupBy("created_year")
+      .addGroupBy("created_month")
+      .orderBy("created_year", "DESC")
+      .addOrderBy("created_month", "DESC");
+    if (name) {
+      builder = builder.andWhere("name ILIKE :name", {
+        name: `%${name}%`,
+      });
+    }
+
+    return await builder.getRawMany();
+  }
+  async getPointList(options?: FindManyOptions<Log>): Promise<Log[]> {
+    const where: any = options?.where;
+    let builder = this.logRepository
+      .builder("l")
+      .where(`data ->> 'user_id' = :user_id`, { user_id: where?.user_id });
+    if (where.starts_at && where.ends_at) {
+      builder = builder.andWhere(`created_at BETWEEN :starts_at AND :ends_at`, {
+        starts_at: new Date(where.starts_at).toISOString(),
+        ends_at: new Date(where.ends_at).toISOString(),
+      });
+    }
+    if (where.name) {
+      builder = builder.andWhere("name ILIKE :name", {
+        name: `%${where.name}%`,
+      });
+    }
+
+    return await builder.getMany();
+  }
+  async getPointPageable(pageData: PageData, options: FindOneOptions<Log>) {
+    const where: any = options?.where;
+    let builder = this.logRepository
+      .builder("l")
+      .where(`data ->> 'user_id' = :user_id`, { user_id: where?.user_id });
+    if (where.starts_at && where.ends_at) {
+      builder = builder.andWhere(`created_at BETWEEN :starts_at AND :ends_at`, {
+        starts_at: new Date(where.starts_at).toISOString(),
+        ends_at: new Date(where.ends_at).toISOString(),
+      });
+    }
+    if (where.name) {
+      builder = builder.andWhere("name ILIKE :name", {
+        name: `%${where.name}%`,
+      });
+    }
+
+    const { pageSize, pageNumber = 0 } = pageData;
+    const content = await builder
+      .clone()
+      .skip(pageSize * pageNumber)
+      .take(pageSize)
+      .getMany();
+    const NumberOfTotalElements = await builder.getCount();
+    const NumberOfElements = content.length;
+    const totalPages =
+      pageSize > 0 ? Math.ceil(NumberOfTotalElements / pageSize) : 0;
+    const last = pageNumber === totalPages - 1;
+    return {
+      content,
+      pageSize,
+      pageNumber,
+      NumberOfTotalElements,
+      NumberOfElements,
+      totalPages,
+      last,
+    };
   }
 }
