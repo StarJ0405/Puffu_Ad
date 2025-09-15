@@ -9,7 +9,8 @@ import MasonryGrid from "@/components/masonry/MasonryGrid";
 import Span from "@/components/span/Span";
 import clsx from "clsx";
 import Link from "next/link";
-import { useRef } from "react";
+import { usePathname } from "next/navigation";
+import { use, useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
 
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
@@ -35,6 +36,14 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
   );
   // log(banners); 베너 정보
   const swiperRef = useRef<SwiperType | null>(null);
+  // const [banners, setBanners] = useState<BannerData[]>([]);
+
+  // useEffect(() => {
+  //   requester.getBanners((result: BannerData[]) => {
+  //     console.log(result);
+  //     setBanners(result);
+  //   });
+  // }, []);
 
   const paintBullets = (swiper: SwiperType) => {
     // 페이지네이션 스타일 설정
@@ -172,6 +181,8 @@ export function MiniBanner() {
 }
 
 export function MainCategory() {
+
+  
   // 카테고리메뉴
 
   const { categoriesData } = useCategories();

@@ -362,7 +362,7 @@ class _Requester {
     if (callback) callback(await this.post(`/users/me/recent`, data));
     else return await this.post(`/users/me/recent`, data);
   }
-  // 배송지 관련
+  // 배송지 관련 주소
   async createAddress(data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.post(`/users/me/address`, data));
     else return await this.post(`/users/me/address`, data);
@@ -387,6 +387,7 @@ class _Requester {
     if (callback) callback(await this.delete(`/users/me/address/${id}`, data));
     else return await this.delete(`/users/me/address/${id}`, data);
   }
+  // 배송지 관련 주소 끝
   // 카트 관련
   async addItem(data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.post(`/users/me/cart/items`, data));
