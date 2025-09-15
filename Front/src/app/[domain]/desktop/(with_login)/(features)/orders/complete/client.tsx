@@ -129,14 +129,12 @@ export function MyOrdersTable() {
       {cart.length > 0 ? (
         <VerticalFlex gap={10}>
           <table className={styles.list_table}>
-            {/* 게시판 셀 너비 조정 */}
             <colgroup>
               <col style={{ width: "60%" }} />
               <col style={{ width: "20%" }} />
               <col style={{ width: "20%" }} />
             </colgroup>
 
-            {/* 헤더 */}
             <thead>
               <tr className={styles.table_header}>
                 <th>상품정보</th>
@@ -145,42 +143,46 @@ export function MyOrdersTable() {
               </tr>
             </thead>
 
-            {/* 상품 내용 */}
             <tbody>
-              {cart.map((item, i) => (
-                <tr key={i}>
-                  <td>
-                    <FlexChild className={styles.order_item}>
-                      <Image src={item.thumbnail} width={150} />
+              {cart.map(
+                (
+                  item,
+                  i // ✅ 중괄호로 감싸기
+                ) => (
+                  <tr key={i}>
+                    <td>
+                      <FlexChild className={styles.order_item}>
+                        <Image src={item.thumbnail} width={150} />
 
-                      <VerticalFlex className={styles.order_txt}>
-                        <span className={styles.brand}>{item.brand}</span>
+                        <VerticalFlex className={styles.order_txt}>
+                          <span className={styles.brand}>{item.brand}</span>
+                          <P className={styles.title}>{item.title}</P>
 
-                        <P className={styles.title}>{item.title}</P>
-
-                        <VerticalFlex className={styles.option_list}>
-                          {item.option.map((option, j) => (
-                            <FlexChild key={j} gap={5}>
-                              <P>{option.title}</P>
-                              <Span> + {option.price}원</Span>
-                            </FlexChild>
-                          ))}
+                          <VerticalFlex className={styles.option_list}>
+                            {item.option.map((option, j) => (
+                              <FlexChild key={j} gap={5}>
+                                <P>{option.title}</P>
+                                <Span> + {option.price}원</Span>
+                              </FlexChild>
+                            ))}
+                          </VerticalFlex>
                         </VerticalFlex>
-                      </VerticalFlex>
-                    </FlexChild>
-                  </td>
+                      </FlexChild>
+                    </td>
 
-                  <td>
-                    <P weight={600} color="#fff">
-                      0원
-                    </P>
-                  </td>
+                    <td>
+                      <P weight={600} color="#fff">
+                        0원
+                      </P>
+                    </td>
 
-                  <td>
-                    <P weight={600}>{item.price} ₩</P>
-                  </td>
-                </tr>
-              ))}
+                    <td>
+                      <P weight={600}>{item.price} ₩</P>
+                    </td>
+                  </tr>
+                )
+              )}{" "}
+              {/* ✅ map 닫는 괄호 위치 */}
             </tbody>
           </table>
         </VerticalFlex>

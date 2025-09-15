@@ -59,7 +59,6 @@
 .picker_input_box .dataPicker_box .picker_input {color: #ddd !important;}
 
 
-
 /* 주문내역 리스트 */
 
 .list_table {
@@ -87,7 +86,7 @@
 }
 
 .list_table :is(td, th) {
-   padding: 20px 10px;
+   padding: 20 10px;
    word-wrap: break-word; /* 이거 줘야 테이블에서 내용들 넘치면 줄바꿈 됨. */
    /* word-break: break-all; */
    vertical-align: middle; /* 테이블 내용 세로 정렬: align-items: center라고 보면 됨 */
@@ -135,3 +134,4 @@
    color: #fff !important;
    font-size: 14px !important;
 }
+
