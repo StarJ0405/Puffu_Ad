@@ -7,8 +7,9 @@ import P from "@/components/P/P";
 import Pstyles from '../../products.module.css';
 import { } from './client';
 
-import { SortFilter, BaseProductList } from "../../baseClient";
+import { BaseProductList } from "../../baseClient";
 import { requester } from "@/shared/Requester";
+import { CommingSoonList } from "./client";
 
 
 
@@ -30,7 +31,10 @@ export default async function () {
 
 
             <VerticalFlex className={Pstyles.list}>
-               <BaseProductList listArray={newProducts} commingSoon={true} />
+               <CommingSoonList
+                 initProducts={newProducts}
+                 initConiditon={newCondition}
+               />
             </VerticalFlex>
          </Container>
       </section>

@@ -76,8 +76,14 @@ export function TestProductCard(
          // margin={product.margin}
          className={style.prodcut_item}
       >
-         <FlexChild className={style.imgBox}>
-            <Link href={product_link}>
+         <FlexChild 
+            className={style.imgBox}
+         >
+            <Link href={product_link} 
+               style={{
+                 pointerEvents: commingSoon ? "none" : "auto",
+               }}
+            >
              {/* 링크 상품 링크로 바꾸기 */}
 
                { // 프로덕트 페이지가 best일때만 나타나기. 제품 인기순 표시임.
@@ -112,7 +118,12 @@ export function TestProductCard(
                </FlexChild>
 
                <FlexChild className={style.product_title}>
-                  <Link href={product_link}>
+                  <Link 
+                     href={product_link}
+                     style={{
+                       pointerEvents: commingSoon ? "none" : "auto",
+                     }}
+                  >
                      <P 
                         textOverflow={"ellipsis"}
                         display={"webkit-box"}
