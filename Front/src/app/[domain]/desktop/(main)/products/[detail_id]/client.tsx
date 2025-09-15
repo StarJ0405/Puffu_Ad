@@ -245,15 +245,14 @@ export function DetailFrame({
           </FlexChild>
 
           {product.discount_rate > 0 && (
-            <>
-              <FlexChild className={styles.sale_price}>
-                <P>{product.discount_rate}%</P>
-              </FlexChild>
-
-              <FlexChild className={styles.regular_price}>
-                <P>{product?.discount_price}</P>₩
-              </FlexChild>
-            </>
+            <FlexChild className={styles.sale_price}>
+              <P>{product.discount_rate}%</P>
+            </FlexChild>
+          )}
+          {product.discount_rate > 0 && (
+            <FlexChild className={styles.regular_price}>
+              <P>{product?.discount_price}</P>₩
+            </FlexChild>
           )}
         </HorizontalFlex>
 
@@ -489,10 +488,7 @@ export function ProductSlider({
             {listArray.map((product: ProductData, i: number) => {
               return (
                 <SwiperSlide key={i}>
-                  <ProductCard
-                    product={product}
-                    lineClamp={lineClamp ?? 2}
-                  />
+                  <ProductCard product={product} lineClamp={lineClamp ?? 2} />
                 </SwiperSlide>
               );
             })}
