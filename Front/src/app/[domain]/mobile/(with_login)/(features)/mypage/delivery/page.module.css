@@ -1,3 +1,7 @@
+.delivery_box {
+   padding-bottom: 40px;
+}
+
 .delivery_box .top_box > * {
    width: auto;
 }
@@ -15,12 +19,12 @@
 }
 
 .delivery_box .top_box .add_btn button {
-   padding: 10px 13px;
+   padding: 7px 13px;
    background: var(--main-color2);
    border-radius: 5px;
    color: #fff;
    transition: all 0.2s;
-   font-size: 16px;
+   font-size: 13px;
 }
 
 
@@ -29,7 +33,7 @@
 
 .delivery_list .item {
    gap: 20px;
-   padding: 40px 0;
+   padding: 20px 0;
    border-bottom: 1px solid #6b6b6b;
 }
 
@@ -41,23 +45,29 @@
 
 .delivery_list .item .number {
    background: #050505;
-   padding: 7px 10px;
+   padding: 5px 7px;
+   border-radius: 3px;
+   width: auto;
+}
+
+.delivery_list .item .content {gap: 10px; align-items: start !important;}
+.delivery_list .item .content .default {
+   font-size: 11px;
+   color: #fff;
+   padding: 5px 7px;
+   background: var(--main-color2);
+   width: auto;
    border-radius: 3px;
 }
 
-.delivery_list .item .content {gap: 10px;}
-.delivery_list .item .content .default {
-   font-size: 16px;
-   color: #7d7d7d;
-}
-
 .delivery_list .item .content .address {
-   font-size: 20px; color: #ddd;
+   font-size: 15px; color: #ddd;
    font-weight: 500;
+   line-height: 1.4;
 }
 
 .delivery_list .item .content .name {
-   font-size: 14px; gap: 5px;
+   font-size: 13px; gap: 5px;
    color: #eaeaea;
 }
 
@@ -65,15 +75,14 @@
    color: #7d7d7d;
 }
 
-
-.delivery_list .item .edit_btn button {
-   padding: 10px; background: transparent;
-   border: 1px solid #aaa;
-   font-size: 13px;
-   transition: all 0.1s;
-   color: #fff;
+.delivery_list .item .edit_btn {
+   width: auto; cursor: pointer;
 }
 
-.delivery_list .item .edit_btn button:hover {
-   background: #050505;
+.delivery_list .item .edit_btn button {
+   padding: 7px 10px; background: transparent;
+   border: 1px solid #aaa;
+   font-size: 12px;
+   transition: all 0.1s;
+   color: #fff;
 }

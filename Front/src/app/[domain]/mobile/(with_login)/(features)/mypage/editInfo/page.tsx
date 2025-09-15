@@ -24,16 +24,22 @@ export default async function () {
         <VerticalFlex className={styles.edit_container}>
             <VerticalFlex className={styles.thumb_box}>
                <FlexChild className={styles.thumbnail}>
-                     <Image
-                        src={"/resources/images/dummy_img/product_01.png"}
-                        width={80}
-                     />
+                  {
+                     1 < 0 ? (
+                        <Image src={"유저 이미지 정보"} width={80}/>
+                     ) : (
+                        <Image src={"/resources/icons/mypage/user_no_img.png"} width={80}/>
+                     )
+                  }
                </FlexChild>
 
-               <Button className={styles.photo_edit_btn}>
+               <Button 
+                  className={styles.photo_edit_btn}
+                  // onClick={()=> console.log('사진변경')}
+               >
                   <Image
                      src={"/resources/icons/mypage/img_edit_icon.png"}
-                     width={20}
+                     width={15}
                   />
                      사진등록
                </Button>
@@ -44,7 +50,7 @@ export default async function () {
                   <P className={styles.input_label}>
                      아이디
                   </P>
-                  <P size={16} color="#797979">
+                  <P size={14} color="#797979">
                      mynameistony
                   </P>
                </VerticalFlex>

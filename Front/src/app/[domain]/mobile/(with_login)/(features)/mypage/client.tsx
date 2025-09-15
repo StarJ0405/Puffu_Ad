@@ -11,9 +11,11 @@ import styles from "./mypage.module.css";
 
 import Input from "@/components/inputs/Input";
 import ConfirmModal from "@/modals/confirm/ConfirmModal";
-import NiceModal from "@ebay/nice-modal-react";
-import SubPageHeader from "@/components/subPageHeader/subPageHeader";
 import useNavigate from "@/shared/hooks/useNavigate";
+import { Cookies } from "@/shared/utils/Data";
+import { getCookieOption } from "@/shared/utils/Functions";
+import NiceModal from "@ebay/nice-modal-react";
+import { useCookies } from "react-cookie";
 
 
 
@@ -24,22 +26,6 @@ const editInfoModal = () => { // 개인정보 수정
       <EditINfo />
     ),
     confirmText: "확인",
-    withCloseButton: true,
-    onConfirm: async () => {
-      
-    },
-  })
-}
-
-const logoutModal = () => { // 로그아웃
-  NiceModal.show(ConfirmModal, {
-    message: (
-      <FlexChild justifyContent="center" marginBottom={30}>
-        <P color="#333" fontSize={20} weight={600}>로그아웃 하시겠습니까?</P>
-      </FlexChild>
-    ),
-    confirmText: "확인",
-    cancelText: "취소",
     withCloseButton: true,
     onConfirm: async () => {
       
@@ -92,6 +78,9 @@ export function Profile() {
 }
 
 export function DeliveryInfo() {
+
+  const navigate = useNavigate();
+
   return (
     <VerticalFlex className={clsx(styles.box_frame, styles.delivery_box)}>
       <FlexChild className={styles.box_header}>
@@ -120,7 +109,7 @@ export function DeliveryInfo() {
         </VerticalFlex>
       </FlexChild>
 
-      <FlexChild className={styles.link_btn}>
+      <FlexChild className={styles.link_btn} onClick={()=> navigate('/mypage/myOrders')}>
         <Button>내 주문 확인</Button>
       </FlexChild>
     </VerticalFlex>
@@ -129,6 +118,24 @@ export function DeliveryInfo() {
 
 
 export function MypageNavi() {
+  const [, , removeCookie] = useCookies([Cookies.JWT]);
+  
+  const logoutModal = () => { // 로그아웃
+
+    NiceModal.show(ConfirmModal, {
+      message: (
+        <FlexChild justifyContent="center" marginBottom={30}>
+          <P color="#333" fontSize={20} weight={600}>로그아웃 하시겠습니까?</P>
+        </FlexChild>
+      ),
+      confirmText: "확인",
+      cancelText: "취소",
+      withCloseButton: true,
+      onConfirm: () => {
+        removeCookie(Cookies.JWT, getCookieOption());
+      },
+    })
+  }
 
    const myshopMenu = [
       { name: "내 주문 내역", link: "/mypage/myOrders" },
@@ -191,15 +198,13 @@ export function MypageNavi() {
             </li>
           ))}
           <li>
-            <Link className={styles.inner_btn} href={"/"}
-              onClick={logoutModal}
-            >
+            <FlexChild className={styles.inner_btn} onClick={logoutModal}>
               <Span>로그아웃</Span>
               <Image
                 src={"/resources/icons/arrow/slide_arrow.png"}
                 width={8}
               />
-            </Link>
+            </FlexChild>
           </li>
         </ul>
       </VerticalFlex>

@@ -104,21 +104,21 @@ export function DeliveryClient({ initAddresses }: { initAddresses: any }) {
     });
   };
 
-  const deliveryListModal = () => {
-    NiceModal.show(ConfirmModal, {
-        message: <DeliveryListModal />,
-        confirmText: '저장',
-        cancelText: "닫기",
-        // onclick: setPaswwordStep(1),
-        withCloseButton: true,
-        onConfirm: async () => {
-        console.log("저장하기");
-        },
-        onCancel: () => {
-        console.log("닫기");
-      },
-    });
-  };
+  // const deliveryListModal = () => {
+  //   NiceModal.show(ConfirmModal, {
+  //       message: <DeliveryListModal />,
+  //       confirmText: '저장',
+  //       cancelText: "닫기",
+  //       // onclick: setPaswwordStep(1),
+  //       withCloseButton: true,
+  //       onConfirm: async () => {
+  //       console.log("저장하기");
+  //       },
+  //       onCancel: () => {
+  //       console.log("닫기");
+  //     },
+  //   });
+  // };
 
   return (
     <VerticalFlex
@@ -144,27 +144,29 @@ export function DeliveryClient({ initAddresses }: { initAddresses: any }) {
       {addresses && addresses.length > 0 ? (
         <VerticalFlex className={styles.delivery_list}>
           {addresses.map((item, i) => (
-            <HorizontalFlex key={item.id} className={styles.item}>
-              <FlexChild className={styles.number}>{i + 1}</FlexChild>
-
-              <VerticalFlex className={styles.content}>
-                {item.default ? (
-                  <FlexChild className={styles.default}>
-                    <P>[기본배송지]</P>
+            <VerticalFlex key={item.id} className={styles.item}>
+              <HorizontalFlex gap={20}>
+                <FlexChild className={styles.number}>{i + 1}</FlexChild>
+  
+                <VerticalFlex className={styles.content}>
+                  {item.default ? (
+                    <FlexChild className={styles.default}>
+                      <P>기본배송지</P>
+                    </FlexChild>
+                  ) : null}
+  
+                  <FlexChild className={styles.address}>
+                    <P>{`(${item.postal_code}) ${item.address1} ${item.address2}`}</P>
                   </FlexChild>
-                ) : null}
+  
+                  <FlexChild className={styles.name}>
+                    <Span>받는 사람</Span>
+                    <P>{item.name}</P>
+                  </FlexChild>
+                </VerticalFlex>
+              </HorizontalFlex>
 
-                <FlexChild className={styles.address}>
-                  <P>{`(${item.postal_code}) ${item.address1} ${item.address2}`}</P>
-                </FlexChild>
-
-                <FlexChild className={styles.name}>
-                  <Span>받는 사람</Span>
-                  <P>{item.name}</P>
-                </FlexChild>
-              </VerticalFlex>
-
-              <FlexChild gap={10}>
+              <FlexChild gap={10} justifyContent="end" width={'100%'}>
                 <FlexChild
                   className={styles.edit_btn}
                   onClick={() => deliveryAddEditModal(item)}
@@ -179,7 +181,7 @@ export function DeliveryClient({ initAddresses }: { initAddresses: any }) {
                   <Button>삭제</Button>
                 </FlexChild>
               </FlexChild>
-            </HorizontalFlex>
+            </VerticalFlex>
           ))}
         </VerticalFlex>
       ) : (

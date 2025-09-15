@@ -2,11 +2,11 @@
 
 
 .delete_content {
-   gap: 30px;
+   gap: 20px;
 }
 .delete_content > .title {
    width: auto; color: var(--main-color1);
-   font-size: 20px;
+   font-size: 16px !important;
 }
 
 .term_txt {
@@ -20,12 +20,12 @@
 }
 
 .term_txt .title {
-   font-size: 18px;
+   font-size: 14px;
    color: #fff;
    font-weight: 600;
 }
 .term_txt .txt1 {
-   font-size: 16px;
+   font-size: 13px;
    color: #aaa;
    line-height: 1.6;
    /* text-align: center; */
@@ -38,7 +38,7 @@
    max-width: 300px;
 }
 
-.input_box .input_label {min-width: 60px;}
+.input_box .input_label {min-width: 50px; font-size: 14px !important;}
 
 .button_group {
    gap: 10px;
@@ -50,10 +50,9 @@
    padding: 13px 10px;
    border-radius: 5px;
    color: #fff;
-   font-size: 20px;
+   font-size: 18px;
    font-weight: 600;
    width: 100%;
-   max-width: 220px;
 }
 .button_group .submit_btn {
    background: var(--main-color2);
