@@ -32,7 +32,7 @@ export class EventBundleService extends BaseService<
       where,
       relations: ["products", "variants"],
     });
-    if (data.products && data?.products?.length > 0) {
+    if (data.products) {
       const products = data.products;
       await Promise.all(
         bundles.map(async (bundle) => {
@@ -59,9 +59,9 @@ export class EventBundleService extends BaseService<
           );
         })
       );
-      delete data.products;
     }
-    if (data.variants && data?.variants?.length > 0) {
+    delete data.products;
+    if (data.variants) {
       const variants = data.variants;
       await Promise.all(
         bundles.map(async (bundle) => {
@@ -88,9 +88,8 @@ export class EventBundleService extends BaseService<
           );
         })
       );
-
-      delete data.variants;
     }
+    delete data.variants;
     return super.update(where, data, returnEnttiy);
   }
   async delete(
