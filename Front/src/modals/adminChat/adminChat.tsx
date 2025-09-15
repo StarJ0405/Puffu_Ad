@@ -44,8 +44,7 @@ export default function AdminChat({ onClose }: { onClose: () => void }) {
                <FlexChild className={clsx(styles.user_chat, styles.bubble_wrap)}>
                   <FlexChild className={styles.chat_bubble}>
                      <P>
-                        안녕하세요 푸푸토이입니다.질문을 적어주시면 몇분 내 답변을 받으실
-                        수 있습니다. 어떤 서비스 관련 문의사항이 있으실까요?
+                        안녕하세요. 문의사항이 있습니다.
                      </P>
                   </FlexChild>
 
