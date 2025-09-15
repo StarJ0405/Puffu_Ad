@@ -1,0 +1,57 @@
+.delivery_list {
+   margin-top: 30px;
+   padding: 0 5px 30px;
+   gap: 30px;
+   height: 400px;
+   overflow-y: auto;
+   flex: unset;
+}
+.delivery_list .container {
+   border-bottom: 1px solid #ececec;
+   padding-bottom: 10px;
+   flex: unset;
+}
+.delivery_list .item {gap: 20px; flex: unset;}
+.delivery_list .item > * {width: auto;}
+
+.delivery_list .item .number {
+   padding: 3px; background: var(--main-color2);
+   color: #fff; min-width: 20px;
+   border-radius: 3px;
+   justify-content: center;
+   font-size: 12px;
+}
+
+.delivery_list .content {gap: 10px; align-items: start !important;}
+.delivery_list .content .default {
+   color: #fff;
+   font-size: 11px;
+   padding: 5px 7px;
+   border-radius: 5px;
+   background: var(--main-color2);
+   width: auto;
+}
+
+.delivery_list .content .address {
+   color: #121212; font-weight: 600;
+   line-height: 1.3;
+}
+
+.delivery_list .content .name {font-size: 13px; gap: 5px;}
+.delivery_list .content .name span {color: #797979;}
+.delivery_list .content .name p {
+   color: #797979 !important; font-weight: 500 !important;
+}
+
+.delivery_list .edit_btn {width: auto;}
+.delivery_list .edit_btn button {
+   padding: 3px 6px;
+   background: transparent;
+   border: 1px solid #727272;
+   color: #727272;
+}
+
+.delivery_list .edit_btn button:hover {
+   border-color: #111;
+   color: #111;
+}

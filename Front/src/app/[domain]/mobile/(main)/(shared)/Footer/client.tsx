@@ -47,13 +47,18 @@ export function SideToggle() {
      
 
       {/* 채팅 토글 */}
-      <Button
-        className={styles.chat_btn}
-        // onClick={() => {NiceModal.show(AdminChatModal)}}
-        onClick={()=> chatToggleClick()}
-        >
-        <Image src={"/resources/images/footer/chat_toggle_icon.png"} width={45} />
-      </Button>
+      
+      {
+        pathname == "/" && (
+          <Button
+            className={styles.chat_btn}
+            // onClick={() => {NiceModal.show(AdminChatModal)}}
+            onClick={()=> chatToggleClick()}
+            >
+            <Image src={"/resources/images/footer/chat_toggle_icon.png"} width={45} />
+          </Button>
+        )
+      }
     </nav>
   );
 }
