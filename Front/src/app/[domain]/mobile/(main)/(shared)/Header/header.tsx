@@ -23,7 +23,8 @@ export default function MobileHeader() {
    const params = useParams();
    const pathname = usePathname();
 
-   const shouldHideHeader = params.detail_id || pathname.includes("/orders") || pathname.includes("/border");
+   const shouldHideHeader = 
+   params.detail_id || pathname.includes("/orders") || pathname.includes("/border") || pathname.includes("/mypage");
 
    return (
       <>

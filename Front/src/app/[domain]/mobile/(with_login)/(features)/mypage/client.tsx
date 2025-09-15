@@ -12,6 +12,9 @@ import styles from "./mypage.module.css";
 import Input from "@/components/inputs/Input";
 import ConfirmModal from "@/modals/confirm/ConfirmModal";
 import NiceModal from "@ebay/nice-modal-react";
+import SubPageHeader from "@/components/subPageHeader/subPageHeader";
+import useNavigate from "@/shared/hooks/useNavigate";
+
 
 
 const editInfoModal = () => { // 개인정보 수정
@@ -44,7 +47,12 @@ const logoutModal = () => { // 로그아웃
   })
 }
 
+
+
 export function Profile() {
+
+  const navigate = useNavigate();
+
   return (
     <VerticalFlex className={clsx(styles.profile, styles.box_frame)}>
       <VerticalFlex gap={20}>
@@ -52,31 +60,73 @@ export function Profile() {
           <FlexChild className={styles.thumbnail} width={"auto"}>
             <Image
               src={"/resources/images/dummy_img/product_01.png"}
-              width={80}
+              width={60}
             />
           </FlexChild>
         </FlexChild>
 
         <FlexChild width={"auto"} className={styles.profile_name}>
           <P>콘푸로스트123</P>
-
-          <FlexChild width={'auto'} cursor="pointer"
-            onClick={editInfoModal}
-          >
-            <Image
-              src={"/resources/icons/mypage/setting_icon.png"}
-              width={16}
-            />
-          </FlexChild>
         </FlexChild>
       </VerticalFlex>
 
-      <FlexChild className={styles.link_btn}>
-        <Button>관심 리스트</Button>
+      <FlexChild gap={10} justifyContent="center">
+        <FlexChild className={styles.wish_btn} onClick={()=> navigate('/mypage/wishList')}>
+          <Image
+            src={"/resources/icons/main/mob_heart_active.png"}
+            width={16}
+          />
+          관심 리스트
+        </FlexChild>
+
+        <FlexChild className={styles.setting_btn} onClick={editInfoModal}>
+          <Image
+            src={"/resources/icons/mypage/setting_icon.png"}
+            width={14}
+          />
+          개인정보 수정
+        </FlexChild>
       </FlexChild>
     </VerticalFlex>
   )
 }
+
+export function DeliveryInfo() {
+  return (
+    <VerticalFlex className={clsx(styles.box_frame, styles.delivery_box)}>
+      <FlexChild className={styles.box_header}>
+        <P>주문 배송 현황</P>
+      </FlexChild>
+
+      <FlexChild className={styles.deli_itemBox}>
+        <VerticalFlex className={styles.deli_item}>
+          <P>15</P>
+          <Span>상품 준비중</Span>
+        </VerticalFlex>
+
+        <VerticalFlex className={styles.deli_item}>
+          <P>21</P>
+          <Span>배송준비</Span>
+        </VerticalFlex>
+
+        <VerticalFlex className={styles.deli_item}>
+          <P>4</P>
+          <Span>배송중</Span>
+        </VerticalFlex>
+
+        <VerticalFlex className={styles.deli_item}>
+          <P>36</P>
+          <Span>배송완료</Span>
+        </VerticalFlex>
+      </FlexChild>
+
+      <FlexChild className={styles.link_btn}>
+        <Button>내 주문 확인</Button>
+      </FlexChild>
+    </VerticalFlex>
+  )
+}
+
 
 export function MypageNavi() {
 
@@ -158,6 +208,7 @@ export function MypageNavi() {
 }
 
 
+// 개인정보 수정 모달 내용
 export function EditINfo() {
   return (
     <VerticalFlex className="modal_edit_info" gap={50}>

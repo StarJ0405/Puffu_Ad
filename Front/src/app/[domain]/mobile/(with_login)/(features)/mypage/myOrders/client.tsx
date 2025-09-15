@@ -6,6 +6,7 @@ import NoContent from "@/components/noContent/noContent";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import styles from "./page.module.css";
+import HorizontalFlex from "@/components/flex/HorizontalFlex";
 
 
 export function MyOrdersTable() {
@@ -40,72 +41,65 @@ export function MyOrdersTable() {
     <>
       {/* 테이블 안에 tbody 안에 map은 그 날짜에 시킨 주문내역 전부 불러오게 바꾸기 */}
       {cart.length > 0 ? (
-        <VerticalFlex gap={30}>
+        <VerticalFlex gap={20}>
           {cart.map((item, i) => (
-            <VerticalFlex key={i} gap={10}>
+            <VerticalFlex key={i} gap={10} borderBottom={'1px solid #323232'}>
               <FlexChild>
-                {item.date}
+                <P size={15} weight={500}>{item.date}</P>
               </FlexChild>
 
-              <table className={styles.list_table}>
-                {/* 게시판 셀 너비 조정 */}
-                <colgroup>
-                  <col style={{ width: "60%" }} />
-                  <col style={{ width: "20%" }} />
-                  <col style={{ width: "20%" }} />
-                </colgroup>
+              <VerticalFlex className={styles.list_item} gap={30}>
 
-                {/* 헤더 */}
-                <thead>
-                  <tr className={styles.table_header}>
-                    <th>상품정보</th>
-                    <th>할인 금액</th>
-                    <th>결제 금액</th>
-                  </tr>
-                </thead>
+                <HorizontalFlex className={styles.unit} >
+                  <Image
+                    src={item.thumbnail}
+                    width={80} borderRadius={5}
+                  />
+                  <VerticalFlex
+                    className={styles.unit_content}
+                    width={"auto"}
+                    alignItems="start"
+                  >
+                    <FlexChild gap={5}>
+                      <Span className={styles.unit_brand}>
+                        {item.brand}
+                      </Span>
 
-                {/* 상품 내용 */}
-                <tbody>
-                  <tr>
+                      <Image src={item.delivery} width={13} />
+                    </FlexChild>
+                    <P
+                      className={styles.unit_title}
+                      lineClamp={2}
+                      overflow="hidden"
+                      display="--webkit-box"
+                    >
+                      {item.title}
+                    </P>
+                    <VerticalFlex className={styles.option_list}>
+                      {
+                        item.option.map((option, j)=> (
+                          <HorizontalFlex key={j} gap={10}>
+                            <P>{option.title}</P>
+                            <Span> + {option.price}원</Span>
+                          </HorizontalFlex>
+                        ))
+                      }
+                    </VerticalFlex>
+                  </VerticalFlex>
+                </HorizontalFlex>
 
-                    <td>
-                      <FlexChild className={styles.order_item}>
-                        <Image src={item.thumbnail} width={150} />
+                <HorizontalFlex className={styles.price_box}>
+                  <FlexChild>
+                    <P>할인금액 : </P>
+                    <Span>0원</Span>
+                  </FlexChild>
 
-                        <VerticalFlex className={styles.order_txt}>
-                          <span className={styles.brand}>
-                            {item.brand}
-                          </span>
-
-                          <P className={styles.title}>
-                            {item.title}
-                          </P>
-
-                          <VerticalFlex className={styles.option_list}>
-                            {
-                              item.option.map((option, j)=> (
-                                <FlexChild key={j} gap={5}>
-                                  <P>{option.title}</P>
-                                  <Span> + {option.price}원</Span>
-                                </FlexChild>
-                              ))
-                            }
-                          </VerticalFlex>
-                        </VerticalFlex>
-                      </FlexChild>
-                    </td>
-
-
-                    <td>
-                      <P weight={600} color="#fff">0원</P>
-                    </td>
-
-                    <td>
-                      <P weight={600}>{item.price} ₩</P>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                  <FlexChild>
+                    <P>결제 금액 : </P>
+                    <Span color="var(--main-color1)" weight={600} fontSize={20}>{item.price}₩</Span>
+                  </FlexChild>
+                </HorizontalFlex>
+              </VerticalFlex>
             </VerticalFlex>
           ))}
         </VerticalFlex>
