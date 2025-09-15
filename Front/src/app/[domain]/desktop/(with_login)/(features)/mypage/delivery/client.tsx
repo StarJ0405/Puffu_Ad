@@ -64,8 +64,14 @@ export function DeliveryTable({ initAddresses }: { initAddresses: any }) {
                 </FlexChild>
               </VerticalFlex>
 
-              <FlexChild className={styles.edit_btn}>
-                <Button>배송지 수정</Button>
+              <FlexChild gap={10}>
+                <FlexChild className={styles.edit_btn} onClick={()=> Edit}>
+                  <Button>배송지 수정</Button>
+                </FlexChild>
+  
+                <FlexChild className={styles.edit_btn} onClick={()=> Delete}>
+                  <Button>삭제</Button>
+                </FlexChild>
               </FlexChild>
             </HorizontalFlex>
           ))}
