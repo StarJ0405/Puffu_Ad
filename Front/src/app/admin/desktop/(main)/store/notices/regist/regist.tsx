@@ -18,7 +18,7 @@ import { adminRequester } from "@/shared/AdminRequester";
 import useNavigate from "@/shared/hooks/useNavigate";
 import { textFormat } from "@/shared/regExp";
 import { scrollTo, toast, validateInputs } from "@/shared/utils/Functions";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
 
 const types = ["일반", "이벤트"].map((type) => ({
@@ -60,7 +60,6 @@ export default function ({ stores }: { stores: StoreData[] }) {
           detail,
           adult,
           visible,
-          // type: inputs.current[1].getValue(),
           type: type.value,
         };
 
@@ -182,17 +181,15 @@ export default function ({ stores }: { stores: StoreData[] }) {
                           </P>
                         </FlexChild>
                         <FlexChild>
-                          {/* <Input
-                            ref={(el) => {
-                              inputs.current[1] = el;
-                            }}
-                            value="일반"
-                            validable={false}
-                            placeHolder={"공지사항 타입을 입력하세요"}
-                            name={"타입"}
-                            width={250}
-                          /> */}
-                          <Select options={types} value={type.value} />
+                          <Select
+                            options={types}
+                            value={type.value}
+                            onChange={(value) =>
+                              setType(
+                                types.find((f) => f.value === value) || types[0]
+                              )
+                            }
+                          />
                         </FlexChild>
                       </HorizontalFlex>
                     </FlexChild>

@@ -17,6 +17,9 @@ export class Notice extends BaseEntity {
   @Column({ type: "character varying", nullable: false })
   title?: string;
 
+  @Column({ type: "character varying", nullable: true })
+  thumbnail?: string;
+
   @Column({ type: "text", nullable: true })
   detail?: string;
 

@@ -10,6 +10,7 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import Input from "@/components/inputs/Input";
 import P from "@/components/P/P";
+import Select from "@/components/select/Select";
 import { adminRequester } from "@/shared/AdminRequester";
 import useClientEffect from "@/shared/hooks/useClientEffect";
 import { dateToString, toast, validateInputs } from "@/shared/utils/Functions";
@@ -18,6 +19,12 @@ import clsx from "clsx";
 import { useEffect, useRef, useState } from "react";
 import ModalBase from "../../ModalBase";
 import styles from "./NoticeModal.module.css";
+
+const types = ["일반", "이벤트"].map((type) => ({
+  display: type,
+  value: type,
+}));
+
 const NoticeModal = NiceModal.create(
   ({
     notice,
@@ -44,6 +51,9 @@ const NoticeModal = NiceModal.create(
       new Date(notice.starts_at),
       new Date(notice.ends_at),
     ]);
+    const [type, setType] = useState(
+      types.find((f) => f.value === notice?.type) || types[0]
+    );
     const inputs = useRef<any[]>([]);
     const images = useRef<any[]>([]);
     const [adult, setAdult] = useState<boolean>(notice.adult);
@@ -66,7 +76,7 @@ const NoticeModal = NiceModal.create(
             const _data: NoticeDataFrame = {
               title,
               store_id: notice.store_id,
-              type: inputs.current[1].getValue(),
+              type: type.value,
               detail,
               adult,
               visible,
@@ -125,7 +135,13 @@ const NoticeModal = NiceModal.create(
         title={title}
         buttonText={buttonText}
       >
-        <VerticalFlex padding={"10px 20px"}>
+        <VerticalFlex
+          padding={"10px 20px"}
+          maxHeight={"90dvh"}
+          overflow="scroll"
+          overflowY="scroll"
+          hideScrollbar
+        >
           <FlexChild>
             <HorizontalFlex>
               <FlexChild className={styles.head}>
@@ -153,12 +169,13 @@ const NoticeModal = NiceModal.create(
               </FlexChild>
               <FlexChild className={styles.content}>
                 {edit ? (
-                  <Input
-                    value={notice.type}
-                    width={"100%"}
-                    ref={(el) => {
-                      inputs.current[1] = el;
-                    }}
+                  <Select
+                    zIndex={10080}
+                    options={types}
+                    value={type.value}
+                    onChange={(value) =>
+                      setType(types.find((f) => f.value === value) || types[0])
+                    }
                   />
                 ) : (
                   <P notranslate>{notice.type || "미설정"}</P>
@@ -289,7 +306,12 @@ const NoticeModal = NiceModal.create(
             </HorizontalFlex>
           </FlexChild>
           {edit ? (
-            <FlexChild justifyContent="center" gap={5}>
+            <FlexChild
+              justifyContent="center"
+              gap={5}
+              position="sticky"
+              bottom={0}
+            >
               <Button
                 styleType="admin"
                 padding={"12px 20px"}
