@@ -7,7 +7,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import { HeaderBottom, SideMenuBtn } from './client';
 import styles from "./header.module.css";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 
 
 export default function MobileHeader() {
@@ -21,11 +21,14 @@ export default function MobileHeader() {
    ]
 
    const params = useParams();
+   const pathname = usePathname();
+
+   const shouldHideHeader = params.detail_id || pathname.includes("/orders") || pathname.includes("/border");
 
    return (
       <>
          {
-            !params.detail_id? (
+            !shouldHideHeader? (
                <header className={styles.header}>
                   <HorizontalFlex className={clsx('page_container',styles.headerTop)}>
                      <FlexChild gap={20}>

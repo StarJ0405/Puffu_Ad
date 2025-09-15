@@ -11,7 +11,7 @@ import Span from "@/components/span/Span";
 import clsx from "clsx";
 import { useState } from "react";
 import P from "@/components/P/P";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 
 
 export default function SubPageHeader() {
@@ -19,6 +19,7 @@ export default function SubPageHeader() {
    const [active, setActive] = useState(true);
    const navigate = useNavigate();
    const params = useParams();
+   const pathname = usePathname();
 
    return (
       <HorizontalFlex className={styles.subHeader}>
@@ -28,7 +29,12 @@ export default function SubPageHeader() {
             </FlexChild>
 
             <FlexChild width={'auto'} className={styles.page_title}>
-               <P>코스튬/속옷</P>
+               {pathname.includes("/orders/cart") && (<P>장바구니</P>)}
+               {pathname.includes("/orders/complete") && (<P>결제 완료</P>)}
+               {pathname.includes("/board/notice") && (<P>공지사항</P>)}
+               {pathname.includes("/board/inquiry") && (<P>1:1문의</P>)}
+               {pathname.includes("/board/event") && (<P>이벤트</P>)}
+               {pathname.includes("/products/") && (<P>카테고리명</P>)}
             </FlexChild>
          </FlexChild>
 
@@ -37,9 +43,11 @@ export default function SubPageHeader() {
                <Image src={'/resources/images/bottomNavi/navi_home.png'} width={26} />
             </FlexChild>
 
-            <FlexChild width={'auto'} onClick={()=> navigate('/orders/cart')}>
-               <Image src={'/resources/images/bottomNavi/navi_cart.png'} width={26} />
-            </FlexChild>
+            {!pathname.includes("/orders/cart") && (
+               <FlexChild width={'auto'} onClick={()=> navigate('/orders/cart')}>
+                  <Image src={'/resources/images/bottomNavi/navi_cart.png'} width={26} />
+               </FlexChild>
+            )}
          </FlexChild>
       </HorizontalFlex>
    )

@@ -174,7 +174,7 @@ export function ProductWrapper({
   };
 
   return (
-    <section className="root">
+    <section className="root detail_root">
       <Container className={clsx(styles.detail_container)}>
         <DetailFrame
           product={product}

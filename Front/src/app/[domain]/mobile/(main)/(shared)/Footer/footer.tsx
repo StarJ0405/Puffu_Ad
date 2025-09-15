@@ -16,9 +16,9 @@ export default async function Footer() {
       <footer className={styles.footer}>
         <VerticalFlex className={clsx(styles.info_box, 'page_container')} alignItems="start">
           <FlexChild className={styles.policy_item}>
-            <Link href={"/term"}>이용약관</Link>
+            <Link href={"/policies/term"}>이용약관</Link>
             <Span>|</Span>
-            <Link href={"/privacy"}>개인정보처리방침</Link>
+            <Link href={"/policies/privacy"}>개인정보처리방침</Link>
           </FlexChild>
 
           <VerticalFlex alignItems={"start"} className={styles.text_box}>

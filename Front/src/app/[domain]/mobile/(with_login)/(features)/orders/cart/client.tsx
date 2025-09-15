@@ -1,261 +1,173 @@
 "use client";
-import FlexChild from "@/components/flex/FlexChild";
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
-import VerticalFlex from "@/components/flex/VerticalFlex";
-import Input from "@/components/inputs/Input";
-import P from "@/components/P/P";
-import Select from "@/components/select/Select";
-import Span from "@/components/span/Span";
-import { useState } from "react";
-import style from "./page.module.css";
-import { useCart } from "@/providers/StoreProvider/StorePorivderClient";
-import ChoiceChild from "@/components/choice/ChoiceChild";
-import ChoiceGroup from "@/components/choice/ChoiceGroup";
-import NoContent from "@/components/noContent/noContent";
+import PrivacyContent from "@/components/agreeContent/privacyContent";
+import TermContent from "@/components/agreeContent/TermContent";
 import Button from "@/components/buttons/Button";
 import CheckboxAll from "@/components/choice/checkbox/CheckboxAll";
 import CheckboxChild from "@/components/choice/checkbox/CheckboxChild";
 import CheckboxGroup from "@/components/choice/checkbox/CheckboxGroup";
+import ChoiceChild from "@/components/choice/ChoiceChild";
+import ChoiceGroup from "@/components/choice/ChoiceGroup";
+import FlexChild from "@/components/flex/FlexChild";
+import HorizontalFlex from "@/components/flex/HorizontalFlex";
+import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
+import Input from "@/components/inputs/Input";
 import InputNumber from "@/components/inputs/InputNumber";
+import NoContent from "@/components/noContent/noContent";
+import P from "@/components/P/P";
+import Select from "@/components/select/Select";
+import Span from "@/components/span/Span";
 import ConfirmModal from "@/modals/confirm/ConfirmModal";
-import clsx from "clsx";
+import DeliveryAddEdit from "@/modals/DeliveryAddEdit/DeliveryAddEdit";
+import DeliveryListModal from "@/modals/DeliveryListModal/DeliveryListModal";
+import {
+  useCart,
+  useStore,
+} from "@/providers/StoreProvider/StorePorivderClient";
+import { requester } from "@/shared/Requester";
 import NiceModal from "@ebay/nice-modal-react";
+import clsx from "clsx";
+import { useEffect, useState } from "react";
+import style from "./page.module.css";
+import useNavigate from "@/shared/hooks/useNavigate";
 
-   const cart = [
-      {
-         title: '여성용) 핑크색 일본 st 로제 베일 가운',
-         thumbnail: '/resources/images/dummy_img/product_07.png',
-         brand: '푸푸토이',
-         price: '20,000',
-         option: [
-            {title: '여성용) 핑크색 일본 컬러 레드', price: '0'},
-            {title: '여성용) 핑크색 일본 1+1 증정', price: '1,000'},
-         ],
-         delivery: '/resources/icons/cart/cj_icon.png',
-      },
-      {
-         title: '여성용) 핑크색 일본 st 로제 베일 가운',
-         thumbnail: '/resources/images/dummy_img/product_07.png',
-         brand: '푸푸토이',
-         price: '20,000',
-         option: [
-            {title: '여성용) 핑크색 일본 컬러 레드', price: '0'},
-            {title: '여성용) 핑크색 일본 1+1 증정', price: '1,000'},
-         ],
-         delivery: '/resources/icons/cart/cj_icon.png',
-      }
-   ]
-
-export function DeliveryAdd() {
-   return (
-      <VerticalFlex className="modal_edit_info">
-         <FlexChild className="title" justifyContent="center">
-           <P size={25} weight={600}>
-             배송지 목록
-           </P>
-         </FlexChild>
-
-         <ChoiceGroup name="carts" value={['value']}>
-          <VerticalFlex>
-             <FlexChild>
-                <ChoiceChild id={'item'} />
-                
-             </FlexChild>
-          </VerticalFlex>
-         </ChoiceGroup>
-      </VerticalFlex>
-   )
-}
-
-
-interface CheckboxGroupProps {
-  value: Set<string>;
-  onChange: (value: Set<string>) => void;
-  children: React.ReactNode;
-}
 
 export function CartWrap() {
-   const { cartData } = useCart();
+  const { cartData } = useCart();
 
-   const [CartCheck, setCartCheck] = useState<string[]>([]);
+  const [CartCheck, setCartCheck] = useState<string[]>([]);
 
-   console.log(CartCheck);
+  console.log(CartCheck);
 
+  const deliveryAddEditModal = () => {
+    NiceModal.show(ConfirmModal, {
+      message: <DeliveryAddEdit />,
+      confirmText: "저장",
+      cancelText: "닫기",
+      // onclick: setPaswwordStep(1),
+      withCloseButton: true,
+      onConfirm: async () => {
+        console.log("저장하기");
+      },
+      onCancel: () => {
+        console.log("닫기");
+      },
+    });
+  };
 
-   const deliveryModal = () => {
-      NiceModal.show(ConfirmModal, {
-         // title: '아이디 찾기',
-         message: <DeliveryAdd/>,
-         // confirmText: ``,
-         // onclick: setPaswwordStep(1),
-         withCloseButton: true,
-         onConfirm: async () => {},
-      });
-   };
+  const deliveryListModal = () => {
+    NiceModal.show(ConfirmModal, {
+      message: <DeliveryListModal />,
+      confirmText: "저장",
+      cancelText: "닫기",
+      // onclick: setPaswwordStep(1),
+      withCloseButton: true,
+      onConfirm: async () => {
+        console.log("저장하기");
+      },
+      onCancel: () => {
+        console.log("닫기");
+      },
+    });
+  };
 
   return (
-    <HorizontalFlex className={style.cart_wrap}>
+    <VerticalFlex className={style.cart_wrap}>
       <VerticalFlex className={style.cart_data}>
         <CheckboxGroup name="carts" values={CartCheck} onChange={setCartCheck}>
           <VerticalFlex className={style.product_list}>
             <article>
               <P className={style.list_title}>담은 상품</P>
-              {/* {cartData?.items && cartData.items.length > 0 ? ( */}
-                  <FlexChild alignItems="center" gap={10} paddingBottom={40}>
-                    <CheckboxAll />
-                    <Span>전체선택</Span>
-                  </FlexChild>
-                 {/* ) : (
-                  null
-                 )
-               } */}
+              <FlexChild alignItems="center" gap={10} paddingBottom={25}>
+                <CheckboxAll />
+                <Span size={14}>전체선택</Span>
+              </FlexChild>
             </article>
             {
-               // cartData?.items && cartData.items.length > 0 ? (
+              // cartData?.items && cartData.items.length > 0 ? (
               // 담은 상품 목록
-              cart.map((item: any, i: number) => (
-                <VerticalFlex className={style.cart_item} key={i} gap={20}>
-                  <HorizontalFlex justifyContent="start">
-                    <FlexChild
-                      width={"auto"}
-                      marginRight={15}
-                      alignSelf="start"
-                    >
-                      <CheckboxChild
-                        className={style.checkbox}
-                        id={item}
-                      />
-                    </FlexChild>
-
-                    <FlexChild className={style.unit} width={"auto"}>
-                      <Image src={item.thumbnail} width={150} />
-                      <VerticalFlex
-                        className={style.unit_content}
-                        width={"auto"}
-                        alignItems="start"
-                      >
-                        <Span className={style.unit_brand}>{item.brand}</Span>
-                        <P
-                          className={style.unit_title}
-                          lineClamp={2}
-                          overflow="hidden"
-                          display="--webkit-box"
-                        >
-                          {item.title}
-                        </P>
-                        <FlexChild className={style.unit_price}>
-                          <Image src={item.delivery} width={22} />
-                          <P>
-                            {item.price} <Span>₩</Span>
-                          </P>
-                        </FlexChild>
-                        <VerticalFlex className={style.optionList}>
-                          {/* {item.option.map((opItem, i) => (
-                            <FlexChild key={i}>
-                              <P>
-                                {opItem.title}
-                                <Span> + {opItem.price}원</Span>
-                              </P>
-                            </FlexChild>
-                          ))} */}
-                        </VerticalFlex>
-                      </VerticalFlex>
-                    </FlexChild>
-                  </HorizontalFlex>
-
-                  {/* 갯수 추가 */}
-                  <HorizontalFlex
-                    className={style.totalPrice}
-                    justifyContent="end"
-                  >
-                    <FlexChild width={"auto"}>
-                      <InputNumber
-                        //   value={item.quantity}
-                        //   onChange={handleQuantityChange}
-                        //   disabled={loading}
-                        min={1}
-                        max={99}
-                        hideArrow={false}
-                        width={"40px"}
-                        style={{
-                          fontSize: "14px",
-                          color: "#353535",
-                        }}
-                      />
-                    </FlexChild>
-                    <P>
-                      {item.price} <Span>₩</Span>
-                    </P>
-                  </HorizontalFlex>
-                </VerticalFlex>
-              ))
-            //   ) : (
-            //    <NoContent type={'장바구니'} />
-            //   )
+              cartData?.items
+                .sort((i1, i2) =>
+                  String(`${i1.created_at} ${i1.id}`).localeCompare(
+                    String(`${i2.created_at} ${i2.id}`)
+                  )
+                )
+                ?.map((item: LineItemData) => (
+                  <Item item={item} key={item.id} />
+                ))
+              //   ) : (
+              //    <NoContent type={'장바구니'} />
+              //   )
             }
 
-            {cart.length > 0 ? null : <NoContent type={"장바구니"} />}
+            {cartData?.items?.length ? null : <NoContent type={"장바구니"} />}
           </VerticalFlex>
         </CheckboxGroup>
 
         {/* <FlexChild className={style.delivery_root}>
-                     <VerticalFlex alignItems="start">
-                        <article>
-                           <P className={style.list_title}>배송방법</P>
-                        </article>
+            <VerticalFlex alignItems="start">
+              <article>
+                  <P className={style.list_title}>배송방법</P>
+              </article>
 
-                        <HorizontalFlex marginTop={15}>
-                           <FlexChild className={style.delivery_btn}>
-                              <Image src="/resources/icons/cart/delivery_icon.png" width={36} />
-                              <Span>배송</Span>
-                           </FlexChild>
-                        </HorizontalFlex>
-                     </VerticalFlex>
-                  </FlexChild> */}
+              <HorizontalFlex marginTop={15}>
+                  <FlexChild className={style.delivery_btn}>
+                    <Image src="/resources/icons/cart/delivery_icon.png" width={36} />
+                    <Span>배송</Span>
+                  </FlexChild>
+              </HorizontalFlex>
+            </VerticalFlex>
+        </FlexChild> */}
 
         <FlexChild className={style.delivery_info}>
           <VerticalFlex alignItems="start">
             <article>
               <P className={style.list_title}>배송 정보</P>
-              <Button className={style.delivery_list_btn} onClick={deliveryModal} >
-               {
-                  1 < 0 ?
-                  ('배송지 목록')
-                  : ('배송지 추가')
-               }
-              </Button>
+              {1 < 0 ? (
+                <Button
+                  className={style.delivery_list_btn}
+                  onClick={deliveryAddEditModal}
+                >
+                  배송지 목록
+                </Button>
+              ) : (
+                <Button
+                  className={style.delivery_list_btn}
+                  onClick={deliveryListModal}
+                >
+                  배송지 추가
+                </Button>
+              )}
             </article>
-               {
-                  1 < 0 ? (
-                     <VerticalFlex className={style.info_list}>
-                        <HorizontalFlex className={style.info_item}>
-                           <Span>이름</Span>
-                           <P>테스트</P>
-                        </HorizontalFlex>
-   
-                        <HorizontalFlex className={style.info_item}>
-                           <Span>배송주소</Span>
-                           <P>(35353) 서구 도안동로 234 대전 303동 1302호</P>
-                        </HorizontalFlex>
-   
-                        <HorizontalFlex className={style.info_item}>
-                           <Span>연락처</Span>
-                           <P>01012345678</P>
-                        </HorizontalFlex>
-   
-                        <VerticalFlex
-                           className={clsx(style.info_item, style.info_select_box)}
-                        >
-                           <Span>배송 요청사항 선택</Span>
-   
-                           <SelectBox />
-                        </VerticalFlex>     
-                     </VerticalFlex>
-                  ) : ( // 배송지 없을 때 
-                     <NoContent type="배송지"></NoContent>
-                  )
-               }
+            {1 < 0 ? (
+              <VerticalFlex className={style.info_list}>
+                <HorizontalFlex className={style.info_item}>
+                  <Span>이름</Span>
+                  <P>테스트</P>
+                </HorizontalFlex>
+
+                <HorizontalFlex className={style.info_item}>
+                  <Span>배송주소</Span>
+                  <P>(35353) 서구 도안동로 234 대전 303동 1302호</P>
+                </HorizontalFlex>
+
+                <HorizontalFlex className={style.info_item}>
+                  <Span>연락처</Span>
+                  <P>01012345678</P>
+                </HorizontalFlex>
+
+                <VerticalFlex
+                  className={clsx(style.info_item, style.info_select_box)}
+                >
+                  <Span>배송 요청사항 선택</Span>
+
+                  <SelectBox />
+                </VerticalFlex>
+              </VerticalFlex>
+            ) : (
+              // 배송지 없을 때
+              <NoContent type="배송지"></NoContent>
+            )}
           </VerticalFlex>
         </FlexChild>
 
@@ -325,15 +237,107 @@ export function CartWrap() {
             </P>
           </FlexChild>
 
-          <FlexChild marginTop={30}>
-            {/* 결제 정보 전부 체크되기 전에는 disabled class 처리하고 경고문 띄우기  */}
-            <Button className={clsx(style.payment_btn, style.disabled)}>
-              <Span>결제하기</Span>
-            </Button>
-          </FlexChild>
+          {/* 결제 정보 전부 체크되기 전에는 disabled class 처리하고 경고문 띄우기  */}
+          <Button className={clsx(style.payment_btn, style.disabled)}>
+            <Span>결제하기</Span>
+          </Button>
         </VerticalFlex>
       </FlexChild>
-    </HorizontalFlex>
+    </VerticalFlex>
+  );
+}
+
+export function Item({ item }: { item: LineItemData }) {
+  const { storeData } = useStore();
+  const { cartData, reload } = useCart();
+  const [quantity, setQuantity] = useState(item.quantity);
+  useEffect(() => {
+    setQuantity(item.quantity);
+  }, [item]);
+
+  return (
+    <VerticalFlex className={style.cart_item} gap={20}>
+      <HorizontalFlex justifyContent="start">
+        <FlexChild width={"auto"} marginRight={15} alignSelf="start">
+          <CheckboxChild className={style.checkbox} id={item.id} />
+        </FlexChild>
+
+        <FlexChild className={style.unit} width={"auto"}>
+          <Image
+            src={item?.variant?.thumbnail || item?.variant?.product?.thumbnail}
+            width={80} borderRadius={5}
+          />
+          <VerticalFlex
+            className={style.unit_content}
+            width={"auto"}
+            alignItems="start"
+          >
+            <Span className={style.unit_brand}>
+              {item?.variant?.product?.brand?.name}
+            </Span>
+            <P
+              className={style.unit_title}
+              lineClamp={2}
+              overflow="hidden"
+              display="--webkit-box"
+            >
+              {item.variant.product.title}
+            </P>
+            <P
+              className={style.unit_title}
+              lineClamp={2}
+              overflow="hidden"
+              display="--webkit-box"
+            >
+              {item.variant.title}
+            </P>
+            {/* <FlexChild className={style.unit_price}>
+          <Image
+            src={"/resources/icons/cart/cj_icon.png"}
+            width={22}
+          />
+          <P>
+            {item?.variant?.discount_price || 0} <Span>₩</Span>
+          </P>
+        </FlexChild> */}
+          </VerticalFlex>
+        </FlexChild>
+      </HorizontalFlex>
+
+      {/* 갯수 추가 */}
+      <HorizontalFlex className={style.totalPrice} justifyContent="end">
+        <FlexChild width={"auto"}>
+          <InputNumber
+            min={1}
+            value={quantity}
+            max={item.variant.stack}
+            hideArrow={false}
+            width={"40px"}
+            style={{
+              fontSize: "14px",
+              color: "#353535",
+            }}
+            onChange={(value) => {
+              requester
+                .updateItem({
+                  store_id: storeData?.id,
+                  type: cartData?.type,
+                  item_id: item.id,
+                  quantity: value,
+                  extra_quantity: item.extra_quantity,
+                })
+                .then(() => {
+                  reload();
+                });
+              setQuantity(value);
+            }}
+          />
+        </FlexChild>
+        <P>
+          {item.variant.discount_price * quantity} <Span>₩</Span>
+        </P>
+      </HorizontalFlex>
+    </VerticalFlex>
   );
 }
 
@@ -400,44 +404,49 @@ export function SelectBox() {
 }
 
 export function AgreeInfo() {
+
+  const navigate = useNavigate();
+
   return (
     <VerticalFlex alignItems="start">
       <article>
         <P className={style.list_title}>이용약관 동의</P>
       </article>
 
-      <CheckboxGroup name={'agree_check'}>
-         <VerticalFlex className={style.agree_list}>
-           <HorizontalFlex className={style.agree_item}>
-             <FlexChild width={"auto"} gap={10}>
-               <CheckboxAll></CheckboxAll>
-               <Span>전체 이용약관 동의</Span>
-             </FlexChild>
-   
-             <Span className={style.more_btn}>자세히보기</Span>
-           </HorizontalFlex>
-   
-           <HorizontalFlex className={style.agree_item}>
-             <FlexChild width={"auto"} gap={10}>
-               <CheckboxChild id={'term_check'} />
-               <Span>[필수] 구매조건 확인 및 결제진행 동의</Span>
-             </FlexChild>
-   
-             <Span className={style.more_btn}>자세히보기</Span>
-           </HorizontalFlex>
-   
-           <HorizontalFlex className={style.agree_item}>
-             <FlexChild width={"auto"} gap={10}>
-               <CheckboxChild id={'privacy_check'} />
-               <Span>[필수] 개인정보 수집 및 이용 동의</Span>
-             </FlexChild>
-   
-             <Span className={style.more_btn}>자세히보기</Span>
-           </HorizontalFlex>
-         </VerticalFlex>
+      <CheckboxGroup name={"agree_check"}>
+        <VerticalFlex className={style.agree_list}>
+          <HorizontalFlex className={style.agree_item}>
+            <FlexChild width={"auto"} gap={10}>
+              <CheckboxAll></CheckboxAll>
+              <Span size={14}>전체 이용약관 동의</Span>
+            </FlexChild>
+          </HorizontalFlex>
+
+          <VerticalFlex gap={10}>
+            <HorizontalFlex className={style.agree_item}>
+              <FlexChild width={"auto"} gap={10}>
+                <CheckboxChild id={"term_check"} />
+                <Span size={14}>[필수] 구매조건 확인 및 결제진행 동의</Span>
+              </FlexChild>
+
+              <Span className={style.more_btn} onClick={()=> navigate('/policies/term')}>자세히보기</Span>
+            </HorizontalFlex>
+          </VerticalFlex>
+
+          <VerticalFlex gap={10}>
+            <HorizontalFlex className={style.agree_item}>
+              <FlexChild width={"auto"} gap={10}>
+                <CheckboxChild id={"privacy_check"} />
+                <Span size={14}>[필수] 개인정보 수집 및 이용 동의</Span>
+              </FlexChild>
+
+              <Span className={style.more_btn} onClick={()=> navigate('/policies/praivacy')}>자세히보기</Span>
+            </HorizontalFlex>
+          </VerticalFlex>
+        </VerticalFlex>
       </CheckboxGroup>
 
-      <P>
+      <P size={12} color="#797979" lineHeight={'1.4'}>
         귀하의 정보는 안전하게 보호되고 손상되지 않으며, 당사의 개인정보
         보호정책에 따라서만 처리됩니다.
       </P>
