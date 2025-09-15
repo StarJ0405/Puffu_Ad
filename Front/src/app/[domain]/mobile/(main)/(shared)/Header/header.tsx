@@ -1,3 +1,4 @@
+"use client"
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
@@ -6,9 +7,10 @@ import clsx from "clsx";
 import Link from "next/link";
 import { HeaderBottom, SideMenuBtn } from './client';
 import styles from "./header.module.css";
+import { useParams } from "next/navigation";
 
 
-export default async function MobileHeader() {
+export default function MobileHeader() {
 
    const menu1 = [ // 임시 데이터
       { name: 'BEST 상품', link: '/products/best'},
@@ -18,45 +20,53 @@ export default async function MobileHeader() {
       // { name: '랜덤박스', link: '/products/randomBox'},
    ]
 
+   const params = useParams();
+
    return (
       <>
-         <header className={styles.header}>
-            <HorizontalFlex className={clsx('page_container',styles.headerTop)}>
-               <FlexChild gap={20}>
-                  
-                  <SideMenuBtn/>
+         {
+            !params.detail_id? (
+               <header className={styles.header}>
+                  <HorizontalFlex className={clsx('page_container',styles.headerTop)}>
+                     <FlexChild gap={20}>
+                        
+                        <SideMenuBtn/>
 
-                  <FlexChild className={styles.logo}>
-                     <Link href='/'>
-                        <Image
-                           src='/resources/images/header/logo.png'
-                           width={100}
-                           height={'auto'}
-                        />
-                     </Link>
-                  </FlexChild>
-
-               </FlexChild>
-
-               <FlexChild width={'auto'} className={styles.info_box}>
-                  <VerticalFlex gap={20} alignItems="end">
-                     <HorizontalFlex width={'auto'} gap={10}>
-                        <FlexChild>
-                           <Image src='/resources/images/header/input_search_icon.png' width={22} cursor="pointer"/>
-                        </FlexChild>
-
-                        <FlexChild>
-                           <Link href={'/orders/cart'}>
-                              <Image src='/resources/icons/main/cart_icon.png' width={25} cursor="pointer"/>
+                        <FlexChild className={styles.logo}>
+                           <Link href='/'>
+                              <Image
+                                 src='/resources/images/header/logo.png'
+                                 width={100}
+                                 height={'auto'}
+                              />
                            </Link>
                         </FlexChild>
-                     </HorizontalFlex>
-                  </VerticalFlex>
-               </FlexChild>
-            </HorizontalFlex>
 
-            <HeaderBottom menu1={menu1}/>
-         </header>
+                     </FlexChild>
+
+                     <FlexChild width={'auto'} className={styles.info_box}>
+                        <VerticalFlex gap={20} alignItems="end">
+                           <HorizontalFlex width={'auto'} gap={10}>
+                              <FlexChild>
+                                 <Image src='/resources/images/header/input_search_icon.png' width={22} cursor="pointer"/>
+                              </FlexChild>
+
+                              <FlexChild>
+                                 <Link href={'/orders/cart'}>
+                                    <Image src='/resources/icons/main/cart_icon.png' width={25} cursor="pointer"/>
+                                 </Link>
+                              </FlexChild>
+                           </HorizontalFlex>
+                        </VerticalFlex>
+                     </FlexChild>
+                  </HorizontalFlex>
+
+                  <HeaderBottom menu1={menu1}/>
+               </header>
+            ) : (
+               <div style={{display: "none"}}></div>
+            )
+         }
       </>
    )
 }

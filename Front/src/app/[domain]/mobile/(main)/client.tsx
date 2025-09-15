@@ -302,7 +302,7 @@ export function NewProducts({ initProducts }: { initProducts: Pageable }) {
   return (
     <FlexChild marginBottom={20}>
       <VerticalFlex>
-        <HorizontalFlex
+        {/* <HorizontalFlex
           className={styles.titleBox}
           alignItems="end"
           gap={20}
@@ -319,6 +319,23 @@ export function NewProducts({ initProducts }: { initProducts: Pageable }) {
           </div>
           <FlexChild width={"auto"}>
             <Link className={styles.linkBtn} href={"/products/best"}>
+              더보기
+            </Link>
+          </FlexChild>
+        </HorizontalFlex> */}
+        <HorizontalFlex
+          className={styles.titleBox}
+          alignItems="end"
+          gap={20}
+        >
+          <div className={styles.title}>
+            <h2 className="SacheonFont">
+              <Span>따끈따끈</Span> 신상품
+            </h2>
+          </div>
+
+          <FlexChild width={"auto"}>
+            <Link className={styles.linkBtn} href={"/products/new"}>
               더보기
             </Link>
           </FlexChild>

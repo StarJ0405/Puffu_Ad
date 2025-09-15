@@ -1,22 +1,13 @@
-import Container from "@/components/container/Container";
 import FlexChild from "@/components/flex/FlexChild";
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import Image from "@/components/Image/Image";
-import P from "@/components/P/P";
-import Span from "@/components/span/Span";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivder";
 import { requester } from "@/shared/Requester";
 import clsx from "clsx";
 import { Params } from "next/dist/server/request/params";
 import { notFound } from "next/navigation";
-import {
-  DetailTabContainer,
-  DetailFrame,
-  ProductSlider,
-} from "./client";
+import { ProductSlider, ProductWrapper } from "./client";
 import styles from "./page.module.css";
-import { log } from "@/shared/utils/Functions";
-import { useAuth } from "@/providers/AuthPorivder/AuthPorivder";
+import SubPageHeader from "@/components/subPageHeader/subPageHeader";
 
 export default async function ({ params }: { params: Promise<Params> }) {
   const { detail_id } = await params;
@@ -48,28 +39,23 @@ export default async function ({ params }: { params: Promise<Params> }) {
   // console.log('상품 정보', relationProducts);
 
   return (
-    <section className="root">
-      <Container
-        className={clsx(styles.detail_container)}
-      >
-        <DetailFrame initCondition={initCondition} initProduct={initProduct} />
-
-        <VerticalFlex position="relative" marginTop={20} alignItems="start" className={styles.slide_wrap}>
+    <>
+      <SubPageHeader />
+      <ProductWrapper initCondition={initCondition} initProduct={initProduct}>
+        <VerticalFlex position="relative" alignItems="start" className={styles.slide_wrap}>
           <FlexChild marginBottom={20}>
             <h3 className={clsx("SacheonFont", styles.slide_title)}>
               보시는 상품과 비슷한 추천 상품
             </h3>
           </FlexChild>
-
-          <ProductSlider id={"relation"} lineClamp={1} listArray={relationProducts.content} />
+  
+          <ProductSlider
+            id={"relation"}
+            lineClamp={1}
+            listArray={relationProducts.content}
+          />
         </VerticalFlex>
-
-        <HorizontalFlex marginTop={30} alignItems="start" gap={20}>
-          <VerticalFlex className={styles.contents_container}>
-            <DetailTabContainer initCondition={initCondition} initProduct={initProduct} />
-          </VerticalFlex>
-        </HorizontalFlex>
-      </Container>
-    </section>
+      </ProductWrapper>
+    </>
   );
 }

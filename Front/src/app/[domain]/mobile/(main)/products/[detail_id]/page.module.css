@@ -10,7 +10,6 @@
 /* 화면 썸네일 */
 .detail_thumbnail {
    width: 100%;
-   max-width: 650px;
    justify-content: center;
 }
 
@@ -49,7 +48,7 @@
 
 
 .detail_infoBox .sale_price {
-   color: var(--main-color1);
+   color: #DEDEDE;
    font-size: 25px;
    font-weight: 600;
 }
@@ -88,100 +87,6 @@
    padding: 20px 0 40px;
 }
 
-/* 옵션 상자 */
-.option_box {
-   padding: 15px;
-   background: #262626;
-   border-radius: 5px;
-   width: 100%;
-   gap: 30px;
-   margin-bottom: 25px;
-}
-
-.option_box .option_item {
-   /* justify-content: start !important; */
-   gap: 20px;
-}
-
-.option_box .txt_item {
-   align-items: center;
-   gap: 5px;
-   font-size: 14px;
-   color: #fff;
-   flex: 1;
-   line-height: 1.2;
-   text-align: right;
-   justify-content: space-between;
-}
-
-.option_box .txt_item .op_name {
-   max-width: 200px;
-   text-align: left !important;
-}
-
-.total_box {
-   width: 100%;
-   margin-bottom: 25px;
-}
-.total_box .price {
-   color: #fff;
-   font-size: 35px;
-   font-weight: 700;
-   line-height: 1.2;
-}
-
-.total_box .total_txt {
-   font-size: 20px !important;
-   color: #fff !important;
-   font-weight: 600 !important;
-}
-
-
-/* 구매버튼 그룹 */
-
-.buyButton_box {
-   --border-style : 1px solid #535353;
-   gap: 10px; width: 100%;
-}
-
-.buyButton_box .heart_btn {
-   padding: 10px 12px;
-   border: var(--border-style);
-   border-radius: 5px;
-   background: #101113;
-}
-
-.buyButton_box .cart_btn {
-   background: #101113;
-   border: var(--border-style);
-}
-
-.buyButton_box .cart_btn,
-.buyButton_box .buy_btn {
-   width: 100%; max-width: 245px;
-   border-radius: 5px;
-   font-size: 20px;
-   font-weight: 600;
-   text-align: center;
-   padding: 15px 5px;
-   transition: all 0.1s;
-}
-
-.buyButton_box .buy_btn {
-   background: #fff;
-   color: var(--main-color1);
-}
-
-.buyButton_box .cart_btn:hover {
-   border-color: var(--main-color1);
-   color: var(--main-color1);
-}
-
-.buyButton_box .buy_btn:hover {
-   background: var(--main-color1);
-   color: #fff;
-}
-
 
 /* 프로덕트 슬라이더 */
 .slide_wrap {
@@ -217,11 +122,139 @@
 }
 
 
+/* 하단 고정 구매버튼 그룹 */
+.bottom_pay_box {
+   position: fixed;
+   bottom: 0;
+   left: 0;
+   width: 100%;
+   z-index: 1000;
+   padding: 7px 10px;
+   background: linear-gradient(180deg, #313131, #1E1E20);
+}
+
+.buyButton_box {
+   gap: 10px; width: 100%;
+}
+
+.buyButton_box .heart_btn {
+   background: none;
+}
+
+.buyButton_box .buy_btn {
+   width: 100%;
+   border-radius: 5px;
+   font-size: 20px;
+   font-weight: 600;
+   text-align: center;
+   padding: 15px 5px;
+   transition: all 0.1s;
+}
+
+.buyButton_box .buy_btn {
+   background: #050505;
+   color: var(--main-color1);
+}
+
+
+/* 하단 고정 버튼 모달 */
+.pay_cart_modal {
+   height: 100%;
+   justify-content: center;
+   padding: 15px;
+   background: #222;
+}
+
+.pay_cart_modal .title_header {
+   justify-content: center;
+   font-size: 18px;
+   font-weight: 600;
+   color: #fff;
+}
+
+
+/* 옵션 상자 */
+.option_box {
+   width: 100%;
+   gap: 30px;
+}
+
+.option_box .option_item {
+   gap: 20px;
+   height: auto;
+   flex: unset;
+   margin-top: 35px;
+}
+
+.option_box .txt_item {
+   align-items: end;
+   gap: 5px;
+   font-size: 14px;
+   color: #fff;
+   flex: 1;
+   line-height: 1.2;
+   text-align: right;
+   justify-content: space-between;
+}
+
+.option_box .txt_item .op_name {
+   max-width: 200px;
+   text-align: left !important;
+}
+
+.total_box {
+   width: 100%;
+   justify-content: end;
+   gap: 15px;
+}
+
+.total_box .total_item {
+   gap: 13px;
+   justify-content: end;
+}
+
+.total_box .price {
+   color: var(--main-color1);
+   font-size: 25px;
+   font-weight: 700;
+   line-height: 1.2;
+}
+
+.total_box .total_txt {
+   font-size: 14px !important;
+   color: #fff !important;
+   font-weight: 600 !important;
+}
+
+.total_box .button_box {
+   gap: 10px;
+}
+
+.total_box .cart_btn,
+.total_box .buy_btn {
+   width: 100%;
+   padding: 14px 5px;
+   color: #fff;
+   font-size: 15px;
+   font-weight: 700;
+}
+
+.total_box .cart_btn {
+   border: 1px solid #fff;
+   background: transparent;
+}
+
+.total_box .buy_btn {
+   background: var(--main-color2);
+}
+
+
+
 
 
 
 /* sticky 구매창 */
-.mini_infoBox {
+/* .mini_infoBox {
    width: 100%;
    max-width: 410px;
    background: var(--infoBox-bg);
@@ -270,7 +303,7 @@
 .mini_infoBox .buyButton_box .buy_btn {
    width: 100% !important;
    max-width: 100%;
-}
+} */
 
 
 
@@ -285,10 +318,11 @@
 .contents_container .tab_wrap {
    gap: 20px;
    position: sticky;
-   top: 53px;
+   top: 50px;
    z-index: 100;
-   padding: 0 10px;
+   padding: 13px 10px 10px;
    background: #221f22;
+   border-bottom: 1px solid #595959;
 }
 
 .contents_container .tab_wrap .content_tab {
@@ -311,13 +345,13 @@
 
 .contents_container .tab_wrap .content_tab p .list_count {
    margin-left: 5px !important;
-   padding: 2px 7px;
+   padding: 1px 5px;
    background: #FF2A2A;
    color: #fff;
-   font-size: 11px;
+   font-size: 10px;
    border-radius: 5px;
    position: absolute;
-   top: -13px;
+   top: -5px;
    right: -15px;
    width: fit-content;
    /* display: block; */

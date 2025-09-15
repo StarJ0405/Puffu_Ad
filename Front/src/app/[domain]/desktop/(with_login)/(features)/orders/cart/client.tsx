@@ -30,30 +30,6 @@ import clsx from "clsx";
 import { useEffect, useState } from "react";
 import style from "./page.module.css";
 
-//  const cart = [
-//     {
-//        title: '여성용) 핑크색 일본 st 로제 베일 가운',
-//        thumbnail: '/resources/images/dummy_img/product_07.png',
-//        brand: '푸푸토이',
-//        price: '20,000',
-//        option: [
-//           {title: '여성용) 핑크색 일본 컬러 레드', price: '0'},
-//           {title: '여성용) 핑크색 일본 1+1 증정', price: '1,000'},
-//        ],
-//        delivery: '/resources/icons/cart/cj_icon.png',
-//     },
-//     {
-//        title: '여성용) 핑크색 일본 st 로제 베일 가운',
-//        thumbnail: '/resources/images/dummy_img/product_07.png',
-//        brand: '푸푸토이',
-//        price: '20,000',
-//        option: [
-//           {title: '여성용) 핑크색 일본 컬러 레드', price: '0'},
-//           {title: '여성용) 핑크색 일본 1+1 증정', price: '1,000'},
-//        ],
-//        delivery: '/resources/icons/cart/cj_icon.png',
-//     }
-//  ]
 
 export function CartWrap() {
   const { cartData } = useCart();
