@@ -19,9 +19,9 @@ import HorizontalFlex from "@/components/flex/HorizontalFlex";
 export default async function () {
   return (
     <>
-      <VerticalFlex className={clsx(mypage.box_frame, styles.delete_box)} gap={35}>
-        <FlexChild justifyContent="center" marginTop={30}>
-          <P size={35} color="#fff" weight={600}>회원탈퇴</P>
+      <VerticalFlex className={clsx(mypage.box_frame, styles.delete_box)} gap={20}>
+        <FlexChild justifyContent="center">
+          <P size={25} color="#fff" weight={600}>회원탈퇴</P>
         </FlexChild>
 
         <VerticalFlex className={styles.delete_content}>
@@ -86,7 +86,7 @@ export default async function () {
                      <label>
                         <FlexChild gap={10} margin={'30px 0'}>
                            <CheckboxChild id={'delete_member'} />
-                           <P>위 내용을 모두 확인하였고, 동의합니다.</P>
+                           <P size={14}>위 내용을 모두 확인하였고, 동의합니다.</P>
                         </FlexChild>
                      </label>
                   </FlexChild>
