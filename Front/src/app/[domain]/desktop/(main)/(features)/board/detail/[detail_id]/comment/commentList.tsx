@@ -21,7 +21,7 @@ import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import { useParams } from "next/navigation";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
-import ProductCard from "@/components/card/ProductCard";
+import ProductCard from "@/components/card/dummyProductCard";
 import styles from "./commentList.module.css";
 import boardStyle from "../../boardGrobal.module.css";
 import Input from "@/components/inputs/Input";

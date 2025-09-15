@@ -20,7 +20,7 @@ import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import { useParams } from "next/navigation";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
-import ProductCard from "@/components/card/ProductCard";
+import ProductCard from "@/components/card/dummyProductCard";
 import Input from "@/components/inputs/Input";
 import InputNumber from "@/components/inputs/InputNumber";
 import ListPagination from "@/components/listPagination/ListPagination";

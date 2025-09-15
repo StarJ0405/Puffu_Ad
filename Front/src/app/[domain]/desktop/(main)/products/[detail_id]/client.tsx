@@ -11,7 +11,7 @@ import clsx from "clsx";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styles from "./page.module.css";
 
-import TestProductCard from "@/components/card/TestProductCard";
+import ProductCard from "@/components/card/ProductCard";
 import NoContent from "@/components/noContent/noContent";
 import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -470,58 +470,51 @@ export function ProductSlider({
   lineClamp?: number;
   listArray: any;
 }) {
-  return listArray.length > 0 ? (
-    <FlexChild id={id} className={styles.ProductSlider}>
-      <Swiper
-        loop={false}
-        slidesPerView={6}
-        speed={600}
-        spaceBetween={20}
-        modules={[Autoplay, Navigation]}
-        autoplay={{ delay: 4000 }}
-        navigation={{
-          prevEl: `#${id} .${styles.prevBtn}`,
-          nextEl: `#${id} .${styles.nextBtn}`,
-        }}
-      >
-        {listArray.map((product: ProductData, i: number) => {
-          return (
-            <SwiperSlide key={i}>
-              <TestProductCard
-                product={
-                  {
-                    id: product.id,
-                    title: product.title,
-                    thumbnail: product.thumbnail,
-                    price: product.price,
-                    discount_price: product.discount_price,
-                    discount_rate: product.discount_rate,
-                    store_name: product.brand.name,
-                    variants: product.variants,
-                  } as any
-                }
-                lineClamp={lineClamp ?? 2}
-              />
-            </SwiperSlide>
-          );
-        })}
-      </Swiper>
+  return (
+    <>
+      {listArray.length > 0 ? (
+        <FlexChild id={id} className={styles.ProductSlider}>
+          <Swiper
+            loop={false}
+            slidesPerView={6}
+            speed={600}
+            spaceBetween={20}
+            modules={[Autoplay, Navigation]}
+            autoplay={{ delay: 4000 }}
+            navigation={{
+              prevEl: `#${id} .${styles.prevBtn}`,
+              nextEl: `#${id} .${styles.nextBtn}`,
+            }}
+          >
+            {listArray.map((product: ProductData, i: number) => {
+              return (
+                <SwiperSlide key={i}>
+                  <ProductCard
+                    product={product}
+                    lineClamp={lineClamp ?? 2}
+                  />
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
 
-      <div className={clsx(styles.naviBtn, styles.prevBtn)}>
-        <Image
-          src={"/resources/icons/arrow/slide_arrow.png"}
-          width={10}
-        ></Image>
-      </div>
-      <div className={clsx(styles.naviBtn, styles.nextBtn)}>
-        <Image
-          src={"/resources/icons/arrow/slide_arrow.png"}
-          width={10}
-        ></Image>
-      </div>
-    </FlexChild>
-  ) : (
-    <NoContent type="상품" />
+          <div className={clsx(styles.naviBtn, styles.prevBtn)}>
+            <Image
+              src={"/resources/icons/arrow/slide_arrow.png"}
+              width={10}
+            ></Image>
+          </div>
+          <div className={clsx(styles.naviBtn, styles.nextBtn)}>
+            <Image
+              src={"/resources/icons/arrow/slide_arrow.png"}
+              width={10}
+            ></Image>
+          </div>
+        </FlexChild>
+      ) : (
+        <NoContent type="상품" />
+      )}
+    </>
   );
 }
 

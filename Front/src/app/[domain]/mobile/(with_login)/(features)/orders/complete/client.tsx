@@ -15,7 +15,7 @@ import Link from "next/link";
 import Button from "@/components/buttons/Button";
 import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import TestProductCard from "@/components/card/TestProductCard";
+import ProductCard from "@/components/card/ProductCard";
 
 export function CompleteForm() {
   return (
@@ -355,7 +355,7 @@ export function ChoiseProductSlider({
             {ListProduct.map((product, i) => {
               return (
                 <SwiperSlide key={i}>
-                  <TestProductCard
+                  <ProductCard
                     product={product}
                     lineClamp={lineClamp ?? 2}
                   />

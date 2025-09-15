@@ -1,5 +1,5 @@
 "use client";
-import TestProductCard from "@/components/card/TestProductCard";
+import ProductCard from "@/components/card/ProductCard";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import MasonryGrid from "@/components/masonry/MasonryGrid";
 import NoContent from "@/components/noContent/noContent";
@@ -86,7 +86,7 @@ export function WishListTable({ initWishList }: { initWishList: Pageable }) {
           <MasonryGrid width={'100%'} gap={20} breakpoints={4}>
             {ListProduct.map((product, i) => {
               return (
-                <TestProductCard
+                <ProductCard
                   product={wishes}
                   lineClamp={2}
                   key={i}

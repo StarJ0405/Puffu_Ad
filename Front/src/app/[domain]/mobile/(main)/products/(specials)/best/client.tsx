@@ -10,7 +10,7 @@ import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import Pstyles from "../../products.module.css";
 import MasonryGrid from "@/components/masonry/MasonryGrid";
-import TestProductCard from "@/components/card/TestProductCard";
+import ProductCard from "@/components/card/ProductCard";
 import NoContent from "@/components/noContent/noContent";
 import {BaseProductList} from "../../baseClient";
 
