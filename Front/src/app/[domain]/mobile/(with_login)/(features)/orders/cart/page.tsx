@@ -10,7 +10,6 @@ export default async function () {
 
    return (
       <>
-         <SubPageHeader />
          <section className="root page_container">
             <Container className={clsx(style.container)}>
                <CartWrap/>

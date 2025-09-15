@@ -35,7 +35,7 @@ export default async function () {
            </FlexChild>
    
             <VerticalFlex marginTop={80} gap={20}>
-               <FlexChild>
+               <FlexChild justifyContent="center">
                   <P size={20} className="SacheonFont">함께 관심 가지면 좋은 상품</P>
                </FlexChild>
                <ChoiseProductSlider id={'choise'} />
