@@ -18,62 +18,106 @@ import P from "@/components/P/P";
 import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
 import ConfirmModal from "@/modals/confirm/ConfirmModal";
-import DeliveryAddEdit from "@/modals/DeliveryAddEdit/DeliveryAddEdit";
-import DeliveryListModal from "@/modals/DeliveryListModal/DeliveryListModal";
+import DeliveryAddEdit, {
+  DeliveryAddEditRef,
+} from "@/modals/DeliveryAddEdit/DeliveryAddEdit";
+import DeliveryListModal, {
+  DeliveryListRef,
+} from "@/modals/DeliveryListModal/DeliveryListModal";
 import {
   useCart,
   useStore,
 } from "@/providers/StoreProvider/StorePorivderClient";
+import useAddress from "@/shared/hooks/main/useAddress";
 import { requester } from "@/shared/Requester";
+import { toast } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import style from "./page.module.css";
-
 
 export function CartWrap() {
   const { cartData } = useCart();
+  const { addresses, mutate } = useAddress();
+  const [address, setAddress] = useState<AddressData>();
+  const [select, setSelected] = useState<string[]>(
+    cartData?.items.map((i) => i.id) || []
+  );
+  const formRef = useRef<DeliveryAddEditRef>(null);
+  const listRef = useRef<DeliveryListRef>(null);
+  const Create = (data: Partial<AddressDataFrame>) => {
+    requester.createAddress(data, () => mutate());
+  };
 
-  const [CartCheck, setCartCheck] = useState<string[]>([]);
-
-  console.log(CartCheck);
-
-  const deliveryAddEditModal = () => {
+  const deliveryAddModal = () => {
     NiceModal.show(ConfirmModal, {
-      message: <DeliveryAddEdit />,
+      message: <DeliveryAddEdit ref={formRef} />,
       confirmText: "저장",
       cancelText: "닫기",
+      preventable: true,
       // onclick: setPaswwordStep(1),
       withCloseButton: true,
       onConfirm: async () => {
-        console.log("저장하기");
+        const formData = formRef.current?.getFormData();
+
+        if (!formData) {
+          console.error("폼 데이터를 가져올 수 없습니다.");
+          return;
+        }
+        if (
+          !formData.name ||
+          !formData.phone ||
+          !formData.postal_code ||
+          !formData.address1 ||
+          !formData.address2
+        ) {
+          toast({ message: "정보를 전부 기입해주세요." });
+          return false;
+        }
+
+        try {
+          await Create(formData);
+          NiceModal.hide(ConfirmModal);
+          return true;
+        } catch (error) {
+          console.error("저장 중 오류가 발생했습니다.", error);
+          // 여기에 사용자에게 오류를 알리는 토스트 메시지 등을 추가할 수 있습니다.
+        }
       },
       onCancel: () => {
-        console.log("닫기");
+        NiceModal.hide(ConfirmModal);
       },
     });
   };
 
   const deliveryListModal = () => {
     NiceModal.show(ConfirmModal, {
-      message: <DeliveryListModal />,
+      message: <DeliveryListModal selectable ref={listRef} address={address} />,
       confirmText: "저장",
       cancelText: "닫기",
       // onclick: setPaswwordStep(1),
+      preventable: true,
       withCloseButton: true,
       onConfirm: async () => {
-        console.log("저장하기");
-      },
-      onCancel: () => {
-        console.log("닫기");
+        const addr = listRef.current?.getSelect();
+        if (addr) setAddress(addr);
+        return true;
       },
     });
   };
+  useEffect(() => {
+    const _default = addresses.find((f) => f.default);
+    setAddress(_default);
+  }, [addresses]);
 
   return (
     <HorizontalFlex className={style.cart_wrap}>
       <VerticalFlex className={style.cart_data}>
-        <CheckboxGroup name="carts" values={CartCheck} onChange={setCartCheck}>
+        <CheckboxGroup
+          name="carts"
+          initialValues={select}
+          onChange={setSelected}
+        >
           <VerticalFlex className={style.product_list}>
             <article>
               <P className={style.list_title}>담은 상품</P>
@@ -83,7 +127,6 @@ export function CartWrap() {
               </FlexChild>
             </article>
             {
-              // cartData?.items && cartData.items.length > 0 ? (
               // 담은 상품 목록
               cartData?.items
                 .sort((i1, i2) =>
@@ -94,9 +137,6 @@ export function CartWrap() {
                 ?.map((item: LineItemData) => (
                   <Item item={item} key={item.id} />
                 ))
-              //   ) : (
-              //    <NoContent type={'장바구니'} />
-              //   )
             }
 
             {cartData?.items?.length ? null : <NoContent type={"장바구니"} />}
@@ -122,37 +162,40 @@ export function CartWrap() {
           <VerticalFlex alignItems="start">
             <article>
               <P className={style.list_title}>배송 정보</P>
-              {1 < 0 ? (
+              {addresses.length > 0 ? (
                 <Button
                   className={style.delivery_list_btn}
-                  onClick={deliveryAddEditModal}
+                  onClick={deliveryListModal}
                 >
                   배송지 목록
                 </Button>
               ) : (
                 <Button
                   className={style.delivery_list_btn}
-                  onClick={deliveryListModal}
+                  onClick={deliveryAddModal}
                 >
                   배송지 추가
                 </Button>
               )}
             </article>
-            {1 < 0 ? (
+            {address ? (
               <VerticalFlex className={style.info_list}>
                 <HorizontalFlex className={style.info_item}>
                   <Span>이름</Span>
-                  <P>테스트</P>
+                  <P>{address.name}</P>
                 </HorizontalFlex>
 
                 <HorizontalFlex className={style.info_item}>
                   <Span>배송주소</Span>
-                  <P>(35353) 서구 도안동로 234 대전 303동 1302호</P>
+                  <P>
+                    ({address.postal_code}) {address.address1}{" "}
+                    {address.address2}
+                  </P>
                 </HorizontalFlex>
 
                 <HorizontalFlex className={style.info_item}>
                   <Span>연락처</Span>
-                  <P>01012345678</P>
+                  <P>{address.phone}</P>
                 </HorizontalFlex>
 
                 <VerticalFlex

@@ -1,27 +1,18 @@
 "use client";
 import FlexChild from "@/components/flex/FlexChild";
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Input from "@/components/inputs/Input";
 import P from "@/components/P/P";
-import Span from "@/components/span/Span";
 
+import Button from "@/components/buttons/Button";
 import {
-  useState,
-  useEffect,
   forwardRef,
+  useEffect,
   useImperativeHandle,
   useMemo,
+  useState,
 } from "react";
-import style from "./page.module.css";
-import Button from "@/components/buttons/Button";
-import CheckboxAll from "@/components/choice/checkbox/CheckboxAll";
-import CheckboxChild from "@/components/choice/checkbox/CheckboxChild";
-import CheckboxGroup from "@/components/choice/checkbox/CheckboxGroup";
 import { useDaumPostcodePopup } from "react-daum-postcode";
-
-import InputNumber from "@/components/inputs/InputNumber";
-
 
 interface DeliveryAddEditProps {
   address?: AddressDataFrame;
@@ -55,11 +46,6 @@ const DeliveryAddEdit = forwardRef<DeliveryAddEditRef, DeliveryAddEditProps>(
       }
     }, [address]);
 
-    // [디버깅 로그 1] Props가 변경될 때마다 확인
-    useEffect(() => {
-      console.log("DeliveryAddEdit Props:", address);
-    }, [address]);
-
     useImperativeHandle(ref, () => ({
       getFormData: () => formData as AddressDataFrame,
     }));
@@ -67,7 +53,6 @@ const DeliveryAddEdit = forwardRef<DeliveryAddEditRef, DeliveryAddEditProps>(
     const openPostcode = useDaumPostcodePopup();
 
     const handleComplete = (data: any) => {
-      console.log(data);
       let fullAddress = data.address;
       let extraAddress = "";
 
@@ -98,9 +83,6 @@ const DeliveryAddEdit = forwardRef<DeliveryAddEditRef, DeliveryAddEditProps>(
         // It's a raw value
         actualValue = value;
       }
-
-      // [디버깅 로그 2] State가 변경될 때마다 확인
-      console.log(`State 변경: key=${key}, value=`, actualValue);
 
       let processedValue = actualValue;
 
@@ -136,13 +118,7 @@ const DeliveryAddEdit = forwardRef<DeliveryAddEditRef, DeliveryAddEditProps>(
       <VerticalFlex className="modal_edit_info">
         <FlexChild className="title" justifyContent="center">
           <P size={25} weight={600}>
-            {
-              1 > 0 ? (
-                '배송지 추가'
-              ) : (
-                '배송지 수정'
-              )
-            }
+            {address?.id ? "배송지 수정" : "배송지 추가"}
           </P>
         </FlexChild>
 
@@ -226,14 +202,23 @@ const DeliveryAddEdit = forwardRef<DeliveryAddEditRef, DeliveryAddEditProps>(
                   />
                 </FlexChild>
               </VerticalFlex>
-              <label htmlFor="delivery_check" style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+              <label
+                htmlFor="delivery_check"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                }}
+              >
                 <input
                   type="checkbox"
                   id="delivery_check"
                   name="default"
                   checked={!!formData.default}
-                  onChange={(e) => handleFormChange("default", e.target.checked)}
-                  style={{ marginRight: '5px' }}
+                  onChange={(e) =>
+                    handleFormChange("default", e.target.checked)
+                  }
+                  style={{ marginRight: "5px" }}
                 />
                 <P size={14} color="#333">
                   기본 배송지로 설정

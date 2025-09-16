@@ -6,43 +6,24 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import NoContent from "@/components/noContent/noContent";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
-import styles from "./page.module.css";
 import mypage from "../mypage.module.css";
+import styles from "./page.module.css";
 
-import useAddress from "@/shared/hooks/main/useAddress";
-import { requester } from "@/shared/Requester";
-import { log } from "@/shared/utils/Functions";
+import ConfirmModal from "@/modals/confirm/ConfirmModal";
 import DeliveryAddEdit, {
   DeliveryAddEditRef,
 } from "@/modals/DeliveryAddEdit/DeliveryAddEdit";
 import DeliveryListModal from "@/modals/DeliveryListModal/DeliveryListModal";
+import useAddress from "@/shared/hooks/main/useAddress";
+import { requester } from "@/shared/Requester";
+import { log, toast } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
-import ConfirmModal from "@/modals/confirm/ConfirmModal";
 import clsx from "clsx";
 import { useRef } from "react";
-
-interface DummyAddress {
-  address: string;
-  name: string;
-  defaultAdd: boolean;
-}
 
 export function DeliveryClient({ initAddresses }: { initAddresses: any }) {
   const { addresses, mutate } = useAddress(initAddresses?.content || []);
   const formRef = useRef<DeliveryAddEditRef>(null);
-  log(addresses);
-  const deliveryTest = [
-    {
-      address: "대전광역시 관저중로 30-26(관저동)",
-      name: "김철수",
-      defaultAdd: true,
-    },
-    {
-      address: "대전광역시 서구 둔산동 가람아파트 3단지 1207호",
-      name: "안동형",
-      defaultAdd: false,
-    },
-  ];
 
   const Delete = (addr: AddressData) => {
     requester.deleteAddresses(addr.id, {}, () => mutate());
@@ -59,6 +40,7 @@ export function DeliveryClient({ initAddresses }: { initAddresses: any }) {
       message: <DeliveryAddEdit ref={formRef} address={addressData} />,
       confirmText: "저장",
       cancelText: "닫기",
+      preventable: true,
       // onclick: setPaswwordStep(1),
       withCloseButton: true,
       onConfirm: async () => {
@@ -68,6 +50,16 @@ export function DeliveryClient({ initAddresses }: { initAddresses: any }) {
           console.error("폼 데이터를 가져올 수 없습니다.");
           return;
         }
+        if (
+          !formData.name ||
+          !formData.phone ||
+          !formData.postal_code ||
+          !formData.address1 ||
+          !formData.address2
+        ) {
+          toast({ message: "정보를 전부 기입해주세요." });
+          return false;
+        }
 
         try {
           if (addressData?.id) {
@@ -76,6 +68,7 @@ export function DeliveryClient({ initAddresses }: { initAddresses: any }) {
             await Create(formData);
           }
           NiceModal.hide(ConfirmModal);
+          return true;
         } catch (error) {
           console.error("저장 중 오류가 발생했습니다.", error);
           // 여기에 사용자에게 오류를 알리는 토스트 메시지 등을 추가할 수 있습니다.
@@ -100,22 +93,6 @@ export function DeliveryClient({ initAddresses }: { initAddresses: any }) {
           console.error("삭제 중 오류가 발생했습니다.", error);
           // 여기에 사용자에게 오류를 알리는 토스트 메시지 등을 추가할 수 있습니다.
         }
-      },
-    });
-  };
-
-  const deliveryListModal = () => {
-    NiceModal.show(ConfirmModal, {
-        message: <DeliveryListModal />,
-        confirmText: '저장',
-        cancelText: "닫기",
-        // onclick: setPaswwordStep(1),
-        withCloseButton: true,
-        onConfirm: async () => {
-        console.log("저장하기");
-        },
-        onCancel: () => {
-        console.log("닫기");
       },
     });
   };

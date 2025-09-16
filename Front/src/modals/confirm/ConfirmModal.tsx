@@ -29,6 +29,7 @@ const ConfirmModal = NiceModal.create(
     slideUp = false,
     clickOutsideToClose = true,
     classNames,
+    preventable = false, // true시 onConfirm false면 캔슬됨
   }: any) => {
     const [withHeader, withFooter] = [false, false];
     const buttonText = "close";
@@ -44,11 +45,11 @@ const ConfirmModal = NiceModal.create(
         let isAsyncFn =
           onConfirm.constructor.name === "AsyncFunction" ? true : false;
         if (isAsyncFn) {
-          await onConfirm();
-          modal.current.close();
+          const result = await onConfirm();
+          if (!preventable || result) modal.current.close();
         } else {
-          onConfirm();
-          modal.current.close();
+          const result = onConfirm();
+          if (!preventable || result) modal.current.close();
         }
       } else {
         modal.current.close();
