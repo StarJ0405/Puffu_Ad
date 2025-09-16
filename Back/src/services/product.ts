@@ -73,12 +73,6 @@ export class ProductService extends BaseService<Product, ProductRepository> {
         );
       }
       if (where.category_id) {
-        // builder = builder.andWhere(
-        //   "p.category_id in (SELECT id FROM public.category WHERE mpath like :category_id)",
-        // {
-        //   category_id: `%${where.category_id}%`,
-        // }
-        // );
         builder = builder.andWhere(`ct.mpath like :category_id`, {
           category_id: `%${where.category_id}%`,
         });

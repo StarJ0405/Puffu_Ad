@@ -10,4 +10,14 @@ export class WishlistService extends BaseService<Wishlist, WishlistRepository> {
   ) {
     super(wishlistRepository);
   }
+
+  async getCounts(ids: string[]): Promise<{ id: string; count: number }[]> {
+    return await this.repository
+      .builder("wh")
+      .select("product_id", "id")
+      .addSelect("COUNT(*)", "count")
+      .where(`product_id IN (${ids.map((id) => `'${id}'`).join(",")})`)
+      .groupBy("product_id")
+      .getRawMany();
+  }
 }

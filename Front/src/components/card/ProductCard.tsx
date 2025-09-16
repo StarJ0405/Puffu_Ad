@@ -6,12 +6,10 @@ import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
-import clsx from "clsx";
-import Link from "next/link";
-import { useState } from "react";
-import styles from "./ProductCard.module.css";
 import useNavigate from "@/shared/hooks/useNavigate";
 import { requester } from "@/shared/Requester";
+import { useState } from "react";
+import styles from "./ProductCard.module.css";
 // lineClamp 구별해주기, TestProdcutCard는 임시로 만든거임. 나중에 프로덕트카드에 스타일만 입히면 됨.
 // 라인클램프는 제목태그에 달아서 속성 주기.
 
@@ -48,7 +46,7 @@ export function ProductCard({
     >
       <FlexChild
         className={styles.imgBox}
-        onClick={() => (onClick ? onClick : navigate(product_link))}
+        onClick={() => (onClick ? onClick() : navigate(product_link))}
       >
         {/* {
             // 프로덕트 페이지가 best일때만 나타나기. 제품 인기순 표시임
@@ -91,7 +89,7 @@ export function ProductCard({
               }.png`}
               width={20}
             />
-            <Span>{product.wishes}0</Span>
+            <Span>{product.wishes || 0}</Span>
           </FlexChild>
         )}
       </FlexChild>
@@ -99,12 +97,12 @@ export function ProductCard({
       <FlexChild padding={"0 5px"} className={styles.text_box}>
         <VerticalFlex gap={2} alignItems={"start"}>
           <FlexChild className={styles.store_name}>
-            {/* <Span>{product.store_name}</Span> */}
+            <Span>{product?.brand?.name}</Span>
           </FlexChild>
 
           <FlexChild
             className={styles.product_title}
-            onClick={() => (onClick ? onClick : navigate(product_link))}
+            onClick={() => (onClick ? onClick() : navigate(product_link))}
           >
             <P
               textOverflow={"ellipsis"}
