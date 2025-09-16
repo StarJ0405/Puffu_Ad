@@ -1,6 +1,5 @@
 .pagingBox {
    width: 100%;
-   max-width: 372px;
    justify-content: center !important;
    gap: 8px;
 }
@@ -11,9 +10,9 @@
    cursor: pointer;
 }
 
-.pagingBox > .paging {
-   width: 30px;
-   height: 30px;
+.pagingBox .paging {
+   width: 35px;
+   height: 35px;
    border-radius: 50%;
    border: 2px solid #fff;
    display: flex;
@@ -22,7 +21,7 @@
 }
 
 .pagingBox > .num_btn {
-   font-size: 14px; 
+   font-size: 13px; 
    font-weight: 600;
    border: none;
 }
@@ -33,5 +32,12 @@
 
 
 @media (max-width: 768px) {
-   
+   .pagingBox .paging {
+      width: 25px;
+      height: 25px;
+   }
+
+   .pagingBox > .num_btn {
+      font-size: 12px; 
+   }
 }
