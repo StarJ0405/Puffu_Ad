@@ -474,6 +474,10 @@ class _Requester {
     if (callback) callback(await this.post(`/users/me/qa`, data));
     else return await this.post(`/users/me/qa`, data);
   }
+  async getTotalQAs(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/qa`, data));
+    else return await this.get(`/qa`, data);
+  }
   async getQAs(data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.get(`/users/me/qa`, data));
     else return await this.get(`/users/me/qa`, data);

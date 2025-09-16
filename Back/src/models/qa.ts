@@ -9,6 +9,7 @@ import {
 } from "typeorm";
 import { generateEntityId } from "utils/functions";
 import { LineItem } from "./line_item";
+import { Order } from "./order";
 import { Product } from "./product";
 import { User } from "./user";
 
@@ -46,6 +47,13 @@ export class QA extends BaseEntity {
   @ManyToOne(() => LineItem)
   @JoinColumn({ name: "item_id", referencedColumnName: "id" })
   item?: LineItem;
+
+  @Column({ type: "character varying", nullable: true })
+  order_id?: string;
+
+  @ManyToOne(() => Order)
+  @JoinColumn({ name: "order_id", referencedColumnName: "id" })
+  order?: Order;
 
   @Column({ type: "character varying", nullable: false })
   user_id?: string;

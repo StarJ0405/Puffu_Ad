@@ -1,65 +1,74 @@
-.myOrder_box {padding-bottom: 40px;}
+.myOrder_box {
+  padding-bottom: 40px;
+}
 
 .myOrder_box .search_box {
-   gap: 25px;
-   align-items: start !important;
+  gap: 25px;
+  align-items: start !important;
 }
 .myOrder_box .search_box > * {
-   gap: 15px;
-   align-items: start !important;
-   justify-content: start !important;
+  gap: 15px;
+  align-items: start !important;
+  justify-content: start !important;
 }
 
 .myOrder_box .search_box h5 {
-   font-size: 18px;
-   color: #fff; font-weight: 500;
+  font-size: 18px;
+  color: #fff;
+  font-weight: 500;
 }
-
 
 /* 검색창 */
 .search_input_box .keyword {
-   position: relative;
-   width: 100%;
+  position: relative;
+  width: 100%;
 }
 
 .search_input_box .keyword button {
-   position: absolute;
-   top: 50%;
-   right: 10px;
-   transform: translateY(-50%);
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
 }
 
 .search_input_box .search {
-   width: 100%; padding-right: 45px;
+  width: 100%;
+  padding-right: 45px;
 }
-
-
 
 /* 기간선택 */
-.picker_input_box .dataPicker_box {gap: 15px;}
+.picker_input_box .dataPicker_box {
+  gap: 15px;
+}
 
 .picker_input_box .dataPicker_box .btn_wrap {
-   gap: 10px; display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
 }
 .picker_input_box .dataPicker_box .btn_wrap .term_btn {
-   padding: 5px;
-   width: 100%;
-   max-width: 100px;
-   border: 1px solid #797979;
-   border-radius: 5px;
-   font-size: 14px;
-   color: #797979;
-   background: #222;
+  padding: 5px;
+  width: 100%;
+  max-width: 100px;
+  border: 1px solid #797979;
+  border-radius: 5px;
+  font-size: 14px;
+  color: #797979;
+  background: #222;
 }
 
 .picker_input_box .dataPicker_box .btn_wrap .term_btn.active {
-   color: #fff;
-   border-color: #fff;
-   background: #050505;
+  color: #fff;
+  border-color: #fff;
+  background: #050505;
 }
 
-.picker_input_box .dataPicker_box .picker_wrap {gap: 10px;}
-.picker_input_box .dataPicker_box .picker_input {color: #ddd !important;}
+.picker_input_box .dataPicker_box .picker_wrap {
+  gap: 10px;
+}
+.picker_input_box .dataPicker_box .picker_input {
+  color: #ddd !important;
+}
 
 .search_btn {
   width: 100%;
@@ -70,41 +79,51 @@
   margin-top: 10px;
 }
 
-
 /* 주문내역 리스트 */
 
-.list_item {padding-bottom: 20px;}
-.list_item  .unit {gap: 10px;}
-.list_item .unit_content {gap: 7px;}
+.list_item {
+  padding-bottom: 20px;
+}
+.list_item .unit {
+  gap: 10px;
+}
+.list_item .unit_content {
+  gap: 7px;
+}
 
 .list_item .unit_content .unit_brand {
-   color: #a8a8a8;
-   font-size: 12px;
+  color: #a8a8a8;
+  font-size: 12px;
 }
 
 .list_item .unit_content .unit_title {
-   color: #fff;
-   font-size: 15px;
-   line-height: 1.3;
-   margin-bottom: 5px !important;
+  color: #fff;
+  font-size: 15px;
+  line-height: 1.3;
+  margin-bottom: 5px !important;
 }
 
-.option_list {gap: 7px;}
+.option_list {
+  gap: 7px;
+}
 .option_list > * {
-   font-size: 12px;
-   color: #fff;
+  font-size: 12px;
+  color: #fff;
 }
 
 .option_list > * p {
-   color: #797979 !important;
+  color: #797979 !important;
 }
 
 /* 결제 할인 금액 */
-.price_box {gap: 10px;}
+.price_box {
+  gap: 10px;
+}
 .price_box > * {
-   gap: 7px; font-size: 14px;
-   flex-wrap: wrap;
-   width: auto;
+  gap: 7px;
+  font-size: 14px;
+  flex-wrap: wrap;
+  width: auto;
 }
 
 .datePickerWrapper {
@@ -193,4 +212,17 @@
 
 .summary_row span {
   font-weight: bold;
+}
+
+.summary_row span {
+  font-weight: bold;
+}
+
+.tracking_btn {
+  padding: 5px 10px;
+  font-size: 12px;
+  background-color: var(--main-color1);
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
 }
