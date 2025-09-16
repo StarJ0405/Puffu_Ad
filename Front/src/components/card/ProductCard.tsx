@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useState } from "react";
 import styles from "./ProductCard.module.css";
 import useNavigate from "@/shared/hooks/useNavigate";
+import { requester } from "@/shared/Requester";
 // lineClamp 구별해주기, TestProdcutCard는 임시로 만든거임. 나중에 프로덕트카드에 스타일만 입히면 됨.
 // 라인클램프는 제목태그에 달아서 속성 주기.
 
@@ -39,16 +40,17 @@ export function ProductCard({
 
   const navigate = useNavigate();
 
-  console.log("상품222", product);
-
   return (
     <VerticalFlex
       width={width ?? isMobile ? "auto" : 200}
       // margin={product.margin}
       className={styles.prodcut_item}
     >
-      <FlexChild className={styles.imgBox} onClick={()=> onClick ? onClick : navigate(product_link)}>
-          {/* {
+      <FlexChild
+        className={styles.imgBox}
+        onClick={() => (onClick ? onClick : navigate(product_link))}
+      >
+        {/* {
             // 프로덕트 페이지가 best일때만 나타나기. 제품 인기순 표시임
             specialType === "best" && (
               <FlexChild
@@ -61,28 +63,28 @@ export function ProductCard({
               </FlexChild>
             )
           } */}
-          {adultCheck === true ? (
-            <Image src={product.thumbnail} width={"100%"} height={"auto"} />
-          ) : (
-            // 성인인증 안될때 나오는 이미지
-            <Image
-              src={"/resources/images/19_only.png"}
-              width={"100%"}
-              height={"auto"}
-            />
-          )}
+        {adultCheck === true ? (
+          <Image src={product.thumbnail} width={"100%"} height={"auto"} />
+        ) : (
+          // 성인인증 안될때 나오는 이미지
+          <Image
+            src={"/resources/images/19_only.png"}
+            width={"100%"}
+            height={"auto"}
+          />
+        )}
 
-          {commingSoon && ( // 입고예정일때만 나오기
-            <Image
-              className={styles.specialTypeImg}
-              src={"/resources/images/commingSoon_img.png"}
-              width={"101%"}
-              height={"auto"}
-            />
-          )}
+        {commingSoon && ( // 입고예정일때만 나오기
+          <Image
+            className={styles.specialTypeImg}
+            src={"/resources/images/commingSoon_img.png"}
+            width={"101%"}
+            height={"auto"}
+          />
+        )}
 
         {isMobile && (
-          <FlexChild onClick={()=> mutate} className={styles.heart_counter}>
+          <FlexChild onClick={() => mutate} className={styles.heart_counter}>
             <Image
               src={`/resources/icons/main/mob_heart${
                 true === true ? "_active" : ""
@@ -100,15 +102,18 @@ export function ProductCard({
             {/* <Span>{product.store_name}</Span> */}
           </FlexChild>
 
-          <FlexChild className={styles.product_title} onClick={()=> onClick ? onClick : navigate(product_link)}>
-              <P
-                textOverflow={"ellipsis"}
-                display={"webkit-box"}
-                overflow={"hidden"}
-                lineClamp={lineClamp}
-              >
-                {product.title}
-              </P>
+          <FlexChild
+            className={styles.product_title}
+            onClick={() => (onClick ? onClick : navigate(product_link))}
+          >
+            <P
+              textOverflow={"ellipsis"}
+              display={"webkit-box"}
+              overflow={"hidden"}
+              lineClamp={lineClamp}
+            >
+              {product.title}
+            </P>
           </FlexChild>
 
           <HorizontalFlex className={styles.content_item}>
@@ -128,11 +133,37 @@ export function ProductCard({
               </Span>
             </VerticalFlex>
 
-            {!isMobile && (
-              <FlexChild onClick={()=> mutate} className={styles.heart_counter}>
+            {mutate && (
+              <FlexChild
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  if (product.wish) {
+                    requester.deleteWishList(
+                      product.wish.id,
+                      {
+                        soft: false,
+                      },
+                      () => {
+                        mutate();
+                      }
+                    );
+                  } else {
+                    requester.createWishList(
+                      {
+                        product_id: product.id,
+                      },
+                      () => {
+                        mutate();
+                      }
+                    );
+                  }
+                }}
+                className={styles.heart_counter}
+              >
                 <Image
                   src={`/resources/icons/main/product_heart_icon${
-                    true === true ? "_active" : ""
+                    product.wish ? "_active" : ""
                   }.png`}
                   width={23}
                 />

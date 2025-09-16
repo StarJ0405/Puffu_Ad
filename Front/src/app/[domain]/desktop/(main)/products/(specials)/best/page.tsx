@@ -1,12 +1,11 @@
 import Container from "@/components/container/Container";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Pstyles from "../../products.module.css";
-import { BestList, CategoryFilter } from "./client";
+import { BestList } from "./client";
 import styles from "./page.module.css";
 
 import Image from "@/components/Image/Image";
 import { requester } from "@/shared/Requester";
-import { log } from "console";
 
 export default async function () {
   const bestCondition: any = {
@@ -29,10 +28,7 @@ export default async function () {
         </VerticalFlex>
 
         <VerticalFlex className={Pstyles.list}>
-          <BestList
-            initProducts={bestProducts}
-            initConiditon={bestCondition}
-          />
+          <BestList initProducts={bestProducts} initConiditon={bestCondition} />
         </VerticalFlex>
       </Container>
     </section>
