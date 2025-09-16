@@ -14,7 +14,6 @@ import { BaseProductList } from "../../products/baseClient";
 import styles from "./page.module.css";
 import { useState } from "react";
 
-
 function findCategoryById(categories: any[], id: string): any | undefined {
   for (const cat of categories) {
     if (cat.id === id) {
@@ -28,9 +27,7 @@ function findCategoryById(categories: any[], id: string): any | undefined {
   return undefined;
 }
 
-
-export function TitleBox({category_id} : {category_id: any}) {
-
+export function TitleBox({ category_id }: { category_id: any }) {
   const { categoriesData } = useCategories();
   const category = findCategoryById(categoriesData, category_id);
   const navigate = useNavigate();
@@ -44,29 +41,38 @@ export function TitleBox({category_id} : {category_id: any}) {
       {/* 프로덕트 카테고리 */}
       <VerticalFlex marginBottom={30}>
         {category?.children?.length > 0 ? (
-              <SecondCategory categoryId={category_id} childrenData={category.children} parent={category} />
-            ) : (
-              <FlexChild onClick={()=> navigate(-1)} gap={10} cursor="pointer" width={'auto'} alignSelf="start">
-                <Image src={'/resources/images/back.png'} width={20} />
-                <P color="#aaa">이전으로</P>
-              </FlexChild>
-          )
-        }
+          <SecondCategory
+            categoryId={category_id}
+            childrenData={category.children}
+            parent={category}
+          />
+        ) : (
+          <FlexChild
+            onClick={() => navigate(-1)}
+            gap={10}
+            cursor="pointer"
+            width={"auto"}
+            alignSelf="start"
+          >
+            <Image src={"/resources/images/back.png"} width={20} />
+            <P color="#aaa">이전으로</P>
+          </FlexChild>
+        )}
       </VerticalFlex>
     </VerticalFlex>
-  )
+  );
 }
 
 // 중분류, 소분류 카테고리
-export function SecondCategory(
-  { childrenData, parent, categoryId } :
-  {
-    childrenData: CategoryData[]; 
-    parent: CategoryData;
-    categoryId: any;
-  }
-) {
-
+export function SecondCategory({
+  childrenData,
+  parent,
+  categoryId,
+}: {
+  childrenData: CategoryData[];
+  parent: CategoryData;
+  categoryId: any;
+}) {
   return (
     <>
       <ul className={styles.category_list}>
@@ -116,7 +122,7 @@ export function CategoryList({
       ...initCondition,
       pageSize: 24,
       pageNumber,
-      order: sort?.id 
+      order: sort?.id,
     }),
     (condition) => requester.getProducts(condition),
     (data: Pageable) => data?.totalPages || 0,
@@ -128,10 +134,13 @@ export function CategoryList({
   // log(categories);
   return (
     <>
-      <BaseProductList listArray={categories} sortConfig={{sort, setSort, sortOptions}} />
+      <BaseProductList
+        listArray={categories}
+        initCondition={initCondition}
+        initProducts={initProducts}
+        sortConfig={{ sort, setSort, sortOptions }}
+      />
       {/* sortOptions={sortOptions} */}
     </>
   );
 }
-
-

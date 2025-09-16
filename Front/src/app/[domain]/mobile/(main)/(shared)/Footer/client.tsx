@@ -31,6 +31,16 @@ export function SideToggle() {
     setChatToggle((prev) => !prev);
   };
 
+  useEffect(() => {
+    if (chatToggle) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    }
+  }, [chatToggle]);
+
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -47,7 +57,9 @@ export function SideToggle() {
       <FlexChild
         className={clsx(styles.Btn_frame, scrolled ? styles.scroll : "")}
       >
-        <TopButton />
+        <div className={clsx(styles.chat_btn, {[styles.hidden]: chatToggle})}>
+          <TopButton />
+        </div>
       </FlexChild>
 
 
@@ -72,7 +84,7 @@ export function SideToggle() {
 
       {pathname == "/" && (
         <Button
-          className={styles.chat_btn}
+          className={clsx(styles.chat_btn, {[styles.hidden]: chatToggle})}
           // onClick={() => {NiceModal.show(AdminChatModal)}}
           onClick={() => chatToggleClick()}
         >

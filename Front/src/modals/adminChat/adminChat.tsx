@@ -1,27 +1,22 @@
 "use client";
-import NiceModal, { useModal } from "@ebay/nice-modal-react";
-import ModalBase from "@/modals/ModalBase";
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
-import styles from "./adminChat.module.css";
-import VerticalFlex from "@/components/flex/VerticalFlex";
-import { AnimatePresence, motion } from "framer-motion";
-import Container from "@/components/container/Container";
+import Button from "@/components/buttons/Button";
 import FlexChild from "@/components/flex/FlexChild";
-import P from "@/components/P/P";
+import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import Input from "@/components/inputs/Input";
-import Button from "@/components/buttons/Button";
-import clsx from "clsx";
-import useData from "@/shared/hooks/data/useData";
-import { requester } from "@/shared/Requester";
+import P from "@/components/P/P";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
-import { usePathname } from "next/navigation";
-import useClientEffect from "@/shared/hooks/useClientEffect";
-import { useCallback, useEffect, useRef, useState } from "react";
-import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
-import { socketRequester } from "@/shared/SocketRequester";
-import _ from "lodash";
 import { fileRequester } from "@/shared/FileRequester";
+import useData from "@/shared/hooks/data/useData";
+import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
+import useClientEffect from "@/shared/hooks/useClientEffect";
+import { requester } from "@/shared/Requester";
+import { socketRequester } from "@/shared/SocketRequester";
+import clsx from "clsx";
+import _ from "lodash";
+import { usePathname } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
+import styles from "./adminChat.module.css";
 
 export default function AdminChat({
   onClose,
@@ -300,7 +295,7 @@ function Chats({
     [page, maxPage, isLoading, preIsLoading]
   );
   return (
-    <FlexChild>
+    <FlexChild className={styles.scroll_body}>
       <VerticalFlex className={styles.chat_body} id="chat">
         {totalChat.map((chat) => (
           <Chat key={chat.id} chat={chat} users={users} />

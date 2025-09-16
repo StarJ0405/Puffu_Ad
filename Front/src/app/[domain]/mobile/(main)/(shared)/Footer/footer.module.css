@@ -52,7 +52,7 @@
    z-index: 1000;
 }
 
-.chat_btn {padding: 0; background: transparent;}
+.chat_btn {padding: 0; background: transparent; transition: 0.2s;}
 .chat_btn:focus-visible {
    outline: none !important;
 }
@@ -66,4 +66,12 @@
 .scroll {
    opacity: 1;
    visibility: visible;
+}
+
+
+@media (max-width: 768px) {
+   .hidden {
+      opacity: 0; 
+      visibility: hidden;
+   } 
 }

@@ -128,9 +128,9 @@ export function BaseProductList({
 
 }: {
    listArray: ProductData[];
-   initCondition: any;
+   initCondition?: any;
    id: string;
-   initProducts: Pageable;
+   initProducts?: Pageable;
    showMore?: () => void;
    // sortOptions: { id: string; display: string }[];
    sortConfig?: {

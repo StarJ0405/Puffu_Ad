@@ -1,17 +1,13 @@
 "use client"
-import Image from "@/components/Image/Image";
-import styles from "./subPageHeader.module.css";
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import FlexChild from "@/components/flex/FlexChild";
-import VerticalFlex from "@/components/flex/VerticalFlex";
-import useNavigate from "@/shared/hooks/useNavigate";
-import Div from "@/components/div/Div";
-import Link from "next/link";
-import Span from "@/components/span/Span";
-import clsx from "clsx";
-import { useState } from "react";
+import HorizontalFlex from "@/components/flex/HorizontalFlex";
+import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
+import useNavigate from "@/shared/hooks/useNavigate";
 import { useParams, usePathname } from "next/navigation";
+import { useState } from "react";
+import styles from "./subPageHeader.module.css";
+import {CartLength} from "./client"
 
 
 export default function SubPageHeader() {
@@ -45,11 +41,13 @@ export default function SubPageHeader() {
             </FlexChild>
 
             {!pathname.includes("/orders/cart") && (
-               <FlexChild width={'auto'} onClick={()=> navigate('/orders/cart')}>
+               <FlexChild className={styles.cart_btn} width={'auto'} onClick={()=> navigate('/orders/cart')}>
                   <Image src={'/resources/images/bottomNavi/navi_cart.png'} width={26} />
+                  <CartLength />
                </FlexChild>
             )}
          </FlexChild>
       </HorizontalFlex>
    )
 }
+
