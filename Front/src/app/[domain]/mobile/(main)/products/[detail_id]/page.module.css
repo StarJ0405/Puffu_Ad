@@ -323,6 +323,8 @@
    padding: 13px 10px 10px;
    background: #221f22;
    border-bottom: 1px solid #595959;
+   display: grid;
+   grid-template-columns: repeat(3, 1fr);
 }
 
 .contents_container .tab_wrap .content_tab {

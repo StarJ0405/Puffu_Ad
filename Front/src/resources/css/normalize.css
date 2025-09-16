@@ -283,6 +283,23 @@ input[type='search']:focus-visible {
   .web_input {
     padding: 10px 12px !important;
   }
+
+
+  .post_btn {
+    width: 100% !important;
+    background: var(--main-color2) !important;
+    color: #fff !important;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 13px 5px !important;
+    transition: all 0.1s;
+    max-width: 100%;
+  }
+
+  .post_btn:active {
+    background: #b84474 !important;
+  }
+
 }
 
 
