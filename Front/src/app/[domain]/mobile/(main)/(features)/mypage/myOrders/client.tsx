@@ -14,6 +14,24 @@ import { requester } from "@/shared/Requester";
 import clsx from "clsx";
 import mypage from "../mypage.module.css";
 import DatePicker from "@/components/date-picker/DatePicker";
+import { openTrackingNumber } from "@/shared/utils/Functions";
+
+const getStatusKorean = (status: string) => {
+  switch (status) {
+    case "pending":
+      return "상품 준비중";
+    case "fulfilled":
+      return "배송 준비중";
+    case "shipping":
+      return "배송중";
+    case "complete":
+      return "배송 완료";
+    case "cancel":
+      return "주문 취소";
+    default:
+      return status;
+  }
+};
 
 const getInitialStartDate = () => {
   const date = new Date();
@@ -62,6 +80,8 @@ export function MyOrdersTable() {
         content: content,
         totalDiscount: totalDiscount.toLocaleString(),
         totalPayment: totalPayment.toLocaleString(),
+        status: order.status,
+        trackingNumber: order.shipping_methods?.[0]?.tracking_number,
       };
     });
   }, []);
@@ -222,8 +242,19 @@ export function MyOrdersTable() {
             <VerticalFlex key={i} className={styles.order_group}>
               <FlexChild className={styles.order_header}>
                 <P size={15} weight={500}>
-                  {item.date} (주문번호: {item.orderId})
+                  {item.date}{" "}
+                  <Span color="var(--main-color1)">
+                    [{getStatusKorean(item.status)}]
+                  </Span>
                 </P>
+                {item.status === "shipping" && item.trackingNumber && (
+                  <Button
+                    className={styles.tracking_btn}
+                    onClick={() => openTrackingNumber(item.trackingNumber)}
+                  >
+                    배송조회
+                  </Button>
+                )}
               </FlexChild>
 
               <VerticalFlex className={styles.order_items_container}>

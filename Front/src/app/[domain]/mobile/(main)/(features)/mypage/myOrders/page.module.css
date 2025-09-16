@@ -134,6 +134,9 @@
 .order_header {
   padding-bottom: 15px;
   border-bottom: 1px solid #444;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .order_header p {
   color: #fff;

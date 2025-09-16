@@ -11,6 +11,10 @@ import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
 import styles from './inquiry.module.css';
 import InputTextArea from "@/components/inputs/InputTextArea";
+import { useState } from "react";
+import clsx from "clsx";
+import { AnimatePresence, motion } from "framer-motion";
+
 
 
 export default  function Inquiry() {
@@ -42,6 +46,8 @@ export default  function Inquiry() {
       },
    ]
 
+   const [openIndex, setOpenIndex] = useState<number | null>(null);
+
 
    return (
       <VerticalFlex className={styles.inquiry_wrap}>
@@ -52,12 +58,15 @@ export default  function Inquiry() {
                <FlexChild className={styles.select_item}>
                   <Select
                      classNames={{
-                        header: styles.input_body,
-                        placeholder: styles.input_holder
+                        header: "web_select",
+                        placeholder: "web_select_placholder",
+                        line: "web_select_line",
+                        arrow: "web_select_arrow",
+                        search: "web_select_search",
                      }}
 
                      options={[
-                        { value: "상품 관련 문의", display: "상품 관련 문의" },
+                        { value: "상품 관련", display: "상품 관련" },
                         { value: "재고", display: "재고" },
                         { value: "교환 환불 배송", display: "교환 환불 배송" },
                         { value: "기타", display: "기타" },
@@ -100,17 +109,27 @@ export default  function Inquiry() {
                         <VerticalFlex className={styles.user_question}>
                            <HorizontalFlex alignItems="center" className={styles.item_title}>
                               <P>{inquiry.title}</P> 
-                              {/* 체크된 문의 분류에 따라 만들어진 제목으로 변경됨 */}
-   
-                              <Button className={styles.toggle_btn}>
-                                 <Image src={`/resources/icons/arrow/board_arrow_bottom_icon.png`} width={20} />
-                              </Button>
+                              {/* 체크된 문의 분류에 따라 만들어진 제목으로 변경됨. 상품관련이면 
+                              상품관련 문의 기타면 기타 문의입니다. 이런 식.  */}
+                              
+
+                              {/* 답변대기일때는 버튼 사라지기 */}
+                              {
+                                 inquiry.response && (
+                                    <Button 
+                                       className={clsx(styles.toggle_btn, {[styles.active]: openIndex === i,})} 
+                                       onClick={() => setOpenIndex(prev => (prev === i ? null : i))}
+                                    >
+                                       <Image src={`/resources/icons/arrow/board_arrow_bottom_icon.png`} width={20} />
+                                    </Button>
+                                 )
+                              }
                            </HorizontalFlex>
    
                            <FlexChild className={styles.data_group}>
                               <FlexChild className={styles.response_check}>
                                  <Span
-                                    color={inquiry.response && 'var(--main-color1)'}
+                                    color={inquiry.response && '#fff'}
                                  >
                                     {inquiry.response ? '답변완료' : '답변대기'}
                                  </Span>
@@ -131,22 +150,34 @@ export default  function Inquiry() {
                               </P>
                            </FlexChild>
                         </VerticalFlex>
-
+                        
+                        <AnimatePresence mode="wait">
+                           <motion.div
+                             id="motion"
+                             key={openIndex}
+                             initial={{ opacity: 0,}}
+                             animate={{ opacity: 1,}}
+                             transition={{ duration: 0.5, ease: "easeInOut" }}
+                           >
                         {
-                           inquiry.response.length > 0 && (
-                              <VerticalFlex className={styles.admin_answer}>
-                                 <FlexChild className={styles.answer_title}>
-                                    <P color="var(--main-color1)">관리자 답변</P>
-                                 </FlexChild>
-                                 
-                                 <FlexChild className={styles.item_content}>
-                                    <P>
-                                       {inquiry.response}
-                                    </P>
-                                 </FlexChild>
-                              </VerticalFlex>
+                           inquiry.response && (
+                              openIndex === i && (
+                                 <VerticalFlex className={styles.admin_answer}>
+                                    <FlexChild className={styles.answer_title}>
+                                       <P color="var(--main-color1)">관리자 답변</P>
+                                    </FlexChild>
+                                    
+                                    <FlexChild className={styles.item_content}>
+                                       <P>
+                                          {inquiry.response}
+                                       </P>
+                                    </FlexChild>
+                                 </VerticalFlex>
+                              )
                            )
                         }
+                        </motion.div>
+                        </AnimatePresence>
                      </VerticalFlex>
                   ))
                }

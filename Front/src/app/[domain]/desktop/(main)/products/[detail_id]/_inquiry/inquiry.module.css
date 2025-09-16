@@ -27,6 +27,9 @@
 
 /* 리스트 */
 
+.toggle_btn {background: none; transition: 0.2s}
+.toggle_btn.active {transform: rotate(180deg);}
+
 .inquiry_list {gap: 25px;}
 
 .inquiry_list .list_title {
@@ -64,9 +67,7 @@
    border-radius: 3px;
 }
 
-.inquiry_item .user_question .data_group .response_check span {
-   color: #fff;
-}
+.inquiry_item .user_question .data_group .response_check span {color: #555;}
 
 .inquiry_item .user_question .data_group .item_name {
    color: #fff !important; font-size: 13px !important;
@@ -91,6 +92,10 @@
 /* 관리자 답변 */
 .inquiry_item .admin_answer {
    margin-top: 20px;
+}
+
+.inquiry_item .admin_answer .item_content {
+   background: #111;
 }
 
 .inquiry_item .admin_answer .answer_title {
