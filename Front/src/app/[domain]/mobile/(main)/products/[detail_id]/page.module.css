@@ -96,7 +96,7 @@
    font-size: 16px;
 }
 
-.ProductSlider {position: relative;}
+.ProductSlider {position: relative; overflow: hidden;}
 .ProductSlider .naviBtn {
    position: absolute;
    top: 25%;
