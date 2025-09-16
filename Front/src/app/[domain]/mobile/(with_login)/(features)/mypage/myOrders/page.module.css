@@ -61,6 +61,15 @@
 .picker_input_box .dataPicker_box .picker_wrap {gap: 10px;}
 .picker_input_box .dataPicker_box .picker_input {color: #ddd !important;}
 
+.search_btn {
+  width: 100%;
+  height: 48px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
 
 /* 주문내역 리스트 */
 
@@ -96,4 +105,89 @@
    gap: 7px; font-size: 14px;
    flex-wrap: wrap;
    width: auto;
+}
+
+.datePickerWrapper {
+  width: 100%;
+}
+
+.datePickerWrapper > :global(div[class*="datePickerContainer"]) {
+  display: block;
+  width: 100%;
+}
+
+.datePickerWrapper :global(div[class*="dateDisplay"]) {
+  width: 100%;
+  box-sizing: border-box;
+  background: #222;
+  border-color: #797979;
+  color: #ddd;
+}
+.order_group {
+  background-color: #2c2c2c;
+  border-radius: 8px;
+  padding: 15px;
+  gap: 15px;
+  border: 1px solid #444;
+}
+
+.order_header {
+  padding-bottom: 15px;
+  border-bottom: 1px solid #444;
+}
+.order_header p {
+  color: #fff;
+}
+.order_items_container {
+  gap: 20px;
+}
+.list_item {
+  border-bottom: 1px solid #323232;
+  padding-bottom: 15px;
+}
+.list_item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.item_price_box {
+  justify-content: space-between;
+  background-color: #333;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+.item_price_box p {
+  color: #aaa;
+}
+.item_price_box span {
+  font-weight: 500;
+  color: #fff;
+}
+.item_price_box > * {
+  gap: 7px;
+  width: auto;
+}
+.order_summary {
+  margin-top: 10px;
+  padding-top: 15px;
+  border-top: 1px solid #444;
+  gap: 10px;
+  background-color: #383838;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.summary_row {
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+}
+
+.summary_row p {
+  font-weight: 500;
+  color: #ddd;
+}
+
+.summary_row span {
+  font-weight: bold;
 }
