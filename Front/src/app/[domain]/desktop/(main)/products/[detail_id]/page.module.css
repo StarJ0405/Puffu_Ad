@@ -288,7 +288,7 @@
 
 .contents_container .tab_wrap {
    display: grid;
-   grid-template-columns: repeat(4, 1fr);
+   grid-template-columns: repeat(3, 1fr);
    position: sticky;
    top: 53px;
    z-index: 100;
