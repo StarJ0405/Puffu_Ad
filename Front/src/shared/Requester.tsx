@@ -465,6 +465,10 @@ class _Requester {
     if (callback) callback(await this.get(`/notices`, data));
     else return await this.get(`/notices`, data);
   }
+  async getNotice(id: string, data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/notices/${id}`, data));
+    else return await this.get(`/notices/${id}`, data);
+  }
   async getNoticeTypes(data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.get(`/notices/types`, data));
     else return await this.get(`/notices/types`, data);
