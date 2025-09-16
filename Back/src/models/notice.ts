@@ -39,6 +39,12 @@ export class Notice extends BaseEntity {
   @Column({ type: "timestamp with time zone", nullable: true })
   ends_at?: Date | string;
 
+  @Column({ type: "timestamp with time zone", nullable: true })
+  actives_at?: Date | string;
+
+  @Column({ type: "timestamp with time zone", nullable: true })
+  deactives_at?: Date | string;
+
   @Column({ type: "boolean", default: false })
   adult?: boolean;
 

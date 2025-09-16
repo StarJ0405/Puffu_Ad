@@ -5,11 +5,12 @@ import boardStyle from "../../boardGrobal.module.css";
 import { DetailFrame } from "./client";
 import { Params } from "next/dist/server/request/params";
 import { requester } from "@/shared/Requester";
+import notFound from "@/app/not-found";
 
 export default async function ({ params }: { params: Promise<Params> }) {
   const { detail_id } = await params;
   const initNotice = await requester.getNotice(detail_id as string);
-
+  if (initNotice?.content?.type !== "일반") return notFound();
   return (
     <VerticalFlex className={boardStyle.board_frame}>
       <FlexChild className={boardStyle.board_titleBox}>

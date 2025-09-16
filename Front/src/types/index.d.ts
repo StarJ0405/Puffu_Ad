@@ -377,8 +377,11 @@ interface NoticeDataFrame {
   detail?: string;
   starts_at?: Date | string | null;
   ends_at?: Date | string | null;
+  actives_at?: Date | string | null;
+  deactives_at?: Date | string | null;
   adult?: boolean;
   visible?: boolean;
+  thumbnail?: string;
   metadata?: Record<string, unknown> | null;
 }
 

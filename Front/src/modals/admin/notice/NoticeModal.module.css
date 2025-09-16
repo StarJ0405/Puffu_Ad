@@ -9,3 +9,7 @@
 .content {
   padding: 15px;
 }
+
+.detail img {
+  width: 100%;
+}
