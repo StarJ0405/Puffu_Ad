@@ -149,7 +149,7 @@ export function BoardTable() {
             <ListPagination />
 
             {/* 누르면 글쓰기로 연결 회원만 글쓰기 가능! 비회원은 안 보이게 하던지, 클릭하면 비회원이면 로그인 페이지로 보내기 */}
-            <Button className={boardStyle.write_btn}>글쓰기</Button>
+            <Link href={'/board/inquiry/write'} className={boardStyle.write_btn}>글쓰기</Link>
          </FlexChild>
       </VerticalFlex>
    )

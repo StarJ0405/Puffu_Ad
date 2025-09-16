@@ -164,13 +164,13 @@ export function BoardTable() {
                       width={16}
                     />
                     {/* 12시간 내 등록된 게시물만 나타나기 */}
-                    <Span
+                    {/* <Span
                       size={13}
                       color=""
                       className={boardStyle.comment_count}
                     >
                       +2
-                    </Span>
+                    </Span> */}
                     {/* 현재 게시물 내에 있는 댓글 수 표시 */}
                   </FlexChild>
                 </td>
