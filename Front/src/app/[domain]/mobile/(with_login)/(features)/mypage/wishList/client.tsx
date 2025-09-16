@@ -10,6 +10,7 @@ import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import FlexChild from "@/components/flex/FlexChild";
 import P from "@/components/P/P";
 import mypage from "../mypage.module.css";
+import { useEffect } from "react";
 
 export function WishListTable({ initWishList }: { initWishList: Pageable }) {
   const { wishes, page, setPage, maxPage } = usePageData(
@@ -23,6 +24,10 @@ export function WishListTable({ initWishList }: { initWishList: Pageable }) {
     }
   );
 
+  useEffect(() => {
+    console.log(wishes)
+  },[wishes])
+
   return (
     <>
       <HorizontalFlex className={mypage.box_header}>
@@ -34,10 +39,10 @@ export function WishListTable({ initWishList }: { initWishList: Pageable }) {
       {wishes.length > 0 ? (
         <VerticalFlex>
           <MasonryGrid width={'100%'} gap={15} breakpoints={2}>
-            {wishes.map((product: ProductData, i: number) => {
+            {wishes.map((product: WishData, i: number) => {
               return (
                 <ProductCard
-                  product={wishes}
+                  product={product.product!}
                   lineClamp={2}
                   key={i}
                   width={"100%"}

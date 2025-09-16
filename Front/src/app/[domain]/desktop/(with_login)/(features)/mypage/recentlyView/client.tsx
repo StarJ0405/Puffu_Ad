@@ -19,6 +19,7 @@ export function RecentlyViewTable() {
     rank: number;
     id: string;
   };
+  // 최근 본 상품
   const { recents, mutate } = useData(
     "recents",
     {},

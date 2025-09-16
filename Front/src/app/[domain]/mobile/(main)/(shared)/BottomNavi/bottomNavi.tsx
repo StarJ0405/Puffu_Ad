@@ -32,7 +32,7 @@ export default function BottomNavi() {
                      </FlexChild>
                   </VerticalFlex>
          
-                  <VerticalFlex className={styles.item} onClick={()=> navigate('/mypage/wishlist')}>
+                  <VerticalFlex className={styles.item} onClick={()=> navigate('/mypage/wishList')}>
                      <Image src={`/resources/images/bottomNavi/navi_wish${active ? '_active' : ''}.png`} width={22} />
                      <FlexChild className={clsx(styles.txt, {[styles.active] : active})}>
                         <P>관심 리스트</P>

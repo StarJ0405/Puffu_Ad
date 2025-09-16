@@ -52,7 +52,7 @@ export function RecentlyViewTable() {
             {recents.map((product: ProductData, i: number) => {
               return (
                 <ProductCard
-                  product={recents}
+                  product={product}
                   lineClamp={2}
                   key={i}
                   width={"100%"}
