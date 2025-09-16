@@ -10,34 +10,49 @@ import { usePathname } from "next/navigation";
 import Pstyles from "../../products.module.css";
 import usePageData from "@/shared/hooks/data/usePageData";
 import { requester } from "@/shared/Requester";
-import {BaseProductList} from "../../baseClient";
+import { BaseProductList } from "../../baseClient";
+import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
 
 
 
 export function NewList({
+  id,
   initProducts,
   initConiditon,
 }: {
+  id: string,
   initProducts: Pageable;
   initConiditon: any;
 }) {
-  const { best, maxPage, page, setPage, mutate } = usePageData(
-    "best",
+  const {
+    [id]: items,
+    Load,
+    page,
+    maxPage,
+    isLoading,
+  } = useInfiniteData(
+    id,
     (pageNumber) => ({
       ...initConiditon,
-      pageSize: 24,
+      pageSize: 12,
       pageNumber,
     }),
     (condition) => requester.getProducts(condition),
     (data: Pageable) => data?.totalPages || 0,
     {
       onReprocessing: (data) => data?.content || [],
-      fallbackData: initProducts,
+      fallbackData: [initProducts],
     }
   );
   return (
     <>
-      <BaseProductList listArray={best} />
+      <BaseProductList
+        id={id}
+        initCondition={initConiditon}
+        initProducts={initProducts}
+        listArray={items}
+        showMore={Load}
+      />
     </>
   );
 }

@@ -5,19 +5,16 @@ import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 // import { HotList } from "./client";
 import Pstyles from "../../products.module.css";
-import {} from "./client";
+import { } from "./client";
 import styles from "./page.module.css";
 import { requester } from "@/shared/Requester";
-import {HotList} from './client'
+import { HotList } from './client'
 
 export default async function () {
-  const hotCondition: any = {
-    pageSize: 24,
-    order: "discount",
-  };
+  const hotCondition: any = { pageSize: 12, pageNumber: 0, order: "hot" };
+
   const hotProducts = await requester.getProducts(hotCondition);
 
-  console.log('핫',hotProducts.conent);
 
   return (
     <section className="root page_container">
@@ -38,6 +35,7 @@ export default async function () {
 
         <VerticalFlex className={Pstyles.list}>
           <HotList
+            id={"discount"}
             initProducts={hotProducts}
             initConiditon={hotCondition}
           />
