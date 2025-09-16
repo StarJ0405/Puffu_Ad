@@ -8,9 +8,8 @@ export const Cookies = {
   LOGIN_REDIRECT_URL: "_toy_login_redirect_url",
 };
 export const Sessions = {
-  SELECTED_ITEMS: "_toy_selected_items",
-  ORDER: "_toy_order",
   PAYMENT: "_toy_payment",
+  ORDER: "_toy_order",
 };
 export const Storage = {
   KEYWORDS: "_toy_keywords",

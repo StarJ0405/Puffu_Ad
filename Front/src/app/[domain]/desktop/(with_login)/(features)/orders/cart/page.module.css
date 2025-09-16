@@ -297,7 +297,7 @@
   color: var(--main-color1);
 }
 
-.payment_btn.disabled {
+.payment_btn:disabled {
   background: var(--button-disabled-bg) !important;
   color: #7a7a7a !important;
 }

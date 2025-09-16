@@ -166,7 +166,7 @@ export function ProductWrapper({
         variants: selected,
       });
       if (message) {
-        reload().then(() => navigate("/cart"));
+        reload().then(() => navigate("/orders/cart"));
       } else {
         toast({ message: error });
       }

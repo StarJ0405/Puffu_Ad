@@ -11,7 +11,7 @@ import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import styles from "./page.module.css";
 
-export function CompleteForm() {
+export function CompleteForm({ order }: { order?: OrderData }) {
   return (
     <VerticalFlex marginTop={80}>
       <VerticalFlex gap={30} width={"100%"} maxWidth={"1000px"}>
@@ -26,7 +26,7 @@ export function CompleteForm() {
             <P size={20} color="#aaa" weight={500} lineHeight={"1.4"}>
               <Span color="#fff">{"2025.09.01"}</Span> 주문하신 <br />
               상품의 주문번호는{" "}
-              <Span color="var(--main-color1)">{"12345667"}</Span> 입니다.
+              <Span color="var(--main-color1)">{order?.display}</Span> 입니다.
             </P>
           </FlexChild>
         </VerticalFlex>
@@ -42,22 +42,23 @@ export function CompleteForm() {
             marginTop={20}
           >
             <FlexChild justifyContent="center">
-              <P className={styles.delivery_txt}>김철수</P>
+              <P className={styles.delivery_txt}>{order?.address?.name}</P>
             </FlexChild>
 
             <FlexChild justifyContent="center">
               <P className={styles.delivery_txt}>
-                (35353) 서구 도안동로 234 대전 303동 1302호
+                ({order?.address?.postal_code}) {order?.address?.address1}{" "}
+                {order?.address?.address2}
               </P>
             </FlexChild>
 
             <FlexChild justifyContent="center">
-              <P className={styles.delivery_txt}>01012345678</P>
+              <P className={styles.delivery_txt}>{order?.address?.phone}</P>
             </FlexChild>
 
             <FlexChild justifyContent="center">
               <P className={styles.delivery_txt}>
-                배송요청사항 : 현관문 앞에 놔주세요.
+                배송요청사항 : {order?.address?.message || "없음"}
               </P>
             </FlexChild>
           </VerticalFlex>
@@ -69,14 +70,16 @@ export function CompleteForm() {
           </FlexChild>
 
           <FlexChild marginTop={15}>
-            <MyOrdersTable />
+            <MyOrdersTable items={order?.items} />
           </FlexChild>
         </VerticalFlex>
 
         <VerticalFlex className={clsx(styles.total_frame)} gap={25}>
           <FlexChild justifyContent="center">
             <P size={18} color="#fff" weight={500}>
-              주문금액 {"40,000"}원 - 할인금액 {"0"}원 + 배송비 {"0"}원
+              주문금액 {order?.total}원 - 할인금액{" "}
+              {(order?.total || 0) - (order?.total_discounted || 0)}원 + 배송비{" "}
+              {order?.shipping_methods?.[0]?.amount || 0}원
             </P>
           </FlexChild>
 
@@ -85,7 +88,9 @@ export function CompleteForm() {
               실제 결제 금액
             </P>
             <P size={26} color="var(--main-color1)" weight={600}>
-              {"40,000"}원
+              {(order?.total_discounted || 0) +
+                (order?.shipping_methods?.[0]?.amount || 0)}
+              원
             </P>
           </FlexChild>
         </VerticalFlex>
@@ -95,38 +100,11 @@ export function CompleteForm() {
 }
 
 // 주문 리스트
-export function MyOrdersTable() {
-  const cart = [
-    {
-      title: "여성용) 핑크색 일본 st 로제 베일 가운",
-      thumbnail: "/resources/images/dummy_img/product_07.png",
-      brand: "푸푸토이",
-      price: "20,000",
-      option: [
-        { title: "여성용) 핑크색 일본 컬러 레드", price: "0" },
-        { title: "여성용) 핑크색 일본 1+1 증정", price: "1,000" },
-      ],
-      delivery: "/resources/icons/cart/cj_icon.png",
-      date: "2025년 9월 10일",
-    },
-    {
-      title: "여성용) 핑크색 일본 st 로제 베일 가운",
-      thumbnail: "/resources/images/dummy_img/product_07.png",
-      brand: "푸푸토이",
-      price: "20,000",
-      option: [
-        { title: "여성용) 핑크색 일본 컬러 레드", price: "0" },
-        { title: "여성용) 핑크색 일본 1+1 증정", price: "1,000" },
-      ],
-      delivery: "/resources/icons/cart/cj_icon.png",
-      date: "2025년 9월 7일",
-    },
-  ];
-
+export function MyOrdersTable({ items }: { items?: LineItemData[] }) {
   return (
     <>
       {/* 테이블 안에 tbody 안에 map은 그 날짜에 시킨 주문내역 전부 불러오게 바꾸기 */}
-      {cart.length > 0 ? (
+      {items && items?.length > 0 ? (
         <VerticalFlex gap={10}>
           <table className={styles.list_table}>
             {/* 게시판 셀 너비 조정 */}
@@ -147,24 +125,22 @@ export function MyOrdersTable() {
 
             {/* 상품 내용 */}
             <tbody>
-              {cart.map((item, i) => (
+              {items.map((item, i) => (
                 <tr key={i}>
                   <td>
                     <FlexChild className={styles.order_item}>
                       <Image src={item.thumbnail} width={150} />
 
                       <VerticalFlex className={styles.order_txt}>
-                        <span className={styles.brand}>{item.brand}</span>
+                        <span className={styles.brand}>{item.brand?.name}</span>
 
-                        <P className={styles.title}>{item.title}</P>
+                        <P className={styles.title}>{item.product_title}</P>
 
                         <VerticalFlex className={styles.option_list}>
-                          {item.option.map((option, j) => (
-                            <FlexChild key={j} gap={5}>
-                              <P>{option.title}</P>
-                              <Span> + {option.price}원</Span>
-                            </FlexChild>
-                          ))}
+                          <P>{item.variant_title}</P>
+                          <P>{item.total_quantity}개</P>
+
+                          <Span>{item.unit_price}원</Span>
                         </VerticalFlex>
                       </VerticalFlex>
                     </FlexChild>
@@ -172,12 +148,16 @@ export function MyOrdersTable() {
 
                   <td>
                     <P weight={600} color="#fff">
-                      0원
+                      {((item.discount_price || 0) - (item.unit_price || 0)) *
+                        item.quantity}
+                      원
                     </P>
                   </td>
 
                   <td>
-                    <P weight={600}>{item.price} ₩</P>
+                    <P weight={600}>
+                      {(item.discount_price || 0) * item.quantity} ₩
+                    </P>
                   </td>
                 </tr>
               ))}

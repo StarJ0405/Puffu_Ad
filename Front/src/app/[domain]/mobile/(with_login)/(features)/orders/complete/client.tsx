@@ -80,27 +80,25 @@ export function CompleteForm() {
         </VerticalFlex>
 
         <VerticalFlex className={clsx(styles.total_frame)} gap={25}>
-            <FlexChild justifyContent="center">
-               <P size={18} color="#fff" weight={500}>
-                  주문금액 {'40,000'}원 - 할인금액 {'0'}원 + 배송비 {'0'}원
-               </P>
-            </FlexChild>
+          <FlexChild justifyContent="center">
+            <P size={18} color="#fff" weight={500}>
+              주문금액 {"40,000"}원 - 할인금액 {"0"}원 + 배송비 {"0"}원
+            </P>
+          </FlexChild>
 
-            <FlexChild gap={7} justifyContent="center">
-               <P size={20} color="#fff" weight={500}>
-                  실제 결제 금액
-               </P>
-               <P size={26} color="var(--main-color1)" weight={600}>
-                  {'40,000'}원
-               </P>
-            </FlexChild>
+          <FlexChild gap={7} justifyContent="center">
+            <P size={20} color="#fff" weight={500}>
+              실제 결제 금액
+            </P>
+            <P size={26} color="var(--main-color1)" weight={600}>
+              {"40,000"}원
+            </P>
+          </FlexChild>
         </VerticalFlex>
       </VerticalFlex>
     </VerticalFlex>
   );
 }
-
-
 
 // 주문 리스트
 export function MyOrdersTable() {
@@ -211,7 +209,6 @@ type ListItem = {
   id: string;
 };
 
-
 export function ChoiseProductSlider({
   id,
   lineClamp,
@@ -219,122 +216,7 @@ export function ChoiseProductSlider({
   id: string;
   lineClamp?: number;
 }) {
-  const ListProduct: ListItem[] = [
-    // 임시
-    {
-      thumbnail: "/resources/images/dummy_img/product_01.png",
-      title: "블랙 골드버스트 바디수트",
-      price: 30000,
-      discount_rate: 12,
-      discount_price: 20000,
-      heart_count: 10,
-      store_name: "키테루 키테루",
-      rank: 0,
-      id: '상품',
-    },
-    {
-      thumbnail: "/resources/images/dummy_img/product_02.png",
-      title: "핑크색 일본 st 로제 베일 가벼움",
-      price: 30000,
-      discount_rate: 12,
-      discount_price: 20000,
-      heart_count: 100,
-      store_name: "키테루 키테루",
-      rank: 1,
-      id: '상품',
-    },
-    {
-      thumbnail: "/resources/images/dummy_img/product_03.png",
-      title: "뒷태 반전 유혹하는 파자마",
-      price: 30000,
-      discount_rate: 12,
-      discount_price: 20000,
-      heart_count: 100,
-      store_name: "키테루 키테루",
-      rank: 2,
-      id: '상품',
-    },
-    {
-      thumbnail: "/resources/images/dummy_img/product_04.jpg",
-      title: "스지망 쿠파 로린코 처녀궁 프리미엄 소프트",
-      price: 30000,
-      discount_rate: 12,
-      discount_price: 20000,
-      heart_count: 70,
-      store_name: "키테루 키테루",
-      rank: 3,
-      id: '상품',
-    },
-    {
-      thumbnail: "/resources/images/dummy_img/product_05.png",
-      title: "[유니더스/얇은콘돔형] 지브라 콘돔 1box(10p) [NR]",
-      price: 30000,
-      discount_rate: 12,
-      discount_price: 20000,
-      heart_count: 4,
-      store_name: "키테루 키테루",
-      rank: 4,
-      id: '상품',
-    },
-    {
-      thumbnail: "/resources/images/dummy_img/product_06.png",
-      title: "블랙 망사 리본 스타킹",
-      price: 30000,
-      discount_rate: 12,
-      discount_price: 20000,
-      heart_count: 1020,
-      store_name: "키테루 키테루",
-      rank: 5,
-      id: '상품',
-    },
-    {
-      thumbnail: "/resources/images/dummy_img/product_07.png",
-      title: "섹시 스트랩 간호사 st 코스튬",
-      price: 30000,
-      discount_rate: 12,
-      discount_price: 20000,
-      heart_count: 1030,
-      store_name: "키테루 키테루",
-      rank: 6,
-      id: '상품',
-    },
-
-    {
-      thumbnail: "/resources/images/dummy_img/product_07.png",
-      title: "섹시 스트랩 간호사 st 코스튬",
-      price: 30000,
-      discount_rate: 12,
-      discount_price: 20000,
-      heart_count: 1030,
-      store_name: "키테루 키테루",
-      rank: 6,
-      id: '상품',
-    },
-
-    {
-      thumbnail: "/resources/images/dummy_img/product_07.png",
-      title: "섹시 스트랩 간호사 st 코스튬",
-      price: 30000,
-      discount_rate: 12,
-      discount_price: 20000,
-      heart_count: 1030,
-      store_name: "키테루 키테루",
-      rank: 6,
-      id: '상품',
-    },
-
-    {
-      thumbnail: "/resources/images/dummy_img/product_07.png",
-      title: "섹시 스트랩 간호사 st 코스튬",
-      price: 30000,
-      discount_rate: 12,
-      discount_price: 20000,
-      heart_count: 1030,
-      store_name: "키테루 키테루",
-      rank: 6,
-      id: '상품',
-    },
-  ];
+  const ListProduct: ProductData[] = [];
 
   return (
     <>
@@ -355,10 +237,7 @@ export function ChoiseProductSlider({
             {ListProduct.map((product, i) => {
               return (
                 <SwiperSlide key={i}>
-                  <ProductCard
-                    product={product}
-                    lineClamp={lineClamp ?? 2}
-                  />
+                  <ProductCard product={product} lineClamp={lineClamp ?? 2} />
                 </SwiperSlide>
               );
             })}
