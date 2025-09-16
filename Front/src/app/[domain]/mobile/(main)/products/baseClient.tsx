@@ -15,6 +15,8 @@ import { usePathname } from "next/navigation";
 import Pstyles from "./products.module.css";
 import { useCategories } from "@/providers/StoreProvider/StorePorivderClient";
 import Link from "next/link";
+import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
+import { requester } from "@/shared/Requester";
 
 
 
@@ -22,7 +24,7 @@ export function ProdcutCategory() { // 대분류 카테고리
 
    const pathname = usePathname();
    const { categoriesData } = useCategories();
-   
+
    // css : 카테고리 추가되어도 flex-wrap 구조 문제 없게 수정하기
 
    return (
@@ -30,32 +32,32 @@ export function ProdcutCategory() { // 대분류 카테고리
          {/* ca_item에 active 클래스 주기. active 클래스만 걸리면 효과 들어감. */}
          {
             pathname !== "/" ?
-            <VerticalFlex className={clsx(Pstyles.ca_item, Pstyles.ca_all)}>
-               <FlexChild className={Pstyles.ca_thumb} width={66} height={66}>
-                  <P>ALL</P>
-               </FlexChild>
-              <Span>전체</Span>
-            </VerticalFlex>
-            : null
+               <VerticalFlex className={clsx(Pstyles.ca_item, Pstyles.ca_all)}>
+                  <FlexChild className={Pstyles.ca_thumb} width={66} height={66}>
+                     <P>ALL</P>
+                  </FlexChild>
+                  <Span>전체</Span>
+               </VerticalFlex>
+               : null
          }
 
          {
             categoriesData
-            .sort((c1, c2) => c1.index - c2.index)
-            .map((cat, i) => (
-               <VerticalFlex className={Pstyles.ca_item} key={i}>
-                  <Link href={`/categories/${cat.id}`}>
-                     <FlexChild className={Pstyles.ca_thumb}>
-                        <Image 
-                           src={cat.thumbnail}
-                           width={'auto'}
-                           height={66}
-                        />
-                     </FlexChild>
-                  </Link>
-                  <Span>{cat.name}</Span>
-               </VerticalFlex>
-            ))
+               .sort((c1, c2) => c1.index - c2.index)
+               .map((cat, i) => (
+                  <VerticalFlex className={Pstyles.ca_item} key={i}>
+                     <Link href={`/categories/${cat.id}`}>
+                        <FlexChild className={Pstyles.ca_thumb}>
+                           <Image
+                              src={cat.thumbnail}
+                              width={'auto'}
+                              height={66}
+                           />
+                        </FlexChild>
+                     </Link>
+                     <Span>{cat.name}</Span>
+                  </VerticalFlex>
+               ))
          }
       </nav>
    )
@@ -66,15 +68,15 @@ export function ProdcutCategory() { // 대분류 카테고리
 
 // 인기순, 추천순, 최신순 필터
 export function SortFilter({
-   length, 
+   length,
    // sortOptions
    sortConfig
-} : {
-   length : number, 
+}: {
+   length: number,
    sortConfig?: {
-     sort: { id: string; display: string };
-     setSort: (opt: { id: string; display: string }) => void;
-     sortOptions: { id: string; display: string }[];
+      sort: { id: string; display: string };
+      setSort: (opt: { id: string; display: string }) => void;
+      sortOptions: { id: string; display: string }[];
    };
    // sortOptions: { id: string; display: string }[]
 }) {
@@ -92,12 +94,12 @@ export function SortFilter({
                sortConfig && (
                   <HorizontalFlex className={Pstyles.sort_box}>
                      {
-                        sortConfig.sortOptions.map((opt)=> (
-                           <Button 
-                              key={opt.id} 
+                        sortConfig.sortOptions.map((opt) => (
+                           <Button
+                              key={opt.id}
                               className={clsx(
-                                Pstyles.sort_btn,
-                                sortConfig.sort.id === opt.id && Pstyles.active
+                                 Pstyles.sort_btn,
+                                 sortConfig.sort.id === opt.id && Pstyles.active
                               )}
                               onClick={() => sortConfig.setSort(opt)}
                            >
@@ -117,57 +119,83 @@ export function SortFilter({
 export function BaseProductList({
    listArray,
    // sortOptions,
+   initCondition,
+   id,
+   showMore,
+   initProducts,
    sortConfig,
    commingSoon, // 입고예정 임시용
-} : {
-   listArray : ProductData[];
+
+}: {
+   listArray: ProductData[];
+   initCondition: any;
+   id: string;
+   initProducts: Pageable;
+   showMore?: () => void;
    // sortOptions: { id: string; display: string }[];
    sortConfig?: {
-     sort: { id: string; display: string };
-     setSort: (opt: { id: string; display: string }) => void;
-     sortOptions: { id: string; display: string }[];
+      sort: { id: string; display: string };
+      setSort: (opt: { id: string; display: string }) => void;
+      sortOptions: { id: string; display: string }[];
    };
-   commingSoon? : boolean;
+
+   commingSoon?: boolean;
 }) {
    // const [sort, setSort] = useState(sortOptions?.[0]); // 정렬 상태 관리
+
+   const { [id]: products, Load } = useInfiniteData(
+      id,
+      (pageNumber) => ({
+         ...initCondition,
+         pageSize: 12,
+         pageNumber,
+      }),
+      (condition) => requester.getProducts(condition),
+      (data) => data?.totalPages || 0,
+      {
+         onReprocessing: (data) => data?.content || [],
+         fallbackData: [initProducts],
+      }
+   );
+
+
    const listLength = listArray.length;
 
    return (
-      <>    
+      <>
          {listLength > 0 ? (
-         <>
-            <SortFilter length={listLength} sortConfig={sortConfig}/>
-            {/* sortOptions={sortOptions} */}
-            <VerticalFlex alignItems="start">
-               <MasonryGrid width={'100%'} gap={20}>
-                  {
-                     listArray.map((product: ProductData, i) => {
-                        return (
-                           <ProductCard
-                              key={product.id}
-                              product={product}
-                              commingSoon={commingSoon}
-                              lineClamp={2}
-                              width={200}
-                           />
-                        )
-                     })
-                  }
-               </MasonryGrid>
-            </VerticalFlex>
-            <Button className={Pstyles.list_more_btn}>
-              <FlexChild gap={10}>
-               {/* onClick={showMore} */}
-                <Span>상품 더보기</Span>
-                <Image
-                  src={"/resources/icons/arrow/arrow_bottom_icon.png"}
-                  width={10}
-                />
-              </FlexChild>
-            </Button>
+            <>
+               <SortFilter length={listLength} sortConfig={sortConfig} />
+               {/* sortOptions={sortOptions} */}
+               <VerticalFlex alignItems="start">
+                  <MasonryGrid width={'100%'} gap={20}>
+                     {
+                        listArray.map((product: ProductData, i) => {
+                           return (
+                              <ProductCard
+                                 key={product.id}
+                                 product={product}
+                                 commingSoon={commingSoon}
+                                 lineClamp={2}
+                                 width={200}
+                              />
+                           )
+                        })
+                     }
+                  </MasonryGrid>
+               </VerticalFlex>
+               <Button className={Pstyles.list_more_btn}>
+                  <FlexChild gap={10} onClick={showMore}>
+                     <Span>상품 더보기</Span>
+                     <Image
+                        src={"/resources/icons/arrow/arrow_bottom_icon.png"}
+                        width={10}
+                     />
+                  </FlexChild>
+               </Button>
 
-         </>
-         ):(
+            </>
+         ) : (
             <NoContent type={'상품'} />
          )}
       </>

@@ -38,6 +38,7 @@ export function ProductCard({
 
   const navigate = useNavigate();
 
+
   return (
     <VerticalFlex
       width={width ?? isMobile ? "auto" : 200}
