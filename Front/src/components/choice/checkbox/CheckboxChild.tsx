@@ -33,11 +33,12 @@ const useCheckboxGroup = () => {
 };
 
 interface CheckboxChildProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> {
   id: string;
   className?: string;
   style?: React.CSSProperties;
   children?: React.ReactNode;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   images?: {
     on?: string | React.ReactNode;
     off?: string | React.ReactNode;
