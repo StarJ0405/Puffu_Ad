@@ -301,7 +301,7 @@ function Chats({
   );
   return (
     <FlexChild>
-      <VerticalFlex className={styles.chat_body}>
+      <VerticalFlex className={styles.chat_body} id="chat">
         {totalChat.map((chat) => (
           <Chat key={chat.id} chat={chat} users={users} />
         ))}
