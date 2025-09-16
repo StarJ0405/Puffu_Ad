@@ -29,8 +29,12 @@ import Input from "@/components/inputs/Input";
 import ListPagination from "@/components/listPagination/ListPagination";
 import Link from "next/link";
 import {SelectBox} from "../client"
+import { useRouter } from "next/navigation";
+import { toast } from "@/shared/utils/Functions";
 
-
+interface QADataWithUser extends QAData {
+  user?: UserData;
+}
 
 // 게시판 리스트 -----------------------------------------------
 export function BoardTitleBox() {
@@ -48,22 +52,51 @@ export function BoardTitleBox() {
 
 
 export function BoardTable() {
+  const [qaList, setQaList] = useState<QADataWithUser[]>([]);
+  const { userData } = useAuth();
+  const router = useRouter();
 
-   // 조회수는 세자리마다 , 처리.
-   // date는 어차피 뽑으면 년월일시분초 다 나뉠테니 그때 조정하면 됨.
-   const boardData = [
-      
-      {number: '1', Type: '배송', title: '게시판 내용', member: '푸푸토이', answered: '답변완료', date: '2025-09-04 13:48'},
-      {number: '2', Type: '회원/정보관리', title: '게시판 내용', member: '푸푸토이', answered: '답변대기', date: '2025-09-04 13:48'},
-      {number: '3', Type: '주문/결제', title: '게시판 내용', member: '푸푸토이', answered: '답변완료', date: '2025-09-04 13:48'},
-      {number: '4', Type: '반품/환불/교환/AS', title: '게시판 내용', member: '푸푸토이', answered: '답변완료', date: '2025-09-04 13:48'},
-      {number: '5', Type: '상품/이벤트', title: '게시판 내용', member: '푸푸토이', answered: '답변대기', date: '2025-09-04 13:48'},
-      {number: '6', Type: '기타', title: '게시판 내용', member: '푸푸토이', answered: '답변대기', date: '2025-09-04 13:48'},
-      {number: '7', Type: '주문/결제', title: '게시판 내용', member: '푸푸토이', answered: '답변완료', date: '2025-09-04 13:48'},
-      {number: '8', Type: '배송', title: '게시판 내용', member: '푸푸토이', answered: '답변완료', date: '2025-09-04 13:48'},
-      {number: '9', Type: '배송', title: '게시판 내용', member: '푸푸토이', answered: '답변완료', date: '2025-09-04 13:48'},
-      {number: '10', Type: '배송', title: '게시판 내용', member: '푸푸토이', answered: '답변완료', date: '2025-09-04 13:48'},
-   ]
+  useEffect(() => {
+    const fetchQAs = async () => {
+      const res = await requester.getTotalQAs({
+        relations: ["user"],
+      });
+      if (res?.content) {
+        setQaList(res.content);
+      }
+    };
+    fetchQAs();
+  }, []);
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${String(date.getDate()).padStart(2, "0")} ${String(
+      date.getHours()
+    ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+  };
+
+  const getQaTypeKorean = (type: string) => {
+    switch (type) {
+      case "exchange":
+        return "교환";
+      case "refund":
+        return "환불";
+      case "etc":
+      default:
+        return "기타";
+    }
+  };
+
+  const handleTitleClick = (item: QADataWithUser) => {
+    if (userData?.role !== "admin" || userData?.id !== item.user?.id) {
+      toast({ message: "비밀글은 작성자만 확인할 수 있습니다." });
+      return;
+    }
+    router.push(`/board/inquiry/${item.id}`);
+  };
 
    return (
       <VerticalFlex>
@@ -95,55 +128,51 @@ export function BoardTable() {
                {/* 게시판 내용 */}
                <tbody>
                   {
-                     boardData.map((list, i)=> (
+                     qaList.map((list, i)=> (
                         <tr key={i}>
                            {/* 번호 */}
-                           <td>{list.number}</td>
+                           <td>{qaList.length - i}</td>
 
                            {/* 분류 */}
-                           <td>{list.Type}</td>
+                           <td>{getQaTypeKorean(list.type)}</td>
 
                            {/* 제목 */}
                            <td>
-                              <FlexChild gap={5} alignItems="center" height={'100%'} cursor="pointer" className={boardStyle.td_title} width={'fit-content'}>
-                                 <Image src={'/resources/icons/board/lock_icon.png'} width={16} />{/* 비밀번호 들어가면 활성화 */}
-                                 <P lineClamp={1} overflow="hidden" display="--webkit-box" >{list.title}</P>
-                                 <Image src={'/resources/icons/board/new_icon.png'} width={16} />{/* 12시간 내 등록된 게시물만 나타나기 */}
-                              </FlexChild>
+                              <Div
+                                onClick={() => handleTitleClick(list)}
+                                className={boardStyle.td_title}
+                              >
+                                <FlexChild gap={5} alignItems="center" height={'100%'} cursor="pointer" width={'fit-content'}>
+                                   {list.hidden && <Image src={'/resources/icons/board/lock_icon.png'} width={16} />}
+                                   <P lineClamp={1} overflow="hidden" display="--webkit-box" >{list.title}</P>
+                                </FlexChild>
+                              </Div>
                            </td>
 
                            {/* 작성자 */}
-                           {/* 공지사항은 관리자가 쓰니까 이름 그대로 나오고, 1:1문의에서는 이름 일부 **로 가려주기 */}
                            <td>
                               <P lineClamp={2} overflow="hidden" display="--webkit-box" weight={500}>
-                                 {list.member}
+                                 {list.user?.name || "비회원"}
                               </P>
                            </td>
 
                            {/* 문의상태 */}
                            <td>
-                              {
-                                 
-                              }
                               <Span 
                                  weight={400}
-                                 color={`${list.answered === '답변완료' ? '#fff' : '#FF4343'}`}
+                                 color={`${list.answer ? '#fff' : '#FF4343'}`}
                               >
-                                 {list.answered}
+                                 {list.answer ? "답변완료" : "답변대기"}
                               </Span>
                            </td>
 
                            {/* 날짜 */}
-                           {/* 공지사항은 년월일까지 표시, 1:1문의는 분시초도 표시. */}
-                           <td><Span weight={400}>{list.date}</Span></td>
+                           <td><Span weight={400}>{formatDate(list.created_at as string)}</Span></td>
                         </tr>
                      ))
                   }
                </tbody>
             </table>
-            {
-               boardData.length > 0 ? null : <NoContent type="문의"/> 
-            }
          </FlexChild>
          <FlexChild className={boardStyle.list_bottom_box}>
             <ListPagination />
