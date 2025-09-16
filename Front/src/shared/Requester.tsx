@@ -304,7 +304,7 @@ class _Requester {
   }
   async updateCurrentUser(
     data: {
-      password: string;
+      password?: string;
       thumbnail?: string;
     },
     callback?: Function

@@ -57,7 +57,7 @@ export class QA extends BaseEntity {
   @Column({ type: "text", nullable: false })
   content?: string;
 
-  @Column({ type: "text", nullable: false })
+  @Column({ type: "text", nullable: true })
   answer?: string;
 
   @Column({ type: "boolean", default: false })
