@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { useAuth } from "./providers/AuthPorivder/AuthPorivder";
 
 export const config = {
   matcher: [
@@ -6,7 +7,7 @@ export const config = {
   ],
 };
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const url = req.nextUrl;
   const pathname = url.pathname;
   if (
@@ -33,6 +34,9 @@ export function middleware(req: NextRequest) {
     subdomain === "www" ||
     mains.some((main) => main?.split(".")?.[0] === subdomain)
   ) {
+    const { userData } = await useAuth();
+    if (!userData?.id && pathname !== "/" && !pathname.startsWith("/auth"))
+      return NextResponse.redirect(new URL(`/auth/login`, req.url));
     return NextResponse.rewrite(
       new URL(`/$main/${deviceType}${pathname}${url.search}`, req.url),
       {
