@@ -209,7 +209,6 @@ export default function ({ stores }: { stores: StoreData[] }) {
                             }}
                             name={"배너_썸네일"}
                             path={`/banners/${store}`}
-                            placeHolder="375X320을 권장합니다."
                           />
                         </FlexChild>
                       </HorizontalFlex>

@@ -24,9 +24,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import P from "@/components/P/P";
 
-
 export function MainBanner({ initBanners }: { initBanners: Pageable }) {
-
   const { banners } = useData(
     "banners",
     {},
@@ -101,7 +99,7 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
           return (
             <SwiperSlide key={i} className={`swiper_0${i}`}>
               <Link href={item.thumbnail.mobile}>
-                <Image src={item.thumbnail.mobile} width={'100%'} />
+                <Image src={item.thumbnail.mobile} width={"100%"} />
               </Link>
             </SwiperSlide>
           );
@@ -131,11 +129,14 @@ export function LinkBanner() {
 }
 
 export function SubBanner() {
-
   return (
     <FlexChild width={"100%"}>
-      <Link href={'/'}>
-        <Image src={"/resources/images/dummy_img/sub_banner_01.png"} width={"100%"} height={"auto"} />
+      <Link href={"/"}>
+        <Image
+          src={"/resources/images/dummy_img/sub_banner_01.png"}
+          width={"100%"}
+          height={"auto"}
+        />
       </Link>
     </FlexChild>
   );
@@ -174,22 +175,20 @@ export function MainCategory() {
   return (
     <nav className={styles.category_wrap}>
       {categoriesData
-      .sort((c1, c2) => c1.index - c2.index)
-      .map((cat, i) => (
-
-        <VerticalFlex className={styles.ca_item} key={i}>
-          <Link href={`/categories/${cat.id}`}>
-            <FlexChild className={styles.ca_thumb}>
-              <Image src={cat.thumbnail} width={"auto"} height={66} />
-            </FlexChild>
-          </Link>
-          <Span>{cat.name}</Span>
-        </VerticalFlex>
-      ))}
+        .sort((c1, c2) => c1.index - c2.index)
+        .map((cat, i) => (
+          <VerticalFlex className={styles.ca_item} key={i}>
+            <Link href={`/categories/${cat.id}`}>
+              <FlexChild className={styles.ca_thumb}>
+                <Image src={cat.thumbnail} width={"auto"} height={66} />
+              </FlexChild>
+            </Link>
+            <Span>{cat.name}</Span>
+          </VerticalFlex>
+        ))}
     </nav>
   );
 }
-
 
 // 이 달의 핫딜
 export function HotDealWrapper({
@@ -251,7 +250,7 @@ export function HotDealWrapper({
         <>
           {products.length > 0 ? (
             <VerticalFlex gap={10}>
-              <MasonryGrid gap={20} width={'100%'}>
+              <MasonryGrid gap={20} width={"100%"}>
                 {products.map((product: ProductData, i: number) => {
                   return (
                     <ProductCard
@@ -259,6 +258,7 @@ export function HotDealWrapper({
                       product={product}
                       lineClamp={2}
                       width={200}
+                      onClick={() => console.log(product)}
                     />
                   );
                 })}
@@ -282,10 +282,9 @@ export function HotDealWrapper({
   );
 }
 
-
 // 베스트 상품
 export function NewProducts({ initProducts }: { initProducts: Pageable }) {
-  const { newProducts, Load,origin } = useInfiniteData(
+  const { newProducts, Load, origin } = useInfiniteData(
     "newProducts",
     (pageNumber) => ({
       pageSize: 30,
@@ -295,7 +294,7 @@ export function NewProducts({ initProducts }: { initProducts: Pageable }) {
     (data) => data?.totalPages || 0,
     {
       onReprocessing: (data) => data?.content || [],
-      fallbackData:[initProducts]
+      fallbackData: [initProducts],
     }
   );
 
@@ -323,11 +322,7 @@ export function NewProducts({ initProducts }: { initProducts: Pageable }) {
             </Link>
           </FlexChild>
         </HorizontalFlex> */}
-        <HorizontalFlex
-          className={styles.titleBox}
-          alignItems="end"
-          gap={20}
-        >
+        <HorizontalFlex className={styles.titleBox} alignItems="end" gap={20}>
           <div className={styles.title}>
             <h2 className="SacheonFont">
               <Span>따끈따끈</Span> 신상품
@@ -357,7 +352,6 @@ export function ProductList({
   products: ProductData[];
   Load: () => void;
 }) {
-
   const [visibleCount, setVisibleCount] = useState(6);
 
   const showMore = () => {
@@ -369,17 +363,17 @@ export function ProductList({
     <>
       {products.length > 0 ? (
         <VerticalFlex gap={10}>
-          <MasonryGrid gap={15} width={'100%'}>
-          {products.slice(0, visibleCount).map((product: ProductData, i) => {
-            return (
-              <ProductCard
-                key={product.id}
-                product={product}
-                lineClamp={2}
-                width={'auto'}
-              />
-            );
-          })}
+          <MasonryGrid gap={15} width={"100%"}>
+            {products.slice(0, visibleCount).map((product: ProductData, i) => {
+              return (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  lineClamp={2}
+                  width={"auto"}
+                />
+              );
+            })}
           </MasonryGrid>
           <Button className={styles.list_more_btn} onClick={showMore}>
             <FlexChild gap={10}>
@@ -397,7 +391,6 @@ export function ProductList({
     </>
   );
 }
-
 
 // type ReviewItem = {
 //   thumbnail: string;
@@ -521,4 +514,3 @@ export function ProductList({
 //     </>
 //   );
 // }
-

@@ -22,20 +22,18 @@ import styles from "./page.module.css";
 
 export default async function () {
   const banners = await requester.getBanners();
-  const condition: any = {
-    pageSize: 30,
-  };
+
   const hotCondition: any = {
     pageSize: 12,
     order: "discount",
   };
   const hotProducts = await requester.getProducts(hotCondition);
   const newCondition: any = {
-    pageSize: 12,
+    pageSize: 30,
     order: "new",
   };
 
-  const newProducts = await requester.getProducts(condition);
+  const newProducts = await requester.getProducts(newCondition);
   return (
     <section className="root">
       <MainBanner initBanners={banners} />
@@ -47,22 +45,16 @@ export default async function () {
         className="page_container"
       >
         <MainCategory /> {/* 카테고리 */}
-
         <LinkBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
-
-        <HotDealWrapper 
+        <HotDealWrapper
           id={"hot"}
           lineClamp={1}
           initProducts={hotProducts}
           initCondition={hotCondition}
         />
-
         <SubBanner />
-
-        
         <NewProducts initProducts={newProducts} /> {/* 메인, 상세 리스트 */}
         <MiniBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
-        
         {/* 포토 사용 후기 */}
         {/* <FlexChild marginTop={30}>
           <VerticalFlex>

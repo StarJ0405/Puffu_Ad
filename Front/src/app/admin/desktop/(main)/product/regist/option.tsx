@@ -394,7 +394,6 @@ const SimpleOptionSlot = forwardRef(
                   }}
                   name={"옵션_썸네일"}
                   path={"/product/variant"}
-                  placeHolder="(6:7 비율의 이미지, 600X700을 권장합니다.)"
                 />
               </FlexChild>
             </HorizontalFlex>
@@ -829,7 +828,6 @@ const MultipleOptionSlot = forwardRef(
                   }}
                   name={"옵션_썸네일"}
                   path={"/product/variant"}
-                  placeHolder="(6:7 비율의 이미지, 600X700을 권장합니다.)"
                 />
               </FlexChild>
             </HorizontalFlex>

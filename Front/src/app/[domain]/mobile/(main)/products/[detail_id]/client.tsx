@@ -185,6 +185,7 @@ export function ProductWrapper({
           shipping={shipping}
           onCartClick={onCartClick}
           onPurchaseClick={onPurchaseClick}
+          onWishClick={onWishClick}
         />
 
         {children}
@@ -209,12 +210,14 @@ export function DetailFrame({
   shipping,
   onCartClick,
   onPurchaseClick,
+  onWishClick,
 }: {
   product: ProductData;
   freeShipping?: ShippingMethodData;
   shipping?: ShippingMethodData;
   onCartClick: (selected: Variant[]) => Promise<any>;
   onPurchaseClick: (selected: Variant[]) => Promise<any>;
+  onWishClick: () => void;
 }) {
   const { storeData } = useStore();
   return (
@@ -304,6 +307,7 @@ export function DetailFrame({
         product={product}
         onCartClick={onCartClick}
         onPurchaseClick={onPurchaseClick}
+        onWishClick={onWishClick}
       />
     </VerticalFlex>
   );
@@ -416,10 +420,12 @@ export function BottomPayBox({
   product,
   onCartClick,
   onPurchaseClick,
+  onWishClick,
 }: {
   product: ProductData;
   onCartClick: (selected: Variant[]) => Promise<any>;
   onPurchaseClick: (selected: Variant[]) => Promise<any>;
+  onWishClick: () => void;
 }) {
   return (
     <FlexChild className={styles.bottom_pay_box}>
@@ -427,10 +433,13 @@ export function BottomPayBox({
         <FlexChild width={"auto"}>
           <Button className={styles.heart_btn}>
             <Image
-              src={"/resources/icons/main/product_heart_icon.png"}
+              src={
+                product.wish
+                  ? "/resources/icons/main/product_heart_icon_active.png"
+                  : "/resources/icons/main/product_heart_icon.png"
+              }
               width={35}
             />
-            {/* <Image src={'/resources/icons/main/product_heart_icon_active.png'} width={30} /> */}
           </Button>
         </FlexChild>
 

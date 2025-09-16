@@ -1,4 +1,6 @@
+import { Product } from "models/product";
 import { ProductService } from "services/product";
+import { WishlistService } from "services/wishlist";
 import { container } from "tsyringe";
 
 export const GET: ApiHandler = async (req, res) => {
@@ -14,7 +16,7 @@ export const GET: ApiHandler = async (req, res) => {
   if (req.user) {
     where.user_id = req.user.id;
   }
-
+  const wishService: WishlistService = container.resolve(WishlistService);
   if (pageSize) {
     const page: any = await service.getWithOrder(
       { select, order, relations, where },
@@ -36,6 +38,15 @@ export const GET: ApiHandler = async (req, res) => {
         return product;
       });
     }
+    const wishes = await wishService.getCounts(
+      page.content.map((p: Product) => p.id) || []
+    );
+
+    console.log(wishes);
+    page.content = page.content.map((product: any) => {
+      product.wishes = wishes.find((f) => f.id === product.id)?.count || 0;
+      return product;
+    });
     return res.json(page);
   } else {
     let content: any[] = await service.getWithOrder({
@@ -57,6 +68,13 @@ export const GET: ApiHandler = async (req, res) => {
         return product;
       });
     }
+    const wishes = await wishService.getCounts(
+      content.map((p: Product) => p.id) || []
+    );
+    content = content.map((product: any) => {
+      product.wishes = wishes.find((f) => f.id === product.id)?.count || 0;
+      return product;
+    });
     return res.json({ content });
   }
 };

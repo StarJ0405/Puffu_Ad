@@ -126,10 +126,7 @@ export default function () {
                     </P>
                   </FlexChild>
                   <FlexChild padding={"15px 15px 15px 0"}>
-                    <InputImage
-                      ref={image}
-                      placeHolder="1:1 비율의 이미지를 권장합니다."
-                    />
+                    <InputImage ref={image} />
                   </FlexChild>
                 </HorizontalFlex>
               </FlexChild>
