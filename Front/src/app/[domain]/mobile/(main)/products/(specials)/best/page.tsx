@@ -10,10 +10,8 @@ import { log } from "console";
 import { ProdcutCategory } from "../../baseClient";
 
 export default async function () {
-  const bestCondition: any = {
-    pageSize: 12,
-    order: "best",
-  };
+  const bestCondition: any = { pageSize: 12, pageNumber: 0, order: "best" };
+
   const bestProducts = await requester.getProducts(bestCondition);
   return (
     <section className="root page_container">
@@ -30,7 +28,9 @@ export default async function () {
         </VerticalFlex>
 
         <VerticalFlex className={Pstyles.list}>
+
           <BestList
+            id={"best"}
             initProducts={bestProducts}
             initConiditon={bestCondition}
           />

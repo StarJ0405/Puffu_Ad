@@ -1,0 +1,78 @@
+.comment_Frame {
+   --bb-color: #6B6B6B;
+   background: #111111;
+   border: 1px solid #7e7e7e;
+   border-radius: 5px;
+   width: 100%;
+   max-width: 1250px;
+   margin: 0 auto;
+   padding: 20px 20px 35px;
+   gap: 20px;
+}
+
+.comment_header {
+   padding-bottom: 15px;
+   border-bottom: 1px solid var(--bb-color);
+}
+
+.comment_header p {
+   font-size: 20px !important;
+   font-weight: 600 !important;
+   color: #fff !important;
+}
+
+.comment_list .list_item {
+   border-bottom: 1px solid var(--bb-color);
+   padding: 0 15px 20px; gap: 35px;
+}
+.comment_list .list_item .item_header {justify-content: start !important; gap: 10px;}
+.comment_list .list_item .item_header > * {width: auto;}
+.comment_list .list_item .name {font-size: 14px; color: #cfcfcf; font-weight: 500;}
+.comment_list .list_item .date {font-size: 14px; color: #797979;}
+.comment_list .list_item .reply_btn {
+   gap: 5px; color: #fff; font-size: 14px; font-weight: 500;
+   margin-left: auto; cursor: pointer;
+}
+
+/* 답글 */
+.comment_list .reply_item {
+   padding-left: 35px !important;
+}
+
+.comment_list .list_item .content {
+   color: #fff; font-size: 15px;
+   line-height: 1.4;
+}
+
+
+/* 작성란 */
+.comment_write {gap: 15px;}
+.comment_form {gap: 20px;}
+.comment_form .post_btn {
+   width: 80px; height: 80px;
+   border-radius: 3px;
+   border: 1px solid #898989;
+   background: #1f1f1f;
+   font-size: 18px;
+   color: #fff;
+   font-weight: 500;
+   transition: all 0.1s;
+}
+.comment_form .post_btn:hover {
+   background: var(--main-color2);
+   border-color: var(--main-color2);
+}
+
+.comment_form .content_textArea {
+   height: 125px;
+}
+
+/* 답글 달기란 */
+.toggle_write {
+   opacity: 0;
+}
+
+.toggle_write.active {
+   opacity: 1;
+   transition: 0.5s 10s;
+}

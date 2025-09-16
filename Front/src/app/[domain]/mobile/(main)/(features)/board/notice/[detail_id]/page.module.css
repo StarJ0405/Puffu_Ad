@@ -1,0 +1,68 @@
+.detail_container {
+   background: #161616;
+   border-radius: 10px;
+   padding: 25px 35px;
+   margin-bottom: 20px;
+}
+
+.board_header .title_box {
+   padding: 15px 5px;
+   border-bottom: 1px solid #6B6B6B;
+}
+
+.board_header .title_box > * {width: fit-content;}
+.board_header .title_box .title {font-size: 25px; color: #fff;font-weight: 600;}
+.board_header .title_box .date {font-size: 14px; color: #dadada !important;}
+
+
+.board_header .title_box .view_comment_box {font-size: 14px; color: #DADADA;}
+.board_header .title_box .view_comment_box > * {width: auto;}
+.board_header .title_box .view_comment_box b {font-weight: 600 !important;}
+
+.board_header .edit_box {padding: 15px 0; align-items: start !important;}
+.board_header .edit_box > * {width: auto; flex: unset;}
+.board_header .edit_box .file_list {max-width: 300px;}
+.board_header .edit_box .file_list .file_name {
+   font-size: 12px; color: #fff; 
+   font-weight: 500; cursor: pointer;
+}
+
+.board_header .edit_box .file_list .file_name p {
+   color: #797979 !important; font-weight: 400 !important;
+}
+
+.board_header .edit_box .file_list .file_name:hover p {
+   text-decoration: underline;
+}
+
+
+.edit_button_group {gap: 10px;}
+.edit_button_group button {
+   width: 58px; padding: 7px 5px;
+   border: 1px solid #fff;
+   border-radius: 5px;
+   color: #fff; font-size: 16px;
+   /* font-weight: 600; */
+}
+
+.edit_button_group button.edit_btn {border-color: var(--main-color2);}
+.edit_button_group button.delete_btn:hover {
+   border-color: var(--main-color2);
+}
+.edit_button_group button:hover {background: var(--main-color2);}
+
+.list_btn {
+   width: 130px;
+   padding: 15px 5px;
+   font-size: 20px;
+   font-weight: 600;
+   color: #fff;
+   background: #050505;
+   transition: all 0.2s;
+}
+
+.list_btn:hover {background: var(--main-color2);}
+
+
+
+/* 댓글창 */

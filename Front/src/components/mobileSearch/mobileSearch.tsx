@@ -16,7 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import useNavigate from "@/shared/hooks/useNavigate";
 
 
-export default function MobileSearch({onClose}: {onClose : ()=> void}) {
+export default function MobileSearch({onClose}: {onClose : (isClosed: boolean) => void}) {
 
    const [value, setValue] = useState("");
    const navigate = useNavigate();
@@ -27,12 +27,44 @@ export default function MobileSearch({onClose}: {onClose : ()=> void}) {
      }
    };
 
-   const keyword = ['전기톱', '밤양갱', '냉동젤'];
+   const latestSearch = () => {
+      if(value.trim()) {
+         const stored = JSON.parse(localStorage.getItem('recentSearches') || "[]");
+
+         const updated = [value, ...stored.filter((item: string) => item !== value)];
+
+         const limited = updated.slice(0,5);
+
+         localStorage.setItem("recentSearches", JSON.stringify(limited));
+
+         navigate(`/search?q=${value}`);
+      }
+   }
+
+   // 일괄 삭제
+   const [recentSearches, setRecentSearches] = useState<string[]>([]);
+
+   useEffect(() => {
+     const stored = JSON.parse(localStorage.getItem("recentSearches") || "[]");
+     setRecentSearches(stored);
+   }, []);
+
+   // 개별 삭제
+   const removeSearch = (word: string) => {
+      const stored = JSON.parse(localStorage.getItem("recentSearches") || "[]");
+
+     // 클릭한 word만 제외
+     const updated = stored.filter((item: string) => item !== word);
+
+     // localStorage & state 동기화
+     localStorage.setItem("recentSearches", JSON.stringify(updated));
+     setRecentSearches(updated);
+   };
 
    return (
       <VerticalFlex className={styles.search_frame}>
          <FlexChild className={styles.frame_header}>
-            <FlexChild cursor="pointer" width={'auto'}>
+            <FlexChild cursor="pointer" width={'auto'} onClick={()=> onClose(true)}>
                <Image src={'/resources/icons/arrow/slide_arrow.png'} width={12} />
             </FlexChild>
 
@@ -43,7 +75,11 @@ export default function MobileSearch({onClose}: {onClose : ()=> void}) {
                   value={value}
                   onChange={(e) => setValue(e.target.value)}
                   onKeyDown={(e) => {
-                     if (e.key === "Enter") handleSearch();
+                     if (e.key === "Enter") {
+                        onClose(true);
+                        latestSearch();
+                        handleSearch();
+                     }
                   }}
                />
 
@@ -52,40 +88,56 @@ export default function MobileSearch({onClose}: {onClose : ()=> void}) {
                   width={18}
                   height="auto"
                   cursor="pointer"
-                  onClick={()=>handleSearch()}
+                  onClick={()=>{
+                     onClose(true);
+                     latestSearch();
+                  }}
                />
             </FlexChild>
-
-            <VerticalFlex className={styles.latest_search_box}>
-               <HorizontalFlex>
-                  <FlexChild>
-                     <P>최근 검색어</P>
-                  </FlexChild>
-
-                  <FlexChild className={styles.delete}>
-                     <P>전체삭제</P>
-                  </FlexChild>
-               </HorizontalFlex>
-
-               <VerticalFlex className={styles.latest_list}>
-                  {
-                     keyword.map((word, i) => {
-                        return (
-                           <HorizontalFlex className={styles.item}>
-                              <FlexChild>
-                                 <P>{word}</P>
-                              </FlexChild>
-
-                              <FlexChild>
-                                 <Image src="/resources/icons/closeBtn.png" width={11} />
-                              </FlexChild>
-                           </HorizontalFlex>
-                        )
-                     })
-                  }
-               </VerticalFlex>
-            </VerticalFlex>
          </FlexChild>
+
+         <VerticalFlex className={styles.latest_search_box}>
+            <HorizontalFlex height={'auto'}>
+               <FlexChild width={'auto'}>
+                  <P color="#fff" size={14}>최근 검색어</P>
+               </FlexChild>
+
+               <FlexChild 
+                  className={styles.delete} 
+                  width={'auto'}
+                  onClick={() => {
+                    localStorage.removeItem("recentSearches");
+                    setRecentSearches([]);
+                  }}
+               >
+                  <P size={13} weight={600} color="#595959">전체삭제</P>
+               </FlexChild>
+            </HorizontalFlex>
+
+            <VerticalFlex className={styles.latest_list}>
+               {
+                  recentSearches.map((word, i) => {
+                     return (
+                        <HorizontalFlex className={styles.item} key={i}>
+                           <FlexChild
+                              onClick={() => {
+                                setValue(word);
+                                navigate(`/search?q=${word}`);
+                                onClose(true);
+                              }}
+                           >
+                              <P color="#ccc" size={14}>{word}</P>
+                           </FlexChild>
+
+                           <FlexChild onClick={() => removeSearch(word)}>
+                              <Image src="/resources/icons/closeBtn.png" width={11} />
+                           </FlexChild>
+                        </HorizontalFlex>
+                     )
+                  })
+               }
+            </VerticalFlex>
+         </VerticalFlex>
       </VerticalFlex>
    );
 }

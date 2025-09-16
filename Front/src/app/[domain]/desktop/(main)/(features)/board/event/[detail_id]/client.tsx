@@ -35,16 +35,6 @@ import ChoiceGroup from "@/components/choice/ChoiceGroup";
 import InputTextArea from "@/components/inputs/InputTextArea";
 import NoContent from "@/components/noContent//noContent"
 
-export function BoardTitleBox() {
-  return (
-    <HorizontalFlex className={boardStyle.board_titleBox}>
-      <FlexChild>
-        {/* 여기 현재 path 주소에 맞게 이름 바뀌게 해야 함. */}
-        <h3>공지사항</h3>
-      </FlexChild>
-    </HorizontalFlex>
-  );
-}
 
 // 본문 -----------------------------------------------
 export function DetailFrame() {
@@ -59,7 +49,7 @@ export function DetailFrame() {
       <VerticalFlex className={styles.board_header}>
           <HorizontalFlex className={styles.title_box}>
             <FlexChild className={styles.title}>
-                <P>공지사항 게시판입니다.</P>
+                <P>이벤트 게시판입니다.</P>
             </FlexChild>
 
             <FlexChild className={styles.date}>
@@ -95,14 +85,14 @@ export function DetailFrame() {
                 }
             </VerticalFlex>
 
-            <FlexChild gap={10} className={styles.edit_button_group}>
-                <FlexChild cursor="pointer" width={'auto'}> {/* 공유 버튼 */}
+            {/* <FlexChild gap={10} className={styles.edit_button_group}>
+                <FlexChild cursor="pointer" width={'auto'}>
                   <Image src={'/resources/icons/main/share_icon.png'} width={25} />
                 </FlexChild>
 
                 <Button className={styles.delete_btn}>삭제</Button>
                 <Button className={styles.edit_btn}>수정</Button>
-            </FlexChild>
+            </FlexChild> */}
           </HorizontalFlex>
       </VerticalFlex>
 
@@ -133,6 +123,8 @@ export function DetailFrame() {
 
 
 
+
+// 아래는 무시하세요
 export function BoardTable() {
 
    // 조회수는 세자리마다 , 처리.
@@ -223,7 +215,7 @@ export function BoardTable() {
                </tbody>
             </table>
             {
-               boardData.length > 0 ? null : <NoContent type={'상품'}/> 
+               boardData.length > 0 ? null : <NoContent type={'게시판'}/> 
             }
          </FlexChild>
          <FlexChild className={boardStyle.list_bottom_box}>

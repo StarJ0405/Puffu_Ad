@@ -13,7 +13,7 @@ import P from "@/components/P/P";
 import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
 import clsx from "clsx";
-import boardStyle from "../boardGrobal.module.css";
+import boardStyle from "../../boardGrobal.module.css";
 import styles from "./page.module.css";
 
 // 게시판 쓰기 -----------------------------------------------
@@ -45,7 +45,8 @@ export function WriteFrame() {
               }}
               options={[
                  { value: "회원정보 관리", display: "회원정보 관리" },
-                 { value: "주문/결제", display: "영수증/증빙서류" },
+                 { value: "주문/결제", display: "주문/결제" },
+                 { value: "영수증/증빙서류", display: "영수증/증빙서류" },
                  { value: "상품/이벤트", display: "상품/이벤트" },
                  { value: "기타", display: "기타" },
               ]}
@@ -55,7 +56,7 @@ export function WriteFrame() {
           </FlexChild>
         </FlexChild>
 
-        <FlexChild className={styles.input_box}>
+        {/* <FlexChild className={styles.input_box}>
           <FlexChild>
             <CheckboxGroup name={"comment"}>
               <label>
@@ -67,7 +68,7 @@ export function WriteFrame() {
             </CheckboxGroup>
           </FlexChild>
 
-          {/* <FlexChild>
+          <FlexChild>
             <CheckboxGroup name={"notice"}>
               <label>
                 <FlexChild gap={10}>
@@ -76,8 +77,8 @@ export function WriteFrame() {
                 </FlexChild>
               </label>
             </CheckboxGroup>
-          </FlexChild> */}
-        </FlexChild>
+          </FlexChild>
+        </FlexChild> */}
       </HorizontalFlex>
 
       <HorizontalFlex className={styles.input_group} justifyContent="start">

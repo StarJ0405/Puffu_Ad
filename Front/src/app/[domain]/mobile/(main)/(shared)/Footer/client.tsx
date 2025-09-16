@@ -19,9 +19,7 @@ import AdminChat from "@/modals/adminChat/adminChat";
 
 // const navigate = useNavigate();
 
-{
-  /* 사이드 네비 */
-}
+{/* 사이드 네비 */ }
 export function SideToggle() {
   const pathname = usePathname();
   const [chatToggle, setChatToggle] = useState(false);
@@ -51,6 +49,7 @@ export function SideToggle() {
       >
         <TopButton />
       </FlexChild>
+
 
       <AnimatePresence>
         {chatToggle && (

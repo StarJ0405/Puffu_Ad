@@ -1,4 +1,3 @@
-import Container from "@/components/container/Container";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import P from "@/components/P/P";
 import styles from "./page.module.css";
@@ -21,7 +20,7 @@ export default async function ({
 
   return (
     <section className="root">
-      <Container className="page_container" marginTop={80}>
+      <VerticalFlex className="page_container" marginTop={80} paddingBottom={40}>
         <VerticalFlex className={styles.title_box}>
           <h3>"{q}" 검색결과</h3>
 
@@ -37,7 +36,7 @@ export default async function ({
             initProducts={initProducts}
           />
         </VerticalFlex>
-      </Container>
+      </VerticalFlex>
     </section>
   );
 }

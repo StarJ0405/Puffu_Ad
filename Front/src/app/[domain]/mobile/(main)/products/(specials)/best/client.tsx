@@ -12,7 +12,8 @@ import Pstyles from "../../products.module.css";
 import MasonryGrid from "@/components/masonry/MasonryGrid";
 import ProductCard from "@/components/card/ProductCard";
 import NoContent from "@/components/noContent/noContent";
-import {BaseProductList} from "../../baseClient";
+import { BaseProductList } from "../../baseClient";
+import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
 
 
 export function SecondCategory() {
@@ -45,29 +46,44 @@ export function SecondCategory() {
 }
 
 export function BestList({
+  id,
   initProducts,
   initConiditon,
 }: {
+  id: string;
   initProducts: Pageable;
   initConiditon: any;
 }) {
-  const { best, maxPage, page, setPage, mutate } = usePageData(
-    "best",
+  const {
+    [id]: items,
+    Load,
+    page,
+    maxPage,
+    isLoading,
+  } = useInfiniteData(
+    id,
     (pageNumber) => ({
       ...initConiditon,
-      pageSize: 24,
+      pageSize: 12,
       pageNumber,
     }),
     (condition) => requester.getProducts(condition),
     (data: Pageable) => data?.totalPages || 0,
     {
       onReprocessing: (data) => data?.content || [],
-      fallbackData: initProducts,
+      fallbackData: [initProducts],
     }
   );
+
+
   return (
-    <>
-      <BaseProductList listArray={best} />
-    </>
+    <BaseProductList
+      id={id}
+      initCondition={initConiditon}
+      initProducts={initProducts}
+      listArray={items}
+      showMore={Load}
+    />
   );
 }
+

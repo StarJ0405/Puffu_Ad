@@ -10,6 +10,7 @@ import styles from "./header.module.css";
 import { useParams, usePathname } from "next/navigation";
 import MobileSearch from "@/components/mobileSearch/mobileSearch"
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 
 export default function MobileHeader() {
@@ -72,7 +73,33 @@ export default function MobileHeader() {
                      <HeaderBottom menu1={menu1}/>
                   </header>
 
-                  {showSearch && <MobileSearch onClose={() => setShowSearch(false)} />}
+
+                  {/* 모바일 검색창 페이지 */}
+                  <AnimatePresence mode="wait">
+                  {
+                     showSearch && (
+                        <motion.div
+                           id="motion"
+                           key={showSearch ? "search-open" : "search-closed"}
+                           initial={{ opacity: 0, y: -20,}}
+                           animate={{ opacity: 1, y: 0,}}
+                           exit={{ opacity: 0, y: 0 }}
+                           transition={{ duration: 0.2, ease: "easeInOut" }}
+                           style={{
+                              position: "fixed",
+                              top: 0,
+                              left: 0,
+                              width: "100%",
+                              height: "100vh",
+                              background: "#111",   // 검색창 배경색
+                              zIndex: 10000,         // 다른 UI 위로
+                           }}
+                        >
+                           <MobileSearch onClose={() => setShowSearch(false)} />
+                        </motion.div>
+                     )
+                  }
+                  </AnimatePresence>
                </>
             ) : (
                <div style={{display: "none"}}></div>
