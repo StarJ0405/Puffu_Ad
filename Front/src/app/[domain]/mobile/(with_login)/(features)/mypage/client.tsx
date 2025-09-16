@@ -16,19 +16,35 @@ import { Cookies } from "@/shared/utils/Data";
 import { getCookieOption } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import { useCookies } from "react-cookie";
+import { useEffect, useState } from "react";
+import { requester } from "@/shared/Requester";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 
 
 
-const editInfoModal = () => { // 개인정보 수정
+
+const editInfoModal = (userData: any, navigate: (path: string) => void) => { // 개인정보 수정
+  let password = '';
   NiceModal.show(ConfirmModal, {
     // title: '개인정보 수정',
     message: (
-      <EditINfo />
+      <EditINfo userData={userData} onPasswordChange={(p) => { password = p; }} />
     ),
     confirmText: "확인",
     withCloseButton: true,
     onConfirm: async () => {
-      
+      try {
+        const res = await requester.checkCurrentPassword({ password });
+        console.log('Password check result:', res);
+        if (res.message === 'success') {
+          navigate('/mypage/editInfo');
+        } else {
+          alert('비밀번호가 일치하지 않습니다.');
+        }
+      } catch (error) {
+        console.error('Password check failed:', error);
+        alert('비밀번호 확인 중 오류가 발생했습니다.');
+      }
     },
   })
 }
@@ -38,6 +54,10 @@ const editInfoModal = () => { // 개인정보 수정
 export function Profile() {
 
   const navigate = useNavigate();
+  const { userData } = useAuth(); // 유저정보 받아오기
+  useEffect(() => {
+    console.log(userData);
+  }, [])
 
   return (
     <VerticalFlex className={clsx(styles.profile, styles.box_frame)}>
@@ -45,14 +65,14 @@ export function Profile() {
         <FlexChild width={"auto"} position="relative">
           <FlexChild className={styles.thumbnail} width={"auto"}>
             <Image
-              src={"/resources/images/dummy_img/product_01.png"}
+              src={userData?.thumbnail || "/resources/icons/mypage/user_no_img.png"}
               width={60}
             />
           </FlexChild>
         </FlexChild>
 
         <FlexChild width={"auto"} className={styles.profile_name}>
-          <P>콘푸로스트123</P>
+          <P>{userData?.name ?? "익명"}</P>
         </FlexChild>
       </VerticalFlex>
 
@@ -65,7 +85,7 @@ export function Profile() {
           관심 리스트
         </FlexChild>
 
-        <FlexChild className={styles.setting_btn} onClick={editInfoModal}>
+        <FlexChild className={styles.setting_btn} onClick={() => editInfoModal(userData, navigate)}>
           <Image
             src={"/resources/icons/mypage/setting_icon.png"}
             width={14}
@@ -119,6 +139,8 @@ export function DeliveryInfo() {
 
 export function MypageNavi() {
   const [, , removeCookie] = useCookies([Cookies.JWT]);
+  const { userData } = useAuth();
+  const navigate = useNavigate();
   
   const logoutModal = () => { // 로그아웃
 
@@ -176,7 +198,10 @@ export function MypageNavi() {
         <ul className={styles.inner_menu}>
           <li>
             <Link className={styles.inner_btn} href={"/mypage/editInfo"}
-              onClick={editInfoModal}
+              onClick={(e) => {
+                e.preventDefault();
+                editInfoModal(userData, navigate);
+              }}
             >
               <Span>개인정보 수정</Span>
               <Image
@@ -214,7 +239,7 @@ export function MypageNavi() {
 
 
 // 개인정보 수정 모달 내용
-export function EditINfo() {
+export function EditINfo({ userData, onPasswordChange }: { userData: any, onPasswordChange: (password: string) => void }) {
   return (
     <VerticalFlex className="modal_edit_info" gap={50}>
       <FlexChild className="title" justifyContent="center">
@@ -224,12 +249,12 @@ export function EditINfo() {
       <VerticalFlex alignItems="start" gap={30}>
         <VerticalFlex className={'input_box'} alignItems="start" gap={10}>
           <P size={16} color="#333" weight={600}>아이디</P>
-          <P size={16} color="#797979">mynameistony</P>
+          <P size={16} color="#797979">{userData?.username ?? "mynameistony"}</P>
         </VerticalFlex>
 
         <VerticalFlex className={'input_box'} alignItems="start" gap={10}>
           <P size={16} color="#333" weight={600}>비밀번호</P>
-          <Input type="password" width={'100%'} placeHolder="비밀번호를 입력하세요." />
+          <Input type="password" width={'100%'} placeHolder="비밀번호를 입력하세요." onChange={(value) => onPasswordChange(value as string)} />
         </VerticalFlex>
       </VerticalFlex>
     </VerticalFlex>

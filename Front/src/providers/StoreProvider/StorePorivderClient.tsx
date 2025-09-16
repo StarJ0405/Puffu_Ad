@@ -52,7 +52,7 @@ export default function StoreProviderClient({
   const { categories: categoriesData } = useData(
     "categories",
     {
-      store_id: storeData.id,
+      store_id: storeData?.id,
       parent_id: null,
       tree: "descendants",
     },
