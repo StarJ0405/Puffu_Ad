@@ -349,8 +349,9 @@ export function NewProducts({ initProducts }: { initProducts: Pageable }) {
         </HorizontalFlex> */}
         <HorizontalFlex className={styles.titleBox} alignItems="end" gap={20}>
           <div className={styles.title}>
+            <Image src={'/resources/images/header/logo.png'} width={50} />
             <h2 className="SacheonFont">
-              <Span>따끈따끈</Span> 신상품
+              <Span position="relative" top={3}>BEST</Span> 상품!
             </h2>
           </div>
 
