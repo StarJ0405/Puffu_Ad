@@ -135,7 +135,6 @@ export class OrderService extends BaseService<Order, OrderRepository> {
         delete where.end_date;
         if (where.q) {
           const q = where.q;
-          delete where.q;
 
           const _keyword = ["display", "id"];
 
@@ -189,6 +188,7 @@ export class OrderService extends BaseService<Order, OrderRepository> {
 
           options.where = where;
         }
+        delete where.q;
       }
       if (!options?.order) {
         options.order = {
