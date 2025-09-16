@@ -5,7 +5,7 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import clsx from "clsx";
 import Link from "next/link";
-import { HeaderBottom, SideMenuBtn } from './client';
+import { HeaderBottom, SideMenuBtn, CartLength } from './client';
 import styles from "./header.module.css";
 import { useParams, usePathname } from "next/navigation";
 import MobileSearch from "@/components/mobileSearch/mobileSearch"
@@ -60,10 +60,11 @@ export default function MobileHeader() {
                                     <Image src='/resources/images/header/input_search_icon.png' width={22} cursor="pointer"/>
                                  </FlexChild>
    
-                                 <FlexChild>
+                                 <FlexChild className={styles.cart_btn}>
                                     <Link href={'/orders/cart'}>
                                        <Image src='/resources/icons/main/cart_icon.png' width={25} cursor="pointer"/>
                                     </Link>
+                                    <CartLength />
                                  </FlexChild>
                               </HorizontalFlex>
                            </VerticalFlex>

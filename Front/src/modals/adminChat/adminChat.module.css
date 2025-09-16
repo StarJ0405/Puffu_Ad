@@ -88,3 +88,59 @@
 .chat_modal .write_board .chat_btn:active {
    background: #222;
 }
+
+
+
+
+@media (max-width: 768px) {
+   .chat_modal {
+      border-radius: 10px;
+      background: #fff;
+      width: 95%;
+      height: 80dvh;
+      min-height: unset;
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 20px 15px 10px;
+      /* overflow-y: auto; */
+      z-index: 10000;
+   }
+
+   .chat_modal .title_header {
+      padding-bottom: 15px;
+      border-bottom: 1px solid #000;
+      justify-content: space-between;
+      margin-bottom: 16px;
+   }
+
+   .chat_modal .title_header p {
+      color: #333 !important;
+      font-size: 20px !important;
+      font-weight: bold !important;
+   }
+
+   .scroll_body {
+      overflow-y: auto;
+      height: 100%;
+   }
+
+   .scroll_body::-webkit-scrollbar-thumb {
+      
+   }
+
+   .chat_body {
+      width: 100%;
+      height: 100%;
+      /* overflow-y: auto; */
+      gap: 25px;
+      /* background: #ccc; */
+   }
+
+   .chat_modal .write_board {
+      position: absolute; bottom: 0;
+      width: 95%; background: #fff;
+      padding: 5px;
+   }
+}

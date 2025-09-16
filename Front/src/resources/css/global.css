@@ -168,6 +168,12 @@ a {
 
 /* 모바일 컨테이너 ------------------ */
 
+@media (max-width: 1280px) {
+  .page_container {
+    padding: 0 10px;
+  }
+}
+
 @media (max-width: 768px) {
 
   html {
