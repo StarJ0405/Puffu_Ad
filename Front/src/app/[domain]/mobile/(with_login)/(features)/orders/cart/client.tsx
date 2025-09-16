@@ -18,8 +18,12 @@ import P from "@/components/P/P";
 import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
 import ConfirmModal from "@/modals/confirm/ConfirmModal";
-import DeliveryAddEdit from "@/modals/DeliveryAddEdit/DeliveryAddEdit";
-import DeliveryListModal from "@/modals/DeliveryListModal/DeliveryListModal";
+import DeliveryAddEdit, {
+  DeliveryAddEditRef,
+} from "@/modals/DeliveryAddEdit/DeliveryAddEdit";
+import DeliveryListModal, {
+  DeliveryListRef,
+} from "@/modals/DeliveryListModal/DeliveryListModal";
 import {
   useCart,
   useStore,
@@ -27,54 +31,125 @@ import {
 import { requester } from "@/shared/Requester";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import style from "./page.module.css";
 import useNavigate from "@/shared/hooks/useNavigate";
-
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
+import useAddress from "@/shared/hooks/main/useAddress";
+import { toast } from "@/shared/utils/Functions";
+import RadioGroup from "@/components/choice/radio/RadioGroup";
+import RadioChild from "@/components/choice/radio/RadioChild";
+import { Sessions } from "@/shared/utils/Data";
 
 export function CartWrap() {
+  const { userData } = useAuth();
+  const { storeData } = useStore();
   const { cartData } = useCart();
+  const { addresses, mutate } = useAddress();
+  const [address, setAddress] = useState<AddressData>();
+  const [selected, setSelected] = useState<string[]>(
+    cartData?.items.map((i) => i.id) || []
+  );
+  const formRef = useRef<DeliveryAddEditRef>(null);
+  const listRef = useRef<DeliveryListRef>(null);
+  const Create = (data: Partial<AddressDataFrame>) => {
+    requester.createAddress(data, () => mutate());
+  };
+  const [isLoading, setIsLoading] = useState(false);
+  const [agrees, setAgrees] = useState<string[]>([]);
+  const [payment, setPayment] = useState<string>("");
+  const [total, setTotal] = useState<number>(0);
+  const [selectedMessageOption, setSelectedMessageOption] = useState("");
+  const [message, setMessage] = useState<string>("");
+  const [totalDiscounted, setTotalDiscounted] = useState<number>(0);
+  const [shipping, setShipping] = useState<ShippingMethodData>();
+  const navigate = useNavigate();
 
-  const [CartCheck, setCartCheck] = useState<string[]>([]);
-
-  console.log(CartCheck);
-
-  const deliveryAddEditModal = () => {
+  const deliveryAddModal = () => {
     NiceModal.show(ConfirmModal, {
-      message: <DeliveryAddEdit />,
+      message: <DeliveryAddEdit ref={formRef} />,
       confirmText: "저장",
       cancelText: "닫기",
+      preventable: true,
       // onclick: setPaswwordStep(1),
       withCloseButton: true,
       onConfirm: async () => {
-        console.log("저장하기");
+        const formData = formRef.current?.getFormData();
+
+        if (!formData) {
+          console.error("폼 데이터를 가져올 수 없습니다.");
+          return;
+        }
+        if (
+          !formData.name ||
+          !formData.phone ||
+          !formData.postal_code ||
+          !formData.address1 ||
+          !formData.address2
+        ) {
+          toast({ message: "정보를 전부 기입해주세요." });
+          return false;
+        }
+
+        try {
+          await Create(formData);
+          NiceModal.hide(ConfirmModal);
+          return true;
+        } catch (error) {
+          console.error("저장 중 오류가 발생했습니다.", error);
+          // 여기에 사용자에게 오류를 알리는 토스트 메시지 등을 추가할 수 있습니다.
+        }
       },
       onCancel: () => {
-        console.log("닫기");
+        NiceModal.hide(ConfirmModal);
       },
     });
   };
 
   const deliveryListModal = () => {
     NiceModal.show(ConfirmModal, {
-      message: <DeliveryListModal />,
+      message: <DeliveryListModal selectable ref={listRef} address={address} />,
       confirmText: "저장",
       cancelText: "닫기",
       // onclick: setPaswwordStep(1),
+      preventable: true,
       withCloseButton: true,
       onConfirm: async () => {
-        console.log("저장하기");
-      },
-      onCancel: () => {
-        console.log("닫기");
+        const addr = listRef.current?.getSelect();
+        if (addr) setAddress(addr);
+        return true;
       },
     });
   };
+  useEffect(() => {
+    const _default = addresses.find((f) => f.default);
+    setAddress(_default);
+  }, [addresses]);
+  useEffect(() => {
+    let total = 0;
+    let totalDiscounted = 0;
+    cartData?.items
+      .filter((item) => selected.includes(item.id))
+      .forEach((item) => {
+        total += item?.variant?.price * item.quantity;
+        totalDiscounted += (item?.variant?.discount_price || 0) * item.quantity;
+      });
+    const shippingMethod = storeData?.methods
+      ?.filter((f) => f.min <= total && (f.max === -1 || f.max > total))
+      .sort((m1, m2) => m1.amount - m2.amount)?.[0];
+    setShipping(shippingMethod);
+    setTotalDiscounted(totalDiscounted);
+    setTotal(total);
+  }, [cartData, storeData, selected]);
 
   return (
     <VerticalFlex className={style.cart_wrap}>
       <VerticalFlex className={style.cart_data}>
-        <CheckboxGroup name="carts" values={CartCheck} onChange={setCartCheck}>
+        <CheckboxGroup
+          name="carts"
+          initialValues={selected}
+          onChange={setSelected}
+        >
           <VerticalFlex className={style.product_list}>
             <article>
               <P className={style.list_title}>담은 상품</P>
@@ -126,34 +201,38 @@ export function CartWrap() {
               {1 < 0 ? (
                 <Button
                   className={style.delivery_list_btn}
-                  onClick={deliveryAddEditModal}
+                  onClick={deliveryListModal}
                 >
                   배송지 목록
                 </Button>
               ) : (
                 <Button
                   className={style.delivery_list_btn}
-                  onClick={deliveryListModal}
+                  onClick={deliveryAddModal}
                 >
                   배송지 추가
                 </Button>
               )}
             </article>
             {/* {1 < 0 ? ( */}
+            {address ? (
               <VerticalFlex className={style.info_list}>
                 <HorizontalFlex className={style.info_item}>
                   <Span>이름</Span>
-                  <P>테스트</P>
+                  <P>{address.name}</P>
                 </HorizontalFlex>
 
                 <HorizontalFlex className={style.info_item}>
                   <Span>배송주소</Span>
-                  <P>(35353) 서구 도안동로 234 대전 303동 1302호</P>
+                  <P>
+                    ({address.postal_code}) {address.address1}{" "}
+                    {address.address2}
+                  </P>
                 </HorizontalFlex>
 
                 <HorizontalFlex className={style.info_item}>
                   <Span>연락처</Span>
-                  <P>01012345678</P>
+                  <P>{address.phone}</P>
                 </HorizontalFlex>
 
                 <VerticalFlex
@@ -169,10 +248,13 @@ export function CartWrap() {
                       arrow: "web_select_arrow",
                       search: "web_select_search",
                     }}
-                    width={'100%'}
+                    width={"100%"}
                     options={[
                       { value: "직접 입력하기", display: "직접 입력하기" },
-                      { value: "문 앞에 놓아주세요", display: "문 앞에 놓아주세요" },
+                      {
+                        value: "문 앞에 놓아주세요",
+                        display: "문 앞에 놓아주세요",
+                      },
                       {
                         value: "부재 시 연락 부탁드려요",
                         display: "부재 시 연락 부탁드려요",
@@ -183,24 +265,31 @@ export function CartWrap() {
                       },
                     ]}
                     placeholder={"선택 안함"}
+                    value={selectedMessageOption}
+                    onChange={(value) => {
+                      setSelectedMessageOption(value as string);
+                      if (value !== "직접 입력하기") {
+                        setMessage(value as string);
+                      }
+                    }}
                   />
 
                   {/* 직접 입력하기 조건일때만 나타나게 작업하기 */}
-                  {
-                    1 < 0 && (
-                      <Input
-                        width={"100%"}
-                        className={style.direct_input}
-                        placeHolder={"배송 요청사항을 입력해 주세요."}
-                      />
-                    )
-                  }
+                  {selectedMessageOption === "직접 입력하기" && (
+                    <Input
+                      width={"100%"}
+                      className={style.direct_input}
+                      placeHolder={"배송 요청사항을 입력해 주세요."}
+                      onChange={(value) => setMessage(value as string)}
+                      maxLength={50}
+                    />
+                  )}
                 </VerticalFlex>
               </VerticalFlex>
-            {/* ) : (
+            ) : (
               // 배송지 없을 때
               <NoContent type="배송지"></NoContent>
-            )} */}
+            )}
           </VerticalFlex>
         </FlexChild>
 
@@ -211,21 +300,30 @@ export function CartWrap() {
               <P className={style.list_txt}>결제수단을 선택해 주세요.</P>
             </article>
 
-            <ChoiceGroup name={"payment_root"}>
+            <RadioGroup
+              name={"payment_root"}
+              onValueChange={(value) => setPayment(value)}
+            >
               <VerticalFlex className={style.payment_deak}>
                 <FlexChild className={clsx(style.payment_card)}>
                   <FlexChild width={"auto"}>
-                    <ChoiceChild id={"credit_card"} />
+                    <RadioChild id={"credit_card"} />
                   </FlexChild>
                   <Span>신용카드 결제</Span>
                 </FlexChild>
+                <FlexChild className={clsx(style.payment_card)}>
+                  <FlexChild width={"auto"}>
+                    <RadioChild id={"toss"} />
+                  </FlexChild>
+                  <Span>토스 결제</Span>
+                </FlexChild>
               </VerticalFlex>
-            </ChoiceGroup>
+            </RadioGroup>
           </VerticalFlex>
         </FlexChild>
 
         <FlexChild className={style.agree_info}>
-          <AgreeInfo />
+          <AgreeInfo setAgrees={setAgrees} />
         </FlexChild>
       </VerticalFlex>
 
@@ -241,7 +339,8 @@ export function CartWrap() {
                 <Span>상품 금액</Span>
 
                 <P>
-                  28,000 <Span>₩</Span>
+                  <Span>{totalDiscounted}</Span>
+                  <Span> ₩</Span>
                 </P>
               </HorizontalFlex>
 
@@ -249,7 +348,8 @@ export function CartWrap() {
                 <Span>배송비</Span>
 
                 <P>
-                  0 <Span>₩</Span>
+                  <Span> {shipping?.amount || 0}</Span>
+                  <Span> ₩</Span>
                 </P>
               </HorizontalFlex>
 
@@ -257,7 +357,8 @@ export function CartWrap() {
                 <Span>합계</Span>
 
                 <P color={"var(--main-color1)"}>
-                  28,000 <Span color="#fff">₩</Span>
+                  <Span>{(shipping?.amount || 0) + totalDiscounted}</Span>
+                  <Span color="#fff"> ₩</Span>
                 </P>
               </HorizontalFlex>
             </VerticalFlex>
@@ -266,12 +367,248 @@ export function CartWrap() {
           <FlexChild className={style.total_pay_txt}>
             <Span>총 결제 금액</Span>
             <P color={"var(--main-color1)"}>
-              28,000 <Span color="#fff">₩</Span>
+              <Span>{(shipping?.amount || 0) + totalDiscounted}</Span>
+              <Span color="#fff"> ₩</Span>
             </P>
           </FlexChild>
 
           {/* 결제 정보 전부 체크되기 전에는 disabled class 처리하고 경고문 띄우기  */}
-          <Button className={clsx(style.payment_btn, style.disabled)}>
+          <Button
+            isLoading={isLoading}
+            disabled={agrees.length < 2 || !payment || selected?.length === 0}
+            className={style.payment_btn}
+            onClick={async () => {
+              const data: any = {
+                selected,
+                address_id: address?.id,
+                shipping_method_id: shipping?.id,
+                message: message,
+                cart_id: cartData?.id,
+              };
+              switch (payment) {
+                case "toss": {
+                  sessionStorage.setItem(
+                    Sessions.PAYMENT,
+                    JSON.stringify(data)
+                  );
+                  navigate(`/orders/cart/toss`);
+                  break;
+                }
+                case "credit_card": {
+                  const trackId = data.cart_id + "_" + new Date().getTime();
+                  const items = cartData?.items?.filter((f) =>
+                    selected.includes(f.id)
+                  );
+                  let total = 0;
+
+                  items
+                    ?.filter((item) => selected.includes(item.id))
+                    .forEach((item) => {
+                      const discount_price = item?.variant?.discount_price || 0;
+                      const tax = Math.round(
+                        (discount_price *
+                          (item?.variant?.product?.tax_rate || 0)) /
+                          100
+                      );
+                      total +=
+                        discount_price * item.quantity + tax * item.quantity;
+                    });
+                  const params = {
+                    paytype: "nestpay",
+                    trackId: trackId,
+                    payMethod: "card",
+                    amount: total + (shipping?.amount || 0),
+                    payerId: userData?.id,
+                    payerName: userData?.name,
+                    payerEmail: userData?.username,
+                    payerTel: userData?.phone,
+                    returnUrl: `${origin}/payment`,
+                    products: items?.map((i) => ({
+                      name: `${i.variant.product.title}${
+                        i.variant.title ? ` - ${i.variant.title}` : ""
+                      }`,
+                      qty: i.total_quantity,
+                      price: i.variant.discount_price * i.quantity,
+                    })),
+                  };
+                  const result = await requester.requestPaymentApproval(params);
+
+                  if (!window._babelPolyfill) {
+                    const jsUrl = process.env.NEXT_PUBLIC_STATIC;
+                    const jsElement = document.createElement("script");
+                    jsElement.src = jsUrl + "?ver=" + new Date().getTime();
+                    jsElement.onload = () => {
+                      if (window.NESTPAY) {
+                        window.NESTPAY.welcome();
+                        window.NESTPAY.pay({
+                          payMethod: "card",
+                          trxId: result?.link?.trxId,
+                          openType: "layer",
+                          onApprove: async (response) => {
+                            if (response.resultCd === "0000") {
+                              try {
+                                const approveResult =
+                                  await requester.approvePayment({
+                                    trxId:
+                                      result?.content?.trxId ||
+                                      result?.link?.trxId,
+                                    resultCd: response.resultCd,
+                                    resultMsg: response.resultMsg,
+                                    customerData: JSON.stringify(userData),
+                                  });
+                                if (
+                                  approveResult?.approveResult?.result
+                                    ?.resultCd === "0000"
+                                ) {
+                                  setIsLoading(true);
+                                  data.payment =
+                                    approveResult?.approveResult?.pay;
+                                  requester.createOrder(
+                                    data,
+                                    ({
+                                      content,
+                                      error,
+                                    }: {
+                                      content: OrderData;
+                                      error: any;
+                                    }) => {
+                                      if (error) {
+                                        toast({ message: error });
+                                        setIsLoading(false);
+                                        return;
+                                      }
+                                      sessionStorage.setItem(
+                                        Sessions.ORDER,
+                                        JSON.stringify(content)
+                                      );
+                                      navigate("/orders/complete", {
+                                        type: "replace",
+                                      });
+                                    }
+                                  );
+                                } else {
+                                  NiceModal.show("confirm", {
+                                    clickOutsideToClose: false,
+                                    message:
+                                      approveResult?.approveResult?.result
+                                        ?.resultMsg ||
+                                      "알 수 없는 오류가 발생했습니다.",
+                                    confirmText: "장바구니로 돌아가기",
+                                    onConfirm: () => navigate("/cart"),
+                                  });
+                                }
+                              } catch (error) {}
+                            } else if (response.resultCd !== "CB49") {
+                              NiceModal.show("confirm", {
+                                clickOutsideToClose: false,
+                                message:
+                                  response?.resultMsg ||
+                                  "알 수 없는 오류가 발생했습니다.",
+                                confirmText: "장바구니로 돌아가기",
+                                onConfirm: () => navigate("/cart"),
+                              });
+                            }
+                          },
+                        });
+                      }
+                    };
+
+                    const existingScript = document.querySelector(
+                      'script[src*="nestpay.v1.js"]'
+                    );
+                    if (existingScript) {
+                      existingScript.remove();
+                    }
+
+                    document.head.appendChild(jsElement);
+                    return () => {
+                      const script = document.querySelector(
+                        'script[src*="nestpay.v1.js"]'
+                      );
+                      if (script) {
+                        script.remove();
+                      }
+                    };
+                  } else {
+                    if (window.NESTPAY) {
+                      window.NESTPAY.welcome();
+                      window.NESTPAY.pay({
+                        payMethod: "card",
+                        trxId: result?.link?.trxId,
+                        openType: "layer",
+                        onApprove: async (response) => {
+                          if (response.resultCd === "0000") {
+                            try {
+                              const approveResult =
+                                await requester.approvePayment({
+                                  trxId:
+                                    result?.content?.trxId ||
+                                    result?.link?.trxId,
+                                  resultCd: response.resultCd,
+                                  resultMsg: response.resultMsg,
+                                  customerData: JSON.stringify(userData),
+                                });
+                              if (
+                                approveResult?.approveResult?.result
+                                  ?.resultCd === "0000"
+                              ) {
+                                setIsLoading(true);
+                                data.payment =
+                                  approveResult?.approveResult?.pay;
+                                requester.createOrder(
+                                  data,
+                                  ({
+                                    content,
+                                    error,
+                                  }: {
+                                    content: OrderData;
+                                    error: any;
+                                  }) => {
+                                    if (error) {
+                                      toast({ message: error });
+                                      setIsLoading(false);
+                                      return;
+                                    }
+                                    sessionStorage.setItem(
+                                      Sessions.ORDER,
+                                      JSON.stringify(content)
+                                    );
+                                    navigate("/ordercomplete", {
+                                      type: "replace",
+                                    });
+                                  }
+                                );
+                              } else {
+                                NiceModal.show("confirm", {
+                                  clickOutsideToClose: false,
+                                  message:
+                                    approveResult?.approveResult?.result
+                                      ?.resultMsg ||
+                                    "알 수 없는 오류가 발생했습니다.",
+                                  confirmText: "장바구니로 돌아가기",
+                                  onConfirm: () => navigate("/cart"),
+                                });
+                              }
+                            } catch (error) {}
+                          } else if (response.resultCd !== "CB49") {
+                            NiceModal.show("confirm", {
+                              clickOutsideToClose: false,
+                              message:
+                                response?.resultMsg ||
+                                "알 수 없는 오류가 발생했습니다.",
+                              confirmText: "장바구니로 돌아가기",
+                              onConfirm: () => navigate("/cart"),
+                            });
+                          }
+                        },
+                      });
+                    }
+                  }
+                  break;
+                }
+              }
+            }}
+          >
             <Span>결제하기</Span>
           </Button>
         </VerticalFlex>
@@ -298,7 +635,8 @@ export function Item({ item }: { item: LineItemData }) {
         <FlexChild className={style.unit} width={"auto"}>
           <Image
             src={item?.variant?.thumbnail || item?.variant?.product?.thumbnail}
-            width={80} borderRadius={5}
+            width={80}
+            borderRadius={5}
           />
           <VerticalFlex
             className={style.unit_content}
@@ -374,8 +712,11 @@ export function Item({ item }: { item: LineItemData }) {
   );
 }
 
-export function AgreeInfo() {
-
+export function AgreeInfo({
+  setAgrees,
+}: {
+  setAgrees: Dispatch<SetStateAction<string[]>>;
+}) {
   const navigate = useNavigate();
 
   return (
@@ -384,7 +725,7 @@ export function AgreeInfo() {
         <P className={style.list_title}>이용약관 동의</P>
       </article>
 
-      <CheckboxGroup name={"agree_check"}>
+      <CheckboxGroup name={"agree_check"} onChange={setAgrees}>
         <VerticalFlex className={style.agree_list}>
           <HorizontalFlex className={style.agree_item}>
             <FlexChild width={"auto"} gap={10}>
@@ -400,7 +741,12 @@ export function AgreeInfo() {
                 <Span size={14}>[필수] 구매조건 확인 및 결제진행 동의</Span>
               </FlexChild>
 
-              <Span className={style.more_btn} onClick={()=> navigate('/policies/term')}>자세히보기</Span>
+              <Span
+                className={style.more_btn}
+                onClick={() => navigate("/policies/term")}
+              >
+                자세히보기
+              </Span>
             </HorizontalFlex>
           </VerticalFlex>
 
@@ -411,13 +757,18 @@ export function AgreeInfo() {
                 <Span size={14}>[필수] 개인정보 수집 및 이용 동의</Span>
               </FlexChild>
 
-              <Span className={style.more_btn} onClick={()=> navigate('/policies/praivacy')}>자세히보기</Span>
+              <Span
+                className={style.more_btn}
+                onClick={() => navigate("/policies/praivacy")}
+              >
+                자세히보기
+              </Span>
             </HorizontalFlex>
           </VerticalFlex>
         </VerticalFlex>
       </CheckboxGroup>
 
-      <P size={12} color="#797979" lineHeight={'1.4'}>
+      <P size={12} color="#797979" lineHeight={"1.4"}>
         귀하의 정보는 안전하게 보호되고 손상되지 않으며, 당사의 개인정보
         보호정책에 따라서만 처리됩니다.
       </P>
