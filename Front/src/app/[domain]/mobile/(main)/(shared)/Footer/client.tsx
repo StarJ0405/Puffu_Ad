@@ -24,9 +24,12 @@ export function SideToggle() {
   const pathname = usePathname();
   const [chatToggle, setChatToggle] = useState(false);
 
+  const [date, setDate] = useState(new Date());
+
   const chatToggleClick = () => {
-    setChatToggle(prev => !prev)
-  }
+    setDate(new Date());
+    setChatToggle((prev) => !prev);
+  };
 
   const [scrolled, setScrolled] = useState(false);
 
@@ -41,42 +44,44 @@ export function SideToggle() {
 
   return (
     <nav id={styles.sideNavi}>
-
-      <FlexChild className={clsx(styles.Btn_frame, (scrolled ? styles.scroll : ''))}>
+      <FlexChild
+        className={clsx(styles.Btn_frame, scrolled ? styles.scroll : "")}
+      >
         <TopButton />
       </FlexChild>
 
 
+      <AnimatePresence>
+        {chatToggle && (
+          <motion.div
+            key="chat"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <AdminChat
+              starts_at={date}
+              reload={() => setDate(new Date())}
+              onClose={() => setChatToggle(false)}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* 채팅 토글 */}
 
-      {
-        pathname == "/" && (
-          <>
-            <Button
-              className={styles.chat_btn}
-              // onClick={() => {NiceModal.show(AdminChatModal)}}
-              onClick={() => chatToggleClick()}
-            >
-              <Image src={"/resources/images/footer/chat_toggle_icon.png"} width={45} />
-            </Button>
-            <AnimatePresence>
-              {/* {chatToggle && (
-                <motion.div
-                  key='chat'
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <AdminChat onClose={() => setChatToggle(false)} />
-                </motion.div>
-              )} */}
-            </AnimatePresence>
-          </>
-        )
-      }
+      {pathname == "/" && (
+        <Button
+          className={styles.chat_btn}
+          // onClick={() => {NiceModal.show(AdminChatModal)}}
+          onClick={() => chatToggleClick()}
+        >
+          <Image
+            src={"/resources/images/footer/chat_toggle_icon.png"}
+            width={45}
+          />
+        </Button>
+      )}
     </nav>
   );
 }
-
-

@@ -23,10 +23,10 @@ export default async function () {
          </FlexChild>
 
 
-         {/* 게시판 불러오기 */}
-         <FlexChild marginTop={60}>
+         {/* 일단 보류*/}
+         {/* <FlexChild marginTop={60}>
             <BoardTable />
-         </FlexChild>
+         </FlexChild> */}
       </VerticalFlex>
    )
 
