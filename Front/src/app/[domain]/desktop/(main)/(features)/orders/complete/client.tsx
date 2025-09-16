@@ -6,6 +6,8 @@ import Image from "@/components/Image/Image";
 import NoContent from "@/components/noContent/noContent";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
+import useData from "@/shared/hooks/data/useData";
+import { requester } from "@/shared/Requester";
 import clsx from "clsx";
 import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -186,11 +188,18 @@ export function ChoiseProductSlider({
   id: string;
   lineClamp?: number;
 }) {
-  const ListProduct: ProductData[] = [];
+  const { random } = useData(
+    "random",
+    { order: "random", pageSize: 12 },
+    (condition) => requester.getProducts(condition),
+    {
+      onReprocessing: (data) => data?.content || [],
+    }
+  );
 
   return (
     <>
-      {ListProduct.length > 0 ? (
+      {random.length > 0 ? (
         <FlexChild id={id} className={styles.ProductSlider}>
           <Swiper
             loop={true}
@@ -204,7 +213,7 @@ export function ChoiseProductSlider({
               nextEl: `#${id} .${styles.nextBtn}`,
             }}
           >
-            {ListProduct.map((product: ProductData, i: number) => {
+            {random.map((product: ProductData, i: number) => {
               return (
                 <SwiperSlide key={i}>
                   <ProductCard product={product} lineClamp={lineClamp ?? 2} />
