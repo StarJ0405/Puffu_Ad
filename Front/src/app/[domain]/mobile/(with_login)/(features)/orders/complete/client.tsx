@@ -234,7 +234,6 @@ export function ChoiseProductSlider({
   id: string;
   lineClamp?: number;
 }) {
-
   const ListProduct: ProductData[] = [];
 
   return (

@@ -59,7 +59,7 @@ function HorizontalFlex({
 }) {
   const childrenWithProps = Children.map(children, (child) => {
     if (React.isValidElement(child)) {
-      // if (String(child.type) === "Symbol(react.fragment)") return child;
+      if (child?.type === React.Fragment) return child;
       return React.cloneElement(child, {
         parentclass: "horizontal",
       } as any);

@@ -40,6 +40,7 @@ function FlexGrid({
 }) {
   const childrenWithProps = Children.map(children, (child) => {
     if (React.isValidElement(child)) {
+      if (child?.type === React.Fragment) return child;
       return React.cloneElement(child, {
         parentclass: "grid",
         flexStart: flexStart ? flexStart : null,
