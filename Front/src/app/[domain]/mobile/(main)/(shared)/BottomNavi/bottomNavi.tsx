@@ -11,6 +11,7 @@ import { useState } from "react";
 import styles from "./bottomNavi.module.css";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import CategoryMenu from "./categoryMenu"
+import { AnimatePresence, motion } from "framer-motion";
 
 
 export default function BottomNavi() {
@@ -22,12 +23,40 @@ export default function BottomNavi() {
    const { userData } = useAuth();
 
    return (
-      <>
-         {/* <CategoryMenu /> */}
+      <> 
+
+         {/* 카테고리 메뉴 */}
+         <AnimatePresence mode="wait">
+         {
+            active && (
+               <motion.div
+                  id="motion"
+                  // key={active}
+                  initial={{ opacity: 0, y: -20,}}
+                  animate={{ opacity: 1, y: 0,}}
+                  exit={{ opacity: 0, y: 0 }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
+                  style={{
+                     position: "fixed",
+                     top: 0,
+                     left: 0,
+                     width: "100%",
+                     height: "100vh",
+                     background: "#111",   // 검색창 배경색
+                     zIndex: 1000,         // 다른 UI 위로
+                  }}
+               >
+                  <CategoryMenu CaOpen={active} onClose={() => setActive(false)} />
+               </motion.div>
+            )
+         }
+         </AnimatePresence>
+
+
          {
             !params.detail_id? ( // detail 페이지일때는 숨겨짐.
                <HorizontalFlex className={styles.bottom_navi}>
-                  <VerticalFlex className={styles.item}>
+                  <VerticalFlex className={styles.item} onClick={() => setActive(prev => !prev)}>
                      <Image src={`/resources/images/bottomNavi/navi_category${active ? '_active' : ''}.png`} width={20} />
                      <FlexChild className={clsx(styles.txt, {[styles.active] : active})}>
                         <P>카테고리</P>
@@ -35,29 +64,35 @@ export default function BottomNavi() {
                   </VerticalFlex>
          
                   <VerticalFlex className={styles.item} onClick={()=> navigate('/mypage/wishList')}>
-                     <Image src={`/resources/images/bottomNavi/navi_wish${active ? '_active' : ''}.png`} width={22} />
-                     <FlexChild className={clsx(styles.txt, {[styles.active] : active})}>
+                     <Image src={`/resources/images/bottomNavi/navi_wish${pathname === '/mypage/wishList' ? '_active' : ''}.png`} width={22} />
+                     <FlexChild className={clsx(styles.txt, {[styles.active] : pathname === '/mypage/wishList'})}>
                         <P>관심 리스트</P>
                      </FlexChild>
                   </VerticalFlex>
          
                   <VerticalFlex className={styles.item} onClick={()=> navigate('/')}>
-                     <Image src={`/resources/images/bottomNavi/navi_home${active ? '_active' : ''}.png`} width={22} />
-                     <FlexChild className={clsx(styles.txt, {[styles.active] : active})}>
+                     <Image src={`/resources/images/bottomNavi/navi_home${pathname === '/' ? '_active' : ''}.png`} width={22} />
+                     <FlexChild className={clsx(styles.txt, {[styles.active] : pathname === '/'})}>
                         <P>홈</P>
                      </FlexChild>
                   </VerticalFlex>
          
                   <VerticalFlex className={styles.item} onClick={()=> navigate('/orders/cart')}>
-                     <Image src={`/resources/images/bottomNavi/navi_cart${active ? '_active' : ''}.png`} width={21} />
-                     <FlexChild className={clsx(styles.txt, {[styles.active] : active})}>
+                     <Image src={`/resources/images/bottomNavi/navi_cart${pathname === '/orders/cart' ? '_active' : ''}.png`} width={21} />
+                     <FlexChild className={clsx(styles.txt, {[styles.active] : pathname.startsWith('/orders/cart')})}>
                         <P>장바구니</P>
                      </FlexChild>
                   </VerticalFlex>
          
                   <VerticalFlex className={styles.item} onClick={()=> navigate( !userData?.id ? '/auth/login' : '/mypage')}>
-                     <Image src={`/resources/images/bottomNavi/navi_login${active ? '_active' : ''}.png`} width={22} />
-                     <FlexChild className={clsx(styles.txt, {[styles.active] : active})}>
+                     <Image src={`/resources/images/bottomNavi/navi_login${
+                          pathname === '/mypage' || pathname === '/auth/login'
+                            ? '_active'
+                            : ''
+                        }.png`} 
+                        width={22} 
+                     />
+                     <FlexChild className={clsx(styles.txt, {[styles.active] : pathname === '/mypage' || pathname === '/auth/login'})}>
                         <P hidden={!!userData?.id}>로그인</P>
                         <P hidden={!userData?.id}>마이페이지</P>
                      </FlexChild>
