@@ -140,7 +140,7 @@ export default function TossPaymentPage() {
     }
   };
   return (
-    <VerticalFlex>
+    <VerticalFlex padding={'180px 0 0'} margin={'0 auto'}>
       <div id="payment-method" />
       <div id="agreement" />
       <div
@@ -159,7 +159,7 @@ export default function TossPaymentPage() {
           onClick={handlePaymentRequest}
           borderRadius={4}
         >
-          <P size={18} weight={600} color={ready ? "white" : "black"}>
+          <P size={18} weight={600} color={ready ? "white" : "var(--main-color2)"}>
             <Span verticalAlign={"baseline"}>{total}</Span>
             <Span verticalAlign={"baseline"}>원 결제</Span>
           </P>
