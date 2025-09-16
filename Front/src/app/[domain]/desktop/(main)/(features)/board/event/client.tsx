@@ -13,6 +13,7 @@ import Link from "next/link";
 import boardStyle from "../boardGrobal.module.css";
 import styles from "./event.module.css";
 import { useParams } from "next/navigation";
+import useNavigate from "@/shared/hooks/useNavigate";
 
 // 게시판 리스트 -----------------------------------------------
 export function BoardTitleBox() {
@@ -69,6 +70,8 @@ export function GalleryTable() {
     },
   ];
 
+  const navigate = useNavigate();
+
   return (
     <VerticalFlex>
       <HorizontalFlex className={styles.event_tab}>
@@ -121,10 +124,11 @@ type EventItem = { // 고칠때 지워도 무방함
 export function GalleryItem({item} : {item :  EventItem}) {
 
   const { detail_id } = useParams();
+  const navigate = useNavigate();
 
   return (
     <VerticalFlex gap={17} className={styles.gallery_item}>
-      <FlexChild className={styles.thumb_frame}>
+      <FlexChild className={styles.thumb_frame} onClick={()=> navigate(`/board/event/${detail_id}`)}>
         {/* <Link href={'/board/detail/event_01'}> */}
            <Image src={item.thumbnail} width={"100%"} height={"auto"} />
            {/* {item.durationEnd && (
