@@ -17,6 +17,7 @@ import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import Container from "@/components/container/Container";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import {
   useCart,
   useStore,
@@ -26,13 +27,11 @@ import useNavigate from "@/shared/hooks/useNavigate";
 import { requester } from "@/shared/Requester";
 import { Storage } from "@/shared/utils/Data";
 import { toast } from "@/shared/utils/Functions";
+import NiceModal from "@ebay/nice-modal-react";
 import DeliveryGuide from "./_deliveryGuide/deliveryGuide";
 import Description from "./_description/description";
 import Inquiry from "./_inquiry/inquiry";
 import Review from "./_review/review";
-import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
-import NiceModal from "@ebay/nice-modal-react";
-import { animateValue } from "framer-motion";
 
 interface Variant {
   variant_id: string;
