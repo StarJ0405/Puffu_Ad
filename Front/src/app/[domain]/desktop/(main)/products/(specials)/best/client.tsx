@@ -13,41 +13,39 @@ import styles from "./page.module.css"
 import MasonryGrid from "@/components/masonry/MasonryGrid";
 import ProductCard from "@/components/card/ProductCard";
 import NoContent from "@/components/noContent/noContent";
-import {BaseProductList} from "../../baseClient";
-import Link from "next/link";
+import {BaseProductList, ProdcutCategory} from "../../baseClient";
+import ChildCategory from "@/components/childCategory/childCategory"
+import { useCategories } from "@/providers/StoreProvider/StorePorivderClient";
 
 
-
-
-// 중분류, 소분류 카테고리
-export function SecondCategory(
-  { childrenData, parent, categoryId } :
-  {
-    childrenData: CategoryData[]; 
-    parent: CategoryData;
-    categoryId: any;
+function findCategoryById(categories: any[], id: string): any | undefined {
+  for (const cat of categories) {
+    if (cat.id === id) {
+      return cat; // 현재 레벨에서 찾음
+    }
+    if (cat.children && cat.children.length > 0) {
+      const found = findCategoryById(cat.children, id);
+      if (found) return found; // 자식 트리에서 찾음
+    }
   }
-) {
-
-  return (
-    <>
-      <ul className={styles.category_list}>
-        <li className={clsx(parent.id === categoryId && styles.active)}>
-          <Link href={`/categories/${parent.id}`}>
-            <Span>전체</Span>
-          </Link>
-        </li>
-        {childrenData.map((child, i) => (
-          <li key={i}>
-            <Link href={`/categories/${child.id}`}>
-              <Span>{child.name}</Span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </>
-  );
+  return undefined;
 }
+
+
+// export function CategoryFilter(category_id} : {category_id: any}) {
+
+//   const { categoriesData } = useCategories();
+//   const category = findCategoryById(categoriesData, category_id);
+
+//   return (
+//     <>
+//       <ProdcutCategory />
+//       <ChildCategory categoryId={category_id} childrenData={category.children} parent={category} />
+//     </>
+//   )
+// }
+
+
 
 export function BestList({
   initProducts,

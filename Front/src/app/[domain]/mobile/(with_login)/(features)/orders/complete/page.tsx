@@ -26,12 +26,28 @@ export default async function () {
         <FlexChild>
           <CompleteForm />
         </FlexChild>
-
-        <FlexChild justifyContent="center" marginTop={50}>
-          <Link href={"/"} className={styles.post_btn}>
-            쇼핑 계속하기
-          </Link>
-        </FlexChild>
+   return (
+      <section className="root page_container">
+         <VerticalFlex>
+            <FlexChild>
+               <CompleteForm />
+            </FlexChild>
+           
+            <FlexChild justifyContent="center" marginTop={50}>
+               <Link href={'/'} className={styles.post_btn}>
+                  쇼핑 계속하기
+               </Link>
+           </FlexChild>
+   
+            <VerticalFlex marginTop={80} gap={20}>
+               <FlexChild justifyContent="center">
+                  <P size={20} className="SacheonFont">함께 관심 가지면 좋은 상품</P>
+               </FlexChild>
+               <ChoiseProductSlider id={'choise'} />
+            </VerticalFlex>
+         </VerticalFlex>
+      </section>
+   )
 
         <VerticalFlex marginTop={80} gap={20}>
           <FlexChild>

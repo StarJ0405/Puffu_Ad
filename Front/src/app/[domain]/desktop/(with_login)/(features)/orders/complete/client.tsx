@@ -107,14 +107,12 @@ export function MyOrdersTable({ items }: { items?: LineItemData[] }) {
       {items && items?.length > 0 ? (
         <VerticalFlex gap={10}>
           <table className={styles.list_table}>
-            {/* 게시판 셀 너비 조정 */}
             <colgroup>
               <col style={{ width: "60%" }} />
               <col style={{ width: "20%" }} />
               <col style={{ width: "20%" }} />
             </colgroup>
 
-            {/* 헤더 */}
             <thead>
               <tr className={styles.table_header}>
                 <th>상품정보</th>
@@ -123,7 +121,6 @@ export function MyOrdersTable({ items }: { items?: LineItemData[] }) {
               </tr>
             </thead>
 
-            {/* 상품 내용 */}
             <tbody>
               {items.map((item, i) => (
                 <tr key={i}>
@@ -142,10 +139,8 @@ export function MyOrdersTable({ items }: { items?: LineItemData[] }) {
 
                           <Span>{item.unit_price}원</Span>
                         </VerticalFlex>
-                      </VerticalFlex>
-                    </FlexChild>
-                  </td>
-
+                      </FlexChild>
+                    </td>
                   <td>
                     <P weight={600} color="#fff">
                       {((item.discount_price || 0) - (item.unit_price || 0)) *

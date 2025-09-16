@@ -19,17 +19,17 @@ import ProductCard from "@/components/card/ProductCard";
 
 export function CompleteForm() {
   return (
-    <VerticalFlex marginTop={80}>
+    <VerticalFlex>
       <VerticalFlex gap={30} width={"100%"} maxWidth={"1000px"}>
         <VerticalFlex className={styles.complete_title} gap={35}>
           <FlexChild justifyContent="center">
-            <P size={30} weight={700} color="#fff">
+            <P size={25} weight={700} color="#fff">
               주문이 완료되었습니다.
             </P>
           </FlexChild>
 
           <FlexChild justifyContent="center">
-            <P size={20} color="#aaa" weight={500} lineHeight={"1.4"}>
+            <P size={16} color="#aaa" weight={500} lineHeight={"1.4"}>
               <Span color="#fff">{"2025.09.01"}</Span> 주문하신 <br />
               상품의 주문번호는{" "}
               <Span color="var(--main-color1)">{"12345667"}</Span> 입니다.
@@ -75,25 +75,44 @@ export function CompleteForm() {
           </FlexChild>
 
           <FlexChild marginTop={15}>
-            <MyOrdersTable />
+            <CompleteOrdersTable />
           </FlexChild>
         </VerticalFlex>
 
-        <VerticalFlex className={clsx(styles.total_frame)} gap={25}>
-          <FlexChild justifyContent="center">
-            <P size={18} color="#fff" weight={500}>
-              주문금액 {"40,000"}원 - 할인금액 {"0"}원 + 배송비 {"0"}원
-            </P>
-          </FlexChild>
+        <VerticalFlex className={clsx(styles.total_frame)} gap={60}>
+          <VerticalFlex justifyContent="center" gap={15}>
+            <FlexChild justifyContent="center">
+              <P size={16} color="#fff" weight={500}>
+                주문금액 {"40,000"}원
+              </P>
+            </FlexChild>
 
-          <FlexChild gap={7} justifyContent="center">
-            <P size={20} color="#fff" weight={500}>
-              실제 결제 금액
-            </P>
-            <P size={26} color="var(--main-color1)" weight={600}>
-              {"40,000"}원
-            </P>
-          </FlexChild>
+            <FlexChild justifyContent="center">
+              <P size={16} color="#fff" weight={500}>
+                할인금액 {"0"}원
+              </P>
+            </FlexChild>
+
+            <FlexChild justifyContent="center">
+              <P size={16} color="#fff" weight={500}>
+                + 배송비 {"0"}원
+              </P>
+            </FlexChild>
+          </VerticalFlex>
+
+          <VerticalFlex gap={10} justifyContent="center">
+            <FlexChild justifyContent="center">
+              <P size={16} color="#fff" weight={500}>
+                실제 결제 금액
+              </P>
+            </FlexChild>
+
+            <FlexChild justifyContent="center">
+              <P size={25} color="var(--main-color1)" weight={600}>
+                {"40,000"}원
+              </P>
+            </FlexChild>
+          </VerticalFlex>
         </VerticalFlex>
       </VerticalFlex>
     </VerticalFlex>
@@ -101,7 +120,7 @@ export function CompleteForm() {
 }
 
 // 주문 리스트
-export function MyOrdersTable() {
+export function CompleteOrdersTable() {
   const cart = [
     {
       title: "여성용) 핑크색 일본 st 로제 베일 가운",
@@ -113,7 +132,6 @@ export function MyOrdersTable() {
         { title: "여성용) 핑크색 일본 1+1 증정", price: "1,000" },
       ],
       delivery: "/resources/icons/cart/cj_icon.png",
-      date: "2025년 9월 10일",
     },
     {
       title: "여성용) 핑크색 일본 st 로제 베일 가운",
@@ -125,74 +143,74 @@ export function MyOrdersTable() {
         { title: "여성용) 핑크색 일본 1+1 증정", price: "1,000" },
       ],
       delivery: "/resources/icons/cart/cj_icon.png",
-      date: "2025년 9월 7일",
     },
   ];
-
   return (
     <>
-      {/* 테이블 안에 tbody 안에 map은 그 날짜에 시킨 주문내역 전부 불러오게 바꾸기 */}
-      {cart.length > 0 ? (
-        <VerticalFlex gap={10}>
-          <table className={styles.list_table}>
-            {/* 게시판 셀 너비 조정 */}
-            <colgroup>
-              <col style={{ width: "60%" }} />
-              <col style={{ width: "20%" }} />
-              <col style={{ width: "20%" }} />
-            </colgroup>
-
-            {/* 헤더 */}
-            <thead>
-              <tr className={styles.table_header}>
-                <th>상품정보</th>
-                <th>할인 금액</th>
-                <th>결제 금액</th>
-              </tr>
-            </thead>
-
-            {/* 상품 내용 */}
-            <tbody>
-              {cart.map((item, i) => (
-                <tr key={i}>
-                  <td>
-                    <FlexChild className={styles.order_item}>
-                      <Image src={item.thumbnail} width={150} />
-
-                      <VerticalFlex className={styles.order_txt}>
-                        <span className={styles.brand}>{item.brand}</span>
-
-                        <P className={styles.title}>{item.title}</P>
-
-                        <VerticalFlex className={styles.option_list}>
-                          {item.option.map((option, j) => (
-                            <FlexChild key={j} gap={5}>
-                              <P>{option.title}</P>
-                              <Span> + {option.price}원</Span>
-                            </FlexChild>
-                          ))}
-                        </VerticalFlex>
-                      </VerticalFlex>
+      <VerticalFlex gap={20}>
+        {cart.length > 0 ? (
+          cart.map((item, i) => (
+            <VerticalFlex key={i} gap={20}>
+              <VerticalFlex
+                className={styles.list_item}
+                gap={30}
+                borderBottom={"1px solid #323232"}
+              >
+                {/* 상품 단위 */}
+                <HorizontalFlex className={styles.unit}>
+                  <Image src={item.thumbnail} width={80} borderRadius={5} />
+                  <VerticalFlex
+                    className={styles.unit_content}
+                    width={"auto"}
+                    alignItems="start"
+                  >
+                    <FlexChild gap={5}>
+                      <Span className={styles.unit_brand}>{item.brand}</Span>
+                      <Image src={item.delivery} width={13} />
                     </FlexChild>
-                  </td>
 
-                  <td>
-                    <P weight={600} color="#fff">
-                      0원
+                    <P
+                      className={styles.unit_title}
+                      lineClamp={2}
+                      overflow="hidden"
+                      display="--webkit-box"
+                    >
+                      {item.title}
                     </P>
-                  </td>
+                  </VerticalFlex>
+                </HorizontalFlex>
 
-                  <td>
-                    <P weight={600}>{item.price} ₩</P>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </VerticalFlex>
-      ) : (
-        <NoContent type="장바구니" />
-      )}
+                {/* 옵션 리스트 */}
+                <VerticalFlex className={styles.option_list}>
+                  {item.option.map((option, k) => (
+                    <HorizontalFlex key={k} gap={10}>
+                      <P>{option.title}</P>
+                      <Span> + {option.price}원</Span>
+                    </HorizontalFlex>
+                  ))}
+                </VerticalFlex>
+
+                {/* 가격 박스 */}
+                <HorizontalFlex className={styles.price_box}>
+                  <FlexChild>
+                    <P>할인금액 : </P>
+                    <Span>0원</Span>
+                  </FlexChild>
+
+                  <FlexChild>
+                    <P>결제 금액 : </P>
+                    <Span color="var(--main-color1)" weight={600} fontSize={20}>
+                      {item.price}₩
+                    </Span>
+                  </FlexChild>
+                </HorizontalFlex>
+              </VerticalFlex>
+            </VerticalFlex>
+          ))
+        ) : (
+          <NoContent type="장바구니" />
+        )}
+      </VerticalFlex>
     </>
   );
 }
@@ -224,7 +242,7 @@ export function ChoiseProductSlider({
         <FlexChild id={id} className={styles.ProductSlider}>
           <Swiper
             loop={true}
-            slidesPerView={6}
+            slidesPerView={2.2}
             speed={600}
             spaceBetween={20}
             modules={[Autoplay, Navigation]}
@@ -234,7 +252,7 @@ export function ChoiseProductSlider({
               nextEl: `#${id} .${styles.nextBtn}`,
             }}
           >
-            {ListProduct.map((product, i) => {
+            {ListProduct.map((product: ProductData, i: number) => {
               return (
                 <SwiperSlide key={i}>
                   <ProductCard product={product} lineClamp={lineClamp ?? 2} />
