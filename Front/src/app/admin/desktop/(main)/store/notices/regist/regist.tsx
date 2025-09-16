@@ -20,6 +20,7 @@ import { textFormat } from "@/shared/regExp";
 import { scrollTo, toast, validateInputs } from "@/shared/utils/Functions";
 import { useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
+import InputImage from "@/components/inputs/InputImage";
 
 const types = ["일반", "이벤트"].map((type) => ({
   display: type,
@@ -28,7 +29,6 @@ const types = ["일반", "이벤트"].map((type) => ({
 export default function ({ stores }: { stores: StoreData[] }) {
   const [store, setStore] = useState<string>("");
   const inputs = useRef<any[]>([]);
-  const [adult, setAdult] = useState(false);
   const [visible, setVisible] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState(false);
   const [unlimit, setUnlimit] = useState(true);
@@ -58,7 +58,6 @@ export default function ({ stores }: { stores: StoreData[] }) {
           store_id: store,
           title,
           detail,
-          adult,
           visible,
           type: type.value,
         };
@@ -193,40 +192,35 @@ export default function ({ stores }: { stores: StoreData[] }) {
                         </FlexChild>
                       </HorizontalFlex>
                     </FlexChild>
-                    <HorizontalFlex marginTop={20}>
-                      <FlexChild
+                    <FlexChild hidden={type.value !== "이벤트"}>
+                      <HorizontalFlex
+                        alignItems="stretch"
+                        gap={20}
                         border={"1px solid #EFEFEF"}
                         borderRight={"none"}
                         borderLeft={"none"}
+                        borderTop={"none"}
                       >
-                        <CheckboxGroup
-                          name="adult"
-                          values={adult ? ["adult"] : []}
-                          onChange={(values) =>
-                            setAdult(values.includes("adult"))
-                          }
+                        <FlexChild
+                          width={"130px"}
+                          padding={"18px 15px"}
+                          backgroundColor={"#F5F6FB"}
+                          justifyContent={"center"}
                         >
-                          <HorizontalFlex
-                            gap={20}
-                            justifyContent={"flex-start"}
-                          >
-                            <FlexChild
-                              width={"130px"}
-                              padding={15}
-                              justifyContent={"center"}
-                              backgroundColor={"#3C4B64"}
-                            >
-                              <P size={16} weight={600} color={"#ffffff"}>
-                                성인설정
-                              </P>
-                            </FlexChild>
-                            <FlexChild>
-                              <CheckboxChild id="adult" />
-                            </FlexChild>
-                          </HorizontalFlex>
-                        </CheckboxGroup>
-                      </FlexChild>
-                    </HorizontalFlex>
+                          <P size={16} weight={600}>
+                            썸네일
+                          </P>
+                        </FlexChild>
+                        <FlexChild>
+                          <InputImage
+                            ref={(el) => {
+                              inputs.current[1] = el;
+                            }}
+                            path="/notice"
+                          />
+                        </FlexChild>
+                      </HorizontalFlex>
+                    </FlexChild>
                     <VerticalFlex
                       marginTop={20}
                       borderBottom={"1px solid #EFEFEF"}

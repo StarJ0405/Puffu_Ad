@@ -120,7 +120,7 @@ export default function ({ initStores }: { initStores: Pageable }) {
           );
         })
         .catch((e) => {
-          log(e)
+          log(e);
           toast({ message: "오류가 발생했습니다." });
           setIsLoading(false);
         });
@@ -201,7 +201,6 @@ export default function ({ initStores }: { initStores: Pageable }) {
                       ref={(el) => {
                         images.current[3] = el;
                       }}
-                      placeHolder="1:1 비율의 이미지를 권장합니다."
                     />
                   </FlexChild>
                 </HorizontalFlex>
@@ -230,7 +229,6 @@ export default function ({ initStores }: { initStores: Pageable }) {
                       ref={(el) => {
                         images.current[0] = el;
                       }}
-                      placeHolder="4:1 비율의 이미지를 권장합니다."
                     />
                   </FlexChild>
                 </HorizontalFlex>
@@ -261,7 +259,6 @@ export default function ({ initStores }: { initStores: Pageable }) {
                       ref={(el) => {
                         images.current[1] = el;
                       }}
-                      placeHolder="4:1 비율의 이미지를 권장합니다."
                     />
                   </FlexChild>
                 </HorizontalFlex>
@@ -290,7 +287,6 @@ export default function ({ initStores }: { initStores: Pageable }) {
                       ref={(el) => {
                         images.current[2] = el;
                       }}
-                      placeHolder="4:1 비율의 이미지를 권장합니다."
                     />
                   </FlexChild>
                 </HorizontalFlex>

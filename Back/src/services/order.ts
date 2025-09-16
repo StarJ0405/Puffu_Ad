@@ -120,6 +120,76 @@ export class OrderService extends BaseService<Order, OrderRepository> {
   }
   async getList(options?: FindManyOptions<Order>): Promise<Order[]> {
     if (options) {
+      if (options.where) {
+        let where: any = options.where;
+        if (where.start_date) {
+          if (where.end_date) {
+            where.created_at = Between(where.start_date, where.end_date);
+          } else {
+            where.created_at = MoreThanOrEqual(where.start_date);
+          }
+        } else if (where.end_date) {
+          where.created_at = LessThanOrEqual(where.end_date);
+        }
+        delete where.start_date;
+        delete where.end_date;
+        if (where.q) {
+          const q = where.q;
+          delete where.q;
+
+          const _keyword = ["display", "id"];
+
+          where = this.Search(where, _keyword, q);
+
+          if (options.relations) {
+            const relations = Array.isArray(options.relations)
+              ? options.relations
+              : [options.relations];
+            const _where: any[] = [];
+            const _relations: any[] = [];
+            if (
+              relations.some(
+                (relation) =>
+                  typeof relation === "string" && relation.includes("items")
+              )
+            ) {
+              _where.push(
+                this.Search(
+                  {},
+                  ["items.product_title", "items.variant_title"],
+                  q,
+                  true
+                )
+              );
+              _relations.push("items");
+            }
+            if (
+              relations.some(
+                (relation) =>
+                  typeof relation === "string" && relation.includes("user")
+              )
+            ) {
+              _where.push(..._where, this.Search({}, ["user.name"], q, true));
+              _relations.push("user");
+            }
+
+            if (_where.length > 0) {
+              const list = await super.getList({
+                select: ["id"],
+                where: _where,
+                relations: _relations,
+              });
+
+              where = [
+                ...(Array.isArray(where) ? where : [where]),
+                { ...options.where, id: In(list.map((order) => order.id)) },
+              ];
+            }
+          }
+
+          options.where = where;
+        }
+      }
       if (!options?.order) {
         options.order = {
           created_at: "DESC",
@@ -127,7 +197,6 @@ export class OrderService extends BaseService<Order, OrderRepository> {
         };
       }
     }
-
     return super.getList(options);
   }
   async getStatus(
