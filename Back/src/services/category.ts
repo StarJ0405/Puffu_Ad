@@ -216,7 +216,6 @@ export class CategoryService extends BaseTreeService<
               .andWhere(`store_id = '${_data.store_id}'`)
               .andWhere(`index >= ${_data.index}`)
               .execute();
-            console.log("?");
             await this.repository
               .builder("e")
               .update()

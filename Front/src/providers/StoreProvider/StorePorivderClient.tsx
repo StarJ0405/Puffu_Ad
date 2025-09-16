@@ -101,7 +101,15 @@ export default function StoreProviderClient({
         subdomain,
       }}
     >
-      <CategoryContext.Provider value={{ categoriesData }}>
+      <CategoryContext.Provider
+        value={{
+          categoriesData: (categoriesData || []).map((cat: CategoryData) => {
+            if (!userData?.adult)
+              cat.thumbnail = "/resources/images/19_only.png";
+            return cat;
+          }),
+        }}
+      >
         <CartContext.Provider value={{ cartData: cart, reload: mutate }}>
           {children}
         </CartContext.Provider>

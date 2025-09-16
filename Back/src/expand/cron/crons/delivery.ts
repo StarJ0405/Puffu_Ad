@@ -21,8 +21,11 @@ async function ProgressModule(
   order: Order,
   callback: (progresses: Progress[]) => Promise<void>
 ) {
+  let tracking_number = order.shipping_methods?.[0]?.tracking_number;
+  if (!tracking_number) return;
+  tracking_number = String(tracking_number).replace(/-/g, "");
   const response = await axios.get(
-    `https://apis.tracker.delivery/carriers/kr.cjlogistics/tracks/${order.shipping_methods?.[0]?.tracking_number}`
+    `https://apis.tracker.delivery/carriers/kr.cjlogistics/tracks/${tracking_number}`
   );
   const progresses: Progress[] = response?.data?.progresses;
   if (progresses) {

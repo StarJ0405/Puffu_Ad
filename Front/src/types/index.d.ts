@@ -411,3 +411,24 @@ interface ChatroomUserData {
   room?: ChatroomData;
   last_read: Date | string;
 }
+
+interface QADataFrame {
+  type: "etc" | "exchange" | "refund"; // 기타, 환불 ,교환
+  category?: string; // 유형 등 추가 텍스트가 필요한 경우 사용
+  title: string; // 제목
+
+  user_id: string; // 작성자
+  content: string; // 내용 Quill 사용
+  hidden?: boolean; // 숨김글
+
+  images?: string[]; // 여러 이미지가 들어가는 경우
+
+  product_id?: string; // 상품문의
+  item_id?: string; // 주문 관련 상품 문의
+  order_id?: string; //주문  자체 문의
+
+  metadata?: Record<string, unknown> | null;
+}
+interface QAData extends BaseEntity, QADataFrame {
+  answer?: string; // 대답(응답)
+}

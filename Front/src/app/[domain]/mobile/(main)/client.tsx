@@ -1,6 +1,5 @@
 "use client";
 import Button from "@/components/buttons/Button";
-import ReviewImgCard from "@/components/card/reviewImgCard";
 import ProductCard from "@/components/card/ProductCard";
 import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
@@ -9,22 +8,23 @@ import MasonryGrid from "@/components/masonry/MasonryGrid";
 import Span from "@/components/span/Span";
 import clsx from "clsx";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useRef, useState } from "react";
 import styles from "./page.module.css";
 
+import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import NoContent from "@/components/noContent/noContent";
+import P from "@/components/P/P";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
+import { useCategories } from "@/providers/StoreProvider/StorePorivderClient";
+import useData from "@/shared/hooks/data/useData";
 import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
 import { requester } from "@/shared/Requester";
 import { Swiper as SwiperType } from "swiper";
-import { Autoplay, Navigation, Pagination } from "swiper/modules";
-import { useCategories } from "@/providers/StoreProvider/StorePorivderClient";
-import useData from "@/shared/hooks/data/useData";
+import { Autoplay, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
-import P from "@/components/P/P";
 
 export function MainBanner({ initBanners }: { initBanners: Pageable }) {
+  const { userData } = useAuth();
   const { banners } = useData(
     "banners",
     {},
@@ -95,12 +95,30 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
           paintBullets(swiper);
         }}
       >
-        {[...banners]?.reverse().map((item, i) => {
+        {[...banners]?.reverse().map((item: BannerData, i: number) => {
           return (
             <SwiperSlide key={i} className={`swiper_0${i}`}>
-              <Link href={item.thumbnail.mobile}>
-                <Image src={item.thumbnail.mobile} width={"100%"} />
-              </Link>
+              {item.to ? (
+                <Link href={item.to}>
+                  <Image
+                    src={
+                      userData?.adult
+                        ? item.thumbnail.mobile
+                        : "/resources/images/19_only.png"
+                    }
+                    width={"100%"}
+                  />
+                </Link>
+              ) : (
+                <Image
+                  src={
+                    userData?.adult
+                      ? item.thumbnail.mobile
+                      : "/resources/images/19_only.png"
+                  }
+                  width={"100%"}
+                />
+              )}
             </SwiperSlide>
           );
         })}
@@ -202,7 +220,12 @@ export function HotDealWrapper({
   initProducts: Pageable;
   initCondition: any;
 }) {
-  const { [id]: products, Load } = useInfiniteData(
+  const {
+    [id]: products,
+    Load,
+    page,
+    maxPage,
+  } = useInfiniteData(
     id,
     (pageNumber) => ({
       ...initCondition,
@@ -258,12 +281,14 @@ export function HotDealWrapper({
                       product={product}
                       lineClamp={2}
                       width={200}
-                      onClick={() => console.log(product)}
                     />
                   );
                 })}
               </MasonryGrid>
-              <Button className={styles.list_more_btn}>
+              <Button
+                className={styles.list_more_btn}
+                hidden={maxPage < 1 || page >= maxPage}
+              >
                 <FlexChild gap={10} onClick={showMore}>
                   <Span>상품 더보기</Span>
                   <Image
@@ -284,7 +309,7 @@ export function HotDealWrapper({
 
 // 베스트 상품
 export function NewProducts({ initProducts }: { initProducts: Pageable }) {
-  const { newProducts, Load, origin } = useInfiniteData(
+  const { newProducts, Load, maxPage, page } = useInfiniteData(
     "newProducts",
     (pageNumber) => ({
       pageSize: 30,
@@ -335,7 +360,12 @@ export function NewProducts({ initProducts }: { initProducts: Pageable }) {
             </Link>
           </FlexChild>
         </HorizontalFlex>
-        <ProductList id="new" products={newProducts} Load={Load} />
+        <ProductList
+          id="new"
+          products={newProducts}
+          Load={Load}
+          hidden={maxPage < 1 || page >= maxPage}
+        />
       </VerticalFlex>
     </FlexChild>
   );
@@ -346,11 +376,13 @@ export function ProductList({
   lineClamp,
   products,
   Load,
+  hidden,
 }: {
   id: string;
   lineClamp?: number;
   products: ProductData[];
   Load: () => void;
+  hidden?: boolean;
 }) {
   const [visibleCount, setVisibleCount] = useState(6);
 
@@ -375,7 +407,11 @@ export function ProductList({
               );
             })}
           </MasonryGrid>
-          <Button className={styles.list_more_btn} onClick={showMore}>
+          <Button
+            className={styles.list_more_btn}
+            onClick={showMore}
+            hidden={hidden}
+          >
             <FlexChild gap={10}>
               <Span>상품 더보기</Span>
               <Image

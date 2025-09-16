@@ -5,10 +5,10 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
 import useNavigate from "@/shared/hooks/useNavigate";
 import { requester } from "@/shared/Requester";
-import { useState } from "react";
 import styles from "./ProductCard.module.css";
 // lineClamp 구별해주기, TestProdcutCard는 임시로 만든거임. 나중에 프로덕트카드에 스타일만 입히면 됨.
 // 라인클램프는 제목태그에 달아서 속성 주기.
@@ -30,14 +30,12 @@ export function ProductCard({
   mutate?: () => void;
   onClick?: () => void;
 }) {
+  const { userData } = useAuth();
   const { isMobile } = useBrowserEvent();
 
   const product_link = `/products/${product.id}`;
 
-  const [adultCheck, setadultCheck] = useState(true);
-
   const navigate = useNavigate();
-
 
   return (
     <VerticalFlex
@@ -62,7 +60,7 @@ export function ProductCard({
               </FlexChild>
             )
           } */}
-        {adultCheck === true ? (
+        {userData?.adult ? (
           <Image src={product.thumbnail} width={"100%"} height={"auto"} />
         ) : (
           // 성인인증 안될때 나오는 이미지

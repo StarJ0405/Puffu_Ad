@@ -1,6 +1,5 @@
 "use client";
 import Button from "@/components/buttons/Button";
-import ReviewImgCard from "@/components/card/reviewImgCard";
 import ProductCard from "@/components/card/ProductCard";
 import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
@@ -9,8 +8,7 @@ import MasonryGrid from "@/components/masonry/MasonryGrid";
 import Span from "@/components/span/Span";
 import clsx from "clsx";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { use, useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import styles from "./page.module.css";
 
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
@@ -21,10 +19,12 @@ import useData from "@/shared/hooks/data/useData";
 import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
 import { requester } from "@/shared/Requester";
 import { Swiper as SwiperType } from "swiper";
-import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import { Autoplay, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 
 export function MainBanner({ initBanners }: { initBanners: Pageable }) {
+  const { userData } = useAuth();
   const { banners } = useData(
     "banners",
     {},
@@ -107,10 +107,24 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
             <SwiperSlide key={i} className={`swiper_0${i}`}>
               {item.to ? (
                 <Link href={item.to}>
-                  <Image src={item.thumbnail.pc} width={"100%"} />
+                  <Image
+                    src={
+                      userData?.adult
+                        ? item.thumbnail.pc
+                        : "/resources/images/19_only.png"
+                    }
+                    width={"100%"}
+                  />
                 </Link>
               ) : (
-                <Image src={item.thumbnail.pc} width={"100%"} />
+                <Image
+                  src={
+                    userData?.adult
+                      ? item.thumbnail.pc
+                      : "/resources/images/19_only.png"
+                  }
+                  width={"100%"}
+                />
               )}
             </SwiperSlide>
           );
@@ -141,19 +155,19 @@ export function LinkBanner() {
   );
 }
 
-
 export function SubBanner() {
-
   return (
     <FlexChild width={"100%"}>
-      <Link href={'/'}>
-        <Image src={"/resources/images/dummy_img/sub_banner_01.png"} width={"100%"} height={"auto"} />
+      <Link href={"/"}>
+        <Image
+          src={"/resources/images/dummy_img/sub_banner_01.png"}
+          width={"100%"}
+          height={"auto"}
+        />
       </Link>
     </FlexChild>
   );
 }
-
-
 
 export function MiniBanner() {
   const link_banner = [
@@ -181,8 +195,6 @@ export function MiniBanner() {
 }
 
 export function MainCategory() {
-
-  
   // 카테고리메뉴
 
   const { categoriesData } = useCategories();
@@ -205,8 +217,6 @@ export function MainCategory() {
   );
 }
 
-
-
 // 이 달의 핫딜
 export function HotDealWrapper({
   id,
@@ -219,7 +229,12 @@ export function HotDealWrapper({
   initProducts: Pageable;
   initCondition: any;
 }) {
-  const { [id]: products, Load } = useInfiniteData(
+  const {
+    [id]: products,
+    Load,
+    maxPage,
+    page,
+  } = useInfiniteData(
     id,
     (pageNumber) => ({
       ...initCondition,
@@ -233,7 +248,6 @@ export function HotDealWrapper({
       fallbackData: [initProducts],
     }
   );
-
   const showMore = () => {
     Load(); // 서버에서도 다음 페이지 로드
   };
@@ -269,7 +283,7 @@ export function HotDealWrapper({
         <>
           {products.length > 0 ? (
             <VerticalFlex gap={10}>
-              <MasonryGrid gap={20} width={'100%'}>
+              <MasonryGrid gap={20} width={"100%"}>
                 {products.map((product: ProductData, i: number) => {
                   return (
                     <ProductCard
@@ -281,7 +295,10 @@ export function HotDealWrapper({
                   );
                 })}
               </MasonryGrid>
-              <Button className={styles.list_more_btn}>
+              <Button
+                className={styles.list_more_btn}
+                hidden={maxPage < 1 || page >= maxPage}
+              >
                 <FlexChild gap={10} onClick={showMore}>
                   <Span>상품 더보기</Span>
                   <Image
@@ -300,8 +317,6 @@ export function HotDealWrapper({
   );
 }
 
-
-
 // 신상품, 등등
 export function ProductList({
   id,
@@ -314,7 +329,12 @@ export function ProductList({
   initProducts: Pageable;
   initCondition: any;
 }) {
-  const { [id]: products, Load } = useInfiniteData(
+  const {
+    [id]: products,
+    Load,
+    maxPage,
+    page,
+  } = useInfiniteData(
     id,
     (pageNumber) => ({
       ...initCondition,
@@ -328,7 +348,6 @@ export function ProductList({
       fallbackData: [initProducts],
     }
   );
-
   const showMore = () => {
     Load(); // 서버에서도 다음 페이지 로드
   };
@@ -388,7 +407,10 @@ export function ProductList({
               );
             })}
           </MasonryGrid>
-          <Button className={styles.list_more_btn}>
+          <Button
+            className={styles.list_more_btn}
+            hidden={maxPage < 1 || page >= maxPage}
+          >
             <FlexChild gap={10} onClick={showMore}>
               <Span>상품 더보기</Span>
               <Image
@@ -405,8 +427,6 @@ export function ProductList({
   );
 }
 
-
-
 // type ReviewItem = {
 //   thumbnail: string;
 //   content: string;
@@ -419,8 +439,6 @@ export function ProductList({
 //     reviewcount: string;
 //   };
 // };
-
-
 
 // // 리뷰 슬라이더
 // export function ProductSlider({
