@@ -12,15 +12,15 @@ import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Input from "@/components/inputs/Input";
+import InputImage from "@/components/inputs/InputImage";
 import P from "@/components/P/P";
 import Select from "@/components/select/Select";
 import { adminRequester } from "@/shared/AdminRequester";
 import useNavigate from "@/shared/hooks/useNavigate";
 import { textFormat } from "@/shared/regExp";
 import { scrollTo, toast, validateInputs } from "@/shared/utils/Functions";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import styles from "./page.module.css";
-import InputImage from "@/components/inputs/InputImage";
 
 const types = ["일반", "이벤트"].map((type) => ({
   display: type,
@@ -33,6 +33,7 @@ export default function ({ stores }: { stores: StoreData[] }) {
   const [isLoading, setIsLoading] = useState(false);
   const [unlimit, setUnlimit] = useState(true);
   const [dates, setDates] = useState<Date[]>([new Date(), new Date()]);
+  const [actives, setActives] = useState<Date[]>([new Date(), new Date()]);
   const [detail, setDetail] = useState<string>("");
   const [type, setType] = useState(types[0]);
   const navigate = useNavigate();
@@ -61,11 +62,16 @@ export default function ({ stores }: { stores: StoreData[] }) {
           visible,
           type: type.value,
         };
-
+        if (type.value === "이벤트") {
+          _data.thumbnail = inputs.current[1].getValue();
+          _data.actives_at = actives[0];
+          _data.deactives_at = actives[1];
+        }
         if (!unlimit) {
           _data.starts_at = dates[0];
           _data.ends_at = dates[1];
         }
+
         adminRequester.createNotices(
           _data,
           ({ message, error }: { message?: string; error?: string }) => {
@@ -217,6 +223,34 @@ export default function ({ stores }: { stores: StoreData[] }) {
                               inputs.current[1] = el;
                             }}
                             path="/notice"
+                          />
+                        </FlexChild>
+                      </HorizontalFlex>
+                    </FlexChild>
+                    <FlexChild hidden={type.value !== "이벤트"}>
+                      <HorizontalFlex
+                        alignItems="stretch"
+                        gap={20}
+                        border={"1px solid #EFEFEF"}
+                        borderRight={"none"}
+                        borderLeft={"none"}
+                        borderTop={"none"}
+                      >
+                        <FlexChild
+                          width={"130px"}
+                          padding={"18px 15px"}
+                          backgroundColor={"#F5F6FB"}
+                          justifyContent={"center"}
+                        >
+                          <P size={16} weight={600}>
+                            이벤트 기간
+                          </P>
+                        </FlexChild>
+                        <FlexChild>
+                          <DatePicker
+                            selectionMode="range"
+                            defaultSelectedRange={dates as any}
+                            onChange={(dates) => setActives(dates as Date[])}
                           />
                         </FlexChild>
                       </HorizontalFlex>

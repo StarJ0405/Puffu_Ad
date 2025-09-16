@@ -9,6 +9,7 @@ import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import Input from "@/components/inputs/Input";
+import InputImage from "@/components/inputs/InputImage";
 import P from "@/components/P/P";
 import Select from "@/components/select/Select";
 import { adminRequester } from "@/shared/AdminRequester";
@@ -51,12 +52,16 @@ const NoticeModal = NiceModal.create(
       new Date(notice.starts_at),
       new Date(notice.ends_at),
     ]);
+
+    const [actives, setActives] = useState<Date[]>([
+      new Date(notice.actives_at || new Date()),
+      new Date(notice.deactives_at || new Date()),
+    ]);
     const [type, setType] = useState(
       types.find((f) => f.value === notice?.type) || types[0]
     );
     const inputs = useRef<any[]>([]);
     const images = useRef<any[]>([]);
-    const [adult, setAdult] = useState<boolean>(notice.adult);
     const [visible, setVisible] = useState<boolean>(notice.visible);
     const [detail, setDetail] = useState<string>(notice.detail);
     const [isLoading, setIsLoading] = useState(false);
@@ -78,9 +83,13 @@ const NoticeModal = NiceModal.create(
               store_id: notice.store_id,
               type: type.value,
               detail,
-              adult,
               visible,
             };
+            if (type.value === "이벤트") {
+              _data.thumbnail = inputs.current[1].getValue();
+              _data.actives_at = actives[0];
+              _data.deactives_at = actives[1];
+            }
             if (unlimit) {
               _data.starts_at = null;
               _data.ends_at = null;
@@ -183,6 +192,54 @@ const NoticeModal = NiceModal.create(
               </FlexChild>
             </HorizontalFlex>
           </FlexChild>
+          <FlexChild
+            hidden={(!edit && !notice.thumbnail) || type.value !== "이벤트"}
+          >
+            <HorizontalFlex>
+              <FlexChild className={styles.head}>
+                <P>썸네일</P>
+              </FlexChild>
+              <FlexChild className={styles.content}>
+                {edit ? (
+                  <InputImage
+                    ref={(el) => {
+                      inputs.current[1] = el;
+                    }}
+                    path="/notice"
+                  />
+                ) : (
+                  <Image src={notice.thumbnail} width={"100%"} />
+                )}
+              </FlexChild>
+            </HorizontalFlex>
+          </FlexChild>
+          <FlexChild hidden={type.value !== "이벤트"}>
+            <HorizontalFlex>
+              <FlexChild className={styles.head}>
+                <P>이벤트 기간</P>
+              </FlexChild>
+              <FlexChild className={styles.content}>
+                {edit ? (
+                  <FlexChild width={300}>
+                    <DatePicker
+                      zIndex={10080}
+                      selectionMode="range"
+                      defaultSelectedRange={actives as any}
+                      onChange={(dates: any) => setActives(dates)}
+                    />
+                  </FlexChild>
+                ) : (
+                  <P>
+                    {!notice.actives_at && !notice.deactives_at
+                      ? "미설정"
+                      : `${dateToString(notice.actives_at)} ~ ${dateToString(
+                          notice.deactives_at
+                        )}`}
+                  </P>
+                )}
+              </FlexChild>
+            </HorizontalFlex>
+          </FlexChild>
           <FlexChild>
             <HorizontalFlex>
               <FlexChild className={styles.head}>
@@ -247,32 +304,6 @@ const NoticeModal = NiceModal.create(
                   <Image
                     src={
                       notice.visible
-                        ? "/resources/images/checkbox_on.png"
-                        : "/resources/images/checkbox_off.png"
-                    }
-                  />
-                )}
-              </FlexChild>
-            </HorizontalFlex>
-          </FlexChild>
-          <FlexChild>
-            <HorizontalFlex>
-              <FlexChild className={styles.head}>
-                <P>성인설정</P>
-              </FlexChild>
-              <FlexChild className={styles.content}>
-                {edit ? (
-                  <CheckboxGroup
-                    name="adult"
-                    initialValues={adult ? ["adult"] : []}
-                    onChange={(values) => setAdult(values.includes("adult"))}
-                  >
-                    <CheckboxChild id="adult" />
-                  </CheckboxGroup>
-                ) : (
-                  <Image
-                    src={
-                      notice.adult
                         ? "/resources/images/checkbox_on.png"
                         : "/resources/images/checkbox_off.png"
                     }
