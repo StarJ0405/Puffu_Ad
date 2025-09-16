@@ -17,6 +17,7 @@ import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import Container from "@/components/container/Container";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import {
   useCart,
   useStore,
@@ -26,13 +27,11 @@ import useNavigate from "@/shared/hooks/useNavigate";
 import { requester } from "@/shared/Requester";
 import { Storage } from "@/shared/utils/Data";
 import { toast } from "@/shared/utils/Functions";
+import NiceModal from "@ebay/nice-modal-react";
 import DeliveryGuide from "./_deliveryGuide/deliveryGuide";
 import Description from "./_description/description";
 import Inquiry from "./_inquiry/inquiry";
 import Review from "./_review/review";
-import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
-import NiceModal from "@ebay/nice-modal-react";
-import { animateValue } from "framer-motion";
 
 interface Variant {
   variant_id: string;
@@ -187,6 +186,7 @@ export function ProductWrapper({
           selected={selected}
           onCartClick={onCartClick}
           onPurchaseClick={onPurchaseClick}
+          onWishClick={onWishClick}
         />
 
         {children}
@@ -212,6 +212,7 @@ export function DetailFrame({
   setSelected,
   onCartClick,
   onPurchaseClick,
+  onWishClick,
 }: {
   product: ProductData;
   freeShipping?: ShippingMethodData;
@@ -220,6 +221,7 @@ export function DetailFrame({
   setSelected: Dispatch<SetStateAction<Variant[]>>;
   onCartClick: () => Promise<any>;
   onPurchaseClick: () => Promise<any>;
+  onWishClick: () => void;
 }) {
   const { storeData } = useStore();
   return (
@@ -241,7 +243,7 @@ export function DetailFrame({
 
         <HorizontalFlex marginBottom={17} gap={10}>
           <FlexChild className={styles.price} marginLeft={5}>
-            <P>{product?.price}</P> ₩
+            <P>{product?.discount_price}</P> ₩
           </FlexChild>
 
           {product.discount_rate > 0 && (
@@ -251,7 +253,7 @@ export function DetailFrame({
           )}
           {product.discount_rate > 0 && (
             <FlexChild className={styles.regular_price}>
-              <P>{product?.discount_price}</P>₩
+              <P>{product?.price}</P>₩
             </FlexChild>
           )}
         </HorizontalFlex>
@@ -327,8 +329,10 @@ export function DetailFrame({
         </HorizontalFlex>
 
         <BuyButtonGroup
+          product={product}
           onCartClick={onCartClick}
           onPurchaseClick={onPurchaseClick}
+          onWishClick={onWishClick}
         />
       </VerticalFlex>
     </HorizontalFlex>
@@ -427,21 +431,29 @@ export function OptionItem({
 
 // 좋아요 장바구니 구매버튼 묶음
 export function BuyButtonGroup({
+  product,
   onCartClick,
   onPurchaseClick,
+  onWishClick,
 }: {
+  product: ProductData;
   onCartClick: () => Promise<any>;
   onPurchaseClick: () => Promise<any>;
+  onWishClick: () => void;
 }) {
   return (
     <HorizontalFlex className={styles.buyButton_box}>
       <FlexChild width={"auto"}>
-        <Button className={styles.heart_btn}>
+        <Button className={styles.heart_btn} onClick={onWishClick}>
           <Image
-            src={"/resources/icons/main/product_heart_icon.png"}
+            src={
+              product.wish
+                ? "/resources/icons/main/product_heart_icon_active.png"
+                : "/resources/icons/main/product_heart_icon.png"
+            }
             width={30}
           />
-          {/* <Image src={'/resources/icons/main/product_heart_icon_active.png'} width={30} /> */}
+          {/* <Image src={} width={30} /> */}
         </Button>
       </FlexChild>
 

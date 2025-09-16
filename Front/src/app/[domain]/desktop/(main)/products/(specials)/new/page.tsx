@@ -1,12 +1,10 @@
 import Container from "@/components/container/Container";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Span from "@/components/span/Span";
-import Pstyles from "../../products.module.css";
-import {} from "./client";
-import styles from "./page.module.css";
-import {NewList} from './client'
 import { requester } from "@/shared/Requester";
-import { CategoryFilter } from "./client";
+import Pstyles from "../../products.module.css";
+import { NewList } from "./client";
+import styles from "./page.module.css";
 
 export default async function () {
   const newCondition: any = {
@@ -31,10 +29,7 @@ export default async function () {
         </VerticalFlex>
 
         <VerticalFlex className={Pstyles.list}>
-          <NewList
-            initProducts={newProducts}
-            initConiditon={newCondition}
-          />
+          <NewList initProducts={newProducts} initConiditon={newCondition} />
         </VerticalFlex>
       </Container>
     </section>
