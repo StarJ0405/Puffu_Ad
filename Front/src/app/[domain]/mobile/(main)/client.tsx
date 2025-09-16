@@ -202,7 +202,12 @@ export function HotDealWrapper({
   initProducts: Pageable;
   initCondition: any;
 }) {
-  const { [id]: products, Load } = useInfiniteData(
+  const {
+    [id]: products,
+    Load,
+    page,
+    maxPage,
+  } = useInfiniteData(
     id,
     (pageNumber) => ({
       ...initCondition,
@@ -263,7 +268,10 @@ export function HotDealWrapper({
                   );
                 })}
               </MasonryGrid>
-              <Button className={styles.list_more_btn}>
+              <Button
+                className={styles.list_more_btn}
+                hidden={maxPage < 1 || page >= maxPage}
+              >
                 <FlexChild gap={10} onClick={showMore}>
                   <Span>상품 더보기</Span>
                   <Image
@@ -284,7 +292,7 @@ export function HotDealWrapper({
 
 // 베스트 상품
 export function NewProducts({ initProducts }: { initProducts: Pageable }) {
-  const { newProducts, Load, origin } = useInfiniteData(
+  const { newProducts, Load, maxPage, page } = useInfiniteData(
     "newProducts",
     (pageNumber) => ({
       pageSize: 30,
@@ -335,7 +343,12 @@ export function NewProducts({ initProducts }: { initProducts: Pageable }) {
             </Link>
           </FlexChild>
         </HorizontalFlex>
-        <ProductList id="new" products={newProducts} Load={Load} />
+        <ProductList
+          id="new"
+          products={newProducts}
+          Load={Load}
+          hidden={maxPage < 1 || page >= maxPage}
+        />
       </VerticalFlex>
     </FlexChild>
   );
@@ -346,11 +359,13 @@ export function ProductList({
   lineClamp,
   products,
   Load,
+  hidden,
 }: {
   id: string;
   lineClamp?: number;
   products: ProductData[];
   Load: () => void;
+  hidden?: boolean;
 }) {
   const [visibleCount, setVisibleCount] = useState(6);
 
@@ -375,7 +390,11 @@ export function ProductList({
               );
             })}
           </MasonryGrid>
-          <Button className={styles.list_more_btn} onClick={showMore}>
+          <Button
+            className={styles.list_more_btn}
+            onClick={showMore}
+            hidden={hidden}
+          >
             <FlexChild gap={10}>
               <Span>상품 더보기</Span>
               <Image
