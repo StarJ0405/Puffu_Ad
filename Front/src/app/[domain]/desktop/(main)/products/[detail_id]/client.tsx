@@ -223,11 +223,20 @@ export function DetailFrame({
   onPurchaseClick: () => Promise<any>;
   onWishClick: () => void;
 }) {
+  const { userData } = useAuth();
   const { storeData } = useStore();
   return (
     <HorizontalFlex gap={60} alignItems="start">
       <FlexChild className={styles.detail_thumbnail}>
-        <Image src={product?.thumbnail} width={600} height={"auto"} />
+        <Image
+          src={
+            userData?.adult
+              ? product?.thumbnail
+              : "/resources/images/19_only.png"
+          }
+          width={600}
+          height={"auto"}
+        />
       </FlexChild>
 
       <VerticalFlex className={styles.detail_infoBox} alignItems="start">

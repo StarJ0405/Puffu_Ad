@@ -1,6 +1,5 @@
 "use client";
 import Button from "@/components/buttons/Button";
-import ReviewImgCard from "@/components/card/reviewImgCard";
 import ProductCard from "@/components/card/ProductCard";
 import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
@@ -9,22 +8,23 @@ import MasonryGrid from "@/components/masonry/MasonryGrid";
 import Span from "@/components/span/Span";
 import clsx from "clsx";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useRef, useState } from "react";
 import styles from "./page.module.css";
 
+import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import NoContent from "@/components/noContent/noContent";
+import P from "@/components/P/P";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
+import { useCategories } from "@/providers/StoreProvider/StorePorivderClient";
+import useData from "@/shared/hooks/data/useData";
 import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
 import { requester } from "@/shared/Requester";
 import { Swiper as SwiperType } from "swiper";
-import { Autoplay, Navigation, Pagination } from "swiper/modules";
-import { useCategories } from "@/providers/StoreProvider/StorePorivderClient";
-import useData from "@/shared/hooks/data/useData";
+import { Autoplay, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
-import P from "@/components/P/P";
 
 export function MainBanner({ initBanners }: { initBanners: Pageable }) {
+  const { userData } = useAuth();
   const { banners } = useData(
     "banners",
     {},
@@ -95,12 +95,30 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
           paintBullets(swiper);
         }}
       >
-        {[...banners]?.reverse().map((item, i) => {
+        {[...banners]?.reverse().map((item: BannerData, i: number) => {
           return (
             <SwiperSlide key={i} className={`swiper_0${i}`}>
-              <Link href={item.thumbnail.mobile}>
-                <Image src={item.thumbnail.mobile} width={"100%"} />
-              </Link>
+              {item.to ? (
+                <Link href={item.to}>
+                  <Image
+                    src={
+                      userData?.adult
+                        ? item.thumbnail.mobile
+                        : "/resources/images/19_only.png"
+                    }
+                    width={"100%"}
+                  />
+                </Link>
+              ) : (
+                <Image
+                  src={
+                    userData?.adult
+                      ? item.thumbnail.mobile
+                      : "/resources/images/19_only.png"
+                  }
+                  width={"100%"}
+                />
+              )}
             </SwiperSlide>
           );
         })}
@@ -263,7 +281,6 @@ export function HotDealWrapper({
                       product={product}
                       lineClamp={2}
                       width={200}
-                      onClick={() => console.log(product)}
                     />
                   );
                 })}

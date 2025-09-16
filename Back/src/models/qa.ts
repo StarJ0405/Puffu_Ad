@@ -27,7 +27,7 @@ export class QA extends BaseEntity {
   @Column({ enum: QARole, type: "enum", nullable: false, default: QARole.ETC })
   type!: QARole;
 
-  @Column({ type: "character varying", nullable: false })
+  @Column({ type: "character varying", nullable: true })
   category?: string;
 
   @Column({ type: "character varying", nullable: false })

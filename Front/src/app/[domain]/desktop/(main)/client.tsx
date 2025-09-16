@@ -21,8 +21,10 @@ import { requester } from "@/shared/Requester";
 import { Swiper as SwiperType } from "swiper";
 import { Autoplay, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 
 export function MainBanner({ initBanners }: { initBanners: Pageable }) {
+  const { userData } = useAuth();
   const { banners } = useData(
     "banners",
     {},
@@ -105,10 +107,24 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
             <SwiperSlide key={i} className={`swiper_0${i}`}>
               {item.to ? (
                 <Link href={item.to}>
-                  <Image src={item.thumbnail.pc} width={"100%"} />
+                  <Image
+                    src={
+                      userData?.adult
+                        ? item.thumbnail.pc
+                        : "/resources/images/19_only.png"
+                    }
+                    width={"100%"}
+                  />
                 </Link>
               ) : (
-                <Image src={item.thumbnail.pc} width={"100%"} />
+                <Image
+                  src={
+                    userData?.adult
+                      ? item.thumbnail.pc
+                      : "/resources/images/19_only.png"
+                  }
+                  width={"100%"}
+                />
               )}
             </SwiperSlide>
           );
