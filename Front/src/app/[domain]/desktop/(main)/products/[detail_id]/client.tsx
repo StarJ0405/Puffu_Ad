@@ -389,7 +389,7 @@ export function OptionItem({
   selected,
   setSelected,
 }: {
-  product: any;
+  product: ProductData;
   selected: Variant[];
   setSelected: Dispatch<SetStateAction<Variant[]>>;
 }) {
@@ -402,6 +402,7 @@ export function OptionItem({
         return (
           <HorizontalFlex className={styles.option_item} key={v.id}>
             <InputNumber
+              disabled={!product.buyable || !v.buyable || v.stack === 0}
               value={select?.quantity}
               min={0}
               max={100}
@@ -413,6 +414,17 @@ export function OptionItem({
               }}
             />
             <HorizontalFlex className={styles.txt_item} gap={10} width={"auto"}>
+              {v.stack === 0 ? (
+                <FlexChild width={"max-content"}>
+                  <P>(재고 부족)</P>
+                </FlexChild>
+              ) : !v.buyable ? (
+                <FlexChild width={"max-content"}>
+                  <P>(판매 중단)</P>
+                </FlexChild>
+              ) : (
+                <></>
+              )}
               <FlexChild className={styles.op_name}>
                 <P>{v?.title}</P>
               </FlexChild>
@@ -458,14 +470,22 @@ export function BuyButtonGroup({
       </FlexChild>
 
       <FlexChild className={styles.cart_box}>
-        <Button className={styles.cart_btn} onClick={onCartClick}>
-          <P>장바구니</P>
+        <Button
+          className={styles.cart_btn}
+          onClick={onCartClick}
+          disabled={!product.buyable}
+        >
+          <P>{product.buyable ? `장바구니` : "판매 중단"}</P>
         </Button>
       </FlexChild>
 
       <FlexChild className={styles.buy_box}>
-        <Button className={styles.buy_btn} onClick={onPurchaseClick}>
-          <P>바로 구매</P>
+        <Button
+          className={styles.buy_btn}
+          onClick={onPurchaseClick}
+          disabled={!product.buyable}
+        >
+          <P>{product.buyable ? `바로 구매` : "판매 중단"}</P>
         </Button>
       </FlexChild>
     </HorizontalFlex>

@@ -431,6 +431,7 @@ export function BottomPayBox({
 
         <FlexChild className={styles.buy_box}>
           <Button
+            disabled={!product.buyable}
             className={styles.buy_btn}
             onClick={() =>
               NiceModal.show(buyCartModal, {
@@ -440,7 +441,7 @@ export function BottomPayBox({
               })
             }
           >
-            <P>구매하기</P>
+            <P>{product.buyable ? "구매하기" : "판매중단"}</P>
           </Button>
         </FlexChild>
       </HorizontalFlex>
