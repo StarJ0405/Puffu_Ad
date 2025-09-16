@@ -135,7 +135,9 @@ export function ProductCard({
 
             {mutate && (
               <FlexChild
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
                   if (product.wish) {
                     requester.deleteWishList(
                       product.wish.id,
