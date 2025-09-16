@@ -2,15 +2,14 @@
 import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import P from "@/components/P/P";
-import styles from "./page.module.css";
-
-import Link from "next/link";
-import { ChoiseProductSlider, CompleteForm } from "./client";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
-import { useEffect, useState } from "react";
-import useNavigate from "@/shared/hooks/useNavigate";
 import useClientEffect from "@/shared/hooks/useClientEffect";
+import useNavigate from "@/shared/hooks/useNavigate";
 import { Sessions } from "@/shared/utils/Data";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { ChoiseProductSlider, CompleteForm } from "./client";
+import styles from "./page.module.css";
 
 export default function () {
   const { reload } = useAuth();
@@ -37,9 +36,6 @@ export default function () {
     [],
     true
   );
-  useEffect(() => {
-    console.log(order);
-  }, [order]);
   return (
     <section className="root page_container">
       <VerticalFlex>

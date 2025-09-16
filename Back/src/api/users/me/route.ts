@@ -53,20 +53,16 @@ export const POST: ApiHandler = async (req, res) => {
 
 export const PUT: ApiHandler = async (req, res) => {
   const user: User = req.user;
-  const { password, new_password, phone } = req.body;
-  const result = await comparePasswords(password, user.password_hash);
-  if (!result) {
-    return res.status(404).json({ error: "not allowed" });
-  }
+  const { password, thumbnail } = req.body;
+  const data: any = {};
+  if (password) data.password = password;
+  if (data.thumbnail) data.thumbnail = thumbnail;
   const service = container.resolve(UserService);
   await service.update(
     {
       id: user.id,
     },
-    {
-      password: new_password,
-      phone,
-    }
+    data
   );
   return res.json({
     message: "success",

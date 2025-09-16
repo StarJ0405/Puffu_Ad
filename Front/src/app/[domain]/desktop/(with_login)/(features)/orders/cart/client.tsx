@@ -287,7 +287,8 @@ export function CartWrap() {
                 <Span>상품 금액</Span>
 
                 <P>
-                  <Span>{totalDiscounted}</Span> <Span>₩</Span>
+                  <Span>{totalDiscounted}</Span>
+                  <Span> ₩</Span>
                 </P>
               </HorizontalFlex>
 
@@ -295,7 +296,8 @@ export function CartWrap() {
                 <Span>배송비</Span>
 
                 <P>
-                  {shipping?.amount || 0} <Span>₩</Span>
+                  <Span>{shipping?.amount || 0}</Span>
+                  <Span> ₩</Span>
                 </P>
               </HorizontalFlex>
 
@@ -303,8 +305,8 @@ export function CartWrap() {
                 <Span>합계</Span>
 
                 <P color={"var(--main-color1)"}>
-                  {Number((shipping?.amount || 0) + totalDiscounted)}
-                  <Span color="#fff">₩</Span>
+                  <Span>{(shipping?.amount || 0) + totalDiscounted}</Span>
+                  <Span color="#fff"> ₩</Span>
                 </P>
               </HorizontalFlex>
             </VerticalFlex>
@@ -314,7 +316,7 @@ export function CartWrap() {
             <Span>총 결제 금액</Span>
             <P color={"var(--main-color1)"}>
               <Span>{(shipping?.amount || 0) + totalDiscounted}</Span>
-              <Span color="#fff">₩</Span>
+              <Span color="#fff"> ₩</Span>
             </P>
           </FlexChild>
 
@@ -323,7 +325,7 @@ export function CartWrap() {
             <Button
               isLoading={isLoading}
               disabled={agrees.length < 2 || !payment || selected?.length === 0}
-              className={clsx(style.payment_btn, style.disabled)}
+              className={style.payment_btn}
               onClick={async () => {
                 const data: any = {
                   selected,
