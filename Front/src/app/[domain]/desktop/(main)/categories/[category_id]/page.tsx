@@ -7,7 +7,7 @@ import P from "@/components/P/P";
 import styles from "./page.module.css";
 import {} from "./client";
 
-import { SecondCategory, CategoryList, TitleBox } from "./client";
+import { CategoryList, TitleBox } from "./client";
 import { Params } from "next/dist/server/request/params";
 import { requester } from "@/shared/Requester";
 import { log } from "@/shared/utils/Functions";

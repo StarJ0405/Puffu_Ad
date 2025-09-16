@@ -13,6 +13,7 @@ import Link from "next/link";
 import { BaseProductList } from "../../products/baseClient";
 import styles from "./page.module.css";
 import { useState } from "react";
+import ChildCategory from "@/components/childCategory/childCategory"
 
 
 function findCategoryById(categories: any[], id: string): any | undefined {
@@ -44,7 +45,7 @@ export function TitleBox({category_id} : {category_id: any}) {
       {/* 프로덕트 카테고리 */}
       <VerticalFlex marginBottom={30}>
         {category?.children?.length > 0 ? (
-              <SecondCategory categoryId={category_id} childrenData={category.children} parent={category} />
+              <ChildCategory categoryId={category_id} childrenData={category.children} parent={category} />
             ) : (
               <FlexChild onClick={()=> navigate(-1)} gap={10} cursor="pointer" width={'auto'} alignSelf="start">
                 <Image src={'/resources/images/back.png'} width={20} />
@@ -57,35 +58,8 @@ export function TitleBox({category_id} : {category_id: any}) {
   )
 }
 
-// 중분류, 소분류 카테고리
-export function SecondCategory(
-  { childrenData, parent, categoryId } :
-  {
-    childrenData: CategoryData[]; 
-    parent: CategoryData;
-    categoryId: any;
-  }
-) {
 
-  return (
-    <>
-      <ul className={styles.category_list}>
-        <li className={clsx(parent.id === categoryId && styles.active)}>
-          <Link href={`/categories/${parent.id}`}>
-            <Span>전체</Span>
-          </Link>
-        </li>
-        {childrenData.map((child, i) => (
-          <li key={i}>
-            <Link href={`/categories/${child.id}`}>
-              <Span>{child.name}</Span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </>
-  );
-}
+
 
 export function CategoryList({
   initCondition,
