@@ -139,8 +139,9 @@ export function MyOrdersTable({ items }: { items?: LineItemData[] }) {
 
                           <Span>{item.unit_price}원</Span>
                         </VerticalFlex>
-                      </FlexChild>
-                    </td>
+                      </VerticalFlex>
+                    </FlexChild>
+                  </td>
                   <td>
                     <P weight={600} color="#fff">
                       {((item.discount_price || 0) - (item.unit_price || 0)) *

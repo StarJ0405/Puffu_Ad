@@ -97,7 +97,7 @@ export function MyOrdersTable() {
 
                 <tbody>
                   {item.content.map((child, j) => (
-                  <tr>
+                  <tr key={j}>
                     <td>
                       <FlexChild className={styles.order_item}>
                         <Image src={child.thumbnail} width={150} />

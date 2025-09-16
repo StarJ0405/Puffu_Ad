@@ -5,5 +5,20 @@
    left: 0;
    width: 100%;
    height: 100dvh;
-   background: #000;
+   background: #222;
+}
+
+.frame_header {
+   gap: 25px; padding: 15px;
+   height: auto;
+}
+
+/* 검색창 */
+.search_Box {
+   border: 1px solid rgba(255,255,255,0.3);
+   border-radius: 3px;
+   width: 100%;
+   padding: 11px 10px;
+   font-size: 16px;
+   background: #111 !important;
 }
