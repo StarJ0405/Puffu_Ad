@@ -4,10 +4,9 @@ import Span from "@/components/span/Span";
 import Pstyles from "../../products.module.css";
 import {} from "./client";
 import styles from "./page.module.css";
-
-import { ProdcutCategory } from "../../baseClient";
 import {NewList} from './client'
 import { requester } from "@/shared/Requester";
+import { CategoryFilter } from "./client";
 
 export default async function () {
   const newCondition: any = {
@@ -28,7 +27,7 @@ export default async function () {
         </VerticalFlex>
 
         <VerticalFlex marginBottom={30}>
-          <ProdcutCategory />
+          {/* <CategoryFilter /> */}
         </VerticalFlex>
 
         <VerticalFlex className={Pstyles.list}>

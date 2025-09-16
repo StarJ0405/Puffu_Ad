@@ -8,6 +8,8 @@ import Link from "next/link";
 import { HeaderBottom, SideMenuBtn } from './client';
 import styles from "./header.module.css";
 import { useParams, usePathname } from "next/navigation";
+import MobileSearch from "@/components/mobileSearch/mobileSearch"
+import { useState } from "react";
 
 
 export default function MobileHeader() {
@@ -22,6 +24,7 @@ export default function MobileHeader() {
 
    const params = useParams();
    const pathname = usePathname();
+   const [showSearch, setShowSearch] = useState(false);
 
    const shouldHideHeader = 
    params.detail_id || pathname.includes("/orders") || pathname.includes("/border") || pathname.includes("/mypage");
@@ -30,43 +33,47 @@ export default function MobileHeader() {
       <>
          {
             !shouldHideHeader? (
-               <header className={styles.header}>
-                  <HorizontalFlex className={clsx('page_container',styles.headerTop)}>
-                     <FlexChild gap={20}>
-                        
-                        <SideMenuBtn/>
-
-                        <FlexChild className={styles.logo}>
-                           <Link href='/'>
-                              <Image
-                                 src='/resources/images/header/logo.png'
-                                 width={100}
-                                 height={'auto'}
-                              />
-                           </Link>
+               <>
+                  <header className={styles.header}>
+                     <HorizontalFlex className={clsx('page_container',styles.headerTop)}>
+                        <FlexChild gap={20}>
+                           
+                           <SideMenuBtn/>
+   
+                           <FlexChild className={styles.logo}>
+                              <Link href='/'>
+                                 <Image
+                                    src='/resources/images/header/logo.png'
+                                    width={100}
+                                    height={'auto'}
+                                 />
+                              </Link>
+                           </FlexChild>
+   
                         </FlexChild>
+   
+                        <FlexChild width={'auto'} className={styles.info_box}>
+                           <VerticalFlex gap={20} alignItems="end">
+                              <HorizontalFlex width={'auto'} gap={10}>
+                                 <FlexChild onClick={()=> setShowSearch(true)}>
+                                    <Image src='/resources/images/header/input_search_icon.png' width={22} cursor="pointer"/>
+                                 </FlexChild>
+   
+                                 <FlexChild>
+                                    <Link href={'/orders/cart'}>
+                                       <Image src='/resources/icons/main/cart_icon.png' width={25} cursor="pointer"/>
+                                    </Link>
+                                 </FlexChild>
+                              </HorizontalFlex>
+                           </VerticalFlex>
+                        </FlexChild>
+                     </HorizontalFlex>
+   
+                     <HeaderBottom menu1={menu1}/>
+                  </header>
 
-                     </FlexChild>
-
-                     <FlexChild width={'auto'} className={styles.info_box}>
-                        <VerticalFlex gap={20} alignItems="end">
-                           <HorizontalFlex width={'auto'} gap={10}>
-                              <FlexChild>
-                                 <Image src='/resources/images/header/input_search_icon.png' width={22} cursor="pointer"/>
-                              </FlexChild>
-
-                              <FlexChild>
-                                 <Link href={'/orders/cart'}>
-                                    <Image src='/resources/icons/main/cart_icon.png' width={25} cursor="pointer"/>
-                                 </Link>
-                              </FlexChild>
-                           </HorizontalFlex>
-                        </VerticalFlex>
-                     </FlexChild>
-                  </HorizontalFlex>
-
-                  <HeaderBottom menu1={menu1}/>
-               </header>
+                  {showSearch && <MobileSearch onClose={() => setShowSearch(false)} />}
+               </>
             ) : (
                <div style={{display: "none"}}></div>
             )

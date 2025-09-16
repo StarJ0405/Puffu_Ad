@@ -1,14 +1,12 @@
 import Container from "@/components/container/Container";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Pstyles from "../../products.module.css";
-import { BestList } from "./client";
+import { BestList, CategoryFilter } from "./client";
 import styles from "./page.module.css";
 
 import Image from "@/components/Image/Image";
 import { requester } from "@/shared/Requester";
 import { log } from "console";
-import { ProdcutCategory } from "../../baseClient";
-import {SecondCategory} from "./client"
 
 export default async function () {
   const bestCondition: any = {
@@ -27,7 +25,7 @@ export default async function () {
         </VerticalFlex>
 
         <VerticalFlex marginBottom={30}>
-          <ProdcutCategory />
+          {/* <CategoryFilter /> */}
         </VerticalFlex>
 
         <VerticalFlex className={Pstyles.list}>
