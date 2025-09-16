@@ -139,7 +139,7 @@ export function BaseProductList({
             <SortFilter length={listLength} sortConfig={sortConfig}/>
             {/* sortOptions={sortOptions} */}
             <VerticalFlex alignItems="start">
-               <MasonryGrid gap={20}>
+               <MasonryGrid gap={20} width={'100%'}>
                   {
                      listArray.map((product: ProductData, i) => {
                         return (

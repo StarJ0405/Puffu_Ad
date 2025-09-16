@@ -634,13 +634,27 @@ export function DetailTabContainer({ product }: { product: ProductData }) {
   const tabParamsChange = (params: string) => {
     setTabParams(params);
   };
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const handleTabClick = (name: string) => {
+    tabParamsChange(name);
+
+    if (contentRef.current) {
+      const top =
+        contentRef.current.getBoundingClientRect().top +
+        window.scrollY -
+        100; // 헤더 높이만큼 보정
+      window.scrollTo({ top, behavior: "smooth" });
+    }
+  };
+
   const tabAraays = [
     {
       name: "상세정보",
       paramsName: "description",
       component: <Description product={product} />,
     },
-    { name: "사용후기", paramsName: "review", component: <Review /> },
+    // { name: "사용후기", paramsName: "review", component: <Review /> },
     { name: "상품 Q&A", paramsName: "inquiry", component: <Inquiry /> },
     {
       name: "배송/반품/교환/안내",
@@ -659,7 +673,10 @@ export function DetailTabContainer({ product }: { product: ProductData }) {
               styles.content_tab,
               tabParams === `${item.paramsName}` && styles.active
             )}
-            onClick={() => tabParamsChange(`${item.paramsName}`)}
+            onClick={() => {
+              handleTabClick(item.paramsName);
+              tabParamsChange(`${item.paramsName}`);
+            }}
           >
             <P>
               {item.name}
@@ -670,6 +687,8 @@ export function DetailTabContainer({ product }: { product: ProductData }) {
           </FlexChild>
         ))}
       </HorizontalFlex>
+
+      <div ref={contentRef}></div> {/* 탭 스크롤 이동 추적용 */}
 
       <VerticalFlex className={styles.content_view}>
         <article key={tabParams} className={styles.tab_fade}>

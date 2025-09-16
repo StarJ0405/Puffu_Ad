@@ -1,6 +1,7 @@
 
 .inquiry_board {
-   gap: 35px;
+   gap: 45px;
+   padding: 20px 10px 0;
 }
 
 
@@ -27,7 +28,10 @@
 
 /* 리스트 */
 
-.inquiry_list {gap: 25px;}
+.toggle_btn {background: none; transition: 0.2s}
+.toggle_btn.active {transform: rotate(180deg);}
+
+.inquiry_list {gap: 45px;}
 
 .inquiry_list .list_title {
    gap: 10px;
@@ -47,7 +51,7 @@
 }
 
 .inquiry_item .user_question .item_title {
-   margin-bottom: 10px;
+   margin-bottom: 20px;
 }
 
 .inquiry_item .user_question .item_title p {
@@ -64,9 +68,7 @@
    border-radius: 3px;
 }
 
-.inquiry_item .user_question .data_group .response_check span {
-   color: #fff;
-}
+.inquiry_item .user_question .data_group .response_check span {color: #555;}
 
 .inquiry_item .user_question .data_group .item_name {
    color: #fff !important; font-size: 13px !important;
@@ -85,12 +87,17 @@
    min-height: 140px;
    align-items: start !important;
    line-height: 1.4;
+   font-size: 14px !important;
 }
 
 
 /* 관리자 답변 */
 .inquiry_item .admin_answer {
    margin-top: 20px;
+}
+
+.inquiry_item .admin_answer .item_content {
+   background: #111;
 }
 
 .inquiry_item .admin_answer .answer_title {
