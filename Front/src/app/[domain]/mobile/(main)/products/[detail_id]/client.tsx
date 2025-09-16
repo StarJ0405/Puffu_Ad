@@ -66,12 +66,6 @@ export function ProductWrapper({
       fallbackData: initProduct,
     }
   );
-  const [selected, setSelected] = useState<Variant[]>(
-    product.variants.map((v: VariantData) => ({
-      variant_id: v.id,
-      quantity: 0,
-    }))
-  );
 
   const onWishClick = () => {
     if (product.wish) {
@@ -122,16 +116,20 @@ export function ProductWrapper({
     setShipping(shippingMethod);
   }, [product, storeData]);
 
-  const onCartClick = async (): Promise<any> => {
-    if (!userData)
-      return NiceModal.show("confirm", {
+  const onCartClick = async (selected: Variant[]): Promise<boolean> => {
+    if (!userData) {
+      NiceModal.show("confirm", {
         message: "로그인 필요합니다.",
         confirmText: "로그인하기",
         cancelText: "취소",
         onConfirm: () => navigate("/auth/login"),
       });
-    if (!selected.some((f) => f.quantity > 0))
-      return toast({ message: "상품을 최소 1개 이상 담아주세요" });
+      return false;
+    }
+    if (!selected.some((f) => f.quantity > 0)) {
+      toast({ message: "상품을 최소 1개 이상 담아주세요" });
+      return false;
+    }
 
     if (selected.length > 0) {
       const { message, error } = await requester.addItem({
@@ -141,24 +139,27 @@ export function ProductWrapper({
       if (message) {
         reload();
         toast({ message: "장바구니 물건을 담았습니다." });
-        setSelected([
-          ...selected.map((s) => ({ variant_id: s.variant_id, quantity: 0 })),
-        ]);
       } else {
         toast({ message: error });
       }
+      return true;
     }
+    return false;
   };
-  const onPurchaseClick = async (): Promise<any> => {
-    if (!userData)
-      return NiceModal.show("confirm", {
+  const onPurchaseClick = async (selected: Variant[]): Promise<boolean> => {
+    if (!userData) {
+      NiceModal.show("confirm", {
         message: "로그인 필요합니다.",
         confirmText: "로그인하기",
         cancelText: "취소",
         onConfirm: () => navigate("/auth/login"),
       });
-    if (!selected.some((f) => f.quantity > 0))
-      return toast({ message: "상품을 최소 1개 이상 담아주세요" });
+      return false;
+    }
+    if (!selected.some((f) => f.quantity > 0)) {
+      toast({ message: "상품을 최소 1개 이상 담아주세요" });
+      return false;
+    }
 
     if (selected.length > 0) {
       const { message, error } = await requester.addItem({
@@ -166,11 +167,13 @@ export function ProductWrapper({
         variants: selected,
       });
       if (message) {
-        reload().then(() => navigate("/cart"));
+        reload().then(() => navigate("/orders/cart"));
       } else {
         toast({ message: error });
       }
+      return true;
     }
+    return false;
   };
 
   return (
@@ -180,8 +183,6 @@ export function ProductWrapper({
           product={product}
           freeShipping={freeShipping}
           shipping={shipping}
-          setSelected={setSelected}
-          selected={selected}
           onCartClick={onCartClick}
           onPurchaseClick={onPurchaseClick}
         />
@@ -201,26 +202,25 @@ export function ProductWrapper({
   );
 }
 
-
-
 // 제품정보 상단
 export function DetailFrame({
-  product, freeShipping, shipping, selected, 
-  setSelected, onCartClick, onPurchaseClick,
+  product,
+  freeShipping,
+  shipping,
+  onCartClick,
+  onPurchaseClick,
 }: {
   product: ProductData;
   freeShipping?: ShippingMethodData;
   shipping?: ShippingMethodData;
-  selected: Variant[];
-  setSelected: Dispatch<SetStateAction<Variant[]>>;
-  onCartClick: () => Promise<any>;
-  onPurchaseClick: () => Promise<any>;
+  onCartClick: (selected: Variant[]) => Promise<any>;
+  onPurchaseClick: (selected: Variant[]) => Promise<any>;
 }) {
   const { storeData } = useStore();
   return (
     <VerticalFlex alignItems="start">
       <FlexChild className={styles.detail_thumbnail}>
-        <Image src={product?.thumbnail} width={'100%'} height={"auto"} />
+        <Image src={product?.thumbnail} width={"100%"} height={"auto"} />
       </FlexChild>
 
       <VerticalFlex className={styles.detail_infoBox} alignItems="start">
@@ -302,8 +302,6 @@ export function DetailFrame({
 
       <BottomPayBox
         product={product}
-        selected={selected}
-        setSelected={setSelected}
         onCartClick={onCartClick}
         onPurchaseClick={onPurchaseClick}
       />
@@ -311,105 +309,113 @@ export function DetailFrame({
   );
 }
 
-
 // 구매하기 버튼 누르면 나오는 모달
-const buyCartModal = NiceModal.create(({
+const buyCartModal = NiceModal.create(
+  ({
     product,
-    selected,
-    setSelected,
     onCartClick,
     onPurchaseClick,
-  }:{
+  }: {
     product: ProductData;
-    selected: Variant[];
-    setSelected: Dispatch<SetStateAction<Variant[]>>;
-    onCartClick: () => Promise<any>;
-    onPurchaseClick: () => Promise<any>;
-  })=> {
-
+    onCartClick: (selected: Variant[]) => Promise<boolean>;
+    onPurchaseClick: (selected: Variant[]) => Promise<any>;
+  }) => {
+    const [selected, setSelected] = useState<Variant[]>(
+      product.variants.map((v: VariantData) => ({
+        variant_id: v.id,
+        quantity: 0,
+      }))
+    );
     const modal = useModal();
     const modalRef = useRef<any>(null);
 
     return (
-    <ModalBase
-      ref={modalRef}
-      slideUp
-      cancelBack
-      topRound
-      width={'100%'}
-      maxWidth={768}
-      minWidth={220}
-      height={'258px'}
-      
-      clickOutsideToClose={true}
-      onClose={modal.remove}
-    >
-      <VerticalFlex className={styles.pay_cart_modal}>
-        <FlexChild className={styles.title_header}>
-          <P>구매하기</P>
-        </FlexChild>
-
-        <VerticalFlex className={styles.option_box}>
-          <OptionItem
-            product={product}
-            setSelected={setSelected}
-            selected={selected}
-          />
-        </VerticalFlex>
-
-        {/* 총 금액 표시 */}
-        <VerticalFlex className={styles.total_box}>
-          <FlexChild className={styles.total_item}>
-            <P className={styles.total_txt}>총 상품 금액</P>
-
-            <FlexChild className={styles.price} width={"auto"}>
-              <P>
-                {product.variants.reduce((acc, now) => {
-                  const quantity =
-                    selected.find((f) => f.variant_id === now.id)?.quantity || 0;
-
-                  return acc + now.discount_price * quantity;
-                }, 0)}
-              </P>
-              ₩
-            </FlexChild>
+      <ModalBase
+        ref={modalRef}
+        slideUp
+        cancelBack
+        topRound
+        width={"100%"}
+        maxWidth={768}
+        minWidth={220}
+        height={"258px"}
+        clickOutsideToClose={true}
+        onClose={modal.remove}
+      >
+        <VerticalFlex className={styles.pay_cart_modal}>
+          <FlexChild className={styles.title_header}>
+            <P>구매하기</P>
           </FlexChild>
 
-          <FlexChild className={styles.button_box}>
-            <FlexChild className={styles.cart_box}>
-              <Button className={styles.cart_btn} onClick={onCartClick}>
-                <P>장바구니 담기</P>
-              </Button>
+          <VerticalFlex className={styles.option_box}>
+            <OptionItem
+              product={product}
+              setSelected={setSelected}
+              selected={selected}
+            />
+          </VerticalFlex>
+
+          {/* 총 금액 표시 */}
+          <VerticalFlex className={styles.total_box}>
+            <FlexChild className={styles.total_item}>
+              <P className={styles.total_txt}>총 상품 금액</P>
+
+              <FlexChild className={styles.price} width={"auto"}>
+                <P>
+                  {product.variants.reduce((acc, now) => {
+                    const quantity =
+                      selected.find((f) => f.variant_id === now.id)?.quantity ||
+                      0;
+
+                    return acc + now.discount_price * quantity;
+                  }, 0)}
+                </P>
+                ₩
+              </FlexChild>
             </FlexChild>
 
-            <FlexChild className={styles.buy_box}>
-              <Button className={styles.buy_btn} onClick={onPurchaseClick}>
-                <P>바로구매</P>
-              </Button>
+            <FlexChild className={styles.button_box}>
+              <FlexChild className={styles.cart_box}>
+                <Button
+                  className={styles.cart_btn}
+                  onClick={async () => {
+                    const result = await onCartClick(selected);
+                    if (result) modalRef.current.close();
+                  }}
+                >
+                  <P>장바구니 담기</P>
+                </Button>
+              </FlexChild>
+
+              <FlexChild className={styles.buy_box}>
+                <Button
+                  className={styles.buy_btn}
+                  onClick={async () => {
+                    const result = await onPurchaseClick(selected);
+                    if (result) modalRef.current.close();
+                  }}
+                >
+                  <P>바로구매</P>
+                </Button>
+              </FlexChild>
             </FlexChild>
-          </FlexChild>
+          </VerticalFlex>
         </VerticalFlex>
-
-      </VerticalFlex>
       </ModalBase>
     );
-  });
+  }
+);
 
 // 하단 고정 네비
 export function BottomPayBox({
   product,
-  selected,
-  setSelected,
   onCartClick,
   onPurchaseClick,
 }: {
   product: ProductData;
-  selected: Variant[];
-  setSelected: Dispatch<SetStateAction<Variant[]>>;
-  onCartClick: () => Promise<any>;
-  onPurchaseClick: () => Promise<any>;
+  onCartClick: (selected: Variant[]) => Promise<any>;
+  onPurchaseClick: (selected: Variant[]) => Promise<any>;
 }) {
-
   return (
     <FlexChild className={styles.bottom_pay_box}>
       <HorizontalFlex className={styles.buyButton_box}>
@@ -424,22 +430,22 @@ export function BottomPayBox({
         </FlexChild>
 
         <FlexChild className={styles.buy_box}>
-          <Button 
-            className={styles.buy_btn} 
-            onClick={() => NiceModal.show(buyCartModal, {
-              product,
-              selected,
-              setSelected,
-              onCartClick,
-              onPurchaseClick,
-            })}
+          <Button
+            className={styles.buy_btn}
+            onClick={() =>
+              NiceModal.show(buyCartModal, {
+                product,
+                onCartClick,
+                onPurchaseClick,
+              })
+            }
           >
             <P>구매하기</P>
           </Button>
         </FlexChild>
       </HorizontalFlex>
     </FlexChild>
-  )
+  );
 }
 
 // 미니 구매란
@@ -507,7 +513,7 @@ export function OptionItem({
             <InputNumber
               value={select?.quantity}
               min={0}
-              max={100}
+              max={v.stack}
               step={1}
               onChange={(val) => {
                 select.quantity = val;
@@ -609,7 +615,7 @@ export function DetailTabContainer({ product }: { product: ProductData }) {
   ];
 
   return (
-    <VerticalFlex className={styles.contents_container} width={'100%'}>
+    <VerticalFlex className={styles.contents_container} width={"100%"}>
       <HorizontalFlex className={styles.tab_wrap}>
         {tabAraays.map((item) => (
           <FlexChild
