@@ -73,6 +73,8 @@ export default function MobileHeader() {
                      <HeaderBottom menu1={menu1}/>
                   </header>
 
+
+                  {/* 모바일 검색창 페이지 */}
                   <AnimatePresence mode="wait">
                   {
                      showSearch && (

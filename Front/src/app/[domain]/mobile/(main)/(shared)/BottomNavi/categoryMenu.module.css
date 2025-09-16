@@ -1,0 +1,83 @@
+.category_container {
+   position: fixed;
+   top: 0; left: 0;
+   width: 100%;
+   height: 100dvh;
+   background: #222222;
+   z-index: 10000;
+}
+
+.category_container .frame_header {
+   gap: 25px; padding: 15px;
+   height: auto;
+   border-bottom: 5px solid #333;
+}
+
+/* 검색창 */
+.search_Box {
+   border: 1px solid rgba(255,255,255,0.3);
+   border-radius: 3px;
+   width: 100%;
+   padding: 11px 10px;
+   font-size: 16px;
+   background: #111 !important;
+}
+
+.ca_wrap {
+   align-items: start !important;
+   overflow-y: auto;
+   height: 100%;
+}
+
+.ca_tab1 {
+   display: flex;
+   flex-direction: column;
+   min-width: 120px;
+}
+
+.ca_tab1 .tab_item {
+   padding: 14px 10px;
+   background: #3F3F3F;
+   color: #fff;
+   font-size: 15px;
+   cursor: pointer;
+   transition: all 0.2s;
+}
+
+.ca_tab1 .tab_item:hover,
+.ca_tab1 .tab_item.active {
+   background: var(--main-color1);
+}
+
+.child_wrap {
+   padding: 15px 10px;
+}
+
+.child_wrap .ca_child {
+   align-items: start !important;
+   border-bottom: 1px solid #333;
+}
+
+.child_wrap .ca_child:not(:first-child) {
+   margin-top: 20px;
+} 
+
+.child_wrap .ca_child .cat1_item {
+   gap: 10px;
+   font-size: 16px;
+   color: #fff;
+   font-weight: 600;
+   padding-bottom: 30px;
+}
+
+.child_wrap .ca_child a {
+   width: 90%; display: block;
+}
+
+.child_wrap .ca_child .child_item {
+   font-size: 15px; color: #dfdfdf;
+   margin: 0 0 30px 10px;
+   justify-content: space-between;
+   width: 100%;
+   padding-left: 5px;
+}

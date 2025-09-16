@@ -10,6 +10,7 @@ import { useParams, usePathname } from "next/navigation";
 import { useState } from "react";
 import styles from "./bottomNavi.module.css";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
+import CategoryMenu from "./categoryMenu"
 
 
 export default function BottomNavi() {
@@ -22,6 +23,7 @@ export default function BottomNavi() {
 
    return (
       <>
+         {/* <CategoryMenu /> */}
          {
             !params.detail_id? ( // detail 페이지일때는 숨겨짐.
                <HorizontalFlex className={styles.bottom_navi}>
