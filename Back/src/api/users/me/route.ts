@@ -54,9 +54,10 @@ export const POST: ApiHandler = async (req, res) => {
 export const PUT: ApiHandler = async (req, res) => {
   const user: User = req.user;
   const { password, thumbnail } = req.body;
+
   const data: any = {};
   if (password) data.password = password;
-  if (data.thumbnail) data.thumbnail = thumbnail;
+  if (thumbnail) data.thumbnail = thumbnail;
   const service = container.resolve(UserService);
   await service.update(
     {

@@ -40,7 +40,7 @@ export default function () {
     <section className="root page_container">
       <VerticalFlex>
         <FlexChild>
-          <CompleteForm />
+          <CompleteForm order={order} />
         </FlexChild>
 
         <FlexChild justifyContent="center" marginTop={50}>

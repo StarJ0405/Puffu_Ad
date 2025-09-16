@@ -1,23 +1,19 @@
 "use client";
+import ProductCard from "@/components/card/ProductCard";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import Input from "@/components/inputs/Input";
-import P from "@/components/P/P";
-import Select from "@/components/select/Select";
-import Span from "@/components/span/Span";
-import { useState } from "react";
-import styles from "./page.module.css";
 import Image from "@/components/Image/Image";
 import NoContent from "@/components/noContent/noContent";
+import P from "@/components/P/P";
+import Span from "@/components/span/Span";
 import clsx from "clsx";
-import Link from "next/link";
-import Button from "@/components/buttons/Button";
 import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import ProductCard from "@/components/card/ProductCard";
+import styles from "./page.module.css";
 
-export function CompleteForm() {
+export function CompleteForm({ order }: { order?: OrderData }) {
+  const date = new Date(order?.created_at || "");
   return (
     <VerticalFlex>
       <VerticalFlex gap={30} width={"100%"} maxWidth={"1000px"}>
@@ -30,9 +26,15 @@ export function CompleteForm() {
 
           <FlexChild justifyContent="center">
             <P size={16} color="#aaa" weight={500} lineHeight={"1.4"}>
-              <Span color="#fff">{"2025.09.01"}</Span> 주문하신 <br />
+              <Span color="#fff">{`${date.getFullYear()}.${String(
+                date.getMonth() + 1
+              ).padStart(2, "0")}.${String(date.getDate()).padStart(
+                2,
+                "0"
+              )}`}</Span>{" "}
+              주문하신 <br />
               상품의 주문번호는{" "}
-              <Span color="var(--main-color1)">{"12345667"}</Span> 입니다.
+              <Span color="var(--main-color1)">{order?.display}</Span> 입니다.
             </P>
           </FlexChild>
         </VerticalFlex>
@@ -48,22 +50,23 @@ export function CompleteForm() {
             marginTop={20}
           >
             <FlexChild justifyContent="center">
-              <P className={styles.delivery_txt}>김철수</P>
+              <P className={styles.delivery_txt}>{order?.address?.name}</P>
             </FlexChild>
 
             <FlexChild justifyContent="center">
               <P className={styles.delivery_txt}>
-                (35353) 서구 도안동로 234 대전 303동 1302호
+                ({order?.address?.postal_code}) {order?.address?.address1}{" "}
+                {order?.address?.address2}
               </P>
             </FlexChild>
 
             <FlexChild justifyContent="center">
-              <P className={styles.delivery_txt}>01012345678</P>
+              <P className={styles.delivery_txt}>{order?.address?.phone}</P>
             </FlexChild>
 
             <FlexChild justifyContent="center">
               <P className={styles.delivery_txt}>
-                배송요청사항 : 현관문 앞에 놔주세요.
+                배송요청사항 : {order?.address?.message || "없음"}
               </P>
             </FlexChild>
           </VerticalFlex>
@@ -75,7 +78,7 @@ export function CompleteForm() {
           </FlexChild>
 
           <FlexChild marginTop={15}>
-            <CompleteOrdersTable />
+            <CompleteOrdersTable items={order?.items || []} />
           </FlexChild>
         </VerticalFlex>
 
@@ -83,19 +86,27 @@ export function CompleteForm() {
           <VerticalFlex justifyContent="center" gap={15}>
             <FlexChild justifyContent="center">
               <P size={16} color="#fff" weight={500}>
-                주문금액 {"40,000"}원
+                주문금액 {Number(order?.total).toLocaleString("kr")}원
               </P>
             </FlexChild>
 
             <FlexChild justifyContent="center">
               <P size={16} color="#fff" weight={500}>
-                할인금액 {"0"}원
+                할인금액{" "}
+                {Number(
+                  (order?.total || 0) - (order?.total_discounted || 0)
+                ).toLocaleString("kr")}
+                원
               </P>
             </FlexChild>
 
             <FlexChild justifyContent="center">
               <P size={16} color="#fff" weight={500}>
-                + 배송비 {"0"}원
+                + 배송비{" "}
+                {Number(
+                  order?.shipping_methods?.[0]?.amount || 0
+                ).toLocaleString("kr")}
+                원
               </P>
             </FlexChild>
           </VerticalFlex>
@@ -109,7 +120,11 @@ export function CompleteForm() {
 
             <FlexChild justifyContent="center">
               <P size={25} color="var(--main-color1)" weight={600}>
-                {"40,000"}원
+                {Number(
+                  (order?.total_discounted || 0) +
+                    (order?.shipping_methods?.[0]?.amount || 0)
+                ).toLocaleString("kr")}
+                원
               </P>
             </FlexChild>
           </VerticalFlex>
@@ -120,36 +135,12 @@ export function CompleteForm() {
 }
 
 // 주문 리스트
-export function CompleteOrdersTable() {
-  const cart = [
-    {
-      title: "여성용) 핑크색 일본 st 로제 베일 가운",
-      thumbnail: "/resources/images/dummy_img/product_07.png",
-      brand: "푸푸토이",
-      price: "20,000",
-      option: [
-        { title: "여성용) 핑크색 일본 컬러 레드", price: "0" },
-        { title: "여성용) 핑크색 일본 1+1 증정", price: "1,000" },
-      ],
-      delivery: "/resources/icons/cart/cj_icon.png",
-    },
-    {
-      title: "여성용) 핑크색 일본 st 로제 베일 가운",
-      thumbnail: "/resources/images/dummy_img/product_07.png",
-      brand: "푸푸토이",
-      price: "20,000",
-      option: [
-        { title: "여성용) 핑크색 일본 컬러 레드", price: "0" },
-        { title: "여성용) 핑크색 일본 1+1 증정", price: "1,000" },
-      ],
-      delivery: "/resources/icons/cart/cj_icon.png",
-    },
-  ];
+export function CompleteOrdersTable({ items }: { items: LineItemData[] }) {
   return (
     <>
       <VerticalFlex gap={20}>
-        {cart.length > 0 ? (
-          cart.map((item, i) => (
+        {items.length > 0 ? (
+          items.map((item, i) => (
             <VerticalFlex key={i} gap={20}>
               <VerticalFlex
                 className={styles.list_item}
@@ -165,8 +156,13 @@ export function CompleteOrdersTable() {
                     alignItems="start"
                   >
                     <FlexChild gap={5}>
-                      <Span className={styles.unit_brand}>{item.brand}</Span>
-                      <Image src={item.delivery} width={13} />
+                      <Span className={styles.unit_brand}>
+                        {item.brand?.name}
+                      </Span>
+                      <Image
+                        src={"/resources/icons/cart/cj_icon.png"}
+                        width={13}
+                      />
                     </FlexChild>
 
                     <P
@@ -175,32 +171,47 @@ export function CompleteOrdersTable() {
                       overflow="hidden"
                       display="--webkit-box"
                     >
-                      {item.title}
+                      {item.product_title}
+                    </P>
+                    <P>
+                      <Span>{item.variant_title}</Span>
+                      <Span>{item.quantity}개</Span>
+                    </P>
+                    <P>
+                      <Span>{item.unit_price}</Span>
+                      <Span> 원</Span>
                     </P>
                   </VerticalFlex>
                 </HorizontalFlex>
 
                 {/* 옵션 리스트 */}
-                <VerticalFlex className={styles.option_list}>
+                {/* <VerticalFlex className={styles.option_list}>
                   {item.option.map((option, k) => (
                     <HorizontalFlex key={k} gap={10}>
                       <P>{option.title}</P>
                       <Span> + {option.price}원</Span>
                     </HorizontalFlex>
                   ))}
-                </VerticalFlex>
+                </VerticalFlex> */}
 
                 {/* 가격 박스 */}
                 <HorizontalFlex className={styles.price_box}>
                   <FlexChild>
                     <P>할인금액 : </P>
-                    <Span>0원</Span>
+                    <Span>
+                      {((item.unit_price || 0) - (item.discount_price || 0)) *
+                        item.quantity}
+                      원
+                    </Span>
                   </FlexChild>
 
                   <FlexChild>
                     <P>결제 금액 : </P>
                     <Span color="var(--main-color1)" weight={600} fontSize={20}>
-                      {item.price}₩
+                      {Number(
+                        (item.discount_price || 0) * item.quantity
+                      ).toLocaleString("kr")}{" "}
+                      ₩
                     </Span>
                   </FlexChild>
                 </HorizontalFlex>

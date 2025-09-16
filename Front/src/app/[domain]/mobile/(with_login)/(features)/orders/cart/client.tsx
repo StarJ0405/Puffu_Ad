@@ -198,7 +198,7 @@ export function CartWrap() {
           <VerticalFlex alignItems="start">
             <article>
               <P className={style.list_title}>배송 정보</P>
-              {1 < 0 ? (
+              {addresses.length > 0 ? (
                 <Button
                   className={style.delivery_list_btn}
                   onClick={deliveryListModal}
