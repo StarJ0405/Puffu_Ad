@@ -342,7 +342,12 @@ const buyCartModal = NiceModal.create(
         clickOutsideToClose={true}
         onClose={modal.remove}
       >
-        <VerticalFlex className={styles.pay_cart_modal}>
+        <VerticalFlex
+          className={styles.pay_cart_modal}
+          overflow="scroll"
+          overflowY="scroll"
+          hideScrollbar
+        >
           <FlexChild className={styles.title_header}>
             <P>구매하기</P>
           </FlexChild>
@@ -431,7 +436,9 @@ export function BottomPayBox({
 
         <FlexChild className={styles.buy_box}>
           <Button
-            disabled={!product.buyable}
+            disabled={
+              !product.buyable || !product.variants.some((v) => v.stack > 0)
+            }
             className={styles.buy_btn}
             onClick={() =>
               NiceModal.show(buyCartModal, {
@@ -441,7 +448,13 @@ export function BottomPayBox({
               })
             }
           >
-            <P>{product.buyable ? "구매하기" : "판매중단"}</P>
+            <P>
+              {product.buyable
+                ? !product.variants.some((v) => v.stack > 0)
+                  ? "재고부족"
+                  : "구매하기"
+                : "판매중단"}
+            </P>
           </Button>
         </FlexChild>
       </HorizontalFlex>
@@ -512,6 +525,7 @@ export function OptionItem({
         return (
           <HorizontalFlex className={styles.option_item} key={v.id}>
             <InputNumber
+              disabled={!product.buyable || !v.buyable || v.stack === 0}
               value={select?.quantity}
               min={0}
               max={v.stack}
@@ -523,6 +537,17 @@ export function OptionItem({
               }}
             />
             <HorizontalFlex className={styles.txt_item} gap={10} width={"auto"}>
+              {v.stack === 0 ? (
+                <FlexChild width={"max-content"}>
+                  <P>(재고 부족)</P>
+                </FlexChild>
+              ) : !v.buyable ? (
+                <FlexChild width={"max-content"}>
+                  <P>(판매 중단)</P>
+                </FlexChild>
+              ) : (
+                <></>
+              )}
               <FlexChild className={styles.op_name}>
                 <P>{v?.title}</P>
               </FlexChild>
