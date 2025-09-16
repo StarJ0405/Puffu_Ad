@@ -10,12 +10,14 @@ import { requester } from "@/shared/Requester";
 import clsx from "clsx";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import styles from "./headerCategory.module.css";
+import styles from "./categoryMenu.module.css";
+import useNavigate from "@/shared/hooks/useNavigate";
 
-export function HeaderCategory({ CaOpen }: { CaOpen: boolean }) {
+export default function CategoryMenu({ CaOpen }: { CaOpen?: boolean }) {
   // 카테고리메뉴
-  const { categoriesData } = useCategories();
+   const { categoriesData } = useCategories();
    const [categories, setCategories] = useState<CategoryData[]>([]);
+   const navigate = useNavigate();
 
    useEffect(() => {
       const fetchData = async () => {
@@ -30,13 +32,32 @@ export function HeaderCategory({ CaOpen }: { CaOpen: boolean }) {
       fetchData();
     }, []);
 
+    console.log('카테고리1', categoriesData);
 
   const [activeDepth1, setActiveDepth1] = useState<string | null>(null);
+    
+
 
   return (
-    <Div
-      className={clsx(styles.overlay, {[styles.isOverlayVisible]: CaOpen,})}
-    >
+    <Div className={styles.category_container}>
+      <FlexChild className={styles.frame_header}>
+         <FlexChild cursor="pointer" width={'auto'}>
+            {/* onClick={()=> onClose(true)} */}
+            <Image src={'/resources/icons/arrow/slide_arrow.png'} width={12} />
+         </FlexChild>
+
+         <FlexChild gap={10} className={`searchInput_Box ${styles.search_Box}`}>
+            <input type="search" placeholder="2025 신제품"/>
+
+            <Image
+               src="/resources/images/header/input_search_icon.png"
+               width={18}
+               height="auto"
+               cursor="pointer"
+            />
+         </FlexChild>
+      </FlexChild>
+
       <HorizontalFlex className={styles.ca_wrap}>
 
         {/* 대분류 */}
@@ -49,21 +70,16 @@ export function HeaderCategory({ CaOpen }: { CaOpen: boolean }) {
                 className={clsx(styles.tab_item, 
                   {[styles.active]: activeDepth1 === cat.id,}
                 )}
-
-                onMouseEnter={()=> setActiveDepth1(cat.id)}
-                onMouseLeave={() => setActiveDepth1(null)}
               >
-                <Link href={`/categories/${cat.id}`}>
-                  <P>
-                    {cat.name}
-                  </P>
-                </Link>
+                <P>
+                 {cat.name}
+               </P>
               </FlexChild>
             ))}
         </nav>
 
         <VerticalFlex className={clsx(styles.child_wrap)}>
-          <VerticalFlex>
+          <VerticalFlex alignItems="start">
             {categoriesData
               .sort((c1, c2) => c1.index - c2.index)
               .filter((cat1) => cat1.children && cat1.children.length > 0)
@@ -76,15 +92,20 @@ export function HeaderCategory({ CaOpen }: { CaOpen: boolean }) {
                   onMouseEnter={() => setActiveDepth1(cat1.id)}
                   onMouseLeave={() => setActiveDepth1(null)}
                 >
+                  <FlexChild className={styles.cat1_item} onClick={()=> navigate(`/categories/${cat1.id}`)}>
+                     <P>{cat1.name}</P>
+                     <Image src={'/resources/icons/arrow/list_paging_next.png'} width={7} />
+                  </FlexChild> 
+
                   {cat1.children
                     ?.sort((c1, c2) => c1.index - c2.index)
                     .map((child2, j) => (
-                      <FlexChild key={child2.id ?? j} cursor="pointer" className={styles.child_item}>
-                        <Link href={`/categories/${child2.id}`}>
-                          <P>{child2.name}</P>
-                          <Image src={'/resources/icons/arrow/foldBtn_black.png'} width={7} />
+                        <Link href={`/categories/${child2.id}`} key={child2.id ?? j}>
+                           <FlexChild cursor="pointer" className={styles.child_item}>
+                              <P>{child2.name}</P>
+                              <Image src={'/resources/icons/arrow/list_paging_next.png'} width={5} />
+                           </FlexChild>
                         </Link>
-                      </FlexChild>
                     ))}
                 </VerticalFlex>
               ))}
