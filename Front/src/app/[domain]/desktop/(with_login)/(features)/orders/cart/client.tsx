@@ -612,6 +612,14 @@ export function Item({ item }: { item: LineItemData }) {
             >
               {item.variant.title}
             </P>
+            <P
+              className={style.unit_title}
+              lineClamp={2}
+              overflow="hidden"
+              display="--webkit-box"
+            >
+              111
+            </P>
             {/* <FlexChild className={style.unit_price}>
           <Image
             src={"/resources/icons/cart/cj_icon.png"}
