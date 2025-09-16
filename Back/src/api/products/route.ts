@@ -42,7 +42,6 @@ export const GET: ApiHandler = async (req, res) => {
       page.content.map((p: Product) => p.id) || []
     );
 
-    console.log(wishes);
     page.content = page.content.map((product: any) => {
       product.wishes = wishes.find((f) => f.id === product.id)?.count || 0;
       return product;
