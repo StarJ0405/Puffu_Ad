@@ -27,11 +27,13 @@ export default function MobileSearch({onClose}: {onClose : ()=> void}) {
      }
    };
 
+   const keyword = ['전기톱', '밤양갱', '냉동젤'];
+
    return (
       <VerticalFlex className={styles.search_frame}>
          <FlexChild className={styles.frame_header}>
-            <FlexChild cursor="pointer">
-               <Image src='/resources/images/header/input_search_icon.png' width={22}/>
+            <FlexChild cursor="pointer" width={'auto'}>
+               <Image src={'/resources/icons/arrow/slide_arrow.png'} width={12} />
             </FlexChild>
 
             <FlexChild gap={10} className={`searchInput_Box ${styles.search_Box}`}>
@@ -53,6 +55,36 @@ export default function MobileSearch({onClose}: {onClose : ()=> void}) {
                   onClick={()=>handleSearch()}
                />
             </FlexChild>
+
+            <VerticalFlex className={styles.latest_search_box}>
+               <HorizontalFlex>
+                  <FlexChild>
+                     <P>최근 검색어</P>
+                  </FlexChild>
+
+                  <FlexChild className={styles.delete}>
+                     <P>전체삭제</P>
+                  </FlexChild>
+               </HorizontalFlex>
+
+               <VerticalFlex className={styles.latest_list}>
+                  {
+                     keyword.map((word, i) => {
+                        return (
+                           <HorizontalFlex className={styles.item}>
+                              <FlexChild>
+                                 <P>{word}</P>
+                              </FlexChild>
+
+                              <FlexChild>
+                                 <Image src="/resources/icons/closeBtn.png" width={11} />
+                              </FlexChild>
+                           </HorizontalFlex>
+                        )
+                     })
+                  }
+               </VerticalFlex>
+            </VerticalFlex>
          </FlexChild>
       </VerticalFlex>
    );
