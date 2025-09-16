@@ -27,6 +27,8 @@
 
 /* 리스트 */
 
+.toggle_btn {background: none;}
+
 .inquiry_list {gap: 25px;}
 
 .inquiry_list .list_title {

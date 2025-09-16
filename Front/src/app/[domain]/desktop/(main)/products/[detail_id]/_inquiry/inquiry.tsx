@@ -11,6 +11,7 @@ import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
 import styles from './inquiry.module.css';
 import InputTextArea from "@/components/inputs/InputTextArea";
+import { useState } from "react";
 
 
 export default  function Inquiry() {
@@ -41,6 +42,8 @@ export default  function Inquiry() {
          response: '',
       },
    ]
+
+   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
 
    return (
@@ -101,8 +104,10 @@ export default  function Inquiry() {
                            <HorizontalFlex alignItems="center" className={styles.item_title}>
                               <P>{inquiry.title}</P> 
                               {/* 체크된 문의 분류에 따라 만들어진 제목으로 변경됨 */}
-   
-                              <Button className={styles.toggle_btn}>
+                              
+
+                              {/* 답변대기일때는 버튼 사라지기 */}
+                              <Button className={styles.toggle_btn} onClick={() => setOpenIndex(prev => (prev === i ? null : i))}>
                                  <Image src={`/resources/icons/arrow/board_arrow_bottom_icon.png`} width={20} />
                               </Button>
                            </HorizontalFlex>
@@ -133,7 +138,7 @@ export default  function Inquiry() {
                         </VerticalFlex>
 
                         {
-                           inquiry.response.length > 0 && (
+                           openIndex && (
                               <VerticalFlex className={styles.admin_answer}>
                                  <FlexChild className={styles.answer_title}>
                                     <P color="var(--main-color1)">관리자 답변</P>
