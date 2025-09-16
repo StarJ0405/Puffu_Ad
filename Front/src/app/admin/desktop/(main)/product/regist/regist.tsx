@@ -610,7 +610,6 @@ export default function ({
                             }}
                             name={"상품_썸네일"}
                             path={"/product/thumbnail"}
-                            placeHolder="최소 600X600 이상의 이미지를 권장합니다."
                           />
                         </FlexChild>
                       </HorizontalFlex>
