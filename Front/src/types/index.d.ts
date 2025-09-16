@@ -385,6 +385,7 @@ interface NoticeDataFrame {
 interface NoticeData extends BaseEntity, NoticeDataFrame {
   adult: boolean;
   visible: boolean;
+  views: number;
 }
 
 interface ChatroomData extends BaseEntity {

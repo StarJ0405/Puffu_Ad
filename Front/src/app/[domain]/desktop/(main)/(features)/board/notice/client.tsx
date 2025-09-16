@@ -1,19 +1,17 @@
 "use client";
-import Button from "@/components/buttons/Button";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
-import Input from "@/components/inputs/Input";
 import ListPagination from "@/components/listPagination/ListPagination";
 import NoContent from "@/components/noContent/noContent";
 import P from "@/components/P/P";
-import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
-import Link from "next/link";
-import boardStyle from "../boardGrobal.module.css";
-import {SelectBox} from "../client"
+import usePageData from "@/shared/hooks/data/usePageData";
 import useNavigate from "@/shared/hooks/useNavigate";
+import { requester } from "@/shared/Requester";
+import boardStyle from "../boardGrobal.module.css";
+import { SelectBox } from "../client";
 
 // const pathname = usePathname();
 
@@ -37,84 +35,35 @@ export function BoardTitleBox() {
   );
 }
 
-export function BoardTable() {
-  // 조회수는 세자리마다 , 처리.
-  // date는 어차피 뽑으면 년월일시분초 다 나뉠테니 그때 조정하면 됨.
-  const boardData = [
+export function BoardTable({
+  initCondition,
+  initNotices,
+}: {
+  initCondition: any;
+  initNotices: Pageable;
+}) {
+  const { notices, page, maxPage, origin } = usePageData(
+    "notices",
+    (pageNumber) => ({
+      ...initCondition,
+      pageNumber,
+    }),
+    (condition) => requester.getNotices(condition),
+    (data: Pageable) => data?.totalPages || 0,
     {
-      number: "1",
-      title: "게시판 내용",
-      member: "푸푸토이",
-      views: "12323",
-      date: "2025-09-04",
-    },
-    {
-      number: "2",
-      title: "게시판 내용",
-      member: "푸푸토이",
-      views: "12323",
-      date: "2025-09-04",
-    },
-    {
-      number: "3",
-      title: "게시판 내용",
-      member: "푸푸토이",
-      views: "12323",
-      date: "2025-09-04",
-    },
-    {
-      number: "4",
-      title: "게시판 내용",
-      member: "푸푸토이",
-      views: "12323",
-      date: "2025-09-04",
-    },
-    {
-      number: "5",
-      title: "게시판 내용",
-      member: "푸푸토이",
-      views: "12323",
-      date: "2025-09-04",
-    },
-    {
-      number: "6",
-      title: "게시판 내용",
-      member: "푸푸토이",
-      views: "12323",
-      date: "2025-09-04",
-    },
-    {
-      number: "7",
-      title: "게시판 내용",
-      member: "푸푸토이",
-      views: "12323",
-      date: "2025-09-04",
-    },
-    {
-      number: "8",
-      title: "게시판 내용",
-      member: "푸푸토이",
-      views: "12323",
-      date: "2025-09-04",
-    },
-    {
-      number: "9",
-      title: "게시판 내용",
-      member: "푸푸토이",
-      views: "12323",
-      date: "2025-09-04",
-    },
-    {
-      number: "10",
-      title: "게시판 내용",
-      member: "푸푸토이",
-      views: "12323",
-      date: "2025-09-04",
-    },
-  ];
+      onReprocessing: (data) => data?.content || [],
+      fallbackData: initNotices,
+    }
+  );
 
   const navigate = useNavigate();
-
+  const dateToString = (date: string | Date) => {
+    date = new Date(date);
+    return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}.${String(date.getMonth()).padStart(2, "0")}`;
+  };
   return (
     <VerticalFlex>
       <FlexChild>
@@ -141,10 +90,10 @@ export function BoardTable() {
 
           {/* 게시판 내용 */}
           <tbody>
-            {boardData.map((list, i) => (
-              <tr key={i}>
+            {notices.map((notice: NoticeData, index: number) => (
+              <tr key={notice.id}>
                 {/* 번호 */}
-                <td>{list.number}</td>
+                <td>{(origin.pageSize || 0) * page + index}</td>
 
                 {/* 제목 */}
                 <td>
@@ -154,10 +103,11 @@ export function BoardTable() {
                     height={"100%"}
                     className={boardStyle.td_title}
                     width={"fit-content"}
-                    onClick={()=> navigate('/board/notice/')}
+                    cursor="pointer"
+                    onClick={() => navigate(`/board/notice/${notice.id}`)}
                   >
                     <P lineClamp={1} overflow="hidden" display="--webkit-box">
-                      {list.title}
+                      {notice.title}
                     </P>
                     <Image
                       src={"/resources/icons/board/new_icon.png"}
@@ -184,25 +134,25 @@ export function BoardTable() {
                     display="--webkit-box"
                     weight={500}
                   >
-                    {list.member}
+                    관리자
                   </P>
                 </td>
 
                 {/* 조회수 */}
                 <td>
-                  <Span weight={400}>{list.views}</Span>
+                  <Span weight={400}>{notice.views || 0}</Span>
                 </td>
 
                 {/* 날짜 */}
                 {/* 공지사항은 년월일까지 표시, 1:1문의는 분시초도 표시. */}
                 <td>
-                  <Span weight={400}>{list.date}</Span>
+                  <Span weight={400}>{dateToString(notice.created_at)}</Span>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-        {boardData.length > 0 ? null : <NoContent type={'게시판'} />}
+        {notices?.length > 0 ? null : <NoContent type={"게시판"} />}
       </FlexChild>
       <FlexChild className={boardStyle.list_bottom_box}>
         <ListPagination />

@@ -42,6 +42,9 @@ export class Notice extends BaseEntity {
   @Column({ type: "boolean", default: false })
   adult?: boolean;
 
+  @Column({ type: "integer", default: 0 })
+  views!: number;
+
   @Column({ type: "boolean", default: true })
   visible?: boolean;
 
