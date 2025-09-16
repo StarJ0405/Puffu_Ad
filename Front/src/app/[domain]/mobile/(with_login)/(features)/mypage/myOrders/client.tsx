@@ -14,7 +14,7 @@ import { requester } from "@/shared/Requester";
 import clsx from "clsx";
 import mypage from "../mypage.module.css";
 import DatePicker from "@/components/date-picker/DatePicker";
-import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
+import { openTrackingNumber } from "@/shared/utils/Functions";
 
 const getStatusKorean = (status: string) => {
   switch (status) {
@@ -45,7 +45,6 @@ export function MyOrdersTable() {
   const [startDate, setStartDate] = useState(getInitialStartDate());
   const [endDate, setEndDate] = useState(new Date());
   const [activePeriod, setActivePeriod] = useState("1week");
-  const { isMobile } = useBrowserEvent();
 
   const formatOrders = useCallback((ordersData: any[]) => {
     return ordersData.map((order) => {
@@ -163,16 +162,6 @@ export function MyOrdersTable() {
     fetchOrders(startDate, endDate, q);
   };
 
-  const handleTracking = (trackingNumber: string) => {
-    const filteredTrackingNumber = trackingNumber.replace(/-/g, "");
-    const url = `https://www.cjlogistics.com/ko/tool/parcel/tracking?gnbInvcNo=${filteredTrackingNumber}`;
-    if (isMobile) {
-      window.open(url, "_blank");
-    } else {
-      window.open(url, "delivery_tracking", "width=800,height=600");
-    }
-  };
-
   return (
     <>
       <VerticalFlex className={styles.search_box}>
@@ -261,7 +250,7 @@ export function MyOrdersTable() {
                 {item.status === "shipping" && item.trackingNumber && (
                   <Button
                     className={styles.tracking_btn}
-                    onClick={() => handleTracking(item.trackingNumber)}
+                    onClick={() => openTrackingNumber(item.trackingNumber)}
                   >
                     배송조회
                   </Button>
