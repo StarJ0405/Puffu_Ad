@@ -154,7 +154,7 @@ export function BoardTable() {
                     height={"100%"}
                     className={boardStyle.td_title}
                     width={"fit-content"}
-                    onClick={()=> navigate('/board/detail/board_01')}
+                    onClick={()=> navigate('/board/notice/')}
                   >
                     <P lineClamp={1} overflow="hidden" display="--webkit-box">
                       {list.title}
