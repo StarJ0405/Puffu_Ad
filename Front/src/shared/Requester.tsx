@@ -286,6 +286,10 @@ class _Requester {
     if (callback) callback(await this.get(`/auth`, data));
     else return await this.get(`/auth`, data);
   }
+  async updateUser(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.post(`/users/me`, data));
+    else return await this.post(`/users/me`, data);
+  }
   async changePassword(
     email?: string,
     data?: any,
