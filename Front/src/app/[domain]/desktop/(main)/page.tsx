@@ -70,11 +70,13 @@ export default async function () {
               className={styles.titleBox}
               justifyContent="start"
               alignItems="end"
-              gap={20}
+              gap={30}
             >
               <div className={styles.title}>
+                <Image src={'/resources/images/header/logo.png'} width={100} marginBottom={5} />
                 <h2 className="SacheonFont">
-                  <Span>따끈따끈</Span> 신상품
+                  {/* <Span>따끈따끈</Span> 신상품 */}
+                  <Span position="relative" top={3}>BEST</Span> 상품!
                 </h2>
               </div>
 

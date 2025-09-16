@@ -259,7 +259,7 @@ export function HotDealWrapper({
           className={clsx(styles.titleBox, styles.titleBox1)}
           justifyContent="start"
           alignItems="end"
-          gap={20}
+          gap={30}
         >
           <div className={styles.title}>
             <h2 className="SacheonFont" style={{ marginBottom: "12px" }}>
