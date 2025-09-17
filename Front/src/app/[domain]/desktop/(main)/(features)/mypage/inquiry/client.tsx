@@ -7,97 +7,112 @@ import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import styles from "./page.module.css";
 import ListPagination from "@/components/listPagination/ListPagination";
+import { useState, Fragment } from "react";
+import usePageData from "@/shared/hooks/data/usePageData";
+import { requester } from "@/shared/Requester";
+
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
+import { toast } from "@/shared/utils/Functions";
+import Div from "@/components/div/Div";
+
+const getInquiryTypeKorean = (type: string) => {
+  switch (type) {
+    case "exchange":
+      return "교환/환불";
+    case "product":
+      return "상품문의";
+    case "shipping":
+      return "배송문의";
+    case "etc":
+      return "기타문의";
+    default:
+      return type;
+  }
+};
+
+const formatInquiries = (inquiriesData: any[]) => {
+  console.log("Step 2: formatInquiries input:", inquiriesData);
+  const formatted = inquiriesData.map((inquiry) => {
+    const inquiryDate = new Date(inquiry.created_at).toLocaleString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    return {
+      id: inquiry.id,
+      Type: getInquiryTypeKorean(inquiry.type),
+      title: inquiry.title,
+      content: inquiry.content,
+      images: inquiry.images || [],
+      answer: inquiry.answer,
+      member: inquiry.user?.name || "고객",
+      answered: inquiry.answer ? "답변완료" : "답변대기",
+      date: inquiryDate,
+      is_secret: inquiry.hidden,
+      user_id: inquiry.user_id,
+    };
+  });
+  console.log("Step 3: formatInquiries output:", formatted);
+  return formatted;
+};
 
 export function InquiryTable() {
-  const inquiryTest = [
+  const { userData } = useAuth();
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  const initCondition: any = {
+    pageSize: 10,
+    relations: ["user"],
+  };
+
+  const {
+    "qas-desktop-mypage": inquiries,
+    page,
+    maxPage,
+    changePage,
+  } = usePageData(
+    "qas-desktop-mypage",
+    (pageNumber) => ({
+      ...initCondition,
+      pageNumber,
+    }),
+    (condition) => requester.getQAs(condition),
+    (data: Pageable) => data?.totalPages || 0,
     {
-      number: "1",
-      Type: "배송",
-      title: "게시판 내용",
-      member: "푸푸토이",
-      answered: "답변완료",
-      date: "2025-09-04 13:48",
-    },
-    {
-      number: "2",
-      Type: "회원/정보관리",
-      title: "게시판 내용",
-      member: "푸푸토이",
-      answered: "답변대기",
-      date: "2025-09-04 13:48",
-    },
-    {
-      number: "3",
-      Type: "주문/결제",
-      title: "게시판 내용",
-      member: "푸푸토이",
-      answered: "답변완료",
-      date: "2025-09-04 13:48",
-    },
-    {
-      number: "4",
-      Type: "반품/환불/교환/AS",
-      title: "게시판 내용",
-      member: "푸푸토이",
-      answered: "답변완료",
-      date: "2025-09-04 13:48",
-    },
-    {
-      number: "5",
-      Type: "상품/이벤트",
-      title: "게시판 내용",
-      member: "푸푸토이",
-      answered: "답변대기",
-      date: "2025-09-04 13:48",
-    },
-    {
-      number: "6",
-      Type: "기타",
-      title: "게시판 내용",
-      member: "푸푸토이",
-      answered: "답변대기",
-      date: "2025-09-04 13:48",
-    },
-    {
-      number: "7",
-      Type: "주문/결제",
-      title: "게시판 내용",
-      member: "푸푸토이",
-      answered: "답변완료",
-      date: "2025-09-04 13:48",
-    },
-    {
-      number: "8",
-      Type: "배송",
-      title: "게시판 내용",
-      member: "푸푸토이",
-      answered: "답변완료",
-      date: "2025-09-04 13:48",
-    },
-    {
-      number: "9",
-      Type: "배송",
-      title: "게시판 내용",
-      member: "푸푸토이",
-      answered: "답변완료",
-      date: "2025-09-04 13:48",
-    },
-    {
-      number: "10",
-      Type: "배송",
-      title: "게시판 내용",
-      member: "푸푸토이",
-      answered: "답변완료",
-      date: "2025-09-04 13:48",
-    },
-  ];
+      onReprocessing: (data) => {
+        console.log("Step 1: Raw response from API:", data);
+        return formatInquiries(data?.content || []);
+      },
+    }
+  );
+
+  console.log("Step 4: Final data for rendering (inquiries):", inquiries);
+
+  const handleRowClick = (item: any) => {
+    if (
+      item.is_secret &&
+      userData?.role !== "admin" &&
+      userData?.id !== item.user_id
+    ) {
+      toast({ message: "비밀글은 작성자만 확인할 수 있습니다." });
+      return;
+    }
+
+    if (expandedId === item.id) {
+      setExpandedId(null);
+    } else {
+      setExpandedId(item.id);
+    }
+  };
 
   return (
     <>
       <VerticalFlex>
         <FlexChild>
           <table className={styles.list_table}>
-            {/* 게시판 셀 너비 조정 */}
             <colgroup>
               <col style={{ width: "10%" }} />
               <col style={{ width: "15%" }} />
@@ -106,8 +121,6 @@ export function InquiryTable() {
               <col style={{ width: "10%" }} />
               <col style={{ width: "15%" }} />
             </colgroup>
-
-            {/* 게시판리스트 헤더 */}
             <thead>
               <tr className={styles.table_header}>
                 <th>번호</th>
@@ -119,81 +132,118 @@ export function InquiryTable() {
               </tr>
             </thead>
 
-            {/* 게시판 내용 */}
             <tbody>
-              {inquiryTest.map((list, i) => (
-                <tr key={i}>
-                  {/* 번호 */}
-                  <td>{list.number}</td>
-
-                  {/* 분류 */}
-                  <td>{list.Type}</td>
-
-                  {/* 제목 */}
-                  <td>
-                    <FlexChild
-                      gap={5}
-                      alignItems="center"
-                      height={"100%"}
-                      cursor="pointer"
-                      className={styles.td_title}
-                      width={"fit-content"}
-                    >
-                      <Image
-                        src={"/resources/icons/board/lock_icon.png"}
-                        width={16}
-                      />
-                      {/* 비밀번호 들어가면 활성화 */}
-                      <P lineClamp={1} overflow="hidden" display="--webkit-box">
-                        {list.title}
+              {inquiries?.map((list: any, i: number) => (
+                <Fragment key={list.id}>
+                  <tr
+                    onClick={() => handleRowClick(list)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <td>{inquiries.length - i}</td>
+                    <td>{list.Type}</td>
+                    <td>
+                      <Div className={styles.td_title}>
+                        <FlexChild
+                          gap={5}
+                          alignItems="center"
+                          height={"100%"}
+                          width={"fit-content"}
+                        >
+                          {list.is_secret && (
+                            <Image
+                              src={"/resources/icons/board/lock_icon.png"}
+                              width={16}
+                            />
+                          )}
+                          <P
+                            lineClamp={1}
+                            overflow="hidden"
+                            display="--webkit-box"
+                          >
+                            {list.title}
+                          </P>
+                        </FlexChild>
+                      </Div>
+                    </td>
+                    <td>
+                      <P
+                        lineClamp={2}
+                        overflow="hidden"
+                        display="--webkit-box"
+                        weight={500}
+                      >
+                        {list.member}
                       </P>
-                      <Image
-                        src={"/resources/icons/board/new_icon.png"}
-                        width={16}
-                      />
-                      {/* 12시간 내 등록된 게시물만 나타나기 */}
-                    </FlexChild>
-                  </td>
-
-                  {/* 작성자 */}
-                  {/* 공지사항은 관리자가 쓰니까 이름 그대로 나오고, 1:1문의에서는 이름 일부 **로 가려주기 */}
-                  <td>
-                    <P
-                      lineClamp={2}
-                      overflow="hidden"
-                      display="--webkit-box"
-                      weight={500}
-                    >
-                      {list.member}
-                    </P>
-                  </td>
-
-                  {/* 문의상태 */}
-                  <td>
-                    {}
-                    <Span
-                      weight={400}
-                      color={`${
-                        list.answered === "답변완료" ? "#fff" : "#FF4343"
-                      }`}
-                    >
-                      {list.answered}
-                    </Span>
-                  </td>
-
-                  {/* 날짜 */}
-                  {/* 공지사항은 년월일까지 표시, 1:1문의는 분시초도 표시. */}
-                  <td>
-                    <Span weight={400}>{list.date}</Span>
-                  </td>
-                </tr>
+                    </td>
+                    <td>
+                      <Span
+                        weight={400}
+                        color={`${
+                          list.answered === "답변완료" ? "#fff" : "#FF4343"
+                        }`}
+                      >
+                        {list.answered}
+                      </Span>
+                    </td>
+                    <td>
+                      <Span weight={400}>{list.date}</Span>
+                    </td>
+                  </tr>
+                  {expandedId === list.id && (
+                    <tr>
+                      <td colSpan={6}>
+                        <VerticalFlex className={styles.details_container}>
+                          <P padding={"0 0 35px 0"} width={"100%"} textAlign="left" className={styles.item_content}>{list.content}</P>
+                          {list.images?.length > 0 && (
+                            <FlexChild
+                              className={styles.image_gallery}
+                              gap={10}
+                            >
+                              {list.images.map(
+                                (img: string, index: number) => (
+                                  <Image
+                                    key={index}
+                                    src={img}
+                                    width={80}
+                                    height={80}
+                                    className={styles.gallery_image}
+                                  />
+                                )
+                              )}
+                            </FlexChild>
+                          )}
+                          {list.answer && (
+                            <div className={styles.item_answer}>
+                              <FlexChild
+                                alignItems="center"
+                                gap={8}
+                                className={styles.answer_header}
+                              >
+                                <P weight={600} color="#fff">
+                                  관리자 답변
+                                </P>
+                              </FlexChild>
+                              <P className={styles.answer_content}>
+                                {list.answer}
+                              </P>
+                            </div>
+                          )}
+                        </VerticalFlex>
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
               ))}
             </tbody>
           </table>
-          {inquiryTest.length > 0 ? null : <NoContent type="문의" />}
+          {inquiries?.length === 0 && <NoContent type="문의" />}
         </FlexChild>
         <FlexChild className={styles.list_bottom_box}>
-          {/* <ListPagination /> */}
+          <ListPagination
+            page={page}
+            maxPage={maxPage}
+            onChange={changePage}
+          />
         </FlexChild>
       </VerticalFlex>
     </>

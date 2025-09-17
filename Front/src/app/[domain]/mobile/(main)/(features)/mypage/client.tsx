@@ -96,8 +96,34 @@ export function Profile() {
 }
 
 export function DeliveryInfo() {
-
   const navigate = useNavigate();
+  const [statusCounts, setStatusCounts] = useState({
+    pending: 0,
+    fulfilled: 0,
+    shipping: 0,
+    complete: 0,
+  });
+
+  useEffect(() => {
+    const fetchStatus = async () => {
+      const res = await requester.getOrderStatus();
+      if (res && res.content) {
+        const counts = {
+          pending: 0,
+          fulfilled: 0,
+          shipping: 0,
+          complete: 0,
+        };
+        res.content.forEach((item: { status: string; count: string }) => {
+          if (item.status in counts) {
+            counts[item.status as keyof typeof counts] = parseInt(item.count, 10);
+          }
+        });
+        setStatusCounts(counts);
+      }
+    };
+    fetchStatus();
+  }, []);
 
   return (
     <VerticalFlex className={clsx(styles.box_frame, styles.delivery_box)}>
@@ -107,27 +133,27 @@ export function DeliveryInfo() {
 
       <FlexChild className={styles.deli_itemBox}>
         <VerticalFlex className={styles.deli_item}>
-          <P>15</P>
+          <P>{statusCounts.pending}</P>
           <Span>상품 준비중</Span>
         </VerticalFlex>
 
         <VerticalFlex className={styles.deli_item}>
-          <P>21</P>
+          <P>{statusCounts.fulfilled}</P>
           <Span>배송준비</Span>
         </VerticalFlex>
 
         <VerticalFlex className={styles.deli_item}>
-          <P>4</P>
+          <P>{statusCounts.shipping}</P>
           <Span>배송중</Span>
         </VerticalFlex>
 
         <VerticalFlex className={styles.deli_item}>
-          <P>36</P>
+          <P>{statusCounts.complete}</P>
           <Span>배송완료</Span>
         </VerticalFlex>
       </FlexChild>
 
-      <FlexChild className={styles.link_btn} onClick={()=> navigate('/mypage/myOrders')}>
+      <FlexChild className={styles.link_btn} onClick={() => navigate("/mypage/myOrders")}>
         <Button>내 주문 확인</Button>
       </FlexChild>
     </VerticalFlex>

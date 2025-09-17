@@ -110,3 +110,77 @@
    justify-content: center !important;
    position: relative;
 }
+
+.datePickerWrapper {
+   width: 100%;
+}
+
+/* New styles for card list */
+.list_container {
+   gap: 10px;
+}
+
+.inquiry_item {
+   background-color: #222;
+   padding: 15px;
+   border-radius: 8px;
+   gap: 10px;
+   border: 1px solid #323232;
+}
+
+.item_header {
+   font-size: 14px;
+   font-weight: 500;
+}
+
+.item_header p {
+   color: #cfcfcf;
+}
+
+.td_title {
+  justify-content: flex-start !important;
+}
+
+.item_content {
+  color: #a0a0a0;
+  font-size: 14px;
+  padding: 10px 0;
+  border-top: 1px solid #323232;
+  border-bottom: 1px solid #323232;
+  margin-top: 10px;
+}
+
+.image_gallery {
+  padding-top: 10px;
+  overflow-x: auto;
+}
+
+.gallery_image {
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.item_answer {
+  background-color: #3a3a3a;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid #555;
+}
+
+.answer_header {
+  padding-bottom: 8px;
+  border-bottom: 1px solid #555;
+}
+
+.answer_content {
+  color: #dcdcdc;
+}
+
+.item_footer {
+   font-size: 12px;
+   color: #888;
+}

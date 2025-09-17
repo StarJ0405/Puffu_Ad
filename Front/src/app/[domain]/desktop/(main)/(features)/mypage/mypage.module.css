@@ -15,6 +15,7 @@
    border: 1px solid #7d7d7d7d;
    border-radius: 10px;
    padding: 25px 20px 20px;
+   max-width: 970px;
 }
 
 .box_frame .NolayerBox {
@@ -113,7 +114,10 @@
 
 /* 오른쪽 */
 
-.right_bar {gap: 25px;}
+.right_bar {
+   gap: 25px;
+   max-width: 970px;
+}
 
 .box_frame .box_header {
    border-bottom: 1px solid #6B6B6B;

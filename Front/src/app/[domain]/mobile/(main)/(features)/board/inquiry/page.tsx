@@ -20,7 +20,7 @@ import clsx from "clsx";
 // import style from './inquiry.module.css'
 import boardStyle from '../boardGrobal.module.css'
 
-import { BoardTitleBox, BoardTable } from "./client";
+import { SearchBox, BoardTable } from "./client";
 import ChoiceChild from "@/components/choice/ChoiceChild";
 import ChoiceGroup from "@/components/choice/ChoiceGroup";
 
@@ -29,8 +29,8 @@ export default async function InquiryBoard() {
    return (
       <>
          <VerticalFlex className={boardStyle.board_frame}>
-            <BoardTitleBox />
             <BoardTable />
+            <SearchBox />
          </VerticalFlex>
       </>
    )

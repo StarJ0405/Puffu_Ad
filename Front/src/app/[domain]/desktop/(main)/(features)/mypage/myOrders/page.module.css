@@ -16,9 +16,12 @@
 
 
 /* 검색창 */
+.search_input_box {
+   width: 50% !important;
+}
 .search_input_box .keyword {
    position: relative;
-   width: fit-content;
+   width: 100%;
 }
 
 .search_input_box .keyword button {
@@ -35,7 +38,13 @@
 
 
 /* 기간선택 */
-.picker_input_box .dataPicker_box {gap: 15px;}
+.picker_input_box {
+   width: 50% !important;
+}
+.picker_input_box .dataPicker_box {
+   gap: 15px;
+   align-items: flex-start !important;
+}
 
 .picker_input_box .dataPicker_box .btn_wrap {
    gap: 10px; flex-wrap: wrap;
@@ -60,6 +69,9 @@
 
 
 /* 주문내역 리스트 */
+.order_header {
+   padding-bottom: 10px;
+}
 
 .list_table {
    width: 100%;
@@ -134,4 +146,25 @@
    color: #fff !important;
    font-size: 14px !important;
 }
+
+.datePickerWrapper :global(div[class*="dateDisplay"]) {
+   width: 95.5%;
+   box-sizing: border-box;
+   /* background: #222; */
+   background: var(--main-color);
+   border-color: #797979;
+   color: #ddd;
+ }
+
+ .item_price_box {
+   flex: unset;
+ }
+ .order_summary {
+   padding: 16px;
+   background-color: #383838;
+   border-top: 1px solid #444;
+   border-radius: 8px;
+   gap: 16px;
+ }
+
 

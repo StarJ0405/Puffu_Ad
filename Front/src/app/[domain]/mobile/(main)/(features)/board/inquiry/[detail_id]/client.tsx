@@ -1,39 +1,26 @@
 "use client";
 import Button from "@/components/buttons/Button";
-import Div from "@/components/div/Div";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import Icon from "@/components/icons/Icon";
 import Image from "@/components/Image/Image";
-import P from "@/components/P/P";
-import Select from "@/components/select/Select";
-import { usePathname } from "next/navigation";
-import Span from "@/components/span/Span";
-import CheckboxAll from "@/components/choice/checkbox/CheckboxAll";
-import CheckboxChild from "@/components/choice/checkbox/CheckboxChild";
-import CheckboxGroup from "@/components/choice/checkbox/CheckboxGroup";
-import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
-import useData from "@/shared/hooks/data/useData";
-import useNavigate from "@/shared/hooks/useNavigate";
-import { requester } from "@/shared/Requester";
-import NiceModal from "@ebay/nice-modal-react";
-import clsx from "clsx";
-import { useParams } from "next/navigation";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
-import ProductCard from "@/components/card/dummyProductCard";
-import styles from "./page.module.css";
-import boardStyle from "../../boardGrobal.module.css";
-import Input from "@/components/inputs/Input";
 import ListPagination from "@/components/listPagination/ListPagination";
-import Link from "next/link";
-import PrivacyContent from "@/components/agreeContent/privacyContent";
-import { SelectBox } from "../../client";
+import P from "@/components/P/P";
+import Span from "@/components/span/Span";
+import { requester } from "@/shared/Requester";
 
-import ChoiceChild from "@/components/choice/ChoiceChild";
-import ChoiceGroup from "@/components/choice/ChoiceGroup";
-import InputTextArea from "@/components/inputs/InputTextArea";
+import boardStyle from "../../boardGrobal.module.css";
+
+import { SelectBox } from "../../client";
+import styles from "./page.module.css";
+
+import LoadingSpinner from "@/components/loading/LoadingSpinner";
 import NoContent from "@/components/noContent//noContent";
+
+import { useParams, useRouter } from "next/navigation";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
+import { useEffect, useState } from "react";
+import { toast } from "@/shared/utils/Functions";
 
 export function BoardTitleBox() {
   return (
@@ -48,91 +35,102 @@ export function BoardTitleBox() {
 
 // 본문 -----------------------------------------------
 export function DetailFrame() {
-  const uploadFile = [
-    "24hours_20250811_06_30_52.jpg",
-    "46hours_20250811_06_30_51.jpg",
-  ];
+  const router = useRouter();
+  const { detail_id } = useParams();
+  const {userData} = useAuth();
+  const [qaData, setQaData] = useState<QAData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (detail_id) {
+      const fetchQaData = async () => {
+        const res = await requester.getQAs({
+          id: detail_id,
+          relations: ["user"],
+        });
+        
+        if (res?.content?.[0]) {
+          const data = res.content[0];
+          setQaData(data);
+        } else {
+          toast({ message: "게시글을 찾을 수 없습니다." });
+          router.back();
+        }
+        setLoading(false);
+      };
+      fetchQaData();
+    }
+  }, [detail_id, router]);
+
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${String(date.getDate()).padStart(2, "0")} ${String(
+      date.getHours()
+    ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+  };
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (!qaData) {
+    return <NoContent type="문의" />;
+  }
 
   return (
     <VerticalFlex className={styles.detail_container}>
       <VerticalFlex className={styles.board_header}>
         <HorizontalFlex className={styles.title_box}>
           <FlexChild className={styles.title}>
-            <P>공지사항 게시판입니다.</P>
+            <P>{qaData.title}</P>
           </FlexChild>
-
           <FlexChild className={styles.date}>
-            <P>2025-08-11 14:25</P>
+            <P>{formatDate(qaData.created_at as string)}</P>
           </FlexChild>
         </HorizontalFlex>
-
         <HorizontalFlex className={styles.title_box}>
           <FlexChild className={styles.name}>
-            <P>푸푸토이 관리자</P>
-          </FlexChild>
-
-          <FlexChild className={styles.view_comment_box} gap={10}>
-            <FlexChild className={styles.view}>
-              <P>
-                조회수 <b>18</b>
-              </P>
-            </FlexChild>
-
-            <FlexChild className={styles.comment}>
-              <P>
-                댓글 <b>2</b>
-              </P>
-            </FlexChild>
+            <P>{userData?.name || "비회원"}</P>
           </FlexChild>
         </HorizontalFlex>
 
-        <HorizontalFlex className={styles.edit_box}>
-          <VerticalFlex className={styles.file_list} gap={5}>
-            {uploadFile.map((item, i) => (
-              <FlexChild key={i} className={styles.file_name} gap={5}>
-                <Span>첨부파일</Span>
-                <P lineClamp={1} overflow="hidden" display="--webkit-box">
-                  {item}
-                </P>
-              </FlexChild>
-            ))}
-          </VerticalFlex>
-
-          <FlexChild gap={10} className={styles.edit_button_group}>
-            <FlexChild cursor="pointer" width={"auto"}>
-              {" "}
-              {/* 공유 버튼 */}
-              <Image src={"/resources/icons/main/share_icon.png"} width={25} />
-            </FlexChild>
-
-            <Button className={styles.delete_btn}>삭제</Button>
-            <Button className={styles.edit_btn}>수정</Button>
-          </FlexChild>
-        </HorizontalFlex>
       </VerticalFlex>
-
       <VerticalFlex className={styles.content_box} padding={"40px 0 100px"}>
         <FlexChild marginBottom={80}>
           <P size={16} color="#fff" weight={500}>
-            공지사항 안내문입니다. 공지사항이니까 댓글은 달 수 없습니다.
-            감사합니다.
+            {qaData.content}
           </P>
         </FlexChild>
-
         <VerticalFlex gap={10}>
-          {uploadFile.map((item, i) => (
+          {qaData.images?.map((image, i) => (
             <FlexChild key={i} width={"auto"}>
-              <Image
-                src={"/resources/images/dummy_img/product_05.png"}
-                width={"auto"}
-              />
+              <Image src={image} width={"auto"} />
             </FlexChild>
           ))}
         </VerticalFlex>
       </VerticalFlex>
+      
+      {qaData.answer && (
+        <VerticalFlex className={styles.answer_container}>
+          <HorizontalFlex className={styles.answer_header}>
+            <P weight={600} size={18}>
+              답변
+            </P>
+          </HorizontalFlex>
+          <div className={styles.answer_content}>
+            <P>{qaData.answer}</P>
+          </div>
+        </VerticalFlex>
+      )}
 
       <FlexChild justifyContent="center">
-        <Button className={styles.list_btn}>목록으로</Button>
+        <Button className={styles.list_btn} onClick={() => router.push("/board/inquiry")}>
+          목록으로
+        </Button>
       </FlexChild>
     </VerticalFlex>
   );

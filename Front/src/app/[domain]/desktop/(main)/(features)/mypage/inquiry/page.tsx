@@ -24,42 +24,6 @@ export default async function () {
             <FlexChild className={mypage.box_header}>
                <P>1:1 문의 내역</P>
             </FlexChild>
-
-            <FlexChild className={styles.search_box}>
-               <VerticalFlex className={styles.search_input_box}>
-                  <h5>문의글 검색</h5>
-                  <FlexChild className={styles.keyword}>
-                     <Input className={clsx('web_input', styles.search)} type="search" placeHolder="상품 키워드를 입력하세요" />
-                     <Button>
-                        <Image 
-                           src='/resources/images/header/input_search_icon.png'
-                           width={18}
-                           height="auto"
-                           cursor="pointer"
-                        />
-                     </Button>
-                  </FlexChild>
-               </VerticalFlex>
-
-               <VerticalFlex className={styles.picker_input_box}>
-                  <h5>기간선택</h5>
-                  <VerticalFlex className={styles.dataPicker_box}>
-                     <FlexChild className={styles.btn_wrap}>
-                        <Button className={clsx(styles.term_btn, styles.active)}>1주일</Button>
-                        <Button className={clsx(styles.term_btn)}>1개월</Button>
-                        <Button className={clsx(styles.term_btn)}>3개월</Button>
-                        <Button className={clsx(styles.term_btn)}>6개월</Button>
-                     </FlexChild>
-
-                     <FlexChild className={styles.picker_wrap}>
-                        <Input className={clsx('web_input', styles.picker_input)} type="text" readOnly={true} value={'2025-09-03'} />
-                        <Span size={18}>-</Span>
-                        <Input className={clsx('web_input', styles.picker_input)} type="text" readOnly={true} value={'2025-09-10'} />
-                     </FlexChild>
-                  </VerticalFlex>
-               </VerticalFlex>
-            </FlexChild>
-
             <InquiryTable />
          </VerticalFlex>
       </>

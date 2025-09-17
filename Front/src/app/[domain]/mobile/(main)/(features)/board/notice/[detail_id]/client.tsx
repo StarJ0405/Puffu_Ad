@@ -1,39 +1,21 @@
 "use client";
 import Button from "@/components/buttons/Button";
-import Div from "@/components/div/Div";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import Icon from "@/components/icons/Icon";
 import Image from "@/components/Image/Image";
-import P from "@/components/P/P";
-import Select from "@/components/select/Select";
-import { usePathname } from "next/navigation";
-import Span from "@/components/span/Span";
-import CheckboxAll from "@/components/choice/checkbox/CheckboxAll";
-import CheckboxChild from "@/components/choice/checkbox/CheckboxChild";
-import CheckboxGroup from "@/components/choice/checkbox/CheckboxGroup";
-import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
-import useData from "@/shared/hooks/data/useData";
-import useNavigate from "@/shared/hooks/useNavigate";
-import { requester } from "@/shared/Requester";
-import NiceModal from "@ebay/nice-modal-react";
-import clsx from "clsx";
-import { useParams } from "next/navigation";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
-import ProductCard from "@/components/card/dummyProductCard";
-import styles from "./page.module.css";
-import boardStyle from "../../boardGrobal.module.css";
-import Input from "@/components/inputs/Input";
 import ListPagination from "@/components/listPagination/ListPagination";
-import Link from "next/link";
-import PrivacyContent from "@/components/agreeContent/privacyContent";
+import P from "@/components/P/P";
+import Span from "@/components/span/Span";
+import useData from "@/shared/hooks/data/useData";
+import { requester } from "@/shared/Requester";
+import boardStyle from "../../boardGrobal.module.css";
 import { SelectBox } from "../../client";
-
-import ChoiceChild from "@/components/choice/ChoiceChild";
-import ChoiceGroup from "@/components/choice/ChoiceGroup";
-import InputTextArea from "@/components/inputs/InputTextArea";
+import styles from "./page.module.css";
+import Div from "@/components/div/Div";
 import NoContent from "@/components/noContent//noContent";
+import useNavigate from "@/shared/hooks/useNavigate";
+
 
 export function BoardTitleBox() {
   return (
@@ -47,47 +29,64 @@ export function BoardTitleBox() {
 }
 
 // 본문 -----------------------------------------------
-export function DetailFrame() {
+export function DetailFrame({ initNotice }: { initNotice: any }) {
+  const navigate = useNavigate();
+  const { notice } = useData(
+    "notice",
+    { id: initNotice.content.id },
+    (condition) => {
+      const id = condition.id;
+      delete condition.id;
+      return requester.getNotice(id, condition);
+    },
+    {
+      onReprocessing: (data) => data.content,
+      fallbackData: initNotice,
+    }
+  );
   const uploadFile = [
     "24hours_20250811_06_30_52.jpg",
     "46hours_20250811_06_30_51.jpg",
   ];
-
+  const dateToString = (date: string | Date) => {
+    date = new Date(date);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${String(date.getDate()).padStart(2, "0")} ${String(
+      date.getHours()
+    ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+  };
   return (
     <VerticalFlex className={styles.detail_container}>
       <VerticalFlex className={styles.board_header}>
         <HorizontalFlex className={styles.title_box}>
           <FlexChild className={styles.title}>
-            <P>공지사항 게시판입니다.</P>
+            <P>{notice.title}</P>
           </FlexChild>
 
           <FlexChild className={styles.date}>
-            <P>2025-08-11 14:25</P>
+            <P>{dateToString(notice.created_at)}</P>
           </FlexChild>
         </HorizontalFlex>
 
         <HorizontalFlex className={styles.title_box}>
           <FlexChild className={styles.name}>
-            <P>푸푸토이 관리자</P>
+            <P>관리자</P>
           </FlexChild>
 
           <FlexChild className={styles.view_comment_box} gap={10}>
             <FlexChild className={styles.view}>
               <P>
-                조회수 <b>18</b>
-              </P>
-            </FlexChild>
-
-            <FlexChild className={styles.comment}>
-              <P>
-                댓글 <b>2</b>
+                조회수 <b>{notice.views || 0}</b>
               </P>
             </FlexChild>
           </FlexChild>
         </HorizontalFlex>
 
         <HorizontalFlex className={styles.edit_box}>
-          <VerticalFlex className={styles.file_list} gap={5}>
+          {/* <VerticalFlex className={styles.file_list} gap={5}>
+
             {uploadFile.map((item, i) => (
               <FlexChild key={i} className={styles.file_name} gap={5}>
                 <Span>첨부파일</Span>
@@ -96,7 +95,8 @@ export function DetailFrame() {
                 </P>
               </FlexChild>
             ))}
-          </VerticalFlex>
+
+          </VerticalFlex> */}
 
           {/* <FlexChild gap={10} className={styles.edit_button_group}>
                 <FlexChild cursor="pointer" width={'auto'}>
@@ -109,15 +109,17 @@ export function DetailFrame() {
         </HorizontalFlex>
       </VerticalFlex>
 
-      <VerticalFlex className={styles.content_box} padding={"40px 0 100px"}>
-        <FlexChild marginBottom={80}>
+
+      {/* <VerticalFlex className={styles.content_box} padding={"40px 0 100px"}> */}
+      {/* <FlexChild marginBottom={80}>
+
           <P size={16} color="#fff" weight={500}>
             공지사항 안내문입니다. 공지사항이니까 댓글은 달 수 없습니다.
             감사합니다.
           </P>
-        </FlexChild>
+        </FlexChild> */}
 
-        <VerticalFlex gap={10}>
+      {/* <VerticalFlex gap={10}>
           {uploadFile.map((item, i) => (
             <FlexChild key={i} width={"auto"}>
               <Image
@@ -126,11 +128,20 @@ export function DetailFrame() {
               />
             </FlexChild>
           ))}
-        </VerticalFlex>
-      </VerticalFlex>
+        </VerticalFlex> */}
+      {/* </VerticalFlex> */}
+      <FlexChild className={styles.detail}>
+        <Div dangerouslySetInnerHTML={{ __html: notice.detail }} />
+      </FlexChild>
 
       <FlexChild justifyContent="center">
-        <Button className={styles.list_btn}>목록으로</Button>
+        <Button
+          className={styles.list_btn}
+          onClick={() => navigate("/board/notice")}
+        >
+          목록으로
+        </Button>
+
       </FlexChild>
     </VerticalFlex>
   );

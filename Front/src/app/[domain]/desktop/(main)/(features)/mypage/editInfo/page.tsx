@@ -1,8 +1,5 @@
-import { requester } from "@/shared/Requester";
-import { DeliveryClient } from "./client";
+import { EditInfoClient } from "./client";
 
-export default async function DeliveryPage() {
-  const initAddresses = await requester.getAddresses();
-
-  return <DeliveryClient initAddresses={initAddresses} />;
+export default async function EditInfoPage() {
+  return <EditInfoClient />;
 }
