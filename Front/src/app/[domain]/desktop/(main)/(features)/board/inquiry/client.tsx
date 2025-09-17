@@ -104,6 +104,7 @@ export function BoardTable() {
   return (
     <VerticalFlex>
       <FlexChild>
+        {qaList.length > 0 ? (
         <table className={boardStyle.list_table}>
           {/* 게시판 셀 너비 조정 */}
           <colgroup>
@@ -195,6 +196,10 @@ export function BoardTable() {
             ))}
           </tbody>
         </table>
+        ) : (
+          <NoContent type={"게시판"}></NoContent>
+        )
+      }
       </FlexChild>
       <FlexChild className={boardStyle.list_bottom_box}>
         {/* <ListPagination /> */}
