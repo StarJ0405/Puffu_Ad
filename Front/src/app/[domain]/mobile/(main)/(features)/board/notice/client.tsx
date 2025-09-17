@@ -25,9 +25,6 @@ import { SelectBox } from "../client";
 export function SearchBox() {
   return (
     <HorizontalFlex className={boardStyle.board_searchBox}>
-      {/* <FlexChild>
-        <h3>공지사항</h3>
-      </FlexChild> */}
 
       <SelectBox />
     </HorizontalFlex>

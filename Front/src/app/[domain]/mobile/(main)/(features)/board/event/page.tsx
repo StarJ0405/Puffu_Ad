@@ -19,7 +19,7 @@ import Link from "next/link";
 import clsx from "clsx";
 import boardStyle from '../boardGrobal.module.css'
 
-import { BoardTitleBox, GalleryTable } from "./client";
+import { GalleryTable } from "./client";
 import ChoiceChild from "@/components/choice/ChoiceChild";
 import ChoiceGroup from "@/components/choice/ChoiceGroup";
 
@@ -28,7 +28,10 @@ export default async function EventBoard() {
    return (
       <>
          <VerticalFlex className={boardStyle.board_frame}>
-            <BoardTitleBox />
+            {/* <BoardTitleBox /> */}
+            <FlexChild className={boardStyle.title_box}>
+              <h3 className={boardStyle.title}>이벤트</h3>
+            </FlexChild>
             <GalleryTable />
          </VerticalFlex>
       </>

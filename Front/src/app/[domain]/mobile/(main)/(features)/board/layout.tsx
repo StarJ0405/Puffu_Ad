@@ -1,6 +1,7 @@
 import { Params } from "next/dist/server/request/params";
 import React from "react";
 import BoardHeader from "./boardHeader";
+// import SubPageHeader from "@/components/subPageHeader/subPageHeader";
 
 export default async function ({
   children,
@@ -11,9 +12,12 @@ export default async function ({
 }) {
 
   return (
-    <section className="root page_container">
-      {/* <BoardHeader /> */}
-      {children}
-    </section>
+    <>
+      {/* <SubPageHeader /> */}
+      <section className="root page_container">
+        {/* <BoardHeader /> */}
+        {children}
+      </section>
+    </>
   );
 }

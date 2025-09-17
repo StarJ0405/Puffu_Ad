@@ -10,8 +10,8 @@ export default async function () {
 
    return (
       <VerticalFlex className={boardStyle.board_frame}>
-         <FlexChild className={boardStyle.board_titleBox}>
-            {/* <h3>공지사항</h3> */}
+         <FlexChild className={boardStyle.title_box}>
+            <h3>1:1문의</h3>
          </FlexChild>
 
          <FlexChild>

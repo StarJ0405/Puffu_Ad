@@ -38,7 +38,7 @@ const SideMenu = NiceModal.create(() => {
   const cutomerMenu: PagingItem[] = [
     {name: '공지사항', link: '/board/notice'},
     {name: '1:1 문의', link: '/board/inquiry'},
-    {name: '이벤트', link: '/mypage/event'},
+    {name: '이벤트', link: '/board/event'},
   ]
 
   const shopMenu: PagingItem[] = [
