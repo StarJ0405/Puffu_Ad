@@ -1,0 +1,10 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Disallow: /auth/login/
+Disallow: /auth/signup/
+Disallow: /mypage/
+Disallow: /orders/
+Disallow: /admin/
+
+
+Sitemap: https://puffutoy.com/sitemap.xml

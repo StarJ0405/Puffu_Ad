@@ -156,28 +156,52 @@ export function LinkBanner() {
 }
 
 export function SubBanner1() {
+
+  const { userData } = useAuth();
+
   return (
     <FlexChild width={"100%"}>
       <Link href={"/"} className={styles.disabled}>
-        <Image
-          src={"/resources/images/dummy_img/sub_banner_01.jpg"}
-          width={"100%"}
-          height={"auto"}
-        />
+        {userData?.adult ? (
+          <Image
+            src={"/resources/images/dummy_img/sub_banner_01.jpg"}
+            width={"100%"}
+            height={"auto"}
+          />
+        ) : (
+          // 성인인증 안될때 나오는 이미지
+          <Image
+            src={"/resources/images/19_only_sub_banner_pc.png"}
+            width={"100%"}
+            height={"auto"}
+          />
+        )}
       </Link>
     </FlexChild>
   );
 }
 
 export function SubBanner2() {
+
+  const { userData } = useAuth();
+
   return (
     <FlexChild width={"100%"}>
       <Link href={"/"} className={styles.disabled}>
-        <Image
-          src={"/resources/images/dummy_img/sub_banner_02.jpg"}
-          width={"100%"}
-          height={"auto"}
-        />
+        {userData?.adult ? (
+          <Image
+            src={"/resources/images/dummy_img/sub_banner_02.jpg"}
+            width={"100%"}
+            height={"auto"}
+          />
+        ) : (
+          // 성인인증 안될때 나오는 이미지
+          <Image
+            src={"/resources/images/19_only_sub_banner_pc.png"}
+            width={"100%"}
+            height={"auto"}
+          />
+        )}
       </Link>
     </FlexChild>
   );
