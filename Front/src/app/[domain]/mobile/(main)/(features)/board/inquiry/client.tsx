@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Button from "@/components/buttons/Button";
 import Div from "@/components/div/Div";
 import FlexChild from "@/components/flex/FlexChild";
@@ -28,6 +28,7 @@ import boardStyle from "../boardGrobal.module.css";
 import Input from "@/components/inputs/Input";
 import ListPagination from "@/components/listPagination/ListPagination";
 import Link from "next/link";
+
 import {SelectBox} from "../client"
 import { useRouter } from "next/navigation";
 import { toast } from "@/shared/utils/Functions";
@@ -48,7 +49,6 @@ export function SearchBox() {
       </HorizontalFlex>
    )
 }
-
 
 export function BoardTable() {
   const [qaList, setQaList] = useState<QADataWithUser[]>([]);
@@ -171,27 +171,8 @@ export function BoardTable() {
    )
 }
 
-
 // 게시판 리스트 end -----------------------------------------------
 
-
-
 // 게시판 쓰기 -----------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // 게시판 쓰기 end -----------------------------------------------

@@ -121,7 +121,6 @@ export function InquiryTable() {
               <col style={{ width: "10%" }} />
               <col style={{ width: "15%" }} />
             </colgroup>
-
             <thead>
               <tr className={styles.table_header}>
                 <th>번호</th>

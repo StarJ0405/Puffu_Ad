@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Button from "@/components/buttons/Button";
 import Div from "@/components/div/Div";
 import FlexChild from "@/components/flex/FlexChild";
@@ -28,7 +28,7 @@ import boardStyle from "../boardGrobal.module.css";
 import Input from "@/components/inputs/Input";
 import ListPagination from "@/components/listPagination/ListPagination";
 import Link from "next/link";
-import {SelectBox} from "../client"
+import { SelectBox } from "../client";
 import { useRouter } from "next/navigation";
 import { toast } from "@/shared/utils/Functions";
 
@@ -38,18 +38,17 @@ interface QADataWithUser extends QAData {
 
 // 게시판 리스트 -----------------------------------------------
 export function BoardTitleBox() {
-   return (
-      <HorizontalFlex className={boardStyle.board_titleBox}>
-         <FlexChild>
-            {/* 여기 현재 path 주소에 맞게 이름 바뀌게 해야 함. */}
-            <h3>1:1문의</h3>
-         </FlexChild>
+  return (
+    <HorizontalFlex className={boardStyle.board_titleBox}>
+      <FlexChild>
+        {/* 여기 현재 path 주소에 맞게 이름 바뀌게 해야 함. */}
+        <h3>1:1문의</h3>
+      </FlexChild>
 
-         <SelectBox />
-      </HorizontalFlex>
-   )
+      <SelectBox />
+    </HorizontalFlex>
+  );
 }
-
 
 export function BoardTable() {
   const [qaList, setQaList] = useState<QADataWithUser[]>([]);
@@ -98,113 +97,115 @@ export function BoardTable() {
     router.push(`/board/inquiry/${item.id}`);
   };
 
-   return (
-      <VerticalFlex>
-         <FlexChild>
-            <table className={boardStyle.list_table}>
+  return (
+    <VerticalFlex>
+      <FlexChild>
+        <table className={boardStyle.list_table}>
+          {/* 게시판 셀 너비 조정 */}
+          <colgroup>
+            <col style={{ width: "10%" }} />
+            <col style={{ width: "15%" }} />
+            <col style={{ width: "35%" }} />
+            <col style={{ width: "15%" }} />
+            <col style={{ width: "10%" }} />
+            <col style={{ width: "15%" }} />
+          </colgroup>
 
-               {/* 게시판 셀 너비 조정 */}
-               <colgroup>
-                  <col style={{width: '10%'}} />
-                  <col style={{width: '15%'}} />
-                  <col style={{width: '35%'}} />
-                  <col style={{width: '15%'}} />
-                  <col style={{width: '10%'}} />
-                  <col style={{width: '15%'}} />
-               </colgroup>
-   
-               {/* 게시판리스트 헤더 */}
-               <thead>
-                  <tr className={boardStyle.table_header}>
-                     <th>번호</th>
-                     <th>분류</th>
-                     <th>제목</th>
-                     <th>작성자</th>
-                     <th>문의상태</th>
-                     <th>날짜</th>
-                  </tr>
-               </thead>
-   
-               {/* 게시판 내용 */}
-               <tbody>
-                  {
-                     qaList.map((list, i)=> (
-                        <tr key={i}>
-                           {/* 번호 */}
-                           <td>{qaList.length - i}</td>
+          {/* 게시판리스트 헤더 */}
+          <thead>
+            <tr className={boardStyle.table_header}>
+              <th>번호</th>
+              <th>분류</th>
+              <th>제목</th>
+              <th>작성자</th>
+              <th>문의상태</th>
+              <th>날짜</th>
+            </tr>
+          </thead>
 
-                           {/* 분류 */}
-                           <td>{getQaTypeKorean(list.type)}</td>
+          {/* 게시판 내용 */}
+          <tbody>
+            {qaList.map((list, i) => (
+              <tr key={i}>
+                {/* 번호 */}
+                <td>{qaList.length - i}</td>
 
-                           {/* 제목 */}
-                           <td>
-                              <Div
-                                onClick={() => handleTitleClick(list)}
-                                className={boardStyle.td_title}
-                              >
-                                <FlexChild gap={5} alignItems="center" height={'100%'} cursor="pointer" width={'fit-content'}>
-                                   {list.hidden && <Image src={'/resources/icons/board/lock_icon.png'} width={16} />}
-                                   <P lineClamp={1} overflow="hidden" display="--webkit-box" >{list.title}</P>
-                                </FlexChild>
-                              </Div>
-                           </td>
+                {/* 분류 */}
+                <td>{getQaTypeKorean(list.type)}</td>
 
-                           {/* 작성자 */}
-                           <td>
-                              <P lineClamp={2} overflow="hidden" display="--webkit-box" weight={500}>
-                                 {list.user?.name || "비회원"}
-                              </P>
-                           </td>
+                {/* 제목 */}
+                <td>
+                  <Div
+                    onClick={() => handleTitleClick(list)}
+                    className={boardStyle.td_title}
+                  >
+                    <FlexChild
+                      gap={5}
+                      alignItems="center"
+                      height={"100%"}
+                      cursor="pointer"
+                      width={"fit-content"}
+                    >
+                      {list.hidden && (
+                        <Image
+                          src={"/resources/icons/board/lock_icon.png"}
+                          width={16}
+                        />
+                      )}
+                      <P lineClamp={1} overflow="hidden" display="--webkit-box">
+                        {list.title}
+                      </P>
+                    </FlexChild>
+                  </Div>
+                </td>
 
-                           {/* 문의상태 */}
-                           <td>
-                              <Span 
-                                 weight={400}
-                                 color={`${list.answer ? '#fff' : '#FF4343'}`}
-                              >
-                                 {list.answer ? "답변완료" : "답변대기"}
-                              </Span>
-                           </td>
+                {/* 작성자 */}
+                <td>
+                  <P
+                    lineClamp={2}
+                    overflow="hidden"
+                    display="--webkit-box"
+                    weight={500}
+                  >
+                    {list.user?.name || "비회원"}
+                  </P>
+                </td>
 
-                           {/* 날짜 */}
-                           <td><Span weight={400}>{formatDate(list.created_at as string)}</Span></td>
-                        </tr>
-                     ))
-                  }
-               </tbody>
-            </table>
-         </FlexChild>
-         <FlexChild className={boardStyle.list_bottom_box}>
-            <ListPagination />
+                {/* 문의상태 */}
+                <td>
+                  <Span
+                    weight={400}
+                    color={`${list.answer ? "#fff" : "#FF4343"}`}
+                  >
+                    {list.answer ? "답변완료" : "답변대기"}
+                  </Span>
+                </td>
 
-            {/* 누르면 글쓰기로 연결 회원만 글쓰기 가능! 비회원은 안 보이게 하던지, 클릭하면 비회원이면 로그인 페이지로 보내기 */}
-            <Link href={'/board/inquiry/write'} className={boardStyle.write_btn}>글쓰기</Link>
-         </FlexChild>
-      </VerticalFlex>
-   )
+                {/* 날짜 */}
+                <td>
+                  <Span weight={400}>
+                    {formatDate(list.created_at as string)}
+                  </Span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </FlexChild>
+      <FlexChild className={boardStyle.list_bottom_box}>
+        {/* <ListPagination /> */}
+
+        {/* 누르면 글쓰기로 연결 회원만 글쓰기 가능! 비회원은 안 보이게 하던지, 클릭하면 비회원이면 로그인 페이지로 보내기 */}
+        <Link href={"/board/inquiry/write"} className={boardStyle.write_btn}>
+          글쓰기
+        </Link>
+      </FlexChild>
+    </VerticalFlex>
+  );
 }
-
 
 // 게시판 리스트 end -----------------------------------------------
 
-
-
 // 게시판 쓰기 -----------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // 게시판 쓰기 end -----------------------------------------------

@@ -12,10 +12,10 @@ import { requester } from "@/shared/Requester";
 import boardStyle from "../../boardGrobal.module.css";
 import { SelectBox } from "../../client";
 import styles from "./page.module.css";
-
 import Div from "@/components/div/Div";
 import NoContent from "@/components/noContent//noContent";
 import useNavigate from "@/shared/hooks/useNavigate";
+
 
 export function BoardTitleBox() {
   return (
@@ -86,6 +86,7 @@ export function DetailFrame({ initNotice }: { initNotice: any }) {
 
         <HorizontalFlex className={styles.edit_box}>
           {/* <VerticalFlex className={styles.file_list} gap={5}>
+
             {uploadFile.map((item, i) => (
               <FlexChild key={i} className={styles.file_name} gap={5}>
                 <Span>첨부파일</Span>
@@ -94,6 +95,7 @@ export function DetailFrame({ initNotice }: { initNotice: any }) {
                 </P>
               </FlexChild>
             ))}
+
           </VerticalFlex> */}
 
           {/* <FlexChild gap={10} className={styles.edit_button_group}>
@@ -107,8 +109,10 @@ export function DetailFrame({ initNotice }: { initNotice: any }) {
         </HorizontalFlex>
       </VerticalFlex>
 
+
       {/* <VerticalFlex className={styles.content_box} padding={"40px 0 100px"}> */}
       {/* <FlexChild marginBottom={80}>
+
           <P size={16} color="#fff" weight={500}>
             공지사항 안내문입니다. 공지사항이니까 댓글은 달 수 없습니다.
             감사합니다.
@@ -137,6 +141,7 @@ export function DetailFrame({ initNotice }: { initNotice: any }) {
         >
           목록으로
         </Button>
+
       </FlexChild>
     </VerticalFlex>
   );
@@ -309,7 +314,7 @@ export function BoardTable() {
         {boardData.length > 0 ? null : <NoContent type={"상품"} />}
       </FlexChild>
       <FlexChild className={boardStyle.list_bottom_box}>
-        <ListPagination />
+        {/* <ListPagination /> */}
       </FlexChild>
     </VerticalFlex>
   );

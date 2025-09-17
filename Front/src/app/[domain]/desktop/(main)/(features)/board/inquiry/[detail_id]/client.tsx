@@ -21,7 +21,6 @@ import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import { useEffect, useState } from "react";
 import { toast } from "@/shared/utils/Functions";
 
-
 export function BoardTitleBox() {
   return (
     <HorizontalFlex className={boardStyle.board_titleBox}>
@@ -37,7 +36,7 @@ export function BoardTitleBox() {
 export function DetailFrame() {
   const router = useRouter();
   const { detail_id } = useParams();
-  const {userData} = useAuth();
+  const { userData } = useAuth();
   const [qaData, setQaData] = useState<QAData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -48,7 +47,7 @@ export function DetailFrame() {
           id: detail_id,
           relations: ["user"],
         });
-        
+
         if (res?.content?.[0]) {
           const data = res.content[0];
           setQaData(data);
@@ -112,7 +111,7 @@ export function DetailFrame() {
           ))}
         </VerticalFlex>
       </VerticalFlex>
-      
+
       {qaData.answer && (
         <VerticalFlex className={styles.answer_container}>
           <HorizontalFlex className={styles.answer_header}>
@@ -127,7 +126,10 @@ export function DetailFrame() {
       )}
 
       <FlexChild justifyContent="center">
-        <Button className={styles.list_btn} onClick={() => router.push("/board/inquiry")}>
+        <Button
+          className={styles.list_btn}
+          onClick={() => router.push("/board/inquiry")}
+        >
           목록으로
         </Button>
       </FlexChild>
@@ -135,33 +137,91 @@ export function DetailFrame() {
   );
 }
 
-
-
 // 아래는 무시하세요
 export function BoardTable() {
+  // 조회수는 세자리마다 , 처리.
+  // date는 어차피 뽑으면 년월일시분초 다 나뉠테니 그때 조정하면 됨.
+  const boardData = [
+    {
+      number: "1",
+      title: "게시판 내용",
+      member: "푸푸토이",
+      views: "12323",
+      date: "2025-09-04",
+    },
+    {
+      number: "2",
+      title: "게시판 내용",
+      member: "푸푸토이",
+      views: "12323",
+      date: "2025-09-04",
+    },
+    {
+      number: "3",
+      title: "게시판 내용",
+      member: "푸푸토이",
+      views: "12323",
+      date: "2025-09-04",
+    },
+    {
+      number: "4",
+      title: "게시판 내용",
+      member: "푸푸토이",
+      views: "12323",
+      date: "2025-09-04",
+    },
+    {
+      number: "5",
+      title: "게시판 내용",
+      member: "푸푸토이",
+      views: "12323",
+      date: "2025-09-04",
+    },
+    {
+      number: "6",
+      title: "게시판 내용",
+      member: "푸푸토이",
+      views: "12323",
+      date: "2025-09-04",
+    },
+    {
+      number: "7",
+      title: "게시판 내용",
+      member: "푸푸토이",
+      views: "12323",
+      date: "2025-09-04",
+    },
+    {
+      number: "8",
+      title: "게시판 내용",
+      member: "푸푸토이",
+      views: "12323",
+      date: "2025-09-04",
+    },
+    {
+      number: "9",
+      title: "게시판 내용",
+      member: "푸푸토이",
+      views: "12323",
+      date: "2025-09-04",
+    },
+    {
+      number: "10",
+      title: "게시판 내용",
+      member: "푸푸토이",
+      views: "12323",
+      date: "2025-09-04",
+    },
+  ];
 
-   // 조회수는 세자리마다 , 처리.
-   // date는 어차피 뽑으면 년월일시분초 다 나뉠테니 그때 조정하면 됨.
-   const boardData = [
-      
-      {number: '1', title: '게시판 내용', member: '푸푸토이', views: '12323', date: '2025-09-04'},
-      {number: '2', title: '게시판 내용', member: '푸푸토이', views: '12323', date: '2025-09-04'},
-      {number: '3', title: '게시판 내용', member: '푸푸토이', views: '12323', date: '2025-09-04'},
-      {number: '4', title: '게시판 내용', member: '푸푸토이', views: '12323', date: '2025-09-04'},
-      {number: '5', title: '게시판 내용', member: '푸푸토이', views: '12323', date: '2025-09-04'},
-      {number: '6', title: '게시판 내용', member: '푸푸토이', views: '12323', date: '2025-09-04'},
-      {number: '7', title: '게시판 내용', member: '푸푸토이', views: '12323', date: '2025-09-04'},
-      {number: '8', title: '게시판 내용', member: '푸푸토이', views: '12323', date: '2025-09-04'},
-      {number: '9', title: '게시판 내용', member: '푸푸토이', views: '12323', date: '2025-09-04'},
-      {number: '10', title: '게시판 내용', member: '푸푸토이', views: '12323', date: '2025-09-04'},
-   ]
-
-   return (
-      <VerticalFlex>
-        <HorizontalFlex className={boardStyle.board_titleBox} justifyContent="end">
-          <SelectBox />
-        </HorizontalFlex>
-
+  return (
+    <VerticalFlex>
+      <HorizontalFlex
+        className={boardStyle.board_titleBox}
+        justifyContent="end"
+      >
+        <SelectBox />
+      </HorizontalFlex>
          <FlexChild>
             <table className={boardStyle.list_table}>
 

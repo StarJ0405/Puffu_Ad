@@ -84,7 +84,7 @@ export function GalleryTable({
       </FlexChild>
 
       <FlexChild className={boardStyle.list_bottom_box}>
-        <ListPagination />
+        {/* <ListPagination /> */}
       </FlexChild>
     </VerticalFlex>
   );

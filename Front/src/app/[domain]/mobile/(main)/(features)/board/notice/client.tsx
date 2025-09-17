@@ -84,6 +84,7 @@ export function BoardTable({
                       width={"fit-content"}
                       cursor="pointer"
                       onClick={() => navigate(`/board/notice/${notice.id}`)}
+
                     >
                       {/* <P>{(origin.pageSize || 0) * page + index}</P> */}
                       <P lineClamp={1} overflow="hidden" display="--webkit-box">
@@ -134,7 +135,7 @@ export function BoardTable({
         {notices?.length > 0 ? null : <NoContent type={"게시판"} />}
       </FlexChild>
       <FlexChild className={boardStyle.list_bottom_box}>
-        <ListPagination />
+        {/* <ListPagination /> */}
       </FlexChild>
     </VerticalFlex>
   );

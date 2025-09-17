@@ -422,14 +422,18 @@ interface QADataFrame {
   title: string; // 제목
 
   user_id: string; // 작성자
+  user?: UserData;
   content: string; // 내용 Quill 사용
   hidden?: boolean; // 숨김글
 
   images?: string[]; // 여러 이미지가 들어가는 경우
 
   product_id?: string; // 상품문의
+  product?: ProductData;
   item_id?: string; // 주문 관련 상품 문의
+  item?: LineItemData;
   order_id?: string; //주문  자체 문의
+  order?: OrderData;
 
   metadata?: Record<string, unknown> | null;
 }
