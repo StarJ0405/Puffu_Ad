@@ -44,7 +44,7 @@ export function DetailFrame() {
   useEffect(() => {
     if (detail_id) {
       const fetchQaData = async () => {
-        const res = await requester.getQAs({
+        const res = await requester.getTotalQAs({
           id: detail_id,
           relations: ["user"],
         });
@@ -232,7 +232,7 @@ export function BoardTable() {
             }
          </FlexChild>
          <FlexChild className={boardStyle.list_bottom_box}>
-            <ListPagination />
+            <ListPagination page={1} totalPage={1} handlePageChange={() => {}} />
          </FlexChild>
       </VerticalFlex>
    )

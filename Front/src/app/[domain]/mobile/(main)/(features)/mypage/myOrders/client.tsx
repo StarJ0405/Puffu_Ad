@@ -99,6 +99,7 @@ export function MyOrdersTable() {
         }
         
         const res = await requester.getOrders(data);
+        console.log("res: ", res);
         
         if (res.content) {
           const formattedOrders = formatOrders(res.content);

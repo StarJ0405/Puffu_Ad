@@ -32,9 +32,13 @@
 
 
 @media (max-width: 768px) {
+   .pagingBox {
+      gap: 5px;
+   }
+
    .pagingBox .paging {
-      width: 25px;
-      height: 25px;
+      width: 30px;
+      height: 30px;
    }
 
    .pagingBox > .num_btn {
