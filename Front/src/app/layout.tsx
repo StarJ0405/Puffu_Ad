@@ -28,6 +28,13 @@ export default function RootLayout({
         />
         <meta name="theme-color" content="#000" />
         <meta name="robots" content="index,follow" />
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="description" content="특별한 밤을 위한 다양한 성인용품 | 당신만을 위한 뜨밤 상품 한가득! | 성인용품 전문 | 딜도, 오나홀 | 게이, 레즈 토이" />
+        <meta property="og:url" content="https://puffutoy.com" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="특별한 밤을 위한 당신의 선택 푸푸토이" />
+        <meta property="og:description" content="특별한 밤을 위한 다양한 성인용품 | 당신만을 위한 뜨밤 상품 한가득! | 성인용품 전문 | 딜도, 오나홀 | 게이, 레즈 토이" />
+        <meta property="og:image" content="https://puffukorea.com/org-img.png" />
       </head>
       <body>
         <ProviderWrapper>

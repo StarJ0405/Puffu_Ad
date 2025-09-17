@@ -114,6 +114,8 @@ export function ProductCard({
           <FlexChild
             className={styles.product_title}
             onClick={() => (onClick ? onClick() : navigate(product_link))}
+            minHeight={!isMobile ? 40 : 30}
+            alignItems="flex-start"
           >
             <P
               textOverflow={"ellipsis"}
