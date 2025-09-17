@@ -1,5 +1,6 @@
+import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
-import { useAuth } from "./providers/AuthPorivder/AuthPorivder";
+import { Cookies } from "./shared/utils/Data";
 
 export const config = {
   matcher: [
@@ -34,9 +35,21 @@ export async function middleware(req: NextRequest) {
     subdomain === "www" ||
     mains.some((main) => main?.split(".")?.[0] === subdomain)
   ) {
-    const { userData } = await useAuth();
-    if (!userData?.id && pathname !== "/" && !pathname.startsWith("/auth"))
-      return NextResponse.redirect(new URL(`/auth/login`, req.url));
+    const jwt = req.cookies.get(Cookies.JWT);
+    if (jwt && jwt.value) {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACK}/users/me`,
+        {
+          headers: {
+            Authorization: jwt.value,
+          },
+        }
+      );
+
+      const user = response.data.user;
+      if (!user?.id && pathname !== "/" && !pathname.startsWith("/auth"))
+        return NextResponse.redirect(new URL(`/auth/login`, req.url));
+    }
     return NextResponse.rewrite(
       new URL(`/$main/${deviceType}${pathname}${url.search}`, req.url),
       {
