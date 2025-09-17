@@ -12,6 +12,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import styles from "./categoryMenu.module.css";
 import useNavigate from "@/shared/hooks/useNavigate";
+import { AnimatePresence, motion } from "framer-motion";
+import MobileSearch from "@/components/mobileSearch/mobileSearch"
 
 export default function CategoryMenu({ CaOpen, onClose, }: { CaOpen?: boolean; onClose?: () => void;}) {
   // 카테고리메뉴
@@ -51,18 +53,48 @@ export default function CategoryMenu({ CaOpen, onClose, }: { CaOpen?: boolean; o
       document.documentElement.style.overflow = "";
     };
   }, [CaOpen]);
+
+  const [showSearch, setShowSearch] = useState(false);
     
 
 
   return (
     <>
+
+      {/* 모바일 검색창 페이지 */}
+        <AnimatePresence mode="wait">
+        {
+            showSearch && (
+              <motion.div
+                  id="motion"
+                  key={showSearch ? "search-open" : "search-closed"}
+                  initial={{ opacity: 0, y: -20,}}
+                  animate={{ opacity: 1, y: 0,}}
+                  exit={{ opacity: 0, y: 0 }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
+                  style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100vh",
+                    background: "#111",   // 검색창 배경색
+                    zIndex: 10000,         // 다른 UI 위로
+                  }}
+              >
+                  <MobileSearch onClose={() => setShowSearch(false)} />
+              </motion.div>
+            )
+        }
+        </AnimatePresence>
+
       <Div className={styles.category_container}>
         <HorizontalFlex className={styles.frame_header}>
            <FlexChild cursor="pointer" width={'auto'} onClick={onClose}>
               <Image src={'/resources/icons/arrow/slide_arrow.png'} width={12} />
            </FlexChild>
   
-           {/* <FlexChild gap={10} className={`searchInput_Box ${styles.search_Box}`}>
+           <FlexChild gap={10} className={`searchInput_Box ${styles.search_Box}`} onClick={()=> setShowSearch(true)}>
               <input type="search" placeholder="2025 신제품"/>
   
               <Image
@@ -71,14 +103,14 @@ export default function CategoryMenu({ CaOpen, onClose, }: { CaOpen?: boolean; o
                  height="auto"
                  cursor="pointer"
               />
-           </FlexChild> */}
-           <Image
+           </FlexChild>
+           {/* <Image
                  src="/resources/images/header/logo.png"
                  width={100}
                  height="auto"
                  cursor="pointer"
                  marginRight={30}
-              />
+              /> */}
         </HorizontalFlex>
   
         <HorizontalFlex className={styles.ca_wrap}>
