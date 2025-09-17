@@ -84,7 +84,7 @@ export default function CategoryMenu({ CaOpen, onClose, }: { CaOpen?: boolean; o
         <HorizontalFlex className={styles.ca_wrap}>
   
           {/* 대분류 */}
-          <nav className={clsx(styles.ca_tab1, styles.ca_box)}>
+          {/* <nav className={clsx(styles.ca_tab1, styles.ca_box)}>
             {categoriesData
               .sort((c1, c2) => c1.index - c2.index)
               .map((cat, i) => (
@@ -99,7 +99,7 @@ export default function CategoryMenu({ CaOpen, onClose, }: { CaOpen?: boolean; o
                  </P>
                 </FlexChild>
               ))}
-          </nav>
+          </nav> */}
   
           <VerticalFlex className={clsx(styles.child_wrap)}>
             <VerticalFlex alignItems="start">

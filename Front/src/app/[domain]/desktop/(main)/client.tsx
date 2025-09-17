@@ -146,7 +146,7 @@ export function LinkBanner() {
     <FlexChild width={"auto"}>
       <div className={styles.link_Banner}>
         {link_banner.map((item, i) => (
-          <Link href={item.link} key={i}>
+          <Link href={item.link} key={i} className={styles.disabled}>
             <Image src={item.src} width={"100%"} height={"auto"} />
           </Link>
         ))}
@@ -155,12 +155,26 @@ export function LinkBanner() {
   );
 }
 
-export function SubBanner() {
+export function SubBanner1() {
   return (
     <FlexChild width={"100%"}>
-      <Link href={"/"}>
+      <Link href={"/"} className={styles.disabled}>
         <Image
-          src={"/resources/images/dummy_img/sub_banner_01.png"}
+          src={"/resources/images/dummy_img/sub_banner_01.jpg"}
+          width={"100%"}
+          height={"auto"}
+        />
+      </Link>
+    </FlexChild>
+  );
+}
+
+export function SubBanner2() {
+  return (
+    <FlexChild width={"100%"}>
+      <Link href={"/"} className={styles.disabled}>
+        <Image
+          src={"/resources/images/dummy_img/sub_banner_02.jpg"}
           width={"100%"}
           height={"auto"}
         />
