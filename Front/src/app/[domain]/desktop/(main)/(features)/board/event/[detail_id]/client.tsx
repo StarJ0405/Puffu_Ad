@@ -94,7 +94,7 @@ export function DetailFrame({ initNotice }: { initNotice: any }) {
       </FlexChild>
 
       <FlexChild justifyContent="center">
-        <Button className={styles.list_btn}>목록으로</Button>
+        <Button onClick={()=> navigate('/board/event')} className={styles.list_btn}>목록으로</Button>
       </FlexChild>
     </VerticalFlex>
   );
