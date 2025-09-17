@@ -111,7 +111,7 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
                     src={
                       userData?.adult
                         ? item.thumbnail.pc
-                        : "/resources/images/19_only.png"
+                        : "/resources/images/19_only_banner.png"
                     }
                     width={"100%"}
                   />
@@ -121,7 +121,7 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
                   src={
                     userData?.adult
                       ? item.thumbnail.pc
-                      : "/resources/images/19_only.png"
+                      : "/resources/images/19_only_banner.png"
                   }
                   width={"100%"}
                 />
