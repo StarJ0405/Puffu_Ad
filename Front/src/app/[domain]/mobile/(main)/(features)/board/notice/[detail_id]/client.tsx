@@ -134,7 +134,7 @@ export function DetailFrame({ initNotice }: { initNotice: any }) {
         <Div dangerouslySetInnerHTML={{ __html: notice.detail }} />
       </FlexChild>
 
-      <FlexChild justifyContent="center">
+      <FlexChild justifyContent="center" marginTop={40}>
         <Button
           className={styles.list_btn}
           onClick={() => navigate("/board/notice")}

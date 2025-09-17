@@ -13,7 +13,7 @@ export default async function ({ params }: { params: Promise<Params> }) {
   if (initNotice?.content?.type !== "일반") return notFound();
   return (
     <VerticalFlex className={boardStyle.board_frame}>
-      <FlexChild className={boardStyle.board_titleBox}>
+      <FlexChild className={boardStyle.title_box}>
         <h3>공지사항</h3>
       </FlexChild>
 
