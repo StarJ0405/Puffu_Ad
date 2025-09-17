@@ -118,8 +118,8 @@ export default function TossPaymentPage() {
       const orderName =
         items && items?.length > 0
           ? items?.length > 1
-            ? `${items[0]?.variant.product?.title} 외 ${items?.length - 1}건`
-            : `${items?.[0]?.variant?.product?.title || "주문"}`
+            ? `${items[0]?.variant?.total_code} 외 ${items?.length - 1}건`
+            : `${items?.[0]?.variant?.total_code || "주문"}`
           : "주문";
 
       await widgets.requestPayment({

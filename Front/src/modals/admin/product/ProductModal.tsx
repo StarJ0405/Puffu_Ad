@@ -94,6 +94,7 @@ const ProductModal = NiceModal.create(
         if (!title) {
           return setError("상품명이 입력되지 않았습니다.");
         }
+        const code = inputs.current[4].getValue();
         validateInputs([...inputs.current, image.current])
           .then(({ isValid }: { isValid: boolean }) => {
             if (!isValid) return;
@@ -106,6 +107,7 @@ const ProductModal = NiceModal.create(
               visible: radio[0],
               buyable: radio[1],
               title: title,
+              code,
               description: inputs.current[1].getValue(),
               price: inputs.current[2].getValue(),
               thumbnail: image.current.getValue(),
@@ -150,7 +152,6 @@ const ProductModal = NiceModal.create(
     return (
       <ModalBase
         borderRadius={10}
-        r
         headerStyle
         zIndex={10055}
         ref={modal}
@@ -258,6 +259,26 @@ const ProductModal = NiceModal.create(
           <FlexChild>
             <HorizontalFlex>
               <FlexChild className={styles.head}>
+                <P>상품코드</P>
+              </FlexChild>
+              <FlexChild className={styles.content}>
+                {edit ? (
+                  <Input
+                    value={product.code}
+                    width={"100%"}
+                    ref={(el) => {
+                      inputs.current[4] = el;
+                    }}
+                  />
+                ) : (
+                  <P>{product.code}</P>
+                )}
+              </FlexChild>
+            </HorizontalFlex>
+          </FlexChild>
+          <FlexChild>
+            <HorizontalFlex>
+              <FlexChild className={styles.head}>
                 <P>요약설명</P>
               </FlexChild>
               <FlexChild className={styles.content}>
@@ -284,6 +305,7 @@ const ProductModal = NiceModal.create(
                 {edit ? (
                   <InputNumber
                     value={product.price}
+                    max={99999999}
                     width={"100%"}
                     ref={(el) => {
                       inputs.current[2] = el;

@@ -118,8 +118,8 @@ export default function TossPaymentPage() {
       const orderName =
         items && items?.length > 0
           ? items?.length > 1
-            ? `${items[0]?.variant.product?.title} 외 ${items?.length - 1}건`
-            : `${items?.[0]?.variant?.product?.title || "주문"}`
+            ? `${items[0]?.variant.total_code} 외 ${items?.length - 1}건`
+            : `${items?.[0]?.variant?.total_code || "주문"}`
           : "주문";
 
       await widgets.requestPayment({
@@ -140,7 +140,7 @@ export default function TossPaymentPage() {
     }
   };
   return (
-    <VerticalFlex padding={'180px 0 0'} margin={'0 auto'}>
+    <VerticalFlex padding={"180px 0 0"} margin={"0 auto"}>
       <div id="payment-method" />
       <div id="agreement" />
       <div
@@ -159,7 +159,11 @@ export default function TossPaymentPage() {
           onClick={handlePaymentRequest}
           borderRadius={4}
         >
-          <P size={18} weight={600} color={ready ? "white" : "var(--main-color2)"}>
+          <P
+            size={18}
+            weight={600}
+            color={ready ? "white" : "var(--main-color2)"}
+          >
             <Span verticalAlign={"baseline"}>{total}</Span>
             <Span verticalAlign={"baseline"}>원 결제</Span>
           </P>

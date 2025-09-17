@@ -311,12 +311,12 @@ export function CartWrap() {
                   </FlexChild>
                   <Span>신용카드 결제</Span>
                 </FlexChild>
-                <FlexChild className={clsx(style.payment_card)}>
+                {/* <FlexChild className={clsx(style.payment_card)}>
                   <FlexChild width={"auto"}>
                     <RadioChild id={"toss"} />
                   </FlexChild>
                   <Span>토스 결제</Span>
-                </FlexChild>
+                </FlexChild> */}
               </VerticalFlex>
             </RadioGroup>
           </VerticalFlex>
@@ -424,9 +424,7 @@ export function CartWrap() {
                     payerTel: userData?.phone,
                     returnUrl: `${origin}/payment`,
                     products: items?.map((i) => ({
-                      name: `${i.variant.product.title}${
-                        i.variant.title ? ` - ${i.variant.title}` : ""
-                      }`,
+                      name: i.variant.total_code,
                       qty: i.total_quantity,
                       price: i.variant.discount_price * i.quantity,
                     })),
