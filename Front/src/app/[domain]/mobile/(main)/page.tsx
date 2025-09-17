@@ -16,7 +16,8 @@ import {
   NewProducts,
   // ProductList,
   // ProductSlider,
-  SubBanner,
+  SubBanner1,
+  SubBanner2,
 } from "./client";
 import styles from "./page.module.css";
 
@@ -52,8 +53,12 @@ export default async function () {
           initProducts={hotProducts}
           initCondition={hotCondition}
         />
-        <SubBanner />
+        <SubBanner2 />
+        
         <NewProducts initProducts={newProducts} /> {/* 메인, 상세 리스트 */}
+
+        <SubBanner1 />
+
         <MiniBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
         {/* 포토 사용 후기 */}
         {/* <FlexChild marginTop={30}>

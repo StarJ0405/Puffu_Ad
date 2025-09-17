@@ -49,6 +49,7 @@ export function ProductCard({
     >
       <FlexChild
         className={styles.imgBox}
+        height={width ?? isMobile ? "auto" : 200}
         onClick={() => (onClick ? onClick() : navigate(product_link))}
       >
         {/* {

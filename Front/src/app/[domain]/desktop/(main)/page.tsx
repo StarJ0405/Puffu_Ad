@@ -13,7 +13,8 @@ import {
   MainCategory,
   MiniBanner,
   ProductList,
-  SubBanner,
+  SubBanner1,
+  SubBanner2,
   // ProductSlider,
 } from "./client";
 import styles from "./page.module.css";
@@ -61,7 +62,7 @@ export default async function () {
           initCondition={hotCondition}
         />
 
-        <SubBanner />
+        <SubBanner2 />
 
         {/* 신상품 */}
         <FlexChild>
@@ -76,7 +77,7 @@ export default async function () {
                 <Image src={'/resources/images/header/logo.png'} width={100} marginBottom={5} />
                 <h2 className="SacheonFont">
                   {/* <Span>따끈따끈</Span> 신상품 */}
-                  <Span position="relative" top={3}>BEST</Span> 상품!
+                  <Span position="relative" top={3}>PCIK!</Span> 추천 상품
                 </h2>
               </div>
 
@@ -95,6 +96,10 @@ export default async function () {
             />
           </VerticalFlex>
         </FlexChild>
+
+        <SubBanner1 />
+
+
         <MiniBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
         {/* <FlexChild>
           <VerticalFlex>

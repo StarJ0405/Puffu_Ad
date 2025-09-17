@@ -12,6 +12,8 @@
    width: 100%;
    max-width: 650px;
    justify-content: center;
+   height: 600px !important;
+   overflow: hidden;
 }
 
 /* 오른쪽 정보 패널 */
