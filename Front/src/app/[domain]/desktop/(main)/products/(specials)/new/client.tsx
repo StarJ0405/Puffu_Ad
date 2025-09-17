@@ -53,7 +53,7 @@ export function NewList({
   );
   return (
     <>
-      <BaseProductList listArray={best} />
+      <BaseProductList listArray={best} pagination={{ page, maxPage, setPage }}/>
     </>
   );
 }

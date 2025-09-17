@@ -114,27 +114,24 @@ export function SortFilter({
 }
 
 
-// app/products/baseClient.tsx (또는 현재 BaseProductList가 있는 파일)
-
 export function BaseProductList({
    listArray,
+   // sortOptions,
    sortConfig,
-   commingSoon,
+   commingSoon, // 입고예정 임시용   
    pagination,
 }: {
    listArray: ProductData[];
+   // sortOptions: { id: string; display: string }[];
    sortConfig?: {
       sort: { id: string; display: string };
       setSort: (opt: { id: string; display: string }) => void;
       sortOptions: { id: string; display: string }[];
    };
    commingSoon?: boolean;
-   pagination?: {
-      page: number;
-      totalPages: number;
-      onChange: (p: number) => void;
-   };
+   pagination?: { page: number; maxPage: number; setPage: (p: number) => void }
 }) {
+   // const [sort, setSort] = useState(sortOptions?.[0]); // 정렬 상태 관리
    const listLength = listArray.length;
 
    return (
@@ -142,31 +139,35 @@ export function BaseProductList({
          {listLength > 0 ? (
             <>
                <SortFilter length={listLength} sortConfig={sortConfig} />
-
+               {/* sortOptions={sortOptions} */}
                <VerticalFlex alignItems="start">
-                  <MasonryGrid gap={20} width={"100%"}>
-                     {listArray.map((product: ProductData) => (
-                        <ProductCard
-                           key={product.id}
-                           product={product}
-                           commingSoon={commingSoon}
-                           lineClamp={2}
-                           width={200}
-                        />
-                     ))}
+                  <MasonryGrid gap={20} width={'100%'}>
+                     {
+                        listArray.map((product: ProductData, i) => {
+                           return (
+                              <ProductCard
+                                 key={product.id}
+                                 product={product}
+                                 commingSoon={commingSoon}
+                                 lineClamp={2}
+                                 width={200}
+                              />
+                           )
+                        })
+                     }
                   </MasonryGrid>
                </VerticalFlex>
-               {pagination && (
+               {pagination && pagination.maxPage > 0 && (
                   <ListPagination
                      page={pagination.page}
-                     totalPages={pagination.totalPages}
-                     onChange={pagination.onChange}
+                     maxPage={pagination.maxPage}
+                     onChange={pagination.setPage}
                   />
                )}
             </>
          ) : (
-            <NoContent type={"상품"} />
+            <NoContent type={'상품'} />
          )}
       </>
-   );
+   )
 }

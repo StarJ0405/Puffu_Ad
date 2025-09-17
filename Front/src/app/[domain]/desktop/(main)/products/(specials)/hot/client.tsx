@@ -65,7 +65,7 @@ export function HotList({
   );
   return (
     <>
-      <BaseProductList listArray={discount} />
+      <BaseProductList listArray={discount} pagination={{ page, maxPage, setPage }} />
     </>
   );
 }
