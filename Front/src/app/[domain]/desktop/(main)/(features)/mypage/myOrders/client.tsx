@@ -15,6 +15,7 @@ import clsx from "clsx";
 import mypage from "../mypage.module.css";
 import DatePicker from "@/components/date-picker/DatePicker";
 import { openTrackingNumber } from "@/shared/utils/Functions";
+import Dummy from "@/components/dummy/Dummy";
 
 const getStatusKorean = (status: string) => {
   switch (status) {
@@ -164,7 +165,7 @@ export function MyOrdersTable() {
 
   return (
     <>
-      <VerticalFlex className={styles.search_box}>
+      <HorizontalFlex className={styles.search_box}>
         <VerticalFlex className={styles.search_input_box}>
           <h5>상품 검색</h5>
           <FlexChild className={styles.keyword}>
@@ -189,6 +190,7 @@ export function MyOrdersTable() {
 
         <VerticalFlex className={styles.picker_input_box}>
           <VerticalFlex className={styles.dataPicker_box}>
+            <h5>기간 선택</h5>
             <FlexChild className={styles.btn_wrap}>
               <Button
                 className={clsx(styles.term_btn, {
@@ -235,15 +237,15 @@ export function MyOrdersTable() {
             </FlexChild>
           </VerticalFlex>
         </VerticalFlex>
-      </VerticalFlex>
-      <VerticalFlex gap={20}>
+      </HorizontalFlex>
+      <VerticalFlex gap={30}>
         {orders.length > 0 ? (
           orders.map((item, i) => (
             <VerticalFlex key={i} className={styles.order_group}>
               <FlexChild className={styles.order_header}>
-                <P size={15} weight={500}>
+                <P size={15} weight={500} padding={"0 10px 0 0"}>
                   {item.date}{" "}
-                  <Span color="var(--main-color1)">
+                  <Span color="var(--main-color1)" padding={"0 0 0 4px"}>
                     [{getStatusKorean(item.status)}]
                   </Span>
                 </P>
@@ -258,11 +260,24 @@ export function MyOrdersTable() {
               </FlexChild>
 
               <VerticalFlex className={styles.order_items_container}>
+                <HorizontalFlex backgroundColor={"#323232"} padding={"12px 0"}>
+                  <FlexChild width={"70%"} justifyContent={"center"}>
+                    <P color={"#cfcfcf"}>상품정보</P>
+                  </FlexChild>
+                  <FlexChild width={"15%"} justifyContent={"center"}>
+                    <P color={"#cfcfcf"}>할인금액</P>
+                  </FlexChild>
+                  <FlexChild width={"15%"} justifyContent={"center"}>
+                    <P color={"#cfcfcf"}>결제금액</P>
+                  </FlexChild>
+                </HorizontalFlex>
+                <Dummy height={15} />
                 {item.content.map((child: any, j: number) => (
-                  <VerticalFlex
+                  <HorizontalFlex
                     key={j}
                     className={styles.list_item}
                     gap={15}
+                    padding={"0 0 15px 0"}
                   >
                     {/* 상품 단위 */}
                     <HorizontalFlex className={styles.unit}>
@@ -275,6 +290,8 @@ export function MyOrdersTable() {
                         className={styles.unit_content}
                         width={"auto"}
                         alignItems="start"
+                        padding={"0 0 0 10px"}
+                        gap={10}
                       >
                         <FlexChild gap={5}>
                           <Span className={styles.unit_brand}>
@@ -291,28 +308,34 @@ export function MyOrdersTable() {
                         >
                           {child.title}
                         </P>
+
+                      {/* 옵션 리스트 */}
+                      {child?.option && child?.option.length > 0 && (
+                        <VerticalFlex className={styles.option_list}>
+                          {child.option.map((option: any, k: number) => (
+                            <HorizontalFlex key={k} gap={10}>
+                              <P>{option.title}</P>
+                              <Span> + {option.price}원</Span>
+                            </HorizontalFlex>
+                          ))}
+                        </VerticalFlex>
+                      )}
+
                       </VerticalFlex>
                     </HorizontalFlex>
+                    
+    
 
-                    {/* 옵션 리스트 */}
-                    <VerticalFlex className={styles.option_list}>
-                      {child.option.map((option: any, k: number) => (
-                        <HorizontalFlex key={k} gap={10}>
-                          <P>{option.title}</P>
-                          <Span> + {option.price}원</Span>
-                        </HorizontalFlex>
-                      ))}
-                    </VerticalFlex>
+                    
+                    
 
                     {/* 가격 박스 */}
-                    <HorizontalFlex className={styles.item_price_box}>
-                      <FlexChild>
-                        <P>할인금액 : </P>
+                    <HorizontalFlex width={"30%"} className={styles.item_price_box} paddingBottom={30}>
+                      <FlexChild justifyContent={"center"}>
                         <Span>{child.discountAmount}원</Span>
                       </FlexChild>
 
-                      <FlexChild>
-                        <P>결제 금액 : </P>
+                      <FlexChild justifyContent={"center"}>
                         <Span
                           color="var(--main-color1)"
                           weight={600}
@@ -322,7 +345,7 @@ export function MyOrdersTable() {
                         </Span>
                       </FlexChild>
                     </HorizontalFlex>
-                  </VerticalFlex>
+                  </HorizontalFlex>
                 ))}
               </VerticalFlex>
 
