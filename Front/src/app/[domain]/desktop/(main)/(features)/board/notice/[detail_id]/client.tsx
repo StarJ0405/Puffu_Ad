@@ -10,12 +10,13 @@ import Span from "@/components/span/Span";
 import useData from "@/shared/hooks/data/useData";
 import { requester } from "@/shared/Requester";
 import boardStyle from "../../boardGrobal.module.css";
-import { SelectBox } from "../../client";
+
 import styles from "./page.module.css";
 
 import Div from "@/components/div/Div";
 import NoContent from "@/components/noContent//noContent";
 import useNavigate from "@/shared/hooks/useNavigate";
+import { SelectBox } from "../../faq/client";
 
 export function BoardTitleBox() {
   return (

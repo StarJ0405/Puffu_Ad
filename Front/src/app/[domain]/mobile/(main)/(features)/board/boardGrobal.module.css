@@ -18,6 +18,16 @@
    line-height: 1.2;
 }
 
+.board_searchBox .search_box {
+  border: 1px solid #797979;
+  border-radius: 5px;
+  padding: 0;
+  background: #1a141d;
+  display: flex;
+  align-items: center;
+  width: max-content;
+}
+
 /* 게시판 리스트 스타일 */
 
 /* .board_searchBox .search_box {width: auto;} */
@@ -25,27 +35,33 @@
 /* .board_searchBox .search_box > * {flex: 1;} */
 
 .board_searchBox .search_box input {
-   font-size: 16px;
-   padding: 11px 10px;
-   border: none;
-   width: 100%;
-   max-width: 270px;
+  font-size: 16px;
+  padding: 11px 15px;
+  border: none;
+  flex: 1;
+  background: transparent;
+  color: #fff;
+  min-width: 0;
 }
 
 .board_searchBox .search_box .searchBtn {
-   padding: 11px 13px;
-   font-size: 14px;
-   font-weight: 500;
-   color: #fff;
-   background: #323232;
-   border-radius: 5px;
-   min-width: 50px;
-   transition: all 0.1s;
-   width: auto;
+  padding: 11px 15px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  background: transparent;
+  border-radius: 0;
+  min-width: auto;
+  transition: all 0.1s;
+  width: auto;
+  border-left: 1px solid #797979;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
 }
 
 .board_searchBox .search_box .searchBtn:hover {
-   background: #050505;
+  background: #050505;
 }
 
 /* 검색창 필터 셀렉트 */

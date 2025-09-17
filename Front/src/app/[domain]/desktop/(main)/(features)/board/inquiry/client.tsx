@@ -28,12 +28,15 @@ import boardStyle from "../boardGrobal.module.css";
 import Input from "@/components/inputs/Input";
 import ListPagination from "@/components/listPagination/ListPagination";
 import Link from "next/link";
+
 import { SelectBox } from "../client";
+
 import { useRouter } from "next/navigation";
 import { toast } from "@/shared/utils/Functions";
 
+
 interface QADataWithUser extends QAData {
-  user?: UserData;
+   user?: UserData;
 }
 
 // 게시판 리스트 -----------------------------------------------
@@ -51,51 +54,52 @@ export function BoardTitleBox() {
 }
 
 export function BoardTable() {
-  const [qaList, setQaList] = useState<QADataWithUser[]>([]);
-  const { userData } = useAuth();
-  const router = useRouter();
+   const [qaList, setQaList] = useState<QADataWithUser[]>([]);
+   const { userData } = useAuth();
+   const router = useRouter();
 
-  useEffect(() => {
-    const fetchQAs = async () => {
-      const res = await requester.getTotalQAs({
-        relations: ["user"],
-      });
-      if (res?.content) {
-        setQaList(res.content);
+   useEffect(() => {
+      const fetchQAs = async () => {
+         const res = await requester.getTotalQAs({
+            relations: ["user"],
+         });
+         if (res?.content) {
+            setQaList(res.content);
+         }
+      };
+      fetchQAs();
+   }, []);
+
+   const formatDate = (dateString: string) => {
+      const date = new Date(dateString);
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+         2,
+         "0"
+      )}-${String(date.getDate()).padStart(2, "0")} ${String(
+         date.getHours()
+      ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+   };
+
+   const getQaTypeKorean = (type: string) => {
+      switch (type) {
+         case "exchange":
+            return "교환";
+         case "refund":
+            return "환불";
+         case "etc":
+         default:
+            return "기타";
       }
-    };
-    fetchQAs();
-  }, []);
+   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-      2,
-      "0"
-    )}-${String(date.getDate()).padStart(2, "0")} ${String(
-      date.getHours()
-    ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
-  };
+   const handleTitleClick = (item: QADataWithUser) => {
+      if (userData?.role !== "admin" || userData?.id !== item.user?.id) {
+         toast({ message: "비밀글은 작성자만 확인할 수 있습니다." });
+         return;
+      }
+      router.push(`/board/inquiry/${item.id}`);
+   };
 
-  const getQaTypeKorean = (type: string) => {
-    switch (type) {
-      case "exchange":
-        return "교환";
-      case "refund":
-        return "환불";
-      case "etc":
-      default:
-        return "기타";
-    }
-  };
-
-  const handleTitleClick = (item: QADataWithUser) => {
-    if (userData?.role !== "admin" || userData?.id !== item.user?.id) {
-      toast({ message: "비밀글은 작성자만 확인할 수 있습니다." });
-      return;
-    }
-    router.push(`/board/inquiry/${item.id}`);
-  };
 
   return (
     <VerticalFlex>
@@ -202,6 +206,7 @@ export function BoardTable() {
       </FlexChild>
     </VerticalFlex>
   );
+
 }
 
 // 게시판 리스트 end -----------------------------------------------
