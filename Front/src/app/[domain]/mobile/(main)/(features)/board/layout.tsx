@@ -12,7 +12,7 @@ export default async function ({
 
   return (
     <section className="root page_container">
-      <BoardHeader />
+      {/* <BoardHeader /> */}
       {children}
     </section>
   );

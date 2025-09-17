@@ -9,9 +9,9 @@ export default async function WritePage() {
 
   return (
     <VerticalFlex className={boardStyle.board_frame}>
-      <FlexChild className={boardStyle.board_titleBox}>
+      {/* <FlexChild className={boardStyle.board_titleBox}>
         <h3>1:1문의</h3>
-      </FlexChild>
+      </FlexChild> */}
 
       <WriteFrame />
     </VerticalFlex>

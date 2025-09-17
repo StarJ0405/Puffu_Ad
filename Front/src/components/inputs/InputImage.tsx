@@ -17,6 +17,7 @@ import FlexChild from "../flex/FlexChild";
 import FlexGrid from "../flex/FlexGrid";
 import VerticalFlex from "../flex/VerticalFlex";
 import styles from "./InputImage.module.css";
+import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
 interface InputImageProps {
   name?: string;
   path?: string;
@@ -54,6 +55,7 @@ const InputImage = forwardRef(
     const [images, setImages] = useState<any[]>([]);
     const [isUploading, setIsUploading] = useState(false);
     const [target, setTarget] = useState(-1);
+    const isMobile = useBrowserEvent;
 
     const processFileToImage = useCallback(async (file: File) => {
       return new Promise((resolve) => {
@@ -245,14 +247,14 @@ const InputImage = forwardRef(
             {images?.length === 0 ? (
               <VerticalFlex justifyContent="center" gap={10}>
                 <FlexChild justifyContent="center" gap={10}>
-                  <ImageCompnent src="/resources/icons/photo 1.svg" size={45} />
+                  <ImageCompnent src="/resources/icons/photo 1.svg" size={!isMobile ? 45 : 35} />
                   <ImageCompnent
                     src="/resources/icons/add-folder 1.svg"
-                    size={45}
+                    size={!isMobile ? 45 : 35}
                   />
                 </FlexChild>
                 <FlexChild justifyContent="center">
-                  <P>이미지 파일을 드래그 앤 드롭해주세요</P>
+                  <P fontSize={!isMobile ? 16 : 13} color="#797979">이미지 파일을 드래그 앤 드롭해주세요</P>
                 </FlexChild>
                 <FlexChild justifyContent="center">
                   {placeHolder && (
@@ -260,7 +262,7 @@ const InputImage = forwardRef(
                   )}
                 </FlexChild>
                 <FlexChild justifyContent="center">
-                  <Button styleType="admin" fontSize={16} padding={"8px 16px"}>
+                  <Button styleType="admin" fontSize={!isMobile ? 16 : 13} color="#eee" padding={!isMobile ? "8px 16px" : "5px 16px"}>
                     업로드
                   </Button>
                 </FlexChild>
@@ -275,9 +277,9 @@ const InputImage = forwardRef(
                     key={`${image.url.slice(image.url.length - 5)}_${index}`}
                   >
                     <VerticalFlex justifyContent="center" gap={10}>
-                      <ImageCompnent src={image.url} size={100} />
+                      <ImageCompnent src={image.url} size={!isMobile ? 100 : 50} />
                       <P fontSize={"small"}>{image?.name}</P>
-                      <FlexChild justifyContent="center" gap={5}>
+                      <FlexChild justifyContent="center" gap={5} marginTop={10}>
                         <Button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -288,6 +290,8 @@ const InputImage = forwardRef(
                           }}
                           className={styles.button1}
                           styleType="admin2"
+                          color="#fff"
+                          fontSize={!isMobile ? 14 : 13}
                         >
                           변경
                         </Button>
