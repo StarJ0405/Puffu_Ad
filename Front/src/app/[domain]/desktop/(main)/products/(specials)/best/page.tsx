@@ -9,7 +9,7 @@ import { requester } from "@/shared/Requester";
 
 export default async function () {
   const bestCondition: any = {
-    pageSize: 12,
+    pageSize: 24,
     order: "best",
   };
   const bestProducts = await requester.getProducts(bestCondition);
