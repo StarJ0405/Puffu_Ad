@@ -1,18 +1,16 @@
 .detail_container {
-   background: #161616;
-   border-radius: 10px;
-   padding: 25px 35px;
    margin-bottom: 20px;
 }
 
 .board_header .title_box {
-   padding: 15px 5px;
+   padding: 13px 5px;
    border-bottom: 1px solid #6B6B6B;
 }
 
 .board_header .title_box > * {width: fit-content;}
-.board_header .title_box .title {font-size: 25px; color: #fff;font-weight: 600;}
-.board_header .title_box .date {font-size: 14px; color: #dadada !important;}
+.board_header .title_box .title {font-size: 20px; color: #fff;font-weight: 600;}
+.board_header .title_box .date {font-size: 12px; color: #797979 !important;}
+.board_header .title_box .name {font-size: 13px; color: #ddd;}
 
 
 .board_header .title_box .view_comment_box {font-size: 14px; color: #DADADA;}
@@ -52,16 +50,14 @@
 .edit_button_group button:hover {background: var(--main-color2);}
 
 .list_btn {
-   width: 130px;
-   padding: 15px 5px;
-   font-size: 20px;
+   width: 100%;
+   padding: 13px 5px;
+   font-size: 16px;
    font-weight: 600;
    color: #fff;
    background: #050505;
    transition: all 0.2s;
 }
-
-.list_btn:hover {background: var(--main-color2);}
 
 
 
@@ -71,6 +67,7 @@
   margin-top: 20px;
   border-top: 1px solid #6b6b6b;
   padding-top: 20px;
+  margin-bottom: 40px;
 }
 
 .answer_header {
@@ -80,9 +77,11 @@
 
 .answer_content {
   background-color: #2c2c2c;
-  padding: 20px;
+  padding: 10px;
   border-radius: 5px;
   color: #fff;
   white-space: pre-wrap;
   line-height: 1.6;
+  font-size: 14px;
+  min-height: 100px;
 }

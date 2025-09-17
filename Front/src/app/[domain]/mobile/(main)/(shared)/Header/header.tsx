@@ -28,7 +28,7 @@ export default function MobileHeader() {
    const [showSearch, setShowSearch] = useState(false);
 
    const shouldHideHeader = 
-   params.detail_id || pathname.includes("/orders") || pathname.includes("/border") || pathname.includes("/mypage");
+   pathname.includes("/orders") || pathname.includes("/border") || pathname.includes("/mypage");
 
    return (
       <>

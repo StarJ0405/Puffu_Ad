@@ -16,6 +16,17 @@ import { useParams } from "next/navigation";
 import useNavigate from "@/shared/hooks/useNavigate";
 
 // 게시판 리스트 -----------------------------------------------
+<<<<<<< HEAD
+// export function BoardTitleBox() {
+//   return (
+//     <HorizontalFlex className={clsx(boardStyle.board_titleBox, styles.event_titleBox)}>
+//       <FlexChild>
+//         <h3>이벤트</h3>
+//       </FlexChild>
+//     </HorizontalFlex>
+//   );
+// }
+=======
 export function BoardTitleBox() {
   return (
     <HorizontalFlex
@@ -28,6 +39,7 @@ export function BoardTitleBox() {
     </HorizontalFlex>
   );
 }
+>>>>>>> 9675c82a913cf366dda28c6710abf591cd41f2a3
 
 export function GalleryTable() {
   const event = [
@@ -76,7 +88,7 @@ export function GalleryTable() {
 
   return (
     <VerticalFlex>
-      <HorizontalFlex className={styles.event_tab}>
+      {/* <HorizontalFlex className={styles.event_tab}>
         <FlexChild className={clsx(styles.tab_btn, styles.active)}>
           <P>전체보기</P>
         </FlexChild>
@@ -88,7 +100,7 @@ export function GalleryTable() {
         <FlexChild className={styles.tab_btn}>
           <P>종료된 이벤트</P>
         </FlexChild>
-      </HorizontalFlex>
+      </HorizontalFlex> */}
 
       <FlexChild>
         {event.length > 0 ? (

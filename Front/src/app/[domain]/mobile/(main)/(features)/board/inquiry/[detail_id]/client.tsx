@@ -26,8 +26,7 @@ export function BoardTitleBox() {
   return (
     <HorizontalFlex className={boardStyle.board_titleBox}>
       <FlexChild>
-        {/* 여기 현재 path 주소에 맞게 이름 바뀌게 해야 함. */}
-        <h3>공지사항</h3>
+        <h3>1:1문의</h3>
       </FlexChild>
     </HorizontalFlex>
   );
@@ -99,9 +98,9 @@ export function DetailFrame() {
         </HorizontalFlex>
 
       </VerticalFlex>
-      <VerticalFlex className={styles.content_box} padding={"40px 0 100px"}>
-        <FlexChild marginBottom={80}>
-          <P size={16} color="#fff" weight={500}>
+      <VerticalFlex className={styles.content_box} padding={"25px 10px 40px"}>
+        <FlexChild marginBottom={50}>
+          <P size={14} color="#fff" weight={500}>
             {qaData.content}
           </P>
         </FlexChild>
@@ -296,7 +295,6 @@ export function BoardTable() {
                 <td>
                   <Span weight={400}>{list.views}</Span>
                 </td>
-
                 {/* 날짜 */}
                 {/* 공지사항은 년월일까지 표시, 1:1문의는 분시초도 표시. */}
                 <td>

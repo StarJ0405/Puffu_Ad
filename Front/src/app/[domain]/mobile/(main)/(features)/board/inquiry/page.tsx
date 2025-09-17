@@ -29,8 +29,11 @@ export default async function InquiryBoard() {
    return (
       <>
          <VerticalFlex className={boardStyle.board_frame}>
+            <FlexChild className={boardStyle.title_box}>
+              <h3 className={boardStyle.title}>1:1문의</h3>
+            </FlexChild>
             <BoardTable />
-            <SearchBox />
+            {/* <SearchBox /> */}
          </VerticalFlex>
       </>
    )

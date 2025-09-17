@@ -22,6 +22,8 @@ export default function BottomNavi() {
    const pathname = usePathname();
    const { userData } = useAuth();
 
+   const shouldHideHeader = !pathname.includes(`/products/${params.detail_id}`);
+
    return (
       <> 
 
@@ -54,7 +56,7 @@ export default function BottomNavi() {
 
 
          {
-            !params.detail_id? ( // detail 페이지일때는 숨겨짐.
+            shouldHideHeader? ( // detail 페이지일때는 숨겨짐.
                <HorizontalFlex className={styles.bottom_navi}>
                   <VerticalFlex className={styles.item} onClick={() => setActive(prev => !prev)}>
                      <Image src={`/resources/images/bottomNavi/navi_category${active ? '_active' : ''}.png`} width={20} />
