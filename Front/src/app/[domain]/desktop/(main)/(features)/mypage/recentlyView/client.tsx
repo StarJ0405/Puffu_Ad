@@ -48,7 +48,7 @@ export function RecentlyViewTable() {
       </HorizontalFlex>
       {recents.length > 0 ? (
         <VerticalFlex>
-          <MasonryGrid width={'100%'} gap={15} breakpoints={2}>
+          <MasonryGrid width={'100%'} gap={15} breakpoints={5}>
             {recents.map((product: ProductData, i: number) => {
               return (
                 <ProductCard
