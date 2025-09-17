@@ -31,6 +31,7 @@ import PurchaseModal from "./main/product/PurchaseModal";
 import SearchModal from "./main/search/SearchModal";
 import SelectModal from "./main/select/SelectModal";
 import TableModal from "./table/TableModal";
+import QAModal from "./admin/qa/QAModal";
 
 function ModalHandler() {
   NiceModal.register("toast", ToastModal);
@@ -67,6 +68,7 @@ function ModalHandler() {
   NiceModal.register("categoryDetail", CategoryModal);
   NiceModal.register("shippingMethodList", ShippingMethodListModal);
   NiceModal.register("shippingMethodDetail", ShippingMethodDetailModal);
+  NiceModal.register("QADetail", QAModal);
   return <></>;
 }
 

@@ -575,3 +575,16 @@ export function maskEmail(email: string): string {
 
   return local.slice(0, 4) + "*".repeat(local.length - 4) + "@" + domain;
 }
+export function getQAType(qa: any) {
+  switch (qa.type) {
+    case "refund":
+      return "환불문의";
+    case "exchange":
+      return "교환문의";
+    default: {
+      if (qa.product_id) return "상품문의";
+      else if (qa.order_id를) return "주문/결제/배송 문의";
+      else return "기타 문의";
+    }
+  }
+}

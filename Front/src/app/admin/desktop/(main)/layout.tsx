@@ -9,9 +9,9 @@ export default async function ({ children }: { children: React.ReactNode }) {
 
         height: "100dvh",
         backgroundColor: "#F5F6FB",
-        overflow: "scroll",
-        scrollbarWidth: "none",
-        msOverflowStyle: "none",
+        overflow: "auto",
+        // scrollbarWidth: "none",
+        // msOverflowStyle: "none",
       }}
     >
       <div
