@@ -35,7 +35,7 @@ const editInfoModal = (userData: any, navigate: (path: string) => void) => { // 
     onConfirm: async () => {
       try {
         const res = await requester.checkCurrentPassword({ password });
-        console.log('Password check result:', res);
+        
         if (res.message === 'success') {
           navigate('/mypage/editInfo');
         } else {
@@ -55,9 +55,7 @@ export function Profile() {
 
   const navigate = useNavigate();
   const { userData } = useAuth(); // 유저정보 받아오기
-  useEffect(() => {
-    console.log(userData);
-  }, [])
+  
 
   return (
     <VerticalFlex className={clsx(styles.profile, styles.box_frame)}>

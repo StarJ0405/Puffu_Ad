@@ -33,7 +33,7 @@ export function RecentlyViewTable() {
     },
     { onReprocessing: (data) => data?.content || [] }
   );
-  console.log(recents);
+  
 
   const ListProduct: ListItem[] = [
     // 임시

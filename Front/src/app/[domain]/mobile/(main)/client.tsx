@@ -37,7 +37,7 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
 
   const swiperRef = useRef<SwiperType | null>(null);
 
-  // console.log('배너', banners);
+  
 
   const paintBullets = (swiper: SwiperType) => {
     // 페이지네이션 스타일 설정

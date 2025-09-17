@@ -40,7 +40,7 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
 
   // useEffect(() => {
   //   requester.getBanners((result: BannerData[]) => {
-  //     console.log(result);
+  
   //     setBanners(result);
   //   });
   // }, []);
@@ -352,7 +352,7 @@ export function ProductList({
     Load(); // 서버에서도 다음 페이지 로드
   };
 
-  // console.log('상품', products);
+  
 
   return (
     <>

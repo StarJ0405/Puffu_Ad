@@ -48,7 +48,7 @@ export function DetailFrame() {
           id: detail_id,
           relations: ["user"],
         });
-        console.log(res);
+        
         if (res?.content?.[0]) {
           const data = res.content[0];
           setQaData(data);

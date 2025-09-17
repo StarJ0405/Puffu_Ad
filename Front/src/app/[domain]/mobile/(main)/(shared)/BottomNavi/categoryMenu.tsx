@@ -31,7 +31,8 @@ export default function CategoryMenu({ CaOpen, onClose, }: { CaOpen?: boolean; o
     fetchData();
   }, []);
 
-    console.log('카테고리1', categoriesData);
+
+    
 
   const [activeDepth1, setActiveDepth1] = useState<string | null>(null);
 

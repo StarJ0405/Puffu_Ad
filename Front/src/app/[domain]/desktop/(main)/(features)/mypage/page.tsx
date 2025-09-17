@@ -18,7 +18,7 @@ import { ReviewList } from "./review/client";
 
 export default async function ({ params }: { params: Promise<Params> }) {
   const { id } = await params;
-  console.log(id);
+  
 
   return (
     <>

@@ -97,9 +97,9 @@ export function MyOrdersTable() {
         if (query && query.length > 0) {
           data.q = query;
         }
-        console.log("data: ", data);
+        
         const res = await requester.getOrders(data);
-        console.log("res: ", res);
+        
         if (res.content) {
           const formattedOrders = formatOrders(res.content);
           setOrders(formattedOrders);

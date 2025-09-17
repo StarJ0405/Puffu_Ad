@@ -17,7 +17,7 @@ export default async function () {
   };
   const hotProducts = await requester.getProducts(hotCondition);
 
-  console.log('핫',hotProducts.conent);
+
 
   return (
     <section className="root">

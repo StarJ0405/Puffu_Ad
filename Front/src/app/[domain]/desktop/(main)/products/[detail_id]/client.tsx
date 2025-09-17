@@ -52,6 +52,12 @@ export function ProductWrapper({
   const { reload } = useCart();
   const [shipping, setShipping] = useState<ShippingMethodData>();
   const [freeShipping, setFreeShipping] = useState<ShippingMethodData>();
+  const [qaList, setQaList] = useState<QAData[]>([]);
+  const [totalQaCount, setTotalQaCount] = useState(0);
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+  const pageSize = 5;
+
   const { product, mutate } = useData(
     "product",
     { ...initCondition, id: initProduct?.content?.id },
@@ -71,6 +77,27 @@ export function ProductWrapper({
       quantity: 0,
     }))
   );
+
+  const fetchQAs = async (pageNumber: number) => {
+    const res = await requester.getProductQAs(initProduct?.content?.id, {
+      relations: ["user"],
+      pageSize: pageSize,
+      pageNumber: pageNumber - 1,
+    });
+    
+    if (res) {
+      setQaList(res.content);
+      setTotalPage(res.totalPages);
+      setTotalQaCount(res.NumberOfTotalElements);
+    }
+  };
+
+  useEffect(() => {
+    if (initProduct?.content?.id) {
+      fetchQAs(page);
+    }
+  }, [initProduct?.content?.id, page]);
+
 
   const onWishClick = () => {
     if (product.wish) {
@@ -192,7 +219,15 @@ export function ProductWrapper({
         {children}
 
         <HorizontalFlex marginTop={30} alignItems="start" gap={40}>
-          <DetailTabContainer product={product} />
+          <DetailTabContainer
+            product={product}
+            totalQaCount={totalQaCount}
+            qaList={qaList}
+            page={page}
+            totalPage={totalPage}
+            setPage={setPage}
+            fetchQAs={fetchQAs}
+          />
           <MiniInfoBox
             product={product}
             selected={selected}
@@ -512,7 +547,7 @@ export function ProductSlider({
 }) {
   return (
     <>
-      {listArray.length > 0 ? (
+      {listArray?.length > 0 ? (
         <FlexChild id={id} className={styles.ProductSlider}>
           <Swiper
             loop={false}
@@ -526,7 +561,7 @@ export function ProductSlider({
               nextEl: `#${id} .${styles.nextBtn}`,
             }}
           >
-            {listArray.map((product: ProductData, i: number) => {
+            {listArray?.map((product: ProductData, i: number) => {
               return (
                 <SwiperSlide key={i}>
                   <ProductCard product={product} lineClamp={lineClamp ?? 2} />
@@ -556,7 +591,23 @@ export function ProductSlider({
 }
 
 // 제품 정보 및 내용
-export function DetailTabContainer({ product }: { product: ProductData }) {
+export function DetailTabContainer({
+  product,
+  totalQaCount,
+  qaList,
+  page,
+  totalPage,
+  setPage,
+  fetchQAs,
+}: {
+  product: ProductData;
+  totalQaCount: number;
+  qaList: QAData[];
+  page: number;
+  totalPage: number;
+  setPage: Dispatch<SetStateAction<number>>;
+  fetchQAs: (pageNumber: number) => void;
+}) {
   const [tabParams, setTabParams] = useState("description");
   const tabParamsChange = (params: string) => {
     setTabParams(params);
@@ -568,7 +619,19 @@ export function DetailTabContainer({ product }: { product: ProductData }) {
       component: <Description product={product} />,
     },
     // { name: "사용후기", paramsName: "review", component: <Review /> }, 잠시 가려놓음
-    { name: "상품 Q&A", paramsName: "inquiry", component: <Inquiry /> },
+    {
+      name: "상품 Q&A",
+      paramsName: "inquiry",
+      component: (
+        <Inquiry
+          qaList={qaList}
+          page={page}
+          totalPage={totalPage}
+          setPage={setPage}
+          fetchQAs={fetchQAs}
+        />
+      ),
+    },
     {
       name: "배송/반품/교환/안내",
       paramsName: "deliveryGuide",
@@ -591,7 +654,7 @@ export function DetailTabContainer({ product }: { product: ProductData }) {
             <P>
               {item.name}
               {["review", "inquiry"].includes(item.paramsName) && (
-                <Span className={styles.list_count}>0</Span> // 리뷰, qna 개수 출력
+                <Span className={styles.list_count}>{totalQaCount}</Span> // 리뷰, qna 개수 출력
               )}
             </P>
           </FlexChild>

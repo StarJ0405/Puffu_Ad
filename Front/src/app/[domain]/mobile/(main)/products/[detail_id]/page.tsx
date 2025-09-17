@@ -36,7 +36,7 @@ export default async function ({ params }: { params: Promise<Params> }) {
     category_id: initProduct.content.category_id,
     pageSize: 24,
   });
-  // console.log('상품 정보', relationProducts);
+  
 
   return (
     <>
