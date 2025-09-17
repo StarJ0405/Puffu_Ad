@@ -32,8 +32,6 @@ export function TitleBox({ category_id }: { category_id: any }) {
   const category = findCategoryById(categoriesData, category_id);
   const navigate = useNavigate();
 
-  
-
   return (
     <VerticalFlex className={styles.title_box}>
       <h3>{category?.name ?? "카테고리"}</h3>
@@ -135,6 +133,7 @@ export function CategoryList({
   return (
     <>
       <BaseProductList
+        id=""
         listArray={categories}
         initCondition={initCondition}
         initProducts={initProducts}

@@ -273,7 +273,7 @@ export function BoardTable() {
         {boardData.length > 0 ? null : <NoContent type={"게시판"} />}
       </FlexChild>
       <FlexChild className={boardStyle.list_bottom_box}>
-        <ListPagination />
+        {/* <ListPagination maxPage={}/> */}
       </FlexChild>
     </VerticalFlex>
   );

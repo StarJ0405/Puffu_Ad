@@ -12,7 +12,7 @@ import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
 import Link from "next/link";
 import boardStyle from "../boardGrobal.module.css";
-import {SelectBox} from "../client"
+import { SelectBox } from "../client";
 import useNavigate from "@/shared/hooks/useNavigate";
 
 // const pathname = usePathname();
@@ -154,7 +154,7 @@ export function BoardTable() {
                     height={"100%"}
                     className={boardStyle.td_title}
                     width={"fit-content"}
-                    onClick={()=> navigate('/board/notice/')}
+                    onClick={() => navigate("/board/notice/")}
                   >
                     <P lineClamp={1} overflow="hidden" display="--webkit-box">
                       {list.title}
@@ -202,10 +202,10 @@ export function BoardTable() {
             ))}
           </tbody>
         </table>
-        {boardData.length > 0 ? null : <NoContent type={'게시판'} />}
+        {boardData.length > 0 ? null : <NoContent type={"게시판"} />}
       </FlexChild>
       <FlexChild className={boardStyle.list_bottom_box}>
-        <ListPagination />
+        {/* <ListPagination /> */}
       </FlexChild>
     </VerticalFlex>
   );
