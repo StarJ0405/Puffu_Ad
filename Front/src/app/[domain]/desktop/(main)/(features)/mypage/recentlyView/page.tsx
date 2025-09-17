@@ -14,12 +14,6 @@ export default async function () {
    return (
       <>
          <VerticalFlex className={clsx(mypage.box_frame, styles.delivery_box)} gap={35}>
-            <FlexChild className={mypage.box_header}>
-               <P>최근 본 상품</P>
-               <FlexChild className={mypage.header_subTitle}>
-                  <P>전체 상품 56</P>
-               </FlexChild>
-            </FlexChild>
 
             <RecentlyViewTable />
          </VerticalFlex>
