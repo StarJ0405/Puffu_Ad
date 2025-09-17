@@ -64,6 +64,8 @@ const VariantModal = NiceModal.create(
               visible: radio[0],
               buyable: radio[1],
             };
+            const code = inputs.current[4].getValue();
+            if (code) _data.code = code;
             if (options && options?.length > 0) {
               const values = options
                 .sort((o1, o2) => o1.title.localeCompare(o2.title))
@@ -192,11 +194,32 @@ const VariantModal = NiceModal.create(
           <FlexChild hidden={type === "single"}>
             <HorizontalFlex>
               <FlexChild className={styles.head}>
+                <P>옵션코드</P>
+              </FlexChild>
+              <FlexChild className={styles.content}>
+                {edit ? (
+                  <Input
+                    value={variant?.code}
+                    width={"100%"}
+                    ref={(el) => {
+                      inputs.current[4] = el;
+                    }}
+                  />
+                ) : (
+                  <P>{variant?.code}</P>
+                )}
+              </FlexChild>
+            </HorizontalFlex>
+          </FlexChild>
+          <FlexChild hidden={type === "single"}>
+            <HorizontalFlex>
+              <FlexChild className={styles.head}>
                 <P>증감액</P>
               </FlexChild>
               <FlexChild className={styles.content}>
                 {edit ? (
                   <InputNumber
+                    max={99999999}
                     value={variant?.extra_price}
                     width={"100%"}
                     ref={(el) => {

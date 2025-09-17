@@ -18,6 +18,9 @@ import { Product } from "./product";
 @Index(["created_at"])
 // CREATE INDEX IF NOT EXISTS idx_varaint_title ON public.variant USING GIN (fn_text_to_char_array(title));
 export class Variant extends BaseEntity {
+  @Column({ type: "character varying", nullable: true })
+  code?: string;
+
   @Column({ type: "character varying", nullable: false })
   product_id?: string;
 
@@ -34,6 +37,9 @@ export class Variant extends BaseEntity {
   @Column({ type: "real", nullable: false, default: 0.0 })
   extra_price!: number;
 
+  get total_code(): string {
+    return `${this.product?.code ?? ""}${this.code ? `-${this.code}` : ""}`;
+  }
   get price(): number {
     return this.extra_price + (this.product?.price || 0);
   }
@@ -84,6 +90,7 @@ export class Variant extends BaseEntity {
       price: this.price,
       discount_price: this.discount_price,
       discount_rate: this.discount_rate,
+      total_code: this.total_code,
     };
   }
 }

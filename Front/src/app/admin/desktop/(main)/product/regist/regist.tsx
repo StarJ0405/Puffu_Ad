@@ -86,9 +86,12 @@ export default function ({
   const handleSave = async () => {
     if (!store) return scrollTo("store", "스토어를 설정해주세요.");
     if (!brand) return scrollTo("brand", "입점사를 설정해주세요.");
+
     if (!category) return scrollTo("category", "카테고리를 설정해주세요.");
     const title = inputs.current[0].getValue();
     if (!title) return scrollTo("title", "상품명을 입력해주세요.");
+    const code = inputs.current[5].getValue();
+    // if (!code) return scrollTo("code", "상품코드를 입력해주세요.");
     setIsLoading(true);
     if (!(await optionRef?.current?.isValid?.())) return setIsLoading(false);
     const {
@@ -104,6 +107,7 @@ export default function ({
           brand_id: brand,
           category_id: category.id,
           // adult,
+          code,
           visible: radio[0],
           buyable: radio[1],
           title: title,
@@ -313,6 +317,37 @@ export default function ({
                         </FlexChild>
                       </HorizontalFlex>
                     </FlexChild>
+                    <FlexChild
+                      border={"1px solid #EFEFEF"}
+                      borderRight={"none"}
+                      borderLeft={"none"}
+                    >
+                      <HorizontalFlex gap={20}>
+                        <FlexChild
+                          width={"130px"}
+                          padding={"18px 15px"}
+                          backgroundColor={"#F5F6FB"}
+                          justifyContent={"center"}
+                        >
+                          <P size={16} weight={600}>
+                            상품코드
+                          </P>
+                        </FlexChild>
+                        <FlexChild paddingRight={15}>
+                          <Input
+                            scrollMarginTop={150}
+                            id="code"
+                            ref={(el) => {
+                              inputs.current[5] = el;
+                            }}
+                            name={"상품코드"}
+                            placeHolder={"상품코드를 입력하세요."}
+                            regExp={[textFormat]}
+                            width={250}
+                          />
+                        </FlexChild>
+                      </HorizontalFlex>
+                    </FlexChild>
                     <FlexChild>
                       <HorizontalFlex
                         gap={20}
@@ -370,7 +405,7 @@ export default function ({
                             }}
                             name={"판매가"}
                             min={0}
-                            max={999999}
+                            max={99999999}
                             width={250 - 80}
                           />
                         </FlexChild>

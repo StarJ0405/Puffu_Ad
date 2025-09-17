@@ -22,6 +22,9 @@ import { Wishlist } from "./wishlist";
 @Index(["created_at"])
 // CREATE INDEX IF NOT EXISTS idx_product_title ON public.product USING GIN (fn_text_to_char_array(title));
 export class Product extends BaseEntity {
+  @Column({ type: "character varying", nullable: true })
+  code?: string;
+
   @Column({ type: "character varying", nullable: false })
   store_id?: string;
 

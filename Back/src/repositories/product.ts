@@ -18,6 +18,7 @@ export class ProductRepository extends BaseRepository<Product> {
       product.brand_id = data.brand_id;
       product.category_id = data.category_id;
       product.title = data.title;
+      product.code = data.code;
       product.thumbnail = data.thumbnail;
       product.description = data.description;
       product.detail = data.detail;
@@ -41,6 +42,7 @@ export class ProductRepository extends BaseRepository<Product> {
       const variants = data.variants?.map((variant) => {
         const _variant = new Variant();
         _variant.title = variant.title;
+        _variant.code = variant.code;
         _variant.thumbnail = variant.thumbnail;
         if (variant.extra_price) _variant.extra_price = variant.extra_price;
         _variant.stack = variant.stack;

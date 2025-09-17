@@ -22,6 +22,7 @@ import {
   useRef,
   useState,
 } from "react";
+import styles from "./page.module.css";
 
 const Option = forwardRef(({ type }: { type: string }, ref) => {
   switch (type.toLowerCase()) {
@@ -255,6 +256,7 @@ const SimpleOptionSlot = forwardRef(
       getValue() {
         const extra_price = inputs.current[0].getValue();
         const stack = inputs.current[1].getValue();
+        const code = inputs.current[2].getValue();
         const thumbnail = image.current.getValue();
         const data: VariantDataFrame = {
           title: name,
@@ -264,6 +266,7 @@ const SimpleOptionSlot = forwardRef(
           buyable: radio[1],
           thumbnail,
         };
+        if (code) data.code = code;
         return data;
       },
       isEmpty() {
@@ -406,10 +409,33 @@ const SimpleOptionSlot = forwardRef(
                 backgroundColor={"#3C4B64"}
                 padding={15}
               >
+                <P color="#fff">옵션코드</P>
+              </FlexChild>
+              <FlexChild>
+                <Input
+                  placeHolder="옵션 코드를 입력하세요"
+                  className={styles.input}
+                  width={250}
+                  ref={(el) => {
+                    inputs.current[2] = el;
+                  }}
+                />
+              </FlexChild>
+            </HorizontalFlex>
+          </FlexChild>
+          <FlexChild>
+            <HorizontalFlex gap={10}>
+              <FlexChild
+                width={"15%"}
+                justifyContent="center"
+                backgroundColor={"#3C4B64"}
+                padding={15}
+              >
                 <P color="#fff">증감액</P>
               </FlexChild>
               <FlexChild>
                 <InputNumber
+                  max={99999999}
                   width={170}
                   ref={(el) => {
                     inputs.current[0] = el;
@@ -654,6 +680,7 @@ const MultipleOptionSlot = forwardRef(
       getValue() {
         const extra_price = inputs.current[0].getValue();
         const stack = inputs.current[1].getValue();
+        const code = inputs.current[2].getValue();
         const thumbnail = image.current.getValue();
         const variant: VariantDataFrame = {
           title: name,
@@ -663,6 +690,7 @@ const MultipleOptionSlot = forwardRef(
           buyable: radio[1],
           thumbnail,
         };
+        if (code) variant.code = code;
         const values: OptionValueDataFrame[] = groupRef.current.map((ref) => ({
           value: ref.getValue(),
           variant: { ...variant },
@@ -840,10 +868,33 @@ const MultipleOptionSlot = forwardRef(
                 backgroundColor={"#3C4B64"}
                 padding={15}
               >
+                <P color="#fff">옵션코드</P>
+              </FlexChild>
+              <FlexChild>
+                <Input
+                  placeHolder="옵션 코드를 입력하세요"
+                  className={styles.input}
+                  width={250}
+                  ref={(el) => {
+                    inputs.current[2] = el;
+                  }}
+                />
+              </FlexChild>
+            </HorizontalFlex>
+          </FlexChild>
+          <FlexChild>
+            <HorizontalFlex gap={10}>
+              <FlexChild
+                width={"15%"}
+                justifyContent="center"
+                backgroundColor={"#3C4B64"}
+                padding={15}
+              >
                 <P color="#fff">증감액</P>
               </FlexChild>
               <FlexChild>
                 <InputNumber
+                  max={99999999}
                   width={170}
                   ref={(el) => {
                     inputs.current[0] = el;
