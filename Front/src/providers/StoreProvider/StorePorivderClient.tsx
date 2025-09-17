@@ -62,6 +62,7 @@ export default function StoreProviderClient({
       fallbackData: initCategories,
     }
   );
+  const [categories, setCategories] = useState(categoriesData);
   const [type, setType] = useState<string | null>(null);
   const { cart, mutate } = useData(
     "cart",
@@ -82,6 +83,14 @@ export default function StoreProviderClient({
   );
   useClientEffect(() => {
     mutate();
+    if (userData?.adult) setCategories(categoriesData);
+    else
+      setCategories(
+        (categoriesData || []).map((cat: CategoryData) => {
+          cat.thumbnail = "/resources/images/19_only_category.png";
+          return cat;
+        })
+      );
   }, [userData]);
 
   useEffect(() => {
@@ -103,11 +112,7 @@ export default function StoreProviderClient({
     >
       <CategoryContext.Provider
         value={{
-          categoriesData: (categoriesData || []).map((cat: CategoryData) => {
-            if (!userData?.adult)
-              cat.thumbnail = "/resources/images/19_only_category.png";
-            return cat;
-          }),
+          categoriesData: categories,
         }}
       >
         <CartContext.Provider value={{ cartData: cart, reload: mutate }}>
