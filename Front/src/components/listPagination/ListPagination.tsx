@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useMemo } from "react";
 import HorizontalFlex from "../flex/HorizontalFlex";
 import FlexChild from "../flex/FlexChild";
@@ -7,6 +8,7 @@ import clsx from "clsx";
 import styles from "./ListPagination.module.css";
 import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
 import VerticalFlex from "../flex/VerticalFlex";
+
 
 interface ListPaginationProps {
   page: number;
@@ -167,6 +169,7 @@ function ListPagination({
       )}
     </>
   );
+
 }
 
 export default ListPagination;

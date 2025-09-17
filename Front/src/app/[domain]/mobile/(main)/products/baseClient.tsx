@@ -143,7 +143,7 @@ export function BaseProductList({
 }) {
    // const [sort, setSort] = useState(sortOptions?.[0]); // 정렬 상태 관리
 
-   const { [id]: products, Load } = useInfiniteData(
+   const { [id]: products, Load, mutate } = useInfiniteData(
       id,
       (pageNumber) => ({
          ...initCondition,
@@ -158,7 +158,7 @@ export function BaseProductList({
       }
    );
 
-
+   
    const listLength = listArray.length;
 
    return (
@@ -173,6 +173,7 @@ export function BaseProductList({
                         listArray.map((product: ProductData, i) => {
                            return (
                               <ProductCard
+                                 mutate={mutate}
                                  key={product.id}
                                  product={product}
                                  commingSoon={commingSoon}
