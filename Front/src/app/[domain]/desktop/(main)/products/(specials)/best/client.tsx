@@ -9,14 +9,13 @@ import { requester } from "@/shared/Requester";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import Pstyles from "../../products.module.css";
-import styles from "./page.module.css"
+import styles from "./page.module.css";
 import MasonryGrid from "@/components/masonry/MasonryGrid";
 import ProductCard from "@/components/card/ProductCard";
 import NoContent from "@/components/noContent/noContent";
-import {BaseProductList, ProdcutCategory} from "../../baseClient";
-import ChildCategory from "@/components/childCategory/childCategory"
+import { BaseProductList, ProdcutCategory } from "../../baseClient";
+import ChildCategory from "@/components/childCategory/childCategory";
 import { useCategories } from "@/providers/StoreProvider/StorePorivderClient";
-
 
 function findCategoryById(categories: any[], id: string): any | undefined {
   for (const cat of categories) {
@@ -31,7 +30,6 @@ function findCategoryById(categories: any[], id: string): any | undefined {
   return undefined;
 }
 
-
 // export function CategoryFilter(category_id} : {category_id: any}) {
 
 //   const { categoriesData } = useCategories();
@@ -45,8 +43,6 @@ function findCategoryById(categories: any[], id: string): any | undefined {
 //   )
 // }
 
-
-
 export function BestList({
   initProducts,
   initConiditon,
@@ -54,7 +50,7 @@ export function BestList({
   initProducts: Pageable;
   initConiditon: any;
 }) {
-  const { best, maxPage, page, setPage, mutate } = usePageData(
+  const { best, maxPage, page, setPage, mutate, origin } = usePageData(
     "best",
     (pageNumber) => ({
       ...initConiditon,
@@ -70,7 +66,11 @@ export function BestList({
   );
   return (
     <>
-      <BaseProductList listArray={best} pagination={{ page, maxPage, setPage }} />
+      <BaseProductList
+        total={origin.NumberOfTotalElements || 0}
+        listArray={best}
+        pagination={{ page, maxPage, setPage }}
+      />
     </>
   );
 }
