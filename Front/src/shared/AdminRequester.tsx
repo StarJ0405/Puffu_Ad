@@ -373,6 +373,10 @@ class _AdminRequester {
     else return await this.delete(`/products/${id}`, {});
   }
   // 옵션
+  async createVaraint(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.post(`/variants`, data));
+    else return await this.post(`/variants`, data);
+  }
   async getVariants(data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.get(`/variants`, data));
     else return await this.get(`/variants`, data);

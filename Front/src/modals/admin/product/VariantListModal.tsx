@@ -438,6 +438,7 @@ function Variants({
     case "simple":
       return (
         <Simple
+          product_id={product.id}
           variants={product.variants}
           mutate={mutate}
           onSuccess={onSuccess}
@@ -446,6 +447,7 @@ function Variants({
     case "multiple":
       return (
         <Multiple
+          product_id={product.id}
           options={product.options}
           variants={product.variants}
           mutate={mutate}
@@ -536,10 +538,12 @@ function Single({
   );
 }
 function Simple({
+  product_id,
   variants,
   mutate,
   onSuccess,
 }: {
+  product_id: string;
   variants: VariantData[];
   mutate: KeyedMutator<any>;
   onSuccess?: () => void;
@@ -556,182 +560,206 @@ function Simple({
     }
   }, [swiperInstance, paginationRef.current]);
   return (
-    <>
-      <ReactSwiper
-        spaceBetween={0}
-        slidesPerView={variants?.length > 2 ? 1.8 : 2}
-        loop={true}
-        autoplay={{
-          delay: 5000,
-          pauseOnMouseEnter: true,
-          disableOnInteraction: false,
-        }}
-        onSwiper={setSwiperInstance}
-        initialSlide={0}
-        direction="horizontal"
-        modules={[Autoplay, Pagination]}
-        pagination={{
-          el: paginationRef.current,
-          type: "fraction",
-          clickable: true,
-        }}
-        onBeforeInit={(swiper) => {
-          const pagination: any = swiper?.params?.pagination;
-          pagination.el = paginationRef.current;
+    <VerticalFlex>
+      <FlexChild position="relative">
+        <ReactSwiper
+          spaceBetween={0}
+          slidesPerView={variants?.length > 2 ? 1.8 : 2}
+          loop={true}
+          autoplay={{
+            delay: 5000,
+            pauseOnMouseEnter: true,
+            disableOnInteraction: false,
+          }}
+          onSwiper={setSwiperInstance}
+          initialSlide={0}
+          direction="horizontal"
+          modules={[Autoplay, Pagination]}
+          pagination={{
+            el: paginationRef.current,
+            type: "fraction",
+            clickable: true,
+          }}
+          onBeforeInit={(swiper) => {
+            const pagination: any = swiper?.params?.pagination;
+            pagination.el = paginationRef.current;
+          }}
+        >
+          {variants
+            .sort((v1, v2) =>
+              String(
+                `${new Date(v1.created_at).getTime()} ${v1.id}`
+              ).localeCompare(
+                String(`${new Date(v2.created_at).getTime()} ${v2.id}`)
+              )
+            )
+            .map((variant: VariantData) => (
+              <SwiperSlide key={variant?.id}>
+                <VerticalFlex>
+                  <FlexChild paddingBottom={10}>
+                    <Image src={variant.thumbnail} width={"30%"} />
+                  </FlexChild>
+                  <FlexChild>
+                    <HorizontalFlex>
+                      <FlexChild className={styles.label}>
+                        <P>옵션명</P>
+                      </FlexChild>
+                      <FlexChild>
+                        <P fontWeight={700} fontSize={18}>
+                          {variant.title}
+                        </P>
+                      </FlexChild>
+                    </HorizontalFlex>
+                  </FlexChild>
+                  <FlexChild>
+                    <HorizontalFlex>
+                      <FlexChild className={styles.label}>
+                        <P>재고량</P>
+                      </FlexChild>
+                      <FlexChild>
+                        <P>
+                          <Span>{variant.stack}</Span>
+                          <Span>개</Span>
+                        </P>
+                      </FlexChild>
+                    </HorizontalFlex>
+                  </FlexChild>
+                  <FlexChild>
+                    <HorizontalFlex>
+                      <FlexChild className={styles.label}>
+                        <P>증감액</P>
+                      </FlexChild>
+                      <FlexChild>
+                        <P>
+                          <Span>{variant?.extra_price}</Span>
+                          <Span>{variant?.product?.store?.currency_unit}</Span>
+                        </P>
+                      </FlexChild>
+                    </HorizontalFlex>
+                  </FlexChild>
+                  <FlexChild>
+                    <HorizontalFlex>
+                      <FlexChild className={styles.label}>
+                        <P>판매가</P>
+                      </FlexChild>
+                      <FlexChild>
+                        <P>
+                          <Span>{variant?.price}</Span>
+                          <Span>{variant?.product?.store?.currency_unit}</Span>
+                        </P>
+                      </FlexChild>
+                    </HorizontalFlex>
+                  </FlexChild>
+                  <FlexChild>
+                    <HorizontalFlex>
+                      <FlexChild className={styles.label}>
+                        <P>진열상태</P>
+                      </FlexChild>
+                      <FlexChild>
+                        <P>{variant.visible ? "진열중" : "미진열"}</P>
+                      </FlexChild>
+                    </HorizontalFlex>
+                  </FlexChild>
+                  <FlexChild>
+                    <HorizontalFlex>
+                      <FlexChild className={styles.label}>
+                        <P>진열상태</P>
+                      </FlexChild>
+                      <FlexChild>
+                        <P>{variant.buyable ? "판매중" : "판매중단"}</P>
+                      </FlexChild>
+                    </HorizontalFlex>
+                  </FlexChild>
+
+                  <FlexChild paddingTop={20} justifyContent="center" gap={10}>
+                    <Button
+                      className={styles.singleEditButton}
+                      onClick={() =>
+                        NiceModal.show("variantDetail", {
+                          variant,
+                          edit: true,
+                          type: "simple",
+                          onSuccess: () => {
+                            mutate().then(() => {
+                              onSuccess?.();
+                            });
+                          },
+                        })
+                      }
+                    >
+                      <P>수정하기</P>
+                    </Button>
+                    <Button
+                      hidden={variants?.length === 1}
+                      className={styles.singleCloseButton}
+                      onClick={() =>
+                        NiceModal.show("confirm", {
+                          message: `${variant.title}을 삭제하시겠습니까?`,
+                          confirmText: "삭제",
+                          cancelText: "취소",
+                          onConfirm: () => {
+                            adminRequester.deleteVaraint(
+                              variant.id,
+                              {},
+                              ({
+                                message,
+                                error,
+                              }: {
+                                error: string;
+                                message: string;
+                              }) => {
+                                if (error) toast({ message: error });
+                                else if (message)
+                                  mutate().then(() => {
+                                    onSuccess?.();
+                                  });
+                              }
+                            );
+                          },
+                        })
+                      }
+                    >
+                      <P>삭제하기</P>
+                    </Button>
+                  </FlexChild>
+                </VerticalFlex>
+              </SwiperSlide>
+            ))}
+        </ReactSwiper>
+        <div ref={paginationRef} className={styles.customPagination} />
+      </FlexChild>
+      <Button
+        styleType="admin"
+        className={styles.button}
+        onClick={() => {
+          NiceModal.show("variantDetail", {
+            variant: {
+              product_id,
+            },
+            edit: true,
+            type: "simple",
+            onSuccess: () => {
+              mutate().then(() => {
+                onSuccess?.();
+              });
+            },
+          });
         }}
       >
-        {variants
-          .sort((v1, v2) =>
-            String(
-              `${new Date(v1.created_at).getTime()} ${v1.id}`
-            ).localeCompare(
-              String(`${new Date(v2.created_at).getTime()} ${v2.id}`)
-            )
-          )
-          .map((variant: VariantData) => (
-            <SwiperSlide key={variant?.id}>
-              <VerticalFlex>
-                <FlexChild paddingBottom={10}>
-                  <Image src={variant.thumbnail} width={"30%"} />
-                </FlexChild>
-                <FlexChild>
-                  <HorizontalFlex>
-                    <FlexChild className={styles.label}>
-                      <P>옵션명</P>
-                    </FlexChild>
-                    <FlexChild>
-                      <P fontWeight={700} fontSize={18}>
-                        {variant.title}
-                      </P>
-                    </FlexChild>
-                  </HorizontalFlex>
-                </FlexChild>
-                <FlexChild>
-                  <HorizontalFlex>
-                    <FlexChild className={styles.label}>
-                      <P>재고량</P>
-                    </FlexChild>
-                    <FlexChild>
-                      <P>
-                        <Span>{variant.stack}</Span>
-                        <Span>개</Span>
-                      </P>
-                    </FlexChild>
-                  </HorizontalFlex>
-                </FlexChild>
-                <FlexChild>
-                  <HorizontalFlex>
-                    <FlexChild className={styles.label}>
-                      <P>증감액</P>
-                    </FlexChild>
-                    <FlexChild>
-                      <P>
-                        <Span>{variant?.extra_price}</Span>
-                        <Span>{variant?.product?.store?.currency_unit}</Span>
-                      </P>
-                    </FlexChild>
-                  </HorizontalFlex>
-                </FlexChild>
-                <FlexChild>
-                  <HorizontalFlex>
-                    <FlexChild className={styles.label}>
-                      <P>판매가</P>
-                    </FlexChild>
-                    <FlexChild>
-                      <P>
-                        <Span>{variant?.price}</Span>
-                        <Span>{variant?.product?.store?.currency_unit}</Span>
-                      </P>
-                    </FlexChild>
-                  </HorizontalFlex>
-                </FlexChild>
-                <FlexChild>
-                  <HorizontalFlex>
-                    <FlexChild className={styles.label}>
-                      <P>진열상태</P>
-                    </FlexChild>
-                    <FlexChild>
-                      <P>{variant.visible ? "진열중" : "미진열"}</P>
-                    </FlexChild>
-                  </HorizontalFlex>
-                </FlexChild>
-                <FlexChild>
-                  <HorizontalFlex>
-                    <FlexChild className={styles.label}>
-                      <P>진열상태</P>
-                    </FlexChild>
-                    <FlexChild>
-                      <P>{variant.buyable ? "판매중" : "판매중단"}</P>
-                    </FlexChild>
-                  </HorizontalFlex>
-                </FlexChild>
-
-                <FlexChild paddingTop={20} justifyContent="center" gap={10}>
-                  <Button
-                    className={styles.singleEditButton}
-                    onClick={() =>
-                      NiceModal.show("variantDetail", {
-                        variant,
-                        edit: true,
-                        type: "simple",
-                        onSuccess: () => {
-                          mutate().then(() => {
-                            onSuccess?.();
-                          });
-                        },
-                      })
-                    }
-                  >
-                    <P>수정하기</P>
-                  </Button>
-                  <Button
-                    hidden={variants?.length === 1}
-                    className={styles.singleCloseButton}
-                    onClick={() =>
-                      NiceModal.show("confirm", {
-                        message: `${variant.title}을 삭제하시겠습니까?`,
-                        confirmText: "삭제",
-                        cancelText: "취소",
-                        onConfirm: () => {
-                          adminRequester.deleteVaraint(
-                            variant.id,
-                            {},
-                            ({
-                              message,
-                              error,
-                            }: {
-                              error: string;
-                              message: string;
-                            }) => {
-                              if (error) toast({ message: error });
-                              else if (message)
-                                mutate().then(() => {
-                                  onSuccess?.();
-                                });
-                            }
-                          );
-                        },
-                      })
-                    }
-                  >
-                    <P>삭제하기</P>
-                  </Button>
-                </FlexChild>
-              </VerticalFlex>
-            </SwiperSlide>
-          ))}
-      </ReactSwiper>
-      <div ref={paginationRef} className={styles.customPagination} />
-    </>
+        <P>추가하기</P>
+      </Button>
+    </VerticalFlex>
   );
 }
 
 function Multiple({
+  product_id,
   options,
   variants,
   mutate,
   onSuccess,
 }: {
+  product_id: string;
   options: OptionData[];
   variants: VariantData[];
   mutate: KeyedMutator<any>;
@@ -1061,6 +1089,27 @@ function Multiple({
         </ReactSwiper>
         <div ref={paginationRef} className={styles.customPagination} />
       </FlexChild>
+      <Button
+        styleType="admin"
+        className={styles.button}
+        onClick={() => {
+          NiceModal.show("variantDetail", {
+            variant: {
+              product_id,
+            },
+            edit: true,
+            type: "multiple",
+            options,
+            onSuccess: () => {
+              mutate().then(() => {
+                onSuccess?.();
+              });
+            },
+          });
+        }}
+      >
+        <P>추가하기</P>
+      </Button>
     </VerticalFlex>
   );
 }
