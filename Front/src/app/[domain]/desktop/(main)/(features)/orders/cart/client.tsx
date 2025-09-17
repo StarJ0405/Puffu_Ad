@@ -374,7 +374,7 @@ export function CartWrap() {
                       payerTel: userData?.phone,
                       returnUrl: `${origin}/payment`,
                       products: items?.map((i) => ({
-                        name: i.variant.total_code,
+                        name: i.variant.total_code || i.variant_id.slice(4),
                         qty: i.total_quantity,
                         price: i.variant.discount_price * i.quantity,
                       })),
