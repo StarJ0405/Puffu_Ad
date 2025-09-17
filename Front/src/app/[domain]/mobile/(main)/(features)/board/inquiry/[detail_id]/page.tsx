@@ -11,16 +11,16 @@ export default async function () {
    return (
       <VerticalFlex className={boardStyle.board_frame}>
          <FlexChild className={boardStyle.board_titleBox}>
-            <h3>공지사항</h3>
+            {/* <h3>공지사항</h3> */}
          </FlexChild>
 
          <FlexChild>
             <DetailFrame />
          </FlexChild>
 
-         <FlexChild>
+         {/* <FlexChild>
             <CommentFrame />
-         </FlexChild>
+         </FlexChild> */}
 
 
          {/* 일단 보류*/}

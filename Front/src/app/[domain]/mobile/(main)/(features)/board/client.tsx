@@ -58,7 +58,7 @@ export function SelectBox() {
                   arrow: 'web_select_arrow',
                   search: 'web_select_search',
                   }}
-                  width={100}
+                  width={80}
                   options={[
                   { value: "제목", display: "제목" },
                   { value: "내용", display: "내용" },
@@ -71,11 +71,8 @@ export function SelectBox() {
 
             <Input
                type={"search"}
-               placeHolder={"검색 내용을 입력해 주세요."}
-            ></Input>
-            <Link href={"/board/notice/noticeWrite"}>
-               <Button className={boardStyle.searchBtn}>검색</Button>
-            </Link>
+            />
+            <Button className={boardStyle.searchBtn}>검색</Button>
          </FlexChild>
       </>
    )
