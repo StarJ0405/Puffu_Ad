@@ -3,13 +3,14 @@ import boardStyle from "../boardGrobal.module.css";
 
 import { requester } from "@/shared/Requester";
 import { BoardTable, BoardTitleBox } from "./client";
+import { SearchParams } from "next/dist/server/request/search-params";
 
 export default async function ({
   searchParams,
 }: {
-  searchParams?: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<SearchParams>;
 }) {
-  const q = searchParams?.q || "";
+  const { q = "" } = await searchParams;
   const initCondition: { type: string; pageSize: number; q?: string } = {
     type: "일반",
     pageSize: 10,
