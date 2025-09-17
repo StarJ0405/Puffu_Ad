@@ -135,11 +135,22 @@ export function LinkBanner() {
     { link: "/", src: "/resources/images/dummy_img/link_banner_04.png" },
   ];
 
+  const { userData } = useAuth();
+
   return (
     <VerticalFlex className={styles.link_Banner}>
       {link_banner.map((item, i) => (
         <Link href={item.link} key={i} className={styles.disabled}>
-          <Image src={item.src} width={"100%"} height={"auto"} />
+          {userData?.adult ? (
+            <Image src={item.src} width={"100%"} height={"auto"} />
+          ) : (
+            // 성인인증 안될때 나오는 이미지
+            <Image
+              src={"/resources/images/19_only_sub_banner_mobile.png"}
+              width={"100%"}
+              height={"auto"}
+            />
+          )}
         </Link>
       ))}
     </VerticalFlex>
