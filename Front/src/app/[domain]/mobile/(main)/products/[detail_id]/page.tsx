@@ -40,7 +40,7 @@ export default async function ({ params }: { params: Promise<Params> }) {
 
   return (
     <>
-      <SubPageHeader />
+      {/* <SubPageHeader /> */}
       <ProductWrapper initCondition={initCondition} initProduct={initProduct}>
         <VerticalFlex position="relative" alignItems="start" className={styles.slide_wrap}>
           <FlexChild marginBottom={20}>
