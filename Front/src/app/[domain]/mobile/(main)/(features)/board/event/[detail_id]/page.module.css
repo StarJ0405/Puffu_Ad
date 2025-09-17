@@ -34,6 +34,12 @@
 }
 
 
+/* 게시판 내용 */
+.thumb_box p img {
+   width: 100%;
+}
+
+
 .edit_button_group {gap: 10px;}
 .edit_button_group button {
    width: 58px; padding: 7px 5px;

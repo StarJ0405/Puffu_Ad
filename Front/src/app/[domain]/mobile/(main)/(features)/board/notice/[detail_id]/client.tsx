@@ -15,6 +15,7 @@ import styles from "./page.module.css";
 import Div from "@/components/div/Div";
 import NoContent from "@/components/noContent//noContent";
 import useNavigate from "@/shared/hooks/useNavigate";
+import sanitizeHtml from "sanitize-html";
 
 
 export function BoardTitleBox() {
@@ -57,6 +58,16 @@ export function DetailFrame({ initNotice }: { initNotice: any }) {
       date.getHours()
     ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
   };
+
+
+  const cleanHTML = sanitizeHtml(notice.detail, {
+    allowedTags: ["p", "b", "i", "strong", "em", "img", "ul", "li", "ol"],
+    allowedAttributes: {
+      img: ["src", "alt"],
+    },
+  });
+
+
   return (
     <VerticalFlex className={styles.detail_container}>
       <VerticalFlex className={styles.board_header}>
@@ -131,7 +142,8 @@ export function DetailFrame({ initNotice }: { initNotice: any }) {
         </VerticalFlex> */}
       {/* </VerticalFlex> */}
       <FlexChild className={styles.detail}>
-        <Div dangerouslySetInnerHTML={{ __html: notice.detail }} />
+        {/* <Div dangerouslySetInnerHTML={{ __html: notice.detail }} /> */}
+        <div className={styles.thumb_box} dangerouslySetInnerHTML={{ __html: cleanHTML }} />
       </FlexChild>
 
       <FlexChild justifyContent="center" marginTop={40}>

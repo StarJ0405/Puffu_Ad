@@ -44,6 +44,7 @@
 
 .gallery_item .thumb_frame {
    position: relative;
+   width: 100%;
 }
 
 .gallery_item .thumb_frame img {
