@@ -15,7 +15,7 @@ import { adminRequester } from "@/shared/AdminRequester";
 import useClientEffect from "@/shared/hooks/useClientEffect";
 import { toast, validateInputs } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import ModalBase from "../../ModalBase";
 import styles from "./VariantModal.module.css";
 const VariantModal = NiceModal.create(
@@ -26,7 +26,7 @@ const VariantModal = NiceModal.create(
     type,
     onSuccess,
   }: {
-    variant: VariantData;
+    variant?: VariantData;
     options?: OptionData[];
     edit?: boolean;
     onSuccess?: () => void;
@@ -43,8 +43,8 @@ const VariantModal = NiceModal.create(
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string>("");
     const [radio, setRadio] = useState<boolean[]>([
-      variant.visible,
-      variant.buyable,
+      variant?.visible ?? true,
+      variant?.buyable ?? true,
     ]);
     const optionRef = useRef<any[]>([]);
     const handleSave = () => {
@@ -68,28 +68,48 @@ const VariantModal = NiceModal.create(
               const values = options
                 .sort((o1, o2) => o1.title.localeCompare(o2.title))
                 .map((option, index) => {
-                  const value = variant.values.find(
+                  const value = variant?.values?.find(
                     (f) => f.option_id === option.id
                   );
-                  return {
-                    ...value,
-                    value: optionRef.current[index].getValue(),
-                  };
+                  if (value)
+                    return {
+                      ...value,
+                      value: optionRef.current[index].getValue(),
+                    };
+                  else
+                    return {
+                      option_id: option.id,
+                      value: optionRef.current[index].getValue(),
+                    };
                 });
               _data.values = values;
             }
-            adminRequester.updateVaraint(
-              variant.id,
-              _data,
-              ({ message, error }: { message?: string; error?: string }) => {
-                setIsLoading(false);
+            if (variant?.id) {
+              adminRequester.updateVaraint(
+                variant?.id,
+                _data,
+                ({ message, error }: { message?: string; error?: string }) => {
+                  setIsLoading(false);
 
-                if (message) {
-                  onSuccess?.();
-                  modal.current.close();
-                } else if (error) setError(error);
-              }
-            );
+                  if (message) {
+                    onSuccess?.();
+                    modal.current.close();
+                  } else if (error) setError(error);
+                }
+              );
+            } else {
+              adminRequester.createVaraint(
+                { ..._data, product_id: variant?.product_id },
+                ({ message, error }: { message?: string; error?: string }) => {
+                  setIsLoading(false);
+
+                  if (message) {
+                    onSuccess?.();
+                    modal.current.close();
+                  } else if (error) setError(error);
+                }
+              );
+            }
           })
           .catch((error) => {
             toast({ message: error || "오류가 발생했습니다." });
@@ -99,11 +119,7 @@ const VariantModal = NiceModal.create(
         setIsLoading(false);
       }
     };
-    useEffect(() => {
-      if (!variant) {
-        modal.current.close();
-      }
-    }, [variant]);
+
     useClientEffect(() => {
       if (error) {
         setIsLoading(false);
@@ -114,7 +130,6 @@ const VariantModal = NiceModal.create(
     return (
       <ModalBase
         borderRadius={10}
-        r
         headerStyle
         zIndex={10055}
         ref={modal}
@@ -142,7 +157,7 @@ const VariantModal = NiceModal.create(
                   ref={(el) => {
                     inputs.current[0] = el;
                   }}
-                  value={variant.thumbnail}
+                  value={variant?.thumbnail}
                   placeHolder="1:1 비율의 이미지를 권장합니다."
                 />
               </Div>
@@ -162,14 +177,14 @@ const VariantModal = NiceModal.create(
               <FlexChild className={styles.content}>
                 {edit ? (
                   <Input
-                    value={variant.title}
+                    value={variant?.title}
                     width={"100%"}
                     ref={(el) => {
                       inputs.current[1] = el;
                     }}
                   />
                 ) : (
-                  <P>{variant.title}</P>
+                  <P>{variant?.title}</P>
                 )}
               </FlexChild>
             </HorizontalFlex>
@@ -182,7 +197,7 @@ const VariantModal = NiceModal.create(
               <FlexChild className={styles.content}>
                 {edit ? (
                   <InputNumber
-                    value={variant.extra_price}
+                    value={variant?.extra_price}
                     width={"100%"}
                     ref={(el) => {
                       inputs.current[2] = el;
@@ -190,7 +205,7 @@ const VariantModal = NiceModal.create(
                   />
                 ) : (
                   <P>
-                    <Span>{variant.extra_price}</Span>
+                    <Span>{variant?.extra_price}</Span>
                     <Span>{variant?.product?.store?.currency_unit}</Span>
                   </P>
                 )}
@@ -205,14 +220,14 @@ const VariantModal = NiceModal.create(
               <FlexChild className={styles.content}>
                 {edit ? (
                   <InputNumber
-                    value={variant.stack}
+                    value={variant?.stack || 0}
                     width={"100%"}
                     ref={(el) => {
                       inputs.current[3] = el;
                     }}
                   />
                 ) : (
-                  <P>{variant.stack || 0}</P>
+                  <P>{variant?.stack || 0}</P>
                 )}
               </FlexChild>
             </HorizontalFlex>
@@ -243,7 +258,7 @@ const VariantModal = NiceModal.create(
                     </HorizontalFlex>
                   </RadioGroup>
                 ) : (
-                  <P>{variant.visible ? "진열중" : "미진열"}</P>
+                  <P>{variant?.visible ? "진열중" : "미진열"}</P>
                 )}
               </FlexChild>
             </HorizontalFlex>
@@ -274,7 +289,7 @@ const VariantModal = NiceModal.create(
                     </HorizontalFlex>
                   </RadioGroup>
                 ) : (
-                  <P>{variant.visible ? "판매중" : "판매중단"}</P>
+                  <P>{variant?.visible ? "판매중" : "판매중단"}</P>
                 )}
               </FlexChild>
             </HorizontalFlex>
@@ -291,8 +306,9 @@ const VariantModal = NiceModal.create(
                     {edit ? (
                       <Input
                         value={
-                          variant.values.find((f) => f.option_id === option.id)
-                            ?.value || "default"
+                          variant?.values?.find(
+                            (f) => f.option_id === option.id
+                          )?.value || "default"
                         }
                         width={"100%"}
                         ref={(el) => {
@@ -301,7 +317,7 @@ const VariantModal = NiceModal.create(
                       />
                     ) : (
                       <P>
-                        {variant.values.find((f) => f.option_id === option.id)
+                        {variant?.values?.find((f) => f.option_id === option.id)
                           ?.value || "default"}
                       </P>
                     )}
