@@ -22,7 +22,7 @@ export function ProdcutCategory() { // 대분류 카테고리
 
    const pathname = usePathname();
    const { categoriesData } = useCategories();
-   
+
    // css : 카테고리 추가되어도 flex-wrap 구조 문제 없게 수정하기
 
    return (
@@ -30,32 +30,32 @@ export function ProdcutCategory() { // 대분류 카테고리
          {/* ca_item에 active 클래스 주기. active 클래스만 걸리면 효과 들어감. */}
          {
             pathname !== "/" ?
-            <VerticalFlex className={clsx(Pstyles.ca_item, Pstyles.ca_all)}>
-               <FlexChild className={Pstyles.ca_thumb} width={120} height={120}>
-                  <P>ALL</P>
-               </FlexChild>
-              <Span>전체</Span>
-            </VerticalFlex>
-            : null
+               <VerticalFlex className={clsx(Pstyles.ca_item, Pstyles.ca_all)}>
+                  <FlexChild className={Pstyles.ca_thumb} width={120} height={120}>
+                     <P>ALL</P>
+                  </FlexChild>
+                  <Span>전체</Span>
+               </VerticalFlex>
+               : null
          }
 
          {
             categoriesData
-            .sort((c1, c2) => c1.index - c2.index)
-            .map((cat, i) => (
-               <VerticalFlex className={Pstyles.ca_item} key={i}>
-                  <Link href={`/categories/${cat.id}`}>
-                     <FlexChild className={Pstyles.ca_thumb}>
-                        <Image 
-                           src={cat.thumbnail}
-                           width={'auto'}
-                           height={120}
-                        />
-                     </FlexChild>
-                  </Link>
-                  <Span>{cat.name}</Span>
-               </VerticalFlex>
-            ))
+               .sort((c1, c2) => c1.index - c2.index)
+               .map((cat, i) => (
+                  <VerticalFlex className={Pstyles.ca_item} key={i}>
+                     <Link href={`/categories/${cat.id}`}>
+                        <FlexChild className={Pstyles.ca_thumb}>
+                           <Image
+                              src={cat.thumbnail}
+                              width={'auto'}
+                              height={120}
+                           />
+                        </FlexChild>
+                     </Link>
+                     <Span>{cat.name}</Span>
+                  </VerticalFlex>
+               ))
          }
       </nav>
    )
@@ -66,15 +66,15 @@ export function ProdcutCategory() { // 대분류 카테고리
 
 // 인기순, 추천순, 최신순 필터
 export function SortFilter({
-   length, 
+   length,
    // sortOptions
    sortConfig
-} : {
-   length : number, 
+}: {
+   length: number,
    sortConfig?: {
-     sort: { id: string; display: string };
-     setSort: (opt: { id: string; display: string }) => void;
-     sortOptions: { id: string; display: string }[];
+      sort: { id: string; display: string };
+      setSort: (opt: { id: string; display: string }) => void;
+      sortOptions: { id: string; display: string }[];
    };
    // sortOptions: { id: string; display: string }[]
 }) {
@@ -92,12 +92,12 @@ export function SortFilter({
                sortConfig && (
                   <HorizontalFlex className={Pstyles.sort_box}>
                      {
-                        sortConfig.sortOptions.map((opt)=> (
-                           <Button 
-                              key={opt.id} 
+                        sortConfig.sortOptions.map((opt) => (
+                           <Button
+                              key={opt.id}
                               className={clsx(
-                                Pstyles.sort_btn,
-                                sortConfig.sort.id === opt.id && Pstyles.active
+                                 Pstyles.sort_btn,
+                                 sortConfig.sort.id === opt.id && Pstyles.active
                               )}
                               onClick={() => sortConfig.setSort(opt)}
                            >
@@ -114,52 +114,59 @@ export function SortFilter({
 }
 
 
+// app/products/baseClient.tsx (또는 현재 BaseProductList가 있는 파일)
+
 export function BaseProductList({
    listArray,
-   // sortOptions,
    sortConfig,
-   commingSoon, // 입고예정 임시용
-} : {
-   listArray : ProductData[];
-   // sortOptions: { id: string; display: string }[];
+   commingSoon,
+   pagination,
+}: {
+   listArray: ProductData[];
    sortConfig?: {
-     sort: { id: string; display: string };
-     setSort: (opt: { id: string; display: string }) => void;
-     sortOptions: { id: string; display: string }[];
+      sort: { id: string; display: string };
+      setSort: (opt: { id: string; display: string }) => void;
+      sortOptions: { id: string; display: string }[];
    };
-   commingSoon? : boolean;
+   commingSoon?: boolean;
+   pagination?: {
+      page: number;
+      totalPages: number;
+      onChange: (p: number) => void;
+   };
 }) {
-   // const [sort, setSort] = useState(sortOptions?.[0]); // 정렬 상태 관리
    const listLength = listArray.length;
 
    return (
-      <>    
+      <>
          {listLength > 0 ? (
-         <>
-            <SortFilter length={listLength} sortConfig={sortConfig}/>
-            {/* sortOptions={sortOptions} */}
-            <VerticalFlex alignItems="start">
-               <MasonryGrid gap={20} width={'100%'}>
-                  {
-                     listArray.map((product: ProductData, i) => {
-                        return (
-                           <ProductCard
-                              key={product.id}
-                              product={product}
-                              commingSoon={commingSoon}
-                              lineClamp={2}
-                              width={200}
-                           />
-                        )
-                     })
-                  }
-               </MasonryGrid>
-            </VerticalFlex>
-            <ListPagination />
-         </>
-         ):(
-            <NoContent type={'상품'} />
+            <>
+               <SortFilter length={listLength} sortConfig={sortConfig} />
+
+               <VerticalFlex alignItems="start">
+                  <MasonryGrid gap={20} width={"100%"}>
+                     {listArray.map((product: ProductData) => (
+                        <ProductCard
+                           key={product.id}
+                           product={product}
+                           commingSoon={commingSoon}
+                           lineClamp={2}
+                           width={200}
+                        />
+                     ))}
+                  </MasonryGrid>
+               </VerticalFlex>
+               {pagination && (
+                  <ListPagination
+                     page={pagination.page}
+                     totalPages={pagination.totalPages}
+                     onChange={pagination.onChange}
+                  />
+               )}
+            </>
+         ) : (
+            <NoContent type={"상품"} />
          )}
       </>
-   )
+   );
 }
