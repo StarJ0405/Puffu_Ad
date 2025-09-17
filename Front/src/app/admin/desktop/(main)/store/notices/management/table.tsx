@@ -2,6 +2,8 @@
 
 import Button from "@/components/buttons/Button";
 import Center from "@/components/center/Center";
+import RadioChild from "@/components/choice/radio/RadioChild";
+import RadioGroup from "@/components/choice/radio/RadioGroup";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
@@ -114,18 +116,6 @@ export default function ({
         },
       },
     },
-    {
-      label: "성인 설정",
-      code: "adult",
-      styling: {
-        common: {
-          style: {
-            width: 100,
-            minWidth: 100,
-          },
-        },
-      },
-    },
   ];
   const { stores } = useData(
     "stores",
@@ -140,16 +130,19 @@ export default function ({
   const [total, setTotal] = useState(initData.NumberOfTotalElements);
   const table = useRef<any>(null);
   const input = useRef<any>(null);
+  const [type, setType] = useState<"전체" | "일반" | "이벤트">("전체");
   const onSearchClick = () => {
     const data: any = {};
     const q = input.current.getValue();
     if (q) data.q = q;
     if (store) data.store_id = store;
+    if (type !== "전체") data.type = type;
     table.current.setCondition(data);
   };
   const onResetClick = () => {
     input.current.empty();
     table.current.reset();
+    setType("전체");
     setStore("");
   };
   const ContextMenu = ({ x, y, row }: { x: number; y: number; row?: any }) => {
@@ -270,6 +263,38 @@ export default function ({
                       />
                     </FlexChild>
                   </HorizontalFlex>
+                </FlexChild>
+                <FlexChild borderBottom={"1px solid #e9e9e9"}>
+                  <RadioGroup
+                    name="type"
+                    value={type}
+                    onValueChange={(value) => setType(value as any)}
+                  >
+                    <HorizontalFlex gap={20} justifyContent={"flex-start"}>
+                      <FlexChild
+                        width={"10%"}
+                        backgroundColor={"var(--admin-table-bg-color)"}
+                      >
+                        <div className={styles.titleWrap}>
+                          <Center>
+                            <P size={16} weight={"bold"}>
+                              타입
+                            </P>
+                          </Center>
+                        </div>
+                      </FlexChild>
+                      <FlexChild>
+                        <HorizontalFlex justifyContent="flex-start" gap={14}>
+                          {["전체", "일반", "이벤트"].map((str) => (
+                            <FlexChild key={str} width={"max-content"} gap={5}>
+                              <RadioChild id={str} />
+                              <P>{str}</P>
+                            </FlexChild>
+                          ))}
+                        </HorizontalFlex>
+                      </FlexChild>
+                    </HorizontalFlex>
+                  </RadioGroup>
                 </FlexChild>
               </VerticalFlex>
             </FlexChild>
