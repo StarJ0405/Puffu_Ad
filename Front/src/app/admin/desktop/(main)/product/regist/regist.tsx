@@ -1,8 +1,6 @@
 "use client";
 import Button from "@/components/buttons/Button";
 import Center from "@/components/center/Center";
-import CheckboxChild from "@/components/choice/checkbox/CheckboxChild";
-import CheckboxGroup from "@/components/choice/checkbox/CheckboxGroup";
 import RadioChild from "@/components/choice/radio/RadioChild";
 import RadioGroup from "@/components/choice/radio/RadioGroup";
 import Container from "@/components/container/Container";
@@ -18,7 +16,6 @@ import P from "@/components/P/P";
 import Select from "@/components/select/Select";
 import { adminRequester } from "@/shared/AdminRequester";
 import useData from "@/shared/hooks/data/useData";
-import useClientEffect from "@/shared/hooks/useClientEffect";
 import useNavigate from "@/shared/hooks/useNavigate";
 import { textFormat } from "@/shared/regExp";
 import { scrollTo, toast, validateInputs } from "@/shared/utils/Functions";
@@ -28,12 +25,30 @@ import Option from "./option";
 import styles from "./page.module.css";
 
 export default function ({
-  stores,
-  brands,
+  initStores,
+  initBrands,
 }: {
-  stores: StoreData[];
-  brands: BrandData[];
+  initStores: StoreData[];
+  initBrands: BrandData[];
 }) {
+  const { stores } = useData(
+    "stores",
+    { select: ["id", "name", "currency_unit"] },
+    (condition) => adminRequester.getStores(condition),
+    {
+      onReprocessing: (data) => data?.content || [],
+      fallbackData: initStores,
+    }
+  );
+  const { brands } = useData(
+    "brands",
+    { select: ["id", "name"] },
+    (condition) => adminRequester.getBrands(condition),
+    {
+      onReprocessing: (data) => data?.content || [],
+      fallbackData: initBrands,
+    }
+  );
   const [store, setStore] = useState<string>("");
   const [brand, setBrand] = useState<string>("");
   const { categories } = useData(
@@ -159,7 +174,7 @@ export default function ({
                           <Select
                             id="store"
                             scrollMarginTop={150}
-                            options={stores.map((store) => ({
+                            options={stores.map((store: StoreData) => ({
                               display: store.name,
                               value: store.id,
                             }))}
@@ -194,7 +209,7 @@ export default function ({
                             id="brand"
                             scrollMarginTop={150}
                             searchable={true}
-                            options={brands.map((brand) => ({
+                            options={brands.map((brand: BrandData) => ({
                               display: brand.name,
                               value: brand.id,
                             }))}

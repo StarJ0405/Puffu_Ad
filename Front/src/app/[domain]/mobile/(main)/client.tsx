@@ -37,7 +37,7 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
 
   const swiperRef = useRef<SwiperType | null>(null);
 
-  // console.log('배너', banners);
+  
 
   const paintBullets = (swiper: SwiperType) => {
     // 페이지네이션 스타일 설정
@@ -104,7 +104,7 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
                     src={
                       userData?.adult
                         ? item.thumbnail.mobile
-                        : "/resources/images/19_only.png"
+                        : "/resources/images/19_only_banner_mobile.png"
                     }
                     width={"100%"}
                   />
@@ -114,7 +114,7 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
                   src={
                     userData?.adult
                       ? item.thumbnail.mobile
-                      : "/resources/images/19_only.png"
+                      : "/resources/images/19_only_banner_mobile.png"
                   }
                   width={"100%"}
                 />

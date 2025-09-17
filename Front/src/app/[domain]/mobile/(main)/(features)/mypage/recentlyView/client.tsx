@@ -36,7 +36,7 @@ export function RecentlyViewTable() {
     },
     { onReprocessing: (data) => data?.content || [] }
   );
-  // console.log(recents);
+  
 
   return (
     <>

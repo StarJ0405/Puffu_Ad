@@ -21,7 +21,7 @@ export function HeaderCategory({ CaOpen }: { CaOpen: boolean }) {
       const fetchData = async () => {
         try {
           const result = await requester.getCategories();
-          console.log(result);
+          
           setCategories(result.content);
         } catch (error) {
           console.error("카테고리 데이터를 가져오는 데 실패했습니다:", error);

@@ -1,3 +1,4 @@
+"use client";
 import Button from "@/components/buttons/Button";
 import CheckboxChild from "@/components/choice/checkbox/CheckboxChild";
 import CheckboxGroup from "@/components/choice/checkbox/CheckboxGroup";
@@ -9,186 +10,283 @@ import ListPagination from "@/components/listPagination/ListPagination";
 import P from "@/components/P/P";
 import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
-import styles from './inquiry.module.css';
+import styles from "./inquiry.module.css";
 import InputTextArea from "@/components/inputs/InputTextArea";
-import { useState } from "react";
+import { useState, Dispatch, SetStateAction } from "react";
 import clsx from "clsx";
 import { AnimatePresence, motion } from "framer-motion";
+import { useParams, useRouter } from "next/navigation";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
+import { requester } from "@/shared/Requester";
+import { toast } from "@/shared/utils/Functions";
+import { QAData, QADataFrame } from "@/types";
+import NiceModal from "@ebay/nice-modal-react";
+import ConfirmModal from "@/modals/confirm/ConfirmModal";
+import NoContent from "@/components/noContent/noContent";
 
+interface InquiryProps {
+  qaList: QAData[];
+  page: number;
+  totalPage: number;
+  setPage: Dispatch<SetStateAction<number>>;
+  fetchQAs: (pageNumber: number) => void;
+}
 
+export default function Inquiry({
+  qaList,
+  page,
+  totalPage,
+  setPage,
+  fetchQAs,
+}: InquiryProps) {
+  const params = useParams();
+  const router = useRouter();
+  const detail_id = params.detail_id as string;
+  const domain = params.domain as string;
+  const { userData } = useAuth();
 
-export default  function Inquiry() {
+  const [qaType, setQaType] = useState<QADataFrame["type"] | "">("");
+  const [content, setContent] = useState("");
+  const [isHidden, setIsHidden] = useState(false);
 
-   const inquiryTest = [ // 리뷰 게시글 테스트용
-      {
-         name: 'test',
-         title: '상품 관련 문의입니다.',
-         date: '2025-08-07', 
-         content: '사용해보니까 충전이 됐다 안됐다 하는데 교환 가능할까요',
-         response: '',
-      },
-      {
-         name: 'test',
-         title: '상품 관련 문의입니다.',
-         date: '2025-08-07', 
-         content: '사용해보니까 충전이 됐다 안됐다 하는데 교환 가능할까요', 
-         response: `
-            안녕하세요. 제품을 정면으로 세운 상태에서 그대로 한바퀴 돌리면 뒤에 있습니다. 
-            그래도 모르시겠으면 커뮤니티에서 유저들과 소통해도 도움이 되실 듯 합니다. 감사합니다.
-         `,
-      },
-      {
-         name: 'test',
-         title: '상품 관련 문의입니다.',
-         date: '2025-08-07', 
-         content: '사용해보니까 충전이 됐다 안됐다 하는데 교환 가능할까요', 
-         response: '',
-      },
-   ]
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
 
+  const getQaTypeKorean = (type: QADataFrame["type"] | "") => {
+    switch (type) {
+      case "exchange":
+        return "교환/환불";
+      case "refund":
+        return "교환/환불";
+      case "etc":
+        return "기타";
+      default:
+        return "기타";
+    }
+  };
 
-   return (
-      <VerticalFlex className={styles.inquiry_wrap}>
-         <VerticalFlex className={styles.inquiry_board}>
+  const handleSubmit = async () => {
+    if (!userData) {
+      const result = await NiceModal.show(ConfirmModal, {
+        title: "로그인이 필요합니다.",
+        content: "로그인 페이지로 이동하시겠습니까?",
+        confirmText: "로그인하기",
+        cancelText: "취소",
+      });
+      if (result) {
+        router.push(`/${domain}/login`);
+      }
+      return;
+    }
+    if (!qaType) {
+      toast({ message: "문의 유형을 선택해주세요." });
+      return;
+    }
+    if (!content.trim()) {
+      toast({ message: "문의 내용을 입력해주세요." });
+      return;
+    }
 
-            {/* 문의글 작성란 */}
-            <VerticalFlex className={styles.inquiry_write} gap={15}>
-               <FlexChild className={styles.select_item}>
-                  <Select
-                     classNames={{
-                        header: "web_select",
-                        placeholder: "web_select_placholder",
-                        line: "web_select_line",
-                        arrow: "web_select_arrow",
-                        search: "web_select_search",
-                     }}
+    const payload: QADataFrame = {
+      type: qaType as QADataFrame["type"],
+      title: `${getQaTypeKorean(qaType)} 관련 문의입니다.`,
+      content,
+      hidden: isHidden,
+      product_id: detail_id as string,
+      user_id: userData.id,
+    };
 
-                     options={[
-                        { value: "상품 관련", display: "상품 관련" },
-                        { value: "재고", display: "재고" },
-                        { value: "교환 환불 배송", display: "교환 환불 배송" },
-                        { value: "기타", display: "기타" },
-                     ]}
-                     placeholder={'문의 유형을 선택하세요.'}
-                     // value={selectedMessageOption}
+    const res = await requester.createQA(payload);
+    if (res?.message === "success") {
+      toast({ message: "문의가 등록되었습니다." });
+      setContent("");
+      setQaType("");
+      setIsHidden(false);
+      fetchQAs(1);
+    } else {
+      toast({ message: "문의 등록에 실패했습니다." });
+    }
+  };
+
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${String(date.getDate()).padStart(2, "0")}`;
+  };
+
+  const maskName = (name?: string) => {
+    if (!name) return "비회원";
+    if (name.length <= 2) {
+      return name.substring(0, 1) + "*";
+    }
+    return (
+      name.substring(0, 1) +
+      "*".repeat(name.length - 2) +
+      name.substring(name.length - 1)
+    );
+  };
+
+  return (
+    <VerticalFlex className={styles.inquiry_wrap}>
+      <VerticalFlex className={styles.inquiry_board}>
+        {/* 문의글 작성란 */}
+        <VerticalFlex className={styles.inquiry_write} gap={25}>
+          <FlexChild className={styles.select_item}>
+            <Select
+              classNames={{
+                header: "web_select",
+                placeholder: "web_select_placholder",
+                line: "web_select_line",
+                arrow: "web_select_arrow",
+                search: "web_select_search",
+              }}
+              width={"100%"}
+              options={[
+                { value: "exchange", display: "교환/환불 문의" },
+                { value: "etc", display: "기타 문의" },
+              ]}
+              placeholder={"문의 유형을 선택하세요."}
+              value={qaType}
+              onChange={(value) => setQaType(value as QADataFrame["type"])}
+            />
+          </FlexChild>
+
+          <VerticalFlex className={styles.inquiry_content} gap={10}>
+            <InputTextArea
+              width={"100%"}
+              style={{ height: "150px" }}
+              placeHolder="문의글을 작성해 주세요."
+              value={content}
+              onChange={(value) => setContent(value as string)}
+            />
+
+            <CheckboxGroup name="private_Check">
+              <label>
+                <FlexChild className={styles.Private_checkBox}>
+                  <CheckboxChild
+                    id={"private_Check"}
+                    checked={isHidden}
+                    onChange={() => setIsHidden(!isHidden)}
                   />
-               </FlexChild>
+                  <P>비공개로 작성</P>
+                </FlexChild>
+              </label>
+            </CheckboxGroup>
+          </VerticalFlex>
 
-               <VerticalFlex className={styles.inquiry_content} gap={5}>
-                  <InputTextArea width={'100%'} style={{height: '150px'}} placeHolder="문의글을 작성해 주세요." />
-                  
-                  <CheckboxGroup name='private_Check'>
-                     <label>
-                        <FlexChild className={styles.Private_checkBox}>
-                              <CheckboxChild id={'private_Check'} />
-                              <P>비공개로 작성</P>
-                        </FlexChild>
-                     </label>
-                  </CheckboxGroup>
-               </VerticalFlex>
+          <FlexChild justifyContent="center" marginTop={10}>
+            <Button className="post_btn" onClick={handleSubmit}>
+              문의하기
+            </Button>
+          </FlexChild>
+        </VerticalFlex>
 
-               <FlexChild justifyContent="center" marginTop={10}>
-                  <Button className='post_btn'>
-                     문의하기
-                  </Button>
-               </FlexChild>
-            </VerticalFlex>
+        <VerticalFlex className={styles.inquiry_list}>
+          <FlexChild className={styles.list_title}>
+            <P className={styles.title}>전체 문의목록</P>
+          </FlexChild>
 
+          {qaList.length > 0 ? (
+            qaList.map((inquiry, i) => {
+              const canView =
+                !inquiry.hidden ||
+                userData?.role === "admin" ||
+                userData?.id === inquiry.user_id;
 
-            <VerticalFlex className={styles.inquiry_list}>
-               <FlexChild className={styles.list_title}>
-                  <P className={styles.title}>전체 문의목록</P>
-                  <P size={14} color="#797979"><Span color="#fff">{inquiryTest.length}</Span>건</P>
-               </FlexChild>
-               
-               {
-                  inquiryTest.map((inquiry, i)=> (
-                     <VerticalFlex key={i} className={styles.inquiry_item}>
-                        <VerticalFlex className={styles.user_question}>
-                           <HorizontalFlex alignItems="center" className={styles.item_title}>
-                              <P>{inquiry.title}</P> 
-                              {/* 체크된 문의 분류에 따라 만들어진 제목으로 변경됨. 상품관련이면 
-                              상품관련 문의 기타면 기타 문의입니다. 이런 식.  */}
-                              
+              return (
+                <VerticalFlex key={i} className={styles.inquiry_item}>
+                  <VerticalFlex className={styles.user_question}>
+                    <HorizontalFlex
+                      alignItems="center"
+                      className={styles.item_title}
+                    >
+                      <P>{inquiry.title}</P>
+                      {inquiry.answer && canView && (
+                        <Button
+                          className={clsx(styles.toggle_btn, {
+                            [styles.active]: openIndex === i,
+                          })}
+                          onClick={() =>
+                            setOpenIndex((prev) => (prev === i ? null : i))
+                          }
+                        >
+                          <Image
+                            src={`/resources/icons/arrow/board_arrow_bottom_icon.png`}
+                            width={20}
+                          />
+                        </Button>
+                      )}
+                    </HorizontalFlex>
 
-                              {/* 답변대기일때는 버튼 사라지기 */}
-                              {
-                                 inquiry.response && (
-                                    <Button 
-                                       className={clsx(styles.toggle_btn, {[styles.active]: openIndex === i,})} 
-                                       onClick={() => setOpenIndex(prev => (prev === i ? null : i))}
-                                    >
-                                       <Image src={`/resources/icons/arrow/board_arrow_bottom_icon.png`} width={20} />
-                                    </Button>
-                                 )
-                              }
-                           </HorizontalFlex>
-   
-                           <FlexChild className={styles.data_group}>
-                              <FlexChild className={styles.response_check}>
-                                 <Span
-                                    color={inquiry.response && '#fff'}
-                                 >
-                                    {inquiry.response ? '답변완료' : '답변대기'}
-                                 </Span>
+                    <FlexChild className={styles.data_group}>
+                      <FlexChild className={styles.response_check}>
+                        <Span color={inquiry.answer ? "#fff" : undefined}>
+                          {inquiry.answer ? "답변완료" : "답변대기"}
+                        </Span>
+                      </FlexChild>
+
+                      <P className={styles.item_name}>
+                        {maskName(inquiry.user?.name)}
+                      </P>
+
+                      <P className={styles.item_date}>
+                        {formatDate(inquiry.created_at as string)}
+                      </P>
+                    </FlexChild>
+
+                    <FlexChild className={styles.item_content}>
+                      <P>
+                        {canView ? inquiry.content : "비공개 문의입니다."}
+                      </P>
+                    </FlexChild>
+                  </VerticalFlex>
+
+                  {canView && (
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        id="motion"
+                        key={openIndex}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5, ease: "easeInOut" }}
+                      >
+                        {inquiry.answer &&
+                          openIndex === i && (
+                            <VerticalFlex className={styles.admin_answer}>
+                              <FlexChild className={styles.answer_title}>
+                                <P color="var(--main-color1)">관리자 답변</P>
                               </FlexChild>
-   
-                              <P className={styles.item_name}>
-                                 {inquiry.name} {/* 닉네임 뒷글자 *** 표시 */}
-                              </P>
-   
-                              <P className={styles.item_date}>
-                                 {inquiry.date}
-                              </P>
-                           </FlexChild>
-   
-                           <FlexChild className={styles.item_content}>
-                              <P>
-                                 {inquiry.content}
-                              </P>
-                           </FlexChild>
-                        </VerticalFlex>
-                        
-                        <AnimatePresence mode="wait">
-                           <motion.div
-                             id="motion"
-                             key={openIndex}
-                             initial={{ opacity: 0,}}
-                             animate={{ opacity: 1,}}
-                             transition={{ duration: 0.5, ease: "easeInOut" }}
-                           >
-                        {
-                           inquiry.response && (
-                              openIndex === i && (
-                                 <VerticalFlex className={styles.admin_answer}>
-                                    <FlexChild className={styles.answer_title}>
-                                       <P color="var(--main-color1)">관리자 답변</P>
-                                    </FlexChild>
-                                    
-                                    <FlexChild className={styles.item_content}>
-                                       <P>
-                                          {inquiry.response}
-                                       </P>
-                                    </FlexChild>
-                                 </VerticalFlex>
-                              )
-                           )
-                        }
-                        </motion.div>
-                        </AnimatePresence>
-                     </VerticalFlex>
-                  ))
-               }
 
-               <FlexChild justifyContent="center">
-                  <ListPagination />
-               </FlexChild>
-               
-            </VerticalFlex>
-         </VerticalFlex>
+                              <FlexChild className={styles.item_content}>
+                                <P>{inquiry.answer}</P>
+                              </FlexChild>
+                            </VerticalFlex>
+                          )}
+                      </motion.div>
+                    </AnimatePresence>
+                  )}
+                </VerticalFlex>
+              );
+            })
+          ) : (
+            <NoContent type="문의" />
+          )}
+
+          <FlexChild justifyContent="center">
+            <ListPagination
+              page={page}
+              totalPage={totalPage}
+              handlePageChange={handlePageChange}
+            />
+          </FlexChild>
+        </VerticalFlex>
       </VerticalFlex>
-   )
-
+    </VerticalFlex>
+  );
 }

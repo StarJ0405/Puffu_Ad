@@ -21,7 +21,7 @@ export default async function ({ params }: { params: Promise<Params> }) {
   };
 
   const initProducts = await requester.getProducts(initCondition);
-  // console.log('전체 카테고리', initProducts);
+  
   
   return (
     <section className="root page_container">

@@ -16,35 +16,57 @@ import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { Cookies } from "@/shared/utils/Data";
 import { getCookieOption } from "@/shared/utils/Functions";
+import { requester } from "@/shared/Requester";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
+import useNavigate from "@/shared/hooks/useNavigate";
 
-const editInfoModal = () => {
-  // 개인정보 수정
+const editInfoModal = (userData: any, navigate: (path: string) => void) => { // 개인정보 수정
+  let password = '';
   NiceModal.show(ConfirmModal, {
     // title: '개인정보 수정',
-    message: <EditINfo />,
+    message: (
+      <EditINfo userData={userData} onPasswordChange={(p) => { password = p; }} />
+    ),
     confirmText: "확인",
     withCloseButton: true,
-    onConfirm: async () => {},
-  });
-};
+    onConfirm: async () => {
+      try {
+        const res = await requester.checkCurrentPassword({ password });
+        
+        if (res.message === 'success') {
+          navigate('/mypage/editInfo');
+        } else {
+          alert('비밀번호가 일치하지 않습니다.');
+        }
+      } catch (error) {
+        console.error('Password check failed:', error);
+        alert('비밀번호 확인 중 오류가 발생했습니다.');
+      }
+    },
+  })
+}
 
 export function Profile() {
+
+  const navigate = useNavigate();
+  const { userData } = useAuth(); // 유저정보 받아오기
+
   return (
     <VerticalFlex className={clsx(styles.profile, styles.box_frame)}>
       <VerticalFlex gap={20}>
         <FlexChild width={"auto"} position="relative">
           <FlexChild className={styles.thumbnail} width={"auto"}>
             <Image
-              src={"/resources/images/dummy_img/product_01.png"}
+              src={userData?.thumbnail || "/resources/icons/mypage/user_no_img.png"}
               width={80}
             />
           </FlexChild>
         </FlexChild>
 
         <FlexChild width={"auto"} className={styles.profile_name}>
-          <P>콘푸로스트123</P>
+          <P>{userData?.name ?? "익명"}</P>
 
-          <FlexChild width={"auto"} cursor="pointer" onClick={editInfoModal}>
+          <FlexChild width={"auto"} cursor="pointer" onClick={() => editInfoModal(userData, navigate)}>
             <Image
               src={"/resources/icons/mypage/setting_icon.png"}
               width={16}
@@ -54,7 +76,7 @@ export function Profile() {
       </VerticalFlex>
 
       <FlexChild className={styles.link_btn}>
-        <Button>관심 리스트</Button>
+        <Button onClick={()=> navigate('/mypage/wishList')}>관심 리스트</Button>
       </FlexChild>
     </VerticalFlex>
   );
@@ -62,6 +84,10 @@ export function Profile() {
 
 export function MypageNavi() {
   const [, , removeCookie] = useCookies([Cookies.JWT]);
+
+  const { userData } = useAuth();
+  const navigate = useNavigate();
+
   const myshopMenu = [
     { name: "내 주문 내역", link: "/mypage/myOrders" },
     { name: "최근 본 상품", link: "/mypage/recentlyView" },
@@ -122,7 +148,10 @@ export function MypageNavi() {
             <Link
               className={styles.inner_btn}
               href={"/mypage/editInfo"}
-              onClick={editInfoModal}
+              onClick={(e) => {
+                e.preventDefault();
+                editInfoModal(userData, navigate);
+              }}
             >
               <Span>개인정보 수정</Span>
               <Image src={"/resources/icons/arrow/slide_arrow.png"} width={8} />
@@ -152,7 +181,7 @@ export function MypageNavi() {
   );
 }
 
-export function EditINfo() {
+export function EditINfo({ userData, onPasswordChange }: { userData: any, onPasswordChange: (password: string) => void }) {
   return (
     <VerticalFlex className="modal_edit_info" gap={50}>
       <FlexChild className="title" justifyContent="center">
@@ -167,7 +196,7 @@ export function EditINfo() {
             아이디
           </P>
           <P size={16} color="#797979">
-            mynameistony
+            {userData?.username ?? "mynameistony"}
           </P>
         </VerticalFlex>
 
@@ -175,13 +204,49 @@ export function EditINfo() {
           <P size={16} color="#333" weight={600}>
             비밀번호
           </P>
-          <Input
-            type="password"
-            width={"100%"}
-            placeHolder="비밀번호를 입력하세요."
-          />
+          <Input type="password" width={'100%'} placeHolder="비밀번호를 입력하세요." onChange={(value) => onPasswordChange(value as string)} />
         </VerticalFlex>
       </VerticalFlex>
     </VerticalFlex>
   );
+}
+
+
+export function DeliveryInfo() {
+
+  const navigate = useNavigate();
+
+  return (
+    <VerticalFlex className={clsx(styles.box_frame, styles.delivery_box)}>
+          <FlexChild className={styles.box_header}>
+            <P>주문 배송 현황</P>
+          </FlexChild>
+
+          <FlexChild className={styles.deli_itemBox}>
+            <VerticalFlex className={styles.deli_item}>
+              <P>15</P>
+              <Span>상품 준비중</Span>
+            </VerticalFlex>
+
+            <VerticalFlex className={styles.deli_item}>
+              <P>21</P>
+              <Span>배송준비</Span>
+            </VerticalFlex>
+
+            <VerticalFlex className={styles.deli_item}>
+              <P>4</P>
+              <Span>배송중</Span>
+            </VerticalFlex>
+
+            <VerticalFlex className={styles.deli_item}>
+              <P>36</P>
+              <Span>배송완료</Span>
+            </VerticalFlex>
+          </FlexChild>
+
+          <FlexChild className={styles.link_btn} onClick={()=> navigate('/mypage/myOrders')}>
+            <Button>내 주문 확인</Button>
+          </FlexChild>
+        </VerticalFlex>
+  )
 }

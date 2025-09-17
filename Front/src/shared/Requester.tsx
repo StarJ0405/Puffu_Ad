@@ -478,9 +478,14 @@ class _Requester {
     if (callback) callback(await this.post(`/users/me/qa`, data));
     else return await this.post(`/users/me/qa`, data);
   }
+  // 1:1문의 Q&A
   async getTotalQAs(data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.get(`/qa`, data));
     else return await this.get(`/qa`, data);
+  }
+  async getProductQAs(product_id:string,data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/products/${product_id}/qa`, data));
+    else return await this.get(`/products/${product_id}/qa`, data);
   }
   async getQAs(data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.get(`/users/me/qa`, data));

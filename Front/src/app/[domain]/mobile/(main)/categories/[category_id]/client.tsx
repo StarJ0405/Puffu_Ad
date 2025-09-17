@@ -32,7 +32,7 @@ export function TitleBox({ category_id }: { category_id: any }) {
   const category = findCategoryById(categoriesData, category_id);
   const navigate = useNavigate();
 
-  // console.log('카테고리!', category);
+  
 
   return (
     <VerticalFlex className={styles.title_box}>

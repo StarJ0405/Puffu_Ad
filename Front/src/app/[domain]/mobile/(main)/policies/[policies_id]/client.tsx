@@ -39,13 +39,13 @@ export default function Route () {
       <FlexChild paddingTop={60}>
         {
           pathname.includes("term") && (
-            <TermContent size={10} />
+            <TermContent size={7} />
           )
         }
 
         {
           pathname.includes("privacy") && (
-            <PrivacyContent size={10} />
+            <PrivacyContent size={7} />
           )
         }
       </FlexChild>

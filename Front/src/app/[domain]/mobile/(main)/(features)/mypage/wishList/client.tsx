@@ -24,10 +24,6 @@ export function WishListTable({ initWishList }: { initWishList: Pageable }) {
     }
   );
 
-  useEffect(() => {
-    console.log(wishes)
-  },[wishes])
-
   return (
     <>
       <HorizontalFlex className={mypage.box_header}>

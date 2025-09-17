@@ -352,7 +352,7 @@ function TableRow({
   return columns.map((column: Column, index: any) => {
     let displayValue: React.ReactNode;
     const label =
-      column?.Cell?.({ row, cell: row?.[column.code || ""], index: ridx }) ||
+      column?.Cell?.({ row, cell: row?.[column.code || ""], index: ridx }) ??
       row?.[column.code || ""];
     if (typeof label === "string" || typeof label === "number") {
       displayValue = (

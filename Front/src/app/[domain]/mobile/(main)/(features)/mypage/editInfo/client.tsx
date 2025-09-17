@@ -75,7 +75,7 @@ export function EditInfoClient() {
     try {
       const res = await requester.updateCurrentUser({ password: password, thumbnail: thumbnailUrl });
       alert("사용자 정보가 성공적으로 변경되었습니다.");
-      console.log(res);
+      
       router.back();
     } catch (error) {
       console.error("User update failed:", error);

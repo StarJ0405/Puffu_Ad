@@ -112,10 +112,10 @@ export function DeliveryClient({ initAddresses }: { initAddresses: any }) {
   //       // onclick: setPaswwordStep(1),
   //       withCloseButton: true,
   //       onConfirm: async () => {
-  //       console.log("저장하기");
+  
   //       },
   //       onCancel: () => {
-  //       console.log("닫기");
+  
   //     },
   //   });
   // };

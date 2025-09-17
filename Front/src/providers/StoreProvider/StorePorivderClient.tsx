@@ -105,7 +105,7 @@ export default function StoreProviderClient({
         value={{
           categoriesData: (categoriesData || []).map((cat: CategoryData) => {
             if (!userData?.adult)
-              cat.thumbnail = "/resources/images/19_only.png";
+              cat.thumbnail = "/resources/images/19_only_category.png";
             return cat;
           }),
         }}
