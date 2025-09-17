@@ -16,7 +16,6 @@ import { useParams } from "next/navigation";
 import useNavigate from "@/shared/hooks/useNavigate";
 
 // 게시판 리스트 -----------------------------------------------
-<<<<<<< HEAD
 // export function BoardTitleBox() {
 //   return (
 //     <HorizontalFlex className={clsx(boardStyle.board_titleBox, styles.event_titleBox)}>
@@ -26,20 +25,6 @@ import useNavigate from "@/shared/hooks/useNavigate";
 //     </HorizontalFlex>
 //   );
 // }
-=======
-export function BoardTitleBox() {
-  return (
-    <HorizontalFlex
-      className={clsx(boardStyle.board_titleBox, styles.event_titleBox)}
-    >
-      <FlexChild>
-        {/* 여기 현재 path 주소에 맞게 이름 바뀌게 해야 함. */}
-        <h3>이벤트</h3>
-      </FlexChild>
-    </HorizontalFlex>
-  );
-}
->>>>>>> 9675c82a913cf366dda28c6710abf591cd41f2a3
 
 export function GalleryTable() {
   const event = [
