@@ -13,7 +13,7 @@ import styles from "./page.module.css"
 import MasonryGrid from "@/components/masonry/MasonryGrid";
 import ProductCard from "@/components/card/ProductCard";
 import NoContent from "@/components/noContent/noContent";
-import { BaseProductList, ProdcutCategory } from "../../baseClient";
+import {BaseProductList, ProdcutCategory} from "../../baseClient";
 import ChildCategory from "@/components/childCategory/childCategory"
 import { useCategories } from "@/providers/StoreProvider/StorePorivderClient";
 
@@ -54,30 +54,23 @@ export function BestList({
   initProducts: Pageable;
   initConiditon: any;
 }) {
-  const { best, maxPage, page, setPage } = usePageData(
+  const { best, maxPage, page, setPage, mutate } = usePageData(
     "best",
     (pageNumber) => ({
       ...initConiditon,
+      pageSize: 24,
       pageNumber,
     }),
     (condition) => requester.getProducts(condition),
-    (data: Pageable) => data?.totalPages ?? 0,
+    (data: Pageable) => data?.totalPages || 0,
     {
-      onReprocessing: (data) => data?.content ?? [],
+      onReprocessing: (data) => data?.content || [],
       fallbackData: initProducts,
     }
   );
-
-  const totalPages = (maxPage ?? 0) + 1;
-
   return (
-    <BaseProductList
-      listArray={best}
-      pagination={{
-        page,
-        totalPages,
-        onChange: setPage,
-      }}
-    />
+    <>
+      <BaseProductList listArray={best} pagination={{ page, maxPage, setPage }} />
+    </>
   );
 }
