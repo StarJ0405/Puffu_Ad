@@ -9,18 +9,19 @@
 
 .event_tab {
    justify-content: center !important;
-   gap: 30px;
-   margin-bottom: 60px;
+   gap: 10px;
+   margin-bottom: 40px;
+   flex-direction: column;
 }
 
 .event_tab .tab_btn {
    border-radius: 100px;
-   max-width: 260px;
+   max-width: 240px;
    border: 1px solid #575757;
    background: #111;
-   padding: 15px 5px;
+   padding: 12px 5px;
    color: #595959;
-   font-size: 18px;
+   font-size: 14px;
    font-weight: 600;
    justify-content: center;
    cursor: pointer;
