@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
@@ -9,7 +9,7 @@ import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import Pstyles from "../../products.module.css";
 import { requester } from "@/shared/Requester";
-import {BaseProductList} from "../../baseClient";
+import { BaseProductList } from "../../baseClient";
 import usePageData from "@/shared/hooks/data/usePageData";
 
 export function CommingSoonList({
@@ -35,7 +35,7 @@ export function CommingSoonList({
   );
   return (
     <>
-      <BaseProductList listArray={best} commingSoon={true} />
+      <BaseProductList id="" listArray={best} commingSoon={true} />
     </>
   );
 }

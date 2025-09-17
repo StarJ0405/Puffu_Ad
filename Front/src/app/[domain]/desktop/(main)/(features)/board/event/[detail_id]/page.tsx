@@ -1,13 +1,10 @@
+import notFound from "@/app/not-found";
 import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import boardStyle from "../../boardGrobal.module.css";
-import styles from "./page.module.css";
-
-import { DetailFrame, BoardTable } from "./client";
-import { CommentFrame } from "./comment/commentList";
-import { Params } from "next/dist/server/request/params";
 import { requester } from "@/shared/Requester";
-import notFound from "@/app/not-found";
+import { Params } from "next/dist/server/request/params";
+import boardStyle from "../../boardGrobal.module.css";
+import { DetailFrame } from "./client";
 
 export default async function ({ params }: { params: Promise<Params> }) {
   const { detail_id } = await params;

@@ -1,33 +1,29 @@
 import Container from "@/components/container/Container";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import Pstyles from '../../products.module.css';
-import { } from './client';
+import Pstyles from "../../products.module.css";
+import {} from "./client";
 
 import { BaseProductList } from "../../baseClient";
 import { requester } from "@/shared/Requester";
 
-
-
 export default async function () {
-   const newCondition: any = {
+  const newCondition: any = {
     pageSize: 24,
     order: "new",
   };
   const newProducts = await requester.getProducts(newCondition);
 
-   return (
-      <section className="root page_container">
-         <Container marginTop={35}>
-            <VerticalFlex className={Pstyles.title_box}>
-               
-               <h3>세트 상품</h3>
-            </VerticalFlex>
+  return (
+    <section className="root page_container">
+      <Container marginTop={35}>
+        <VerticalFlex className={Pstyles.title_box}>
+          <h3>세트 상품</h3>
+        </VerticalFlex>
 
-
-            <VerticalFlex className={Pstyles.list}>
-               <BaseProductList listArray={newProducts} />
-            </VerticalFlex>
-         </Container>
-      </section>
-   )
+        <VerticalFlex className={Pstyles.list}>
+          <BaseProductList id="" listArray={newProducts} />
+        </VerticalFlex>
+      </Container>
+    </section>
+  );
 }

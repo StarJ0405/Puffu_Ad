@@ -16,6 +16,7 @@ import { useParams } from "next/navigation";
 import useNavigate from "@/shared/hooks/useNavigate";
 import usePageData from "@/shared/hooks/data/usePageData";
 import { requester } from "@/shared/Requester";
+import { useState } from "react";
 
 // 게시판 리스트 -----------------------------------------------
 export function BoardTitleBox() {
@@ -38,11 +39,15 @@ export function GalleryTable({
   initCondition: any;
   initNotices: Pageable;
 }) {
+  const [active, setActive] = useState<"all" | "before" | "continue" | "end">(
+    "all"
+  );
   const { notices, page, maxPage, origin } = usePageData(
     "notices",
     (pageNumber) => ({
       ...initCondition,
       pageNumber,
+      active,
     }),
     (condition) => requester.getNotices(condition),
     (data: Pageable) => data?.totalPages || 0,
@@ -55,15 +60,37 @@ export function GalleryTable({
   return (
     <VerticalFlex>
       <HorizontalFlex className={styles.event_tab}>
-        <FlexChild className={clsx(styles.tab_btn, styles.active)}>
+        <FlexChild
+          className={clsx(styles.tab_btn, {
+            [styles.active]: active === "all",
+          })}
+          onClick={() => setActive("all")}
+        >
           <P>전체보기</P>
         </FlexChild>
-
-        <FlexChild className={styles.tab_btn}>
+        <FlexChild
+          className={clsx(styles.tab_btn, {
+            [styles.active]: active === "before",
+          })}
+          onClick={() => setActive("before")}
+        >
+          <P>예정된 이벤트</P>
+        </FlexChild>
+        <FlexChild
+          className={clsx(styles.tab_btn, {
+            [styles.active]: active === "continue",
+          })}
+          onClick={() => setActive("continue")}
+        >
           <P>진행중인 이벤트</P>
         </FlexChild>
 
-        <FlexChild className={styles.tab_btn}>
+        <FlexChild
+          className={clsx(styles.tab_btn, {
+            [styles.active]: active === "end",
+          })}
+          onClick={() => setActive("end")}
+        >
           <P>종료된 이벤트</P>
         </FlexChild>
       </HorizontalFlex>
@@ -84,7 +111,7 @@ export function GalleryTable({
       </FlexChild>
 
       <FlexChild className={boardStyle.list_bottom_box}>
-        <ListPagination />
+        {/* <ListPagination /> */}
       </FlexChild>
     </VerticalFlex>
   );

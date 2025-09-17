@@ -6,23 +6,22 @@ import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
+import InputTextArea from "@/components/inputs/InputTextArea";
 import ListPagination from "@/components/listPagination/ListPagination";
+import NoContent from "@/components/noContent/noContent";
 import P from "@/components/P/P";
 import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
-import styles from "./inquiry.module.css";
-import InputTextArea from "@/components/inputs/InputTextArea";
-import { useState, Dispatch, SetStateAction } from "react";
-import clsx from "clsx";
-import { AnimatePresence, motion } from "framer-motion";
-import { useParams, useRouter } from "next/navigation";
+import ConfirmModal from "@/modals/confirm/ConfirmModal";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import { requester } from "@/shared/Requester";
 import { toast } from "@/shared/utils/Functions";
-import { QAData, QADataFrame } from "@/types";
 import NiceModal from "@ebay/nice-modal-react";
-import ConfirmModal from "@/modals/confirm/ConfirmModal";
-import NoContent from "@/components/noContent/noContent";
+import clsx from "clsx";
+import { AnimatePresence, motion } from "framer-motion";
+import { useParams, useRouter } from "next/navigation";
+import { Dispatch, SetStateAction, useState } from "react";
+import styles from "./inquiry.module.css";
 
 interface InquiryProps {
   qaList: QAData[];
@@ -241,9 +240,7 @@ export default function Inquiry({
                     </FlexChild>
 
                     <FlexChild className={styles.item_content}>
-                      <P>
-                        {canView ? inquiry.content : "비공개 문의입니다."}
-                      </P>
+                      <P>{canView ? inquiry.content : "비공개 문의입니다."}</P>
                     </FlexChild>
                   </VerticalFlex>
 
@@ -256,18 +253,17 @@ export default function Inquiry({
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.5, ease: "easeInOut" }}
                       >
-                        {inquiry.answer &&
-                          openIndex === i && (
-                            <VerticalFlex className={styles.admin_answer}>
-                              <FlexChild className={styles.answer_title}>
-                                <P color="var(--main-color1)">관리자 답변</P>
-                              </FlexChild>
+                        {inquiry.answer && openIndex === i && (
+                          <VerticalFlex className={styles.admin_answer}>
+                            <FlexChild className={styles.answer_title}>
+                              <P color="var(--main-color1)">관리자 답변</P>
+                            </FlexChild>
 
-                              <FlexChild className={styles.item_content}>
-                                <P>{inquiry.answer}</P>
-                              </FlexChild>
-                            </VerticalFlex>
-                          )}
+                            <FlexChild className={styles.item_content}>
+                              <P>{inquiry.answer}</P>
+                            </FlexChild>
+                          </VerticalFlex>
+                        )}
                       </motion.div>
                     </AnimatePresence>
                   )}
@@ -281,8 +277,8 @@ export default function Inquiry({
           <FlexChild justifyContent="center">
             <ListPagination
               page={page}
-              totalPage={totalPage}
-              handlePageChange={handlePageChange}
+              maxPage={totalPage}
+              onChange={handlePageChange}
             />
           </FlexChild>
         </VerticalFlex>

@@ -16,6 +16,7 @@ import { useParams } from "next/navigation";
 import useNavigate from "@/shared/hooks/useNavigate";
 
 // 게시판 리스트 -----------------------------------------------
+<<<<<<< HEAD
 // export function BoardTitleBox() {
 //   return (
 //     <HorizontalFlex className={clsx(boardStyle.board_titleBox, styles.event_titleBox)}>
@@ -25,6 +26,20 @@ import useNavigate from "@/shared/hooks/useNavigate";
 //     </HorizontalFlex>
 //   );
 // }
+=======
+export function BoardTitleBox() {
+  return (
+    <HorizontalFlex
+      className={clsx(boardStyle.board_titleBox, styles.event_titleBox)}
+    >
+      <FlexChild>
+        {/* 여기 현재 path 주소에 맞게 이름 바뀌게 해야 함. */}
+        <h3>이벤트</h3>
+      </FlexChild>
+    </HorizontalFlex>
+  );
+}
+>>>>>>> 9675c82a913cf366dda28c6710abf591cd41f2a3
 
 export function GalleryTable() {
   const event = [
@@ -89,7 +104,7 @@ export function GalleryTable() {
 
       <FlexChild>
         {event.length > 0 ? (
-          <div 
+          <div
             className={styles.gallery_grid_container}
             style={{ "--column": "4" } as React.CSSProperties} // 너비에 몇개 늘어놓을 건지 갯수
           >
@@ -98,18 +113,19 @@ export function GalleryTable() {
             ))}
           </div>
         ) : (
-          <NoContent type={'게시판'} />
+          <NoContent type={"게시판"} />
         )}
       </FlexChild>
 
       <FlexChild className={boardStyle.list_bottom_box}>
-        <ListPagination />
+        {/* <ListPagination /> */}
       </FlexChild>
     </VerticalFlex>
   );
 }
 
-type EventItem = { // 고칠때 지워도 무방함
+type EventItem = {
+  // 고칠때 지워도 무방함
   thumbnail: string;
   title: string;
   subTitle: string;
@@ -117,20 +133,20 @@ type EventItem = { // 고칠때 지워도 무방함
   durationEnd: string;
 };
 
-
-
 // 갤러리 아이템
-export function GalleryItem({item} : {item :  EventItem}) {
-
+export function GalleryItem({ item }: { item: EventItem }) {
   const { detail_id } = useParams();
   const navigate = useNavigate();
 
   return (
     <VerticalFlex gap={17} className={styles.gallery_item}>
-      <FlexChild className={styles.thumb_frame} onClick={()=> navigate(`/board/event/${detail_id}`)}>
+      <FlexChild
+        className={styles.thumb_frame}
+        onClick={() => navigate(`/board/event/${detail_id}`)}
+      >
         {/* <Link href={'/board/detail/event_01'}> */}
-           <Image src={item.thumbnail} width={"100%"} height={"auto"} />
-           {/* {item.durationEnd && (
+        <Image src={item.thumbnail} width={"100%"} height={"auto"} />
+        {/* {item.durationEnd && (
              // 현재 날짜가 이벤트 종료기간을 지났을때 이 이미지가 나타나기
              // 실시간으로 시간 1초라도 기간 지나면 바로 업데이트해서 나타나게 해야 할지.
              //클릭해서 내용은 볼 수 있음
@@ -147,7 +163,7 @@ export function GalleryItem({item} : {item :  EventItem}) {
       <VerticalFlex className={styles.item_content}>
         <FlexChild className={styles.title}>
           {/* <Link href={'/board/detail/event_01'}> */}
-            <P>{ detail_id ?? item.title}</P>
+          <P>{detail_id ?? item.title}</P>
           {/* </Link> */}
         </FlexChild>
 

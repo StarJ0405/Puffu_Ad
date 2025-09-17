@@ -76,7 +76,6 @@ export function SecondCategory() {
   );
 }
 
-
 export function SearchList({
   initCondition,
   initProducts,
@@ -117,7 +116,11 @@ export function SearchList({
   // log("검색 결과 : ", products);
   return (
     <>
-      <BaseProductList listArray={products} sortConfig={{sort, setSort, sortOptions}} />
+      <BaseProductList
+        id="base"
+        listArray={products}
+        sortConfig={{ sort, setSort, sortOptions }}
+      />
       {/* sortOptions={sortOptions}  */}
     </>
   );
