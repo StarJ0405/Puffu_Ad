@@ -32,7 +32,7 @@
 
 .index {
   width: 100px;
-  min-width: 100px;
+  min-width: 100px !important;
   text-align: center;
 }
 .cell {

@@ -596,6 +596,15 @@ class _AdminRequester {
     if (callback) callback(await this.get("/users/me/chatrooms", data));
     else return await this.get("/users/me/chatrooms", data);
   }
+  // 문의
+  async getQAs(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get("/qa", data));
+    else return await this.get("/qa", data);
+  }
+  async answerQA(id: string, data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.post(`/qa/${id}`, data));
+    else return await this.post(`/qa/${id}`, data);
+  }
 }
 
 export default _AdminRequester;
