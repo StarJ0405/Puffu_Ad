@@ -1,10 +1,8 @@
 import Container from "@/components/container/Container";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import Pstyles from "../../products.module.css";
-import {} from "./client";
-
 import { requester } from "@/shared/Requester";
 import { BaseProductList } from "../../baseClient";
+import Pstyles from "../../products.module.css";
 
 export default async function () {
   const newCondition: any = {
