@@ -45,7 +45,7 @@ export default function BottomNavi() {
                      width: "100%",
                      height: "100vh",
                      background: "#111",   // 검색창 배경색
-                     zIndex: 1000,         // 다른 UI 위로
+                     zIndex: 1200,         // 다른 UI 위로
                   }}
                >
                   <CategoryMenu CaOpen={active} onClose={() => setActive(false)} />
