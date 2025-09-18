@@ -62,8 +62,7 @@ export function ProductCard({
               </FlexChild>
             )
           } */}
-        <FlexChild >
-          {/* onClick={() => (onClick ? onClick() : navigate(product_link))} */}
+        <FlexChild onClick={() => (onClick ? onClick() : navigate(product_link))}>
           {userData?.adult ? (
             <Image src={product.thumbnail} width={"100%"} height={"auto"} />
           ) : (
