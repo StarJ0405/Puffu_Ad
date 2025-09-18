@@ -35,12 +35,6 @@ export function MyOrdersTable({
   const [activePeriod, setActivePeriod] = useState("1week");
   const formatOrders = useCallback((ordersData: any[]) => {
     return ordersData.map((order) => {
-      const orderDate = new Date(order.created_at).toLocaleDateString("ko-KR", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
-
       let totalDiscount = 0;
       let totalPayment = 0;
 
@@ -63,7 +57,7 @@ export function MyOrdersTable({
 
       return {
         id: order.id,
-        date: orderDate,
+        // date: orderDate,
         orderId: order.display, // Unique order identifier
         content: content,
         totalDiscount: totalDiscount.toLocaleString(),
@@ -83,11 +77,10 @@ export function MyOrdersTable({
     },
     (condition) => requester.getOrders(condition),
     {
-      onReprocessing: (data) => formatOrders(data?.content || []),
+      onReprocessing: (data) => data?.content || [],
       fallbackData: initOrders,
     }
   );
-
   const handlePeriodChange = (period: string) => {
     const newStartDate = new Date();
     const newEndDate = new Date();
@@ -132,8 +125,6 @@ export function MyOrdersTable({
     if (q) setCondition({ q });
     else setCondition({});
   };
-
-  console.log('상품', orders);
 
   return (
     <>
@@ -215,11 +206,15 @@ export function MyOrdersTable({
       </HorizontalFlex>
       <VerticalFlex gap={30}>
         {orders.length > 0 ? (
-          orders.map((order: any, i: number) => (
-            <VerticalFlex key={i} className={styles.order_group}>
+          orders.map((order: OrderData) => (
+            <VerticalFlex key={order.id} className={styles.order_group}>
               <FlexChild className={styles.order_header}>
                 <P size={15} weight={500} padding={"0 10px 0 0"}>
-                  {order.date}{" "}
+                  {new Date(order.created_at).toLocaleDateString("ko-KR", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
                   <Span color="var(--main-color1)" padding={"0 0 0 4px"}>
                     [{getOrderStatus(order)}]
                   </Span>
@@ -240,14 +235,19 @@ export function MyOrdersTable({
                     주문취소
                   </Button>
                 )}
-                {order.status === "shipping" && order.trackingNumber && (
-                  <Button
-                    className={styles.tracking_btn}
-                    onClick={() => openTrackingNumber(order.trackingNumber)}
-                  >
-                    배송조회
-                  </Button>
-                )}
+                {order.status === "shipping" &&
+                  order?.shipping_methods?.[0]?.tracking_number && (
+                    <Button
+                      className={styles.tracking_btn}
+                      onClick={() =>
+                        openTrackingNumber(
+                          order?.shipping_methods?.[0]?.tracking_number as any
+                        )
+                      }
+                    >
+                      배송조회
+                    </Button>
+                  )}
               </FlexChild>
 
               <VerticalFlex className={styles.order_items_container}>
@@ -263,20 +263,16 @@ export function MyOrdersTable({
                   </FlexChild>
                 </HorizontalFlex>
                 <Dummy height={15} />
-                {order.content.map((child: any, j: number) => (
+                {order.items.map((item: LineItemData) => (
                   <HorizontalFlex
-                    key={j}
+                    key={item.id}
                     className={styles.list_item}
                     gap={15}
                     padding={"0 0 15px 0"}
                   >
                     {/* 상품 단위 */}
                     <HorizontalFlex className={styles.unit}>
-                      <Image
-                        src={child.thumbnail}
-                        width={80}
-                        borderRadius={5}
-                      />
+                      <Image src={item.thumbnail} width={80} borderRadius={5} />
                       <VerticalFlex
                         className={styles.unit_content}
                         width={"auto"}
@@ -286,9 +282,12 @@ export function MyOrdersTable({
                       >
                         <FlexChild gap={5}>
                           <Span className={styles.unit_brand}>
-                            {child.brand}
+                            {item?.brand?.name}
                           </Span>
-                          <Image src={child.delivery} width={13} />
+                          <Image
+                            src={"/resources/icons/cart/cj_icon.png"}
+                            width={13}
+                          />
                         </FlexChild>
 
                         <P
@@ -297,20 +296,20 @@ export function MyOrdersTable({
                           overflow="hidden"
                           display="--webkit-box"
                         >
-                          {child.title}
+                          {item.title}
                         </P>
 
-                        {/* 옵션 리스트 */}
-                        {child?.option && child?.option.length > 0 && (
-                          <VerticalFlex className={styles.option_list}>
-                            {child.option.map((option: any, k: number) => (
-                              <HorizontalFlex key={k} gap={10}>
-                                <P>{option.title}</P>
-                                <Span> + {option.price}원</Span>
-                              </HorizontalFlex>
-                            ))}
-                          </VerticalFlex>
-                        )}
+                        <P
+                          className={styles.unit_title}
+                          lineClamp={2}
+                          overflow="hidden"
+                          display="--webkit-box"
+                        >
+                          <Span>{item.total_quantity}</Span>
+                          <Span>개 / </Span>
+                          <Span>{item.unit_price}</Span>
+                          <Span>원</Span>
+                        </P>
                       </VerticalFlex>
                     </HorizontalFlex>
 
@@ -321,17 +320,27 @@ export function MyOrdersTable({
                       paddingBottom={30}
                     >
                       <FlexChild justifyContent={"center"}>
-                        <Span>{child.discountAmount}원</Span>
+                        <P>
+                          <Span>
+                            {((item.discount_price || 0) -
+                              (item.unit_price || 0)) *
+                              item.quantity}
+                          </Span>
+                          <Span>원</Span>
+                        </P>
                       </FlexChild>
 
                       <FlexChild justifyContent={"center"}>
-                        <Span
+                        <P
                           color="var(--main-color1)"
                           weight={600}
                           fontSize={18}
                         >
-                          {child.price}원
-                        </Span>
+                          <Span>
+                            {(item.discount_price || 0) * item.quantity}
+                          </Span>
+                          <Span>원</Span>
+                        </P>
                       </FlexChild>
                     </HorizontalFlex>
                   </HorizontalFlex>
@@ -341,17 +350,39 @@ export function MyOrdersTable({
               <VerticalFlex className={styles.order_summary}>
                 <HorizontalFlex className={styles.summary_row}>
                   <P>배송비</P>
-                  <Span>0 원</Span>
+                  {order.shipping_methods?.[0].amount === 0 ? (
+                    <P>무료</P>
+                  ) : (
+                    <P>
+                      <Span>+</Span>
+                      <Span>{order.shipping_methods?.[0].amount}</Span>
+                      <Span>원</Span>
+                    </P>
+                  )}
+                </HorizontalFlex>
+                <HorizontalFlex className={styles.summary_row}>
+                  <P>총 상품금액</P>
+                  <P>
+                    <Span>{order.total}</Span>
+                    <Span>원</Span>
+                  </P>
                 </HorizontalFlex>
                 <HorizontalFlex className={styles.summary_row}>
                   <P>총 할인금액</P>
-                  <Span>{order.totalDiscount}원</Span>
+                  <P>
+                    <Span>{order.total_discounted - order.total}</Span>
+                    <Span>원</Span>
+                  </P>
                 </HorizontalFlex>
                 <HorizontalFlex className={styles.summary_row}>
                   <P>총 결제금액</P>
-                  <Span color="var(--main-color1)" weight={600} fontSize={20}>
-                    {order.totalPayment}원
-                  </Span>
+                  <P color="var(--main-color1)" weight={600} fontSize={20}>
+                    <Span>
+                      {order.total_discounted +
+                        (order.shipping_methods?.[0].amount || 0)}
+                    </Span>
+                    <Span>원</Span>
+                  </P>
                 </HorizontalFlex>
               </VerticalFlex>
             </VerticalFlex>
