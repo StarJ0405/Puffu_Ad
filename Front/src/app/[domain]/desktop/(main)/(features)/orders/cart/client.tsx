@@ -24,11 +24,13 @@ import DeliveryAddEdit, {
 import DeliveryListModal, {
   DeliveryListRef,
 } from "@/modals/DeliveryListModal/DeliveryListModal";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import {
   useCart,
   useStore,
 } from "@/providers/StoreProvider/StorePorivderClient";
 import useAddress from "@/shared/hooks/main/useAddress";
+import useNavigate from "@/shared/hooks/useNavigate";
 import { requester } from "@/shared/Requester";
 import { Sessions } from "@/shared/utils/Data";
 import { toast } from "@/shared/utils/Functions";
@@ -36,8 +38,6 @@ import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import style from "./page.module.css";
-import useNavigate from "@/shared/hooks/useNavigate";
-import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 
 export function CartWrap() {
   const { userData } = useAuth();
@@ -575,7 +575,6 @@ export function Item({ item }: { item: LineItemData }) {
 
   useEffect(() => {
     setQuantity(item.quantity);
-
   }, [item]);
 
   return (
@@ -590,10 +589,7 @@ export function Item({ item }: { item: LineItemData }) {
             src={item?.variant?.thumbnail || item?.variant?.product?.thumbnail}
             width={150}
           />
-          <VerticalFlex
-            className={style.unit_content}
-            alignItems="start"
-          >
+          <VerticalFlex className={style.unit_content} alignItems="start">
             <Span className={style.unit_brand}>
               {item?.variant?.product?.brand?.name}
             </Span>
@@ -624,15 +620,27 @@ export function Item({ item }: { item: LineItemData }) {
         </FlexChild> */}
           </VerticalFlex>
         </FlexChild>
-        
+
         {/* 삭제 버튼 */}
-        <FlexChild className={style.delete_box}
+        <FlexChild
+          className={style.delete_box}
           // onClick={()=> }
         >
-            <Button>
-              <Image src={'/resources/icons/closeBtn_white.png'} width={15} />
-              {/* closeBtn_white */}
-            </Button>
+          <Button
+            onClick={() =>
+              requester.removeItem(
+                {
+                  store_id: storeData?.id,
+                  type: cartData?.type,
+                  item_id: item.id,
+                },
+                () => reload()
+              )
+            }
+          >
+            <Image src={"/resources/icons/closeBtn_white.png"} width={15} />
+            {/* closeBtn_white */}
+          </Button>
         </FlexChild>
       </HorizontalFlex>
 
@@ -666,7 +674,9 @@ export function Item({ item }: { item: LineItemData }) {
           />
         </FlexChild>
         <P>
-          {Number(item.variant.discount_price * quantity).toLocaleString("ko-KR")}{" "}
+          {Number(item.variant.discount_price * quantity).toLocaleString(
+            "ko-KR"
+          )}{" "}
           <Span>₩</Span>
         </P>
       </HorizontalFlex>
