@@ -91,7 +91,7 @@ export function HeaderBottom() {
     // { name: "입고예정", link: "/products/commingSoon" },
     { name: "신상품", link: "/products/new" },
     {
-      name: "데이 핫딜",
+      name: "이달의 핫딜",
       link: "/products/hot",
       icon: "/resources/images/header/HotDeal_icon.png",
     },
