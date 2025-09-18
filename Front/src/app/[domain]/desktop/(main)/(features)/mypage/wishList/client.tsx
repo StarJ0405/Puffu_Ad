@@ -1,19 +1,17 @@
 "use client";
 import ProductCard from "@/components/card/ProductCard";
+import FlexChild from "@/components/flex/FlexChild";
+import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import MasonryGrid from "@/components/masonry/MasonryGrid";
 import NoContent from "@/components/noContent/noContent";
-import useData from "@/shared/hooks/data/useData";
+import P from "@/components/P/P";
 import usePageData from "@/shared/hooks/data/usePageData";
 import { requester } from "@/shared/Requester";
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
-import FlexChild from "@/components/flex/FlexChild";
-import P from "@/components/P/P";
 import mypage from "../mypage.module.css";
-import { useEffect } from "react";
 
 export function WishListTable({ initWishList }: { initWishList: Pageable }) {
-  const { wishes, page, setPage, maxPage } = usePageData(
+  const { wishes, mutate } = usePageData(
     "wishes",
     (pageNumber) => ({ relations: ["product"], pageSize: 10, pageNumber }),
     (condition) => requester.getWishlists(condition),
@@ -23,6 +21,9 @@ export function WishListTable({ initWishList }: { initWishList: Pageable }) {
       fallbackData: initWishList,
     }
   );
+  const onDeleteWishList = (wish: WishData) => {
+    requester.deleteWishList(wish.id, {}, () => mutate());
+  };
 
   return (
     <>
@@ -34,7 +35,7 @@ export function WishListTable({ initWishList }: { initWishList: Pageable }) {
       </HorizontalFlex>
       {wishes.length > 0 ? (
         <VerticalFlex>
-          <MasonryGrid width={'100%'} gap={15} breakpoints={5}>
+          <MasonryGrid width={"100%"} gap={15} breakpoints={5}>
             {wishes.map((product: WishData, i: number) => {
               return (
                 <ProductCard

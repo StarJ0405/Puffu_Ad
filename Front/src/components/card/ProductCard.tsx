@@ -84,7 +84,7 @@ export function ProductCard({
           )}
         </FlexChild>
 
-        {isMobile && (
+        {mutate && isMobile && (
           <FlexChild
             onClick={(e) => {
               e.stopPropagation();
