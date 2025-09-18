@@ -1,16 +1,10 @@
-import Button from "@/components/buttons/Button";
 import Container from "@/components/container/Container";
-import FlexChild from "@/components/flex/FlexChild";
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import P from "@/components/P/P";
-import styles from "./page.module.css";
-import {} from "./client";
-
-import { SecondCategory, CategoryList, TitleBox } from "./client";
-import { Params } from "next/dist/server/request/params";
 import { requester } from "@/shared/Requester";
-import { log } from "@/shared/utils/Functions";
+import { Params } from "next/dist/server/request/params";
+import { BaseProductList } from "../../products/baseClient";
+import { TitleBox } from "./client";
+import styles from "./page.module.css";
 
 export default async function ({ params }: { params: Promise<Params> }) {
   const { category_id } = await params;
@@ -21,16 +15,15 @@ export default async function ({ params }: { params: Promise<Params> }) {
   };
 
   const initProducts = await requester.getProducts(initCondition);
-  
-  
+
   return (
     <section className="root page_container">
       <Container marginTop={35}>
-
         <TitleBox category_id={category_id} />
 
         <VerticalFlex className={styles.list}>
-          <CategoryList
+          <BaseProductList
+            id="categories"
             initCondition={initCondition}
             initProducts={initProducts}
           />

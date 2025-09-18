@@ -4,7 +4,7 @@ import styles from "./page.module.css";
 
 import { requester } from "@/shared/Requester";
 import { SearchParams } from "next/dist/server/request/search-params";
-import { SearchList } from "./client";
+import { BaseProductList } from "../products/baseClient";
 
 export default async function ({
   searchParams,
@@ -20,7 +20,11 @@ export default async function ({
 
   return (
     <section className="root">
-      <VerticalFlex className="page_container" marginTop={80} paddingBottom={40}>
+      <VerticalFlex
+        className="page_container"
+        marginTop={80}
+        paddingBottom={40}
+      >
         <VerticalFlex className={styles.title_box}>
           <h3>"{q}" 검색결과</h3>
 
@@ -31,7 +35,8 @@ export default async function ({
         </VerticalFlex>
 
         <VerticalFlex className={styles.list}>
-          <SearchList
+          <BaseProductList
+            id="search"
             initCondition={initCondition}
             initProducts={initProducts}
           />

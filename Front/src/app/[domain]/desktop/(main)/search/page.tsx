@@ -15,7 +15,7 @@ export default async function ({
   const { q } = await searchParams;
   const initCondition = {
     q,
-    pageSize: 12,
+    pageSize: 24,
   };
   const initProducts = await requester.getProducts(initCondition);
 

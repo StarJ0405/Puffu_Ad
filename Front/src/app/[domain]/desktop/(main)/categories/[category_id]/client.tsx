@@ -1,20 +1,16 @@
 "use client";
+import ChildCategory from "@/components/childCategory/childCategory";
 import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
-import Span from "@/components/span/Span";
 import { useCategories } from "@/providers/StoreProvider/StorePorivderClient";
 import usePageData from "@/shared/hooks/data/usePageData";
 import useNavigate from "@/shared/hooks/useNavigate";
 import { requester } from "@/shared/Requester";
-import clsx from "clsx";
-import Link from "next/link";
+import { useState } from "react";
 import { BaseProductList } from "../../products/baseClient";
 import styles from "./page.module.css";
-import { useState } from "react";
-import ChildCategory from "@/components/childCategory/childCategory"
-
 
 function findCategoryById(categories: any[], id: string): any | undefined {
   for (const cat of categories) {
@@ -29,14 +25,10 @@ function findCategoryById(categories: any[], id: string): any | undefined {
   return undefined;
 }
 
-
-export function TitleBox({category_id} : {category_id: any}) {
-
+export function TitleBox({ category_id }: { category_id: any }) {
   const { categoriesData } = useCategories();
   const category = findCategoryById(categoriesData, category_id);
   const navigate = useNavigate();
-
-  
 
   return (
     <VerticalFlex className={styles.title_box}>
@@ -45,21 +37,27 @@ export function TitleBox({category_id} : {category_id: any}) {
       {/* 프로덕트 카테고리 */}
       <VerticalFlex marginBottom={30}>
         {category?.children?.length > 0 ? (
-              <ChildCategory categoryId={category_id} childrenData={category.children} parent={category} />
-            ) : (
-              <FlexChild onClick={()=> navigate(-1)} gap={10} cursor="pointer" width={'auto'} alignSelf="start">
-                <Image src={'/resources/images/back.png'} width={20} />
-                <P color="#aaa">이전으로</P>
-              </FlexChild>
-          )
-        }
+          <ChildCategory
+            categoryId={category_id}
+            childrenData={category.children}
+            parent={category}
+          />
+        ) : (
+          <FlexChild
+            onClick={() => navigate(-1)}
+            gap={10}
+            cursor="pointer"
+            width={"auto"}
+            alignSelf="start"
+          >
+            <Image src={"/resources/images/back.png"} width={20} />
+            <P color="#aaa">이전으로</P>
+          </FlexChild>
+        )}
       </VerticalFlex>
     </VerticalFlex>
-  )
+  );
 }
-
-
-
 
 export function CategoryList({
   initCondition,
@@ -82,15 +80,14 @@ export function CategoryList({
       display: "추천순",
     },
   ];
-  const { categoriesData } = useCategories();
   const [sort, setSort] = useState(sortOptions[0]);
-  const { categories } = usePageData(
+  const { categories, origin, mutate, page, maxPage, setPage } = usePageData(
     "categories",
     (pageNumber) => ({
       ...initCondition,
       pageSize: 24,
       pageNumber,
-      order: sort?.id 
+      order: sort?.id,
     }),
     (condition) => requester.getProducts(condition),
     (data: Pageable) => data?.totalPages || 0,
@@ -102,10 +99,14 @@ export function CategoryList({
   // log(categories);
   return (
     <>
-      <BaseProductList listArray={categories} sortConfig={{sort, setSort, sortOptions}} />
+      <BaseProductList
+        mutate={mutate}
+        total={origin?.NumberOfTotalElements || 0}
+        listArray={categories}
+        sortConfig={{ sort, setSort, sortOptions }}
+        pagination={{ page, maxPage, setPage }}
+      />
       {/* sortOptions={sortOptions} */}
     </>
   );
 }
-
-
