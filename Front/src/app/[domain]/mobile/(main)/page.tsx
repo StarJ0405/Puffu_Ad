@@ -21,12 +21,12 @@ export default async function () {
     order: "discount",
   };
   const hotProducts = await requester.getProducts(hotCondition);
-  const newCondition: any = {
+  const bestCondition: any = {
     pageSize: 30,
-    order: "new",
+    order: "best",
   };
 
-  const newProducts = await requester.getProducts(newCondition);
+  const bestProducts = await requester.getProducts(bestCondition);
   return (
     <section className="root">
       <MainBanner initBanners={banners} />
@@ -46,7 +46,7 @@ export default async function () {
           initCondition={hotCondition}
         />
         <SubBanner2 />
-        <NewProducts initProducts={newProducts} /> {/* 메인, 상세 리스트 */}
+        <NewProducts initProducts={bestProducts} /> {/* 메인, 상세 리스트 */}
         <SubBanner1 />
         <MiniBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
         {/* 포토 사용 후기 */}

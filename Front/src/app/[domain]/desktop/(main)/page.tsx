@@ -26,11 +26,11 @@ export default async function () {
     order: "discount",
   };
   const hotProducts = await requester.getProducts(hotCondition);
-  const newCondition: any = {
+  const bestCondition: any = {
     pageSize: 12,
-    order: "new",
+    order: "best",
   };
-  const newProducts = await requester.getProducts(newCondition);
+  const bestProducts = await requester.getProducts(bestCondition);
   return (
     <section className="root page_container">
       <MainBanner initBanners={banners} />
@@ -53,7 +53,6 @@ export default async function () {
           <MainCategory /> {/* 카테고리 */}
         </VerticalFlex>
         <LinkBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
-
         {/* 이 달의 핫딜 */}
         <HotDealWrapper
           id={"hot"}
@@ -61,9 +60,7 @@ export default async function () {
           initProducts={hotProducts}
           initCondition={hotCondition}
         />
-
         <SubBanner2 />
-
         {/* 신상품 */}
         <FlexChild>
           <VerticalFlex>
@@ -74,10 +71,17 @@ export default async function () {
               gap={30}
             >
               <div className={styles.title}>
-                <Image src={'/resources/images/header/logo.png'} width={100} marginBottom={5} />
+                <Image
+                  src={"/resources/images/header/logo.png"}
+                  width={100}
+                  marginBottom={5}
+                />
                 <h2 className="SacheonFont">
                   {/* <Span>따끈따끈</Span> 신상품 */}
-                  <Span position="relative" top={3}>BEST</Span> 상품
+                  <Span position="relative" top={3}>
+                    BEST
+                  </Span>{" "}
+                  상품
                 </h2>
               </div>
 
@@ -91,15 +95,12 @@ export default async function () {
             <ProductList
               id={"best"}
               lineClamp={1}
-              initProducts={newProducts}
-              initCondition={newCondition}
+              initProducts={bestProducts}
+              initCondition={bestCondition}
             />
           </VerticalFlex>
         </FlexChild>
-
         <SubBanner1 />
-
-
         <MiniBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
         {/* <FlexChild>
           <VerticalFlex>
