@@ -1,20 +1,18 @@
 "use client";
-import Button from "@/components/buttons/Button";
-import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
+import Button from "@/components/buttons/Button";
 import TopButton from "@/components/buttons/TopButton";
-import styles from "./footer.module.css";
+import VerticalFlex from "@/components/flex/VerticalFlex";
 import Link from "next/link";
+import styles from "./footer.module.css";
 
 import { AnimatePresence, motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 
-import NiceModal, { useModal } from "@ebay/nice-modal-react";
-import ModalBase from "@/modals/ModalBase";
-import AdminChat from "@/modals/adminChat/adminChat";
-import { useState } from "react";
 import FlexChild from "@/components/flex/FlexChild";
+import AdminChat from "@/modals/adminChat/adminChat";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
+import { useState } from "react";
 
 // const navigate = useNavigate();
 
@@ -65,15 +63,15 @@ export function ChatToggle() {
   const [chatToggle, setChatToggle] = useState(false);
 
   const chatToggleClick = () => {
-    setDate(new Date());
     setChatToggle((prev) => !prev);
   };
 
   return (
     <FlexChild className={styles.chat_btn}>
       <AnimatePresence>
-        {chatToggle && (
+        {userData?.id && (
           <motion.div
+            hidden={!chatToggle}
             key="chat"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

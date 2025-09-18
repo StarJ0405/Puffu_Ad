@@ -85,12 +85,17 @@ function ChatBox({
   } = useInfiniteData(
     "chats",
     (pageNumber) => ({
+      id: chatroom.id,
       pageSize: 50,
       pageNumber,
       created_at: starts_at,
       relations: ["user"],
     }),
-    (condition) => requester.getChats(chatroom.id, condition),
+    (condition) => {
+      const id = condition.id;
+      delete condition.id;
+      return requester.getChats(id, condition);
+    },
     (data: Pageable) => data?.totalPages || 0,
     {
       onReprocessing: (data) => data?.content,
