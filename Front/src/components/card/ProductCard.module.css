@@ -59,7 +59,7 @@
 }
 
 .prodcut_item .product_title {
-   margin: 7px 0 18px;
+   margin: 7px 0 5px;
    font-size: 16px; color: #fff;
    line-height: 1.2; font-weight: 600;
    cursor: pointer;
