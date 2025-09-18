@@ -1,25 +1,17 @@
-import FlexChild from "@/components/flex/FlexChild";
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import Image from "@/components/Image/Image";
-import P from "@/components/P/P";
-import Span from "@/components/span/Span";
 import { requester } from "@/shared/Requester";
-import clsx from "clsx";
-import Link from "next/link";
 import {
+  HotDealWrapper,
   LinkBanner,
   MainBanner,
   MainCategory,
   MiniBanner,
-  HotDealWrapper,
   NewProducts,
   // ProductList,
   // ProductSlider,
   SubBanner1,
   SubBanner2,
 } from "./client";
-import styles from "./page.module.css";
 
 export default async function () {
   const banners = await requester.getBanners();
@@ -54,11 +46,8 @@ export default async function () {
           initCondition={hotCondition}
         />
         <SubBanner2 />
-        
         <NewProducts initProducts={newProducts} /> {/* 메인, 상세 리스트 */}
-
         <SubBanner1 />
-
         <MiniBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
         {/* 포토 사용 후기 */}
         {/* <FlexChild marginTop={30}>

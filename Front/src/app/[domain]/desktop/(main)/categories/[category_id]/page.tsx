@@ -17,16 +17,14 @@ export default async function ({ params }: { params: Promise<Params> }) {
 
   const initCondition = {
     category_id,
-    pageSize: 12,
+    pageSize: 24,
   };
 
   const initProducts = await requester.getProducts(initCondition);
-  
-  
+
   return (
     <section className="root">
       <Container className="page_container" marginTop={80}>
-
         <TitleBox category_id={category_id} />
 
         <VerticalFlex className={styles.list}>
