@@ -280,7 +280,7 @@ export function DetailFrame({
         </FlexChild>
 
         <FlexChild className={styles.detail_title}>
-          <P lineClamp={2} display="--webkit-box" overflow="hidden">
+          <P lineClamp={4} display="--webkit-box" overflow="hidden">
             {product?.title}
           </P>
         </FlexChild>

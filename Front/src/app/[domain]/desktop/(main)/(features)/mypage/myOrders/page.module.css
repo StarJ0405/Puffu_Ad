@@ -105,6 +105,14 @@
    text-align: center;
 }
 
+
+
+/* .unit {
+   flex: 1;
+   width: 100px !important;
+} */
+
+
 .order_item {
    gap: 20px;
    align-items: start !important;
@@ -159,6 +167,10 @@
  .item_price_box {
    flex: unset;
  }
+ .item_price_box span,
+ .item_price_box p {word-break: break-all !important;}
+
+
  .order_summary {
    padding: 16px;
    background-color: #383838;

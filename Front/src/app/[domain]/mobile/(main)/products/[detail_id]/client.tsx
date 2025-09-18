@@ -276,7 +276,7 @@ export function DetailFrame({
         </FlexChild>
 
         <FlexChild className={styles.detail_title}>
-          <P lineClamp={2} display="--webkit-box" overflow="hidden">
+          <P lineClamp={4} display="--webkit-box" overflow="hidden">
             {product?.title}
           </P>
         </FlexChild>
@@ -284,7 +284,7 @@ export function DetailFrame({
         <VerticalFlex>
           {product.discount_rate > 0 && (
             <FlexChild className={styles.regular_price}>
-              <P>{product?.discount_price}</P>₩
+              <P>{product?.price}</P>₩
             </FlexChild>
           )}
 
@@ -295,7 +295,7 @@ export function DetailFrame({
               </FlexChild>
             )}
             <FlexChild className={styles.price} marginLeft={5}>
-              <P>{product?.price}</P> ₩
+              <P>{product?.discount_price}</P> ₩
             </FlexChild>
           </FlexChild>
         </VerticalFlex>
@@ -471,11 +471,14 @@ export function BottomPayBox({
   onPurchaseClick: (selected: Variant[]) => Promise<any>;
   onWishClick: () => void;
 }) {
+
+  console.log('좋아요!!', product.wishes);
+
   return (
     <FlexChild className={styles.bottom_pay_box}>
       <HorizontalFlex className={styles.buyButton_box}>
         <FlexChild width={"auto"}>
-          <Button className={styles.heart_btn}>
+          <Button className={styles.heart_btn} onClick={onWishClick}>
             <Image
               src={
                 product.wish

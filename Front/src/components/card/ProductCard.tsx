@@ -39,11 +39,6 @@ export function ProductCard({
 
   const navigate = useNavigate();
 
-  // 원가랑 할인가 동등하면 원가는 나오지 않기.
-  const price = Number(product.price);
-  const discount = Number(product.discount_price);
-  const diff = price - discount;
-
   return (
     <VerticalFlex
       width={width ?? isMobile ? "auto" : 200}
@@ -53,7 +48,6 @@ export function ProductCard({
       <FlexChild
         className={styles.imgBox}
         height={width ?? isMobile ? "auto" : 200}
-        onClick={() => (onClick ? onClick() : navigate(product_link))}
       >
         {/* {
             // 프로덕트 페이지가 best일때만 나타나기. 제품 인기순 표시임
@@ -68,25 +62,28 @@ export function ProductCard({
               </FlexChild>
             )
           } */}
-        {userData?.adult ? (
-          <Image src={product.thumbnail} width={"100%"} height={"auto"} />
-        ) : (
-          // 성인인증 안될때 나오는 이미지
-          <Image
-            src={"/resources/images/19_only.png"}
-            width={"100%"}
-            height={"auto"}
-          />
-        )}
-
-        {commingSoon && ( // 입고예정일때만 나오기
-          <Image
-            className={styles.specialTypeImg}
-            src={"/resources/images/commingSoon_img.png"}
-            width={"101%"}
-            height={"auto"}
-          />
-        )}
+        <FlexChild >
+          {/* onClick={() => (onClick ? onClick() : navigate(product_link))} */}
+          {userData?.adult ? (
+            <Image src={product.thumbnail} width={"100%"} height={"auto"} />
+          ) : (
+            // 성인인증 안될때 나오는 이미지
+            <Image
+              src={"/resources/images/19_only.png"}
+              width={"100%"}
+              height={"auto"}
+            />
+          )}
+  
+          {commingSoon && ( // 입고예정일때만 나오기
+            <Image
+              className={styles.specialTypeImg}
+              src={"/resources/images/commingSoon_img.png"}
+              width={"101%"}
+              height={"auto"}
+            />
+          )}
+        </FlexChild>
 
         {isMobile && (
           <FlexChild
@@ -152,16 +149,16 @@ export function ProductCard({
                   >
                      {product.discount_rate}%
                   </Span> */}
-            <VerticalFlex className={styles.price_box}>
+            <FlexChild className={styles.price_box} minHeight={!isMobile ? 36 : 33}>
               {
-                diff > 0 && ( // 원가랑 할인가 차이 없으면 표시 안하기
+                product.discount_rate > 0 && ( // 원가랑 할인가 차이 없으면 표시 안하기
                   <Span className={styles.through_price}>{product.price}</Span>
                 )
               }
               <Span className={styles.discount_price}>
                 {Number(product.discount_price).toLocaleString("ko-KR")}{" "}₩
               </Span>
-            </VerticalFlex>
+            </FlexChild>
 
             {mutate && (
               <FlexChild
