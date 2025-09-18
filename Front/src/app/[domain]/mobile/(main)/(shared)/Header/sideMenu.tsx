@@ -21,6 +21,12 @@ import { useParams } from "next/navigation";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import styles from "./sideMenu.module.css";
 import { AnimatePresence, motion } from "framer-motion";
+import { Cookies } from "@/shared/utils/Data";
+
+import Input from "@/components/inputs/Input";
+import ConfirmModal from "@/modals/confirm/ConfirmModal";
+import { getCookieOption } from "@/shared/utils/Functions";
+import { useCookies } from "react-cookie";
 
 
 const SideMenu = NiceModal.create(() => {
@@ -28,6 +34,8 @@ const SideMenu = NiceModal.create(() => {
   const navigate = useNavigate();
   const modalRef = useRef<any>(null);
   const [menuTab, setMenuTab] = useState('mypage');
+  const { userData } = useAuth();
+  const [, , removeCookie] = useCookies([Cookies.JWT]);
 
 
   type PagingItem = {
@@ -53,6 +61,23 @@ const SideMenu = NiceModal.create(() => {
     {name: '1:1 문의 내역', link: '/mypage/inquiry'},
     // {name: '리뷰 관리', link: '/mypage/review'},
   ]
+
+  // const logoutModal = () => { // 로그아웃
+
+  //   NiceModal.show(ConfirmModal, {
+  //     message: (
+  //       <FlexChild justifyContent="center" marginBottom={30}>
+  //         <P color="#333" fontSize={20} weight={600}>로그아웃 하시겠습니까?</P>
+  //       </FlexChild>
+  //     ),
+  //     confirmText: "확인",
+  //     cancelText: "취소",
+  //     withCloseButton: true,
+  //     onConfirm: () => {
+  //       removeCookie(Cookies.JWT, getCookieOption());
+  //     },
+  //   })
+  // }
 
   return (
     <ModalBase
@@ -167,6 +192,18 @@ const SideMenu = NiceModal.create(() => {
                           </HorizontalFlex>
                         ))
                       }
+                          {/* <HorizontalFlex className={styles.inner_btn}>
+                            <FlexChild 
+                              className={styles.inner_txt} 
+                              onClick={()=> {
+                                logoutModal
+                              }}
+                            >
+                              <P>로그아웃</P>
+                            </FlexChild>
+              
+                            <Image src={"/resources/icons/arrow/list_paging_next.png"} width={7} />
+                          </HorizontalFlex> */}
                     </VerticalFlex>
                   </VerticalFlex>
     
