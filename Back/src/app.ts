@@ -231,10 +231,12 @@ initializeDataSource().then(() => {
           //   console.log(
           //     `<Socket> [${new Date().toISOString()}] ${socket.id} connected`
           //   );
-          for (const [
+          for (let [
             urlPath,
             socketEvent,
           ] of collectedSocketHandlers.entries()) {
+            if (urlPath.endsWith("/"))
+              urlPath = urlPath.slice(0, urlPath.length - 1);
             socket.on(urlPath, async (data) =>
               socketEvent(socket, io, urlPath, data)
             );

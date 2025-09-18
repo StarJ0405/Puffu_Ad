@@ -4,8 +4,8 @@ import socketIOClient from "socket.io-client";
 const mode = process.env.REACT_APP_MODE;
 const socket = mode
   ? process.env["NEXT_PUBLIC_BACK_" + mode.toUpperCase()] ||
-    process.env.NEXT_PUBLIC_BACK
-  : process.env.NEXT_PUBLIC_BACK;
+    process.env.NEXT_PUBLIC_SOCKET
+  : process.env.NEXT_PUBLIC_SOCKET;
 
 class _SocketRequester {
   instance;
