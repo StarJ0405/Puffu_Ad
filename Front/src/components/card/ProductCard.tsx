@@ -10,6 +10,7 @@ import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventPr
 import useNavigate from "@/shared/hooks/useNavigate";
 import { requester } from "@/shared/Requester";
 import styles from "./ProductCard.module.css";
+import { useEffect } from "react";
 // lineClamp 구별해주기, TestProdcutCard는 임시로 만든거임. 나중에 프로덕트카드에 스타일만 입히면 됨.
 // 라인클램프는 제목태그에 달아서 속성 주기.
 
@@ -37,6 +38,11 @@ export function ProductCard({
   const product_link = `/products/${product.id}`;
 
   const navigate = useNavigate();
+
+  // 원가랑 할인가 동등하면 원가는 나오지 않기.
+  const price = Number(product.price);
+  const discount = Number(product.discount_price);
+  const diff = price - discount;
 
   return (
     <VerticalFlex
@@ -112,9 +118,13 @@ export function ProductCard({
 
       <FlexChild padding={"0 5px"} className={styles.text_box}>
         <VerticalFlex gap={2} alignItems={"start"}>
-          <FlexChild className={styles.store_name}>
-            <Span>{product?.brand?.name}</Span>
-          </FlexChild>
+          {
+            product?.brand?.name && (
+              <FlexChild className={styles.store_name}>
+                <Span>{product?.brand?.name}</Span>
+              </FlexChild>
+            )
+          }
 
           <FlexChild
             className={styles.product_title}
@@ -143,9 +153,13 @@ export function ProductCard({
                      {product.discount_rate}%
                   </Span> */}
             <VerticalFlex className={styles.price_box}>
-              <Span className={styles.through_price}>{product.price}</Span>
+              {
+                diff > 0 && ( // 원가랑 할인가 차이 없으면 표시 안하기
+                  <Span className={styles.through_price}>{product.price}</Span>
+                )
+              }
               <Span className={styles.discount_price}>
-                {product.discount_price}₩
+                {Number(product.discount_price).toLocaleString("ko-KR")}{" "}₩
               </Span>
             </VerticalFlex>
 

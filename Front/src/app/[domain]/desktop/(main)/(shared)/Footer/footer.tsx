@@ -50,15 +50,27 @@ export default async function Footer() {
 
           <VerticalFlex className={styles.Cs_center} alignItems={"start"}>
             <P className={styles.cs_title}>CS CENTER</P>
-            <P className={styles.cs_number}>010-7627-3243</P>
-            <VerticalFlex className={styles.cs_days}>
-              <P>
-                <Span>평일 : </Span>09:30 ~ 18:30
-              </P>
-              <P>
-                <Span>점심시간 :</Span> 12:00 ~ 13:00
-              </P>
-            </VerticalFlex>
+            <P className={styles.cs_number}>010-8112-6191</P>
+            <FlexChild gap={10} alignItems="start">
+              <VerticalFlex className={styles.cs_days}>
+                <P>
+                  <Span>평일 : </Span>10:00 ~ 17:00
+                </P>
+                <P>
+                  <Span>점심시간 :</Span> 12:00 ~ 13:00
+                </P>
+              </VerticalFlex>
+
+              <VerticalFlex className={styles.cs_days}>
+                <P>
+                  <Span>[은행계좌] KEB하나은행</Span> <br />
+                  642-910017-99204
+                </P>
+                <P>
+                  <Span>예금주 : </Span>주식회사 푸푸글로벌
+                </P>
+              </VerticalFlex>
+            </FlexChild>
           </VerticalFlex>
         </HorizontalFlex>
       </footer>
