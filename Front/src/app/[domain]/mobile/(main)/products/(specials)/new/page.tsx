@@ -1,13 +1,10 @@
 import Container from "@/components/container/Container";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Span from "@/components/span/Span";
-import Pstyles from "../../products.module.css";
-import { } from "./client";
-import styles from "./page.module.css";
-
-import { ProdcutCategory } from "../../baseClient";
-import { NewList } from './client'
 import { requester } from "@/shared/Requester";
+import { BaseProductList, ProdcutCategory } from "../../baseClient";
+import Pstyles from "../../products.module.css";
+import styles from "./page.module.css";
 
 export default async function () {
   const newCondition: any = { pageSize: 12, pageNumber: 0, order: "new" };
@@ -29,10 +26,10 @@ export default async function () {
         </VerticalFlex>
 
         <VerticalFlex className={Pstyles.list}>
-          <NewList
+          <BaseProductList
             id={"new"}
             initProducts={newProducts}
-            initConiditon={newCondition}
+            initCondition={newCondition}
           />
         </VerticalFlex>
       </Container>

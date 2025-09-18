@@ -179,9 +179,7 @@ function useInfiniteData(
   const { data, error, isLoading, isValidating, mutate, size, setSize } =
     useSWRInfinite(
       (index, previousPageData) => {
-        if (previousPageData && index >= onMaxPage(previousPageData) - 1)
-          return "";
-
+        if (previousPageData && index >= onMaxPage(previousPageData)) return "";
         return `${key}_${stringify(condition(index, previousPageData))}`;
       },
       (_key) => {
@@ -213,9 +211,10 @@ function useInfiniteData(
     error,
     isLoading: isLoading || isValidating,
     mutate, // 인자 없는 경우 해당 요소 리로딩, key값 부여시 전역 리로딩
-    Load: () => setSize(Math.min(size + 1, maxPage)),
+    Load: () => setSize(Math.max(Math.min(size + 1, maxPage + 1), 0)),
     page: size - 1,
-    setPage: (page: number) => setSize(Math.min(page + 1, maxPage)),
+    setPage: (page: number) =>
+      setSize(Math.max(1, Math.min(page + 1, maxPage))),
     maxPage,
   };
 }

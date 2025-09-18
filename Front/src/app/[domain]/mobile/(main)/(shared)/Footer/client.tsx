@@ -16,11 +16,15 @@ import ModalBase from "@/modals/ModalBase";
 import { useState, useEffect } from "react";
 import FlexChild from "@/components/flex/FlexChild";
 import AdminChat from "@/modals/adminChat/adminChat";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 
 // const navigate = useNavigate();
 
-{/* 사이드 네비 */ }
+{
+  /* 사이드 네비 */
+}
 export function SideToggle() {
+  const { userData } = useAuth();
   const pathname = usePathname();
   const [chatToggle, setChatToggle] = useState(false);
 
@@ -57,11 +61,10 @@ export function SideToggle() {
       <FlexChild
         className={clsx(styles.Btn_frame, scrolled ? styles.scroll : "")}
       >
-        <div className={clsx(styles.chat_btn, {[styles.hidden]: chatToggle})}>
+        <div className={clsx(styles.chat_btn, { [styles.hidden]: chatToggle })}>
           <TopButton />
         </div>
       </FlexChild>
-
 
       <AnimatePresence>
         {chatToggle && (
@@ -84,8 +87,8 @@ export function SideToggle() {
 
       {pathname == "/" && (
         <Button
-          className={clsx(styles.chat_btn, {[styles.hidden]: chatToggle})}
-          // onClick={() => {NiceModal.show(AdminChatModal)}}
+          className={clsx(styles.chat_btn, { [styles.hidden]: chatToggle })}
+          hidden={!userData?.id}
           onClick={() => chatToggleClick()}
         >
           <Image

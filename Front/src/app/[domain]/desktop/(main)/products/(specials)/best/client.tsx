@@ -1,21 +1,7 @@
 "use client";
-import FlexChild from "@/components/flex/FlexChild";
-import VerticalFlex from "@/components/flex/VerticalFlex";
-import Image from "@/components/Image/Image";
-import P from "@/components/P/P";
-import Span from "@/components/span/Span";
 import usePageData from "@/shared/hooks/data/usePageData";
 import { requester } from "@/shared/Requester";
-import clsx from "clsx";
-import { usePathname } from "next/navigation";
-import Pstyles from "../../products.module.css";
-import styles from "./page.module.css";
-import MasonryGrid from "@/components/masonry/MasonryGrid";
-import ProductCard from "@/components/card/ProductCard";
-import NoContent from "@/components/noContent/noContent";
-import { BaseProductList, ProdcutCategory } from "../../baseClient";
-import ChildCategory from "@/components/childCategory/childCategory";
-import { useCategories } from "@/providers/StoreProvider/StorePorivderClient";
+import { BaseProductList } from "../../baseClient";
 
 function findCategoryById(categories: any[], id: string): any | undefined {
   for (const cat of categories) {
@@ -67,6 +53,7 @@ export function BestList({
   return (
     <>
       <BaseProductList
+        mutate={mutate}
         total={origin.NumberOfTotalElements || 0}
         listArray={best}
         pagination={{ page, maxPage, setPage }}

@@ -14,6 +14,7 @@ import ModalBase from "@/modals/ModalBase";
 import AdminChat from "@/modals/adminChat/adminChat";
 import { useState } from "react";
 import FlexChild from "@/components/flex/FlexChild";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 
 // const navigate = useNavigate();
 
@@ -59,6 +60,7 @@ export function NaviMenu() {
 }
 
 export function ChatToggle() {
+  const { userData } = useAuth();
   const [date, setDate] = useState(new Date());
   const [chatToggle, setChatToggle] = useState(false);
 
@@ -88,6 +90,7 @@ export function ChatToggle() {
       </AnimatePresence>
       <Button
         // onClick={() => {NiceModal.show(AdminChatModal)}}
+        hidden={!userData?.id}
         onClick={() => chatToggleClick()}
       >
         <Image

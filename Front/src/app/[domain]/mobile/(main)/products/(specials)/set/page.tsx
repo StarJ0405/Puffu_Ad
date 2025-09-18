@@ -3,8 +3,8 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import Pstyles from "../../products.module.css";
 import {} from "./client";
 
-import { BaseProductList } from "../../baseClient";
 import { requester } from "@/shared/Requester";
+import { BaseProductList } from "../../baseClient";
 
 export default async function () {
   const newCondition: any = {
@@ -21,7 +21,11 @@ export default async function () {
         </VerticalFlex>
 
         <VerticalFlex className={Pstyles.list}>
-          <BaseProductList id="" listArray={newProducts} />
+          <BaseProductList
+            id=""
+            initProducts={newProducts}
+            initCondition={newCondition}
+          />
         </VerticalFlex>
       </Container>
     </section>
