@@ -398,7 +398,7 @@ export function NewProducts({ initProducts }: { initProducts: Pageable }) {
           <div className={styles.title}>
             <Image src={'/resources/images/header/logo.png'} width={50} />
             <h2 className="SacheonFont">
-              <Span position="relative" top={3}>PICK!</Span> 추천 상품
+              <Span position="relative" top={3}>BEST</Span> 상품
             </h2>
           </div>
 

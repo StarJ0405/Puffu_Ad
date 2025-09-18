@@ -143,6 +143,22 @@
 
 /* 배송방법 end -------------------------------------------------- */
 
+
+/* 삭제버튼 */
+.cart_item .delete_box {
+  align-self: end; width: auto;
+  position: absolute;
+  top: 0; right: 0;
+}
+
+.cart_item .delete_box button {
+  background: none !important;
+  cursor: pointer;
+}
+
+
+
+
 /* 배송정보 */
 
 .delivery_info {

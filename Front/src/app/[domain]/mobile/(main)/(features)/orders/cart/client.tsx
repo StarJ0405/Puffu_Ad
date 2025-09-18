@@ -625,7 +625,7 @@ export function Item({ item }: { item: LineItemData }) {
 
   return (
     <VerticalFlex className={style.cart_item} gap={20}>
-      <HorizontalFlex justifyContent="start">
+      <HorizontalFlex justifyContent="start" position="relative">
         <FlexChild width={"auto"} marginRight={15} alignSelf="start">
           <CheckboxChild className={style.checkbox} id={item.id} />
         </FlexChild>
@@ -670,6 +670,16 @@ export function Item({ item }: { item: LineItemData }) {
           </P>
         </FlexChild> */}
           </VerticalFlex>
+        </FlexChild>
+
+        {/* 삭제 버튼 */}
+        <FlexChild className={style.delete_box}
+          // onClick={()=> }
+        >
+            <Button>
+              <Image src={'/resources/icons/closeBtn_white.png'} width={12} />
+              {/* closeBtn_white */}
+            </Button>
         </FlexChild>
       </HorizontalFlex>
 

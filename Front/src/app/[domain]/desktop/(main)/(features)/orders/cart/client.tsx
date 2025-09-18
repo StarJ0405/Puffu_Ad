@@ -572,13 +572,15 @@ export function Item({ item }: { item: LineItemData }) {
   const { storeData } = useStore();
   const { cartData, reload } = useCart();
   const [quantity, setQuantity] = useState(item.quantity);
+
   useEffect(() => {
     setQuantity(item.quantity);
+
   }, [item]);
 
   return (
     <VerticalFlex className={style.cart_item} gap={20}>
-      <HorizontalFlex justifyContent="start">
+      <HorizontalFlex justifyContent="start" position="relative">
         <FlexChild width={"auto"} marginRight={15} alignSelf="start">
           <CheckboxChild className={style.checkbox} id={item.id} />
         </FlexChild>
@@ -618,7 +620,7 @@ export function Item({ item }: { item: LineItemData }) {
               overflow="hidden"
               display="--webkit-box"
             >
-              111
+              {/* 111 */}
             </P>
             {/* <FlexChild className={style.unit_price}>
           <Image
@@ -630,6 +632,16 @@ export function Item({ item }: { item: LineItemData }) {
           </P>
         </FlexChild> */}
           </VerticalFlex>
+        </FlexChild>
+        
+        {/* 삭제 버튼 */}
+        <FlexChild className={style.delete_box}
+          // onClick={()=> }
+        >
+            <Button>
+              <Image src={'/resources/icons/closeBtn_white.png'} width={15} />
+              {/* closeBtn_white */}
+            </Button>
         </FlexChild>
       </HorizontalFlex>
 

@@ -32,7 +32,7 @@ export default async function () {
   };
   const newProducts = await requester.getProducts(newCondition);
   return (
-    <section className="root">
+    <section className="root page_container">
       <MainBanner initBanners={banners} />
 
       <VerticalFlex
@@ -77,19 +77,19 @@ export default async function () {
                 <Image src={'/resources/images/header/logo.png'} width={100} marginBottom={5} />
                 <h2 className="SacheonFont">
                   {/* <Span>따끈따끈</Span> 신상품 */}
-                  <Span position="relative" top={3}>PCIK!</Span> 추천 상품
+                  <Span position="relative" top={3}>BEST</Span> 상품
                 </h2>
               </div>
 
               <FlexChild width={"auto"}>
-                <Link className={styles.linkBtn} href={"/products/new"}>
+                <Link className={styles.linkBtn} href={"/products/best"}>
                   더보기
                 </Link>
               </FlexChild>
             </HorizontalFlex>
             {/* 메인, 상세 리스트 */}
             <ProductList
-              id={"new"}
+              id={"best"}
               lineClamp={1}
               initProducts={newProducts}
               initCondition={newCondition}
