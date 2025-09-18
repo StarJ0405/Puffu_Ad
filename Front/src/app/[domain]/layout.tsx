@@ -1,8 +1,8 @@
 import AuthProvider from "@/providers/AuthPorivder/AuthPorivder";
 import ModalProvider from "@/providers/ModalProvider/ModalProvider";
+import StoreProvider from "@/providers/StoreProvider/StorePorivder";
 import React from "react";
 import LayoutClient from "./layoutClient";
-import StoreProvider from "@/providers/StoreProvider/StorePorivder";
 
 export default async function ({
   children,

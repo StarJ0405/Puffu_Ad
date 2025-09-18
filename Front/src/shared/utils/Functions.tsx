@@ -588,3 +588,20 @@ export function getQAType(qa: any) {
     }
   }
 }
+
+export function getItemStatus(order: OrderData, item: LineItemData) {
+  switch (order.status) {
+    case "pending":
+      return "상품준비중";
+    case "fulfilled":
+      return "배송대기";
+    case "shipping":
+      return "배송중";
+    case "complete":
+      return "배송완료";
+    case "cancel":
+      return "주문취소";
+    default:
+      return "오류";
+  }
+}
