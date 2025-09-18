@@ -630,7 +630,7 @@ export function Item({ item }: { item: LineItemData }) {
           <CheckboxChild className={style.checkbox} id={item.id} />
         </FlexChild>
 
-        <FlexChild className={style.unit} width={"auto"}>
+        <FlexChild className={style.unit}>
           <Image
             src={item?.variant?.thumbnail || item?.variant?.product?.thumbnail}
             width={80}
@@ -638,7 +638,6 @@ export function Item({ item }: { item: LineItemData }) {
           />
           <VerticalFlex
             className={style.unit_content}
-            width={"auto"}
             alignItems="start"
           >
             <Span className={style.unit_brand}>
@@ -713,7 +712,8 @@ export function Item({ item }: { item: LineItemData }) {
           />
         </FlexChild>
         <P>
-          {item.variant.discount_price * quantity} <Span>₩</Span>
+          {Number(item.variant.discount_price * quantity).toLocaleString("ko-KR")}{" "}
+          <Span>₩</Span>
         </P>
       </HorizontalFlex>
     </VerticalFlex>
