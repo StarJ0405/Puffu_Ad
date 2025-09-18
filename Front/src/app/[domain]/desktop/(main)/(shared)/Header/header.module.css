@@ -9,6 +9,7 @@
    width: 100%;
    left: 0;
    top: 0;
+   min-width: 1380px;
 }
 
 /* 스크롤 fixed - header 안에 자식에 걸림 */
