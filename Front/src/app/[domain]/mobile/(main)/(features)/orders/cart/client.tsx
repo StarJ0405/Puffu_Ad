@@ -1,12 +1,10 @@
 "use client";
-import PrivacyContent from "@/components/agreeContent/privacyContent";
-import TermContent from "@/components/agreeContent/TermContent";
 import Button from "@/components/buttons/Button";
 import CheckboxAll from "@/components/choice/checkbox/CheckboxAll";
 import CheckboxChild from "@/components/choice/checkbox/CheckboxChild";
 import CheckboxGroup from "@/components/choice/checkbox/CheckboxGroup";
-import ChoiceChild from "@/components/choice/ChoiceChild";
-import ChoiceGroup from "@/components/choice/ChoiceGroup";
+import RadioChild from "@/components/choice/radio/RadioChild";
+import RadioGroup from "@/components/choice/radio/RadioGroup";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
@@ -24,22 +22,20 @@ import DeliveryAddEdit, {
 import DeliveryListModal, {
   DeliveryListRef,
 } from "@/modals/DeliveryListModal/DeliveryListModal";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import {
   useCart,
   useStore,
 } from "@/providers/StoreProvider/StorePorivderClient";
+import useAddress from "@/shared/hooks/main/useAddress";
+import useNavigate from "@/shared/hooks/useNavigate";
 import { requester } from "@/shared/Requester";
+import { Sessions } from "@/shared/utils/Data";
+import { toast } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import style from "./page.module.css";
-import useNavigate from "@/shared/hooks/useNavigate";
-import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
-import useAddress from "@/shared/hooks/main/useAddress";
-import { toast } from "@/shared/utils/Functions";
-import RadioGroup from "@/components/choice/radio/RadioGroup";
-import RadioChild from "@/components/choice/radio/RadioChild";
-import { Sessions } from "@/shared/utils/Data";
 
 export function CartWrap() {
   const { userData } = useAuth();
@@ -636,10 +632,7 @@ export function Item({ item }: { item: LineItemData }) {
             width={80}
             borderRadius={5}
           />
-          <VerticalFlex
-            className={style.unit_content}
-            alignItems="start"
-          >
+          <VerticalFlex className={style.unit_content} alignItems="start">
             <Span className={style.unit_brand}>
               {item?.variant?.product?.brand?.name}
             </Span>
@@ -672,13 +665,23 @@ export function Item({ item }: { item: LineItemData }) {
         </FlexChild>
 
         {/* 삭제 버튼 */}
-        <FlexChild className={style.delete_box}
-          // onClick={()=> }
+        <FlexChild
+          className={style.delete_box}
+          onClick={() =>
+            requester.removeItem(
+              {
+                store_id: storeData?.id,
+                type: cartData?.type,
+                item_id: item.id,
+              },
+              () => reload()
+            )
+          }
         >
-            <Button>
-              <Image src={'/resources/icons/closeBtn_white.png'} width={12} />
-              {/* closeBtn_white */}
-            </Button>
+          <Button>
+            <Image src={"/resources/icons/closeBtn_white.png"} width={12} />
+            {/* closeBtn_white */}
+          </Button>
         </FlexChild>
       </HorizontalFlex>
 
@@ -712,7 +715,9 @@ export function Item({ item }: { item: LineItemData }) {
           />
         </FlexChild>
         <P>
-          {Number(item.variant.discount_price * quantity).toLocaleString("ko-KR")}{" "}
+          {Number(item.variant.discount_price * quantity).toLocaleString(
+            "ko-KR"
+          )}{" "}
           <Span>₩</Span>
         </P>
       </HorizontalFlex>
