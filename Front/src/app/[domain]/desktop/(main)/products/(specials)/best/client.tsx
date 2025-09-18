@@ -16,17 +16,20 @@ function findCategoryById(categories: any[], id: string): any | undefined {
   return undefined;
 }
 
-// export function CategoryFilter(category_id} : {category_id: any}) {
-
+// export function CategoryFilter({ category_id }: { category_id: any }) {
 //   const { categoriesData } = useCategories();
 //   const category = findCategoryById(categoriesData, category_id);
 
 //   return (
 //     <>
 //       <ProdcutCategory />
-//       <ChildCategory categoryId={category_id} childrenData={category.children} parent={category} />
+//       <ChildCategory
+//         categoryId={category_id}
+//         childrenData={category?.children || []}
+//         parent={category}
+//       />
 //     </>
-//   )
+//   );
 // }
 
 export function BestList({
