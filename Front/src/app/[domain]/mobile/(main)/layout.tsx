@@ -1,7 +1,7 @@
 import React from "react";
-import Header from './(shared)/Header/header'
-import Footer from './(shared)/Footer/footer'
-import BottomNavi from './(shared)/BottomNavi/bottomNavi'
+import BottomNavi from "./(shared)/BottomNavi/bottomNavi";
+import Footer from "./(shared)/Footer/footer";
+import Header from "./(shared)/Header/header";
 
 export default async function ({
   children,

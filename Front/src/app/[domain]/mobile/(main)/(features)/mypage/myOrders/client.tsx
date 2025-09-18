@@ -1,5 +1,6 @@
 "use client";
 import Button from "@/components/buttons/Button";
+import DatePicker from "@/components/date-picker/DatePicker";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
@@ -8,42 +9,27 @@ import Input from "@/components/inputs/Input";
 import NoContent from "@/components/noContent/noContent";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
-import styles from "./page.module.css";
-import { useEffect, useState, useCallback } from "react";
+import useData from "@/shared/hooks/data/useData";
 import { requester } from "@/shared/Requester";
+import { getOrderStatus, openTrackingNumber } from "@/shared/utils/Functions";
+import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
-import mypage from "../mypage.module.css";
-import DatePicker from "@/components/date-picker/DatePicker";
-import { openTrackingNumber } from "@/shared/utils/Functions";
+import { useCallback, useState } from "react";
+import styles from "./page.module.css";
 
-const getStatusKorean = (status: string) => {
-  switch (status) {
-    case "pending":
-      return "상품 준비중";
-    case "fulfilled":
-      return "배송 준비중";
-    case "shipping":
-      return "배송중";
-    case "complete":
-      return "배송 완료";
-    case "cancel":
-      return "주문 취소";
-    default:
-      return status;
-  }
-};
-
-const getInitialStartDate = () => {
-  const date = new Date();
-  date.setDate(date.getDate() - 7);
-  return date;
-};
-
-export function MyOrdersTable() {
-  const [orders, setOrders] = useState<any[]>([]);
+export function MyOrdersTable({
+  initEndDate,
+  initStartDate,
+  initOrders,
+}: {
+  initStartDate: Date;
+  initEndDate: Date;
+  initOrders: any;
+}) {
   const [q, setQ] = useState("");
-  const [startDate, setStartDate] = useState(getInitialStartDate());
-  const [endDate, setEndDate] = useState(new Date());
+  const [condition, setCondition] = useState<any>({});
+  const [startDate, setStartDate] = useState(initStartDate);
+  const [endDate, setEndDate] = useState(initEndDate);
   const [activePeriod, setActivePeriod] = useState("1week");
 
   const formatOrders = useCallback((ordersData: any[]) => {
@@ -75,6 +61,7 @@ export function MyOrdersTable() {
       });
 
       return {
+        id: order.id,
         date: orderDate,
         orderId: order.display, // Unique order identifier
         content: content,
@@ -86,44 +73,27 @@ export function MyOrdersTable() {
     });
   }, []);
 
-  const fetchOrders = useCallback(
-    async (start: Date, end: Date, query: string) => {
-      try {
-        const data: any = {
-          relations: ["items.brand", "shipping_methods", "store", "address"],
-          start_date: start,
-          end_date: end,
-        };
-        if (query && query.length > 0) {
-          data.q = query;
-        }
-        
-        const res = await requester.getOrders(data);
-        console.log("res: ", res);
-        
-        if (res.content) {
-          const formattedOrders = formatOrders(res.content);
-          setOrders(formattedOrders);
-        } else {
-          setOrders([]);
-        }
-      } catch (err) {
-        console.error("Failed to fetch orders: ", err);
-        setOrders([]);
-      }
+  const { orders, mutate } = useData(
+    "orders",
+    {
+      ...condition,
+      relations: ["items.brand", "shipping_methods", "store", "address"],
+      start_date: startDate,
+      end_date: endDate,
     },
-    [formatOrders]
+    (condition) => requester.getOrders(condition),
+    {
+      onReprocessing: (data) => formatOrders(data?.content || []),
+      fallbackData: initOrders,
+    }
   );
-
-  useEffect(() => {
-    fetchOrders(startDate, endDate, "");
-  }, []);
 
   const handlePeriodChange = (period: string) => {
     const newStartDate = new Date();
     const newEndDate = new Date();
     setActivePeriod(period);
     setQ("");
+    setCondition({});
 
     switch (period) {
       case "1week":
@@ -143,7 +113,6 @@ export function MyOrdersTable() {
     }
     setStartDate(newStartDate);
     setEndDate(newEndDate);
-    fetchOrders(newStartDate, newEndDate, "");
   };
 
   const handleDateChange = (
@@ -160,7 +129,8 @@ export function MyOrdersTable() {
   };
 
   const handleSearch = () => {
-    fetchOrders(startDate, endDate, q);
+    if (q) setCondition({ q });
+    else setCondition({});
   };
 
   return (
@@ -176,6 +146,9 @@ export function MyOrdersTable() {
               placeHolder="상품 키워드를 입력하세요"
               value={q}
               onChange={(value) => setQ(value as string)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSearch();
+              }}
             />
             <Button backgroundColor="transparent" onClick={handleSearch}>
               <Image
@@ -239,19 +212,35 @@ export function MyOrdersTable() {
       </VerticalFlex>
       <VerticalFlex gap={20}>
         {orders.length > 0 ? (
-          orders.map((item, i) => (
+          orders.map((order: any, i: number) => (
             <VerticalFlex key={i} className={styles.order_group}>
               <FlexChild className={styles.order_header}>
                 <P size={15} weight={500}>
-                  {item.date}{" "}
+                  {order.date}{" "}
                   <Span color="var(--main-color1)">
-                    [{getStatusKorean(item.status)}]
+                    [{getOrderStatus(order)}]
                   </Span>
                 </P>
-                {item.status === "shipping" && item.trackingNumber && (
+                {order.status === "pending" && (
                   <Button
                     className={styles.tracking_btn}
-                    onClick={() => openTrackingNumber(item.trackingNumber)}
+                    onClick={() =>
+                      NiceModal.show("confirm", {
+                        message: "주문을 취소하시겠습니까?",
+                        confirmText: "진행하기",
+                        cancelText: "그만두기",
+                        onConfirm: () =>
+                          requester.cancelOrder(order.id, {}, () => mutate()),
+                      })
+                    }
+                  >
+                    주문취소
+                  </Button>
+                )}
+                {order.status === "shipping" && order.trackingNumber && (
+                  <Button
+                    className={styles.tracking_btn}
+                    onClick={() => openTrackingNumber(order.trackingNumber)}
                   >
                     배송조회
                   </Button>
@@ -259,12 +248,8 @@ export function MyOrdersTable() {
               </FlexChild>
 
               <VerticalFlex className={styles.order_items_container}>
-                {item.content.map((child: any, j: number) => (
-                  <VerticalFlex
-                    key={j}
-                    className={styles.list_item}
-                    gap={15}
-                  >
+                {order.content.map((child: any, j: number) => (
+                  <VerticalFlex key={j} className={styles.list_item} gap={15}>
                     {/* 상품 단위 */}
                     <HorizontalFlex className={styles.unit}>
                       <Image
@@ -330,16 +315,12 @@ export function MyOrdersTable() {
               <VerticalFlex className={styles.order_summary}>
                 <HorizontalFlex className={styles.summary_row}>
                   <P>총 할인금액</P>
-                  <Span>{item.totalDiscount}원</Span>
+                  <Span>{order.totalDiscount}원</Span>
                 </HorizontalFlex>
                 <HorizontalFlex className={styles.summary_row}>
                   <P>총 결제금액</P>
-                  <Span
-                    color="var(--main-color1)"
-                    weight={600}
-                    fontSize={20}
-                  >
-                    {item.totalPayment}원
+                  <Span color="var(--main-color1)" weight={600} fontSize={20}>
+                    {order.totalPayment}원
                   </Span>
                 </HorizontalFlex>
               </VerticalFlex>
