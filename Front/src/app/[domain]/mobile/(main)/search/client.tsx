@@ -1,23 +1,6 @@
 "use client";
-import Button from "@/components/buttons/Button";
-import ProductCard from "@/components/card/ProductCard";
-import FlexChild from "@/components/flex/FlexChild";
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
-import VerticalFlex from "@/components/flex/VerticalFlex";
-import Image from "@/components/Image/Image";
-import ListPagination from "@/components/listPagination/ListPagination";
-import MasonryGrid from "@/components/masonry/MasonryGrid";
-import NoContent from "@/components/noContent/noContent";
-import P from "@/components/P/P";
 import Span from "@/components/span/Span";
-import usePageData from "@/shared/hooks/data/usePageData";
-import { requester } from "@/shared/Requester";
-import { log } from "@/shared/utils/Functions";
-import clsx from "clsx";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
 import styles from "./page.module.css";
-import { BaseProductList } from "../products/baseClient";
 
 // export function ProdcutCategory() {
 //   // 대분류 카테고리
@@ -72,56 +55,6 @@ export function SecondCategory() {
           </li>
         ))}
       </ul>
-    </>
-  );
-}
-
-export function SearchList({
-  initCondition,
-  initProducts,
-}: {
-  initProducts: Pageable;
-  initCondition: any;
-}) {
-  const sortOptions = [
-    {
-      id: "new",
-      display: "최신순",
-    },
-    {
-      id: "best",
-      display: "인기순",
-    },
-    {
-      id: "recommend",
-      display: "추천순",
-    },
-  ];
-  const [sort, setSort] = useState(sortOptions[0]);
-  const {
-    [initCondition?.q || "search"]: products,
-    page,
-    maxPage,
-    setPage,
-  } = usePageData(
-    initCondition?.q || "search",
-    (pageNumber) => ({ ...initCondition, pageNumber, order: sort?.id }),
-    (condition) => requester.getProducts(condition),
-    (data: Pageable) => data?.totalPages || 0,
-    {
-      onReprocessing: (data) => data?.content || [],
-      fallbackData: initProducts,
-    }
-  );
-  // log("검색 결과 : ", products);
-  return (
-    <>
-      <BaseProductList
-        id="base"
-        listArray={products}
-        sortConfig={{ sort, setSort, sortOptions }}
-      />
-      {/* sortOptions={sortOptions}  */}
     </>
   );
 }

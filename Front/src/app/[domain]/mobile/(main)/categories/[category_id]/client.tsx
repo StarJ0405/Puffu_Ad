@@ -5,14 +5,10 @@ import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import { useCategories } from "@/providers/StoreProvider/StorePorivderClient";
-import usePageData from "@/shared/hooks/data/usePageData";
 import useNavigate from "@/shared/hooks/useNavigate";
-import { requester } from "@/shared/Requester";
 import clsx from "clsx";
 import Link from "next/link";
-import { BaseProductList } from "../../products/baseClient";
 import styles from "./page.module.css";
-import { useState } from "react";
 
 function findCategoryById(categories: any[], id: string): any | undefined {
   for (const cat of categories) {
@@ -87,59 +83,6 @@ export function SecondCategory({
           </li>
         ))}
       </ul>
-    </>
-  );
-}
-
-export function CategoryList({
-  initCondition,
-  initProducts,
-}: {
-  initCondition: any;
-  initProducts: Pageable;
-}) {
-  const sortOptions = [
-    {
-      id: "new",
-      display: "최신순",
-    },
-    {
-      id: "best",
-      display: "인기순",
-    },
-    {
-      id: "recommend",
-      display: "추천순",
-    },
-  ];
-  const { categoriesData } = useCategories();
-  const [sort, setSort] = useState(sortOptions[0]);
-  const { categories } = usePageData(
-    "categories",
-    (pageNumber) => ({
-      ...initCondition,
-      pageSize: 24,
-      pageNumber,
-      order: sort?.id,
-    }),
-    (condition) => requester.getProducts(condition),
-    (data: Pageable) => data?.totalPages || 0,
-    {
-      onReprocessing: (data) => data?.content || [],
-      fallbackData: initProducts,
-    }
-  );
-  // log(categories);
-  return (
-    <>
-      <BaseProductList
-        id=""
-        listArray={categories}
-        initCondition={initCondition}
-        initProducts={initProducts}
-        sortConfig={{ sort, setSort, sortOptions }}
-      />
-      {/* sortOptions={sortOptions} */}
     </>
   );
 }

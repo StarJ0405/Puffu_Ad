@@ -76,7 +76,6 @@ export function SecondCategory() {
   );
 }
 
-
 export function SearchList({
   initCondition,
   initProducts,
@@ -104,6 +103,8 @@ export function SearchList({
     page,
     maxPage,
     setPage,
+    origin,
+    mutate,
   } = usePageData(
     initCondition?.q || "search",
     (pageNumber) => ({ ...initCondition, pageNumber, order: sort?.id }),
@@ -117,7 +118,17 @@ export function SearchList({
   // log("검색 결과 : ", products);
   return (
     <>
-      <BaseProductList listArray={products} sortConfig={{sort, setSort, sortOptions}} />
+      <BaseProductList
+        mutate={mutate}
+        total={origin.NumberOfTotalElements || 0}
+        listArray={products}
+        sortConfig={{ sort, setSort, sortOptions }}
+        pagination={{
+          page,
+          maxPage,
+          setPage,
+        }}
+      />
       {/* sortOptions={sortOptions}  */}
     </>
   );

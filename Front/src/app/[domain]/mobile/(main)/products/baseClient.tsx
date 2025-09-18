@@ -114,13 +114,14 @@ export function BaseProductList({
     Load,
     origin,
     mutate,
+    page,
+    maxPage,
   } = useInfiniteData(
     id,
     (pageNumber) => ({
       ...initCondition,
       pageSize: 12,
       pageNumber,
-      order: id,
     }),
     (condition) => requester.getProducts(condition),
     (data) => data?.totalPages || 0,
@@ -154,7 +155,10 @@ export function BaseProductList({
               })}
             </MasonryGrid>
           </VerticalFlex>
-          <Button className={Pstyles.list_more_btn}>
+          <Button
+            className={Pstyles.list_more_btn}
+            hidden={maxPage < 1 || page >= maxPage}
+          >
             <FlexChild gap={10} onClick={Load}>
               <Span>상품 더보기</Span>
               <Image
