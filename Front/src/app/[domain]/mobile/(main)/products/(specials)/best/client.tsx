@@ -1,20 +1,6 @@
 "use client";
-import FlexChild from "@/components/flex/FlexChild";
-import VerticalFlex from "@/components/flex/VerticalFlex";
-import Image from "@/components/Image/Image";
-import P from "@/components/P/P";
 import Span from "@/components/span/Span";
-import usePageData from "@/shared/hooks/data/usePageData";
-import { requester } from "@/shared/Requester";
-import clsx from "clsx";
-import { usePathname } from "next/navigation";
 import Pstyles from "../../products.module.css";
-import MasonryGrid from "@/components/masonry/MasonryGrid";
-import ProductCard from "@/components/card/ProductCard";
-import NoContent from "@/components/noContent/noContent";
-import { BaseProductList } from "../../baseClient";
-import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
-
 
 export function SecondCategory() {
   // 카테고리메뉴
@@ -44,46 +30,3 @@ export function SecondCategory() {
     </>
   );
 }
-
-export function BestList({
-  id,
-  initProducts,
-  initConiditon,
-}: {
-  id: string;
-  initProducts: Pageable;
-  initConiditon: any;
-}) {
-  const {
-    [id]: items,
-    Load,
-    page,
-    maxPage,
-    isLoading,
-  } = useInfiniteData(
-    id,
-    (pageNumber) => ({
-      ...initConiditon,
-      pageSize: 12,
-      pageNumber,
-    }),
-    (condition) => requester.getProducts(condition),
-    (data: Pageable) => data?.totalPages || 0,
-    {
-      onReprocessing: (data) => data?.content || [],
-      fallbackData: [initProducts],
-    }
-  );
-
-
-  return (
-    <BaseProductList
-      id={id}
-      initCondition={initConiditon}
-      initProducts={initProducts}
-      listArray={items}
-      showMore={Load}
-    />
-  );
-}
-

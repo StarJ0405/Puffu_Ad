@@ -97,6 +97,7 @@ export function SortFilter({
 }
 
 export function BaseProductList({
+  mutate,
   total,
   listArray,
   // sortOptions,
@@ -104,6 +105,7 @@ export function BaseProductList({
   commingSoon, // 입고예정 임시용
   pagination,
 }: {
+  mutate?: () => void;
   total?: number;
   listArray: ProductData[];
   // sortOptions: { id: string; display: string }[];
@@ -134,6 +136,7 @@ export function BaseProductList({
                     commingSoon={commingSoon}
                     lineClamp={2}
                     width={200}
+                    mutate={mutate}
                   />
                 );
               })}

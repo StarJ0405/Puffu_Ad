@@ -1,13 +1,11 @@
 import Container from "@/components/container/Container";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Pstyles from "../../products.module.css";
-import { BestList } from "./client";
 import styles from "./page.module.css";
 
 import Image from "@/components/Image/Image";
 import { requester } from "@/shared/Requester";
-import { log } from "console";
-import { ProdcutCategory } from "../../baseClient";
+import { BaseProductList, ProdcutCategory } from "../../baseClient";
 
 export default async function () {
   const bestCondition: any = { pageSize: 12, pageNumber: 0, order: "best" };
@@ -28,11 +26,10 @@ export default async function () {
         </VerticalFlex>
 
         <VerticalFlex className={Pstyles.list}>
-
-          <BestList
+          <BaseProductList
             id={"best"}
             initProducts={bestProducts}
-            initConiditon={bestCondition}
+            initCondition={bestCondition}
           />
         </VerticalFlex>
       </Container>

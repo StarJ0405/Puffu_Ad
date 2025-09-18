@@ -1,14 +1,8 @@
-import Button from "@/components/buttons/Button";
 import Container from "@/components/container/Container";
-import FlexChild from "@/components/flex/FlexChild";
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import P from "@/components/P/P";
-import Pstyles from "../../products.module.css";
-import {} from "./client";
-
-import { SortFilter, BaseProductList } from "../../baseClient";
 import { requester } from "@/shared/Requester";
+import { BaseProductList } from "../../baseClient";
+import Pstyles from "../../products.module.css";
 
 export default async function () {
   const newCondition: any = {
@@ -25,7 +19,11 @@ export default async function () {
         </VerticalFlex>
 
         <VerticalFlex className={Pstyles.list}>
-          <BaseProductList id="" listArray={newProducts} />
+          <BaseProductList
+            id=""
+            initProducts={newProducts}
+            initCondition={newCondition}
+          />
         </VerticalFlex>
       </Container>
     </section>

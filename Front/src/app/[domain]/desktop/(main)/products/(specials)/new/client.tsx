@@ -1,7 +1,8 @@
-"use client"
+"use client";
 import usePageData from "@/shared/hooks/data/usePageData";
 import { requester } from "@/shared/Requester";
 import { BaseProductList } from "../../baseClient";
+import { mutate } from "swr";
 
 function findCategoryById(categories: any[], id: string): any | undefined {
   for (const cat of categories) {
@@ -15,7 +16,6 @@ function findCategoryById(categories: any[], id: string): any | undefined {
   }
   return undefined;
 }
-
 
 // export function CategoryFilter(category_id} : {category_id: any}) {
 
@@ -37,7 +37,7 @@ export function NewList({
   initProducts: Pageable;
   initConiditon: any;
 }) {
-  const { best, maxPage, page, setPage, mutate } = usePageData(
+  const { best, maxPage, page, setPage, origin, mutate } = usePageData(
     "best",
     (pageNumber) => ({
       ...initConiditon,
@@ -53,7 +53,12 @@ export function NewList({
   );
   return (
     <>
-      <BaseProductList listArray={best} pagination={{ page, maxPage, setPage }}/>
+      <BaseProductList
+        mutate={mutate}
+        total={origin.NumberOfTotalElements || 0}
+        listArray={best}
+        pagination={{ page, maxPage, setPage }}
+      />
     </>
   );
 }

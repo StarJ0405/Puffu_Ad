@@ -40,7 +40,7 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
 
   // useEffect(() => {
   //   requester.getBanners((result: BannerData[]) => {
-  
+
   //     setBanners(result);
   //   });
   // }, []);
@@ -167,7 +167,6 @@ export function LinkBanner() {
 }
 
 export function SubBanner1() {
-
   const { userData } = useAuth();
 
   return (
@@ -193,7 +192,6 @@ export function SubBanner1() {
 }
 
 export function SubBanner2() {
-
   const { userData } = useAuth();
 
   return (
@@ -283,6 +281,7 @@ export function HotDealWrapper({
     Load,
     maxPage,
     page,
+    origin,
   } = useInfiniteData(
     id,
     (pageNumber) => ({
@@ -400,8 +399,6 @@ export function ProductList({
   const showMore = () => {
     Load(); // 서버에서도 다음 페이지 로드
   };
-
-  
 
   return (
     <>

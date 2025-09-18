@@ -30,10 +30,7 @@ export function ProductCard({
   mutate?: () => void;
   onClick?: () => void;
 }) {
-
   const { userData } = useAuth();
-
-
 
   const { isMobile } = useBrowserEvent();
 
@@ -86,18 +83,26 @@ export function ProductCard({
         )}
 
         {isMobile && (
-          <FlexChild onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            if (product.wish) {
-              requester.deleteWishList(product.wish.id, { soft: false }, () => mutate?.());
-            } else {
-              requester.createWishList({ product_id: product.id }, () => mutate?.());
-            }
-          }} className={styles.heart_counter}
+          <FlexChild
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              if (product.wish) {
+                requester.deleteWishList(product.wish.id, { soft: false }, () =>
+                  mutate?.()
+                );
+              } else {
+                requester.createWishList({ product_id: product.id }, () =>
+                  mutate?.()
+                );
+              }
+            }}
+            className={styles.heart_counter}
           >
             <Image
-              src={`/resources/icons/main/mob_heart${product.wish ? "_active" : ""}.png`}
+              src={`/resources/icons/main/mob_heart${
+                product.wish ? "_active" : ""
+              }.png`}
               width={20}
             />
             <Span>{product.wishes ?? 0}</Span>
@@ -173,11 +178,12 @@ export function ProductCard({
                 className={styles.heart_counter}
               >
                 <Image
-                  src={`/resources/icons/main/product_heart_icon${product.wish ? "_active" : ""
-                    }.png`}
+                  src={`/resources/icons/main/product_heart_icon${
+                    product.wish ? "_active" : ""
+                  }.png`}
                   width={23}
                 />
-                <Span>{product.wishes}0</Span>
+                <Span>{product.wishes ?? 0}</Span>
               </FlexChild>
             )}
             {/* <Span fontSize={14} weight={600}>

@@ -3,18 +3,15 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
-// import { HotList } from "./client";
-import Pstyles from "../../products.module.css";
-import { } from "./client";
-import styles from "./page.module.css";
 import { requester } from "@/shared/Requester";
-import { HotList } from './client'
+import { BaseProductList } from "../../baseClient";
+import Pstyles from "../../products.module.css";
+import styles from "./page.module.css";
 
 export default async function () {
   const hotCondition: any = { pageSize: 12, pageNumber: 0, order: "hot" };
 
   const hotProducts = await requester.getProducts(hotCondition);
-
 
   return (
     <section className="root page_container">
@@ -34,10 +31,10 @@ export default async function () {
         </VerticalFlex>
 
         <VerticalFlex className={Pstyles.list}>
-          <HotList
+          <BaseProductList
             id={"discount"}
             initProducts={hotProducts}
-            initConiditon={hotCondition}
+            initCondition={hotCondition}
           />
         </VerticalFlex>
       </Container>

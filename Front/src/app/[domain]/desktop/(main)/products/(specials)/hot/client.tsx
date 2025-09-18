@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
@@ -10,37 +10,46 @@ import Span from "@/components/span/Span";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import Pstyles from "../../products.module.css";
-import {BaseProductList} from "../../baseClient";
-
+import { BaseProductList } from "../../baseClient";
 
 export function HotDealCategory() {
+  const hotdeals = [
+    {
+      thumbnail: "/resources/images/dummy_img/hotdeal_banner_01.png",
+      filter: "daySale",
+    },
+    {
+      thumbnail: "/resources/images/dummy_img/hotdeal_banner_02.png",
+      filter: "weekSale",
+    },
+    {
+      thumbnail: "/resources/images/dummy_img/hotdeal_banner_03.png",
+      filter: "setSale",
+    },
+    {
+      thumbnail: "/resources/images/dummy_img/hotdeal_banner_04.png",
+      filter: "pointSale",
+    },
+    {
+      thumbnail: "/resources/images/dummy_img/hotdeal_banner_05.png",
+      filter: "specialSale",
+    },
+    {
+      thumbnail: "/resources/images/dummy_img/hotdeal_banner_06.png",
+      filter: "refuerSale",
+    },
+  ];
 
-
-   const hotdeals = [
-      {thumbnail: '/resources/images/dummy_img/hotdeal_banner_01.png', filter: 'daySale'},
-      {thumbnail: '/resources/images/dummy_img/hotdeal_banner_02.png', filter: 'weekSale'},
-      {thumbnail: '/resources/images/dummy_img/hotdeal_banner_03.png', filter: 'setSale'},
-      {thumbnail: '/resources/images/dummy_img/hotdeal_banner_04.png', filter: 'pointSale'},
-      {thumbnail: '/resources/images/dummy_img/hotdeal_banner_05.png', filter: 'specialSale'},
-      {thumbnail: '/resources/images/dummy_img/hotdeal_banner_06.png', filter: 'refuerSale'},
-   ]
-
-   return (
-      <HorizontalFlex>
-         {
-            hotdeals.map((cat, i)=> (
-               <FlexChild cursor="pointer" key={i}>
-                  <Image 
-                     src={cat.thumbnail}
-                     width={216}
-                  />
-               </FlexChild>
-            ))
-         }
-      </HorizontalFlex>
-   )
+  return (
+    <HorizontalFlex>
+      {hotdeals.map((cat, i) => (
+        <FlexChild cursor="pointer" key={i}>
+          <Image src={cat.thumbnail} width={216} />
+        </FlexChild>
+      ))}
+    </HorizontalFlex>
+  );
 }
-
 
 export function HotList({
   initProducts,
@@ -49,7 +58,7 @@ export function HotList({
   initProducts: Pageable;
   initConiditon: any;
 }) {
-  const { discount, maxPage, page, setPage, mutate } = usePageData(
+  const { discount, maxPage, page, setPage, mutate, origin } = usePageData(
     "discount",
     (pageNumber) => ({
       ...initConiditon,
@@ -65,7 +74,12 @@ export function HotList({
   );
   return (
     <>
-      <BaseProductList listArray={discount} pagination={{ page, maxPage, setPage }} />
+      <BaseProductList
+        mutate={mutate}
+        total={origin.NumberOfTotalElements || 0}
+        listArray={discount}
+        pagination={{ page, maxPage, setPage }}
+      />
     </>
   );
 }
