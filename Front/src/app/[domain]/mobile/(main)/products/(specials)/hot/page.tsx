@@ -7,10 +7,16 @@ import { requester } from "@/shared/Requester";
 import { BaseProductList } from "../../baseClient";
 import Pstyles from "../../products.module.css";
 import styles from "./page.module.css";
+import { SearchParams } from "next/dist/server/request/search-params";
 
-export default async function () {
+export default async function ({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const { category_id } = await searchParams;
   const hotCondition: any = { pageSize: 12, pageNumber: 0, order: "hot" };
-
+  if (category_id) hotCondition.category_id = category_id;
   const hotProducts = await requester.getProducts(hotCondition);
 
   return (

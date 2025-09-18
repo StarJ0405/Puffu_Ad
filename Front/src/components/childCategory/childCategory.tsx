@@ -4,18 +4,16 @@ import clsx from "clsx";
 import Link from "next/link";
 import styles from "./childCategory.module.css";
 
-
-
 // 중분류, 소분류 카테고리
-export default function ChildCategory(
-  { childrenData, parent, categoryId } :
-  {
-    childrenData: CategoryData[]; 
-    parent: CategoryData;
-    categoryId: any;
-  }
-) {
-
+export default function ChildCategory({
+  childrenData,
+  parent,
+  categoryId,
+}: {
+  childrenData: CategoryData[];
+  parent: CategoryData;
+  categoryId: any;
+}) {
   return (
     <>
       <ul className={styles.category_list}>

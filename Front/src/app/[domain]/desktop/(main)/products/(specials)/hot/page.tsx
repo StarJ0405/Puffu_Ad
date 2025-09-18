@@ -8,16 +8,21 @@ import Pstyles from "../../products.module.css";
 import {} from "./client";
 import styles from "./page.module.css";
 import { requester } from "@/shared/Requester";
-import {HotList} from './client'
+import { HotList } from "./client";
+import { SearchParams } from "next/dist/server/request/search-params";
 
-export default async function () {
+export default async function ({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const { category_id } = await searchParams;
   const hotCondition: any = {
     pageSize: 24,
     order: "discount",
   };
+  if (category_id) hotCondition.category_id = category_id;
   const hotProducts = await requester.getProducts(hotCondition);
-
-
 
   return (
     <section className="root">
@@ -37,10 +42,7 @@ export default async function () {
         </VerticalFlex>
 
         <VerticalFlex className={Pstyles.list}>
-          <HotList
-            initProducts={hotProducts}
-            initConiditon={hotCondition}
-          />
+          <HotList initProducts={hotProducts} initConiditon={hotCondition} />
         </VerticalFlex>
       </Container>
     </section>

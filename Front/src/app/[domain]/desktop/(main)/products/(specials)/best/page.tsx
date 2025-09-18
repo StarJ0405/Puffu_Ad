@@ -6,12 +6,19 @@ import styles from "./page.module.css";
 
 import Image from "@/components/Image/Image";
 import { requester } from "@/shared/Requester";
+import { SearchParams } from "next/dist/server/request/search-params";
 
-export default async function () {
+export default async function ({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const { category_id } = await searchParams;
   const bestCondition: any = {
     pageSize: 24,
     order: "best",
   };
+  if (category_id) bestCondition.category_id = category_id;
   const bestProducts = await requester.getProducts(bestCondition);
   return (
     <section className="root page_container">
@@ -24,7 +31,7 @@ export default async function () {
         </VerticalFlex>
 
         <VerticalFlex marginBottom={30}>
-          {/* <CategoryFilter /> */}
+          {/* <CategoryFilter category_id={category_id} /> */}
         </VerticalFlex>
 
         <VerticalFlex className={Pstyles.list}>
