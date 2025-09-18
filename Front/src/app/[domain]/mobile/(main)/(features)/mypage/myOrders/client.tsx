@@ -314,6 +314,10 @@ export function MyOrdersTable({
 
               <VerticalFlex className={styles.order_summary}>
                 <HorizontalFlex className={styles.summary_row}>
+                  <P>배송비</P>
+                  <Span>0 원</Span>
+                </HorizontalFlex>
+                <HorizontalFlex className={styles.summary_row}>
                   <P>총 할인금액</P>
                   <Span>{order.totalDiscount}원</Span>
                 </HorizontalFlex>

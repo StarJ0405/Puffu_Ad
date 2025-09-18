@@ -65,28 +65,28 @@ export default function BottomNavi() {
                      </FlexChild>
                   </VerticalFlex>
          
-                  <VerticalFlex className={styles.item} onClick={()=> navigate('/mypage/wishList')}>
+                  <VerticalFlex className={styles.item} onClick={()=> {navigate('/mypage/wishList'); setActive(false);}}>
                      <Image src={`/resources/images/bottomNavi/navi_wish${pathname === '/mypage/wishList' ? '_active' : ''}.png`} width={22} />
                      <FlexChild className={clsx(styles.txt, {[styles.active] : pathname === '/mypage/wishList'})}>
                         <P>관심 리스트</P>
                      </FlexChild>
                   </VerticalFlex>
          
-                  <VerticalFlex className={styles.item} onClick={()=> navigate('/')}>
+                  <VerticalFlex className={styles.item} onClick={()=> {navigate('/'); setActive(false);}}>
                      <Image src={`/resources/images/bottomNavi/navi_home${pathname === '/' ? '_active' : ''}.png`} width={22} />
                      <FlexChild className={clsx(styles.txt, {[styles.active] : pathname === '/'})}>
                         <P>홈</P>
                      </FlexChild>
                   </VerticalFlex>
          
-                  <VerticalFlex className={styles.item} onClick={()=> navigate('/orders/cart')}>
+                  <VerticalFlex className={styles.item} onClick={()=> {navigate('/orders/cart'); setActive(false);}}>
                      <Image src={`/resources/images/bottomNavi/navi_cart${pathname === '/orders/cart' ? '_active' : ''}.png`} width={21} />
                      <FlexChild className={clsx(styles.txt, {[styles.active] : pathname.startsWith('/orders/cart')})}>
                         <P>장바구니</P>
                      </FlexChild>
                   </VerticalFlex>
          
-                  <VerticalFlex className={styles.item} onClick={()=> navigate( !userData?.id ? '/auth/login' : '/mypage')}>
+                  <VerticalFlex className={styles.item} onClick={()=> {navigate( !userData?.id ? '/auth/login' : '/mypage'); setActive(false);}}>
                      <Image src={`/resources/images/bottomNavi/navi_login${
                           pathname === '/mypage' || pathname === '/auth/login'
                             ? '_active'
