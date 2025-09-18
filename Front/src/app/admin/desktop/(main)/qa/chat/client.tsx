@@ -18,7 +18,7 @@ import { socketRequester } from "@/shared/SocketRequester";
 import { dateToString } from "@/shared/utils/Functions";
 import clsx from "clsx";
 import _ from "lodash";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
 
 export default function ({
@@ -42,7 +42,7 @@ export default function ({
     (condition) => adminRequester.getMyChatrooms(condition),
     (data: Pageable) => data?.totalPages || 0,
     {
-      onReprocessing: (data) => data?.content,
+      onReprocessing: (data) => data?.content || [],
       fallbackData: initChatrooms,
     }
   );
@@ -180,7 +180,13 @@ function ChatSpace({
     ?.map((u) => u.user)
     .find((f) => f?.role === "member");
   const inputRef = useRef<any>(null);
-  const { chats: preChats } = useInfiniteData(
+  const {
+    chats: preChats,
+    isLoading,
+    page,
+    maxPage,
+    Load,
+  } = useInfiniteData(
     "chats",
     (pageNumber) => ({
       pageSize: 50,
@@ -191,7 +197,7 @@ function ChatSpace({
     (condition) => requester.getChats(room?.id, condition),
     (data: Pageable) => data?.totalPages || 0,
     {
-      onReprocessing: (data) => data?.content,
+      onReprocessing: (data) => data?.content || [],
     }
   );
   const { [`/${room?.id}/chats`]: newChats } = useSubscriptionData(
@@ -229,7 +235,15 @@ function ChatSpace({
             <P>{user?.name}님의 문의</P>
           </FlexChild>
         </FlexChild>
-        <Chats preChats={preChats} newChats={newChats} users={room?.users} />
+        <Chats
+          isLoading={isLoading}
+          preChats={preChats}
+          newChats={newChats}
+          users={room?.users}
+          page={page}
+          maxPage={maxPage}
+          Load={Load}
+        />
         <input
           id="upload"
           type="file"
@@ -298,18 +312,29 @@ interface Chat {
 }
 
 function Chats({
+  isLoading: preIsLoading,
   preChats,
   newChats,
   users,
+  page,
+  maxPage,
+  Load,
 }: {
+  isLoading: boolean;
   preChats: ChatData[];
   newChats: ChatData[];
   users?: ChatroomUserData[];
+  page: number;
+  maxPage: number;
+  Load: () => void;
 }) {
+  const initRef = useRef<boolean>(true);
+  const heightRef = useRef<number>(0);
   const [totalChat, setTotalChat] = useState<Chat[]>([]);
-
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const observer = useRef<any>(null);
   useEffect(() => {
-    const combined = [...preChats, ...newChats];
+    const combined = [...(preChats || []).reverse(), ...newChats];
     const total = _.groupBy(combined, (chat: ChatData) => {
       const date = new Date(chat.created_at);
       return dateToString(date);
@@ -321,13 +346,76 @@ function Chats({
       }))
     );
   }, [preChats, newChats]);
+  const moveToEnd = () => {
+    const chatScroll = document.getElementById("chat");
+    if (chatScroll) {
+      chatScroll.scrollTop = chatScroll.scrollHeight - chatScroll?.clientHeight;
+    }
+  };
+  const ref = useCallback(
+    (node: any) => {
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (
+            entries[0].isIntersecting &&
+            page < maxPage &&
+            !isLoading &&
+            !preIsLoading
+          ) {
+            const chatScroll = document.getElementById("chat");
+            if (chatScroll) {
+              heightRef.current =
+                chatScroll.scrollHeight - chatScroll.scrollTop;
+            }
+            Load();
+            setIsLoading(true);
+          }
+        },
+        {
+          root: null,
+          rootMargin: "100px",
+          threshold: 0.1,
+        }
+      );
+      if (node) observer.current.observe(node);
+    },
+    [page, maxPage, isLoading, preIsLoading]
+  );
+  useEffect(() => {
+    if (totalChat?.length > 0 && initRef.current) {
+      moveToEnd();
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
+      initRef.current = false;
+    }
+  }, [totalChat]);
+  useEffect(() => {
+    if (!initRef.current)
+      setTimeout(() => {
+        const chatScroll = document.getElementById("chat");
+        if (chatScroll && chatScroll.scrollHeight > heightRef.current) {
+          chatScroll.scrollTop = chatScroll.scrollHeight - heightRef.current;
+          setIsLoading(false);
+        }
+      }, 300);
+  }, [preChats]);
+  useEffect(() => {
+    if (!initRef.current)
+      setTimeout(() => {
+        moveToEnd();
+      }, 100);
+  }, [newChats]);
   return (
     <VerticalFlex
+      id="chat"
       overflow="scroll"
       overflowY="scroll"
       hideScrollbar
       className={clsx(styles.wrapper2, styles.chatspaceinnerWrapper)}
     >
+      <div ref={ref} style={{ height: 1 }} />
       {totalChat.length === 0 && (
         <P className={styles.date}>{dateToString(new Date())}</P>
       )}

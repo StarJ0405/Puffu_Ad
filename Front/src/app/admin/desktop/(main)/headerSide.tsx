@@ -45,6 +45,11 @@ const SidebarNav: NavParent[] = [
         to: "/chat",
         icon: "/resources/images/sideNav_chat_admin.png",
       },
+      {
+        name: "문의 관리",
+        to: "/inquiry",
+        icon: "/resources/images/sideNav_chat_admin.png",
+      },
     ],
   },
   {
