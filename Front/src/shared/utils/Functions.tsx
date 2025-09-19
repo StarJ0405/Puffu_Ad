@@ -589,6 +589,10 @@ export function getQAType(qa: any) {
   }
 }
 
+export function maskPhone(phone: string): string { // 배송지 관리등에서 휴대폰 가운데 자리 *처리
+ return  phone.replace(/(\d{3})-?(\d{4})-?(\d{4})/, "$1-****-$3");
+}
+
 export function getItemStatus(order: OrderData, item: LineItemData) {
   switch (order.status) {
     case "pending":

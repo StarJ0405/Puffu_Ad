@@ -11,7 +11,7 @@ import mypage from "../mypage.module.css";
 
 import useAddress from "@/shared/hooks/main/useAddress";
 import { requester } from "@/shared/Requester";
-import { log } from "@/shared/utils/Functions";
+import { log, maskPhone } from "@/shared/utils/Functions";
 import DeliveryAddEdit, {
   DeliveryAddEditRef,
 } from "@/modals/DeliveryAddEdit/DeliveryAddEdit";
@@ -30,7 +30,7 @@ interface DummyAddress {
 export function DeliveryClient({ initAddresses }: { initAddresses: any }) {
   const { addresses, mutate } = useAddress(initAddresses?.content || []);
   const formRef = useRef<DeliveryAddEditRef>(null);
-  log(addresses);
+  log('주소',addresses);
   const deliveryTest = [
     {
       address: "대전광역시 관저중로 30-26(관저동)",
@@ -120,16 +120,19 @@ export function DeliveryClient({ initAddresses }: { initAddresses: any }) {
   //   });
   // };
 
+  // 기본배송지가 위로 오도록.
+  const addressDefaultChaning = addresses.sort((a, b)=> (b.default ? 1 : 0) - (a.default ? 1: 0));
+
   return (
     <VerticalFlex
       className={clsx(mypage.box_frame, styles.delivery_box)}
-      gap={35}
+      gap={25}
     >
       <FlexChild className={mypage.box_header}>
         <P>배송지 관리</P>
       </FlexChild>
 
-      <HorizontalFlex className={styles.top_box}>
+      <VerticalFlex className={styles.top_box}>
         <FlexChild className={styles.all_txt}>
           <P>전체 배송지</P>
           <Span>({addresses?.length || 0}건)</Span>
@@ -138,15 +141,15 @@ export function DeliveryClient({ initAddresses }: { initAddresses: any }) {
         <FlexChild className={styles.add_btn}>
           <Button onClick={() => deliveryAddEditModal()}>배송지 추가</Button>
         </FlexChild>
-      </HorizontalFlex>
+      </VerticalFlex>
 
       {/* 테이블 안에 tbody 안에 map은 그 날짜에 시킨 주문내역 전부 불러오게 바꾸기 */}
       {addresses && addresses.length > 0 ? (
         <VerticalFlex className={styles.delivery_list}>
-          {addresses.map((item, i) => (
-            <VerticalFlex key={item.id} className={styles.item}>
+          {addressDefaultChaning.map((item, i) => (
+            <VerticalFlex key={item.id} className={clsx(styles.item, (item.default ? styles.default : ''))} alignItems="start">
               <HorizontalFlex gap={20}>
-                <FlexChild className={styles.number}>{i + 1}</FlexChild>
+                {/* <FlexChild className={styles.number}>{i + 1}</FlexChild> */}
   
                 <VerticalFlex className={styles.content}>
                   {item.default ? (
@@ -154,14 +157,19 @@ export function DeliveryClient({ initAddresses }: { initAddresses: any }) {
                       <P>기본배송지</P>
                     </FlexChild>
                   ) : null}
-  
                   <FlexChild className={styles.address}>
                     <P>{`(${item.postal_code}) ${item.address1} ${item.address2}`}</P>
                   </FlexChild>
   
-                  <FlexChild className={styles.name}>
-                    <Span>받는 사람</Span>
-                    <P>{item.name}</P>
+                  <FlexChild gap={10}>
+                    <FlexChild className={styles.user_pri}>
+                      <Span>받는분</Span>
+                      <P>{item.name}</P>
+                    </FlexChild>
+
+                    <FlexChild className={styles.user_pri}>
+                      <P>{maskPhone(item.phone)}</P>
+                    </FlexChild>
                   </FlexChild>
                 </VerticalFlex>
               </HorizontalFlex>
@@ -171,7 +179,7 @@ export function DeliveryClient({ initAddresses }: { initAddresses: any }) {
                   className={styles.edit_btn}
                   onClick={() => deliveryAddEditModal(item)}
                 >
-                  <Button>배송지 수정</Button>
+                  <Button>수정</Button>
                 </FlexChild>
 
                 <FlexChild
