@@ -3,7 +3,14 @@ import { container } from "tsyringe";
 
 export const POST: ApiHandler = async (req, res) => {
   const user = req.user;
-  const { item_id, content, images, metadata, return_data = false } = req.body;
+  const {
+    item_id,
+    content,
+    images,
+    metadata,
+    star_rate,
+    return_data = false,
+  } = req.body;
 
   const service: ReviewService = container.resolve(ReviewService);
   try {
@@ -12,6 +19,7 @@ export const POST: ApiHandler = async (req, res) => {
       item_id,
       content,
       images,
+      star_rate,
       metadata,
     };
 

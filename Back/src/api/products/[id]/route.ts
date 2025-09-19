@@ -1,4 +1,5 @@
 import { ProductService } from "services/product";
+import { ReviewService } from "services/review";
 import { WishlistService } from "services/wishlist";
 import { container } from "tsyringe";
 import { IsNull, Or } from "typeorm";
@@ -54,6 +55,10 @@ export const GET: ApiHandler = async (req, res) => {
     },
   });
   if (content) content.wishes = count || 0;
+  const reviewService = container.resolve(ReviewService);
+  const reviews = await reviewService.getProudctData(content.id);
+
+  content.reviews = reviews || { count: 0, avg: 0 };
   if (req.user) {
     if (content?.wishlists && content.wishlists?.length > 0) {
       const wish = content.wishlists.find(
