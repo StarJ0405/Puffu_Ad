@@ -17,6 +17,7 @@ import { User } from "./user";
 import { LineItem } from "./line_item";
 
 export enum OrderStatus {
+  AWAITING = "awaiting",
   PENDING = "pending",
   FULFILLED = "fulfilled",
   SHIPPING = "shipping",
