@@ -43,7 +43,7 @@
 }
 
 .gallery_container .gallery_item {
-   width: calc(100% / 3 - 30px);
+   width: calc(25% - 30px);
 }
 
 .gallery_item .thumb_frame {
