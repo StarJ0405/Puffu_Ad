@@ -88,13 +88,13 @@ export default function BottomNavi() {
          
                   <VerticalFlex className={styles.item} onClick={()=> {navigate( !userData?.id ? '/auth/login' : '/mypage'); setActive(false);}}>
                      <Image src={`/resources/images/bottomNavi/navi_login${
-                          pathname === '/mypage' || pathname === '/auth/login'
+                           pathname.includes('/mypage') || pathname === '/auth/login'
                             ? '_active'
                             : ''
                         }.png`} 
                         width={22} 
                      />
-                     <FlexChild className={clsx(styles.txt, {[styles.active] : pathname === '/mypage' || pathname === '/auth/login'})}>
+                     <FlexChild className={clsx(styles.txt, {[styles.active] : pathname.includes('/mypage') || pathname === '/auth/login'})}>
                         <P hidden={!!userData?.id}>로그인</P>
                         <P hidden={!userData?.id}>마이페이지</P>
                      </FlexChild>

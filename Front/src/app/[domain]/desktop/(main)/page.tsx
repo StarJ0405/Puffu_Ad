@@ -61,7 +61,7 @@ export default async function () {
           initCondition={hotCondition}
         />
         <SubBanner2 />
-        {/* 신상품 */}
+        {/* 베스트 */}
         <FlexChild>
           <VerticalFlex>
             <HorizontalFlex

@@ -166,21 +166,13 @@ export function ProductCard({
                   e.preventDefault();
                   if (product.wish) {
                     requester.deleteWishList(
-                      product.wish.id,
-                      {
-                        soft: false,
-                      },
-                      () => {
-                        mutate();
+                      product.wish.id, { soft: false, }, () => {
+                        mutate?.();
                       }
                     );
                   } else {
-                    requester.createWishList(
-                      {
-                        product_id: product.id,
-                      },
-                      () => {
-                        mutate();
+                    requester.createWishList( { product_id: product.id,}, () => {
+                        mutate?.();
                       }
                     );
                   }

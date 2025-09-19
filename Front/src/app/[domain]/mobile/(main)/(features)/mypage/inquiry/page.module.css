@@ -116,9 +116,7 @@
 }
 
 /* New styles for card list */
-.list_container {
-   gap: 10px;
-}
+.list_container {gap: 20px;}
 
 .inquiry_item {
    background-color: #222;
@@ -129,29 +127,28 @@
 }
 
 .item_header {
-   font-size: 14px;
-   font-weight: 500;
+   font-size: 12px;
+   margin-bottom: 10px;
 }
 
 .item_header p {
    color: #cfcfcf;
 }
 
-.td_title {
-  justify-content: flex-start !important;
-}
+.td_title {font-size: 14px;}
 
 .item_content {
-  color: #a0a0a0;
+  color: #fff;
   font-size: 14px;
-  padding: 10px 0;
+  padding: 15px 3px;
   border-top: 1px solid #323232;
   border-bottom: 1px solid #323232;
   margin-top: 10px;
+  line-height: 1.3;
 }
 
 .image_gallery {
-  padding-top: 10px;
+  padding-top: 5px;
   overflow-x: auto;
 }
 
@@ -160,27 +157,43 @@
   object-fit: cover;
 }
 
-.item_answer {
+.admin_answer {
   background-color: #3a3a3a;
-  padding: 15px;
-  border-radius: 8px;
-  margin-top: 10px;
+  padding: 15px 10px;
+  border-radius: 3px;
+  margin-top: 30px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
   border: 1px solid #555;
+  font-size: 13px;
 }
 
 .answer_header {
-  padding-bottom: 8px;
+  padding-bottom: 15px;
   border-bottom: 1px solid #555;
 }
 
 .answer_content {
   color: #dcdcdc;
+  padding: 15px 3px 10px;
+  font-size: 14px;
+  min-height: 70px;
 }
 
 .item_footer {
    font-size: 12px;
    color: #888;
+   margin-top: 20px;
+}
+
+
+/* arrow 버튼 효과 */
+
+.toggle_btn {
+   transform: rotate(0deg);
+   transition: 0.2s;
+}
+
+.btn_active {
+   transform: rotate(180deg);
 }

@@ -6,7 +6,7 @@ import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import Link from "next/link";
 import styles from "./footer.module.css";
-import { NaviMenu, ChatToggle } from "./client";
+import SideNavi from "../sideNavi/sideNavi"
 
 export default async function Footer() {
 
@@ -41,9 +41,9 @@ export default async function Footer() {
               </FlexChild>
 
               <FlexChild className={styles.policy_item}>
-                <Link href={"/term"}>이용약관</Link>
+                <Link href={"/policies/term"}>이용약관</Link>
                 <Span>|</Span>
-                <Link href={"/privacy"}>개인정보처리방침</Link>
+                <Link href={"/policies/privacy"}>개인정보처리방침</Link>
               </FlexChild>
             </VerticalFlex>
           </VerticalFlex>
@@ -75,9 +75,7 @@ export default async function Footer() {
         </HorizontalFlex>
       </footer>
 
-      <NaviMenu />
-
-      <ChatToggle />
+      <SideNavi />
     </>
   );
 }

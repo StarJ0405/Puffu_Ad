@@ -127,7 +127,7 @@ export function DetailFrame({ initNotice }: { initNotice: any }) {
           ))}
         </VerticalFlex> */}
       {/* </VerticalFlex> */}
-      <FlexChild className={styles.detail}>
+      <FlexChild className={styles.detail} alignItems="start">
         <Div dangerouslySetInnerHTML={{ __html: notice.detail }} />
       </FlexChild>
 

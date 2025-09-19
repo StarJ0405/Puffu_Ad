@@ -6,7 +6,6 @@ import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import Link from "next/link";
 import styles from "./footer.module.css";
-import { SideToggle } from "./client";
 import clsx from "clsx";
 
 export default async function Footer() {
@@ -48,8 +47,6 @@ export default async function Footer() {
           </VerticalFlex>
         </VerticalFlex>
       </footer>
-
-      <SideToggle />
     </>
   );
 }

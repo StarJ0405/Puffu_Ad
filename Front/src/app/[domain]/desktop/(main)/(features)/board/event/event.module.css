@@ -34,15 +34,22 @@
 
 
 /* 갤러리 리스트 */
-.gallery_grid_container {
-   display: grid;
-   grid-template-columns: repeat(var(--column), 1fr);
+.gallery_container {
+   /* display: grid; */
+   /* grid-template-columns: repeat(var(--column), 1fr); */
+   display: flex;
    gap: 30px;
+   flex-wrap: wrap;
 }
 
+.gallery_container .gallery_item {
+   width: calc(100% / 3 - 30px);
+}
 
 .gallery_item .thumb_frame {
    position: relative;
+   overflow: hidden;
+   border-radius: 15px;
 }
 
 .gallery_item .thumb_frame img {
@@ -82,3 +89,10 @@
    gap: 5px !important;
 }
 
+
+
+.event_out {
+   position: absolute !important; top: 0;
+   left: 0; width: 100%;
+   z-index: 10;
+}
