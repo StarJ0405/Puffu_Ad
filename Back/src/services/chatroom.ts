@@ -54,12 +54,11 @@ export class ChatroomService extends BaseService<Chatroom, ChatroomRepository> {
         user_id: user_id,
         last_read: chat.created_at,
       });
-      if (admin.id !== user_id)
-        await this.chatroomUserRepository.create({
-          room_id: room.id,
-          user_id: admin.id,
-          last_read: chat.created_at,
-        });
+      await this.chatroomUserRepository.create({
+        room_id: room.id,
+        user_id: admin.id,
+        last_read: chat.created_at,
+      });
       // users: [{ id: user_id }, { id: admin_id }],
     } else {
       await this.updateUserRead(user_id, room.id);
