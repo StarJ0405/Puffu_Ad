@@ -48,4 +48,18 @@ export class ReviewService extends BaseService<Review, ReviewRepository> {
     }
     return super.getList(options);
   }
+  async getProudctData(
+    product_id: string
+  ): Promise<{ count: number; avg: number }> {
+    const result = this.repository
+      .builder("r")
+      .innerJoin("r.item", "i")
+      .innerJoin("i.variant", "v")
+      .select("COUNT(DISTINCT r.id)", "count")
+      .addSelect("AVG(r.star_rate)", "avg")
+      .where("v.product_id = :product_id", { product_id })
+      .groupBy("v.product_id")
+      .getRawOne();
+    return result;
+  }
 }
