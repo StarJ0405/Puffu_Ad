@@ -108,7 +108,7 @@ function ChatBox({
       setNewChats((prev) => _.uniqBy([...prev, res.chat], (chat) => chat.id));
     });
     return () => socketRequester.unSubscribe(`/${chatroom?.id}/chats`);
-  }, []);
+  }, [chatroom]);
 
   return (
     <VerticalFlex className={styles.chat_modal}>
@@ -300,8 +300,8 @@ function Chats({
     [page, maxPage, isLoading, preIsLoading]
   );
   return (
-    <FlexChild className={styles.scroll_body}>
-      <VerticalFlex className={styles.chat_body} id="chat">
+    <FlexChild className={styles.scroll_body} id="chat">
+      <VerticalFlex className={styles.chat_body}>
         {totalChat.map((chat) => (
           <Chat key={chat.id} chat={chat} users={users} />
         ))}
