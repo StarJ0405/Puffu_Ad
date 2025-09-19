@@ -6,11 +6,13 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToOne,
 } from "typeorm";
 import { generateEntityId } from "utils/functions";
 import { Brand } from "./brand";
 import { Cart } from "./cart";
 import { Order } from "./order";
+import { Review } from "./review";
 import { Variant } from "./variant";
 
 @Entity({ name: "line_item" })
@@ -112,6 +114,9 @@ export class LineItem extends BaseEntity {
 
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;
+
+  @OneToOne(() => Review, (review) => review.item)
+  reviews?: Review[];
 
   @BeforeInsert()
   protected async BeforeInsert(): Promise<void> {

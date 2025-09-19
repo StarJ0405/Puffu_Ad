@@ -6,11 +6,10 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToOne,
 } from "typeorm";
 import { generateEntityId } from "utils/functions";
 import { LineItem } from "./line_item";
-import { Order } from "./order";
-import { Product } from "./product";
 import { User } from "./user";
 
 @Entity({ name: "review" })
@@ -20,7 +19,7 @@ export class Review extends BaseEntity {
   @Column({ type: "character varying", nullable: true })
   item_id?: string;
 
-  @ManyToOne(() => LineItem)
+  @OneToOne(() => LineItem, (item) => item.reviews)
   @JoinColumn({ name: "item_id", referencedColumnName: "id" })
   item?: LineItem;
 

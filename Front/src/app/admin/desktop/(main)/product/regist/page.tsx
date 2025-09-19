@@ -8,5 +8,5 @@ export default async function () {
   const brands: any = await adminRequester.getBrands({
     select: ["id", "name"],
   });
-  return <Regist initStores={stores.content} initBrands={brands.content} />;
+  return <Regist initStores={stores} initBrands={brands} />;
 }
