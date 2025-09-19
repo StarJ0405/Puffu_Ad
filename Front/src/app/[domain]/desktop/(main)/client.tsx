@@ -435,18 +435,7 @@ export function ProductList({
               return (
                 <ProductCard
                   key={product.id}
-                  product={
-                    {
-                      id: product.id,
-                      title: product.title,
-                      thumbnail: product.thumbnail,
-                      price: product.price,
-                      discount_price: product.discount_price,
-                      discount_rate: product.discount_rate,
-                      store_name: product.brand.name,
-                      variants: product.variants,
-                    } as any
-                  }
+                  product={product}
                   lineClamp={2}
                   width={200}
                 />
