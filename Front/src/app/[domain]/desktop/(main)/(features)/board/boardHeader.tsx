@@ -65,11 +65,11 @@ export default function BoardHeader() {
                      </FlexChild>
             
                      <FlexChild className={styles.call_number}>
-                        <P>010-8112-6191</P>
+                        <P>010-2349-8677</P>
                      </FlexChild>
             
                      <VerticalFlex className={styles.business_time} gap={5}>
-                        <P>평일 : 10:00 ~ 17:00</P>
+                        <P>평일 : 09:30 ~ 18:30</P>
                         <P>점심시간 : 12:00 ~ 13:00</P>
                      </VerticalFlex>
                   </VerticalFlex>

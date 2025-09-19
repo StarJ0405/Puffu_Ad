@@ -36,12 +36,20 @@ export default async function Footer() {
             </FlexChild>
 
             <FlexChild className={styles.txt_item}>
+              <Span>전화번호: 010-2349-8677</Span>
+            </FlexChild>
+
+            <FlexChild className={styles.txt_item}>
+              <Span>이용시간: 평일 09:30 ~ 18:30(점심시간 12:00~13:00)</Span>
+            </FlexChild>
+
+            <FlexChild className={styles.txt_item}>
               <Span>통신판매업신고번호: 대전광역시 서구-0308</Span>
             </FlexChild>
 
             <FlexChild className={styles.txt_item}>
               <Span>
-                Copyright, ⓒ 2025 puffutoy.com. All rights reserved.
+                Copyright 2021.Puffu global Corp. all rights reserved
               </Span>
             </FlexChild>
           </VerticalFlex>

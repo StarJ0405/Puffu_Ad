@@ -47,10 +47,10 @@ export default function RootLayout({
         <meta property="og:image" content="https://puffutoy.com/org-img.png" />
 
         <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content="K PUFFU | 普虎韩国" />
+        <meta name="twitter:title" content="특별한 밤을 위한 당신의 선택 푸푸토이" />
         <meta
           name="twitter:description"
-          content="K PUFUFU(普虎韩国) offers Korean fashion (韩国服装), red ginseng (韩国红参), health food (韩国保健品), cosmetics (韩国护肤品), beauty (韩国妆), body care, and home appliances for global shoppers."
+          content="특별한 밤을 위한 다양한 성인용품 | 당신만을 위한 뜨밤 상품 한가득! | 성인용품 전문 | 딜도, 오나홀 | 게이, 레즈 토이"
         />
         <meta
           name="twitter:image"
