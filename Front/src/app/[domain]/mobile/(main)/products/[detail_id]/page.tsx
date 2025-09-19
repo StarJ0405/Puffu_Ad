@@ -5,9 +5,11 @@ import { requester } from "@/shared/Requester";
 import clsx from "clsx";
 import { Params } from "next/dist/server/request/params";
 import { notFound } from "next/navigation";
-import { ProductSlider, ProductWrapper } from "./client";
+import {ProductSlider, ProductWrapper } from "./client";
 import styles from "./page.module.css";
 import SubPageHeader from "@/components/subPageHeader/subPageHeader";
+import AnimationWapper from "@/components/AnimationWrapper/AnimationWapper";
+
 
 export default async function ({ params }: { params: Promise<Params> }) {
   const { detail_id } = await params;
@@ -39,8 +41,8 @@ export default async function ({ params }: { params: Promise<Params> }) {
   
 
   return (
-    <>
-      {/* <SubPageHeader /> */}
+    <AnimationWapper>
+      <SubPageHeader />
       <ProductWrapper initCondition={initCondition} initProduct={initProduct}>
         <VerticalFlex position="relative" alignItems="start" className={styles.slide_wrap}>
           <FlexChild marginBottom={20}>
@@ -56,6 +58,6 @@ export default async function ({ params }: { params: Promise<Params> }) {
           />
         </VerticalFlex>
       </ProductWrapper>
-    </>
+    </AnimationWapper>
   );
 }

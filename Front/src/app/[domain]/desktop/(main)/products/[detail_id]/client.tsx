@@ -8,7 +8,7 @@ import InputNumber from "@/components/inputs/InputNumber";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import clsx from "clsx";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
 
 import ProductCard from "@/components/card/ProductCard";
@@ -612,6 +612,21 @@ export function DetailTabContainer({
   const tabParamsChange = (params: string) => {
     setTabParams(params);
   };
+
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const handleTabClick = (name: string) => {
+    tabParamsChange(name);
+
+    if (contentRef.current) {
+      const top =
+        contentRef.current.getBoundingClientRect().top +
+        window.scrollY -
+        100; // 헤더 높이만큼 보정
+      window.scrollTo({ top, behavior: "smooth" });
+    }
+  };
+
   const tabAraays = [
     {
       name: "상세정보",
@@ -649,7 +664,10 @@ export function DetailTabContainer({
               styles.content_tab,
               tabParams === `${item.paramsName}` && styles.active
             )}
-            onClick={() => tabParamsChange(`${item.paramsName}`)}
+            onClick={() => {
+              handleTabClick(`${item.paramsName}`); 
+              tabParamsChange(`${item.paramsName}`);
+            }}
           >
             <P>
               {item.name}
@@ -660,6 +678,8 @@ export function DetailTabContainer({
           </FlexChild>
         ))}
       </HorizontalFlex>
+
+      <div ref={contentRef}></div> {/* 탭 스크롤 이동 추적용 */}
 
       <VerticalFlex className={styles.content_view}>
         <article key={tabParams} className={styles.tab_fade}>
