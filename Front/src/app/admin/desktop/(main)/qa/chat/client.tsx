@@ -6,13 +6,11 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import Icon from "@/components/icons/Icon";
 import Image from "@/components/Image/Image";
 import Input from "@/components/inputs/Input";
-import InputTextArea from "@/components/inputs/InputTextArea";
 import P from "@/components/P/P";
 import { useAdminAuth } from "@/providers/AdminAuthPorivder/AdminAuthPorivderClient";
 import { adminRequester } from "@/shared/AdminRequester";
 import { fileRequester } from "@/shared/FileRequester";
 import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
-import useSubscriptionData from "@/shared/hooks/data/useSubscriptionData";
 import { requester } from "@/shared/Requester";
 import { socketRequester } from "@/shared/SocketRequester";
 import { dateToString } from "@/shared/utils/Functions";
@@ -200,21 +198,15 @@ function ChatSpace({
       onReprocessing: (data) => data?.content || [],
     }
   );
-  const { [`/${room?.id}/chats`]: newChats } = useSubscriptionData(
-    `/${room?.id}/chats`,
-    (key, { next }) => {
-      socketRequester.subscribe(key, (res) => {
-        document.getElementById("reload_read")?.click();
-        next(null, (pre: any[]) => {
-          return [...(pre || []), res.chat];
-        });
-      });
-      return () => socketRequester.unSubscribe(key);
-    },
-    {
-      fallbackData: [],
-    }
-  );
+  const [newChats, setNewChats] = useState<ChatData[]>([]);
+  useEffect(() => {
+    socketRequester.subscribe(`/${room?.id}/chats`, (res) => {
+      document.getElementById("reload_read")?.click();
+
+      setNewChats((pre) => [...(pre || []), res.chat]);
+    });
+    return () => socketRequester.unSubscribe(`/${room?.id}/chats`);
+  }, []);
   return (
     <FlexChild>
       <VerticalFlex
@@ -281,11 +273,22 @@ function ChatSpace({
               onClick={() => document.getElementById("upload")?.click()}
             />
           </Button>
-          <InputTextArea
+          <Input
             ref={inputRef}
             className={styles.input2}
             width={"100%"}
             placeHolder="메시지를 입력하세요"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                socketRequester.publish(`/users/me/chatrooms`, {
+                  room_id: room.id,
+                  user_id: userData?.id,
+                  message: inputRef.current.getValue(),
+                  type: "message",
+                });
+                inputRef.current.empty();
+              }
+            }}
           />
           <Icon
             name="upload"
@@ -419,14 +422,18 @@ function Chats({
       {totalChat.length === 0 && (
         <P className={styles.date}>{dateToString(new Date())}</P>
       )}
-      {totalChat.map((total) => (
-        <VerticalFlex key={total.date}>
-          <P className={styles.date}>{total.date}</P>
-          {total.chats.map((chat) => (
-            <Chat key={chat.id} chat={chat} users={users} />
-          ))}
-        </VerticalFlex>
-      ))}
+      {totalChat
+        .sort(
+          (c1, c2) => new Date(c1.date).getTime() - new Date(c2.date).getTime()
+        )
+        .map((total) => (
+          <VerticalFlex key={total.date}>
+            <P className={styles.date}>{total.date}</P>
+            {total.chats.map((chat) => (
+              <Chat key={chat.id} chat={chat} users={users} />
+            ))}
+          </VerticalFlex>
+        ))}
     </VerticalFlex>
   );
 }

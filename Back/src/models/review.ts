@@ -37,6 +37,9 @@ export class Review extends BaseEntity {
   @Column({ array: true, type: "character varying", default: [] })
   images?: string[];
 
+  @Column({ type: "real", default: 0 })
+  star_rate?: number;
+
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;
 
