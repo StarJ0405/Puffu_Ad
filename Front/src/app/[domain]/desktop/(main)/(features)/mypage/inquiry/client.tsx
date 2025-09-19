@@ -31,7 +31,7 @@ const getInquiryTypeKorean = (type: string) => {
 };
 
 const formatInquiries = (inquiriesData: any[]) => {
-  console.log("Step 2: formatInquiries input:", inquiriesData);
+  // console.log("Step 2: formatInquiries input:", inquiriesData);
   const formatted = inquiriesData.map((inquiry) => {
     const inquiryDate = new Date(inquiry.created_at).toLocaleString("ko-KR", {
       year: "numeric",
@@ -55,7 +55,7 @@ const formatInquiries = (inquiriesData: any[]) => {
       user_id: inquiry.user_id,
     };
   });
-  console.log("Step 3: formatInquiries output:", formatted);
+  // console.log("Step 3: formatInquiries output:", formatted);
   return formatted;
 };
 
@@ -83,13 +83,13 @@ export function InquiryTable() {
     (data: Pageable) => data?.totalPages || 0,
     {
       onReprocessing: (data) => {
-        console.log("Step 1: Raw response from API:", data);
+        // console.log("Step 1: Raw response from API:", data);
         return formatInquiries(data?.content || []);
       },
     }
   );
 
-  console.log("Step 4: Final data for rendering (inquiries):", inquiries);
+  // console.log("Step 4: Final data for rendering (inquiries):", inquiries);
 
   const handleRowClick = (item: any) => {
     if (
@@ -193,23 +193,28 @@ export function InquiryTable() {
                     <tr>
                       <td colSpan={6}>
                         <VerticalFlex className={styles.details_container}>
-                          <P padding={"0 0 35px 0"} width={"100%"} textAlign="left" className={styles.item_content}>{list.content}</P>
+                          <P
+                            padding={"0 0 35px 0"}
+                            width={"100%"}
+                            textAlign="left"
+                            className={styles.item_content}
+                          >
+                            {list.content}
+                          </P>
                           {list.images?.length > 0 && (
                             <FlexChild
                               className={styles.image_gallery}
                               gap={10}
                             >
-                              {list.images.map(
-                                (img: string, index: number) => (
-                                  <Image
-                                    key={index}
-                                    src={img}
-                                    width={80}
-                                    height={80}
-                                    className={styles.gallery_image}
-                                  />
-                                )
-                              )}
+                              {list.images.map((img: string, index: number) => (
+                                <Image
+                                  key={index}
+                                  src={img}
+                                  width={80}
+                                  height={80}
+                                  className={styles.gallery_image}
+                                />
+                              ))}
                             </FlexChild>
                           )}
                           {list.answer && (
@@ -239,11 +244,7 @@ export function InquiryTable() {
           {inquiries?.length === 0 && <NoContent type="문의" />}
         </FlexChild>
         <FlexChild className={styles.list_bottom_box}>
-          <ListPagination
-            page={page}
-            maxPage={maxPage}
-            onChange={changePage}
-          />
+          <ListPagination page={page} maxPage={maxPage} onChange={changePage} />
         </FlexChild>
       </VerticalFlex>
     </>

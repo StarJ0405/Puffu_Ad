@@ -300,8 +300,6 @@ export function HotDealWrapper({
     Load(); // 서버에서도 다음 페이지 로드
   };
 
-  console.log('hot', products);
-
   return (
     <FlexChild hidden={!products || products?.length === 0}>
       <VerticalFlex>
