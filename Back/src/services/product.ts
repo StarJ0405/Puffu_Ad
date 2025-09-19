@@ -33,18 +33,24 @@ export class ProductService extends BaseService<Product, ProductRepository> {
     options: FindOneOptions<Product>,
     pageData?: PageData
   ): Promise<Pageable<Product> | any> {
+    const where: any = options?.where;
     let builder = this.repository
       .builder("p")
       .leftJoinAndSelect("p.variants", "v")
       .leftJoinAndSelect("p.brand", "b")
       .leftJoinAndSelect("p.discounts", "ds")
-      .leftJoinAndSelect("ds.discount", "dc")
-      .leftJoinAndSelect("p.wishlists", "wis")
+      .leftJoinAndSelect("ds.discount", "dc");
+    if (where.user_id)
+      builder = builder.leftJoinAndSelect(
+        "p.wishlists",
+        "wis",
+        "wis.user_id = :user_id",
+        { user_id: where.user_id }
+      );
+    builder = builder
       .leftJoin("p.category", "ct")
       .where("p.visible IS TRUE")
       .andWhere("v.visible IS TRUE");
-
-    const where: any = options?.where;
 
     if (where) {
       if (where.ids) {
@@ -63,15 +69,15 @@ export class ProductService extends BaseService<Product, ProductRepository> {
       if ("adult" in where) {
         builder = builder.andWhere(`p.adult is ${where.adult}`);
       }
-      if (where.user_id) {
-        builder = builder.andWhere(
-          new Brackets((sub) =>
-            sub
-              .where("wis.user_id is null")
-              .orWhere("wis.user_id = :user_id", { user_id: where.user_id })
-          )
-        );
-      }
+      // if (where.user_id) {
+      //   builder = builder.andWhere(
+      //     new Brackets((sub) =>
+      //       sub
+      //         .where("wis.user_id is null")
+      //         .orWhere("wis.user_id = :user_id", { user_id: where.user_id })
+      //     )
+      //   );
+      // }
       if (where.category_id) {
         builder = builder.andWhere(`ct.mpath like :category_id`, {
           category_id: `%${where.category_id}%`,
