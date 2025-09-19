@@ -29,7 +29,7 @@ const getInquiryTypeKorean = (type: string) => {
 };
 
 const formatInquiries = (inquiriesData: any[]) => {
-  console.log("Step 2: formatInquiries input:", inquiriesData);
+  // console.log("Step 2: formatInquiries input:", inquiriesData);
   const formatted = inquiriesData.map((inquiry) => {
     const inquiryDate = new Date(inquiry.created_at).toLocaleString("ko-KR", {
       year: "numeric",
@@ -52,7 +52,7 @@ const formatInquiries = (inquiriesData: any[]) => {
       is_secret: inquiry.hidden,
     };
   });
-  console.log("Step 3: formatInquiries output:", formatted);
+  // console.log("Step 3: formatInquiries output:", formatted);
   return formatted;
 };
 
@@ -77,7 +77,7 @@ export function InquiryClient() {
     (data: Pageable) => data?.totalPages || 0,
     {
       onReprocessing: (data) => {
-        console.log("Step 1: Raw response from API:", data);
+        // console.log("Step 1: Raw response from API:", data);
         return formatInquiries(data?.content || []);
       },
     }
@@ -93,7 +93,11 @@ export function InquiryClient() {
         <FlexChild>
           <VerticalFlex className={styles.list_container}>
             {inquiries?.map((list: any, i: number) => (
-              <VerticalFlex key={i} className={styles.inquiry_item} alignItems="start">
+              <VerticalFlex
+                key={i}
+                className={styles.inquiry_item}
+                alignItems="start"
+              >
                 <FlexChild
                   justifyContent="space-between"
                   className={styles.item_header}
@@ -110,7 +114,9 @@ export function InquiryClient() {
                   cursor="pointer"
                   className={styles.td_title}
                   justifyContent="start"
-                  onClick={()=> setAnswerToggle((prev) => (prev === i ? null : i))}
+                  onClick={() =>
+                    setAnswerToggle((prev) => (prev === i ? null : i))
+                  }
                 >
                   <FlexChild gap={5}>
                     {list.is_secret && (
@@ -128,8 +134,14 @@ export function InquiryClient() {
                     src={"/resources/icons/board/new_icon.png"}
                     width={16}
                   /> */}
-                  
-                  <FlexChild width={'auto'} className={clsx(styles.toggle_btn, (answerToggle === i ? styles.btn_active : ''))}>
+
+                  <FlexChild
+                    width={"auto"}
+                    className={clsx(
+                      styles.toggle_btn,
+                      answerToggle === i ? styles.btn_active : ""
+                    )}
+                  >
                     <Image
                       src={`/resources/icons/arrow/board_arrow_bottom_icon.png`}
                       width={12}
@@ -155,29 +167,37 @@ export function InquiryClient() {
                 </FlexChild>
 
                 {/* 문의 내용 / 관리자 답변 */}
-                <AnimatePresence mode={'wait'}>
-                  {
-                    answerToggle === i && (
-                      <motion.div
-                        id="motion"
-                        // key={active}
-                        initial={{ opacity: 0, y: -20,}}
-                        animate={{ opacity: 1, y: 0,}}
-                        exit={{ opacity: 0, y: 0 }}
-                        transition={{ duration: 0.2, ease: "easeInOut" }}
-                      >
-                        <VerticalFlex className={styles.content_wrapper}>
-                          <VerticalFlex className={styles.item_content} alignItems="start" gap={15}>
+                <AnimatePresence mode={"wait"}>
+                  {answerToggle === i && (
+                    <motion.div
+                      id="motion"
+                      // key={active}
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 0 }}
+                      transition={{ duration: 0.2, ease: "easeInOut" }}
+                    >
+                      <VerticalFlex className={styles.content_wrapper}>
+                        <VerticalFlex
+                          className={styles.item_content}
+                          alignItems="start"
+                          gap={15}
+                        >
+                          <FlexChild minHeight={100} alignItems="start">
+                            <P>{list.content}</P>
+                          </FlexChild>
 
-                            <FlexChild minHeight={100} alignItems="start">
-                              <P>{list.content}</P>
-                            </FlexChild>
-
-                            {list.images?.length > 0 && (
-                              <VerticalFlex alignItems="start">
-                                <P color="#797979" size={11}>첨부 이미지</P>
-                                <FlexChild className={styles.image_gallery} gap={10}>
-                                  {list.images.map((img: string, index: number) => (
+                          {list.images?.length > 0 && (
+                            <VerticalFlex alignItems="start">
+                              <P color="#797979" size={11}>
+                                첨부 이미지
+                              </P>
+                              <FlexChild
+                                className={styles.image_gallery}
+                                gap={10}
+                              >
+                                {list.images.map(
+                                  (img: string, index: number) => (
                                     <Image
                                       key={index}
                                       src={img}
@@ -185,36 +205,47 @@ export function InquiryClient() {
                                       height={60}
                                       className={styles.gallery_image}
                                     />
-                                  ))}
-                                </FlexChild>
-                              </VerticalFlex>
-                            )}
-                          </VerticalFlex>
-          
-                          {list.answer && (
-                            <VerticalFlex className={styles.admin_answer} alignItems="start">
-                              <FlexChild alignItems="center" gap={8} className={styles.answer_header}>
-                                <P weight={600} color="#fff">관리자 To</P>
-                              </FlexChild>
-
-                              <FlexChild className={styles.answer_content} alignItems="start">
-                                <P>{list.answer}</P>
+                                  )
+                                )}
                               </FlexChild>
                             </VerticalFlex>
                           )}
                         </VerticalFlex>
-                      </motion.div>
-                    )
-                  }
-                </AnimatePresence>
 
+                        {list.answer && (
+                          <VerticalFlex
+                            className={styles.admin_answer}
+                            alignItems="start"
+                          >
+                            <FlexChild
+                              alignItems="center"
+                              gap={8}
+                              className={styles.answer_header}
+                            >
+                              <P weight={600} color="#fff">
+                                관리자 To
+                              </P>
+                            </FlexChild>
+
+                            <FlexChild
+                              className={styles.answer_content}
+                              alignItems="start"
+                            >
+                              <P>{list.answer}</P>
+                            </FlexChild>
+                          </VerticalFlex>
+                        )}
+                      </VerticalFlex>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </VerticalFlex>
             ))}
           </VerticalFlex>
           {inquiries?.length > 0 ? null : <NoContent type="문의" />}
         </FlexChild>
         <FlexChild className={styles.list_bottom_box}>
-           <ListPagination page={page} maxPage={maxPage} onChange={changePage} />
+          <ListPagination page={page} maxPage={maxPage} onChange={changePage} />
         </FlexChild>
       </VerticalFlex>
     </>

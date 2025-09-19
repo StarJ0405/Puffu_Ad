@@ -33,7 +33,6 @@ import DeliveryGuide from "./_deliveryGuide/deliveryGuide";
 import Description from "./_description/description";
 import InquiryClient from "./_inquiry/client";
 
-
 interface Variant {
   variant_id: string;
   quantity: number;
@@ -389,7 +388,7 @@ const buyCartModal = NiceModal.create(
         height={"fit-content"}
         clickOutsideToClose={true}
         onClose={modal.remove}
-        style={{minHeight: '258px', maxHeight: '80dvh'}}
+        style={{ minHeight: "258px", maxHeight: "80dvh" }}
       >
         <VerticalFlex
           className={styles.pay_cart_modal}
@@ -472,9 +471,6 @@ export function BottomPayBox({
   onPurchaseClick: (selected: Variant[]) => Promise<any>;
   onWishClick: () => void;
 }) {
-
-  console.log('좋아요!!', product.wishes);
-
   return (
     <FlexChild className={styles.bottom_pay_box}>
       <HorizontalFlex className={styles.buyButton_box}>
@@ -580,7 +576,11 @@ export function OptionItem({
         const index = selected.findIndex((f) => f.variant_id === v.id);
         const select = selected[index];
         return (
-          <VerticalFlex className={styles.option_item} key={v.id} alignItems="start">
+          <VerticalFlex
+            className={styles.option_item}
+            key={v.id}
+            alignItems="start"
+          >
             <FlexChild gap={10} fontSize={10}>
               <InputNumber
                 disabled={!product.buyable || !v.buyable || v.stack === 0}
@@ -597,22 +597,27 @@ export function OptionItem({
               />
               {v.stack === 0 ? (
                 <FlexChild width={"max-content"}>
-                  <P size={14} color="#fff">(재고 부족)</P>
+                  <P size={14} color="#fff">
+                    (재고 부족)
+                  </P>
                 </FlexChild>
               ) : !v.buyable ? (
                 <FlexChild width={"max-content"}>
-                  <P size={14} color="#fff">(판매 중단)</P>
+                  <P size={14} color="#fff">
+                    (판매 중단)
+                  </P>
                 </FlexChild>
               ) : (
                 <></>
               )}
             </FlexChild>
-            <HorizontalFlex 
+            <HorizontalFlex
               className={clsx(
                 styles.txt_item,
                 (v.stack === 0 || !v.buyable) && styles.disable
-              )} 
-              gap={10} width={"auto"}
+              )}
+              gap={10}
+              width={"auto"}
             >
               <FlexChild className={styles.op_name}>
                 <P>{v?.title}</P>
@@ -714,9 +719,7 @@ export function DetailTabContainer({
 
     if (contentRef.current) {
       const top =
-        contentRef.current.getBoundingClientRect().top +
-        window.scrollY -
-        100; // 헤더 높이만큼 보정
+        contentRef.current.getBoundingClientRect().top + window.scrollY - 100; // 헤더 높이만큼 보정
       window.scrollTo({ top, behavior: "smooth" });
     }
   };
@@ -772,9 +775,7 @@ export function DetailTabContainer({
           </FlexChild>
         ))}
       </HorizontalFlex>
-
       <div ref={contentRef}></div> {/* 탭 스크롤 이동 추적용 */}
-
       <VerticalFlex className={styles.content_view}>
         <article key={tabParams} className={styles.tab_fade}>
           {tabAraays.find((t) => t.paramsName === tabParams)?.component}
