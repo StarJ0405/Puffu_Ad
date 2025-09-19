@@ -57,6 +57,8 @@ export function GalleryTable({
     }
   );
 
+  console.log(notices);
+
   return (
     <VerticalFlex>
       <HorizontalFlex className={styles.event_tab}>
@@ -98,11 +100,10 @@ export function GalleryTable({
       <FlexChild>
         {notices.length > 0 ? (
           <div
-            className={styles.gallery_grid_container}
-            style={{ "--column": "4" } as React.CSSProperties} // 너비에 몇개 늘어놓을 건지 갯수
+            className={styles.gallery_container}
           >
             {notices.map((item: NoticeData, i: number) => (
-              <GalleryItem key={i} item={item} />
+              <GalleryItem active={active} key={i} item={item} />
             ))}
           </div>
         ) : (
@@ -118,7 +119,7 @@ export function GalleryTable({
 }
 
 // 갤러리 아이템
-export function GalleryItem({ item }: { item: NoticeData }) {
+export function GalleryItem({ item, active }: { item: NoticeData, active: "all" | "before" | "continue" | "end"; }) {
   const navigate = useNavigate();
   const dateToString = (date: string | Date | null | undefined) => {
     date = new Date(date || new Date());
@@ -129,6 +130,7 @@ export function GalleryItem({ item }: { item: NoticeData }) {
       date.getHours()
     ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
   };
+
   return (
     <VerticalFlex gap={17} className={styles.gallery_item}>
       <FlexChild
@@ -137,7 +139,18 @@ export function GalleryItem({ item }: { item: NoticeData }) {
         onClick={() => navigate(`/board/event/${item.id}`)}
       >
         {/* <Link href={'/board/detail/event_01'}> */}
-        <Image src={item.thumbnail} width={"100%"} height={"auto"} />
+        {
+          item.thumbnail ? (
+                <Image src={item.thumbnail} width={"100%"} height={"auto"} />
+              ) : (
+                <Image src={'/resources/images/no-img.png'} width={"100%"} height={"auto"} />
+            )
+        }
+
+        {item.deactives_at && new Date(item.deactives_at).getTime() < Date.now() && item.thumbnail && (
+          <Image className={styles.event_out} src={'/resources/images/event_out.png'} width={"100%"} height={"auto"} /> 
+        )}
+
         {/* {item.durationEnd && (
              // 현재 날짜가 이벤트 종료기간을 지났을때 이 이미지가 나타나기
              // 실시간으로 시간 1초라도 기간 지나면 바로 업데이트해서 나타나게 해야 할지.

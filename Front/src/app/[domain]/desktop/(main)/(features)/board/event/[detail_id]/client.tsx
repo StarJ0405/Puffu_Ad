@@ -4,36 +4,18 @@ import Div from "@/components/div/Div";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import Icon from "@/components/icons/Icon";
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
-import Select from "@/components/select/Select";
-import { usePathname } from "next/navigation";
 import Span from "@/components/span/Span";
-import CheckboxAll from "@/components/choice/checkbox/CheckboxAll";
-import CheckboxChild from "@/components/choice/checkbox/CheckboxChild";
-import CheckboxGroup from "@/components/choice/checkbox/CheckboxGroup";
-import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import useData from "@/shared/hooks/data/useData";
 import useNavigate from "@/shared/hooks/useNavigate";
 import { requester } from "@/shared/Requester";
-import NiceModal from "@ebay/nice-modal-react";
-import clsx from "clsx";
-import { useParams } from "next/navigation";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
-import ProductCard from "@/components/card/dummyProductCard";
-import styles from "./page.module.css";
 import boardStyle from "../../boardGrobal.module.css";
-import Input from "@/components/inputs/Input";
-import ListPagination from "@/components/listPagination/ListPagination";
-import Link from "next/link";
-import PrivacyContent from "@/components/agreeContent/privacyContent";
 import { SelectBox } from "../../client";
+import styles from "./page.module.css";
 
-import ChoiceChild from "@/components/choice/ChoiceChild";
-import ChoiceGroup from "@/components/choice/ChoiceGroup";
-import InputTextArea from "@/components/inputs/InputTextArea";
 import NoContent from "@/components/noContent//noContent";
+import sanitizeHtml from "sanitize-html";
 
 // 본문 -----------------------------------------------
 export function DetailFrame({ initNotice }: { initNotice: any }) {
@@ -61,6 +43,14 @@ export function DetailFrame({ initNotice }: { initNotice: any }) {
       date.getHours()
     ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
   };
+
+  const cleanHTML = sanitizeHtml(notice.detail, {
+    allowedTags: ["p", "b", "i", "strong", "em", "img", "ul", "li", "ol"],
+    allowedAttributes: {
+      img: ["src", "alt"],
+    },
+  });
+
   return (
     <VerticalFlex className={styles.detail_container}>
       <VerticalFlex className={styles.board_header}>
@@ -89,8 +79,8 @@ export function DetailFrame({ initNotice }: { initNotice: any }) {
         </HorizontalFlex>
       </VerticalFlex>
 
-      <FlexChild className={styles.detail}>
-        <Div dangerouslySetInnerHTML={{ __html: notice.detail }} />
+      <FlexChild className={styles.detail} alignItems="start">
+        <Div dangerouslySetInnerHTML={{ __html: cleanHTML }} />
       </FlexChild>
 
       <FlexChild justifyContent="center">

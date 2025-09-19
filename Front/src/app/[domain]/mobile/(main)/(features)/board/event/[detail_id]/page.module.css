@@ -66,10 +66,15 @@
 }
 
 
+.detail {
+   min-height: 200px;
+   margin: 30px 0;
+}
+
 
 /* 댓글창 */
 
-.answer_container {
+/* .answer_container {
   margin-top: 20px;
   border-top: 1px solid #6b6b6b;
   padding-top: 20px;
@@ -90,4 +95,4 @@
   line-height: 1.6;
   font-size: 14px;
   min-height: 100px;
-}
+} */
