@@ -12,7 +12,7 @@ export default function TermContent({ size = 10 }: Props) {
   return (
     <VerticalFlex className={styles.board_container} fontSize={size}>
       <FlexChild justifyContent="center">
-        <h3>약관</h3>
+        <h3>이용 약관</h3>
       </FlexChild>
       <VerticalFlex>
         <P className={styles.title}>제1장 총칙</P>

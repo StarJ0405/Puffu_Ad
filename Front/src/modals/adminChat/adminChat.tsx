@@ -17,12 +17,15 @@ import _ from "lodash";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./adminChat.module.css";
+import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
 
 export default function AdminChat({
+  // onOpen,
   onClose,
   starts_at,
   reload,
 }: {
+  // onOpen: boolean;
   onClose: () => void;
   starts_at: Date;
   reload: () => void;
@@ -60,21 +63,26 @@ export default function AdminChat({
     <>
       <button hidden id="reload_read" onClick={() => reload_read()} />
       <ChatBox chatroom={chatroom} onClose={onClose} starts_at={starts_at} />
+      {/* onOpen={onOpen} */}
     </>
   );
 }
 
 function ChatBox({
+  // onOpen,
   chatroom,
   onClose,
   starts_at,
 }: {
+  // onOpen?: boolean;
   chatroom: ChatroomData;
   starts_at: Date;
   onClose: () => void;
 }) {
   const { userData } = useAuth();
   const inputRef = useRef<any>(null);
+
+  const { isMobile } = useBrowserEvent();
 
   const {
     chats: preChats,
@@ -111,72 +119,101 @@ function ChatBox({
   }, [chatroom]);
 
   return (
-    <VerticalFlex className={styles.chat_modal}>
-      <FlexChild className={styles.title_header}>
-        <P>관리자 문의하기</P>
-
-        <Image
-          src={"/resources/icons/modal_close_icon.png"}
-          cursor="pointer"
-          width={20}
-          onClick={onClose}
-        />
-      </FlexChild>
-      <Chats
-        Load={Load}
-        isLoading={isLoading}
-        maxPage={maxPage}
-        newChats={newChats}
-        page={page}
-        preChats={preChats}
-        users={chatroom?.users || []}
-      />
-
-      <FlexChild className={styles.write_board}>
-        <FlexChild>
+    <>
+      {
+        isMobile && (
+          <div className={styles.background_close} onClick={onClose}></div>
+        )
+      }
+      <VerticalFlex 
+        className={clsx(
+          styles.chat_modal, 
+          isMobile && styles.mob_chat_modal, 
+          // onOpen && styles.modal_active
+        )}
+      >
+        <FlexChild className={styles.title_header}>
+          <P>관리자 문의하기</P>
+  
           <Image
+            src={"/resources/icons/modal_close_icon.png"}
             cursor="pointer"
-            src={"/resources/icons/board/chat_file_upload.png"}
-            width={39}
-            onClick={() => document.getElementById("upload")?.click()}
+            width={20}
+            onClick={onClose}
           />
         </FlexChild>
-        <input
-          id="upload"
-          type="file"
-          hidden
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) {
-              let type = "file";
-              if (file.type.includes("image")) {
-                type = "image";
+        <Chats
+          Load={Load}
+          isLoading={isLoading}
+          maxPage={maxPage}
+          newChats={newChats}
+          page={page}
+          preChats={preChats}
+          users={chatroom?.users || []}
+        />
+  
+        <FlexChild className={styles.write_board}>
+          <FlexChild>
+            <Image
+              cursor="pointer"
+              src={"/resources/icons/board/chat_file_upload.png"}
+              width={39}
+              onClick={() => document.getElementById("upload")?.click()}
+            />
+          </FlexChild>
+          <input
+            id="upload"
+            type="file"
+            hidden
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                let type = "file";
+                if (file.type.includes("image")) {
+                  type = "image";
+                }
+                const form = new FormData();
+                form.set("files", file);
+                fileRequester
+                  .upload(form, `/chatroom/${chatroom?.id}/${userData?.id}`)
+                  .then(({ urls }: { urls?: string[] }) => {
+                    if (urls && urls?.length > 0)
+                      socketRequester.publish(`/users/me/chatrooms`, {
+                        room_id: chatroom.id,
+                        user_id: userData?.id,
+                        message: urls[0],
+                        type,
+                      });
+                  });
               }
-              const form = new FormData();
-              form.set("files", file);
-              fileRequester
-                .upload(form, `/chatroom/${chatroom?.id}/${userData?.id}`)
-                .then(({ urls }: { urls?: string[] }) => {
-                  if (urls && urls?.length > 0)
+              e.target.value = "";
+            }}
+          />
+          <FlexChild className={styles.chat_input}>
+            <Input
+              ref={inputRef}
+              type="text"
+              width={"100%"}
+              placeHolder="메시지를 입력하세요..."
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  const value = inputRef.current.getValue();
+                  if (value?.trim())
                     socketRequester.publish(`/users/me/chatrooms`, {
                       room_id: chatroom.id,
                       user_id: userData?.id,
-                      message: urls[0],
-                      type,
+                      message: value.trim(),
+                      type: "message",
                     });
-                });
-            }
-            e.target.value = "";
-          }}
-        />
-        <FlexChild className={styles.chat_input}>
-          <Input
-            ref={inputRef}
-            type="text"
-            width={"100%"}
-            placeHolder="메시지를 입력하세요..."
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
+                  inputRef.current.empty();
+                }
+              }}
+            />
+          </FlexChild>
+          <FlexChild>
+            <Button
+              className={styles.chat_btn}
+              onClick={() => {
                 const value = inputRef.current.getValue();
                 if (value?.trim())
                   socketRequester.publish(`/users/me/chatrooms`, {
@@ -186,30 +223,14 @@ function ChatBox({
                     type: "message",
                   });
                 inputRef.current.empty();
-              }
-            }}
-          />
+              }}
+            >
+              전송
+            </Button>
+          </FlexChild>
         </FlexChild>
-        <FlexChild>
-          <Button
-            className={styles.chat_btn}
-            onClick={() => {
-              const value = inputRef.current.getValue();
-              if (value?.trim())
-                socketRequester.publish(`/users/me/chatrooms`, {
-                  room_id: chatroom.id,
-                  user_id: userData?.id,
-                  message: value.trim(),
-                  type: "message",
-                });
-              inputRef.current.empty();
-            }}
-          >
-            전송
-          </Button>
-        </FlexChild>
-      </FlexChild>
-    </VerticalFlex>
+      </VerticalFlex>
+    </>
   );
 }
 

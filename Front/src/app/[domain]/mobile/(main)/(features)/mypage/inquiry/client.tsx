@@ -2,17 +2,16 @@
 import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
+import ListPagination from "@/components/listPagination/ListPagination";
 import NoContent from "@/components/noContent/noContent";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
-import styles from "./page.module.css";
-import ListPagination from "@/components/listPagination/ListPagination";
-import { useEffect, useState, useCallback } from "react";
 import { requester } from "@/shared/Requester";
-
-
-import clsx from "clsx";
+import styles from "./page.module.css";
 import usePageData from "@/shared/hooks/data/usePageData";
+import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
+import clsx from "clsx";
 
 const getInquiryTypeKorean = (type: string) => {
   switch (type) {
@@ -84,7 +83,9 @@ export function InquiryClient() {
     }
   );
 
-  console.log("Step 4: Final data for rendering (inquiries):", inquiries);
+  // console.log("Step 4: Final data for rendering (inquiries):", inquiries);
+
+  const [answerToggle, setAnswerToggle] = useState<number | null>(null);
 
   return (
     <>
@@ -92,12 +93,57 @@ export function InquiryClient() {
         <FlexChild>
           <VerticalFlex className={styles.list_container}>
             {inquiries?.map((list: any, i: number) => (
-              <VerticalFlex key={i} className={styles.inquiry_item}>
+              <VerticalFlex key={i} className={styles.inquiry_item} alignItems="start">
                 <FlexChild
                   justifyContent="space-between"
                   className={styles.item_header}
                 >
-                  <P>{list.Type}</P>
+                  <P color="#c7c7c7">{list.Type}</P>
+                  <Span size={12} color="#888">
+                    {list.date}
+                  </Span>
+                </FlexChild>
+
+                <FlexChild
+                  gap={5}
+                  alignItems="center"
+                  cursor="pointer"
+                  className={styles.td_title}
+                  justifyContent="start"
+                  onClick={()=> setAnswerToggle((prev) => (prev === i ? null : i))}
+                >
+                  <FlexChild gap={5}>
+                    {list.is_secret && (
+                      <Image
+                        src={"/resources/icons/board/lock_icon.png"}
+                        width={12}
+                      />
+                    )}
+                    <P lineClamp={1} overflow="hidden" display="--webkit-box">
+                      {list.title}
+                    </P>
+                  </FlexChild>
+                  {/* new icon logic needed */}
+                  {/* <Image
+                    src={"/resources/icons/board/new_icon.png"}
+                    width={16}
+                  /> */}
+                  
+                  <FlexChild width={'auto'} className={clsx(styles.toggle_btn, (answerToggle === i ? styles.btn_active : ''))}>
+                    <Image
+                      src={`/resources/icons/arrow/board_arrow_bottom_icon.png`}
+                      width={12}
+                    />
+                  </FlexChild>
+                </FlexChild>
+
+                <FlexChild
+                  justifyContent="space-between"
+                  className={styles.item_footer}
+                >
+                  <P size={12} color="#888">
+                    {list.member}
+                  </P>
                   <Span
                     weight={400}
                     color={`${
@@ -108,66 +154,60 @@ export function InquiryClient() {
                   </Span>
                 </FlexChild>
 
-                <FlexChild
-                  gap={5}
-                  alignItems="center"
-                  cursor="pointer"
-                  className={styles.td_title}
-                  width={"fit-content"}
-                >
-                  {list.is_secret && (
-                    <Image
-                      src={"/resources/icons/board/lock_icon.png"}
-                      width={16}
-                    />
-                  )}
-                  <P lineClamp={1} overflow="hidden" display="--webkit-box">
-                    {list.title}
-                  </P>
-                  {/* new icon logic needed */}
-                  {/* <Image
-                    src={"/resources/icons/board/new_icon.png"}
-                    width={16}
-                  /> */}
-                </FlexChild>
+                {/* 문의 내용 / 관리자 답변 */}
+                <AnimatePresence mode={'wait'}>
+                  {
+                    answerToggle === i && (
+                      <motion.div
+                        id="motion"
+                        // key={active}
+                        initial={{ opacity: 0, y: -20,}}
+                        animate={{ opacity: 1, y: 0,}}
+                        exit={{ opacity: 0, y: 0 }}
+                        transition={{ duration: 0.2, ease: "easeInOut" }}
+                      >
+                        <VerticalFlex className={styles.content_wrapper}>
+                          <VerticalFlex className={styles.item_content} alignItems="start" gap={15}>
 
-                <P className={styles.item_content}>{list.content}</P>
+                            <FlexChild minHeight={100} alignItems="start">
+                              <P>{list.content}</P>
+                            </FlexChild>
 
-                {list.images?.length > 0 && (
-                  <FlexChild className={styles.image_gallery} gap={10}>
-                    {list.images.map((img: string, index: number) => (
-                      <Image
-                        key={index}
-                        src={img}
-                        width={60}
-                        height={60}
-                        className={styles.gallery_image}
-                      />
-                    ))}
-                  </FlexChild>
-                )}
+                            {list.images?.length > 0 && (
+                              <VerticalFlex alignItems="start">
+                                <P color="#797979" size={11}>첨부 이미지</P>
+                                <FlexChild className={styles.image_gallery} gap={10}>
+                                  {list.images.map((img: string, index: number) => (
+                                    <Image
+                                      key={index}
+                                      src={img}
+                                      width={60}
+                                      height={60}
+                                      className={styles.gallery_image}
+                                    />
+                                  ))}
+                                </FlexChild>
+                              </VerticalFlex>
+                            )}
+                          </VerticalFlex>
+          
+                          {list.answer && (
+                            <VerticalFlex className={styles.admin_answer} alignItems="start">
+                              <FlexChild alignItems="center" gap={8} className={styles.answer_header}>
+                                <P weight={600} color="#fff">관리자 To</P>
+                              </FlexChild>
 
-                {list.answer && (
-                  <div className={styles.item_answer}>
-                    <FlexChild alignItems="center" gap={8} className={styles.answer_header}>
-                      
-                      <P weight={600} color="#fff">관리자 답변</P>
-                    </FlexChild>
-                    <P className={styles.answer_content}>{list.answer}</P>
-                  </div>
-                )}
+                              <FlexChild className={styles.answer_content} alignItems="start">
+                                <P>{list.answer}</P>
+                              </FlexChild>
+                            </VerticalFlex>
+                          )}
+                        </VerticalFlex>
+                      </motion.div>
+                    )
+                  }
+                </AnimatePresence>
 
-                <FlexChild
-                  justifyContent="space-between"
-                  className={styles.item_footer}
-                >
-                  <P size={12} color="#888">
-                    {list.member}
-                  </P>
-                  <Span size={12} color="#888">
-                    {list.date}
-                  </Span>
-                </FlexChild>
               </VerticalFlex>
             ))}
           </VerticalFlex>
