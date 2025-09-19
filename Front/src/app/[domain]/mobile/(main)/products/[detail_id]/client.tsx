@@ -386,9 +386,10 @@ const buyCartModal = NiceModal.create(
         width={"100%"}
         maxWidth={768}
         minWidth={220}
-        height={"258px"}
+        height={"fit-content"}
         clickOutsideToClose={true}
         onClose={modal.remove}
+        style={{minHeight: '258px', maxHeight: '80dvh'}}
       >
         <VerticalFlex
           className={styles.pay_cart_modal}
@@ -579,31 +580,40 @@ export function OptionItem({
         const index = selected.findIndex((f) => f.variant_id === v.id);
         const select = selected[index];
         return (
-          <HorizontalFlex className={styles.option_item} key={v.id}>
-            <InputNumber
-              disabled={!product.buyable || !v.buyable || v.stack === 0}
-              value={select?.quantity}
-              min={0}
-              max={v.stack}
-              step={1}
-              onChange={(val) => {
-                select.quantity = val;
-                selected[index] = select;
-                setSelected([...selected]);
-              }}
-            />
-            <HorizontalFlex className={styles.txt_item} gap={10} width={"auto"}>
+          <VerticalFlex className={styles.option_item} key={v.id} alignItems="start">
+            <FlexChild gap={10} fontSize={10}>
+              <InputNumber
+                disabled={!product.buyable || !v.buyable || v.stack === 0}
+                value={select?.quantity}
+                min={0}
+                max={v.stack}
+                step={1}
+                onChange={(val) => {
+                  select.quantity = val;
+                  selected[index] = select;
+                  setSelected([...selected]);
+                }}
+                width={40}
+              />
               {v.stack === 0 ? (
                 <FlexChild width={"max-content"}>
-                  <P>(재고 부족)</P>
+                  <P size={14} color="#fff">(재고 부족)</P>
                 </FlexChild>
               ) : !v.buyable ? (
                 <FlexChild width={"max-content"}>
-                  <P>(판매 중단)</P>
+                  <P size={14} color="#fff">(판매 중단)</P>
                 </FlexChild>
               ) : (
                 <></>
               )}
+            </FlexChild>
+            <HorizontalFlex 
+              className={clsx(
+                styles.txt_item,
+                (v.stack === 0 || !v.buyable) && styles.disable
+              )} 
+              gap={10} width={"auto"}
+            >
               <FlexChild className={styles.op_name}>
                 <P>{v?.title}</P>
               </FlexChild>
@@ -613,7 +623,7 @@ export function OptionItem({
                 <Span>+ {select.quantity * product?.discount_price}원</Span>
               </FlexChild>
             </HorizontalFlex>
-          </HorizontalFlex>
+          </VerticalFlex>
         );
       })}
     </VerticalFlex>

@@ -53,7 +53,7 @@ export default async function ({ params }: { params: Promise<Params> }) {
   
           <ProductSlider
             id={"relation"}
-            lineClamp={1}
+            lineClamp={2}
             listArray={relationProducts.content}
           />
         </VerticalFlex>
