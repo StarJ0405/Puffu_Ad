@@ -1,42 +1,23 @@
 "use client";
-import Button from "@/components/buttons/Button";
 import Div from "@/components/div/Div";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import Icon from "@/components/icons/Icon";
 import Image from "@/components/Image/Image";
-import P from "@/components/P/P";
-import Select from "@/components/select/Select";
 import NoContent from "@/components/noContent/noContent";
-import { usePathname } from "next/navigation";
+import P from "@/components/P/P";
 import Span from "@/components/span/Span";
-import CheckboxAll from "@/components/choice/checkbox/CheckboxAll";
-import CheckboxChild from "@/components/choice/checkbox/CheckboxChild";
-import CheckboxGroup from "@/components/choice/checkbox/CheckboxGroup";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
-import useData from "@/shared/hooks/data/useData";
-import useNavigate from "@/shared/hooks/useNavigate";
 import { requester } from "@/shared/Requester";
-import NiceModal from "@ebay/nice-modal-react";
-import clsx from "clsx";
-import { useParams } from "next/navigation";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
-import ProductCard from "@/components/card/dummyProductCard";
-import style from "./page.module.css";
-import boardStyle from "../boardGrobal.module.css";
-import Input from "@/components/inputs/Input";
-import ListPagination from "@/components/listPagination/ListPagination";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import boardStyle from "../boardGrobal.module.css";
 
-import { SelectBox } from "../client";
-
-import { useRouter } from "next/navigation";
 import { toast } from "@/shared/utils/Functions";
-
+import { useRouter } from "next/navigation";
 
 interface QADataWithUser extends QAData {
-   user?: UserData;
+  user?: UserData;
 }
 
 // 게시판 리스트 -----------------------------------------------
@@ -54,152 +35,154 @@ export function BoardTitleBox() {
 }
 
 export function BoardTable() {
-   const [qaList, setQaList] = useState<QADataWithUser[]>([]);
-   const { userData } = useAuth();
-   const router = useRouter();
+  const [qaList, setQaList] = useState<QADataWithUser[]>([]);
+  const { userData } = useAuth();
+  const router = useRouter();
 
-   useEffect(() => {
-      const fetchQAs = async () => {
-         const res = await requester.getTotalQAs({
-            relations: ["user"],
-         });
-         if (res?.content) {
-            setQaList(res.content);
-         }
-      };
-      fetchQAs();
-   }, []);
-
-   const formatDate = (dateString: string) => {
-      const date = new Date(dateString);
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-         2,
-         "0"
-      )}-${String(date.getDate()).padStart(2, "0")} ${String(
-         date.getHours()
-      ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
-   };
-
-   const getQaTypeKorean = (type: string) => {
-      switch (type) {
-         case "exchange":
-            return "교환";
-         case "refund":
-            return "환불";
-         case "etc":
-         default:
-            return "기타";
+  useEffect(() => {
+    const fetchQAs = async () => {
+      const res = await requester.getTotalQAs({
+        relations: ["user"],
+      });
+      if (res?.content) {
+        setQaList(res.content);
       }
-   };
+    };
+    fetchQAs();
+  }, []);
 
-   const handleTitleClick = (item: QADataWithUser) => {
-      if (userData?.role !== "admin" || userData?.id !== item.user?.id) {
-         toast({ message: "비밀글은 작성자만 확인할 수 있습니다." });
-         return;
-      }
-      router.push(`/board/inquiry/${item.id}`);
-   };
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${String(date.getDate()).padStart(2, "0")} ${String(
+      date.getHours()
+    ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+  };
 
+  const getQaTypeKorean = (type: string) => {
+    switch (type) {
+      case "exchange":
+        return "교환";
+      case "refund":
+        return "환불";
+      case "etc":
+      default:
+        return "기타";
+    }
+  };
+
+  const handleTitleClick = (item: QADataWithUser) => {
+    if (userData?.role !== "admin" || userData?.id !== item.user?.id) {
+      toast({ message: "비밀글은 작성자만 확인할 수 있습니다." });
+      return;
+    }
+    router.push(`/board/inquiry/${item.id}`);
+  };
 
   return (
     <VerticalFlex>
       <FlexChild>
         {qaList.length > 0 ? (
-        <table className={boardStyle.list_table}>
-          {/* 게시판 셀 너비 조정 */}
-          <colgroup>
-            <col style={{ width: "10%" }} />
-            <col style={{ width: "15%" }} />
-            <col style={{ width: "35%" }} />
-            <col style={{ width: "15%" }} />
-            <col style={{ width: "10%" }} />
-            <col style={{ width: "15%" }} />
-          </colgroup>
+          <table className={boardStyle.list_table}>
+            {/* 게시판 셀 너비 조정 */}
+            <colgroup>
+              <col style={{ width: "10%" }} />
+              <col style={{ width: "15%" }} />
+              <col style={{ width: "35%" }} />
+              <col style={{ width: "15%" }} />
+              <col style={{ width: "10%" }} />
+              <col style={{ width: "15%" }} />
+            </colgroup>
 
-          {/* 게시판리스트 헤더 */}
-          <thead>
-            <tr className={boardStyle.table_header}>
-              <th>번호</th>
-              <th>분류</th>
-              <th>제목</th>
-              <th>작성자</th>
-              <th>문의상태</th>
-              <th>날짜</th>
-            </tr>
-          </thead>
-
-          {/* 게시판 내용 */}
-          <tbody>
-            {qaList.map((list, i) => (
-              <tr key={i}>
-                {/* 번호 */}
-                <td>{qaList.length - i}</td>
-
-                {/* 분류 */}
-                <td>{getQaTypeKorean(list.type)}</td>
-
-                {/* 제목 */}
-                <td>
-                  <Div
-                    onClick={() => handleTitleClick(list)}
-                    className={boardStyle.td_title}
-                  >
-                    <FlexChild
-                      gap={5}
-                      alignItems="center"
-                      height={"100%"}
-                      cursor="pointer"
-                      width={"fit-content"}
-                    >
-                      {list.hidden && (
-                        <Image
-                          src={"/resources/icons/board/lock_icon.png"}
-                          width={16}
-                        />
-                      )}
-                      <P lineClamp={1} overflow="hidden" display="--webkit-box">
-                        {list.title}
-                      </P>
-                    </FlexChild>
-                  </Div>
-                </td>
-
-                {/* 작성자 */}
-                <td>
-                  <P
-                    lineClamp={2}
-                    overflow="hidden"
-                    display="--webkit-box"
-                    weight={500}
-                  >
-                    {list.user?.name || "비회원"}
-                  </P>
-                </td>
-
-                {/* 문의상태 */}
-                <td>
-                  <Span
-                    weight={400}
-                    color={`${list.answer ? "#fff" : "#FF4343"}`}
-                  >
-                    {list.answer ? "답변완료" : "답변대기"}
-                  </Span>
-                </td>
-
-                {/* 날짜 */}
-                <td>
-                  <Span weight={400}>
-                    {formatDate(list.created_at as string)}
-                  </Span>
-                </td>
+            {/* 게시판리스트 헤더 */}
+            <thead>
+              <tr className={boardStyle.table_header}>
+                <th>번호</th>
+                <th>분류</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>문의상태</th>
+                <th>날짜</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            {/* 게시판 내용 */}
+            <tbody>
+              {qaList.map((list, i) => (
+                <tr key={i}>
+                  {/* 번호 */}
+                  <td>{qaList.length - i}</td>
+
+                  {/* 분류 */}
+                  <td>{getQaTypeKorean(list.type)}</td>
+
+                  {/* 제목 */}
+                  <td>
+                    <Div
+                      onClick={() => handleTitleClick(list)}
+                      className={boardStyle.td_title}
+                    >
+                      <FlexChild
+                        gap={5}
+                        alignItems="center"
+                        height={"100%"}
+                        cursor="pointer"
+                        width={"fit-content"}
+                      >
+                        {list.hidden && (
+                          <Image
+                            src={"/resources/icons/board/lock_icon.png"}
+                            width={16}
+                          />
+                        )}
+                        <P
+                          lineClamp={1}
+                          overflow="hidden"
+                          display="--webkit-box"
+                        >
+                          {list.title}
+                        </P>
+                      </FlexChild>
+                    </Div>
+                  </td>
+
+                  {/* 작성자 */}
+                  <td>
+                    <P
+                      lineClamp={2}
+                      overflow="hidden"
+                      display="--webkit-box"
+                      weight={500}
+                    >
+                      {list.user?.name || "비회원"}
+                    </P>
+                  </td>
+
+                  {/* 문의상태 */}
+                  <td>
+                    <Span
+                      weight={400}
+                      color={`${list.answer ? "#fff" : "#FF4343"}`}
+                    >
+                      {list.answer ? "답변완료" : "답변대기"}
+                    </Span>
+                  </td>
+
+                  {/* 날짜 */}
+                  <td>
+                    <Span weight={400}>
+                      {formatDate(list.created_at as string)}
+                    </Span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         ) : (
           <NoContent type={"게시판"}></NoContent>
-        )
-      }
+        )}
       </FlexChild>
       <FlexChild className={boardStyle.list_bottom_box}>
         {/* <ListPagination /> */}
@@ -211,7 +194,6 @@ export function BoardTable() {
       </FlexChild>
     </VerticalFlex>
   );
-
 }
 
 // 게시판 리스트 end -----------------------------------------------

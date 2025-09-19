@@ -30,7 +30,6 @@ export default function SubPageHeader() {
                {pathname.includes("/board/notice") && (<P>공지사항</P>)}
                {pathname.includes("/board/inquiry") && (<P>1:1문의</P>)}
                {pathname.includes("/board/event") && (<P>이벤트</P>)}
-               {pathname.includes("/products") && (<P>카테고리</P>)}
                {pathname.includes("/mypage") && (<P>마이페이지</P>)}
             </FlexChild>
          </FlexChild>

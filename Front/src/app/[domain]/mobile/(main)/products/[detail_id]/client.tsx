@@ -33,10 +33,12 @@ import DeliveryGuide from "./_deliveryGuide/deliveryGuide";
 import Description from "./_description/description";
 import InquiryClient from "./_inquiry/client";
 
+
 interface Variant {
   variant_id: string;
   quantity: number;
 }
+
 export function ProductWrapper({
   initProduct,
   initCondition,

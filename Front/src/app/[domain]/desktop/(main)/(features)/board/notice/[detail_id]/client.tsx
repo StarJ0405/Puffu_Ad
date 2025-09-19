@@ -4,7 +4,6 @@ import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
-import ListPagination from "@/components/listPagination/ListPagination";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import useData from "@/shared/hooks/data/useData";

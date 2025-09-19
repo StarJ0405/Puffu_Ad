@@ -1,22 +1,18 @@
 "use client";
-import Button from "@/components/buttons/Button";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
-import ListPagination from "@/components/listPagination/ListPagination";
 import NoContent from "@/components/noContent/noContent";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
+import usePageData from "@/shared/hooks/data/usePageData";
+import useNavigate from "@/shared/hooks/useNavigate";
+import { requester } from "@/shared/Requester";
 import clsx from "clsx";
-import Link from "next/link";
+import { useState } from "react";
 import boardStyle from "../boardGrobal.module.css";
 import styles from "./event.module.css";
-import { useParams } from "next/navigation";
-import useNavigate from "@/shared/hooks/useNavigate";
-import usePageData from "@/shared/hooks/data/usePageData";
-import { requester } from "@/shared/Requester";
-import { useState } from "react";
 
 // 게시판 리스트 -----------------------------------------------
 export function BoardTitleBox() {
