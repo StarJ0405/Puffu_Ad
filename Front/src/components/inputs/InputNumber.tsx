@@ -12,6 +12,7 @@ import {
 } from "react";
 import { useTranslation } from "react-i18next";
 import style from "./InputNumber.module.css";
+import P from "../P/P";
 
 // Props type definition for better type safety
 interface InputNumberProps {
@@ -498,6 +499,7 @@ const InputNumber = forwardRef<refInterface, InputNumberProps>((props, ref) => {
           >
             <div className={style.center}>
               {/* Plus icon SVG */}
+              {/* <P size={!isMobile ? 30 : 25}>+</P> */}
               <svg
                 width="24"
                 height="24"

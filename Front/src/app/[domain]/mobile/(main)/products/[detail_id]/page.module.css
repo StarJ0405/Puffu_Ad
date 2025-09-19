@@ -177,13 +177,20 @@
 .option_box {
    width: 100%;
    gap: 30px;
+   overflow-y: auto;
+   margin: 30px 0;
+   max-height: 300px;
 }
 
 .option_box .option_item {
    gap: 20px;
    height: auto;
    flex: unset;
-   margin-top: 35px;
+}
+
+.option_box .option_item .disable {
+   color: #797979;
+   text-decoration: line-through;
 }
 
 .option_box .txt_item {
