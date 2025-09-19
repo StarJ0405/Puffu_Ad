@@ -48,7 +48,7 @@ export function BoardTitleBox() {
         <h3>1:1문의</h3>
       </FlexChild>
 
-      <SelectBox />
+      {/* <SelectBox /> */}
     </HorizontalFlex>
   );
 }

@@ -97,14 +97,11 @@ export function GalleryTable({
 
       <FlexChild>
         {notices.length > 0 ? (
-          <div
-            className={styles.gallery_grid_container}
-            style={{ "--column": "1" } as React.CSSProperties} // 너비에 몇개 늘어놓을 건지 갯수
-          >
+          <VerticalFlex gap={50}>
             {notices.map((item: NoticeData, i: number) => (
               <GalleryItem key={i} item={item} />
             ))}
-          </div>
+          </VerticalFlex>
         ) : (
           <NoContent type={"게시판"} />
         )}

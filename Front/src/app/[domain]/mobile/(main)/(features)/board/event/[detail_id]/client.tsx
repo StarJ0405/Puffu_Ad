@@ -99,7 +99,7 @@ export function DetailFrame({ initNotice }: { initNotice: any }) {
         </HorizontalFlex>
       </VerticalFlex>
 
-      <FlexChild className={styles.detail}>
+      <FlexChild className={styles.detail} alignItems="start">
         <div className={styles.thumb_box} dangerouslySetInnerHTML={{ __html: cleanHTML }} />
       </FlexChild>
 
