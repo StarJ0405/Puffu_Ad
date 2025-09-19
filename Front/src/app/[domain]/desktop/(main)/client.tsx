@@ -300,6 +300,8 @@ export function HotDealWrapper({
     Load(); // 서버에서도 다음 페이지 로드
   };
 
+  console.log('hot', products);
+
   return (
     <FlexChild hidden={!products || products?.length === 0}>
       <VerticalFlex>
@@ -405,32 +407,6 @@ export function ProductList({
       {products.length > 0 ? (
         <VerticalFlex gap={10}>
           <MasonryGrid gap={20} breakpoints={6}>
-            {/* {products.map((product, i) => {
-              return (
-                <TestProductCard
-                  product={product}
-                  lineClamp={2}
-                  key={i}
-                  width={200}
-                />
-              );
-            })} */}
-            {/* </MasonryGrid> */}
-            {/* <ProductCard
-            product={{
-              id: "123",
-              title: "테스트 상품",
-              thumbnail: "/test.png",
-              price: 10000,
-              discount_price: 8000,
-              discount_rate: 0.8,
-              store: "테스트 스토어",
-              brand: "브랜드명",
-              category: "카테고리",
-              variants: [],
-            }}
-            currency_unit="₩"
-          /> */}
             {products.map((product: ProductData, i: number) => {
               return (
                 <ProductCard

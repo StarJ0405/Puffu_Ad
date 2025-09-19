@@ -6,7 +6,7 @@ import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import Link from "next/link";
 import styles from "./footer.module.css";
-import { NaviMenu, ChatToggle } from "./client";
+import SideNavi from "../sideNavi/sideNavi"
 
 export default async function Footer() {
 
@@ -75,9 +75,7 @@ export default async function Footer() {
         </HorizontalFlex>
       </footer>
 
-      <NaviMenu />
-
-      <ChatToggle />
+      <SideNavi />
     </>
   );
 }

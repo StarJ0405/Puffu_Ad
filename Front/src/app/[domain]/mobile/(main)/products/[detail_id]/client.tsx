@@ -31,8 +31,6 @@ import { toast } from "@/shared/utils/Functions";
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import DeliveryGuide from "./_deliveryGuide/deliveryGuide";
 import Description from "./_description/description";
-import Inquiry from "./_inquiry/inquiry";
-import Review from "./_review/review";
 import InquiryClient from "./_inquiry/client";
 
 interface Variant {

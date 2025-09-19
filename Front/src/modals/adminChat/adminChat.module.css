@@ -98,56 +98,72 @@
 
 
 
+/* isMobile 처리 반응형 */
 
-@media (max-width: 768px) {
-   .chat_modal {
-      border-radius: 10px;
-      background: #fff;
-      width: 95%;
-      height: 80dvh;
-      min-height: unset;
-      position: fixed;
-      bottom: 80px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 20px 15px 10px;
-      /* overflow-y: auto; */
-      z-index: 10000;
-   }
+.mob_chat_modal {
+   border-radius: 10px 10px 0 0;
+   background: #fff;
+   width: 100%;
+   height: 90dvh;
+   min-height: unset;
+   position: fixed;
+   bottom: 0px;
+   left: 50%;
+   transform: translateX(-50%);
+   padding: 20px 15px 10px;
+   /* overflow-y: auto; */
+   z-index: 10000;
+   /* opacity: 0;
+   visibility: hidden;
+   transition: all 0.5s 10s; */
+}
 
-   .chat_modal .title_header {
-      padding-bottom: 15px;
-      border-bottom: 1px solid #000;
-      justify-content: space-between;
-      margin-bottom: 16px;
-   }
+.mob_chat_modal .title_header {
+   padding-bottom: 15px;
+   border-bottom: 1px solid #000;
+   justify-content: space-between;
+   margin-bottom: 16px;
+}
 
-   .chat_modal .title_header p {
-      color: #333 !important;
-      font-size: 20px !important;
-      font-weight: bold !important;
-   }
+.mob_chat_modal .title_header p {
+   color: #333 !important;
+   font-size: 20px !important;
+   font-weight: bold !important;
+}
 
-   .scroll_body {
-      overflow-y: auto;
-      height: 77%;
-   }
+.mob_chat_modal .scroll_body {
+   overflow-y: auto;
+   height: 77%;
+}
 
-   .scroll_body::-webkit-scrollbar-thumb {
-      
-   }
+.mob_chat_modal .chat_body {
+   width: 100%;
+   height: 100%;
+   /* overflow-y: auto; */
+   gap: 25px;
+   /* background: #ccc; */
+}
 
-   .chat_body {
-      width: 100%;
-      height: 100%;
-      /* overflow-y: auto; */
-      gap: 25px;
-      /* background: #ccc; */
-   }
+.mob_chat_modal .write_board {
+   position: absolute; bottom: 0;
+   width: 95%; background: #fff;
+   padding: 10px 5px;
+}
 
-   .chat_modal .write_board {
-      position: absolute; bottom: 0;
-      width: 95%; background: #fff;
-      padding: 5px;
-   }
+
+/* .modal_active {
+   opacity: 1;
+   visibility: visible;
+   bottom: 0;
+   transition: all 0.5s 1s;
+} */
+
+/* 모달 뒷배경 */
+.background_close {
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background: rgba(0,0,0,0.7);
 }
