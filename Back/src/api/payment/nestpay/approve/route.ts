@@ -30,7 +30,7 @@ export const POST: ApiHandler = async (req, res) => {
     );
 
     const approveResult = approveResponse.data;
-
+    console.log("결제 로그 : ", approveResult);
     if (resultCd === "0000") {
       // 결제 성공 - DB 저장 없이 결과만 반환
       return res.json({
@@ -39,7 +39,6 @@ export const POST: ApiHandler = async (req, res) => {
         approveResult,
       });
     } else {
-      // 결제 실패
       return res.json({
         message: "FAIL",
         trxId,

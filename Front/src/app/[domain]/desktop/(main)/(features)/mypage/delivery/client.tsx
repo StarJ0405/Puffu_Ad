@@ -22,7 +22,7 @@ import clsx from "clsx";
 import { useRef } from "react";
 
 export function DeliveryClient({ initAddresses }: { initAddresses: any }) {
-  const { addresses, mutate } = useAddress(initAddresses?.content || []);
+  const { addresses, mutate } = useAddress(initAddresses);
   const formRef = useRef<DeliveryAddEditRef>(null);
 
   const Delete = (addr: AddressData) => {
