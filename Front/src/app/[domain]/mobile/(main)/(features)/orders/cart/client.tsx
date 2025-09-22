@@ -344,7 +344,7 @@ export function CartWrap() {
                 <Span>배송비</Span>
 
                 <P>
-                  <Span> {shipping?.amount || 0}</Span>
+                  <Span> {(shipping?.amount || 0).toLocaleString()}</Span>
                   <Span> ₩</Span>
                 </P>
               </HorizontalFlex>

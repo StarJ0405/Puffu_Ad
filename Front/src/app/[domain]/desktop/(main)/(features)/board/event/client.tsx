@@ -173,15 +173,9 @@ export function GalleryItem({
       </FlexChild>
 
       <VerticalFlex className={styles.item_content}>
-        <FlexChild className={styles.title}>
-          {/* <Link href={'/board/detail/event_01'}> */}
+        <FlexChild className={styles.title} onClick={() => navigate(`/board/event/${item.id}`)}>
           <P>{item.title}</P>
-          {/* </Link> */}
         </FlexChild>
-        {/* 
-        <FlexChild className={styles.subTitle}>
-          <P>{item.subTitle}</P>
-        </FlexChild> */}
 
         <FlexChild className={styles.duration}>
           <P>{dateToString(item.actives_at)}</P>
