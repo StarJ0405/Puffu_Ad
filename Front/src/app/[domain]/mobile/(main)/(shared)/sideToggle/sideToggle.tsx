@@ -12,7 +12,7 @@ import { usePathname } from "next/navigation";
 import FlexChild from "@/components/flex/FlexChild";
 import AdminChat from "@/modals/adminChat/adminChat";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 // const navigate = useNavigate();
 
@@ -51,6 +51,14 @@ export default function SideToggle() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+  const isChatable = useCallback(() => {
+    switch (pathname) {
+      case "/":
+      case "/mypage/myOrders":
+        return true;
+    }
+    return false;
+  }, [pathname]);
 
   return (
     <nav id={styles.sideNavi}>
@@ -64,30 +72,28 @@ export default function SideToggle() {
 
       <AnimatePresence>
         {chatToggle && (
-            <motion.div
-               key="chat"
-               initial={{ opacity: 0 }}
-               animate={{ opacity: 1 }}
-               exit={{ opacity: 0 }}
-               transition={{ duration: 0.2 }}
-               style={{
-                  
-               }}
-            >
-               <AdminChat
-               // onOpen={chatToggle}
-               starts_at={date}
-               reload={() => setDate(new Date())}
-               onClose={() => setChatToggle(false)}
-               />
-            </motion.div>
-         )
-        }
+          <motion.div
+            key="chat"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            style={{}}
+          >
+            <AdminChat
+              // onOpen={chatToggle}
+              starts_at={date}
+              reload={() => setDate(new Date())}
+              onClose={() => setChatToggle(false)}
+            />
+          </motion.div>
+        )}
       </AnimatePresence>
       {/* 채팅 토글 */}
 
-      {pathname == "/" && (
+      {isChatable() && (
         <Button
+          id="side_chat"
           className={clsx(styles.chat_btn, { [styles.hidden]: chatToggle })}
           hidden={!userData?.id}
           onClick={() => chatToggleClick()}
