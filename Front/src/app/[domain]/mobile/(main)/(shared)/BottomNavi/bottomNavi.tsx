@@ -24,6 +24,10 @@ export default function BottomNavi() {
 
    const shouldHideHeader = !pathname.includes(`/products/${params.detail_id}`);
 
+   const linkTypeHandler = (type: string) => { // 링크에 따라서 active 바뀜.
+      return pathname === type && active === false
+   }
+
    return (
       <> 
 
@@ -66,35 +70,31 @@ export default function BottomNavi() {
                   </VerticalFlex>
          
                   <VerticalFlex className={styles.item} onClick={()=> {navigate('/mypage/wishList'); setActive(false);}}>
-                     <Image src={`/resources/images/bottomNavi/navi_wish${pathname === '/mypage/wishList' ? '_active' : ''}.png`} width={22} />
-                     <FlexChild className={clsx(styles.txt, {[styles.active] : pathname === '/mypage/wishList'})}>
+                     <Image src={`/resources/images/bottomNavi/navi_wish${linkTypeHandler('/mypage/wishList') ? '_active' : ''}.png`} width={22} />
+                     <FlexChild className={clsx(styles.txt, {[styles.active] : linkTypeHandler('/mypage/wishList')})}>
                         <P>관심 리스트</P>
                      </FlexChild>
                   </VerticalFlex>
          
                   <VerticalFlex className={styles.item} onClick={()=> {navigate('/'); setActive(false);}}>
-                     <Image src={`/resources/images/bottomNavi/navi_home${pathname === '/' ? '_active' : ''}.png`} width={22} />
-                     <FlexChild className={clsx(styles.txt, {[styles.active] : pathname === '/'})}>
+                     <Image src={`/resources/images/bottomNavi/navi_home${linkTypeHandler('/') ? '_active' : ''}.png`} width={22} />
+                     <FlexChild className={clsx(styles.txt, {[styles.active] : linkTypeHandler('/')})}>
                         <P>홈</P>
                      </FlexChild>
                   </VerticalFlex>
          
                   <VerticalFlex className={styles.item} onClick={()=> {navigate('/orders/cart'); setActive(false);}}>
-                     <Image src={`/resources/images/bottomNavi/navi_cart${pathname === '/orders/cart' ? '_active' : ''}.png`} width={21} />
-                     <FlexChild className={clsx(styles.txt, {[styles.active] : pathname.startsWith('/orders/cart')})}>
+                     <Image src={`/resources/images/bottomNavi/navi_cart${linkTypeHandler('/orders/cart') ? '_active' : ''}.png`} width={21} />
+                     <FlexChild className={clsx(styles.txt, {[styles.active] : linkTypeHandler('/orders/cart')})}>
                         <P>장바구니</P>
                      </FlexChild>
                   </VerticalFlex>
          
                   <VerticalFlex className={styles.item} onClick={()=> {navigate( !userData?.id ? '/auth/login' : '/mypage'); setActive(false);}}>
-                     <Image src={`/resources/images/bottomNavi/navi_login${
-                           pathname.includes('/mypage') || pathname === '/auth/login'
-                            ? '_active'
-                            : ''
-                        }.png`} 
+                     <Image src={`/resources/images/bottomNavi/navi_login${linkTypeHandler('/mypage') || linkTypeHandler('/auth/login') ? '_active' : ''}.png`} 
                         width={22} 
                      />
-                     <FlexChild className={clsx(styles.txt, {[styles.active] : pathname.includes('/mypage') || pathname === '/auth/login'})}>
+                     <FlexChild className={clsx(styles.txt, {[styles.active] : linkTypeHandler('/mypage') || linkTypeHandler('/auth/login')})}>
                         <P hidden={!!userData?.id}>로그인</P>
                         <P hidden={!userData?.id}>마이페이지</P>
                      </FlexChild>
