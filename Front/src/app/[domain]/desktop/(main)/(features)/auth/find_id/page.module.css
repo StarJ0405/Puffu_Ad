@@ -1,0 +1,16 @@
+.container {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   height: 100dvh;
+}
+
+.findBox {
+   width: 100%;
+   max-width: 460px;
+   gap: 50px;
+}
+
+.findBox .logo {
+   justify-content: center;
+}
