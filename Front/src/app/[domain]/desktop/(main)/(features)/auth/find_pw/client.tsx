@@ -29,7 +29,7 @@ export function PwStepBox() {
   return (
     <>
     { // 1단계 아이디, 이메일 입력
-      1 > 0 && (
+      1 < 0 && (
         <>
           <VerticalFlex className={styles.input_wrap}>
       

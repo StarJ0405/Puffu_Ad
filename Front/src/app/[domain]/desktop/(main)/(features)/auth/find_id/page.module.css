@@ -6,11 +6,14 @@
 }
 
 .findBox {
-   width: 100%;
-   max-width: 460px;
    gap: 50px;
+    width: 100%;
+    max-width: 460px;
 }
 
-.findBox .logo {
+.findBox .title_box {
+   color: #fff;
    justify-content: center;
+   font-size: 30px;
+   font-weight: 600;
 }
