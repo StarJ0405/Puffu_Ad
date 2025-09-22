@@ -36,14 +36,15 @@
 /* 갤러리 리스트 */
 .gallery_container {
    /* display: grid; */
-   /* grid-template-columns: repeat(var(--column), 1fr); */
+   /* grid-template-columns: repeat(4, 1fr); */
    display: flex;
    gap: 30px;
    flex-wrap: wrap;
 }
 
 .gallery_container .gallery_item {
-   width: calc(25% - 30px);
+   width: calc(100% / 4 - 23px);
+   flex: unset;
 }
 
 .gallery_item .thumb_frame {
@@ -74,14 +75,15 @@
    color: #fff;
    font-weight: 700;
    font-size: 20px;
+   cursor: pointer;
 }
 
-.gallery_item .item_content .subTitle {
+/* .gallery_item .item_content .subTitle {
    color: #ADADAD;
    font-weight: 400;
    font-size: 16px;
    margin-bottom: 10px;
-}
+} */
 
 .gallery_item .item_content .duration {
    color: #ddd;

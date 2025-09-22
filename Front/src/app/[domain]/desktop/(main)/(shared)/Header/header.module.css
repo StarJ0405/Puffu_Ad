@@ -46,7 +46,7 @@
    cursor: pointer;
 }
 
-.info_box .info_top .logout_txt:hover {
+.info_box .info_top > *:hover {
    text-decoration: underline;
 }
 

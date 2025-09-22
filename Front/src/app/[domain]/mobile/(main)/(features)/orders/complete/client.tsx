@@ -97,7 +97,7 @@ export function CompleteForm({ order }: { order?: OrderData }) {
                 할인금액{" "}
                 {Number(
                   (order?.total || 0) - (order?.total_discounted || 0)
-                ).toLocaleString("kr")}
+                ).toLocaleString("ko-KR")}
                 원
               </P>
             </FlexChild>
@@ -107,7 +107,7 @@ export function CompleteForm({ order }: { order?: OrderData }) {
                 + 배송비{" "}
                 {Number(
                   order?.shipping_methods?.[0]?.amount || 0
-                ).toLocaleString("kr")}
+                ).toLocaleString("ko-KR")}
                 원
               </P>
             </FlexChild>
@@ -125,7 +125,7 @@ export function CompleteForm({ order }: { order?: OrderData }) {
                 {Number(
                   (order?.total_discounted || 0) +
                     (order?.shipping_methods?.[0]?.amount || 0)
-                ).toLocaleString("kr")}
+                ).toLocaleString("ko-KR")}
                 원
               </P>
             </FlexChild>
@@ -201,9 +201,8 @@ export function CompleteOrdersTable({ items }: { items: LineItemData[] }) {
                   <FlexChild>
                     <P>할인금액 : </P>
                     <Span>
-                      {((item.unit_price || 0) - (item.discount_price || 0)) *
-                        item.quantity}
-                      원
+                      {(((item.unit_price || 0) - (item.discount_price || 0)) *
+                      item.quantity).toLocaleString("ko-KR")}{" "}원
                     </Span>
                   </FlexChild>
 
@@ -212,7 +211,7 @@ export function CompleteOrdersTable({ items }: { items: LineItemData[] }) {
                     <Span color="var(--main-color1)" weight={600} fontSize={20}>
                       {Number(
                         (item.discount_price || 0) * item.quantity
-                      ).toLocaleString("kr")}{" "}
+                      ).toLocaleString("ko-KR")}{" "}
                       ₩
                     </Span>
                   </FlexChild>
@@ -227,18 +226,6 @@ export function CompleteOrdersTable({ items }: { items: LineItemData[] }) {
     </>
   );
 }
-
-type ListItem = {
-  thumbnail: string;
-  title: string;
-  price: number;
-  discount_rate: number;
-  discount_price: number;
-  heart_count: number;
-  store_name: string;
-  rank: number;
-  id: string;
-};
 
 export function ChoiseProductSlider({
   id,
