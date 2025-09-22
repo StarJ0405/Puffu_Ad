@@ -12,7 +12,13 @@ export default async function () {
   startDate.setDate(startDate.getDate() - 7);
   const endDate = new Date();
   const initOrders = await requester.getOrders({
-    relations: ["items.brand", "shipping_methods", "store", "address"],
+    relations: [
+      "items.brand",
+      "items.review",
+      "shipping_methods",
+      "store",
+      "address",
+    ],
     start_date: startDate,
     end_date: endDate,
   });

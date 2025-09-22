@@ -319,18 +319,28 @@ export function MyOrdersTable({
                           <Span>원</Span>
                         </P>
                       </VerticalFlex>
-                      <FlexChild width={"max-content"}>
-                        <VerticalFlex gap={6}>
-                          <Button>리뷰 작성</Button>
-                          <Button
-                            onClick={() =>
-                              document.getElementById("side_chat")?.click()
-                            }
-                          >
-                            교환/환불 문의
-                          </Button>
-                        </VerticalFlex>
-                      </FlexChild>
+                      {order.status === "complete" && (
+                        <FlexChild width={"max-content"}>
+                          <VerticalFlex gap={6}>
+                            <Button
+                              onClick={() =>
+                                NiceModal.show("review", {
+                                  edit: true,
+                                })
+                              }
+                            >
+                              리뷰 작성
+                            </Button>
+                            <Button
+                              onClick={() =>
+                                document.getElementById("side_chat")?.click()
+                              }
+                            >
+                              교환/환불 문의
+                            </Button>
+                          </VerticalFlex>
+                        </FlexChild>
+                      )}
                     </HorizontalFlex>
 
                     {/* 가격 박스 */}

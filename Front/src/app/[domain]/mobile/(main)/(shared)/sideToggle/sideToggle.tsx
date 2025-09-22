@@ -10,7 +10,7 @@ import { usePathname } from "next/navigation";
 
 // import AdminChatModal from "@/modals/adminChat/adminChat";
 import FlexChild from "@/components/flex/FlexChild";
-import AdminChat from "@/modals/adminChat/adminChat";
+import AdminChat from "@/modals/main/adminChat/adminChat";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import { useCallback, useEffect, useState } from "react";
 

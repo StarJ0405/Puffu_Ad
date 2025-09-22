@@ -310,17 +310,28 @@ export function MyOrdersTable({
                         </P>
                       </VerticalFlex>
                     </HorizontalFlex>
-                    <HorizontalFlex gap={6}>
-                      <Button width={"100%"}>리뷰 작성</Button>
-                      <Button
-                        width={"100%"}
-                        onClick={() =>
-                          document.getElementById("side_chat")?.click()
-                        }
-                      >
-                        교환/환불 문의
-                      </Button>
-                    </HorizontalFlex>
+                    {order.status === "complete" && (
+                      <HorizontalFlex gap={6}>
+                        <Button
+                          width={"100%"}
+                          onClick={() =>
+                            NiceModal.show("review", {
+                              edit: true,
+                            })
+                          }
+                        >
+                          리뷰 작성
+                        </Button>
+                        <Button
+                          width={"100%"}
+                          onClick={() =>
+                            document.getElementById("side_chat")?.click()
+                          }
+                        >
+                          교환/환불 문의
+                        </Button>
+                      </HorizontalFlex>
+                    )}
                     {/* 가격 박스 */}
                     <HorizontalFlex className={styles.item_price_box}>
                       <FlexChild>
