@@ -20,6 +20,7 @@ import { useCookies } from "react-cookie";
 import styles from "./page.module.css";
 
 export function SignFeatures() {
+  const navigate = useNavigate();
   const [idStep, setidStep] = useState(0);
 
   const IdLostModal = () => {
@@ -60,13 +61,13 @@ export function SignFeatures() {
       </FlexChild>
 
       <FlexChild className={styles.find_box}>
-        <FlexChild onClick={IdLostModal}>
+        <FlexChild onClick={()=> navigate('/auth/find_id')}>
           <Span>아이디 찾기</Span>
         </FlexChild>
 
         <Span>|</Span>
 
-        <FlexChild onClick={passwordLostModal}>
+        <FlexChild onClick={()=> navigate('/auth/find_pw')}>
           <Span>비밀번호 찾기</Span>
         </FlexChild>
       </FlexChild>

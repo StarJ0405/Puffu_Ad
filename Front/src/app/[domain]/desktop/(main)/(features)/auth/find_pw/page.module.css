@@ -1,0 +1,106 @@
+.container {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   height: 100dvh;
+}
+
+.findBox {
+   gap: 50px;
+    width: 100%;
+    max-width: 460px;
+}
+
+.findBox .title_box {
+   color: #fff;
+   justify-content: center;
+   font-size: 30px;
+   font-weight: 600;
+}
+
+
+
+.findBox .input_wrap {
+   background: #222;
+   border: 1px solid rgba(255, 255, 255, .5);
+   border-radius: 10px;
+   padding: 45px;
+   gap: 20px;
+}
+
+.input_wrap .sub_title {
+   text-align: center;
+   gap: 10px;
+   margin-bottom: 20px;
+}
+
+.input_wrap .sub_title > * {
+   width: auto;
+}
+
+.input_wrap .sub_title > .title {
+   font-size: 20px;
+   color: #fff;
+   font-weight: 600;
+}
+
+.input_wrap .sub_title > .txt {
+   font-size: 16px;
+   color: #fff;
+}
+
+.input_wrap .input_box {
+   color: #efefef;
+   gap: 10px;
+   font-size: 16px;
+}
+
+.find_id_link {
+   gap: 10px;
+   font-size: 14px;
+   color: #fff;
+}
+
+.find_id_link .link_btn {
+   text-decoration: underline;
+   color: var(--main-color1) !important;
+   cursor: pointer;
+}
+
+.find_id_link .link_btn:active {
+   color: var(--main-color2) !important;
+}
+
+.findBox .btn {
+   width: 100%;
+   cursor: pointer;
+   max-width: 180px;
+   justify-content: center;
+   padding: 17px 10px;
+   font-size: 18px;
+   border-radius: 5px;
+   font-weight: 600;
+   transition: all 0.2s;
+}
+
+.findBox .next_btn {background: var(--main-color1); color: #fff;}
+.findBox .next_btn:hover {background: var(--main-color2);}
+
+.findBox .prev_btn {background: #ccc; color: #4d4d4d;}
+.findBox .prev_btn:hover {background: gray;}
+
+
+
+
+/* 메일 인증 */
+.input_wrap .mail_data {
+   justify-content: center;
+   margin-bottom: 30px;
+   color: #b7b7b7;
+}
+
+
+.disabled {
+   cursor: not-allowed !important;
+   background: gray;
+}

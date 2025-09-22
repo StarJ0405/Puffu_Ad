@@ -8,6 +8,21 @@ import { requester } from "@/shared/Requester";
 import { BaseProductList, ProdcutCategory } from "../../baseClient";
 import { SearchParams } from "next/dist/server/request/search-params";
 
+
+function findCategoryById(categories: any[], id: string): any | undefined {
+  for (const cat of categories) {
+    if (cat.id === id) {
+      return cat; // 현재 레벨에서 찾음
+    }
+    if (cat.children && cat.children.length > 0) {
+      const found = findCategoryById(cat.children, id);
+      if (found) return found; // 자식 트리에서 찾음
+    }
+  }
+  return undefined;
+}
+
+
 export default async function ({
   searchParams,
 }: {
