@@ -17,7 +17,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Pstyles from "./products.module.css";
 
-export function ProdcutCategory() {
+export function ProdcutCategory({findCategoryById} : {findCategoryById?: (id: string) => void;}) {
   // 대분류 카테고리
 
   const pathname = usePathname();
@@ -41,11 +41,11 @@ export function ProdcutCategory() {
         .sort((c1, c2) => c1.index - c2.index)
         .map((cat, i) => (
           <VerticalFlex className={Pstyles.ca_item} key={i}>
-            <Link href={`/categories/${cat.id}`}>
+            {/* <Link href={`/categories/${cat.id}`}> */}
               <FlexChild className={Pstyles.ca_thumb}>
                 <Image src={cat.thumbnail} width={"auto"} height={66} />
               </FlexChild>
-            </Link>
+            {/* </Link> */}
             <Span>{cat.name}</Span>
           </VerticalFlex>
         ))}
@@ -131,6 +131,8 @@ export function BaseProductList({
     }
   );
 
+  const pathname = usePathname();
+
   return (
     <>
       {products?.length > 0 ? (
@@ -141,16 +143,31 @@ export function BaseProductList({
           {/* sortOptions={sortOptions} */}
           <VerticalFlex alignItems="start">
             <MasonryGrid width={"100%"} gap={20}>
-              {products.map((product: ProductData) => {
+              {products.map((product: ProductData, i: number) => {
                 return (
-                  <ProductCard
-                    mutate={mutate}
-                    key={product.id}
-                    product={product}
-                    commingSoon={commingSoon}
-                    lineClamp={2}
-                    width={200}
-                  />
+                  <FlexChild className={Pstyles.item_wrap} key={product.id}>
+                    {
+                      // 프로덕트, new일때만 나타나기. 제품 인기순 표시임
+                      (pathname === "/products/new" || 
+                      pathname === "/products/best") && (
+                        <FlexChild
+                          className={clsx(
+                            Pstyles.rank,
+                            i < 3 ? Pstyles.topRank : ""
+                          )}
+                        >
+                          <Span className="SacheonFont">{i}</Span>
+                        </FlexChild>
+                      )
+                    }
+                    <ProductCard
+                      mutate={mutate}
+                      product={product}
+                      commingSoon={commingSoon}
+                      lineClamp={2}
+                      width={200}
+                    />
+                  </FlexChild>
                 );
               })}
             </MasonryGrid>

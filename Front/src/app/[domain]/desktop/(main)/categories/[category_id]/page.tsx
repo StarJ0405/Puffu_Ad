@@ -1,16 +1,11 @@
-import Button from "@/components/buttons/Button";
 import Container from "@/components/container/Container";
-import FlexChild from "@/components/flex/FlexChild";
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import P from "@/components/P/P";
+import { } from "./client";
 import styles from "./page.module.css";
-import {} from "./client";
 
-import { CategoryList, TitleBox } from "./client";
-import { Params } from "next/dist/server/request/params";
 import { requester } from "@/shared/Requester";
-import { log } from "@/shared/utils/Functions";
+import { Params } from "next/dist/server/request/params";
+import { CategoryList, TitleBox } from "./client";
 
 export default async function ({ params }: { params: Promise<Params> }) {
   const { category_id } = await params;

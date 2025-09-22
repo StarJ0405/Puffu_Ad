@@ -1,13 +1,8 @@
 "use client";
-import FlexChild from "@/components/flex/FlexChild";
+import ChildCategory from "@/components/childCategory/childCategory";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import Image from "@/components/Image/Image";
-import P from "@/components/P/P";
-import Span from "@/components/span/Span";
 import { useCategories } from "@/providers/StoreProvider/StorePorivderClient";
 import useNavigate from "@/shared/hooks/useNavigate";
-import clsx from "clsx";
-import Link from "next/link";
 import styles from "./page.module.css";
 
 function findCategoryById(categories: any[], id: string): any | undefined {
@@ -34,42 +29,12 @@ export function TitleBox({ category_id }: { category_id: any }) {
 
       {/* 프로덕트 카테고리 */}
       <VerticalFlex marginBottom={30}>
-        <SecondCategory
+        <ChildCategory
           categoryId={category_id}
           childrenData={category.children}
           parent={category}
         />
       </VerticalFlex>
     </VerticalFlex>
-  );
-}
-
-// 중분류, 소분류 카테고리
-export function SecondCategory({
-  childrenData,
-  parent,
-  categoryId,
-}: {
-  childrenData: CategoryData[];
-  parent: CategoryData;
-  categoryId: any;
-}) {
-  return (
-    <>
-      <ul className={styles.category_list}>
-        <li className={clsx(parent.id === categoryId && styles.active)}>
-          <Link href={`/categories/${parent.id}`}>
-            <Span>전체</Span>
-          </Link>
-        </li>
-        {childrenData.map((child, i) => (
-          <li key={i}>
-            <Link href={`/categories/${child.id}`}>
-              <Span>{child.name}</Span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </>
   );
 }

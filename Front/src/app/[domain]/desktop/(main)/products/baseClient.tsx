@@ -120,6 +120,8 @@ export function BaseProductList({
   // const [sort, setSort] = useState(sortOptions?.[0]); // 정렬 상태 관리
   const listLength = listArray.length;
 
+  const pathname = usePathname();
+
   return (
     <>
       {listLength > 0 ? (
@@ -128,16 +130,31 @@ export function BaseProductList({
           {/* sortOptions={sortOptions} */}
           <VerticalFlex alignItems="start">
             <MasonryGrid gap={20} width={"100%"}>
-              {listArray.map((product: ProductData, i) => {
+              {listArray.map((product: ProductData, i:number) => {
                 return (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    commingSoon={commingSoon}
-                    lineClamp={2}
-                    width={200}
-                    mutate={mutate}
-                  />
+                  <FlexChild key={product.id} className={Pstyles.item_wrap}>
+                    {
+                      // 프로덕트, new일때만 나타나기. 제품 인기순 표시임
+                      (pathname === "/products/new" || 
+                      pathname === "/products/best") && (
+                        <FlexChild
+                          className={clsx(
+                            Pstyles.rank,
+                            i < 3 ? Pstyles.topRank : ""
+                          )}
+                        >
+                          <Span className="SacheonFont">{i}</Span>
+                        </FlexChild>
+                      )
+                    }
+                    <ProductCard
+                      product={product}
+                      commingSoon={commingSoon}
+                      lineClamp={2}
+                      width={'100%'}
+                      mutate={mutate}
+                    />
+                  </FlexChild>
                 );
               })}
             </MasonryGrid>

@@ -71,6 +71,12 @@
    max-width: 310px;
 }
 
+.sub_banner {
+   justify-content: center;
+   max-width: 768px;
+}
+.sub_banner a {width: 100%;}
+
 .disabled {pointer-events: none;}
 
 

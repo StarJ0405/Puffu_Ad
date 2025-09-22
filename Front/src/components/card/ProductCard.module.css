@@ -11,23 +11,6 @@
    border-radius: 10px;
 }
 
-.prodcut_item .imgBox .rank {
-   position: absolute;
-   top: 7px; left: 7px;
-   width: 25px; height: 25px;
-   background: #050505;
-   color: #fff;
-   font-size: 15px;
-   z-index: 2;
-   align-items: center;
-   justify-content: center;
-   border-radius: 3px;
-}
-.prodcut_item .imgBox .topRank {
-   background: #E6BE1B;
-}
-.prodcut_item .imgBox .rank span {position: relative; top: 2px;}
-
 .prodcut_item .imgBox img {
    transition: all 0.5s;
    will-change: transform;
@@ -111,37 +94,36 @@
 
 
 
+/* 모바일 스타일 ----------------------------- */
 
-@media (max-width: 768px) {
-   .prodcut_item {
-      padding-bottom: 20px;
-   }
-   .prodcut_item .content_item .price_box .through_price {font-size: 10px;}
-   .prodcut_item .content_item .price_box .discount_price {font-size: 16px;}
-   
-   .prodcut_item .product_title {
-      margin: 5px 0 10px;
-      font-size: 12px; color: #fff;
-      line-height: 1.2; font-weight: 400;
-      cursor: pointer;
-   }
+.mob_prodcut_item {
+   padding-bottom: 20px;
+}
+.mob_prodcut_item .content_item .price_box .through_price {font-size: 10px;}
+.mob_prodcut_item .content_item .price_box .discount_price {font-size: 16px;}
 
-   .prodcut_item .heart_counter {
-      position: absolute; 
-      bottom: 10px;
-      right: 5px;
-      z-index: 10;
-      width: auto;
-   }
+.mob_prodcut_item .product_title {
+   margin: 5px 0 10px;
+   font-size: 12px; color: #fff;
+   line-height: 1.2; font-weight: 400;
+   cursor: pointer;
+}
 
-   .prodcut_item .heart_counter > span {
-      font-size: 13px !important; color: #fff !important;
-      text-shadow: 0 0 10px #050505;
-   }
+.mob_prodcut_item .heart_counter {
+   position: absolute; 
+   bottom: 10px;
+   right: 5px;
+   z-index: 10;
+   width: auto;
+}
 
-   .prodcut_item .content_item .price_box {
-      flex-direction: unset;
-      align-items: center !important;
-      flex-wrap: wrap;
-   }
+.mob_prodcut_item .heart_counter > span {
+   font-size: 13px !important; color: #fff !important;
+   text-shadow: 0 0 10px #050505;
+}
+
+.mob_prodcut_item .content_item .price_box {
+   flex-direction: unset;
+   align-items: center !important;
+   flex-wrap: wrap;
 }

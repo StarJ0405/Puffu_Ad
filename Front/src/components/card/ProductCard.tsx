@@ -11,6 +11,7 @@ import useNavigate from "@/shared/hooks/useNavigate";
 import { requester } from "@/shared/Requester";
 import styles from "./ProductCard.module.css";
 import { useEffect } from "react";
+import clsx from "clsx";
 // lineClamp 구별해주기, TestProdcutCard는 임시로 만든거임. 나중에 프로덕트카드에 스타일만 입히면 됨.
 // 라인클램프는 제목태그에 달아서 속성 주기.
 
@@ -43,25 +44,12 @@ export function ProductCard({
     <VerticalFlex
       width={width ?? isMobile ? "auto" : 200}
       // margin={product.margin}
-      className={styles.prodcut_item}
+      className={clsx(styles.prodcut_item, isMobile ? styles.mob_prodcut_item : '')}
     >
       <FlexChild
         className={styles.imgBox}
         height={width ?? isMobile ? "auto" : 200}
       >
-        {/* {
-            // 프로덕트 페이지가 best일때만 나타나기. 제품 인기순 표시임
-            specialType === "best" && (
-              <FlexChild
-                className={clsx(
-                  styles.rank,
-                  product.rank < 3 ? styles.topRank : ""
-                )}
-              >
-                <Span className="SacheonFont">{product.rank + 1}</Span>
-              </FlexChild>
-            )
-          } */}
         <FlexChild onClick={() => (onClick ? onClick() : navigate(product_link))}>
           {userData?.adult ? (
             <Image src={product.thumbnail} width={"100%"} height={"auto"} />
@@ -159,7 +147,7 @@ export function ProductCard({
               </Span>
             </FlexChild>
 
-            {mutate && (
+            {!isMobile && mutate && (
               <FlexChild
                 onClick={(e) => {
                   e.stopPropagation();
