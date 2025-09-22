@@ -61,13 +61,19 @@ export function SignFeatures() {
       </FlexChild>
 
       <FlexChild className={styles.find_box}>
-        <FlexChild onClick={()=> navigate('/auth/find_id')}>
+        <FlexChild 
+          // onClick={()=> navigate('/auth/find_id')}
+          onClick={IdLostModal}
+        >
           <Span>아이디 찾기</Span>
         </FlexChild>
 
         <Span>|</Span>
 
-        <FlexChild onClick={()=> navigate('/auth/find_pw')}>
+        <FlexChild 
+          // onClick={()=> navigate('/auth/find_pw')}
+          onClick={passwordLostModal}
+        >
           <Span>비밀번호 찾기</Span>
         </FlexChild>
       </FlexChild>
