@@ -40,7 +40,7 @@ import style from "./page.module.css";
 export function CartWrap() {
   const { userData } = useAuth();
   const { storeData } = useStore();
-  const { cartData } = useCart();
+  const { cartData, reload } = useCart();
   const { addresses, mutate } = useAddress();
   const [address, setAddress] = useState<AddressData>();
   const [selected, setSelected] = useState<string[]>(
@@ -137,7 +137,9 @@ export function CartWrap() {
     setTotalDiscounted(totalDiscounted);
     setTotal(total);
   }, [cartData, storeData, selected]);
-
+  useEffect(() => {
+    reload();
+  }, []);
   return (
     <VerticalFlex className={style.cart_wrap}>
       <VerticalFlex className={style.cart_data}>
@@ -488,7 +490,7 @@ export function CartWrap() {
                                         ?.resultMsg ||
                                       "알 수 없는 오류가 발생했습니다.",
                                     confirmText: "장바구니로 돌아가기",
-                                    onConfirm: () => navigate("/cart"),
+                                    onConfirm: () => navigate("/orders/cart"),
                                   });
                                 }
                               } catch (error) {}
@@ -499,7 +501,7 @@ export function CartWrap() {
                                   response?.resultMsg ||
                                   "알 수 없는 오류가 발생했습니다.",
                                 confirmText: "장바구니로 돌아가기",
-                                onConfirm: () => navigate("/cart"),
+                                onConfirm: () => navigate("/orders/cart"),
                               });
                             }
                           },
@@ -580,7 +582,7 @@ export function CartWrap() {
                                       ?.resultMsg ||
                                     "알 수 없는 오류가 발생했습니다.",
                                   confirmText: "장바구니로 돌아가기",
-                                  onConfirm: () => navigate("/cart"),
+                                  onConfirm: () => navigate("/orders/cart"),
                                 });
                               }
                             } catch (error) {}
@@ -591,7 +593,7 @@ export function CartWrap() {
                                 response?.resultMsg ||
                                 "알 수 없는 오류가 발생했습니다.",
                               confirmText: "장바구니로 돌아가기",
-                              onConfirm: () => navigate("/cart"),
+                              onConfirm: () => navigate("/orders/cart"),
                             });
                           }
                         },

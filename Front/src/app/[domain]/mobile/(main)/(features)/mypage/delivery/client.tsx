@@ -28,9 +28,8 @@ interface DummyAddress {
 }
 
 export function DeliveryClient({ initAddresses }: { initAddresses: any }) {
-  const { addresses, mutate } = useAddress(initAddresses?.content || []);
+  const { addresses, mutate } = useAddress(initAddresses);
   const formRef = useRef<DeliveryAddEditRef>(null);
-  log('주소',addresses);
   const deliveryTest = [
     {
       address: "대전광역시 관저중로 30-26(관저동)",
@@ -112,16 +111,18 @@ export function DeliveryClient({ initAddresses }: { initAddresses: any }) {
   //       // onclick: setPaswwordStep(1),
   //       withCloseButton: true,
   //       onConfirm: async () => {
-  
+
   //       },
   //       onCancel: () => {
-  
+
   //     },
   //   });
   // };
 
   // 기본배송지가 위로 오도록.
-  const addressDefaultChaning = addresses.sort((a, b)=> (b.default ? 1 : 0) - (a.default ? 1: 0));
+  const addressDefaultChaning = addresses.sort(
+    (a, b) => (b.default ? 1 : 0) - (a.default ? 1 : 0)
+  );
 
   return (
     <VerticalFlex
@@ -147,10 +148,14 @@ export function DeliveryClient({ initAddresses }: { initAddresses: any }) {
       {addresses && addresses.length > 0 ? (
         <VerticalFlex className={styles.delivery_list}>
           {addressDefaultChaning.map((item, i) => (
-            <VerticalFlex key={item.id} className={clsx(styles.item, (item.default ? styles.default : ''))} alignItems="start">
+            <VerticalFlex
+              key={item.id}
+              className={clsx(styles.item, item.default ? styles.default : "")}
+              alignItems="start"
+            >
               <HorizontalFlex gap={20}>
                 {/* <FlexChild className={styles.number}>{i + 1}</FlexChild> */}
-  
+
                 <VerticalFlex className={styles.content}>
                   {item.default ? (
                     <FlexChild className={styles.default}>
@@ -160,7 +165,7 @@ export function DeliveryClient({ initAddresses }: { initAddresses: any }) {
                   <FlexChild className={styles.address}>
                     <P>{`(${item.postal_code}) ${item.address1} ${item.address2}`}</P>
                   </FlexChild>
-  
+
                   <FlexChild gap={10}>
                     <FlexChild className={styles.user_pri}>
                       <Span>받는분</Span>
@@ -174,7 +179,7 @@ export function DeliveryClient({ initAddresses }: { initAddresses: any }) {
                 </VerticalFlex>
               </HorizontalFlex>
 
-              <FlexChild gap={10} justifyContent="end" width={'100%'}>
+              <FlexChild gap={10} justifyContent="end" width={"100%"}>
                 <FlexChild
                   className={styles.edit_btn}
                   onClick={() => deliveryAddEditModal(item)}

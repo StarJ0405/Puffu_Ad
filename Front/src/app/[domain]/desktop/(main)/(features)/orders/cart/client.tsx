@@ -444,7 +444,7 @@ export function CartWrap() {
                                           ?.resultMsg ||
                                         "알 수 없는 오류가 발생했습니다.",
                                       confirmText: "장바구니로 돌아가기",
-                                      onConfirm: () => navigate("/cart"),
+                                      onConfirm: () => navigate("/orders/cart"),
                                     });
                                   }
                                 } catch (error) {}
@@ -455,7 +455,7 @@ export function CartWrap() {
                                     response?.resultMsg ||
                                     "알 수 없는 오류가 발생했습니다.",
                                   confirmText: "장바구니로 돌아가기",
-                                  onConfirm: () => navigate("/cart"),
+                                  onConfirm: () => navigate("/orders/cart"),
                                 });
                               }
                             },
@@ -536,7 +536,7 @@ export function CartWrap() {
                                         ?.resultMsg ||
                                       "알 수 없는 오류가 발생했습니다.",
                                     confirmText: "장바구니로 돌아가기",
-                                    onConfirm: () => navigate("/cart"),
+                                    onConfirm: () => navigate("/orders/cart"),
                                   });
                                 }
                               } catch (error) {}
@@ -547,7 +547,7 @@ export function CartWrap() {
                                   response?.resultMsg ||
                                   "알 수 없는 오류가 발생했습니다.",
                                 confirmText: "장바구니로 돌아가기",
-                                onConfirm: () => navigate("/cart"),
+                                onConfirm: () => navigate("/orders/cart"),
                               });
                             }
                           },
