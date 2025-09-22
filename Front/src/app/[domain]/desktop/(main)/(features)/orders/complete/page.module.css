@@ -84,6 +84,7 @@
    /* word-break: break-all; */
    vertical-align: middle; /* 테이블 내용 세로 정렬: align-items: center라고 보면 됨 */
    text-align: center;
+   line-height: 1.3;
 }
 
 .order_item {
@@ -96,6 +97,8 @@
    align-items: start !important;
    gap: 15px;
 }
+
+.order_item .order_txt > * {text-align: left;}
 
 .order_item .order_txt .brand {
    color: #A8A8A8;
