@@ -18,10 +18,10 @@ import Span from "@/components/span/Span";
 import ConfirmModal from "@/modals/confirm/ConfirmModal";
 import DeliveryAddEdit, {
   DeliveryAddEditRef,
-} from "@/modals/DeliveryAddEdit/DeliveryAddEdit";
+} from "@/modals/main/DeliveryAddEdit/DeliveryAddEdit";
 import DeliveryListModal, {
   DeliveryListRef,
-} from "@/modals/DeliveryListModal/DeliveryListModal";
+} from "@/modals/main/DeliveryListModal/DeliveryListModal";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import {
   useCart,

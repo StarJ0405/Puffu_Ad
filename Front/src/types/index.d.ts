@@ -443,3 +443,6 @@ interface QADataFrame {
 interface QAData extends BaseEntity, QADataFrame {
   answer?: string; // 대답(응답)
 }
+
+interface ReviewDataFrame {}
+interface ReviewData extends BaseEntity, ReviewDataFrame {}

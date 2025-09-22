@@ -16,6 +16,7 @@ import VariantModal from "./admin/product/VariantModal";
 import PromotionModal from "./admin/promotion/PromotionModal";
 import PromotionOptionListModal from "./admin/promotion/PromotionOptionListModal";
 import PromotionOptionModal from "./admin/promotion/PromotionOptionModal";
+import QAModal from "./admin/qa/QAModal";
 import ShippingMethodDetailModal from "./admin/shipping_method/ShippingMethodDetailModal";
 import ShippingMethodListModal from "./admin/shipping_method/ShippingMethodListModal";
 import StoreModal from "./admin/store/StoreModal";
@@ -28,10 +29,10 @@ import AddressModal from "./main/address/AddressModal";
 import PostalCodeModal from "./main/address/PostaCodelModal";
 import OptionChangeModal from "./main/product/OptionChangeModal";
 import PurchaseModal from "./main/product/PurchaseModal";
+import ReviewModal from "./main/review/reviewModal";
 import SearchModal from "./main/search/SearchModal";
 import SelectModal from "./main/select/SelectModal";
 import TableModal from "./table/TableModal";
-import QAModal from "./admin/qa/QAModal";
 
 function ModalHandler() {
   NiceModal.register("toast", ToastModal);
@@ -49,6 +50,7 @@ function ModalHandler() {
   NiceModal.register("purchase", PurchaseModal);
   NiceModal.register("postalcode", PostalCodeModal);
   NiceModal.register("optionChange", OptionChangeModal);
+  NiceModal.register("review", ReviewModal);
   // admin
   NiceModal.register("bannerDetail", BannerModal);
   NiceModal.register("noticeDetail", NoticeModal);

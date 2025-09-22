@@ -116,7 +116,7 @@ export class LineItem extends BaseEntity {
   metadata?: Record<string, unknown> | null;
 
   @OneToOne(() => Review, (review) => review.item)
-  reviews?: Review[];
+  review?: Review;
 
   @BeforeInsert()
   protected async BeforeInsert(): Promise<void> {

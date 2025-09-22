@@ -19,7 +19,7 @@ export class Review extends BaseEntity {
   @Column({ type: "character varying", nullable: true })
   item_id?: string;
 
-  @OneToOne(() => LineItem, (item) => item.reviews)
+  @OneToOne(() => LineItem, (item) => item.review)
   @JoinColumn({ name: "item_id", referencedColumnName: "id" })
   item?: LineItem;
 

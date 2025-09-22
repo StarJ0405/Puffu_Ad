@@ -14,8 +14,8 @@ import { requester } from "@/shared/Requester";
 import { log, maskPhone } from "@/shared/utils/Functions";
 import DeliveryAddEdit, {
   DeliveryAddEditRef,
-} from "@/modals/DeliveryAddEdit/DeliveryAddEdit";
-import DeliveryListModal from "@/modals/DeliveryListModal/DeliveryListModal";
+} from "@/modals/main/DeliveryAddEdit/DeliveryAddEdit";
+import DeliveryListModal from "@/modals/main/DeliveryListModal/DeliveryListModal";
 import NiceModal from "@ebay/nice-modal-react";
 import ConfirmModal from "@/modals/confirm/ConfirmModal";
 import clsx from "clsx";

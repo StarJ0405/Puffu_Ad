@@ -10,7 +10,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 
 import FlexChild from "@/components/flex/FlexChild";
-import AdminChat from "@/modals/adminChat/adminChat";
+import AdminChat from "@/modals/main/adminChat/adminChat";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import { useState } from "react";
 

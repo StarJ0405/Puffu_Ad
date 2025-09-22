@@ -12,8 +12,8 @@ import styles from "./page.module.css";
 import ConfirmModal from "@/modals/confirm/ConfirmModal";
 import DeliveryAddEdit, {
   DeliveryAddEditRef,
-} from "@/modals/DeliveryAddEdit/DeliveryAddEdit";
-import DeliveryListModal from "@/modals/DeliveryListModal/DeliveryListModal";
+} from "@/modals/main/DeliveryAddEdit/DeliveryAddEdit";
+import DeliveryListModal from "@/modals/main/DeliveryListModal/DeliveryListModal";
 import useAddress from "@/shared/hooks/main/useAddress";
 import { requester } from "@/shared/Requester";
 import { log, toast } from "@/shared/utils/Functions";
