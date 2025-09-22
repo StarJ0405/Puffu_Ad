@@ -36,24 +36,11 @@ export function TitleBox({ category_id }: { category_id: any }) {
 
       {/* 프로덕트 카테고리 */}
       <VerticalFlex marginBottom={30}>
-        {category?.children?.length > 0 ? (
-          <ChildCategory
-            categoryId={category_id}
-            childrenData={category.children}
-            parent={category}
-          />
-        ) : (
-          <FlexChild
-            onClick={() => navigate(-1)}
-            gap={10}
-            cursor="pointer"
-            width={"auto"}
-            alignSelf="start"
-          >
-            <Image src={"/resources/images/back.png"} width={20} />
-            <P color="#aaa">이전으로</P>
-          </FlexChild>
-        )}
+        <ChildCategory
+          categoryId={category_id}
+          childrenData={category.children}
+          parent={category}
+        />
       </VerticalFlex>
     </VerticalFlex>
   );

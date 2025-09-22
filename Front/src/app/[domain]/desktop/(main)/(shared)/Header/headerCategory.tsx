@@ -28,7 +28,11 @@ export function HeaderCategory({ CaOpen }: { CaOpen: boolean }) {
         }
       };
       fetchData();
+      
     }, []);
+
+
+
 
 
   const [activeDepth1, setActiveDepth1] = useState<string | null>(null);
@@ -43,23 +47,27 @@ export function HeaderCategory({ CaOpen }: { CaOpen: boolean }) {
         <nav className={clsx(styles.ca_tab1, styles.ca_box)}>
           {categoriesData
             .sort((c1, c2) => c1.index - c2.index)
-            .map((cat, i) => (
-              <FlexChild
-                key={i}
-                className={clsx(styles.tab_item, 
-                  {[styles.active]: activeDepth1 === cat.id,}
-                )}
+            .map((cat, i) => {
+              // const href = cat.children?.length
+              //   ? `/categories/${cat.children[0]?.id}`
+              //   : `/categories/${cat.id}`;
 
-                onMouseEnter={()=> setActiveDepth1(cat.id)}
-                onMouseLeave={() => setActiveDepth1(null)}
-              >
-                <Link href={`/categories/${cat.id}`}>
-                  <P>
-                    {cat.name}
-                  </P>
-                </Link>
-              </FlexChild>
-            ))}
+              return (
+                <FlexChild
+                  key={i}
+                  className={clsx(styles.tab_item, {
+                    [styles.active]: activeDepth1 === cat.id,
+                  })}
+                  onMouseEnter={() => setActiveDepth1(cat.id)}
+                  onMouseLeave={() => setActiveDepth1(null)}
+                >
+                  {/* <Link href={href}> */}
+                  <Link href={`/categories/${cat.id}`}>
+                    <P>{cat.name}</P>
+                  </Link>
+                </FlexChild>
+              );
+          })}
         </nav>
 
         <VerticalFlex className={clsx(styles.child_wrap)}>
