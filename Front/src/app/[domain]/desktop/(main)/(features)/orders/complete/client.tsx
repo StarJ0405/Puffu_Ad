@@ -79,9 +79,9 @@ export function CompleteForm({ order }: { order?: OrderData }) {
         <VerticalFlex className={clsx(styles.total_frame)} gap={25}>
           <FlexChild justifyContent="center">
             <P size={18} color="#fff" weight={500}>
-              주문금액 {order?.total}원 - 할인금액{" "}
-              {(order?.total || 0) - (order?.total_discounted || 0)}원 + 배송비{" "}
-              {order?.shipping_methods?.[0]?.amount || 0}원
+              주문금액 {Number(order?.total || 0).toLocaleString("ko-KR")}원 - 할인금액{" "}
+              {((order?.total || 0) - (order?.total_discounted || 0)).toLocaleString("kr")}원 + 배송비{" "}
+              {Number(order?.shipping_methods?.[0]?.amount || 0).toLocaleString("ko-KR")}원
             </P>
           </FlexChild>
 
@@ -90,8 +90,10 @@ export function CompleteForm({ order }: { order?: OrderData }) {
               실제 결제 금액
             </P>
             <P size={26} color="var(--main-color1)" weight={600}>
-              {(order?.total_discounted || 0) +
-                (order?.shipping_methods?.[0]?.amount || 0)}
+              {Number(
+                  (order?.total_discounted || 0) +
+                    (order?.shipping_methods?.[0]?.amount || 0)
+                ).toLocaleString("ko-KR")}
               원
             </P>
           </FlexChild>
@@ -139,22 +141,24 @@ export function MyOrdersTable({ items }: { items?: LineItemData[] }) {
                           <P>{item.variant_title}</P>
                           <P>{item.total_quantity}개</P>
 
-                          <Span>{item.unit_price}원</Span>
+                          <Span>{Number(item.unit_price).toLocaleString("ko-KR")}원</Span>
                         </VerticalFlex>
                       </VerticalFlex>
                     </FlexChild>
                   </td>
                   <td>
                     <P weight={600} color="#fff">
-                      {((item.discount_price || 0) - (item.unit_price || 0)) *
-                        item.quantity}
+                      {(((item.unit_price || 0) - (item.discount_price || 0)) *
+                      item.quantity).toLocaleString("ko-KR")}{" "}
                       원
                     </P>
                   </td>
 
                   <td>
                     <P weight={600}>
-                      {(item.discount_price || 0) * item.quantity} ₩
+                      {Number(
+                        (item.discount_price || 0) * item.quantity
+                      ).toLocaleString("ko-KR")}{" "}원
                     </P>
                   </td>
                 </tr>
@@ -168,18 +172,6 @@ export function MyOrdersTable({ items }: { items?: LineItemData[] }) {
     </>
   );
 }
-
-type ListItem = {
-  thumbnail: string;
-  title: string;
-  price: number;
-  discount_rate: number;
-  discount_price: number;
-  heart_count: number;
-  store_name: string;
-  rank: number;
-  id: string;
-};
 
 export function ChoiseProductSlider({
   id,

@@ -211,8 +211,7 @@ export function CompleteOrdersTable({ items }: { items: LineItemData[] }) {
                     <Span color="var(--main-color1)" weight={600} fontSize={20}>
                       {Number(
                         (item.discount_price || 0) * item.quantity
-                      ).toLocaleString("ko-KR")}{" "}
-                      ₩
+                      ).toLocaleString("ko-KR")}{" "}원
                     </Span>
                   </FlexChild>
                 </HorizontalFlex>
