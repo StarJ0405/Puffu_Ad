@@ -1,9 +1,6 @@
 "use client";
 import ChildCategory from "@/components/childCategory/childCategory";
-import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import Image from "@/components/Image/Image";
-import P from "@/components/P/P";
 import { useCategories } from "@/providers/StoreProvider/StorePorivderClient";
 import usePageData from "@/shared/hooks/data/usePageData";
 import useNavigate from "@/shared/hooks/useNavigate";

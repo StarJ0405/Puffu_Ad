@@ -161,7 +161,7 @@ export function SubBanner1() {
   const { userData } = useAuth();
 
   return (
-    <FlexChild width={"100%"}>
+    <FlexChild width={"100%"} className={styles.sub_banner}>
       <Link href={"/"} className={styles.disabled}>
         {userData?.adult ? (
           <Image
@@ -186,7 +186,7 @@ export function SubBanner2() {
   const { userData } = useAuth();
 
   return (
-    <FlexChild width={"100%"}>
+    <FlexChild width={"100%"} className={styles.sub_banner}>
       <Link href={"/"} className={styles.disabled}>
         {userData?.adult ? (
           <Image

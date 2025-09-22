@@ -24,20 +24,24 @@ export default function ChildCategory({
   return (
     <>
       <ul className={styles.category_list}>
-        <li className={clsx(parent.id === categoryId && styles.active)}>
-          <Link href={`/categories/${parent.id}`}>
-            <Span>전체</Span>
-          </Link>
-        </li>
         {
-         childrenData.length > 0 ? 
-          childrenData.map((child, i) => (
-            <li key={i}>
-              <Link href={`/categories/${child.id}`}>
-                <Span>{child.name}</Span>
-              </Link>
-            </li>
-          )) : (
+          childrenData.length > 0 ? (
+            <>
+              <li className={clsx(parent.id === categoryId && styles.active)}>
+                <Link href={`/categories/${parent.id}`}>
+                  <Span>전체</Span>
+                </Link>
+              </li>
+
+              {childrenData.map((child, i) => (
+                <li key={i}>
+                  <Link href={`/categories/${child.id}`}>
+                    <Span>{child.name}</Span>
+                  </Link>
+                </li>
+              ))}
+            </>
+          ) : (
             <FlexChild
               onClick={() => navigate(-1)}
               gap={10}

@@ -41,23 +41,25 @@ export default async function ({ params }: { params: Promise<Params> }) {
   
 
   return (
-    <AnimationWapper>
-      <SubPageHeader />
-      <ProductWrapper initCondition={initCondition} initProduct={initProduct}>
-        <VerticalFlex position="relative" alignItems="start" className={styles.slide_wrap}>
-          <FlexChild marginBottom={20}>
-            <h3 className={clsx("SacheonFont", styles.slide_title)}>
-              보시는 상품과 비슷한 추천 상품
-            </h3>
-          </FlexChild>
-  
-          <ProductSlider
-            id={"relation"}
-            lineClamp={2}
-            listArray={relationProducts.content}
-          />
-        </VerticalFlex>
-      </ProductWrapper>
-    </AnimationWapper>
+    <div style={{overflow: 'hidden'}}>
+      <AnimationWapper>
+        <SubPageHeader />
+        <ProductWrapper initCondition={initCondition} initProduct={initProduct}>
+          <VerticalFlex position="relative" alignItems="start" className={styles.slide_wrap}>
+            <FlexChild marginBottom={20}>
+              <h3 className={clsx("SacheonFont", styles.slide_title)}>
+                보시는 상품과 비슷한 추천 상품
+              </h3>
+            </FlexChild>
+    
+            <ProductSlider
+              id={"relation"}
+              lineClamp={2}
+              listArray={relationProducts.content}
+            />
+          </VerticalFlex>
+        </ProductWrapper>
+      </AnimationWapper>
+    </div>
   );
 }
