@@ -5,11 +5,10 @@ import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import Link from "next/link";
+import SideNavi from "../sideNavi/sideNavi";
 import styles from "./footer.module.css";
-import SideNavi from "../sideNavi/sideNavi"
 
 export default async function Footer() {
-
   return (
     <>
       <footer className={styles.footer}>
@@ -48,10 +47,14 @@ export default async function Footer() {
             </VerticalFlex>
           </VerticalFlex>
 
-          <VerticalFlex width={390} className={styles.Cs_center} alignItems={"start"}>
+          <VerticalFlex
+            width={390}
+            className={styles.Cs_center}
+            alignItems={"start"}
+          >
             <P className={styles.cs_title}>CS CENTER</P>
             <P className={styles.cs_number}>010-2349-8677</P>
-            <FlexChild gap={10} alignItems="start" width={'100%'}>
+            <FlexChild gap={10} alignItems="start" width={"100%"}>
               <VerticalFlex className={styles.cs_days}>
                 <P>
                   <Span>평일 : </Span>09:30 ~ 18:30

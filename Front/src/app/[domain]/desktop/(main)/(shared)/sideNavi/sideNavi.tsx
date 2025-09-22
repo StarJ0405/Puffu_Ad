@@ -24,39 +24,39 @@ export default function SideNavi() {
 
   return (
     <>
-       <nav id={styles.sideNavi}>
-         <VerticalFlex className={styles.outer_box}>
-           <Link href={"/products/hot"} className={styles.hotDeal_link}>
-             <Image
-               src={"/resources/images/footer/sidenavi_hotDeal.png"}
-               width={43}
-             />
-             <h4 className="SacheonFont">이달의 HOT딜</h4>
-           </Link>
-   
-           <ul className={styles.link_list}>
-             <li>
-               <Link href={"/mypage"}>마이페이지</Link>
-             </li>
-   
-             <li>
-               <Link href={"/orders/cart"}>장바구니</Link>
-             </li>
-   
-             <li>
-               <Link href={"/mypage/wishList"}>위시리스트</Link>
-             </li>
-   
-             <li>
-               <Link href={"/board/inquiry"}>1:1문의</Link>
-             </li>
-           </ul>
-         </VerticalFlex>
-   
-         <TopButton />
-       </nav>
+      <nav id={styles.sideNavi}>
+        <VerticalFlex className={styles.outer_box}>
+          <Link href={"/products/hot"} className={styles.hotDeal_link}>
+            <Image
+              src={"/resources/images/footer/sidenavi_hotDeal.png"}
+              width={43}
+            />
+            <h4 className="SacheonFont">이달의 HOT딜</h4>
+          </Link>
 
-       <ChatToggle />
+          <ul className={styles.link_list}>
+            <li>
+              <Link href={"/mypage"}>마이페이지</Link>
+            </li>
+
+            <li>
+              <Link href={"/orders/cart"}>장바구니</Link>
+            </li>
+
+            <li>
+              <Link href={"/mypage/wishList"}>위시리스트</Link>
+            </li>
+
+            <li>
+              <Link href={"/board/inquiry"}>1:1문의</Link>
+            </li>
+          </ul>
+        </VerticalFlex>
+
+        <TopButton />
+      </nav>
+
+      <ChatToggle />
     </>
   );
 }
@@ -76,7 +76,7 @@ export function ChatToggle() {
         {userData?.id && chatToggle && (
           <motion.div
             key="chat"
-            initial={{ opacity: 0}}
+            initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
@@ -90,6 +90,7 @@ export function ChatToggle() {
         )}
       </AnimatePresence>
       <Button
+        id="side_chat"
         hidden={!userData?.id}
         onClick={() => chatToggleClick()}
       >

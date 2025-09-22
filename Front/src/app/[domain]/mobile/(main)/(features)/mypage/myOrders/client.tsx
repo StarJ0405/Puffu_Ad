@@ -241,7 +241,7 @@ export function MyOrdersTable({
                     주문취소
                   </Button>
                 )}
-                {order.status === "shipping" &&
+                {(order.status === "shipping" || order.status === "complete") &&
                   order.shipping_methods?.[0]?.tracking_number && (
                     <Button
                       className={styles.tracking_btn}
@@ -287,7 +287,15 @@ export function MyOrdersTable({
                           overflow="hidden"
                           display="--webkit-box"
                         >
-                          {item.title}
+                          {item.product_title}
+                        </P>
+                        <P
+                          className={styles.unit_title}
+                          lineClamp={1}
+                          overflow="hidden"
+                          display="--webkit-box"
+                        >
+                          {item.variant_title}
                         </P>
                         <P
                           className={styles.unit_title}
@@ -302,7 +310,17 @@ export function MyOrdersTable({
                         </P>
                       </VerticalFlex>
                     </HorizontalFlex>
-
+                    <HorizontalFlex gap={6}>
+                      <Button width={"100%"}>리뷰 작성</Button>
+                      <Button
+                        width={"100%"}
+                        onClick={() =>
+                          document.getElementById("side_chat")?.click()
+                        }
+                      >
+                        교환/환불 문의
+                      </Button>
+                    </HorizontalFlex>
                     {/* 가격 박스 */}
                     <HorizontalFlex className={styles.item_price_box}>
                       <FlexChild>

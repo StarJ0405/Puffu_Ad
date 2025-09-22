@@ -1,19 +1,19 @@
 import FlexChild from "@/components/flex/FlexChild";
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
+import clsx from "clsx";
 import Link from "next/link";
 import styles from "./footer.module.css";
-import clsx from "clsx";
 
 export default async function Footer() {
-
   return (
     <>
       <footer className={styles.footer}>
-        <VerticalFlex className={clsx(styles.info_box, 'page_container')} alignItems="start">
+        <VerticalFlex
+          className={clsx(styles.info_box, "page_container")}
+          alignItems="start"
+        >
           <FlexChild className={styles.policy_item}>
             <Link href={"/policies/term"}>이용약관</Link>
             <Span>|</Span>
@@ -48,9 +48,7 @@ export default async function Footer() {
             </FlexChild>
 
             <FlexChild className={styles.txt_item}>
-              <Span>
-                Copyright 2021.Puffu global Corp. all rights reserved
-              </Span>
+              <Span>Copyright 2021.Puffu global Corp. all rights reserved</Span>
             </FlexChild>
           </VerticalFlex>
         </VerticalFlex>
