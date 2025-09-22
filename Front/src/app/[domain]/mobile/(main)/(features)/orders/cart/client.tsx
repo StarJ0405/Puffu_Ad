@@ -569,7 +569,7 @@ export function CartWrap() {
                                       Sessions.ORDER,
                                       JSON.stringify(content)
                                     );
-                                    navigate("/ordercomplete", {
+                                    navigate("/orders/complete", {
                                       type: "replace",
                                     });
                                   }
