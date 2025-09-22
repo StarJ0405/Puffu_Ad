@@ -56,7 +56,7 @@
 /* 주문내역 리스트 */
 
 .list_item {padding-bottom: 20px;}
-.list_item  .unit {gap: 10px;}
+.list_item  .unit {gap: 10px; text-align: left;}
 .list_item .unit_content {gap: 7px;}
 
 .list_item .unit_content .unit_brand {
