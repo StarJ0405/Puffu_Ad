@@ -8,14 +8,14 @@ import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import ConfirmModal from "@/modals/confirm/ConfirmModal";
 import ToastModal from "@/modals/toast/ToastModal";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import useNavigate from "@/shared/hooks/useNavigate";
 import { requester } from "@/shared/Requester";
 import { Cookies } from "@/shared/utils/Data";
 import { getCookieOption } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
-import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import styles from "./page.module.css";
 
@@ -227,6 +227,7 @@ export function Lostpassword({ passwordStep }: { passwordStep: number }) {
 }
 
 export function SubmitGroup() {
+  const { userData } = useAuth();
   const [, setCookies] = useCookies([Cookies.JWT]);
   const navigate = useNavigate();
   const onClick = async () => {
@@ -265,7 +266,9 @@ export function SubmitGroup() {
       messageBoxClassName: "custom-toast",
     });
   };
-
+  useEffect(() => {
+    if (userData?.id) navigate("/");
+  }, [userData]);
   return (
     <>
       <Button onClick={onClick} className={clsx(styles.login_btn, styles.btn)}>
