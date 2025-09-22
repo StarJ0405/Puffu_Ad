@@ -262,7 +262,7 @@ export function SubmitGroup() {
       message: "아이디, 비밀번호를 입력해주세요.",
       className: "custom-toast-body",
       withCloseButton: true,
-      messageBoxClassName: 'custom-toast',
+      messageBoxClassName: "custom-toast",
     });
   };
 
@@ -271,8 +271,11 @@ export function SubmitGroup() {
       <Button onClick={onClick} className={clsx(styles.login_btn, styles.btn)}>
         로그인
       </Button>
-      <Button className={clsx(styles.join_btn, styles.btn)}>
-        <Link href={"/auth/signup"}>회원가입</Link>
+      <Button
+        className={clsx(styles.join_btn, styles.btn)}
+        onClick={() => navigate("/auth/signup")}
+      >
+        회원가입
       </Button>
     </>
   );
