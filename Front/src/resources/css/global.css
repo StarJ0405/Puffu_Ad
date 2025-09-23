@@ -175,6 +175,10 @@ a {
 
 
 @media (max-width: 768px) {
+
+  /* 탭 하이라이트 제거 */
+  * {-webkit-tap-highlight-color: transparent;}
+
   html {
     max-width: 768px;
   }

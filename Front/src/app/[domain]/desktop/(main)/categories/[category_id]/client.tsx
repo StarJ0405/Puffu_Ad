@@ -8,6 +8,7 @@ import { requester } from "@/shared/Requester";
 import { useState } from "react";
 import { BaseProductList } from "../../products/baseClient";
 import styles from "./page.module.css";
+import FlexChild from "@/components/flex/FlexChild";
 
 function findCategoryById(categories: any[], id: string): any | undefined {
   for (const cat of categories) {

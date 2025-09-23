@@ -2,6 +2,7 @@ import Container from "@/components/container/Container";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Pstyles from "../../products.module.css";
 import { BestList } from "./client";
+import {ProdcutCategoryFilter } from "../../baseClient";
 import styles from "./page.module.css";
 
 import Image from "@/components/Image/Image";
@@ -31,7 +32,7 @@ export default async function ({
         </VerticalFlex>
 
         <VerticalFlex marginBottom={30}>
-          {/* <CategoryFilter category_id={category_id} /> */}
+          <ProdcutCategoryFilter />
         </VerticalFlex>
 
         <VerticalFlex className={Pstyles.list}>

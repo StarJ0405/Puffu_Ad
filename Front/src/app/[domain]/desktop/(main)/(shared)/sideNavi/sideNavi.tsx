@@ -12,7 +12,8 @@ import { usePathname } from "next/navigation";
 import FlexChild from "@/components/flex/FlexChild";
 import AdminChat from "@/modals/main/adminChat/adminChat";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useCart } from "@/providers/StoreProvider/StorePorivderClient";
 
 // const navigate = useNavigate();
 
@@ -40,7 +41,10 @@ export default function SideNavi() {
             </li>
 
             <li>
-              <Link href={"/orders/cart"}>장바구니</Link>
+              <Link href={"/orders/cart"}>
+                장바구니
+                <CartLength />
+              </Link>
             </li>
 
             <li>
@@ -59,6 +63,28 @@ export default function SideNavi() {
       <ChatToggle />
     </>
   );
+}
+
+
+export function CartLength() {
+  const { cartData } = useCart();
+  const [length, setLength] = useState<number>(0);
+
+  useEffect(() => {
+    setLength(cartData?.items.length ?? 0);
+  }, [cartData]);
+  
+  return (
+    <>
+    {
+      length > 0 && (
+        <FlexChild className={styles.cart_length}>
+          {length}
+        </FlexChild>
+      )
+    }
+    </>
+  )
 }
 
 export function ChatToggle() {
