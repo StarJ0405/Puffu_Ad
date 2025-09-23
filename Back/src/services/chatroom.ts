@@ -71,7 +71,7 @@ export class ChatroomService extends BaseService<Chatroom, ChatroomRepository> {
         },
         relations: ["users"],
       });
-      const unreadBuilder = this.chatRepository
+      const unread = await this.chatRepository
         .builder("ch")
         .innerJoinAndSelect("chatroom_user", "cu", "ch.room_id = cu.room_id")
         .where("ch.created_at > cu.last_read")
@@ -79,8 +79,7 @@ export class ChatroomService extends BaseService<Chatroom, ChatroomRepository> {
           user_id,
         })
         .select("ch.room_id", "id")
-        .addSelect("count(*)", "unread");
-      const unread = await unreadBuilder
+        .addSelect("count(*)", "unread")
         .andWhere(`ch.room_id = :room_id`, { room_id: room.id })
         .groupBy("ch.room_id")
         .getRawOne();
