@@ -28,10 +28,7 @@ export function WishListTable({ initWishList }: { initWishList: Pageable }) {
   return (
     <>
       <HorizontalFlex className={mypage.box_header}>
-        <P>관심 리스트</P>
-        <FlexChild className={mypage.header_subTitle}>
-          <P>전체 상품 {wishes.length}</P>
-        </FlexChild>
+        <P>전체 상품 {wishes.length}</P>
       </HorizontalFlex>
       {wishes.length > 0 ? (
         <VerticalFlex>

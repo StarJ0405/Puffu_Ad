@@ -7,6 +7,7 @@ export default async function ({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <LayoutClient>
       <SubPageHeader />

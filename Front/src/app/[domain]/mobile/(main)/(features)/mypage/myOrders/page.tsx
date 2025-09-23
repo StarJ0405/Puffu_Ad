@@ -22,9 +22,6 @@ export default async function () {
         className={clsx(mypage.box_frame, styles.myOrder_box)}
         gap={35}
       >
-        <FlexChild className={mypage.box_header}>
-          <P>내 주문 내역</P>
-        </FlexChild>
         <MyOrdersTable
           initStartDate={startDate}
           initEndDate={endDate}
