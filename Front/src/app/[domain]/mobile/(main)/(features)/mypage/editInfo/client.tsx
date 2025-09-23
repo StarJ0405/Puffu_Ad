@@ -111,9 +111,9 @@ export function EditInfoClient() {
         accept="image/*"
       />
       <VerticalFlex className={clsx(mypage.box_frame)} gap={35}>
-        <FlexChild className={mypage.box_header}>
+        {/* <FlexChild className={mypage.box_header}>
           <P>개인정보 수정</P>
-        </FlexChild>
+        </FlexChild> */}
 
         <VerticalFlex className={styles.edit_container}>
           <VerticalFlex className={styles.thumb_box}>

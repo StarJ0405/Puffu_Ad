@@ -129,9 +129,6 @@ export function DeliveryClient({ initAddresses }: { initAddresses: any }) {
       className={clsx(mypage.box_frame, styles.delivery_box)}
       gap={25}
     >
-      <FlexChild className={mypage.box_header}>
-        <P>배송지 관리</P>
-      </FlexChild>
 
       <VerticalFlex className={styles.top_box}>
         <FlexChild className={styles.all_txt}>

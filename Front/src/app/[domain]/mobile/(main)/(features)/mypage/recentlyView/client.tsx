@@ -41,10 +41,7 @@ export function RecentlyViewTable() {
   return (
     <>
       <HorizontalFlex className={mypage.box_header}>
-         <P>최근 본 상품</P>
-         <FlexChild className={mypage.header_subTitle}>
-            <P>전체 상품 {recents.length}</P>
-         </FlexChild>
+        <P>전체 상품 {recents.length}</P>
       </HorizontalFlex>
       {recents.length > 0 ? (
         <VerticalFlex>

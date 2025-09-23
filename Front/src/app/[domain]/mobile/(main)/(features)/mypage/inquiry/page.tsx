@@ -21,9 +21,6 @@ export default async function () {
    return (
       <>
          <VerticalFlex className={clsx(mypage.box_frame, styles.inquiry_box)} gap={35}>
-            <FlexChild className={mypage.box_header}>
-               <P>1:1 문의 내역</P>
-            </FlexChild>
             <InquiryClient />
          </VerticalFlex>
       </>

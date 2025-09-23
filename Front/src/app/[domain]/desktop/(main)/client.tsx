@@ -346,8 +346,9 @@ export function HotDealWrapper({
               <Button
                 className={styles.list_more_btn}
                 hidden={maxPage < 1 || page >= maxPage}
+                onClick={showMore}
               >
-                <FlexChild gap={10} onClick={showMore}>
+                <FlexChild gap={10}>
                   <Span>상품 더보기</Span>
                   <Image
                     src={"/resources/icons/arrow/arrow_bottom_icon.png"}
@@ -419,8 +420,9 @@ export function ProductList({
           <Button
             className={styles.list_more_btn}
             hidden={maxPage < 1 || page >= maxPage}
+            onClick={showMore}
           >
-            <FlexChild gap={10} onClick={showMore}>
+            <FlexChild gap={10}>
               <Span>상품 더보기</Span>
               <Image
                 src={"/resources/icons/arrow/arrow_bottom_icon.png"}

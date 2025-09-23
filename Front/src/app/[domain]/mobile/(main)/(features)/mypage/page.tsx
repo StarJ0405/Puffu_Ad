@@ -27,7 +27,7 @@ export default async function ({ params }: { params: Promise<Params> }) {
         <DeliveryInfo />
 
         {/* 하단 메뉴 */}
-        <MypageNavi />      
+        <MypageNavi/>      
       </VerticalFlex>
     </>
   );
