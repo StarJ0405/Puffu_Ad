@@ -92,11 +92,12 @@
 }
 
 .outer_menu .inner_menu .inner_btn span {
-   font-size: 16px; color: #afafaf;
+   font-size: 16px; color: #797979;
    transition: all 0.2s;
 }
 
-.outer_menu .inner_menu .inner_btn:hover span {color: #fff;}
+.outer_menu .inner_menu .inner_btn:hover span,
+.outer_menu .inner_menu .inner_btn.active span {color: #fff;}
 
 .mypage_navi .outer_menu .inner_menu .inner_btn img {
    position: relative;
@@ -105,9 +106,7 @@
    transition: all 0.1s;
 }
 
-.mypage_navi .outer_menu .inner_menu .inner_btn:hover img {
-   left: 3px;
-}
+.mypage_navi .outer_menu .inner_menu .inner_btn:hover img {left: 3px;}
 
 
 

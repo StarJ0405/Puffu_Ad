@@ -30,7 +30,16 @@ export default function SubPageHeader() {
                {pathname.includes("/board/notice") && (<P>공지사항</P>)}
                {pathname.includes("/board/inquiry") && (<P>1:1문의</P>)}
                {pathname.includes("/board/event") && (<P>이벤트</P>)}
-               {pathname.includes("/mypage") && (<P>마이페이지</P>)}
+
+
+               {pathname === "/mypage" && (<P>마이페이지</P>)}
+               {pathname === "/mypage/myOrders" && (<P>내 주문내역</P>)}
+               {pathname === "/mypage/recentlyView" && (<P>최근 본 상품</P>)}
+               {pathname === "/mypage/wishList" && (<P>관심 리스트</P>)}
+               {pathname === "/mypage/editInfo" && (<P>개인정보 수정</P>)}
+               {pathname === "/mypage/delivery" && (<P>배송지 관리</P>)}
+               {pathname === "/mypage/inquiry" && (<P>1:1 문의내역</P>)}
+               {pathname === "/mypage/deleteAccount" && (<P>회원탈퇴</P>)}
             </FlexChild>
          </FlexChild>
 

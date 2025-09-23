@@ -16,7 +16,7 @@ import Pstyles from "./products.module.css";
 import { useCategories } from "@/providers/StoreProvider/StorePorivderClient";
 import Link from "next/link";
 
-export function ProdcutCategory() {
+export function ProdcutCategoryFilter() {
   // 대분류 카테고리
 
   const pathname = usePathname();
@@ -25,11 +25,11 @@ export function ProdcutCategory() {
   // css : 카테고리 추가되어도 flex-wrap 구조 문제 없게 수정하기
 
   return (
-    <nav className={Pstyles.category_wrap}>
+    <nav className={Pstyles.cat_filter_wrap}>
       {/* ca_item에 active 클래스 주기. active 클래스만 걸리면 효과 들어감. */}
       {pathname !== "/" ? (
         <VerticalFlex className={clsx(Pstyles.ca_item, Pstyles.ca_all)}>
-          <FlexChild className={Pstyles.ca_thumb} width={120} height={120}>
+          <FlexChild className={Pstyles.ca_thumb} height={120}>
             <P>ALL</P>
           </FlexChild>
           <Span>전체</Span>
@@ -42,7 +42,7 @@ export function ProdcutCategory() {
           <VerticalFlex className={Pstyles.ca_item} key={i}>
             <Link href={`/categories/${cat.id}`}>
               <FlexChild className={Pstyles.ca_thumb}>
-                <Image src={cat.thumbnail} width={"auto"} height={120} />
+                <Image src={cat.thumbnail} height={120} />
               </FlexChild>
             </Link>
             <Span>{cat.name}</Span>

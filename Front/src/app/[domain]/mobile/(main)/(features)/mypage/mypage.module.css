@@ -30,6 +30,12 @@
    min-height: 39px;
 }
 
+.profile .wish_btn:active {
+   background: #000;
+   border-color: var(--main-color2);
+   color: #ababab;
+}
+
 .profile .setting_btn {
    width: auto;
    border-radius: 5px;
@@ -41,6 +47,11 @@
    gap: 4px;
    cursor: pointer;
    min-height: 39px;
+}
+
+.profile .setting_btn:active {
+   border-color: #ababab;
+   color: #ababab;
 }
 
 
@@ -73,17 +84,13 @@
    transition: all 0.2s;
 }
 
-.outer_menu .inner_menu .inner_btn:hover span {color: #fff;}
+.outer_menu .inner_menu .inner_btn:active span {color: #fff;}
 
 .mypage_navi .outer_menu .inner_menu .inner_btn img {
    position: relative;
    transform: rotate(180deg);
    left: 0;
    transition: all 0.1s;
-}
-
-.mypage_navi .outer_menu .inner_menu .inner_btn:hover img {
-   left: 3px;
 }
 
 
@@ -134,4 +141,9 @@
    font-weight: 600;
    padding: 15px 5px;
    width: 100%;
+}
+
+.delivery_box .link_btn button:active {
+   background: #000;
+   color: #ababab;
 }

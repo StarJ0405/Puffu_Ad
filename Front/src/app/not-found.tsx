@@ -12,7 +12,7 @@ export default async function () {
   const deviceType = getDeviceType(userAgent);
 
   return (
-    <VerticalFlex width={'100%'} height={'100dvh'} justifyContent="center" gap={30}>
+    <VerticalFlex width={'100%'} height={'100dvh'} display="flex" justifyContent="center" gap={30}>
       <FlexChild justifyContent="center">
         <P color="#fff" size={25} weight={500}>페이지를 찾을 수 없습니다.</P>
       </FlexChild>

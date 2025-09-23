@@ -5,10 +5,8 @@ import TopButton from "@/components/buttons/TopButton";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Link from "next/link";
 import styles from "./sideNavi.module.css";
-
 import { AnimatePresence, motion, useAnimation } from "framer-motion";
 import { usePathname } from "next/navigation";
-
 import FlexChild from "@/components/flex/FlexChild";
 import AdminChat from "@/modals/main/adminChat/adminChat";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
@@ -16,6 +14,8 @@ import { requester } from "@/shared/Requester";
 import useData from "@/shared/hooks/data/useData";
 import { useEffect, useState } from "react";
 import P from "@/components/P/P";
+import { useCart } from "@/providers/StoreProvider/StorePorivderClient";
+
 
 // const navigate = useNavigate();
 
@@ -43,7 +43,10 @@ export default function SideNavi() {
             </li>
 
             <li>
-              <Link href={"/orders/cart"}>장바구니</Link>
+              <Link href={"/orders/cart"}>
+                장바구니
+                <CartLength />
+              </Link>
             </li>
 
             <li>
@@ -62,6 +65,28 @@ export default function SideNavi() {
       {userData?.id && userData?.role !== "admin" && <ChatToggle />}
     </>
   );
+}
+
+
+export function CartLength() {
+  const { cartData } = useCart();
+  const [length, setLength] = useState<number>(0);
+
+  useEffect(() => {
+    setLength(cartData?.items.length ?? 0);
+  }, [cartData]);
+  
+  return (
+    <>
+    {
+      length > 0 && (
+        <FlexChild className={styles.cart_length}>
+          {length}
+        </FlexChild>
+      )
+    }
+    </>
+  )
 }
 
 export function ChatToggle() {

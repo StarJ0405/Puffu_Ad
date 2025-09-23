@@ -19,6 +19,7 @@ import { getCookieOption } from "@/shared/utils/Functions";
 import { requester } from "@/shared/Requester";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import useNavigate from "@/shared/hooks/useNavigate";
+import { usePathname } from "next/navigation";
 
 const editInfoModal = (userData: any, navigate: (path: string) => void) => { // 개인정보 수정
   let password = '';
@@ -87,6 +88,7 @@ export function MypageNavi() {
 
   const { userData } = useAuth();
   const navigate = useNavigate();
+  const pathname = usePathname();
 
   const myshopMenu = [
     { name: "내 주문 내역", link: "/mypage/myOrders" },
@@ -126,17 +128,28 @@ export function MypageNavi() {
         <P>쇼핑정보</P>
 
         <ul className={styles.inner_menu}>
-          {myshopMenu.map((item, i) => (
-            <li key={i}>
-              <Link className={styles.inner_btn} href={item.link}>
-                <Span>{item.name}</Span>
-                <Image
-                  src={"/resources/icons/arrow/slide_arrow.png"}
-                  width={8}
-                />
-              </Link>
-            </li>
-          ))}
+          {myshopMenu.map((item, i) => {
+
+            const active = pathname === item.link;
+
+            return (
+              <li key={i}>
+                <Link className={
+                  clsx(
+                    styles.inner_btn, 
+                    (active && styles.active)
+                  )} 
+                  href={item.link}
+                >
+                  <Span>{item.name}</Span>
+                  <Image
+                    src={"/resources/icons/arrow/slide_arrow.png"}
+                    width={8}
+                  />
+                </Link>
+              </li>
+            )
+          })}
         </ul>
       </VerticalFlex>
 
