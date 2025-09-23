@@ -24,24 +24,39 @@ export default function RootLayout({
         <meta charSet="utf-8" />
         <meta
           name="viewport"
-          content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0"
+          content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
         />
         <meta name="theme-color" content="#000" />
         <meta name="robots" content="index,follow" />
         <link rel="icon" href="/favicon.ico" />
 
-        <meta name="description" content="특별한 밤을 위한 다양한 성인용품 | 당신만을 위한 뜨밤 상품 한가득! | 성인용품 전문 | 딜도, 오나홀 | 게이, 레즈 토이"/>
+        <meta
+          name="description"
+          content="특별한 밤을 위한 다양한 성인용품 | 당신만을 위한 뜨밤 상품 한가득! | 성인용품 전문 | 딜도, 오나홀 | 게이, 레즈 토이"
+        />
         <meta property="og:url" content="https://puffutoy.com" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="특별한 밤을 위한 당신의 선택 푸푸토이"/>
-        <meta property="og:description" content="특별한 밤을 위한 다양한 성인용품 | 당신만을 위한 뜨밤 상품 한가득! | 성인용품 전문 | 딜도, 오나홀 | 게이, 레즈 토이"/>
+        <meta
+          property="og:title"
+          content="특별한 밤을 위한 당신의 선택 푸푸토이"
+        />
+        <meta
+          property="og:description"
+          content="특별한 밤을 위한 다양한 성인용품 | 당신만을 위한 뜨밤 상품 한가득! | 성인용품 전문 | 딜도, 오나홀 | 게이, 레즈 토이"
+        />
         <meta property="og:image" content="https://puffutoy.com/org-img.png" />
 
         {/* 트위터 */}
         <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content="특별한 밤을 위한 당신의 선택 푸푸토이" />
-        <meta name="twitter:description" content="특별한 밤을 위한 다양한 성인용품 | 당신만을 위한 뜨밤 상품 한가득! | 성인용품 전문 | 딜도, 오나홀 | 게이, 레즈 토이"/>
-        <meta name="twitter:image" content="https://puffutoy.com/org-img.png"/>
+        <meta
+          name="twitter:title"
+          content="특별한 밤을 위한 당신의 선택 푸푸토이"
+        />
+        <meta
+          name="twitter:description"
+          content="특별한 밤을 위한 다양한 성인용품 | 당신만을 위한 뜨밤 상품 한가득! | 성인용품 전문 | 딜도, 오나홀 | 게이, 레즈 토이"
+        />
+        <meta name="twitter:image" content="https://puffutoy.com/org-img.png" />
 
         {/* <title>성인용품 | 푸푸토이 | 성인용품 전문점 | 입문자부터 숙련자까지!</title> */}
       </head>

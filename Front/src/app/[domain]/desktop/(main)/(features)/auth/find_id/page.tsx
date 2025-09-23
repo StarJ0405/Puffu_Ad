@@ -8,7 +8,7 @@ import { useAuth } from "@/providers/AuthPorivder/AuthPorivder";
 import clsx from "clsx";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { IdStepBox } from "./client";
+import IdStepBox from "./client";
 import styles from "./page.module.css";
 import P from "@/components/P/P";
 
@@ -19,12 +19,12 @@ export default async function () {
   }
   return (
     <>
-      <section className={clsx("root ","page_container", styles.container)}>
+      <section className={clsx("root ", "page_container", styles.container)}>
         <VerticalFlex className={styles.findBox}>
           <FlexChild className={styles.title_box}>
             <P>아이디 찾기</P>
           </FlexChild>
-          
+
           <IdStepBox />
         </VerticalFlex>
       </section>
