@@ -777,7 +777,7 @@ function PassReady({ setStep, data, handleUpdate }: StepProps) {
       </FlexChild>
       <FlexChild width={"max-content"} gap={7} paddingTop={60}>
         <Button
-          className={clsx(styles.prev_btn)}
+          className={clsx(styles.prev_btn, styles.button)}
           width={180}
           onClick={() => setStep("certification")}
         >
