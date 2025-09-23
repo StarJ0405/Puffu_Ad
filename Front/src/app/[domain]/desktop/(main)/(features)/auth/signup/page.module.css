@@ -217,7 +217,7 @@
 
 /* 4단계 */
 .signup_completed {
-  padding: 50px 0;
+  padding: 80px 0 50px;
 }
 
 .signup_completed > * {
@@ -261,26 +261,26 @@
   transition: all 0.2s;
 }
 
-.continue_box .prev_btn {
+.prev_btn {
   background: #ccc;
   color: #4D4D4D;
 }
 
-.continue_box .prev_btn:hover {
+.prev_btn:hover {
   background: #858484;
   color: #fff;
 }
 
-.continue_box .prev_btn.disabled {
+.prev_btn.disabled {
   color: #aaa;
 }
 
-.continue_box .next_btn {
+.next_btn {
   background: #fff;
   color: var(--main-color1);
 }
 
-.continue_box .next_btn:hover {
+.next_btn:hover {
   background: var(--main-color1);
   color: #fff;
 }

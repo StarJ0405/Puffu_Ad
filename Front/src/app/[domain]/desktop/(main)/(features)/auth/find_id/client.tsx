@@ -61,12 +61,12 @@ export default function IdStepBox() {
         <FlexChild padding={80}>
           <VerticalFlex gap={20}>
             <Image src="/resources/images/error_icon.png" width={80} />
-            <P className={styles.title} paddingBottom={30}>
+            <P color="#fff" paddingBottom={30}>
               알 수 없는 오류가 발생했습니다.
             </P>
             <FlexChild>
               <Button
-                className={clsx(styles.button, styles.reverse)}
+                className={clsx(styles.button, styles.next_btn)}
                 onClick={() => naviagte("/")}
                 width={363}
                 margin={"0 auto"}
@@ -83,47 +83,43 @@ export default function IdStepBox() {
 function Certification({ setStep, handleUpdate }: StepProps) {
   const [type, setType] = useState<"pass" | "sms">("pass");
   return (
-    <VerticalFlex className={styles.wrapper} paddingBottom={80}>
+    <VerticalFlex width={'100%'} maxWidth={600} className={styles.auth_check_group}>
       <FlexChild justifyContent="center">
-        <HorizontalFlex width={600} maxWidth={600} minWidth={600}>
+        <HorizontalFlex className={styles.auth_btn_box}>
           <FlexChild
-            className={clsx(styles.certificationBox, {
-              [styles.selected]: type === "pass",
+            className={clsx(styles.auth_btn, {
+              [styles.active]: type === "pass",
             })}
             gap={10}
+            justifyContent="center" 
             onClick={() => setType("pass")}
           >
-            <Image
-              src="/resources/images/PASS.png"
-              height={36}
-              width={"auto"}
-            />
-            <P size={18} weight={600} color="#1C1B1F">
+            <P size={25} weight={600}>
               PASS 인증
             </P>
           </FlexChild>
           <FlexChild
-            className={clsx(styles.certificationBox, {
-              [styles.selected]: type === "sms",
+            className={clsx(styles.auth_btn, {
+              [styles.active]: type === "sms",
             })}
             gap={10}
+            justifyContent="center" 
             onClick={() => setType("sms")}
           >
-            <Image src="/resources/images/SMS.png" height={36} width={"auto"} />
-            <P size={18} weight={600} color="#1C1B1F">
+            <P size={25} weight={600}>
               SMS 인증
             </P>
           </FlexChild>
         </HorizontalFlex>
       </FlexChild>
-      <FlexChild className={styles.certificationContent} borderTop={"none"}>
+      <FlexChild className={styles.certificationContent}>
         {type === "sms" ? (
           <SMS setStep={setStep} handleUpdate={handleUpdate} />
         ) : (
           <PASS setStep={setStep} handleUpdate={handleUpdate} />
         )}
       </FlexChild>
-      <CopyRight paddingTop={68} />
+      {/* <CopyRight paddingTop={68} /> */}
     </VerticalFlex>
   );
 }
@@ -142,8 +138,8 @@ function PASS({ setStep, handleUpdate }: StepProps) {
   const [phone, setPhone] = useState<string>("");
   const [phoneStation, setPhoneStation] = useState(phoneStations[0]);
   return (
-    <VerticalFlex>
-      <FlexChild paddingBottom={20}>
+    <VerticalFlex className={styles.auth_root_box}>
+      <FlexChild paddingBottom={30}>
         <VerticalFlex gap={9}>
           <FlexChild>
             <P className={styles.inputLabel}>이름</P>
@@ -151,16 +147,16 @@ function PASS({ setStep, handleUpdate }: StepProps) {
           <FlexChild>
             <Input
               id="name"
-              className={styles.input}
+              className={'web_input'}
               placeHolder="이름을 입력하세요"
-              width={512}
+              width={'100%'}
               noWhiteSpace
               onChange={(value) => setName(value as string)}
             />
           </FlexChild>
         </VerticalFlex>
       </FlexChild>
-      <FlexChild paddingBottom={20}>
+      <FlexChild paddingBottom={30}>
         <VerticalFlex gap={9}>
           <FlexChild>
             <P className={styles.inputLabel}>생년월일</P>
@@ -168,9 +164,9 @@ function PASS({ setStep, handleUpdate }: StepProps) {
           <FlexChild>
             <Input
               id="birthday"
-              className={styles.input}
+              className={'web_input'}
               placeHolder="YYYYMMDD"
-              width={512}
+              width={'100%'}
               onFilter={(value: any) => value.replace(numberOnlyFormat.exp, "")}
               maxLength={8}
               noWhiteSpace
@@ -191,15 +187,16 @@ function PASS({ setStep, handleUpdate }: StepProps) {
             <P className={styles.inputLabel}>휴대폰 번호</P>
           </FlexChild>
           <FlexChild>
-            <HorizontalFlex gap={10}>
+            <HorizontalFlex gap={10} width={'auto'} className={styles.phone_input_group}>
               <Select
                 hideScroll
                 id="phoneStation"
                 classNames={{
-                  header: styles.phoneStationBox,
-                  line: styles.phoneStationBox,
-                  placeholder: styles.phoneStationBox,
-                  search: styles.phoneStationBox,
+                  header: styles.phone_select_header,
+                  placeholder: 'web_select_placholder',
+                  line: 'web_select_line',
+                  arrow: 'web_select_arrow',
+                  search: 'web_select_search',
                 }}
                 value={phoneStation.value}
                 options={phoneStations.map((phone) => ({
@@ -220,9 +217,9 @@ function PASS({ setStep, handleUpdate }: StepProps) {
               <FlexChild>
                 <Input
                   id="phone"
-                  className={styles.input}
+                  className={'web_input'}
                   placeHolder="'-' 없이 숫자만 입력"
-                  width={388}
+                  width={'100%'}
                   onFilter={(value: any) =>
                     value.replace(numberOnlyFormat.exp, "")
                   }
@@ -239,8 +236,8 @@ function PASS({ setStep, handleUpdate }: StepProps) {
           </FlexChild>
         </VerticalFlex>
       </FlexChild>
-      <FlexChild justifyContent="center" width={600} maxWidth={600}>
-        <HorizontalFlex gap={7} width={363} maxWidth={363}>
+      <FlexChild justifyContent="center" width={600} maxWidth={600} paddingTop={30}>
+        <HorizontalFlex gap={10} width={363} maxWidth={363} className={styles.continue_box}>
           {/* <FlexChild>
             <Button
               width={"100%"}
@@ -255,7 +252,7 @@ function PASS({ setStep, handleUpdate }: StepProps) {
           <FlexChild>
             <Button
               width={"100%"}
-              className={styles.button}
+              className={clsx(styles.button, styles.next_btn)}
               onClick={async () => {
                 const { mokToken: token } = await requester.getToken();
                 const data = handleUpdate?.([
@@ -380,8 +377,8 @@ function SMS({ setStep, handleUpdate }: StepProps) {
     }
   }, [time]);
   return (
-    <VerticalFlex>
-      <FlexChild paddingBottom={20}>
+    <VerticalFlex className={styles.auth_root_box}>
+      <FlexChild paddingBottom={30}>
         <VerticalFlex gap={9}>
           <FlexChild>
             <P className={styles.inputLabel}>이름</P>
@@ -389,9 +386,9 @@ function SMS({ setStep, handleUpdate }: StepProps) {
           <FlexChild>
             <Input
               id="name"
-              className={styles.input}
+              className={'web_input'}
               placeHolder="이름을 입력하세요"
-              width={512}
+              width={'100%'}
               noWhiteSpace
               onChange={(value) => {
                 setPhoneApprove("ready");
@@ -401,7 +398,7 @@ function SMS({ setStep, handleUpdate }: StepProps) {
           </FlexChild>
         </VerticalFlex>
       </FlexChild>
-      <FlexChild paddingBottom={20}>
+      <FlexChild paddingBottom={30}>
         <VerticalFlex gap={9}>
           <FlexChild>
             <P className={styles.inputLabel}>주민등록번호 7자리</P>
@@ -411,9 +408,9 @@ function SMS({ setStep, handleUpdate }: StepProps) {
               <FlexChild>
                 <Input
                   id="identification"
-                  className={styles.input}
+                  className={'web_input'}
                   placeHolder="YYMMDD"
-                  width={218}
+                  width={'100%'}
                   onFilter={(value: any) =>
                     value.replace(numberOnlyFormat.exp, "")
                   }
@@ -432,13 +429,14 @@ function SMS({ setStep, handleUpdate }: StepProps) {
                   src="/resources/icons/minus.png"
                   width={12}
                   height={"auto"}
+                  className={styles.icon_filter}
                 />
               </FlexChild>
               <FlexChild gap={8}>
                 <Input
                   id="gender"
-                  className={styles.input}
-                  width={49}
+                  className={'web_input'}
+                  width={'100%'}
                   onFilter={(value: any) =>
                     value.replace(numberOnlyFormat.exp, "")
                   }
@@ -474,15 +472,16 @@ function SMS({ setStep, handleUpdate }: StepProps) {
             <P className={styles.inputLabel}>휴대폰 번호</P>
           </FlexChild>
           <FlexChild>
-            <HorizontalFlex gap={10}>
+            <HorizontalFlex gap={10} width={'auto'} className={styles.phone_input_group}>
               <Select
                 hideScroll
                 id="phoneStation"
                 classNames={{
-                  header: styles.phoneStationBox,
-                  line: styles.phoneStationBox,
-                  placeholder: styles.phoneStationBox,
-                  search: styles.phoneStationBox,
+                  header: styles.phone_select_header,
+                  placeholder: 'web_select_placholder',
+                  line: 'web_select_line',
+                  arrow: 'web_select_arrow',
+                  search: 'web_select_search',
                 }}
                 value={phoneStation.value}
                 options={phoneStations.map((phone) => ({
@@ -504,7 +503,7 @@ function SMS({ setStep, handleUpdate }: StepProps) {
               <FlexChild position="relative">
                 <Input
                   id="phone"
-                  className={styles.input}
+                  className={'web_input'}
                   placeHolder="'-' 없이 숫자만 입력"
                   width={271}
                   onFilter={(value: any) =>
@@ -635,10 +634,11 @@ function SMS({ setStep, handleUpdate }: StepProps) {
         position="relative"
         hidden={phoneApprove === "ready"}
         margin={12}
+        gap={10}
       >
         <Input
           id="code"
-          className={styles.input}
+          className={'web_input'}
           placeHolder="인증번호를 입력하세요"
           width={"100%"}
           maxLength={6}
@@ -653,7 +653,7 @@ function SMS({ setStep, handleUpdate }: StepProps) {
         )}:${String(time % 60).padStart(2, "0")}`}</P>
       </FlexChild>
       <FlexChild paddingTop={30} justifyContent="center">
-        <HorizontalFlex gap={7} width={363} maxWidth={363}>
+        <HorizontalFlex gap={7} width={363} maxWidth={363} paddingTop={30}>
           {/* <FlexChild>
             <Button
               width={"100%"}
@@ -668,7 +668,7 @@ function SMS({ setStep, handleUpdate }: StepProps) {
           <FlexChild>
             <Button
               width={"100%"}
-              className={styles.button}
+              className={clsx(styles.next_btn, styles.button)}
               onClick={() => {
                 const { token, verification, userPhoneNum } = dataRef.current;
                 requester.verificationCheck(
@@ -723,10 +723,10 @@ function SMS({ setStep, handleUpdate }: StepProps) {
 
 function PassReady({ setStep, data, handleUpdate }: StepProps) {
   return (
-    <VerticalFlex className={styles.wrapper} paddingBottom={80}>
+    <VerticalFlex className={styles.wrapper}>
       <FlexChild margin={"auto"} padding={37}>
         <VerticalFlex>
-          <P className={styles.title} paddingTop={80} paddingBottom={45}>
+          <P paddingTop={80} paddingBottom={45} color="#fff">
             {"PASS앱에서 인증 후\n인증완료 버튼을 눌러주세요"}
           </P>
           <Image
@@ -739,7 +739,7 @@ function PassReady({ setStep, data, handleUpdate }: StepProps) {
       </FlexChild>
       <FlexChild width={"max-content"} gap={7} paddingTop={60}>
         <Button
-          className={clsx(styles.button, styles.white)}
+          className={clsx(styles.prev_btn, styles.button)}
           width={180}
           onClick={() => setStep("certification")}
         >
@@ -747,7 +747,7 @@ function PassReady({ setStep, data, handleUpdate }: StepProps) {
         </Button>
         <Button
           width={180}
-          className={styles.button}
+          className={clsx(styles.next_btn, styles.button)}
           onClick={() => {
             const { token, verification, userPhoneNum } = data.current;
             requester.verificationCheck(
@@ -789,7 +789,7 @@ function PassReady({ setStep, data, handleUpdate }: StepProps) {
           <P>인증완료</P>
         </Button>
       </FlexChild>
-      <CopyRight paddingTop={68} />
+      {/* <CopyRight paddingTop={68} /> */}
     </VerticalFlex>
   );
 }
@@ -797,68 +797,69 @@ function PassReady({ setStep, data, handleUpdate }: StepProps) {
 function Found({ data }: StepProps) {
   const naviagte = useNavigate();
   return (
-    <VerticalFlex className={styles.wrapper} paddingBottom={80}>
-      <FlexChild alignItems="center">
-        <P className={styles.title} paddingTop={80} paddingBottom={45}>
+    <VerticalFlex className={styles.wrapper}>
+      <FlexChild alignItems="center" justifyContent="center">
+        <P size={18} paddingBottom={45} color="#fff">
           {"회원님의 휴대전화로\n가입된 아이디입니다"}
         </P>
       </FlexChild>
       <FlexChild
         border={"1px solid #d9d9d9"}
         borderRadius={4}
-        padding={"40px 44px"}
+        padding={"45px 40px 20px"}
+        width={'100%'}
+        maxWidth={400}
       >
         <VerticalFlex>
-          <FlexChild
+          <VerticalFlex
             className={styles.mailWrapper}
-            marginBottom={20}
+            marginBottom={50}
             justifyContent="center"
+            gap={10}
           >
-            <P>
-              <Span className={styles.mailLabel} paddingRight={"1em"}>
-                아이디
-              </Span>
-              <Span className={styles.mailValue}>
-                {data?.current?.username}
-              </Span>
+            <P className={styles.mailLabel}>
+              아이디
             </P>
-          </FlexChild>
-          <FlexChild
+            <P className={styles.mailValue}>
+              {data?.current?.username}
+            </P>
+          </VerticalFlex>
+          <VerticalFlex
             alignItems="center"
             width={"max-content"}
             paddingBottom={30}
+            gap={10}
           >
-            <P>
-              <Span className={styles.forgetPW} paddingRight={"0.5em"}>
-                비밀번호를 잊으셨나요?
-              </Span>
-              <Span
-                className={styles.findPW}
-                onClick={() =>
-                  naviagte(`/auth/find_pw?id=${data?.current?.username}`)
-                }
-              >
-                비밀번호 찾기
-              </Span>
+            <P className={styles.forgetPW} paddingRight={"0.5em"}>
+              비밀번호를 잊으셨나요?
             </P>
-          </FlexChild>
-          <FlexChild position="sticky" marginTop={"auto"}>
-            <VerticalFlex>
-              <Button
-                className={styles.button}
-                width={363}
-                margin={"0 auto"}
-                onClick={() => {
-                  naviagte(`/auth/login?id=${data?.current?.username}`);
-                }}
-              >
-                <P>로그인 바로가기</P>
-              </Button>
-            </VerticalFlex>
-          </FlexChild>
+            <P
+              className={styles.findPW}
+              onClick={() =>
+                naviagte(`/auth/find_pw?id=${data?.current?.username}`)
+              }
+            >
+              비밀번호 찾기
+            </P>
+          </VerticalFlex>
         </VerticalFlex>
       </FlexChild>
-      <CopyRight />
+
+      <FlexChild position="sticky" marginTop={"auto"} paddingTop={60}>
+        <VerticalFlex>
+          <Button
+            className={clsx(styles.button, styles.next_btn)}
+            width={363}
+            margin={"0 auto"}
+            onClick={() => {
+              naviagte(`/auth/login?id=${data?.current?.username}`);
+            }}
+          >
+            <P>로그인 바로가기</P>
+          </Button>
+        </VerticalFlex>
+      </FlexChild>
+      {/* <CopyRight /> */}
     </VerticalFlex>
   );
 }
@@ -866,7 +867,7 @@ function Found({ data }: StepProps) {
 function NotFound({}: StepProps) {
   const naviagte = useNavigate();
   return (
-    <VerticalFlex className={styles.wrapper} paddingBottom={80}>
+    <VerticalFlex className={styles.wrapper} >
       <FlexChild alignItems="center">
         <P className={styles.title} paddingTop={80} paddingBottom={10}>
           {"등록된 아이디가 없습니다\n새로운 계정을 만들어보세요!"}
@@ -897,19 +898,19 @@ function NotFound({}: StepProps) {
           <P>홈으로</P>
         </Button>
       </FlexChild>
-      <CopyRight />
+      {/* <CopyRight /> */}
     </VerticalFlex>
   );
 }
 
-function CopyRight({
-  paddingTop = 80,
-}: {
-  paddingTop?: React.CSSProperties["paddingTop"];
-}) {
-  return (
-    <P className={styles.copyright} paddingTop={paddingTop}>
-      © PUFFU ALL RIGHTS RESERVED.
-    </P>
-  );
-}
+// function CopyRight({
+//   paddingTop = 80,
+// }: {
+//   paddingTop?: React.CSSProperties["paddingTop"];
+// }) {
+//   return (
+//     <P className={styles.copyright} paddingTop={paddingTop}>
+//       © PUFFU ALL RIGHTS RESERVED.
+//     </P>
+//   );
+// }
