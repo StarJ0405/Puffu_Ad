@@ -1,38 +1,53 @@
 /* 사이드네비 */
 
 #sideNavi {
-   position: fixed;
-   right: 10px;
-   bottom: 12%;
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   gap: 10px;
-   width: auto;
-   height: auto;
-   z-index: 1201;
+  position: fixed;
+  right: 10px;
+  bottom: 12%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: auto;
+  height: auto;
+  z-index: 1201;
 }
 
-.chat_btn {padding: 0; background: transparent; transition: 0.2s;}
+.chat_btn {
+  padding: 0;
+  background: transparent;
+  transition: 0.2s;
+}
 .chat_btn:focus-visible {
-   outline: none !important;
+  outline: none !important;
 }
 
 .Btn_frame {
-   opacity: 0;
-   visibility: hidden;
-   transition: all 0.3s;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
 }
 
 .scroll {
-   opacity: 1;
-   visibility: visible;
+  opacity: 1;
+  visibility: visible;
 }
 
-
 @media (max-width: 768px) {
-   .hidden {
-      opacity: 0; 
-      visibility: hidden;
-   } 
+  .hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.chat_number {
+  position: absolute;
+  background-color: var(--main-color2);
+  z-index: 2;
+  border-radius: 5px;
+  width: max-content;
+  top: -3px;
+  right: -5px;
+  padding: 4px 5px;
+  font-size: 11px;
 }

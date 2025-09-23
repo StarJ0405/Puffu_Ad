@@ -6,8 +6,8 @@ import Image from "@/components/Image/Image";
 import Input from "@/components/inputs/Input";
 import P from "@/components/P/P";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
+import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
 import { fileRequester } from "@/shared/FileRequester";
-import useData from "@/shared/hooks/data/useData";
 import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
 import useClientEffect from "@/shared/hooks/useClientEffect";
 import { requester } from "@/shared/Requester";
@@ -17,30 +17,20 @@ import _ from "lodash";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./adminChat.module.css";
-import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
 
 export default function AdminChat({
-  // onOpen,
+  chatroom,
   onClose,
   starts_at,
-  reload,
 }: {
-  // onOpen: boolean;
+  chatroom: ChatroomData;
   onClose: () => void;
   starts_at: Date;
-  reload: () => void;
 }) {
   const initRef = useRef<boolean>(true);
   const { userData } = useAuth();
   const pathname = usePathname();
-  const { chatroom, mutate: reload_read } = useData(
-    "chatroom",
-    {},
-    () => requester.getChatroom(),
-    {
-      onReprocessing: (data) => data?.content,
-    }
-  );
+
   useClientEffect(() => {
     if (initRef.current === false) {
       onClose();
@@ -51,19 +41,10 @@ export default function AdminChat({
   useClientEffect(() => {
     if (!userData?.id) onClose();
   }, [userData]);
-  useEffect(() => {
-    if (
-      chatroom &&
-      starts_at.getTime() < new Date(chatroom?.created_at).getTime()
-    ) {
-      reload();
-    }
-  }, [starts_at, chatroom]);
+
   return (
     <>
-      <button hidden id="reload_read" onClick={() => reload_read()} />
       <ChatBox chatroom={chatroom} onClose={onClose} starts_at={starts_at} />
-      {/* onOpen={onOpen} */}
     </>
   );
 }
@@ -120,21 +101,19 @@ function ChatBox({
 
   return (
     <>
-      {
-        isMobile && (
-          <div className={styles.background_close} onClick={onClose}></div>
-        )
-      }
-      <VerticalFlex 
+      {isMobile && (
+        <div className={styles.background_close} onClick={onClose}></div>
+      )}
+      <VerticalFlex
         className={clsx(
-          styles.chat_modal, 
-          isMobile && styles.mob_chat_modal, 
+          styles.chat_modal,
+          isMobile && styles.mob_chat_modal
           // onOpen && styles.modal_active
         )}
       >
         <FlexChild className={styles.title_header}>
           <P>관리자 문의하기</P>
-  
+
           <Image
             src={"/resources/icons/modal_close_icon.png"}
             cursor="pointer"
@@ -151,7 +130,7 @@ function ChatBox({
           preChats={preChats}
           users={chatroom?.users || []}
         />
-  
+
         <FlexChild className={styles.write_board}>
           <FlexChild>
             <Image
@@ -279,7 +258,8 @@ function Chats({
       setTimeout(() => {
         const chatScroll = document.getElementById("chat");
         if (chatScroll && chatScroll.scrollHeight > heightRef.current) {
-          chatScroll.scrollTop = chatScroll.scrollHeight - heightRef.current;
+          chatScroll.scrollTop = chatScroll.scrollHeight;
+
           setIsLoading(false);
         }
       }, 300);
@@ -323,6 +303,7 @@ function Chats({
   return (
     <FlexChild className={styles.scroll_body} id="chat">
       <VerticalFlex className={styles.chat_body}>
+        <div ref={ref} style={{ height: 1 }} />
         {totalChat.map((chat) => (
           <Chat key={chat.id} chat={chat} users={users} />
         ))}
@@ -332,9 +313,9 @@ function Chats({
 }
 
 function Chat({ chat, users }: { chat: ChatData; users?: ChatroomUserData[] }) {
-  const read = users?.filter(
-    (f) => new Date(f.last_read).getTime() < new Date(chat.created_at).getTime()
-  ).length;
+  // const read = users?.filter(
+  //   (f) => new Date(f.last_read).getTime() < new Date(chat.created_at).getTime()
+  // ).length;
   if (chat?.user?.role === "admin") {
     return (
       <FlexChild className={clsx(styles.admin_chat, styles.bubble_wrap)}>

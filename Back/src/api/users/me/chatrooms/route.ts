@@ -3,10 +3,10 @@ import { container } from "tsyringe";
 
 export const GET: ApiHandler = async (req, res) => {
   const user = req.user;
-  const { targets } = req.parsedQuery;
+  const { targets, open = false } = req.parsedQuery;
   const service = container.resolve(ChatroomService);
   if (!targets || targets?.length === 0) {
-    const content = await service.getAdminChat(user.id);
+    const content = await service.getAdminChat(user.id, open);
 
     return res.json({ content });
   }

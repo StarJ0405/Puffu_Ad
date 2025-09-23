@@ -93,7 +93,8 @@ export function getDeviceType(userAgent: string | null): DeviceType {
     isKindle ||
     /tablet|playbook|silk/i.test(userAgent)
   ) {
-    return "tablet";
+    // return "tablet";
+    return "mobile";
   }
 
   // 모바일 판별
