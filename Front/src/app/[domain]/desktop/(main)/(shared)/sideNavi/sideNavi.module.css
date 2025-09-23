@@ -97,6 +97,8 @@
   width: max-content;
   top: -3px;
   right: -5px;
-  padding: 4px 5px;
-  font-size: 11px;
+  padding: 5px 6px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
 }
