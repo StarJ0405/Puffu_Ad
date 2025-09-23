@@ -164,7 +164,7 @@ function ChatspaceWrapper({
         </VerticalFlex>
       </FlexChild>
     );
-  return <ChatSpace room={room} starts_at={starts_at} />;
+  return <ChatSpace key={room?.id} room={room} starts_at={starts_at} />;
 }
 function ChatSpace({
   room,
@@ -207,6 +207,7 @@ function ChatSpace({
     });
     return () => socketRequester.unSubscribe(`/${room?.id}/chats`);
   }, []);
+
   return (
     <FlexChild>
       <VerticalFlex

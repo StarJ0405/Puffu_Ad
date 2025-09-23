@@ -6,13 +6,16 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import Link from "next/link";
 import styles from "./sideNavi.module.css";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useAnimation } from "framer-motion";
 import { usePathname } from "next/navigation";
 
 import FlexChild from "@/components/flex/FlexChild";
 import AdminChat from "@/modals/main/adminChat/adminChat";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
-import { useState } from "react";
+import { requester } from "@/shared/Requester";
+import useData from "@/shared/hooks/data/useData";
+import { useEffect, useState } from "react";
+import P from "@/components/P/P";
 
 // const navigate = useNavigate();
 
@@ -20,7 +23,7 @@ import { useState } from "react";
   /* 사이드 네비 */
 }
 export default function SideNavi() {
-  const pathname = usePathname();
+  const { userData } = useAuth();
 
   return (
     <>
@@ -56,12 +59,13 @@ export default function SideNavi() {
         <TopButton />
       </nav>
 
-      <ChatToggle />
+      {userData?.id && userData?.role !== "admin" && <ChatToggle />}
     </>
   );
 }
 
 export function ChatToggle() {
+  const controls = useAnimation();
   const { userData } = useAuth();
   const [date, setDate] = useState(new Date());
   const [chatToggle, setChatToggle] = useState(false);
@@ -69,36 +73,59 @@ export function ChatToggle() {
   const chatToggleClick = () => {
     setChatToggle((prev) => !prev);
   };
-
+  const { chatroom, mutate: reload_read } = useData(
+    "chatroom",
+    {
+      open: chatToggle,
+    },
+    (condition) => requester.getChatroom(condition),
+    {
+      onReprocessing: (data) => data?.content,
+    }
+  );
+  useEffect(() => {
+    if (chatroom && date.getTime() < new Date(chatroom?.created_at).getTime()) {
+      setDate(new Date());
+    }
+  }, [date, chatroom]);
+  useEffect(() => {
+    if (chatToggle) controls.start({ opacity: 1, display: "initial" });
+    else controls.start({ opacity: 0, display: "none" });
+  }, [chatToggle]);
   return (
     <FlexChild className={styles.chat_btn}>
       <AnimatePresence>
-        {userData?.id && chatToggle && (
-          <motion.div
-            key="chat"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <AdminChat
-              starts_at={date}
-              reload={() => setDate(new Date())}
-              onClose={() => setChatToggle(false)}
-            />
-          </motion.div>
-        )}
+        <motion.div
+          key="chat"
+          initial={{ opacity: 0 }}
+          animate={controls}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          <AdminChat
+            chatroom={chatroom}
+            starts_at={date}
+            onClose={() => setChatToggle(false)}
+          />
+        </motion.div>
       </AnimatePresence>
-      <Button
-        id="side_chat"
-        hidden={!userData?.id}
-        onClick={() => chatToggleClick()}
-      >
-        <Image
-          src={"/resources/images/footer/chat_toggle_icon.png"}
-          width={56}
-        />
-      </Button>
+
+      <button hidden id="reload_read" onClick={() => reload_read()} />
+      <FlexChild position="relative">
+        <P className={styles.chat_number} hidden={!chatroom?.unread}>
+          {Math.min(99, chatroom?.unread || 0)}
+        </P>
+        <Button
+          id="side_chat"
+          hidden={!userData?.id}
+          onClick={() => chatToggleClick()}
+        >
+          <Image
+            src={"/resources/images/footer/chat_toggle_icon.png"}
+            width={56}
+          />
+        </Button>
+      </FlexChild>
     </FlexChild>
   );
 }

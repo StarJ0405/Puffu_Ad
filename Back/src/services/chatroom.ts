@@ -24,12 +24,13 @@ export class ChatroomService extends BaseService<Chatroom, ChatroomRepository> {
   ) {
     super(chatroomRepository);
   }
-  async getAdminChat(user_id: string): Promise<Chatroom | null> {
+  async getAdminChat(user_id: string, open: boolean): Promise<Chatroom | null> {
     const admin = await this.userRepository.findOne({
       where: { role: UserRole.ADMIN },
     });
     if (!admin) throw new Error("admin 계정이 없습니다.");
-
+    if (admin.id === user_id)
+      throw new Error("어드민은 관리자 채팅을 열 수 없습니다.");
     const rooms = await this.repository.findAll({
       where: {
         users: {
@@ -38,11 +39,13 @@ export class ChatroomService extends BaseService<Chatroom, ChatroomRepository> {
       },
       relations: ["users"],
     });
+
     let room: any = rooms.find((f) => f.users?.length === 2);
     if (!room) {
       room = await this.repository.create({
         title: "",
       });
+      room.unread = 0;
       const chat = await this.chatRepository.create({
         message: "안녕하세요!\n무엇을 도와드릴까요? 🙋‍♀️",
         type: ChatType.MESSAGE,
@@ -52,16 +55,16 @@ export class ChatroomService extends BaseService<Chatroom, ChatroomRepository> {
       await this.chatroomUserRepository.create({
         room_id: room.id,
         user_id: user_id,
-        last_read: chat.created_at,
+        last_read: new Date(),
       });
       await this.chatroomUserRepository.create({
         room_id: room.id,
         user_id: admin.id,
-        last_read: chat.created_at,
+        last_read: new Date(),
       });
       // users: [{ id: user_id }, { id: admin_id }],
     } else {
-      await this.updateUserRead(user_id, room.id);
+      if (open) await this.updateUserRead(user_id, room.id);
       room = await this.repository.findOne({
         where: {
           id: room.id,
@@ -81,7 +84,7 @@ export class ChatroomService extends BaseService<Chatroom, ChatroomRepository> {
         .andWhere(`ch.room_id = :room_id`, { room_id: room.id })
         .groupBy("ch.room_id")
         .getRawOne();
-      room.unread = unread?.unread;
+      room.unread = Number(unread?.unread || 0);
     }
 
     return room;
@@ -219,7 +222,9 @@ export class ChatroomService extends BaseService<Chatroom, ChatroomRepository> {
         .groupBy("ch.room_id")
         .getRawMany();
       content = content.map((room: any) => {
-        room.unread = unreads.find((f) => f.id === room.id)?.unread || 0;
+        room.unread = Number(
+          unreads.find((f) => f.id === room.id)?.unread || 0
+        );
         return room;
       });
 
@@ -243,7 +248,7 @@ export class ChatroomService extends BaseService<Chatroom, ChatroomRepository> {
       .groupBy("ch.room_id")
       .getRawMany();
     content = content.map((room: any) => {
-      room.unread = unreads.find((f) => f.id === room.id)?.unread || 0;
+      room.unread = Number(unreads.find((f) => f.id === room.id)?.unread || 0);
       return room;
     });
     return { content };
