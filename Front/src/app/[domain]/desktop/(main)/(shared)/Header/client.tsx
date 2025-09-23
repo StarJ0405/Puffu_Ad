@@ -43,9 +43,15 @@ export function CartLength() {
   }, [cartData]);
   
   return (
-    <FlexChild className={styles.cart_length}>
-      {length}
-    </FlexChild>
+    <>
+    {
+      length > 0 && (
+        <FlexChild className={styles.cart_length}>
+          {length}
+        </FlexChild>
+      )
+    }
+    </>
   )
 }
 

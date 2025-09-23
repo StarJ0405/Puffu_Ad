@@ -39,9 +39,15 @@ export function CartLength() {
   }, [cartData]);
   
   return (
-    <FlexChild className={styles.cart_length}>
-      {length}
-    </FlexChild>
+   <>
+      {
+         length > 0 && (
+            <FlexChild className={styles.cart_length}>
+              {length}
+            </FlexChild>
+         )
+      }
+   </>
   )
 }
 
@@ -54,21 +60,6 @@ interface ShopMenuItem {
 
 interface HeaderBottomProps {
    menu1: ShopMenuItem[];
-}
-
-export function SearchBox() {
-   return (
-      <FlexChild gap={10} className={`searchInput_Box ${styles.search_Box}`}>
-         <input type="search" placeholder="2025 신제품" onClick={()=> {'검색창 클릭'}} />
-
-         <Image 
-            src='/resources/images/header/input_search_icon.png'
-            width={18}
-            height="auto"
-            cursor="pointer"
-         />
-      </FlexChild>
-   )
 }
 
 export function HeaderBottom({menu1} : HeaderBottomProps) {
