@@ -18,7 +18,9 @@ import Div from "@/components/div/Div";
 const getInquiryTypeKorean = (type: string) => {
   switch (type) {
     case "exchange":
-      return "교환/환불";
+      return "교환문의";
+    case "refund":
+      return "환불문의";
     case "product":
       return "상품문의";
     case "shipping":
