@@ -133,6 +133,7 @@
    justify-content: center;
    gap: 20px;
    width: 100%;
+   flex-wrap: wrap;
 }
 
 .cat_filter_wrap > * {
@@ -151,10 +152,14 @@
 }
 
 .cat_filter_wrap .ca_item .ca_thumb {
+   /* --size: min(100px, calc(100vw * 100 / 1380)); */
+   --size: 100px;
+   border-radius: 10px;
    border: 3px solid transparent;
    overflow: hidden;
    transition: inherit;
-   width: 120px;
+   width:  var(--size);
+   height: var(--size);
    justify-content: center;
 }
 

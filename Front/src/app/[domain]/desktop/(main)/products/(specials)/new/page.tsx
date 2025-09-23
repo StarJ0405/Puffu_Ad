@@ -5,6 +5,7 @@ import { requester } from "@/shared/Requester";
 import { SearchParams } from "next/dist/server/request/search-params";
 import Pstyles from "../../products.module.css";
 import { NewList } from "./client";
+import {ProdcutCategoryFilter } from "../../baseClient";
 import styles from "./page.module.css";
 
 export default async function ({
@@ -21,6 +22,8 @@ export default async function ({
 
   const newProducts = await requester.getProducts(newCondition);
 
+  console.log(newCondition);
+
   return (
     <section className="root">
       <Container className="page_container" marginTop={80}>
@@ -33,7 +36,7 @@ export default async function ({
         </VerticalFlex>
 
         <VerticalFlex marginBottom={30}>
-          {/* <CategoryFilter /> */}
+          <ProdcutCategoryFilter ConditionOrder={newCondition} />
         </VerticalFlex>
 
         <VerticalFlex className={Pstyles.list}>

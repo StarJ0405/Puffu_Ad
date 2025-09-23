@@ -95,11 +95,21 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
           paintBullets(swiper);
         }}
       >
-        {[...banners]?.reverse().map((item: BannerData, i: number) => {
-          return (
-            <SwiperSlide key={i} className={`swiper_0${i}`}>
-              {item.to ? (
-                <Link href={item.to}>
+        {[...banners]?.reverse().map((item: BannerData, i: number) => (
+            item.thumbnail.mobile && (
+              <SwiperSlide key={i} className={`swiper_0${i}`}>
+                {item.to ? (
+                  <Link href={item.to}>
+                    <Image
+                      src={
+                        userData?.adult
+                          ? item.thumbnail.mobile
+                          : "/resources/images/19_only_banner_mobile.png"
+                      }
+                      width={"100%"}
+                    />
+                  </Link>
+                ) : (
                   <Image
                     src={
                       userData?.adult
@@ -108,20 +118,10 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
                     }
                     width={"100%"}
                   />
-                </Link>
-              ) : (
-                <Image
-                  src={
-                    userData?.adult
-                      ? item.thumbnail.mobile
-                      : "/resources/images/19_only_banner_mobile.png"
-                  }
-                  width={"100%"}
-                />
-              )}
-            </SwiperSlide>
-          );
-        })}
+                )}
+              </SwiperSlide>
+            )
+        ))}
       </Swiper>
     </FlexChild>
   );

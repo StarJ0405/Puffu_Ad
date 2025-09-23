@@ -3,7 +3,7 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import Span from "@/components/span/Span";
 import { requester } from "@/shared/Requester";
 import { SearchParams } from "next/dist/server/request/search-params";
-import { BaseProductList, ProdcutCategory } from "../../baseClient";
+import { BaseProductList, ProdcutCategoryFilter } from "../../baseClient";
 import Pstyles from "../../products.module.css";
 import styles from "./page.module.css";
 
@@ -28,9 +28,7 @@ export default async function ({
           </VerticalFlex>
         </VerticalFlex>
 
-        <VerticalFlex marginBottom={30}>
-          <ProdcutCategory />
-        </VerticalFlex>
+        <ProdcutCategoryFilter ConditionOrder={newCondition} />
 
         <VerticalFlex className={Pstyles.list}>
           <BaseProductList

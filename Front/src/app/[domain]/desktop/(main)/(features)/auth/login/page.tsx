@@ -16,6 +16,7 @@ export default async function () {
   if (userData?.id) {
     redirect("/");
   }
+
   return (
     <>
       <section className={clsx("root ","page_container", styles.container)}>

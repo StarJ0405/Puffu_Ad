@@ -12,44 +12,63 @@ import Span from "@/components/span/Span";
 import { useCategories } from "@/providers/StoreProvider/StorePorivderClient";
 import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
 import { requester } from "@/shared/Requester";
+import useNavigate from "@/shared/hooks/useNavigate";
 import clsx from "clsx";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import Pstyles from "./products.module.css";
 
-export function ProdcutCategory({findCategoryById} : {findCategoryById?: (id: string) => void;}) {
+export function ProdcutCategoryFilter({ ConditionOrder }: { ConditionOrder: any }) {
   // 대분류 카테고리
 
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const currentCategoryId = searchParams.get("category_id");
   const { categoriesData } = useCategories();
+  const navigate = useNavigate();
+  const order = ConditionOrder.order;
 
   // css : 카테고리 추가되어도 flex-wrap 구조 문제 없게 수정하기
 
   return (
-    <nav className={Pstyles.category_wrap}>
-      {/* ca_item에 active 클래스 주기. active 클래스만 걸리면 효과 들어감. */}
-      {pathname !== "/" ? (
-        <VerticalFlex className={clsx(Pstyles.ca_item, Pstyles.ca_all)}>
-          <FlexChild className={Pstyles.ca_thumb} width={66} height={66}>
-            <P>ALL</P>
-          </FlexChild>
-          <Span>전체</Span>
-        </VerticalFlex>
-      ) : null}
-
-      {categoriesData
-        .sort((c1, c2) => c1.index - c2.index)
-        .map((cat, i) => (
-          <VerticalFlex className={Pstyles.ca_item} key={i}>
-            {/* <Link href={`/categories/${cat.id}`}> */}
-              <FlexChild className={Pstyles.ca_thumb}>
-                <Image src={cat.thumbnail} width={"auto"} height={66} />
-              </FlexChild>
-            {/* </Link> */}
-            <Span>{cat.name}</Span>
+    <VerticalFlex marginBottom={30} className={Pstyles.filter_box}>
+      <nav className={Pstyles.cat_filter_wrap}>
+        {/* ca_item에 active 클래스 주기. active 클래스만 걸리면 효과 들어감. */}
+        {pathname !== "/" ? (
+          <VerticalFlex
+            className={clsx(Pstyles.ca_item, Pstyles.ca_all, !currentCategoryId && Pstyles.active)}
+            onClick={() => navigate(`/products/${order}`)}
+          >
+            <FlexChild className={Pstyles.ca_thumb}>
+              <P>ALL</P>
+            </FlexChild>
+            <Span>전체</Span>
           </VerticalFlex>
-        ))}
-    </nav>
+        ) : null}
+
+        {categoriesData
+          .sort((c1, c2) => c1.index - c2.index)
+          .map((cat, i) => {
+
+            const cat_check =
+              pathname === `/products/${order}` &&
+              currentCategoryId === String(cat.id);
+
+            return (
+              <VerticalFlex
+                className={clsx(Pstyles.ca_item, cat_check && Pstyles.active)}
+                key={i}
+                onClick={() => navigate(`/products/${order}?category_id=${cat.id}`)}
+              >
+                <FlexChild className={Pstyles.ca_thumb}>
+                  <Image src={cat.thumbnail} />
+                </FlexChild>
+                <Span>{cat.name}</Span>
+              </VerticalFlex>
+            )
+          })}
+      </nav>
+    </VerticalFlex>
   );
 }
 
@@ -142,7 +161,15 @@ export function BaseProductList({
           />
           {/* sortOptions={sortOptions} */}
           <VerticalFlex alignItems="start">
-            <MasonryGrid width={"100%"} gap={20}>
+            <MasonryGrid 
+              width={"100%"} gap={20} 
+              breakpoints={{
+                992: 5,
+                768: 4,
+                680: 3,
+                560: 2,
+              }}
+            >
               {products.map((product: ProductData, i: number) => {
                 return (
                   <FlexChild className={Pstyles.item_wrap} key={product.id}>
@@ -156,7 +183,7 @@ export function BaseProductList({
                             i < 3 ? Pstyles.topRank : ""
                           )}
                         >
-                          <Span className="SacheonFont">{i}</Span>
+                          <Span className="SacheonFont">{i + 1}</Span>
                         </FlexChild>
                       )
                     }
