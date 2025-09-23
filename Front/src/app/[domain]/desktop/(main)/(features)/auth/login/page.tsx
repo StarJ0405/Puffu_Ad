@@ -10,16 +10,22 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { SignFeatures, SubmitGroup } from "./client";
 import styles from "./page.module.css";
+import { SearchParams } from "next/dist/server/request/search-params";
 
-export default async function () {
+export default async function ({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
   const { userData } = await useAuth();
   if (userData?.id) {
     redirect("/");
   }
-
+  const { id } = await searchParams;
+  
   return (
     <>
-      <section className={clsx("root ","page_container", styles.container)}>
+      <section className={clsx("root ", "page_container", styles.container)}>
         <VerticalFlex className={styles.loginBox}>
           <FlexChild className={styles.logo}>
             <Link href={"/"}>
@@ -32,7 +38,12 @@ export default async function () {
               <VerticalFlex gap={30} width={"100%"}>
                 <FlexChild className={styles.input_box}>
                   <Span>아이디</Span>
-                  <Input id="username" placeHolder="아이디" width={"100%"} />
+                  <Input
+                    id="username"
+                    placeHolder="아이디"
+                    width={"100%"}
+                    value={id as string}
+                  />
                 </FlexChild>
 
                 <FlexChild className={styles.input_box}>

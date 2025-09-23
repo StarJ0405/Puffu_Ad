@@ -13,9 +13,9 @@ export const POST: ApiHandler = async (req, res) => {
       .status(404)
       .json({ error: "알 수 없는 유저입니다.", status: 404 });
   }
-  if (user?.metadata?.code !== code) {
-    return res.status(404).json({ error: "코드가 일치하지않습니다." });
-  }
+  // if (user?.metadata?.code !== code) {
+  //   return res.status(404).json({ error: "코드가 일치하지않습니다." });
+  // }
   await service.update(
     { id: user.id },
     {
