@@ -77,32 +77,38 @@ export default function () {
   return (
     <section className="root page_container">
       <VerticalFlex className={styles.signup_frame}>
-        <FlexChild className={styles.page_title}>
-          <h3>회원가입</h3>
-        </FlexChild>
-
-        <HorizontalFlex className={styles.step_root}>
-          <FlexChild className={styles.step_number}>
-            <Span>1</Span>
-          </FlexChild>
-
-          <FlexChild className={styles.step_number}>
-            <Span>2</Span>
-          </FlexChild>
-
-          <FlexChild className={styles.step_number}>
-            <Span>3</Span>
-          </FlexChild>
-
-          <FlexChild className={styles.step_number}>
-            <Span>4</Span>
-          </FlexChild>
-
-          <FlexChild className={styles.step_line}>
-            <div id={styles.line} style={{ width: percent }}></div>
-            {/* 스탭 진행될때마다 width 값 올리면 됨. */}
-          </FlexChild>
-        </HorizontalFlex>
+        {
+          step !== "completed" && (
+            <>
+              <FlexChild className={styles.page_title}>
+                <h3>회원가입</h3>
+              </FlexChild>
+      
+              <HorizontalFlex className={styles.step_root}>
+                <FlexChild className={styles.step_number}>
+                  <Span>1</Span>
+                </FlexChild>
+                
+                <FlexChild className={styles.step_number}>
+                  <Span>2</Span>
+                </FlexChild>
+                
+                <FlexChild className={styles.step_number}>
+                  <Span>3</Span>
+                </FlexChild>
+                
+                <FlexChild className={styles.step_number}>
+                  <Span>4</Span>
+                </FlexChild>
+                
+                <FlexChild className={styles.step_line}>
+                  <div id={styles.line} style={{ width: percent }}></div>
+                  {/* 스탭 진행될때마다 width 값 올리면 됨. */}
+                </FlexChild>
+              </HorizontalFlex>
+            </>
+          )
+        }
 
         {/* 동의 */}
         {step === "agree" && <Agree setStep={setStep} />}
@@ -891,7 +897,7 @@ function PassReady({ setStep, data }: StepProps) {
   const navigate = useNavigate();
   return (
     <VerticalFlex>
-      <P className={styles.title} paddingTop={80} paddingBottom={45}>
+      <P className={styles.title} size={18} paddingTop={80} paddingBottom={45} color="#fff">
         {"PASS앱에서 인증 후\n인증완료 버튼을 눌러주세요"}
       </P>
 
@@ -902,9 +908,9 @@ function PassReady({ setStep, data }: StepProps) {
         // height={"auto"}
       />
 
-      <FlexChild width={"max-content"} gap={7} paddingTop={60}>
+      <FlexChild width={"max-content"} gap={7} paddingTop={60} className={styles.continue_box}>
         <Button
-          className={clsx(styles.button, styles.white)}
+          className={clsx(styles.prev_btn, styles.white)}
           width={180}
           onClick={() => setStep("certification")}
         >
@@ -912,7 +918,7 @@ function PassReady({ setStep, data }: StepProps) {
         </Button>
         <Button
           width={180}
-          className={styles.button}
+          className={styles.next_btn}
           onClick={() => {
             const { token, verification, userPhoneNum } = data.current;
             requester.verificationCheck(
@@ -1061,9 +1067,10 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
             />
             <Button
               disabled={!!emailError || !email}
+              backgroundColor={'var(--main-color2)'}
               width={130}
               minWidth={130}
-              height={50}
+              height={49}
               onClick={() => {
                 setIsLoading(true);
                 requester.isExistUser(

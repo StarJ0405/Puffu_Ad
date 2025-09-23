@@ -8,7 +8,7 @@
 .findBox {
   gap: 50px;
   width: 100%;
-  max-width: 460px;
+  max-width: 600px;
 }
 
 .findBox .title_box {
@@ -69,7 +69,7 @@
   color: var(--main-color2) !important;
 }
 
-.findBox .btn {
+.btn {
   width: 100%;
   cursor: pointer;
   max-width: 180px;
@@ -81,223 +81,257 @@
   transition: all 0.2s;
 }
 
-.findBox .next_btn {
+.next_btn {
   background: var(--main-color1);
   color: #fff;
 }
-.findBox .next_btn:hover {
+
+.next_btn:hover {
   background: var(--main-color2);
 }
 
-.findBox .prev_btn {
+.prev_btn {
   background: #ccc;
   color: #4d4d4d;
 }
-.findBox .prev_btn:hover {
+.prev_btn:hover {
   background: gray;
 }
 
-/* 메일 인증 */
-.input_wrap .mail_data {
-  justify-content: center;
-  margin-bottom: 30px;
-  color: #b7b7b7;
+
+
+/* ------------------------------------------------------------- */
+
+
+.signup_frame {
+  padding-top: 50px;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
-.disabled {
-  cursor: not-allowed !important;
-  background: gray;
+.page_title {justify-content: center; margin-bottom: 50px;}
+
+.page_title h3{
+  font-size: 50px;
+  color: #fff;
+  font-weight: 700;
 }
 
-.wrapper {
-  width: 600px;
-  max-width: 600px;
-  min-width: 600px;
+.step_root {
+  width: 100%;
+  max-width: 570px;
+  margin: 0 auto 100px;
   position: relative;
 }
 
-.title {
-  width: 100%;
-  font-weight: 800;
-  font-size: 24px;
-  color: #1c1b1f;
-  white-space: pre-wrap;
-  text-align: center;
-  line-height: 1.5;
+.step_root > * {
+  width: auto;
 }
 
-.title2 {
-  font-weight: 800;
-  font-size: 24px;
-  line-height: 1.5;
-  color: #1c1b1f;
-  white-space: pre-wrap;
-}
-
-.description {
-  font-weight: 500;
+.step_root .step_number {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  position: relative; z-index: 2;
+  background: #621d8f;
+  color: #fff;
   font-size: 16px;
-  line-height: 1.5;
-  color: #8b8b8b;
-  white-space: pre-wrap;
-  text-align: center;
-}
-
-.certificationBox {
-  border: 1px solid #eaeaea;
-  /* border-radius: 8px; */
-  padding: 18px;
   justify-content: center;
-  cursor: pointer;
-}
-.certificationBox:first-child {
-  border-top-left-radius: 4px;
-}
-.certificationBox:last-child {
-  border-top-right-radius: 4px;
-}
-.certificationBox.selected {
-  border-color: #ff6a00;
-}
-.certificationContent {
-  padding: 40px 45px;
-  border: 1px solid #d9d9d9;
-  max-width: 600px;
-  width: 600px;
 }
 
-.button {
-  padding: 12.5px;
+.step_root .step_line {
+  width: 100%; 
+  position: absolute;
+  z-index: 1;
+  height: 2px;
+  background: rgba(255,255,255,0.5);
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+.step_root .step_line #line {
+  width: 0;
+  height: 100%;
+  background: #a444e4;
+}
+
+.step_title {
+  font-size: 30px;
   font-weight: 600;
-  font-size: 18px;
-  line-height: 1.5rem;
-  background-color: #ff6a00;
-}
-.button:disabled {
-  background-color: #d9d9d9;
-}
-.button.white {
-  background-color: #fff;
-  border: 1px solid #d9d9d9;
-  color: #474747;
-  font-weight: 600;
-  font-size: 18px;
-}
-.button.reverse {
-  border: 1px solid #ff6a00;
-  color: #ff6a00;
-  background-color: #fff;
+  color: #fff;
+  justify-content: center;
+  margin-bottom: 50px;
 }
 
-.mailWrapper {
-  padding: 20px;
-  background-color: #f8f8f8;
-}
 
-.mailLabel {
-  font-weight: 600;
-  font-size: 14px;
-  color: #8b8b8b;
-}
-.mailValue {
-  font-weight: 600;
-  font-size: 16px;
-  color: #474747;
-}
 
-.forgetPW {
-  font-weight: 500;
-  font-size: 15px;
-  color: #1c1b1f;
-}
-.findPW {
-  font-weight: 500;
-  font-size: 15px;
-  text-decoration: underline;
-  color: #ff6a00;
-  cursor: pointer;
-}
+/* 1단계 */
+/* .agree_item{
+  margin-bottom: 16px;
+} */
 
-.divider {
+.agree_box {
   display: flex;
-  align-items: center; /* 수직 정렬 */
-  text-align: center;
-  width: 363px;
+  flex-direction: column;
+  gap: 50px;
 }
 
-.divider-text {
-  padding: 0 1em; /* 좌우 여백 */
-  white-space: nowrap; /* 텍스트가 줄바꿈되지 않도록 방지 */
+.agree_item {
+  gap: 20px;
 }
 
-.divider::before,
-.divider::after {
-  content: ""; /* 가상 요소를 생성 */
-  flex: 1; /* 남은 공간을 모두 채우도록 확장 */
-  border-bottom: 1px solid #eaeaea; /* 가로선 스타일 */
+.agree_item .checkbox label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.phoneStationBox {
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.3;
-  color: #1c1b1f;
+.agree_item .checkbox label span {
+  font-size: 20px !important; color: #fff;
+  font-weight: 500 !important;
 }
 
-.timer {
-  position: absolute;
-  top: 18px;
-  right: 12px;
-  font-weight: 500;
-  font-size: 14px;
-  color: #ff6a00;
+
+.phone_verification .title {
+  padding-bottom: 15px;
+  border-bottom: 1px solid #535353;
 }
-.resend {
-  position: absolute;
-  top: 18px;
-  right: 12px;
-  font-weight: 500;
-  font-size: 14px;
-  color: #474747;
-  text-decoration-line: underline;
-}
-.inputRequire {
+
+.phone_verification .title h5{
+  font-size: 20px; color: #fff;
   font-weight: 600;
-  font-size: 14px;
-  color: #ff6a00;
+}
+
+.verification_box {
+  justify-content: center;
+  padding: 30px 0 0;
+  margin-bottom: 100px;
+}
+
+.verification_box .verfi_item {
+  width: 100%;
+  max-width: 200px;
+  display: flex;
+}
+
+.verification_box .verfi_item label {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 20px;
+  background: #ff4a4d;
+  border-radius: 10px;
+  justify-content: center;
+}
+
+.verification_box .verfi_item label input {
+  margin: 0;
+}
+
+
+/* 인증폼 */
+.auth_btn_box {
+  border-bottom: 3px solid #ededed;
+}
+
+.auth_check_group .auth_btn {
+  padding: 15px 0;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.auth_check_group .auth_btn p {
+  color: #fff !important;
+}
+
+.auth_check_group .auth_btn.active {
+  background: #353535;
+}
+
+.auth_root_box {
+  padding: 40px 20px 0;
+}
+
+.auth_root_box .phone_input_group {
+  justify-content: start !important;
+}
+
+.auth_root_box .phone_input_group > div:nth-child(1) {
+  width: auto !important;
+}
+
+.auth_root_box .phone_input_group > div:nth-child(1) select {
+  height: 50px;
+}
+
+.phone_select_header {
+  background-color: #222 !important;
+  border-radius: 4px !important;
+  border: 1px solid #4c4c4c !important;
+  color: #fff !important;
+  width: 100%;
+  padding: 17px 15px;
+}
+
+.auth_root_box .icon_filter {
+  filter: brightness(10);
 }
 
 .inputError {
-  font-weight: 500;
-  font-size: 13px;
-  color: #ea4335;
+  color: #797979;
+  font-size: 14px !important;
+  padding-left: 10px;
 }
 
-.inputLabel {
+
+/* 진행 버튼박스 */
+
+.continue_box {
+  justify-content: center;
+  gap: 10px;
+}
+
+.findBox button {
+  width: 180px;
+  padding: 13px 10px;
+  border-radius: 5px;
+  font-size: 18px;
+  color: #fff;
   font-weight: 600;
-  font-size: 14px;
-  color: #1c1b1f;
-}
-.input {
-  border-radius: 4px;
-  border: 1px solid #d9d9d9;
-  padding: 15px 12px;
-  font-weight: 500;
-  font-size: 15px;
-  color: #1c1b1f;
+  transition: all 0.2s;
 }
 
-.input:focus {
-  border-color: #ff6a00;
+/* 회원가입 완료 시 */
+
+.continue_box .home_btn {
+  background: transparent;
+  border: 1px solid #fff;
 }
 
-.confirmButton {
-  background-color: #ff6a00 !important;
+.continue_box .login_btn {
+  background: var(--main-color1);
 }
 
-.copyright {
-  font-weight: 400;
-  font-size: 11px;
-  line-height: 1.3;
-  color: #8b8b8b;
+.continue_box .home_btn:hover {
+  color: var(--main-color1);
+  border-color: var(--main-color1);
 }
+
+.continue_box .login_btn:hover {
+  background: var(--main-color2);
+}
+
+
+
+
+/* .disabled {
+  cursor: not-allowed !important;
+  background: gray !important;
+} */
+
+
+
+
+/* ------------------------------------------------------------- */
