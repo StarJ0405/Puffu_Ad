@@ -101,34 +101,26 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
           paintBullets(swiper);
         }}
       >
-        {[...banners]?.reverse().map((item: BannerDataFrame, i: number) => {
+        {[...banners]?.reverse().map((item: BannerDataFrame, i: number) => (
           // reverse는 임시
-          return (
+          item.thumbnail.pc && (
             <SwiperSlide key={i} className={`swiper_0${i}`}>
               {item.to ? (
                 <Link href={item.to}>
                   <Image
-                    src={
-                      userData?.adult
-                        ? item.thumbnail.pc
-                        : "/resources/images/19_only_banner.png"
-                    }
-                    width={"100%"}
+                    src={userData?.adult ? item.thumbnail.pc : "/resources/images/19_only_banner.png"}
+                    width="100%"
                   />
                 </Link>
               ) : (
                 <Image
-                  src={
-                    userData?.adult
-                      ? item.thumbnail.pc
-                      : "/resources/images/19_only_banner.png"
-                  }
-                  width={"100%"}
+                  src={userData?.adult ? item.thumbnail.pc : "/resources/images/19_only_banner.png"}
+                  width="100%"
                 />
               )}
             </SwiperSlide>
-          );
-        })}
+          )
+        ))}
       </Swiper>
     </FlexChild>
   );

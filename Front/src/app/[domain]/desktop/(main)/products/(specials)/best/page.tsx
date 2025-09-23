@@ -19,8 +19,12 @@ export default async function ({
     pageSize: 24,
     order: "best",
   };
+
   if (category_id) bestCondition.category_id = category_id;
   const bestProducts = await requester.getProducts(bestCondition);
+
+  // console.log(bestProducts);
+
   return (
     <section className="root page_container">
       <Container marginTop={80}>
@@ -32,7 +36,7 @@ export default async function ({
         </VerticalFlex>
 
         <VerticalFlex marginBottom={30}>
-          <ProdcutCategoryFilter />
+          <ProdcutCategoryFilter ConditionOrder={bestCondition} />
         </VerticalFlex>
 
         <VerticalFlex className={Pstyles.list}>

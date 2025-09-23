@@ -22,6 +22,7 @@ export default async function ({
     redirect("/");
   }
   const { id } = await searchParams;
+  
   return (
     <>
       <section className={clsx("root ", "page_container", styles.container)}>

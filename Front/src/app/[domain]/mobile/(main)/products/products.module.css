@@ -133,6 +133,84 @@
 }
 
 
+
+/* 베스트, 신상품용 카테고리 필터 */
+
+
+@media (max-width: 680px) {
+   .filter_box {
+      align-items: start !important;
+      padding: 5px 0 15px;
+      overflow-x: auto;
+   }
+
+   
+   .filter_box::-webkit-scrollbar {height: 7px;}
+   .filter_box::-webkit-scrollbar-thumb {
+     background-color: #111;
+     border-radius: 4px;
+   }
+   
+   .filter_box::-webkit-scrollbar-track {
+     background: #797979;
+     border-radius: 4px;
+   }
+}
+
+.cat_filter_wrap {
+   display: grid;
+   grid-template-columns: repeat(5, 1fr);
+   width: fit-content;
+   /* justify-content: center; */
+   gap: 12px;
+   width: fit-content;
+}
+
+.cat_filter_wrap > * {
+   flex: unset !important;
+}
+
+.cat_filter_wrap .ca_item {
+   gap: 10px;
+   font-size: 12px;
+   text-align: center;
+   color: #f4f4f4;
+   cursor: pointer;
+   --hover-color : var(--main-color1);
+   transition: all 0.2s;
+   width: auto;
+}
+
+.cat_filter_wrap .ca_item .ca_thumb {
+   --size: clamp(50px, calc(100vw * 66 / 360), 120px );
+   /* min(66px, calc(100vw * 66 / 360)) */
+   /* --size: 66px; */
+   border-radius: 10px;
+   border: 3px solid transparent;
+   overflow: hidden;
+   transition: inherit;
+   width:  var(--size);
+   height: var(--size);
+   justify-content: center;
+}
+
+.cat_filter_wrap .ca_item:hover,
+.cat_filter_wrap .ca_item.active {
+   color: var(--hover-color);
+}
+
+.cat_filter_wrap .ca_item:hover .ca_thumb,
+.cat_filter_wrap .ca_item.active .ca_thumb {
+   border-color: var(--hover-color);
+}
+
+.cat_filter_wrap .ca_all .ca_thumb {
+   background: #2D2D2D;
+   justify-content: center !important;
+   font-size: 18px; font-weight: 600;
+}
+
+
 /* 랭크 아이콘 */
 .item_wrap {position: relative;}
 

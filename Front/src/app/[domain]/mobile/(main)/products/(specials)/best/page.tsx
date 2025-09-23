@@ -5,7 +5,7 @@ import styles from "./page.module.css";
 
 import Image from "@/components/Image/Image";
 import { requester } from "@/shared/Requester";
-import { BaseProductList, ProdcutCategory } from "../../baseClient";
+import { BaseProductList, ProdcutCategoryFilter } from "../../baseClient";
 import { SearchParams } from "next/dist/server/request/search-params";
 
 
@@ -42,9 +42,7 @@ export default async function ({
           </VerticalFlex>
         </VerticalFlex>
 
-        <VerticalFlex marginBottom={30}>
-          <ProdcutCategory />
-        </VerticalFlex>
+        <ProdcutCategoryFilter ConditionOrder={bestCondition}  />
 
         <VerticalFlex className={Pstyles.list}>
           <BaseProductList
