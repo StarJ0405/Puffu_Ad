@@ -1,0 +1,28 @@
+.cart_length_pc {
+   padding: 4px 5px;
+   width: 100%;
+   width: 20px;
+   background: var(--main-color2);
+   justify-content: center !important;
+   font-size: 11px;
+   border-radius: 5px;
+   position: absolute;
+   z-index: 2;
+}
+
+
+
+
+.cart_length_mob {
+   padding: 3px 2px;
+   width: 100%;
+   max-width: 20px;
+   background: var(--main-color2);
+   justify-content: center !important;
+   font-size: 11px;
+   border-radius: 5px;
+   position: absolute;
+   z-index: 2;
+   color: #fff;
+   text-align: center;
+}

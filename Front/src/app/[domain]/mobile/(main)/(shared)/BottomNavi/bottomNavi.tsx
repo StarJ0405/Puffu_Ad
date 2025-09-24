@@ -88,8 +88,8 @@ export default function BottomNavi() {
                      <Image src={`/resources/images/bottomNavi/navi_cart${linkTypeHandler('/orders/cart') ? '_active' : ''}.png`} width={21} />
                      <FlexChild className={clsx(styles.txt, {[styles.active] : linkTypeHandler('/orders/cart')})}>
                         <P>장바구니</P>
+                        <CountBadge top={'-20px'} right={'-5px'} />
                      </FlexChild>
-                     <CountBadge />
                   </VerticalFlex>
          
                   <VerticalFlex className={styles.item} onClick={()=> {navigate( !userData?.id ? '/auth/login' : '/mypage'); setActive(false);}}>

@@ -34,27 +34,6 @@ interface SubMenuItem {
 //   inner?: SubMenuItem[]; // menu2는 inner 조건 처리
 // }
 
-export function CartLength() {
-  const { cartData } = useCart();
-  const [length, setLength] = useState<number>(0);
-
-  useEffect(() => {
-    setLength(cartData?.items.length ?? 0);
-  }, [cartData]);
-  
-  return (
-    <>
-    {
-      length > 0 && (
-        <FlexChild className={styles.cart_length}>
-          {length}
-        </FlexChild>
-      )
-    }
-    </>
-  )
-}
-
 export function SearchBox() {
 
   const [value, setValue] = useState("");
