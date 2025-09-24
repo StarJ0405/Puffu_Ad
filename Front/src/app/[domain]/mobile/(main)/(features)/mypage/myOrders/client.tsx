@@ -35,7 +35,7 @@ export function MyOrdersTable({
     "orders",
     {
       ...condition,
-      relations: ["items.brand", "shipping_methods", "store", "address"],
+      relations: ["items.brand","items.review", "shipping_methods", "store", "address"],
       start_date: startDate,
       end_date: endDate,
     },
@@ -272,11 +272,23 @@ export function MyOrdersTable({
                       <HorizontalFlex gap={6}>
                         <Button
                           width={"100%"}
-                          onClick={() =>
-                            NiceModal.show("review", {
+                          onClick={() => {
+                            const i = item;
+                            NiceModal.show("reviewWrite", {
+                              item: {
+                                id: i.id,
+                                brand_name: i?.brand?.name,
+                                product_title: i.product_title,
+                                variant_title: i.variant_title,
+                                thumbnail: i.thumbnail,
+                              },
                               edit: true,
-                            })
-                          }
+                              withPCButton: false,
+                              width: "100vw",
+                              height: "100dvh",
+                              onSuccess: () => mutate(),
+                            });
+                          }}
                         >
                           리뷰 작성
                         </Button>

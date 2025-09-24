@@ -290,7 +290,6 @@ export function MyOrdersTable({
                           <VerticalFlex gap={6}>
                             <Button
                               onClick={() => {
-                                console.log(item);
                                 const i = item;
                                 NiceModal.show("reviewWrite", {
                                   item: {
