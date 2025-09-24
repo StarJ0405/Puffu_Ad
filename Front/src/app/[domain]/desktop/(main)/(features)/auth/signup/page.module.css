@@ -276,13 +276,12 @@
 }
 
 .next_btn {
-  background: #fff;
-  color: var(--main-color1);
+  background: var(--main-color1) !important;
+  color: #fff !important;
 }
 
 .next_btn:hover {
-  background: var(--main-color1);
-  color: #fff;
+  background: var(--main-color2) !important;
 }
 
 

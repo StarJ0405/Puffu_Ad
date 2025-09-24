@@ -235,7 +235,7 @@
    padding: 25px 15px;
    border-radius: 10px;
    position: sticky;
-   top: 70px;
+   top: 130px;
 }
 
 .mini_infoBox .option_item {
@@ -292,7 +292,7 @@
    display: grid;
    grid-template-columns: repeat(3, 1fr);
    position: sticky;
-   top: 53px;
+   top: 110px;
    z-index: 100;
 }
 

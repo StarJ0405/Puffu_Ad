@@ -229,7 +229,7 @@ export function Auth() {
   const [, , removeCookie] = useCookies([Cookies.JWT]);
   const { userData } = useAuth();
   return (
-    <HorizontalFlex gap={20} className={styles.info_top} width={"auto"}>
+    <HorizontalFlex gap={13} className={styles.info_top} width={"auto"}>
       <P
         onClick={() => removeCookie(Cookies.JWT, getCookieOption())}
         hidden={!userData?.id}
@@ -241,9 +241,9 @@ export function Auth() {
       <Link href={"/auth/signup"} hidden={!!userData?.id}>
         회원가입
       </Link>
-      <Link href={"/auth/login"} hidden={!!userData?.id}>
+      {/* <Link href={"/auth/login"} hidden={!!userData?.id}>
         로그인
-      </Link>
+      </Link> */}
     </HorizontalFlex>
   );
 }
