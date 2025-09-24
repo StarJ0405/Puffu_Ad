@@ -1,10 +1,19 @@
 import { BaseEntity } from "data-source";
-import { BeforeInsert, Column, Entity, Index, OneToMany } from "typeorm";
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+} from "typeorm";
 import { generateEntityId } from "utils/functions";
 import { AccountLink } from "./account_link";
 import { Cart } from "./cart";
 import { Order } from "./order";
 import { Point } from "./point";
+import { Group } from "./group";
 
 export enum UserRole {
   ADMIN = "admin",
@@ -64,35 +73,15 @@ export class User extends BaseEntity {
   @Column({ type: "character varying", nullable: true })
   brand_id?: string;
 
-  @Column({ type: "character varying", nullable: true })
-  ci?: string;
-
-  @Column({ type: "character varying", nullable: true })
-  di?: string;
-
-  @Column({ type: "character varying", nullable: true })
-  biometric_algorithm?: string;
-
-  @Column({ type: "character varying", nullable: true })
-  biometric_enabled?: string;
-
-  @Column({ type: "character varying", nullable: true })
-  biometric_public_key?: string;
-
-  @Column({
-    type: "timestamp with time zone",
-    nullable: true,
-  })
-  biometric_registered_at?: Date;
-
-  @Column({ type: "character varying", nullable: true })
-  pin_hash?: string;
-
-  @Column({ type: "boolean", default: false })
-  adult_mode?: boolean;
-
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;
+
+  @Column({ type: "character varying", nullable: true })
+  group_id?: string;
+
+  @ManyToOne(() => Group, (group) => group.users)
+  @JoinColumn({ name: "group_id", referencedColumnName: "id" })
+  group?: Group;
 
   @OneToMany(() => AccountLink, (link) => link.user)
   accounts?: AccountLink[];
