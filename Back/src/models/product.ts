@@ -5,6 +5,8 @@ import {
   Entity,
   Index,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
 } from "typeorm";
@@ -39,12 +41,22 @@ export class Product extends BaseEntity {
   @JoinColumn({ name: "brand_id", referencedColumnName: "id" })
   brand?: Brand;
 
-  @Column({ type: "character varying", nullable: false })
+  @Column({ type: "character varying", nullable: true })
   category_id?: string;
 
-  @ManyToOne(() => Category)
-  @JoinColumn({ name: "category_id", referencedColumnName: "id" })
-  category?: Category;
+  @ManyToMany(() => Category, (ct) => ct.products)
+  @JoinTable({
+    name: "product_category",
+    joinColumn: {
+      name: "product_id",
+      referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "category_id",
+      referencedColumnName: "id",
+    },
+  })
+  categories?: Category[];
 
   @Column({ type: "character varying", nullable: false })
   title?: string;

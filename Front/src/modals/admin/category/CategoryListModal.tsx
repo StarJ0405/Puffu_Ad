@@ -8,7 +8,7 @@ import clsx from "clsx";
 import { useRef } from "react";
 import ModalBase from "../../ModalBase";
 import styles from "./CategoryListModal.module.css";
-const CategoryList = NiceModal.create(
+const CategoryListModal = NiceModal.create(
   ({
     category,
     categories,
@@ -188,4 +188,4 @@ const CategoryList = NiceModal.create(
   }
 );
 
-export default CategoryList;
+export default CategoryListModal;

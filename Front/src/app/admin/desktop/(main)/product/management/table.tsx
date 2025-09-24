@@ -249,7 +249,7 @@ export default function ({
     {},
     (condition) => adminRequester.getStores(condition),
     {
-      onReprocessing: (data) => data?.content,
+      onReprocessing: (data) => data?.content || [],
       fallbackData: initStores,
     }
   );
@@ -450,7 +450,7 @@ export default function ({
           onMaxPage={(data) => {
             return Number(data?.totalPages);
           }}
-          onReprocessing={(data) => data.content}
+          onReprocessing={(data) => data?.content || []}
           onChange={({ origin }) => setTotal(origin.NumberOfTotalElements)}
           ContextMenu={ContextMenu}
         />

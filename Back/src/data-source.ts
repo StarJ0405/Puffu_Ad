@@ -76,6 +76,9 @@ export abstract class BaseRepository<T extends ObjectLiteral> {
   builder(alias: string) {
     return this.repo.createQueryBuilder(alias);
   }
+  async save(data: DeepPartial<T>) {
+    return await this.repo.save(data);
+  }
   async create(data: DeepPartial<T>): Promise<T> {
     return await this.repo.save(this.repo.create(data));
   }
@@ -189,6 +192,9 @@ export abstract class BaseTreeRepository<T extends ObjectLiteral> {
   }
   builder(alias: string) {
     return this.repo.createQueryBuilder(alias);
+  }
+  async save(data: DeepPartial<T>) {
+    return await this.repo.save(data);
   }
   async create(data: DeepPartial<T>): Promise<T> {
     return await this.repo.save(this.repo.create(data));

@@ -16,7 +16,7 @@ export class ProductRepository extends BaseRepository<Product> {
       const product = this.repo.create();
       product.store_id = data.store_id;
       product.brand_id = data.brand_id;
-      product.category_id = data.category_id;
+      product.categories = (data.categories || []) as any;
       product.title = data.title;
       product.code = data.code;
       product.thumbnail = data.thumbnail;
