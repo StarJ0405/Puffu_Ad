@@ -60,7 +60,8 @@
 .sign_features .find_box span {cursor: pointer !important;}
 
 
-.sign_features .login_and:hover span {
+.sign_features .login_and:hover span,
+.sign_features .login_and.active span {
    color: var(--main-color2);
 }
 

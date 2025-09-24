@@ -1,0 +1,350 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.findBox {
+  gap: 30px;
+  width: 100%;
+  max-width: 600px;
+  padding: 30px 0 50px;
+}
+
+.findBox .title_box {
+  color: #fff;
+  justify-content: center;
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.findBox .input_wrap {
+  background: #222;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 10px;
+  padding: 45px;
+  gap: 20px;
+}
+
+.input_wrap .sub_title {
+  text-align: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.input_wrap .sub_title > * {
+  width: auto;
+}
+
+.input_wrap .sub_title > .title {
+  font-size: 20px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.input_wrap .sub_title > .txt {
+  font-size: 16px;
+  color: #fff;
+}
+
+.input_wrap .input_box {
+  color: #efefef;
+  gap: 10px;
+  font-size: 16px;
+}
+
+.find_id_link {
+  gap: 10px;
+  font-size: 14px;
+  color: #fff;
+}
+
+.find_id_link .link_btn {
+  text-decoration: underline;
+  color: var(--main-color1) !important;
+  cursor: pointer;
+}
+
+.find_id_link .link_btn:active {
+  color: var(--main-color2) !important;
+}
+
+.btn {
+  width: 100%;
+  cursor: pointer;
+  max-width: 180px;
+  justify-content: center;
+  padding: 12px 10px;
+  font-size: 18px;
+  border-radius: 5px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.next_btn {
+  background: var(--main-color1);
+  color: #fff;
+}
+
+.next_btn:hover {
+  background: var(--main-color2);
+}
+
+.prev_btn {
+  background: #ccc;
+  color: #4d4d4d;
+}
+.prev_btn:hover {
+  background: gray;
+}
+
+
+
+/* ------------------------------------------------------------- */
+
+
+.signup_frame {
+  padding-top: 50px;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.page_title {justify-content: center; margin-bottom: 50px;}
+
+.page_title h3{
+  font-size: 50px;
+  color: #fff;
+  font-weight: 700;
+}
+
+.step_root {
+  width: 100%;
+  max-width: 570px;
+  margin: 0 auto 100px;
+  position: relative;
+}
+
+.step_root > * {
+  width: auto;
+}
+
+.step_root .step_number {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  position: relative; z-index: 2;
+  background: #621d8f;
+  color: #fff;
+  font-size: 16px;
+  justify-content: center;
+}
+
+.step_root .step_line {
+  width: 100%; 
+  position: absolute;
+  z-index: 1;
+  height: 2px;
+  background: rgba(255,255,255,0.5);
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+.step_root .step_line #line {
+  width: 0;
+  height: 100%;
+  background: #a444e4;
+}
+
+.step_title {
+  font-size: 30px;
+  font-weight: 600;
+  color: #fff;
+  justify-content: center;
+  margin-bottom: 50px;
+}
+
+
+
+/* 1단계 */
+/* .agree_item{
+  margin-bottom: 16px;
+} */
+
+.agree_box {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.agree_item {
+  gap: 20px;
+}
+
+.agree_item .checkbox label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.agree_item .checkbox label span {
+  font-size: 20px !important; color: #fff;
+  font-weight: 500 !important;
+}
+
+
+.phone_verification .title {
+  padding-bottom: 15px;
+  border-bottom: 1px solid #535353;
+}
+
+.phone_verification .title h5{
+  font-size: 20px; color: #fff;
+  font-weight: 600;
+}
+
+.verification_box {
+  justify-content: center;
+  padding: 30px 0 0;
+  margin-bottom: 100px;
+}
+
+.verification_box .verfi_item {
+  width: 100%;
+  max-width: 200px;
+  display: flex;
+}
+
+.verification_box .verfi_item label {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 20px;
+  background: #ff4a4d;
+  border-radius: 10px;
+  justify-content: center;
+}
+
+.verification_box .verfi_item label input {
+  margin: 0;
+}
+
+
+/* 인증폼 */
+.auth_btn_box {
+  border-bottom: 3px solid #ededed;
+}
+
+.auth_check_group .auth_btn {
+  padding: 10px 0;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.auth_check_group .auth_btn p {
+  color: #fff !important;
+}
+
+.auth_check_group .auth_btn.active {
+  background: #353535;
+}
+
+.auth_root_box {
+  padding: 25px 15px 0;
+}
+
+.auth_root_box .phone_input_group {
+  justify-content: start !important;
+}
+
+.auth_root_box .phone_input_group > div:nth-child(1) {
+  width: auto !important;
+}
+
+.auth_root_box .phone_input_group > div:nth-child(1) select {
+  height: 50px;
+}
+
+.phone_select_header {
+  background-color: #222 !important;
+  border-radius: 4px !important;
+  border: 1px solid #4c4c4c !important;
+  color: #fff !important;
+  width: 100%;
+  padding: 11px 15px;
+}
+
+.auth_root_box .icon_filter {
+  filter: brightness(10);
+}
+
+.inputError {
+  color: #797979;
+  font-size: 13px !important;
+  padding-top: 10px;
+}
+
+
+.inputLabel {
+  font-size: 14px !important;
+}
+
+.forgetPW {font-size: 14px !important;}
+.findPW {font-size: 14px !important;}
+.findPW:active {color: var(--main-color2);}
+
+/* 진행 버튼박스 */
+
+.continue_box {
+  justify-content: center;
+  gap: 10px;
+}
+
+.findBox button {
+  width: 180px;
+  padding: 10px 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #fff;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+/* 회원가입 완료 시 */
+
+.continue_box .home_btn {
+  background: transparent;
+  border: 1px solid #fff;
+}
+
+.continue_box .login_btn {
+  background: var(--main-color1);
+}
+
+.continue_box .home_btn:hover {
+  color: var(--main-color1);
+  border-color: var(--main-color1);
+}
+
+.continue_box .login_btn:hover {
+  background: var(--main-color2);
+}
+
+
+.mailValue {
+  color: #797979;
+  
+}
+
+
+
+/* .disabled {
+  cursor: not-allowed !important;
+  background: gray !important;
+} */
+
+
+
+
+/* ------------------------------------------------------------- */

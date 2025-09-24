@@ -19,12 +19,30 @@ import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import styles from "./page.module.css";
 
-export function SignFeatures() {
+
+export function LoginFrame() {
+
+  const [loginKeep, setLoginkeep] = useState<boolean>(false);
+
+  return (
+    <>
+      <SignFeatures loginKeep={loginKeep} setLoginkeep={setLoginkeep} />
+
+      <VerticalFlex gap={15}>
+        {/* 로그인, 회원가입 버튼 */}
+        <SubmitGroup loginKeep={loginKeep} />
+      </VerticalFlex>
+    </>
+  )
+}
+
+
+export function SignFeatures({loginKeep, setLoginkeep} : {loginKeep: boolean , setLoginkeep: React.Dispatch<React.SetStateAction<boolean>>}) {
   const navigate = useNavigate();
 
   return (
     <HorizontalFlex className={styles.sign_features}>
-      <FlexChild className={styles.login_and} width={"auto"}>
+      <FlexChild className={clsx(styles.login_and, loginKeep && styles.active)} width={"auto"} onClick={()=> setLoginkeep(true)}>
         <Span cursor="pointer">로그인 상태 유지</Span>
       </FlexChild>
 
@@ -47,7 +65,7 @@ export function SignFeatures() {
   );
 }
 
-export function SubmitGroup() {
+export function SubmitGroup({loginKeep} : {loginKeep : boolean}) {
   const { userData } = useAuth();
   const [, setCookies] = useCookies([Cookies.JWT]);
   const navigate = useNavigate();
@@ -87,6 +105,7 @@ export function SubmitGroup() {
         const { access_token } = await requester.login({
           username,
           password,
+          keep: loginKeep,
         });
         if (access_token) {
           setCookies(Cookies.JWT, access_token, getCookieOption());

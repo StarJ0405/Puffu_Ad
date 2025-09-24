@@ -11,6 +11,7 @@ import {
   useState,
 } from "react";
 import { useTranslation } from "react-i18next";
+import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
 
 // Import the CSS Module
 import styles from "./Input.module.css"; // <--- NEW
@@ -343,6 +344,7 @@ const Input = forwardRef(
     const actualInputType =
       type === "password" && !hidePassword ? "text" : type;
 
+    const { isMobile } = useBrowserEvent();
     return (
       <div
         className={clsx(styles.wrap, { [styles.mobileWrap]: size === "sm" })}
@@ -377,7 +379,7 @@ const Input = forwardRef(
 
           {placeHolder && !value && value !== 0 && (
             <div className={styles.placeHolderArea}>
-              <div className={clsx(styles.placeHolder, placeHolderClassName)}>
+              <div className={clsx(styles.placeHolder, placeHolderClassName)} style={{fontSize: isMobile ? "13px" : ""}}>
                 {t(placeHolder)}
               </div>
             </div>
