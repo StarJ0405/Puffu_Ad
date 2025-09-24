@@ -12,6 +12,7 @@ import React, {
 } from "react";
 import { createPortal } from "react-dom";
 import styles from "./Select.module.css";
+import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
 
 // 옵션의 데이터 타입 정의
 interface SelectOption<T extends string | number> {
@@ -229,6 +230,7 @@ function Select<T extends string | number>({
     }
   };
   const Options = () => {
+    const { isMobile } = useBrowserEvent();
     return (
       <>
         {options.length === 0 ? (
@@ -245,6 +247,7 @@ function Select<T extends string | number>({
             })
             .map((option, index) => (
               <div
+                style={{fontSize: isMobile ? "12px" : ""}}
                 key={String(option?.value) + index}
                 className={clsx(
                   styles.optionItem,

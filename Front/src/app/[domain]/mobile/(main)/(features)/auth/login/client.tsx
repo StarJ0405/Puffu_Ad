@@ -19,54 +19,42 @@ import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import styles from "./page.module.css";
 
-export function SignFeatures() {
-  const [idStep, setidStep] = useState(0);
 
-  const IdLostModal = () => {
-    NiceModal.show(ConfirmModal, {
-      // title: '아이디 찾기',
-      message: <LostId idStep={idStep} />,
-      confirmText: `
-         ${idStep === 0 && "아이디 찾기"}
-         ${idStep === 1 && "확인"}
-      `,
-      // onclick: setPaswwordStep(1),
-      withCloseButton: true,
-      onConfirm: async () => {},
-    });
-  };
+export function LoginFrame() {
 
-  const [passwordStep, setPaswwordStep] = useState(0);
+  const [loginKeep, setLoginkeep] = useState<boolean>(false);
 
-  const passwordLostModal = () => {
-    NiceModal.show(ConfirmModal, {
-      // title: '비밀번호 찾기',
-      message: <Lostpassword passwordStep={passwordStep} />,
-      confirmText: `
-         ${passwordStep === 0 && "다음"}
-         ${passwordStep === 1 && "확인"}
-      `,
-      // onclick: setPaswwordStep(1),
-      withCloseButton: true,
-      onConfirm: async () => {},
-    });
-  };
+  return (
+    <>
+      <SignFeatures loginKeep={loginKeep} setLoginkeep={setLoginkeep} />
+
+      <VerticalFlex gap={15}>
+        {/* 로그인, 회원가입 버튼 */}
+        <SubmitGroup loginKeep={loginKeep} />
+      </VerticalFlex>
+    </>
+  )
+}
+
+export function SignFeatures({loginKeep, setLoginkeep} : {loginKeep: boolean , setLoginkeep: React.Dispatch<React.SetStateAction<boolean>>}) {
+  const navigate = useNavigate();
+
 
   return (
     <HorizontalFlex className={styles.sign_features} gap={10}>
-      <FlexChild className={styles.login_and} width={"auto"}>
+      <FlexChild className={clsx(styles.login_and, loginKeep && styles.active)} width={"auto"} onClick={()=> setLoginkeep(true)}>
         {/* <CheckboxChild id={'11'} /> */}
-        <Span cursor="poointer">로그인 상태 유지</Span>
+        <Span cursor="pointer">로그인 상태 유지</Span>
       </FlexChild>
 
       <FlexChild className={styles.find_box}>
-        <FlexChild onClick={IdLostModal}>
+        <FlexChild onClick={()=> navigate('/auth/find_id')}>
           <Span>아이디 찾기</Span>
         </FlexChild>
 
         <Span>|</Span>
 
-        <FlexChild onClick={passwordLostModal}>
+        <FlexChild onClick={()=> navigate('/auth/find_pw')}>
           <Span>비밀번호 찾기</Span>
         </FlexChild>
       </FlexChild>
@@ -74,159 +62,8 @@ export function SignFeatures() {
   );
 }
 
-export function LostId({ idStep }: { idStep: number }) {
-  return (
-    <VerticalFlex className="modal_edit_info" gap={50}>
-      <FlexChild className="title" justifyContent="center">
-        <P size={25} weight={600}>
-          회원 아이디 찾기
-        </P>
-      </FlexChild>
 
-      {
-        // 1단계 아이디 찾기
-        idStep === 0 && (
-          <FlexChild>
-            <VerticalFlex alignItems="start" gap={30}>
-              <VerticalFlex className={"input_box"} alignItems="start" gap={10}>
-                <P size={16} color="#333" weight={600}>
-                  이름
-                </P>
-                <Input
-                  type="text"
-                  width={"100%"}
-                  placeHolder="가입했던 이름을 입력해 주세요"
-                />
-              </VerticalFlex>
-
-              <VerticalFlex className={"input_box"} alignItems="start" gap={10}>
-                <P size={16} color="#333" weight={600}>
-                  휴대폰번호
-                </P>
-                <Input
-                  type="text"
-                  width={"100%"}
-                  placeHolder="(+86)00000000000"
-                />
-              </VerticalFlex>
-            </VerticalFlex>
-          </FlexChild>
-        )
-      }
-
-      {
-        // 2단계 아이디 보여주기
-        idStep === 1 && (
-          <FlexChild>
-            <VerticalFlex alignItems="center" gap={30}>
-              <VerticalFlex
-                className={"input_box"}
-                alignItems="center"
-                gap={10}
-                marginBottom={30}
-              >
-                <P size={18} color="#333" weight={600}>
-                  회원님의 아이디는
-                </P>
-                <P size={25} color="#333" weight={600}>
-                  <Span color="var(--main-color1)">nah****</Span> 입니다.
-                </P>
-              </VerticalFlex>
-            </VerticalFlex>
-          </FlexChild>
-        )
-      }
-    </VerticalFlex>
-  );
-}
-
-export function Lostpassword({ passwordStep }: { passwordStep: number }) {
-  return (
-    <VerticalFlex className="modal_edit_info" gap={50}>
-      <FlexChild className="title" justifyContent="center">
-        <P size={25} weight={600}>
-          {passwordStep === 0 && "비밀번호 찾기"}
-          {passwordStep === 1 && "비밀번호 변경"}
-        </P>
-      </FlexChild>
-
-      {
-        // 1단계 비밀번호 찾기
-        passwordStep === 0 && (
-          <FlexChild>
-            <VerticalFlex alignItems="start" gap={30}>
-              <VerticalFlex className={"input_box"} alignItems="start" gap={10}>
-                <P size={16} color="#333" weight={600}>
-                  이름
-                </P>
-                <Input
-                  type="text"
-                  width={"100%"}
-                  placeHolder="가입했던 이름을 입력해 주세요"
-                />
-              </VerticalFlex>
-
-              <VerticalFlex className={"input_box"} alignItems="start" gap={10}>
-                <P size={16} color="#333" weight={600}>
-                  휴대폰번호
-                </P>
-                <Input
-                  type="text"
-                  width={"100%"}
-                  placeHolder="(+86)00000000000"
-                />
-              </VerticalFlex>
-
-              <VerticalFlex className={"input_box"} alignItems="start" gap={10}>
-                <P size={16} color="#333" weight={600}>
-                  이메일
-                </P>
-                <Input
-                  type="text"
-                  width={"100%"}
-                  placeHolder="이메일을 입력하세요."
-                />
-              </VerticalFlex>
-            </VerticalFlex>
-          </FlexChild>
-        )
-      }
-
-      {
-        // 2단계 비밀번호 변경
-        passwordStep === 1 && (
-          <FlexChild>
-            <VerticalFlex alignItems="start" gap={30}>
-              <VerticalFlex className={"input_box"} alignItems="start" gap={10}>
-                <P size={16} color="#333" weight={600}>
-                  새 비밀번호 입력
-                </P>
-                <Input
-                  type="text"
-                  width={"100%"}
-                  placeHolder="새 비밀번호 입력"
-                />
-              </VerticalFlex>
-
-              <VerticalFlex className={"input_box"} alignItems="start" gap={10}>
-                <P size={16} color="#333" weight={600}>
-                  새 비밀번호 확인
-                </P>
-                <Input
-                  type="text"
-                  width={"100%"}
-                  placeHolder="새 비밀번호 확인"
-                />
-              </VerticalFlex>
-            </VerticalFlex>
-          </FlexChild>
-        )
-      }
-    </VerticalFlex>
-  );
-}
-
-export function SubmitGroup() {
+export function SubmitGroup({loginKeep} : {loginKeep : boolean}) {
   const { userData } = useAuth();
   const [, setCookies] = useCookies([Cookies.JWT]);
   const navigate = useNavigate();
@@ -243,6 +80,7 @@ export function SubmitGroup() {
         const { access_token } = await requester.login({
           username,
           password,
+          keep: loginKeep,
         });
         if (access_token) {
           setCookies(Cookies.JWT, access_token, getCookieOption());
@@ -253,7 +91,7 @@ export function SubmitGroup() {
             className: "custom-toast-body",
             withCloseButton: true,
             messageBoxClassName: "custom-toast",
-            autoClose: 5000000,
+            autoClose: 5000,
           });
         }
       }

@@ -8,7 +8,7 @@ import { useAuth } from "@/providers/AuthPorivder/AuthPorivder";
 import clsx from "clsx";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { SignFeatures, SubmitGroup } from "./client";
+import { LoginFrame } from "./client";
 import styles from "./page.module.css";
 import { SearchParams } from "next/dist/server/request/search-params";
 
@@ -57,13 +57,8 @@ export default async function ({
                 </FlexChild>
               </VerticalFlex>
 
-              {/* 이메일 비밀번호 찾기, 로그인 상태 유지 */}
-              <SignFeatures />
-
-              <VerticalFlex gap={15}>
-                {/* 로그인, 회원가입 버튼 */}
-                <SubmitGroup />
-              </VerticalFlex>
+              {/* 로그인 기능 */}
+              <LoginFrame />
             </VerticalFlex>
           </FlexChild>
         </VerticalFlex>
