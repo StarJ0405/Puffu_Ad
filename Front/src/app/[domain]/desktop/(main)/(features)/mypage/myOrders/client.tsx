@@ -15,7 +15,7 @@ import { requester } from "@/shared/Requester";
 import { getOrderStatus, openTrackingNumber } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import styles from "./page.module.css";
 
 export function MyOrdersTable({
@@ -33,40 +33,6 @@ export function MyOrdersTable({
   const [endDate, setEndDate] = useState(initEndDate);
   const [condition, setCondition] = useState<any>({});
   const [activePeriod, setActivePeriod] = useState("1week");
-  const formatOrders = useCallback((ordersData: any[]) => {
-    return ordersData.map((order) => {
-      let totalDiscount = 0;
-      let totalPayment = 0;
-
-      const content = order.items.map((item: any) => {
-        const discount = item.total - item.total_discount;
-        totalDiscount += discount;
-        totalPayment += item.total_discount;
-        return {
-          title: item.product_title,
-          thumbnail: item.thumbnail,
-          brand: item.brand.name,
-          price: item.total_discount.toLocaleString(),
-          discountAmount: discount.toLocaleString(),
-          option: item.variant_title
-            ? [{ title: item.variant_title, price: "0" }]
-            : [],
-          delivery: "/resources/icons/cart/cj_icon.png",
-        };
-      });
-
-      return {
-        id: order.id,
-        // date: orderDate,
-        orderId: order.display, // Unique order identifier
-        content: content,
-        totalDiscount: totalDiscount.toLocaleString(),
-        totalPayment: totalPayment.toLocaleString(),
-        status: order.status,
-        trackingNumber: order.shipping_methods?.[0]?.tracking_number,
-      };
-    });
-  }, []);
   const { orders, mutate } = useData(
     "orders",
     {
@@ -404,12 +370,23 @@ export function MyOrdersTable({
                     <Span>원</Span>
                   </P>
                 </HorizontalFlex>
+                <HorizontalFlex
+                  className={styles.summary_row}
+                  hidden={!order.point}
+                >
+                  <P>사용포인트</P>
+                  <P>
+                    <Span>-{order.point}</Span>
+                    <Span>P</Span>
+                  </P>
+                </HorizontalFlex>
                 <HorizontalFlex className={styles.summary_row}>
                   <P>총 결제금액</P>
                   <P color="var(--main-color1)" weight={600} fontSize={20}>
                     <Span>
                       {order.total_discounted +
-                        (order.shipping_methods?.[0].amount || 0)}
+                        (order.shipping_methods?.[0].amount || 0) -
+                        order.point}
                     </Span>
                     <Span>원</Span>
                   </P>
