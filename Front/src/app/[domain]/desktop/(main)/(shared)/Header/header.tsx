@@ -1,3 +1,4 @@
+"use client";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
@@ -5,24 +6,36 @@ import Image from "@/components/Image/Image";
 import Link from "next/link";
 import { Auth, HeaderBottom, SearchBox, CartLength } from "./client";
 import styles from "./header.module.css";
+import { useRef, useState, useEffect } from "react";
+import clsx from "clsx";
 
-export default async function Header() {
+export default function Header() {
+
+  const headerRef = useRef<HTMLDivElement | null>(null);
+  const [fixed, setFixed] = useState(false);
+  const [CaOpen, SetCaOpen] = useState(false);
+
+  useEffect(() => {
+    const headerScroll = () => {
+      setFixed(window.scrollY > 0);
+    };
+
+    window.addEventListener("scroll", headerScroll);
+    return () => window.removeEventListener("scroll", headerScroll);
+  }, [headerRef]);
 
   return (
     <>
-      <header className={styles.header}>
+      {/* className={styles.header} className={clsx(`${fixed ? styles.scroll : ""}`, styles.header)} */}
+      <header ref={headerRef} className={clsx(`${fixed ? styles.scroll : ""}`, styles.header)}>
         <HorizontalFlex
-          className="page_container"
-          alignItems="end"
-          marginBottom={35}
+          className={clsx('page_container', styles.header_wrap)}
         >
           <FlexChild gap={20}>
             <FlexChild className={styles.logo}>
               <Link href="/">
                 <Image
                   src="/resources/images/header/logo.png"
-                  width={150}
-                  height={"auto"}
                 />
               </Link>
             </FlexChild>
@@ -30,7 +43,7 @@ export default async function Header() {
           </FlexChild>
 
           <FlexChild width={"auto"} className={styles.info_box}>
-            <VerticalFlex gap={20} alignItems="end">
+            <VerticalFlex className={styles.info_wrap}>
               <Auth />
 
               <HorizontalFlex width={"auto"} gap={10}>

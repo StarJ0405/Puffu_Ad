@@ -36,7 +36,9 @@
 .SacheonFont {font-family: "SacheonHangGong-Regular", sans-serif !important;}
 
 * {
-  box-sizing: border-box;
+  font-size: 16px; 
+  line-height: 1.4; 
+  /* word-break: break-all; */
 }
 
 html,

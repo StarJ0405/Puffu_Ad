@@ -1,29 +1,31 @@
 
 .header {
+
+   --all_transition: all 0.2s;
+
    background: linear-gradient(180deg, #2b2b2b, #1a1a1a);
    padding: 15px 0 0;
    display: flex;
    flex-direction: column;
-   position: absolute;
+   position: fixed;
+   /* position: absolute; */
    z-index: 1000;
    width: 100%;
    left: 0;
    top: 0;
    min-width: 1380px;
+   transition: var(--all_transition);
 }
 
-/* 스크롤 fixed - header 안에 자식에 걸림 */
-.fixed {
-   position: fixed;
-   top: 0;
-   background: #1a1a1a;
-   border-bottom: 1px solid rgba(255,255,255,0.4);
+.header_wrap {
+   margin-bottom: 35px;
+   transition: var(--all_transition);
+   align-items: end !important;
 }
 
 
-.logo {
-   width: auto;
-}
+.logo {width: auto;}
+.logo img {width: 150px; transition: var(--all_transition);}
 
 /* 검색창 */
 .search_Box {
@@ -33,12 +35,18 @@
    max-width: 363px;
    padding: 13px 15px;
    font-size: 16px;
+   transition: var(--all_transition);
 }
 
 .search_Box input {font-size: 16px;}
 
 
 /* 회원가입, lang */
+.info_box .info_wrap {
+   gap: 20px; transition: var(--all_transition);
+   align-items: end !important;
+}
+
 .info_box .info_top span {
    width: auto;
    font-size: 14px;
@@ -174,3 +182,38 @@
 .commu_outer > li > .subMenu > li a:hover {
    color: var(--main-color1);
 } */
+
+
+
+/* 스크롤 fixed - headerBottom 안에 걸림. 피드백 받고 이상하다 하면 이걸로 돌려놓기 */
+/* .fixed {
+   position: fixed;
+   top: 0;
+   background: #1a1a1a;
+   border-bottom: 1px solid rgba(255,255,255,0.4);
+} */
+
+/* 스크롤되면 클래스 부여 */
+header.scroll {
+   border-bottom: 1px solid rgba(255,255,255,0.4);
+   padding: 10px 0 0;
+}
+header.scroll .header_wrap {
+   margin-bottom: 5px;
+   align-items: start !important;
+}
+header.scroll .logo img {width: 100px;}
+
+/* 검색창 */
+header.scroll .search_Box {
+   max-width: 300px;
+   padding: 7px 15px;
+   font-size: 14px;
+   border: 1px solid #ccc;
+   border-radius: 5px;
+}
+
+header.scroll .info_box .info_wrap {
+   gap: 15px; flex-direction: unset !important;
+   align-items: center !important;
+}

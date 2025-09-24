@@ -3,10 +3,7 @@ import Button from "@/components/buttons/Button";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import Input from "@/components/inputs/Input";
-import P from "@/components/P/P";
 import Span from "@/components/span/Span";
-import ConfirmModal from "@/modals/confirm/ConfirmModal";
 import ToastModal from "@/modals/toast/ToastModal";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import useNavigate from "@/shared/hooks/useNavigate";
@@ -19,9 +16,7 @@ import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import styles from "./page.module.css";
 
-
 export function LoginFrame() {
-
   const [loginKeep, setLoginkeep] = useState<boolean>(false);
 
   return (
@@ -33,31 +28,36 @@ export function LoginFrame() {
         <SubmitGroup loginKeep={loginKeep} />
       </VerticalFlex>
     </>
-  )
+  );
 }
 
-
-export function SignFeatures({loginKeep, setLoginkeep} : {loginKeep: boolean , setLoginkeep: React.Dispatch<React.SetStateAction<boolean>>}) {
+export function SignFeatures({
+  loginKeep,
+  setLoginkeep,
+}: {
+  loginKeep: boolean;
+  setLoginkeep: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const navigate = useNavigate();
 
   return (
     <HorizontalFlex className={styles.sign_features}>
-      <FlexChild className={clsx(styles.login_and, loginKeep && styles.active)} width={"auto"} onClick={()=> setLoginkeep(true)}>
+      <FlexChild
+        className={clsx(styles.login_and, loginKeep && styles.active)}
+        width={"auto"}
+        onClick={() => setLoginkeep(prev => !prev)}
+      >
         <Span cursor="pointer">로그인 상태 유지</Span>
       </FlexChild>
 
       <FlexChild className={styles.find_box}>
-        <FlexChild 
-          onClick={()=> navigate('/auth/find_id')}
-        >
+        <FlexChild onClick={() => navigate("/auth/find_id")}>
           <Span>아이디 찾기</Span>
         </FlexChild>
 
         <Span>|</Span>
 
-        <FlexChild 
-          onClick={()=> navigate('/auth/find_pw')}
-        >
+        <FlexChild onClick={() => navigate("/auth/find_pw")}>
           <Span>비밀번호 찾기</Span>
         </FlexChild>
       </FlexChild>
@@ -65,7 +65,7 @@ export function SignFeatures({loginKeep, setLoginkeep} : {loginKeep: boolean , s
   );
 }
 
-export function SubmitGroup({loginKeep} : {loginKeep : boolean}) {
+export function SubmitGroup({ loginKeep }: { loginKeep: boolean }) {
   const { userData } = useAuth();
   const [, setCookies] = useCookies([Cookies.JWT]);
   const navigate = useNavigate();
