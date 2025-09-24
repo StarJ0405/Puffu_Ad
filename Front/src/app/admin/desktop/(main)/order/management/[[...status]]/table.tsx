@@ -100,7 +100,8 @@ export default function ({
           <Span>
             {cell +
               (row?.total_tax || 0) +
-              (row?.shipping_methods?.[0]?.amount || 0)}
+              (row?.shipping_methods?.[0]?.amount || 0) -
+              (row?.point || 0)}
           </Span>
           <Span>{row?.store?.currency_unit}</Span>
         </P>
