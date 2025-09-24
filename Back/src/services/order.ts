@@ -315,17 +315,17 @@ export class OrderService extends BaseService<Order, OrderRepository> {
           );
         }
       }
-      if (order?.store?.currency_unit === "P") {
+      if (order?.point && order?.point > 0) {
         await this.pointService.create({
           user_id: order.user_id,
-          point: order.total_discounted,
+          point: order.point,
         });
         const repo = container.resolve(LogRepository);
         await repo.create({
           type: "point",
           name: "상품환불(환급)",
           data: {
-            point: order.total_discounted,
+            point: order.point,
             user_id: order.user_id,
           },
         });
