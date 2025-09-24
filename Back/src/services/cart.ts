@@ -132,6 +132,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
     shipping_method_id,
     message,
     payment,
+    point = 0,
   }: {
     user_id: string;
     cart_id: string;
@@ -140,6 +141,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
     shipping_method_id: string;
     message: string;
     payment: any;
+    point?: number;
   }): Promise<Order | null> {
     if (
       !user_id ||
@@ -188,16 +190,11 @@ export class CartService extends BaseService<Cart, CartRepository> {
       id: undefined,
       store_id: null,
     };
-    const isPoint = cart.store?.currency_unit === "P";
 
-    if (isPoint) {
-      const has = await this.pointService.getTotalPoint(user_id);
-      if (
-        has <
-        (items?.reduce((acc, now) => acc + (now?.total_discount || 0), 0) || 0)
-      )
-        throw new Error("소지하고 있는 포인트가 부족합니다.");
-    }
+    // if (point > 0) {
+    //   const has = await this.pointService.getTotalPoint(user_id);
+    //   if (has < point) throw new Error("소지하고 있는 포인트가 부족합니다.");
+    // }
 
     const now = new Date();
     let display = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(
@@ -219,6 +216,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
       shipping_methods: [_shipping_method],
       status: OrderStatus.PENDING,
       payment_data: payment,
+      point: point || 0,
     });
     await Promise.all(
       (items || []).map(async (item) => {
@@ -256,8 +254,8 @@ export class CartService extends BaseService<Cart, CartRepository> {
       },
       relations: ["shipping_methods", "address", "items.brand"],
     });
-    if (isPoint) {
-      await this.pointService.usePoint(user_id, order?.total_discounted || 0);
+    if (point > 0) {
+      await this.pointService.usePoint(user_id, point);
     }
     return order;
   }

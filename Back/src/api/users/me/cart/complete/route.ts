@@ -10,6 +10,7 @@ export const POST: ApiHandler = async (req, res) => {
     shipping_method_id,
     message,
     payment,
+    point,
   } = req.body;
   const serivce = container.resolve(CartService);
 
@@ -22,6 +23,7 @@ export const POST: ApiHandler = async (req, res) => {
       shipping_method_id,
       message,
       payment,
+      point,
     });
     return res.json({
       content: order,

@@ -310,6 +310,7 @@ interface OrderData extends BaseEntity {
   payment_data?: Record<string, unknown> | null;
   metadata?: Record<string, unknown> | null;
   items: LineItemData[];
+  point: number;
 }
 
 interface AccountLinkData extends BaseEntity {
