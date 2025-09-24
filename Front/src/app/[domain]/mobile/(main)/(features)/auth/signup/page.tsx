@@ -86,19 +86,19 @@ export default function () {
             <FlexChild className={styles.step_number}>
               <Span>1</Span>
             </FlexChild>
-  
+
             <FlexChild className={styles.step_number}>
               <Span>2</Span>
             </FlexChild>
-  
+
             <FlexChild className={styles.step_number}>
               <Span>3</Span>
             </FlexChild>
-  
+
             <FlexChild className={styles.step_number}>
               <Span>4</Span>
             </FlexChild>
-  
+
             <FlexChild className={styles.step_line}>
               <div id={styles.line} style={{ width: percent }}></div>
               {/* 스탭 진행될때마다 width 값 올리면 됨. */}
@@ -215,10 +215,10 @@ function Certification({ setStep, handleUpdate }: StepProps) {
     <VerticalFlex width={'100%'} maxWidth={600} className={styles.auth_check_group}>
       <FlexChild justifyContent="center">
         <HorizontalFlex className={styles.auth_btn_box}>
-          <FlexChild 
-            gap={10} onClick={() => setType("pass")} justifyContent="center" 
+          <FlexChild
+            gap={10} onClick={() => setType("pass")} justifyContent="center"
             className={clsx(styles.auth_btn, {
-                [styles.active]: type !== "sms",
+              [styles.active]: type !== "sms",
             })}
           >
             {/* <Image
@@ -654,111 +654,111 @@ function SMS({ setStep, handleUpdate }: StepProps) {
               </HorizontalFlex>
               <FlexChild justifyContent="end">
                 <Button
-                    marginLeft={10}
-                    width={110}
-                    className={styles.button}
-                    backgroundColor="var(--main-color2)"
-                    disabled={
-                      !mobileNoFormat.exp.test(phone) ||
-                      !birthday6Format.exp.test(identification) ||
-                      !name ||
-                      !gender
-                    }
-                    onClick={async () => {
-                      if (phoneApprove === "ready") {
-                        setIsLoading(true);
-                        const { mokToken: token } = await requester.getToken();
-                        const data = handleUpdate?.([
-                          {
-                            key: "userPhoneNum",
-                            value: phone,
-                          },
-                          {
-                            key: "providerid",
-                            value: phoneStation.value,
-                          },
-                          {
-                            key: "reqAuthType",
-                            value: "SMS",
-                          },
-                          {
-                            key: "userName",
-                            value: name,
-                          },
-                          {
-                            key: "userBirthday",
-                            value:
-                              (Number(gender) < 3 ? "19" : "20") + identification,
-                          },
-                          {
-                            key: "birthday",
-                            value:
-                              (Number(gender) < 3 ? "19" : "20") + identification,
-                          },
-                          {
-                            key: "userGender",
-                            value: 2 - (Number(gender) % 2),
-                          },
-                          {
-                            key: "userNation",
-                            value: "0",
-                          },
-                          {
-                            key: "sendMsg",
-                            value:
-                              "본인확인 인증번호[000000]를 화면에 입력해주세요.",
-                          },
-                          {
-                            key: "replyNumber",
-                            value: "01048947486",
-                          },
-                          {
+                  marginLeft={10}
+                  width={110}
+                  className={styles.button}
+                  backgroundColor="var(--main-color2)"
+                  disabled={
+                    !mobileNoFormat.exp.test(phone) ||
+                    !birthday6Format.exp.test(identification) ||
+                    !name ||
+                    !gender
+                  }
+                  onClick={async () => {
+                    if (phoneApprove === "ready") {
+                      setIsLoading(true);
+                      const { mokToken: token } = await requester.getToken();
+                      const data = handleUpdate?.([
+                        {
+                          key: "userPhoneNum",
+                          value: phone,
+                        },
+                        {
+                          key: "providerid",
+                          value: phoneStation.value,
+                        },
+                        {
+                          key: "reqAuthType",
+                          value: "SMS",
+                        },
+                        {
+                          key: "userName",
+                          value: name,
+                        },
+                        {
+                          key: "userBirthday",
+                          value:
+                            (Number(gender) < 3 ? "19" : "20") + identification,
+                        },
+                        {
+                          key: "birthday",
+                          value:
+                            (Number(gender) < 3 ? "19" : "20") + identification,
+                        },
+                        {
+                          key: "userGender",
+                          value: 2 - (Number(gender) % 2),
+                        },
+                        {
+                          key: "userNation",
+                          value: "0",
+                        },
+                        {
+                          key: "sendMsg",
+                          value:
+                            "본인확인 인증번호[000000]를 화면에 입력해주세요.",
+                        },
+                        {
+                          key: "replyNumber",
+                          value: "01048947486",
+                        },
+                        {
+                          key: "MOKAuthRequestData",
+                          value: JSON.stringify({
+                            encryptMOKToken: token.encryptMOKToken,
+                            publicKey: token.publicKey,
+                          }),
+                        },
+                      ]);
+
+                      dataRef.current = {
+                        data,
+                        token,
+                      };
+                      sendSMS();
+                    } else {
+                      setIsLoading(true);
+                      NiceModal.show("confirm", {
+                        confirmText: "재전송",
+                        cancelText: "취소",
+                        message: "인증번호를 재전송하시겠습니까?",
+                        onConfirm: async () => {
+                          const { mokToken: token } =
+                            await requester.getToken();
+                          const data = handleUpdate?.({
                             key: "MOKAuthRequestData",
                             value: JSON.stringify({
                               encryptMOKToken: token.encryptMOKToken,
                               publicKey: token.publicKey,
                             }),
-                          },
-                        ]);
-  
-                        dataRef.current = {
-                          data,
-                          token,
-                        };
-                        sendSMS();
-                      } else {
-                        setIsLoading(true);
-                        NiceModal.show("confirm", {
-                          confirmText: "재전송",
-                          cancelText: "취소",
-                          message: "인증번호를 재전송하시겠습니까?",
-                          onConfirm: async () => {
-                            const { mokToken: token } =
-                              await requester.getToken();
-                            const data = handleUpdate?.({
-                              key: "MOKAuthRequestData",
-                              value: JSON.stringify({
-                                encryptMOKToken: token.encryptMOKToken,
-                                publicKey: token.publicKey,
-                              }),
-                            });
-                            dataRef.current = {
-                              data,
-                              token,
-                            };
-                            sendSMS();
-                          },
-                        });
-                      }
-                    }}
-                  >
-                    <P fontSize={14}>
-                      {phoneApprove === "ready" ? "인증번호 받기" : "재전송"}
-                    </P>
-                  </Button>
+                          });
+                          dataRef.current = {
+                            data,
+                            token,
+                          };
+                          sendSMS();
+                        },
+                      });
+                    }
+                  }}
+                >
+                  <P fontSize={14}>
+                    {phoneApprove === "ready" ? "인증번호 받기" : "재전송"}
+                  </P>
+                </Button>
               </FlexChild>
             </VerticalFlex>
-            
+
           </FlexChild>
         </VerticalFlex>
       </FlexChild>
@@ -903,99 +903,105 @@ function PassReady({ setStep, data }: StepProps) {
         src="/resources/images/pass_phone.png"
         width={"100%"}
         maxWidth={"285px"}
-        // height={"auto"}
+      // height={"auto"}
       />
 
-      <FlexChild width={"max-content"} gap={7} padding={'40px 10px 0'}>
-        <Button
-          className={clsx(styles.prev_button, styles.white)}
-          width={'100%'}
-          onClick={() => setStep("certification")}
-        >
-          이전
-        </Button>
-        <Button
-          width={'100%'}
-          className={styles.next_button}
-          onClick={() => {
-            const { token, verification, userPhoneNum } = data.current;
-            requester.verificationCheck(
-              {
-                MOKConfirmData: verification.MOKConfirmData,
-                session: token.session,
-              },
-              ({ resultData }: { resultData: any }) => {
-                if (resultData) {
-                  requester.isExistUser(
-                    {
-                      phone: userPhoneNum,
-                    },
-                    ({
-                      exist,
-                      username,
-                    }: {
-                      exist: boolean;
-                      username: string;
-                    }) => {
-                      if (exist) {
-                        NiceModal.show("confirm", {
-                          slideUp: true,
-                          clickOutsideToClose: true,
-                          width: 403,
-                          message: (
-                            <VerticalFlex>
-                              <P
-                                className={styles.duplicateTitle}
-                                paddingBottom={17}
-                              >
-                                이미 가입된 계정이 있습니다
-                              </P>
-                              <P
-                                className={styles.duplicateDescription}
-                                paddingBottom={23}
-                              >
-                                아래 아이디로 로그인해주세요
-                              </P>
-                              <FlexChild
-                                justifyContent="center"
-                                className={styles.duplicateInfoWrapper}
-                              >
-                                <P>
-                                  <Span
-                                    className={styles.duplicateInfoLabel}
-                                    paddingRight={"2em"}
+      <FlexChild paddingTop={30} justifyContent="center" width={'100%'}>
+        <HorizontalFlex gap={10} width={'100%'} className={styles.continue_box}>
+          <FlexChild>
+            <Button
+              className={clsx(styles.prev_btn, styles.white)}
+              width={'100%'}
+              onClick={() => setStep("certification")}
+            >
+              이전
+            </Button>
+          </FlexChild>
+          <FlexChild>
+            <Button
+              width={'100%'}
+              className={styles.next_btn}
+              onClick={() => {
+                const { token, verification, userPhoneNum } = data.current;
+                requester.verificationCheck(
+                  {
+                    MOKConfirmData: verification.MOKConfirmData,
+                    session: token.session,
+                  },
+                  ({ resultData }: { resultData: any }) => {
+                    if (resultData) {
+                      requester.isExistUser(
+                        {
+                          phone: userPhoneNum,
+                        },
+                        ({
+                          exist,
+                          username,
+                        }: {
+                          exist: boolean;
+                          username: string;
+                        }) => {
+                          if (exist) {
+                            NiceModal.show("confirm", {
+                              slideUp: true,
+                              clickOutsideToClose: true,
+                              width: 403,
+                              message: (
+                                <VerticalFlex>
+                                  <P
+                                    className={styles.duplicateTitle}
+                                    paddingBottom={17}
                                   >
-                                    아이디
-                                  </Span>
-                                  <Span className={styles.duplicateInfoValue}>
-                                    {username}
-                                  </Span>
-                                </P>
-                              </FlexChild>
-                            </VerticalFlex>
-                          ),
-                          confirmText: "기존 계정으로 로그인하기",
-                          onConfirm: () => {
-                            navigate(`/login?id=${username}`);
-                          },
-                        });
-                      } else {
-                        setStep("info");
-                      }
+                                    이미 가입된 계정이 있습니다
+                                  </P>
+                                  <P
+                                    className={styles.duplicateDescription}
+                                    paddingBottom={23}
+                                  >
+                                    아래 아이디로 로그인해주세요
+                                  </P>
+                                  <FlexChild
+                                    justifyContent="center"
+                                    className={styles.duplicateInfoWrapper}
+                                  >
+                                    <P>
+                                      <Span
+                                        className={styles.duplicateInfoLabel}
+                                        paddingRight={"2em"}
+                                      >
+                                        아이디
+                                      </Span>
+                                      <Span className={styles.duplicateInfoValue}>
+                                        {username}
+                                      </Span>
+                                    </P>
+                                  </FlexChild>
+                                </VerticalFlex>
+                              ),
+                              confirmText: "기존 계정으로 로그인하기",
+                              onConfirm: () => {
+                                navigate(`/login?id=${username}`);
+                              },
+                            });
+                          } else {
+                            setStep("info");
+                          }
+                        }
+                      );
+                    } else {
+                      NiceModal.show("confirm", {
+                        message: "인증 실패. PASS앱을 다시 확인해주세요.",
+                        confirmText: "확인",
+                      });
                     }
-                  );
-                } else {
-                  NiceModal.show("confirm", {
-                    message: "인증 실패. PASS앱을 다시 확인해주세요.",
-                    confirmText: "확인",
-                  });
-                }
-              }
-            );
-          }}
-        >
-          <P>인증완료</P>
-        </Button>
+                  }
+                );
+              }}
+            >
+              <P>인증완료</P>
+            </Button>
+          </FlexChild>
+        </HorizontalFlex>
       </FlexChild>
     </VerticalFlex>
   );
@@ -1153,7 +1159,7 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
                 );
               }}
             >
-              <P fontWeight={600} fontSize={14} lineHeight={1.3}>
+              <P fontWeight={600} fontSize={14} lineHeight={1.3} wordBreak="keep-all">
                 {code ? "재전송" : "인증코드 받기"}
               </P>
             </Button>
