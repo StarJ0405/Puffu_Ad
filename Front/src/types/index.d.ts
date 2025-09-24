@@ -248,6 +248,7 @@ interface LineItemData extends BaseEntity {
   total_tax?: number;
   currency_unit?: string;
   metadata?: Record<string, unknown> | null;
+  review?: any;
 }
 
 interface CartData extends BaseEntity {
