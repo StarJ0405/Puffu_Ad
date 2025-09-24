@@ -95,8 +95,8 @@ export function WriteFrame() {
                 search: "web_select_search",
               }}
               options={[
-                { value: "exchange", display: "교환" },
-                { value: "refund", display: "환불" },
+                // { value: "exchange", display: "교환" },
+                // { value: "refund", display: "환불" },
                 { value: "etc", display: "기타" },
               ]}
               placeholder={"문의 유형 선택"}

@@ -15,6 +15,7 @@ import useData from "@/shared/hooks/data/useData";
 import { useEffect, useState } from "react";
 import P from "@/components/P/P";
 import { useCart } from "@/providers/StoreProvider/StorePorivderClient";
+import CountBadge from "@/components/countBadge/countBadge";
 
 
 // const navigate = useNavigate();
@@ -45,7 +46,7 @@ export default function SideNavi() {
             <li>
               <Link href={"/orders/cart"}>
                 장바구니
-                <CartLength />
+                <CountBadge right={'10px'} top={'50%'} className={styles.sideNavi_count} />
               </Link>
             </li>
 

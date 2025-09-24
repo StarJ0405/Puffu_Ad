@@ -7,7 +7,7 @@ import useNavigate from "@/shared/hooks/useNavigate";
 import { useParams, usePathname } from "next/navigation";
 import { useState } from "react";
 import styles from "./subPageHeader.module.css";
-import {CartLength} from "./client"
+import CountBadge from "../countBadge/countBadge";
 
 
 export default function SubPageHeader() {
@@ -27,9 +27,9 @@ export default function SubPageHeader() {
             <FlexChild width={'auto'} className={styles.page_title}>
                {pathname.includes("/orders/cart") && (<P>장바구니</P>)}
                {pathname.includes("/orders/complete") && (<P>결제 완료</P>)}
-               {pathname.includes("/board/notice") && (<P>공지사항</P>)}
+               {/* {pathname.includes("/board/notice") && (<P>공지사항</P>)}
                {pathname.includes("/board/inquiry") && (<P>1:1문의</P>)}
-               {pathname.includes("/board/event") && (<P>이벤트</P>)}
+               {pathname.includes("/board/event") && (<P>이벤트</P>)} */}
 
 
                {pathname === "/mypage" && (<P>마이페이지</P>)}
@@ -51,7 +51,7 @@ export default function SubPageHeader() {
             {!pathname.includes("/orders/cart") && (
                <FlexChild className={styles.cart_btn} width={'auto'} onClick={()=> navigate('/orders/cart')}>
                   <Image src={'/resources/images/bottomNavi/navi_cart.png'} width={26} />
-                  <CartLength />
+                  <CountBadge bottom={'-3px'} right={'-5px'} />
                </FlexChild>
             )}
          </FlexChild>

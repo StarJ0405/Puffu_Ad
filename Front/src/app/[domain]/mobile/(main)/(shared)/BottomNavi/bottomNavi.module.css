@@ -11,12 +11,14 @@
 
 .bottom_navi .item {
    gap: 5px;
+   position: relative;
 }
 
 .bottom_navi .item .txt {
    color: #aeaeae;
    font-size: 12px;
    width: auto;
+   position: relative;
 }
 
 .bottom_navi .item .txt.active {

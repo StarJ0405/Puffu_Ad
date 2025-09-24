@@ -4,10 +4,11 @@ import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import Link from "next/link";
-import { Auth, HeaderBottom, SearchBox, CartLength } from "./client";
+import { Auth, HeaderBottom, SearchBox } from "./client";
 import styles from "./header.module.css";
 import { useRef, useState, useEffect } from "react";
 import clsx from "clsx";
+import CountBadge from "@/components/countBadge/countBadge";
 
 export default function Header() {
 
@@ -66,7 +67,7 @@ export default function Header() {
                       height={"auto"}
                       cursor="pointer"
                     />
-                    <CartLength />
+                    <CountBadge bottom="-3px" right="-5px" />
                   </Link>
                 </FlexChild>
 
