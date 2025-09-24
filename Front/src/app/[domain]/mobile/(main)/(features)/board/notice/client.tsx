@@ -156,8 +156,9 @@ export function BoardTable({
                           </Span>
                         </FlexChild>
 
-                        <FlexChild>
-                          <Span weight={400}>{notice.views || 0}</Span>
+                        <FlexChild hidden>
+                          <Image src="/resources/icons/board/views_icon.png" width={14}/>
+                          <Span weight={400} paddingLeft={3}>{notice.views || 0}</Span>
                         </FlexChild>
                       </FlexChild>
                     </VerticalFlex>
