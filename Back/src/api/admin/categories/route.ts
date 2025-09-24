@@ -1,6 +1,7 @@
 import { Category } from "models/category";
 import { CategoryService } from "services/category";
 import { container } from "tsyringe";
+import { In } from "typeorm";
 
 export const POST: ApiHandler = async (req, res) => {
   const {
@@ -48,6 +49,10 @@ export const GET: ApiHandler = async (req, res) => {
     tree,
     ...where
   } = req.parsedQuery;
+  if (where?.ids) {
+    where.id = In(Array.isArray(where.ids) ? where.ids : [where.ids]);
+    delete where.ids;
+  }
   const service: CategoryService = container.resolve(CategoryService);
   if (pageSize) {
     const page = await service.getPageable(

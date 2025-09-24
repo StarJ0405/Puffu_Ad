@@ -5,6 +5,7 @@ import {
   Entity,
   Index,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   Tree,
@@ -12,6 +13,7 @@ import {
   TreeParent,
 } from "typeorm";
 import { generateEntityId } from "utils/functions";
+import { Product } from "./product";
 
 @Tree("materialized-path")
 @Entity({ name: "category" })
@@ -41,8 +43,8 @@ export class Category extends BaseTreeEntity {
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;
 
-  // @Column({ type: "character varying", nullable: true })
-  // mpath?: string;
+  @ManyToMany(() => Product, (product) => product.categories)
+  products?: Product[];
 
   @BeforeInsert()
   protected async BeforeInsert(): Promise<void> {

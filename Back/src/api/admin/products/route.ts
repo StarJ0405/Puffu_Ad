@@ -7,7 +7,7 @@ export const POST: ApiHandler = async (req, res) => {
   const {
     store_id,
     brand_id,
-    category_id,
+    categories,
     title,
     code,
     thumbnail,
@@ -33,7 +33,7 @@ export const POST: ApiHandler = async (req, res) => {
     const _data = {
       store_id,
       brand_id,
-      category_id,
+      categories,
       title,
       code,
       thumbnail,

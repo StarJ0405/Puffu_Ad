@@ -8,9 +8,8 @@ import {
   ManyToOne,
 } from "typeorm";
 import { generateEntityId } from "utils/functions";
-import { EventDiscount } from "./discount";
-import { Variant } from "./variant";
 import { EventBundle } from "./bundle";
+import { Variant } from "./variant";
 
 @Entity({ name: "bundle_variant" })
 @Index(["created_at"])

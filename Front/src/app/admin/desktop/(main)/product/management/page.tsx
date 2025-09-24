@@ -11,7 +11,7 @@ export default async function () {
       "store",
       "options",
       "brand",
-      "category",
+      "categories",
     ],
   };
   const initData: Pageable = (await adminRequester.getProducts(

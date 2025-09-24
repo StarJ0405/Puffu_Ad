@@ -142,7 +142,7 @@ interface ProductDataFrame {
   store_id: string;
   code?: string;
   brand_id: string;
-  category_id: string;
+  categories: { id: string }[];
   title: string;
   thumbnail?: string;
   description?: string;
@@ -161,7 +161,7 @@ interface ProductDataFrame {
 interface ProductData extends BaseEntity, ProductDataFrame {
   store: StoreData;
   brand: BrandData;
-  category: CategoryData;
+  categories: CategoryData[];
   variants: VariantData[];
   options: OptionData[];
   discount_price: number;

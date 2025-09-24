@@ -1,5 +1,6 @@
 import { BaseService } from "data-source";
 import { Product } from "models/product";
+import { CategoryRepository } from "repositories/category";
 import { LineItemRepository } from "repositories/line_item";
 import { OptionRepository } from "repositories/option";
 import { OptionValueRepository } from "repositories/option-value";
@@ -23,6 +24,8 @@ export class ProductService extends BaseService<Product, ProductRepository> {
     @inject(VariantRepository) protected variantRepository: VariantRepository,
     @inject(LineItemRepository)
     protected lineItemRepository: LineItemRepository,
+    @inject(CategoryRepository)
+    protected categoryRepository: CategoryRepository,
     @inject(OptionRepository) protected optionRepository: OptionRepository,
     @inject(OptionValueRepository)
     protected optionValueRepository: OptionValueRepository
@@ -48,7 +51,7 @@ export class ProductService extends BaseService<Product, ProductRepository> {
         { user_id: where.user_id }
       );
     builder = builder
-      .leftJoin("p.category", "ct")
+      .leftJoin("p.categories", "ct")
       .where("p.visible IS TRUE")
       .andWhere("v.visible IS TRUE");
 
@@ -295,11 +298,20 @@ export class ProductService extends BaseService<Product, ProductRepository> {
         const categories = await this.repository.query(
           `SELECT id FROM public.category WHERE mpath like '%${where.category_id}%'`
         );
-        where.category_id = In(
-          categories.map((category: { id: string }) => category.id)
-        );
+        where.categories = {
+          id: In(categories.map((category: { id: string }) => category.id)),
+        };
         options.where = where;
+        if (options.relations) {
+          options.relations = (
+            Array.isArray(options.relations)
+              ? options.relations
+              : [options.relations]
+          ) as any[];
+          options.relations.push("categories");
+        } else options.relations = ["categories"];
       }
+      delete where.category_id;
       if (where.q) {
         const q = where.q;
         delete where.q;
@@ -364,6 +376,24 @@ export class ProductService extends BaseService<Product, ProductRepository> {
         where.id = In(Array.isArray(ids) ? ids : [ids]);
         options.where = where;
       }
+      if (where.category_id) {
+        const categories = await this.repository.query(
+          `SELECT id FROM public.category WHERE mpath like '%${where.category_id}%'`
+        );
+        where.categories = {
+          id: In(categories.map((category: { id: string }) => category.id)),
+        };
+        options.where = where;
+        if (options.relations) {
+          options.relations = (
+            Array.isArray(options.relations)
+              ? options.relations
+              : [options.relations]
+          ) as any[];
+          options.relations.push("categories");
+        } else options.relations = ["categories"];
+      }
+      delete where.category_id;
       if (where.q) {
         const q = where.q;
         delete where.q;
@@ -447,7 +477,27 @@ export class ProductService extends BaseService<Product, ProductRepository> {
           )
       );
     }
-
+    if (data.categories) {
+      const _categories = data.categories as any[];
+      delete data.categories;
+      const categories = await this.categoryRepository.findAll({
+        where: {
+          id: In(
+            _categories?.map((cat) => (typeof cat === "string" ? cat : cat?.id))
+          ),
+        },
+      });
+      const products = await this.repository.findAll({
+        where,
+        relations: ["categories"],
+      });
+      await Promise.all(
+        products.map(async (product) => {
+          product.categories = categories;
+          return await this.repository.save(product);
+        })
+      );
+    }
     return super.update(where, data, returnEnttiy);
   }
   async delete(

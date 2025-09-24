@@ -20,7 +20,7 @@ import useNavigate from "@/shared/hooks/useNavigate";
 import { textFormat } from "@/shared/regExp";
 import { scrollTo, toast, validateInputs } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Option from "./option";
 import styles from "./page.module.css";
 
@@ -60,7 +60,9 @@ export default function ({
   const inputs = useRef<any[]>([]);
   const optionRef = useRef<any>(null);
   const optionRadios = useRef<any[]>([]);
-  const [category, setCategory] = useState<CategoryData | null>(null);
+  const [selectedCategories, setSelectedCategories] = useState<CategoryData[]>(
+    []
+  );
   // const [adult, setAdult] = useState(false);
   const [radio, setRadio] = useState<boolean[]>([true, true, true]);
   const [optionType, setOptionType] = useState<string>("single");
@@ -87,7 +89,8 @@ export default function ({
     if (!store) return scrollTo("store", "스토어를 설정해주세요.");
     if (!brand) return scrollTo("brand", "입점사를 설정해주세요.");
 
-    if (!category) return scrollTo("category", "카테고리를 설정해주세요.");
+    if (!selectedCategories)
+      return scrollTo("category", "카테고리를 설정해주세요.");
     const title = inputs.current[0].getValue();
     if (!title) return scrollTo("title", "상품명을 입력해주세요.");
     const code = inputs.current[5].getValue();
@@ -105,7 +108,9 @@ export default function ({
         const _data: ProductDataFrame = {
           store_id: store,
           brand_id: brand,
-          category_id: category.id,
+          categories: selectedCategories.map((category) => ({
+            id: category.id,
+          })),
           // adult,
           code,
           visible: radio[0],
@@ -139,6 +144,12 @@ export default function ({
   const handlePreview = () => {
     toast({ message: "구현 예정" });
   };
+  useEffect(() => {
+    if (stores?.length === 1) setStore(stores?.[0]?.id);
+  }, [stores]);
+  useEffect(() => {
+    if (brands?.length === 1) setBrand(brands?.[0]?.id);
+  }, [brands]);
   return (
     <Container padding={"20px 20px 60px 20px"}>
       <div className={styles.queryWrap}>
@@ -157,7 +168,7 @@ export default function ({
               <FlexChild>
                 <div className={styles.contentWrap}>
                   <VerticalFlex>
-                    <FlexChild>
+                    <FlexChild hidden={stores?.length === 1}>
                       <HorizontalFlex
                         gap={20}
                         border={"1px solid #EFEFEF"}
@@ -182,15 +193,16 @@ export default function ({
                               display: store.name,
                               value: store.id,
                             }))}
+                            value={store}
                             onChange={(value) => {
-                              setCategory(null);
+                              setSelectedCategories([]);
                               setStore(value as string);
                             }}
                           />
                         </FlexChild>
                       </HorizontalFlex>
                     </FlexChild>
-                    <FlexChild>
+                    <FlexChild hidden={brands?.length === 1}>
                       <HorizontalFlex
                         gap={20}
                         border={"1px solid #EFEFEF"}
@@ -217,6 +229,7 @@ export default function ({
                               display: brand.name,
                               value: brand.id,
                             }))}
+                            value={brand}
                             onChange={(value) => setBrand(value as string)}
                           />
                         </FlexChild>
@@ -229,6 +242,7 @@ export default function ({
                         borderRight={"none"}
                         borderLeft={"none"}
                         borderTop={"none"}
+                        alignItems="stretch"
                       >
                         <FlexChild
                           width={"130px"}
@@ -240,49 +254,63 @@ export default function ({
                             카테고리 등록
                           </P>
                         </FlexChild>
-                        <FlexChild paddingRight={15}>
-                          <Button
-                            id="category"
-                            scrollMarginTop={150}
-                            styleType="admin"
-                            onClick={() => {
-                              if (!store)
-                                return toast({
-                                  message: "스토어를 먼저 선택해주세요",
+                        <FlexChild
+                          paddingRight={15}
+                          id="category"
+                          gap={"5px 10px"}
+                          flexWrap="wrap"
+                          padding={"5px 0"}
+                        >
+                          {selectedCategories?.length === 0 ? (
+                            <Button
+                              scrollMarginTop={150}
+                              styleType="admin"
+                              onClick={() => {
+                                if (!store)
+                                  return toast({
+                                    message: "스토어를 먼저 선택해주세요",
+                                  });
+                                if (categories?.length === 0)
+                                  return toast({
+                                    message: "등록된 카테고리가 없습니다.",
+                                  });
+                                NiceModal.show("categorySelect", {
+                                  categories,
+                                  selected: selectedCategories,
+                                  onSelect: (value: CategoryData[]) =>
+                                    setSelectedCategories(value),
                                 });
-                              if (categories?.length === 0)
-                                return toast({
-                                  message: "등록된 카테고리가 없습니다.",
-                                });
-                              NiceModal.show("categoryList", {
-                                categories,
-                                disable: false,
-                                onSelect: (
-                                  value: CategoryData,
-                                  parents: CategoryData[]
-                                ) => {
-                                  value.parent = parents.reduce(
-                                    (
-                                      acc: CategoryData | undefined,
-                                      now: CategoryData
-                                    ) => {
-                                      if (acc) {
-                                        now.parent = acc;
-                                        return now;
-                                      }
-                                      return now;
-                                    },
-                                    undefined
-                                  );
-                                  setCategory(value);
-                                },
-                              });
-                            }}
-                          >
-                            <P size={16}>
-                              {getCategoryName(category) || "미설정"}
-                            </P>
-                          </Button>
+                              }}
+                            >
+                              <P size={16}>미설정</P>
+                            </Button>
+                          ) : (
+                            selectedCategories.map((category) => (
+                              <Button
+                                key={category.id}
+                                scrollMarginTop={150}
+                                styleType="admin"
+                                onClick={() => {
+                                  if (!store)
+                                    return toast({
+                                      message: "스토어를 먼저 선택해주세요",
+                                    });
+                                  if (categories?.length === 0)
+                                    return toast({
+                                      message: "등록된 카테고리가 없습니다.",
+                                    });
+                                  NiceModal.show("categorySelect", {
+                                    categories,
+                                    selected: selectedCategories,
+                                    onSelect: (value: CategoryData[]) =>
+                                      setSelectedCategories(value),
+                                  });
+                                }}
+                              >
+                                <P size={16}>{getCategoryName(category)}</P>
+                              </Button>
+                            ))
+                          )}
                         </FlexChild>
                       </HorizontalFlex>
                     </FlexChild>

@@ -1,6 +1,4 @@
 import Button from "@/components/buttons/Button";
-import CheckboxChild from "@/components/choice/checkbox/CheckboxChild";
-import CheckboxGroup from "@/components/choice/checkbox/CheckboxGroup";
 import RadioChild from "@/components/choice/radio/RadioChild";
 import RadioGroup from "@/components/choice/radio/RadioGroup";
 import Div from "@/components/div/Div";
@@ -33,13 +31,15 @@ const ProductModal = NiceModal.create(
     edit?: boolean;
     onSuccess?: () => void;
   }) => {
-    const [categoryId, setCategoryId] = useState(product.category_id);
-    const { [categoryId]: category } = useData(
-      categoryId,
-      { store_id: product.store_id, tree: "ancestors" },
-      (condition) => adminRequester.getCategory(categoryId, condition),
+    const [categoryIds, setCategoryIds] = useState(
+      product.categories.map((cat: CategoryData) => cat.id)
+    );
+    const { selectedCategories } = useData(
+      "selectedCategories",
+      { store_id: product.store_id, tree: "ancestors", ids: categoryIds },
+      (condition) => adminRequester.getCategories(condition),
       {
-        onReprocessing: (data) => data?.content,
+        onReprocessing: (data) => data?.content || [],
         refresh: {
           revalidateOnFocus: edit,
         },
@@ -102,7 +102,9 @@ const ProductModal = NiceModal.create(
             const _data: ProductDataFrame = {
               store_id: product.store_id,
               brand_id: product.brand_id,
-              category_id: category.id,
+              categories: selectedCategories.map((category: CategoryData) => ({
+                id: category.id,
+              })),
               // adult,
               visible: radio[0],
               buyable: radio[1],
@@ -148,7 +150,6 @@ const ProductModal = NiceModal.create(
         toast({ message: error });
       }
     }, [error]);
-
     return (
       <ModalBase
         borderRadius={10}
@@ -214,25 +215,45 @@ const ProductModal = NiceModal.create(
               <FlexChild className={styles.head}>
                 <P>카테고리</P>
               </FlexChild>
-              <FlexChild className={styles.content}>
-                {edit ? (
-                  <Button
-                    styleType="admin"
-                    onClick={() => {
-                      NiceModal.show("categoryList", {
-                        categories,
-                        disable: false,
-                        onSelect: (value: CategoryData) => {
-                          setCategoryId(value.id);
-                        },
-                      });
-                    }}
-                  >
-                    <P>{getName(category) || product?.category?.name}</P>
-                  </Button>
-                ) : (
-                  <P>{getName(category) || product?.category?.name}</P>
-                )}
+              <FlexChild
+                className={styles.content}
+                gap={"5px 10px"}
+                flexWrap="wrap"
+              >
+                {edit
+                  ? selectedCategories.map((category: CategoryData) => (
+                      <Button
+                        key={category.id}
+                        styleType="admin"
+                        onClick={() => {
+                          NiceModal.show("categorySelect", {
+                            categories,
+                            selected: selectedCategories,
+                            onSelect: (value: CategoryData[]) => {
+                              if (value.length === 0)
+                                NiceModal.show("confirm", {
+                                  message:
+                                    "카테고리는 최소 1개 선택되어야합니다.",
+                                  confirmText: "확인",
+                                });
+                              else setCategoryIds(value.map((cat) => cat.id));
+                            },
+                          });
+                        }}
+                      >
+                        <P>{getName(category)}</P>
+                      </Button>
+                    ))
+                  : selectedCategories.map((category: CategoryData) => (
+                      <P
+                        key={category.id}
+                        backgroundColor="var(--admin-color)"
+                        color="#fff"
+                        padding={"5px 10px"}
+                      >
+                        {getName(category)}
+                      </P>
+                    ))}
               </FlexChild>
             </HorizontalFlex>
           </FlexChild>
