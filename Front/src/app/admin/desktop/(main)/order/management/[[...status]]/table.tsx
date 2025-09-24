@@ -15,6 +15,7 @@ import Table, { Column } from "@/components/table/Table";
 import Tooltip from "@/components/tooltip/Tooltip";
 import { RowInterface } from "@/modals/context/ContextMenuModal";
 import { adminRequester } from "@/shared/AdminRequester";
+import useData from "@/shared/hooks/data/useData";
 import {
   delay,
   downloadExcelFile,
@@ -24,10 +25,9 @@ import {
 } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
-import _ from "lodash";
-import { RefObject, useRef, useState } from "react";
+import _, { max } from "lodash";
+import { RefObject, useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
-import useData from "@/shared/hooks/data/useData";
 export default function ({
   initCondition,
   initData,
@@ -640,191 +640,147 @@ function Buttons({
   total: number;
 }) {
   const ref = useRef<any>(null);
-  switch (status) {
-    case "product":
-      return (
-        <>
-          <FlexChild width={"max-content"} paddingRight={10}>
-            <Button
-              styleType="admin"
-              onClick={() => {
-                const selected = table.current.getData();
-                if (selected?.length > 0) {
-                  NiceModal.show("confirm", {
-                    message: (
-                      <VerticalFlex>
-                        <P>
-                          {`${selected?.length}개의 주문서를 취소 처리하시겠습니까?`}
-                        </P>
-                        <P>다운로드시 주문서가 주문 취소로 이동합니다.</P>
-                      </VerticalFlex>
-                    ),
-                    confirmText: "취소처리",
-                    cancelText: "닫기",
-                    onConfirm: () => {
-                      adminRequester.cancelOrders(
-                        {
-                          id: selected.map((order: OrderData) => order.id),
-                        },
-                        () => {
-                          table.current.research();
-                        }
-                      );
-                    },
-                  });
-                } else {
-                  NiceModal.show("confirm", {
-                    message: (
-                      <VerticalFlex>
-                        <P>{`${total}개의 주문서를 취소 처리하시겠습니까?`}</P>
-                        <P>다운로드시 주문서가 주문 취소로 이동합니다.</P>
-                      </VerticalFlex>
-                    ),
-                    confirmText: "취소처리",
-                    cancelText: "닫기",
-                    onConfirm: () => {
-                      (async () => {
-                        NiceModal.show("loading", {
-                          ref,
-                          message: "취소 진행중 0%",
-                        });
-                        const maxPage = table.current.getMaxPage();
-                        const list: any[] = [];
-
-                        for (let i = 0; i <= maxPage; i++) {
-                          await delay(3000);
-                          const data = await table.current.getPageData(i);
-                          list.push(...data);
-                          ref.current.setMessage(
-                            `취소 진행중 ${Math.round((i / maxPage) * 100)}%`
-                          );
-                        }
+  const [result, setResult] = useState<React.ReactNode>(<></>);
+  useEffect(() => {
+    switch (status) {
+      case "product":
+        setResult(
+          <>
+            <FlexChild width={"max-content"} paddingRight={10}>
+              <Button
+                styleType="admin"
+                onClick={() => {
+                  const selected = table.current.getData();
+                  if (selected?.length > 0) {
+                    NiceModal.show("confirm", {
+                      message: (
+                        <VerticalFlex>
+                          <P>
+                            {`${selected?.length}개의 주문서를 취소 처리하시겠습니까?`}
+                          </P>
+                          <P>다운로드시 주문서가 주문 취소로 이동합니다.</P>
+                        </VerticalFlex>
+                      ),
+                      confirmText: "취소처리",
+                      cancelText: "닫기",
+                      onConfirm: () => {
                         adminRequester.cancelOrders(
                           {
-                            id: list.map((l) => l.id),
+                            id: selected.map((order: OrderData) => order.id),
                           },
                           () => {
                             table.current.research();
-                            ref.current.close();
                           }
                         );
-                      })();
-                    },
-                  });
-                }
-              }}
-            >
-              <P>취소 처리</P>
-            </Button>
-          </FlexChild>
-          <FlexChild width={"max-content"} paddingRight={10}>
-            <Button
-              styleType="white"
-              onClick={() => {
-                const header: ExcelWritableColumn[] = [
-                  {
-                    text: "받는분성명",
-                    code: "address",
-                    Cell: ({ cell }) => cell.name,
-                  },
-                  {
-                    text: "받는분전화번호",
-                    code: "address",
-                    Cell: ({ cell }) => cell.phone,
-                  },
-                  {
-                    text: "받는분기타연락처",
-                    Cell: () => "",
-                  },
-                  {
-                    text: "받는분주소(전체, 분할)",
-                    code: "address",
-                    Cell: ({ cell }) =>
-                      `${cell.address1} ${cell.address2} (${cell.postal_code})`,
-                  },
-                  {
-                    text: "배송메시지1",
-                    code: "address",
-                    Cell: ({ cell }) => cell.message,
-                  },
-                  {
-                    text: "고객주문번호",
-                    code: "display",
-                  },
-                ];
-                const style = {
-                  header: {
-                    alignment: { horizontal: "center" },
-                    font: {
-                      bold: true,
-                    },
-                    fill: {
-                      fgColor: { rgb: "F0F0F0" },
-                    },
-                  },
-                };
-                const selected = table.current.getData();
-                if (selected?.length > 0) {
-                  NiceModal.show("confirm", {
-                    message: (
-                      <VerticalFlex>
-                        <P>
-                          {`${selected?.length}개의 택배양식을 다운로드하시겠습니까?`}
-                        </P>
-                        <P>다운로드시 주문서가 배송대기로 이동합니다.</P>
-                      </VerticalFlex>
-                    ),
-                    confirmText: "다운로드",
-                    cancelText: "취소",
-                    onConfirm: () => {
-                      downloadExcelFile(
-                        selected,
-                        `택배양식_${new Date().toISOString()}`,
-                        [],
-                        header,
-                        style,
-                        async (_list) => {
-                          await adminRequester.updateOrders({
-                            id: _list.map((l) => l.id),
-                            status: "fulfilled",
+                      },
+                    });
+                  } else {
+                    NiceModal.show("confirm", {
+                      message: (
+                        <VerticalFlex>
+                          <P>{`${total}개의 주문서를 취소 처리하시겠습니까?`}</P>
+                          <P>다운로드시 주문서가 주문 취소로 이동합니다.</P>
+                        </VerticalFlex>
+                      ),
+                      confirmText: "취소처리",
+                      cancelText: "닫기",
+                      onConfirm: () => {
+                        (async () => {
+                          NiceModal.show("loading", {
+                            ref,
+                            message: "취소 진행중 0%",
                           });
-                          table.current.research();
-                        }
-                      );
-                    },
-                  });
-                } else {
-                  NiceModal.show("confirm", {
-                    message: (
-                      <VerticalFlex>
-                        <P>{`${total}개의 택배양식을 다운로드하시겠습니까?`}</P>
-                        <P>다운로드시 주문서가 배송대기로 이동합니다.</P>
-                      </VerticalFlex>
-                    ),
-                    confirmText: "다운로드",
-                    cancelText: "취소",
-                    onConfirm: () => {
-                      (async () => {
-                        NiceModal.show("loading", {
-                          ref,
-                          message: "다운로드 진행중 0%",
-                        });
-                        const maxPage = table.current.getMaxPage();
-                        const list: any[] = [];
+                          const maxPage = table.current.getMaxPage();
+                          const list: any[] = [];
 
-                        for (let i = 0; i <= maxPage; i++) {
-                          await delay(3000);
-                          const data = await table.current.getPageData(i);
-                          list.push(...data);
-                          ref.current.setMessage(
-                            `다운로드 진행중 ${Math.round(
-                              (i / maxPage) * 100
-                            )}%`
+                          for (let i = 0; i <= maxPage; i++) {
+                            await delay(3000);
+                            const data = await table.current.getPageData(i);
+                            list.push(...data);
+                            ref.current.setMessage(
+                              `취소 진행중 ${Math.round((i / maxPage) * 100)}%`
+                            );
+                          }
+                          adminRequester.cancelOrders(
+                            {
+                              id: list.map((l) => l.id),
+                            },
+                            () => {
+                              table.current.research();
+                              ref.current.close();
+                            }
                           );
-                        }
-
+                        })();
+                      },
+                    });
+                  }
+                }}
+              >
+                <P>취소 처리</P>
+              </Button>
+            </FlexChild>
+            <FlexChild width={"max-content"} paddingRight={10}>
+              <Button
+                styleType="white"
+                onClick={() => {
+                  const header: ExcelWritableColumn[] = [
+                    {
+                      text: "받는분성명",
+                      code: "address",
+                      Cell: ({ cell }) => cell.name,
+                    },
+                    {
+                      text: "받는분전화번호",
+                      code: "address",
+                      Cell: ({ cell }) => cell.phone,
+                    },
+                    {
+                      text: "받는분기타연락처",
+                      Cell: () => "",
+                    },
+                    {
+                      text: "받는분주소(전체, 분할)",
+                      code: "address",
+                      Cell: ({ cell }) =>
+                        `${cell.address1} ${cell.address2} (${cell.postal_code})`,
+                    },
+                    {
+                      text: "배송메시지1",
+                      code: "address",
+                      Cell: ({ cell }) => cell.message,
+                    },
+                    {
+                      text: "고객주문번호",
+                      code: "display",
+                    },
+                  ];
+                  const style = {
+                    header: {
+                      alignment: { horizontal: "center" },
+                      font: {
+                        bold: true,
+                      },
+                      fill: {
+                        fgColor: { rgb: "F0F0F0" },
+                      },
+                    },
+                  };
+                  const selected = table.current.getData();
+                  if (selected?.length > 0) {
+                    NiceModal.show("confirm", {
+                      message: (
+                        <VerticalFlex>
+                          <P>
+                            {`${selected?.length}개의 택배양식을 다운로드하시겠습니까?`}
+                          </P>
+                          <P>다운로드시 주문서가 배송대기로 이동합니다.</P>
+                        </VerticalFlex>
+                      ),
+                      confirmText: "다운로드",
+                      cancelText: "취소",
+                      onConfirm: () => {
                         downloadExcelFile(
-                          list,
+                          selected,
                           `택배양식_${new Date().toISOString()}`,
                           [],
                           header,
@@ -837,146 +793,461 @@ function Buttons({
                             table.current.research();
                           }
                         );
-                        ref.current.close();
-                      })();
-                    },
-                  });
-                }
-              }}
-            >
-              <FlexChild gap={5}>
-                <Image src={"/resources/icons/excel.png"} size={17} />
-                <P>택배양식출력</P>
-              </FlexChild>
-            </Button>
-          </FlexChild>
-        </>
-      );
-    case "ready":
-      return (
-        <>
-          <FlexChild width={"max-content"} paddingRight={10}>
-            <Button
-              styleType="admin"
-              onClick={() => {
-                const selected = table.current.getData();
-                if (selected?.length > 0) {
-                  NiceModal.show("confirm", {
-                    message: (
-                      <VerticalFlex>
-                        <P>
-                          {`${selected?.length}개의 주문서를 취소 처리하시겠습니까?`}
-                        </P>
-                        <P>다운로드시 주문서가 주문 취소로 이동합니다.</P>
-                      </VerticalFlex>
-                    ),
-                    confirmText: "취소처리",
-                    cancelText: "닫기",
-                    onConfirm: () => {
-                      adminRequester.cancelOrders(
-                        {
-                          id: selected.map((order: OrderData) => order.id),
-                        },
-                        () => {
-                          table.current.research();
-                        }
-                      );
-                    },
-                  });
-                } else {
-                  NiceModal.show("confirm", {
-                    message: (
-                      <VerticalFlex>
-                        <P>{`${total}개의 주문서를 취소 처리하시겠습니까?`}</P>
-                        <P>다운로드시 주문서가 주문 취소로 이동합니다.</P>
-                      </VerticalFlex>
-                    ),
-                    confirmText: "취소처리",
-                    cancelText: "닫기",
-                    onConfirm: () => {
-                      (async () => {
-                        NiceModal.show("loading", {
-                          ref,
-                          message: "취소 진행중 0%",
-                        });
-                        const maxPage = table.current.getMaxPage();
-                        const list: any[] = [];
+                      },
+                    });
+                  } else {
+                    NiceModal.show("confirm", {
+                      message: (
+                        <VerticalFlex>
+                          <P>{`${total}개의 택배양식을 다운로드하시겠습니까?`}</P>
+                          <P>다운로드시 주문서가 배송대기로 이동합니다.</P>
+                        </VerticalFlex>
+                      ),
+                      confirmText: "다운로드",
+                      cancelText: "취소",
+                      onConfirm: () => {
+                        (async () => {
+                          NiceModal.show("loading", {
+                            ref,
+                            message: "다운로드 진행중 0%",
+                          });
+                          const maxPage = table.current.getMaxPage();
+                          const list: any[] = [];
 
-                        for (let i = 0; i <= maxPage; i++) {
-                          await delay(3000);
-                          const data = await table.current.getPageData(i);
-                          list.push(...data);
-                          ref.current.setMessage(
-                            `취소 진행중 ${Math.round((i / maxPage) * 100)}%`
+                          for (let i = 0; i <= maxPage; i++) {
+                            await delay(3000);
+                            const data = await table.current.getPageData(i);
+                            list.push(...data);
+                            ref.current.setMessage(
+                              `다운로드 진행중 ${Math.round(
+                                (i / maxPage) * 100
+                              )}%`
+                            );
+                          }
+
+                          downloadExcelFile(
+                            list,
+                            `택배양식_${new Date().toISOString()}`,
+                            [],
+                            header,
+                            style,
+                            async (_list) => {
+                              await adminRequester.updateOrders({
+                                id: _list.map((l) => l.id),
+                                status: "fulfilled",
+                              });
+                              table.current.research();
+                            }
                           );
-                        }
+                          ref.current.close();
+                        })();
+                      },
+                    });
+                  }
+                }}
+              >
+                <FlexChild gap={5}>
+                  <Image src={"/resources/icons/excel.png"} size={17} />
+                  <P>택배양식출력</P>
+                </FlexChild>
+              </Button>
+            </FlexChild>
+            <FlexChild width={"max-content"} paddingRight={10}>
+              <Button
+                styleType="white"
+                onClick={() => {
+                  const header: ExcelWritableColumn[] = [
+                    {
+                      text: "주문번호",
+                      code: "display",
+                    },
+                    {
+                      text: "주문상품명",
+                      code: "title",
+                    },
+
+                    {
+                      text: "수량",
+                      code: "quantity",
+                    },
+                    {
+                      text: "수령인",
+                      code: "name",
+                    },
+                  ];
+                  const style = {
+                    header: {
+                      alignment: { horizontal: "center" },
+                      font: {
+                        bold: true,
+                      },
+                      fill: {
+                        fgColor: { rgb: "F0F0F0" },
+                      },
+                    },
+                  };
+                  const selected = table.current.getData();
+                  if (selected?.length > 0) {
+                    NiceModal.show("confirm", {
+                      message: `${selected?.length}개의 택배양식을 다운로드하시겠습니까?`,
+                      confirmText: "다운로드",
+                      cancelText: "취소",
+                      onConfirm: () => {
+                        downloadExcelFile(
+                          selected
+                            .map((order: OrderData) => {
+                              return order.items
+                                .sort((i1, i2) =>
+                                  (i1?.title || "")?.localeCompare(
+                                    i2?.title || ""
+                                  )
+                                )
+                                .map((item) => ({
+                                  display: order.display,
+                                  title: item.title,
+                                  quantity:
+                                    item.extra_quantity > 0
+                                      ? `${item.quantity} + ${item.extra_quantity}`
+                                      : item.quantity,
+                                  name: order?.address?.name,
+                                }));
+                            })
+                            .flat(),
+                          `주문서_${new Date().toISOString()}`,
+                          [],
+                          header,
+                          style
+                        );
+                      },
+                    });
+                  } else {
+                    NiceModal.show("confirm", {
+                      message: `${total}개의 택배양식을 다운로드하시겠습니까?`,
+                      confirmText: "다운로드",
+                      cancelText: "취소",
+                      onConfirm: () => {
+                        (async () => {
+                          NiceModal.show("loading", {
+                            ref,
+                            message: "다운로드 진행중 0%",
+                          });
+                          const maxPage = table.current.getMaxPage();
+                          const list: any[] = [];
+                          if (maxPage === 0)
+                            list.push(...(await table.current.getPageData(0)));
+                          else
+                            for (let i = 0; i <= maxPage; i++) {
+                              if (i !== 0) await delay(3000);
+                              const data = await table.current.getPageData(i);
+                              list.push(...data);
+                              ref.current.setMessage(
+                                `다운로드 진행중 ${Math.round(
+                                  (i / maxPage) * 100
+                                )}%`
+                              );
+                            }
+
+                          downloadExcelFile(
+                            list
+                              .map((order: OrderData) => {
+                                return order.items
+                                  .sort((i1, i2) =>
+                                    (i1?.title || "")?.localeCompare(
+                                      i2?.title || ""
+                                    )
+                                  )
+                                  .map((item) => ({
+                                    display: order.display,
+                                    title: item.title,
+                                    quantity:
+                                      item.extra_quantity > 0
+                                        ? `${item.quantity} + ${item.extra_quantity}`
+                                        : item.quantity,
+                                    name: order?.address?.name,
+                                  }));
+                              })
+                              .flat(),
+                            `주문서_${new Date().toISOString()}`,
+                            [],
+                            header,
+                            style
+                          );
+                          ref.current.close();
+                        })();
+                      },
+                    });
+                  }
+                }}
+              >
+                <FlexChild gap={5}>
+                  <Image src={"/resources/icons/excel.png"} size={17} />
+                  <P>주문서 엑셀</P>
+                </FlexChild>
+              </Button>
+            </FlexChild>
+          </>
+        );
+        break;
+      case "ready":
+        setResult(
+          <>
+            <FlexChild width={"max-content"} paddingRight={10}>
+              <Button
+                styleType="admin"
+                onClick={() => {
+                  const selected = table.current.getData();
+                  if (selected?.length > 0) {
+                    NiceModal.show("confirm", {
+                      message: (
+                        <VerticalFlex>
+                          <P>
+                            {`${selected?.length}개의 주문서를 취소 처리하시겠습니까?`}
+                          </P>
+                          <P>다운로드시 주문서가 주문 취소로 이동합니다.</P>
+                        </VerticalFlex>
+                      ),
+                      confirmText: "취소처리",
+                      cancelText: "닫기",
+                      onConfirm: () => {
                         adminRequester.cancelOrders(
                           {
-                            id: list.map((l) => l.id),
+                            id: selected.map((order: OrderData) => order.id),
                           },
                           () => {
                             table.current.research();
-                            ref.current.close();
                           }
                         );
-                      })();
-                    },
-                  });
-                }
-              }}
-            >
-              <P>취소 처리</P>
-            </Button>
-          </FlexChild>
-          <FlexChild width={"max-content"} paddingRight={10}>
-            <Button
-              styleType="white"
-              type="file"
-              onFileChange={async (e) => {
-                const file = e?.target?.files?.[0];
-                if (file) {
-                  switch (file.type) {
-                    case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-                    case "text/csv": {
-                      const header = [
-                        { code: "고객주문번호", attr: "display" },
-                        { code: "운송장번호", attr: "tracking_number" },
-                      ];
-                      const list = await readExcelFile(
-                        file,
-                        (Array.isArray(header) ? header : [header]) || []
-                      );
+                      },
+                    });
+                  } else {
+                    NiceModal.show("confirm", {
+                      message: (
+                        <VerticalFlex>
+                          <P>{`${total}개의 주문서를 취소 처리하시겠습니까?`}</P>
+                          <P>다운로드시 주문서가 주문 취소로 이동합니다.</P>
+                        </VerticalFlex>
+                      ),
+                      confirmText: "취소처리",
+                      cancelText: "닫기",
+                      onConfirm: () => {
+                        (async () => {
+                          NiceModal.show("loading", {
+                            ref,
+                            message: "취소 진행중 0%",
+                          });
+                          const maxPage = table.current.getMaxPage();
+                          const list: any[] = [];
 
-                      await adminRequester.updateOrders(
-                        list.filter((f) => !!f.display && !!f.tracking_number)
-                      );
-                      table.current.research();
-                      toast({
-                        message: "정보가 성공적으로 업데이트되었습니다.",
-                      });
-                      break;
-                    }
-                    default: {
-                      toast({
-                        message: `${file.type}은 형식에 맞지 않는 데이터입니다.`,
-                      });
-                      break;
-                    }
+                          for (let i = 0; i <= maxPage; i++) {
+                            await delay(3000);
+                            const data = await table.current.getPageData(i);
+                            list.push(...data);
+                            ref.current.setMessage(
+                              `취소 진행중 ${Math.round((i / maxPage) * 100)}%`
+                            );
+                          }
+                          adminRequester.cancelOrders(
+                            {
+                              id: list.map((l) => l.id),
+                            },
+                            () => {
+                              table.current.research();
+                              ref.current.close();
+                            }
+                          );
+                        })();
+                      },
+                    });
                   }
+                }}
+              >
+                <P>취소 처리</P>
+              </Button>
+            </FlexChild>
+            <FlexChild width={"max-content"} paddingRight={10}>
+              <Button
+                styleType="white"
+                type="file"
+                onFileChange={async (e) => {
+                  const file = e?.target?.files?.[0];
+                  if (file) {
+                    switch (file.type) {
+                      case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+                      case "text/csv": {
+                        const header = [
+                          { code: "고객주문번호", attr: "display" },
+                          { code: "운송장번호", attr: "tracking_number" },
+                        ];
+                        const list = await readExcelFile(
+                          file,
+                          (Array.isArray(header) ? header : [header]) || []
+                        );
 
-                  e.target.value = "";
-                }
-              }}
-            >
-              <FlexChild gap={5}>
-                <Image src={"/resources/icons/excel.png"} size={17} />
-                <P>송장 일괄업로드</P>
-              </FlexChild>
-            </Button>
-          </FlexChild>
-        </>
-      );
-  }
+                        await adminRequester.updateOrders(
+                          list.filter((f) => !!f.display && !!f.tracking_number)
+                        );
+                        table.current.research();
+                        toast({
+                          message: "정보가 성공적으로 업데이트되었습니다.",
+                        });
+                        break;
+                      }
+                      default: {
+                        toast({
+                          message: `${file.type}은 형식에 맞지 않는 데이터입니다.`,
+                        });
+                        break;
+                      }
+                    }
 
-  return <></>;
+                    e.target.value = "";
+                  }
+                }}
+              >
+                <FlexChild gap={5}>
+                  <Image src={"/resources/icons/excel.png"} size={17} />
+                  <P>송장 일괄업로드</P>
+                </FlexChild>
+              </Button>
+            </FlexChild>
+            <FlexChild width={"max-content"} paddingRight={10}>
+              <Button
+                styleType="white"
+                onClick={() => {
+                  const header: ExcelWritableColumn[] = [
+                    {
+                      text: "주문번호",
+                      code: "display",
+                    },
+                    {
+                      text: "주문상품명",
+                      code: "title",
+                    },
+
+                    {
+                      text: "수량",
+                      code: "quantity",
+                    },
+                    {
+                      text: "수령인",
+                      code: "name",
+                    },
+                  ];
+                  const style = {
+                    header: {
+                      alignment: { horizontal: "center" },
+                      font: {
+                        bold: true,
+                      },
+                      fill: {
+                        fgColor: { rgb: "F0F0F0" },
+                      },
+                    },
+                  };
+                  const selected = table.current.getData();
+                  if (selected?.length > 0) {
+                    NiceModal.show("confirm", {
+                      message: `${selected?.length}개의 택배양식을 다운로드하시겠습니까?`,
+                      confirmText: "다운로드",
+                      cancelText: "취소",
+                      onConfirm: () => {
+                        downloadExcelFile(
+                          selected
+                            .map((order: OrderData) => {
+                              return order.items
+                                .sort((i1, i2) =>
+                                  (i1?.title || "")?.localeCompare(
+                                    i2?.title || ""
+                                  )
+                                )
+                                .map((item) => ({
+                                  display: order.display,
+                                  title: item.title,
+                                  quantity:
+                                    item.extra_quantity > 0
+                                      ? `${item.quantity} + ${item.extra_quantity}`
+                                      : item.quantity,
+                                  name: order?.address?.name,
+                                }));
+                            })
+                            .flat(),
+                          `주문서_${new Date().toISOString()}`,
+                          [],
+                          header,
+                          style
+                        );
+                      },
+                    });
+                  } else {
+                    NiceModal.show("confirm", {
+                      message: `${total}개의 택배양식을 다운로드하시겠습니까?`,
+                      confirmText: "다운로드",
+                      cancelText: "취소",
+                      onConfirm: () => {
+                        (async () => {
+                          NiceModal.show("loading", {
+                            ref,
+                            message: "다운로드 진행중 0%",
+                          });
+                          const maxPage = table.current.getMaxPage();
+                          const list: any[] = [];
+                          if (maxPage === 0)
+                            list.push(...(await table.current.getPageData(0)));
+                          else
+                            for (let i = 0; i <= maxPage; i++) {
+                              if (i !== 0) await delay(3000);
+                              const data = await table.current.getPageData(i);
+                              list.push(...data);
+                              ref.current.setMessage(
+                                `다운로드 진행중 ${Math.round(
+                                  (i / maxPage) * 100
+                                )}%`
+                              );
+                            }
+
+                          downloadExcelFile(
+                            list
+                              .map((order: OrderData) => {
+                                return order.items
+                                  .sort((i1, i2) =>
+                                    (i1?.title || "")?.localeCompare(
+                                      i2?.title || ""
+                                    )
+                                  )
+                                  .map((item) => ({
+                                    display: order.display,
+                                    title: item.title,
+                                    quantity:
+                                      item.extra_quantity > 0
+                                        ? `${item.quantity} + ${item.extra_quantity}`
+                                        : item.quantity,
+                                    name: order?.address?.name,
+                                  }));
+                              })
+                              .flat(),
+                            `주문서_${new Date().toISOString()}`,
+                            [],
+                            header,
+                            style
+                          );
+                          ref.current.close();
+                        })();
+                      },
+                    });
+                  }
+                }}
+              >
+                <FlexChild gap={5}>
+                  <Image src={"/resources/icons/excel.png"} size={17} />
+                  <P>주문서 엑셀</P>
+                </FlexChild>
+              </Button>
+            </FlexChild>
+          </>
+        );
+        break;
+    }
+  }, [status]);
+
+  return <>{result}</>;
 }
