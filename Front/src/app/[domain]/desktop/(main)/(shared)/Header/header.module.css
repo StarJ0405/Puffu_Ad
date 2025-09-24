@@ -1,7 +1,7 @@
 
 .header {
 
-   --all_transition: all 0.2s;
+   --all_transition: all 0.3s;
 
    background: linear-gradient(180deg, #2b2b2b, #1a1a1a);
    padding: 15px 0 0;
@@ -47,9 +47,9 @@
    align-items: end !important;
 }
 
-.info_box .info_top span {
+.info_box .info_top {
    width: auto;
-   font-size: 14px;
+   font-size: 13px;
    color: #fff;
    cursor: pointer;
 }
@@ -209,7 +209,6 @@ header.scroll .search_Box {
    max-width: 300px;
    padding: 7px 15px;
    font-size: 14px;
-   border: 1px solid #ccc;
    border-radius: 5px;
 }
 
