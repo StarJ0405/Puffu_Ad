@@ -241,9 +241,9 @@ export function Auth() {
       <Link href={"/auth/signup"} hidden={!!userData?.id}>
         회원가입
       </Link>
-      {/* <Link href={"/auth/login"} hidden={!!userData?.id}>
+      <Link href={"/auth/login"} hidden={!!userData?.id}>
         로그인
-      </Link> */}
+      </Link>
     </HorizontalFlex>
   );
 }

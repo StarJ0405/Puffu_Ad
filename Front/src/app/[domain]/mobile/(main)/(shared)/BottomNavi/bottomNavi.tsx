@@ -1,17 +1,18 @@
 "use client"
+import CountBadge from "@/components/countBadge/countBadge";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import useNavigate from "@/shared/hooks/useNavigate";
 import clsx from "clsx";
+import { AnimatePresence, motion } from "framer-motion";
 import { useParams, usePathname } from "next/navigation";
 import { useState } from "react";
 import styles from "./bottomNavi.module.css";
-import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
-import CategoryMenu from "./categoryMenu"
-import { AnimatePresence, motion } from "framer-motion";
+import CategoryMenu from "./categoryMenu";
 
 
 export default function BottomNavi() {
@@ -88,6 +89,7 @@ export default function BottomNavi() {
                      <FlexChild className={clsx(styles.txt, {[styles.active] : linkTypeHandler('/orders/cart')})}>
                         <P>장바구니</P>
                      </FlexChild>
+                     <CountBadge />
                   </VerticalFlex>
          
                   <VerticalFlex className={styles.item} onClick={()=> {navigate( !userData?.id ? '/auth/login' : '/mypage'); setActive(false);}}>
