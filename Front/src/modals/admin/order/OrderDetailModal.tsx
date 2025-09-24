@@ -419,7 +419,8 @@ const OrderDetailModal = NiceModal.create(({ order }: { order: OrderData }) => {
                     <FlexChild width="max-content" padding={"15px 15px 15px 0"}>
                       <P>
                         {order?.total_discounted +
-                          (order?.shipping_methods?.[0]?.amount || 0)}
+                          (order?.shipping_methods?.[0]?.amount || 0) -
+                          order.point}
                       </P>
                       <P>{order?.store?.currency_unit}</P>
                     </FlexChild>
@@ -440,7 +441,7 @@ const OrderDetailModal = NiceModal.create(({ order }: { order: OrderData }) => {
                     justifyContent={"center"}
                   >
                     <P size={16} weight={600}>
-                      상품금액
+                      총 상품금액
                     </P>
                   </FlexChild>
                   <FlexChild width="max-content" padding={"15px 15px 15px 0"}>
@@ -473,6 +474,29 @@ const OrderDetailModal = NiceModal.create(({ order }: { order: OrderData }) => {
                   <HorizontalFlex>
                     <P>{order?.shipping_methods?.[0]?.amount || 0}</P>
                     <P>{order?.store?.currency_unit}</P>
+                  </HorizontalFlex>
+                </FlexChild>
+              </HorizontalFlex>
+              <HorizontalFlex
+                justifyContent="flex-start"
+                gap={20}
+                alignItems="stretch"
+                borderBottom={"1px solid #EFEFEF"}
+              >
+                <FlexChild
+                  width={120}
+                  padding={"18px 15px"}
+                  backgroundColor={"#F5F6FB"}
+                  justifyContent={"center"}
+                >
+                  <P size={16} weight={600}>
+                    사용포인트
+                  </P>
+                </FlexChild>
+                <FlexChild width="max-content" padding={"15px 15px 15px 0"}>
+                  <HorizontalFlex>
+                    <P>{order.point || 0}</P>
+                    <P>P</P>
                   </HorizontalFlex>
                 </FlexChild>
               </HorizontalFlex>
