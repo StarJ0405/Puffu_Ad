@@ -10,9 +10,10 @@ import usePageData from "@/shared/hooks/data/usePageData";
 import useNavigate from "@/shared/hooks/useNavigate";
 import { requester } from "@/shared/Requester";
 import clsx from "clsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import boardStyle from "../boardGrobal.module.css";
 import styles from "./event.module.css";
+import ListPagination from "@/components/listPagination/ListPagination";
 
 // 게시판 리스트 -----------------------------------------------
 export function BoardTitleBox() {
@@ -38,7 +39,7 @@ export function GalleryTable({
   const [active, setActive] = useState<"all" | "before" | "continue" | "end">(
     "all"
   );
-  const { notices, page, maxPage, origin } = usePageData(
+  const { notices, page, maxPage, origin, setPage } = usePageData(
     "notices",
     (pageNumber) => ({
       ...initCondition,
@@ -52,6 +53,10 @@ export function GalleryTable({
       fallbackData: initNotices,
     }
   );
+
+  useEffect(() => {
+    setPage(0);
+  }, [initCondition.q]);
 
   return (
     <VerticalFlex>
@@ -104,7 +109,7 @@ export function GalleryTable({
       </FlexChild>
 
       <FlexChild className={boardStyle.list_bottom_box}>
-        {/* <ListPagination /> */}
+        <ListPagination page={page} maxPage={maxPage} onChange={setPage} />
       </FlexChild>
     </VerticalFlex>
   );

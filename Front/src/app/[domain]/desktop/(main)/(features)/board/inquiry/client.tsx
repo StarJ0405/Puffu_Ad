@@ -12,9 +12,10 @@ import { requester } from "@/shared/Requester";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import boardStyle from "../boardGrobal.module.css";
-
+import ListPagination from "@/components/listPagination/ListPagination";
 import { toast } from "@/shared/utils/Functions";
 import { useRouter } from "next/navigation";
+import usePageData from "@/shared/hooks/data/usePageData";
 
 interface QADataWithUser extends QAData {
   user?: UserData;
@@ -185,7 +186,7 @@ export function BoardTable() {
         )}
       </FlexChild>
       <FlexChild className={boardStyle.list_bottom_box}>
-        {/* <ListPagination /> */}
+        {/* <ListPagination page={page} maxPage={maxPage} onChange={setPage} /> */}
 
         {/* 누르면 글쓰기로 연결 회원만 글쓰기 가능! 비회원은 안 보이게 하던지, 클릭하면 비회원이면 로그인 페이지로 보내기 */}
         <Link href={"/board/inquiry/write"} className={boardStyle.write_btn}>
