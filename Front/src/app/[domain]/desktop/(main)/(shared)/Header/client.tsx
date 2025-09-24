@@ -123,25 +123,28 @@ export function HeaderBottom() {
   ];
 
   const pathname = usePathname();
-  const bottomRef = useRef<HTMLDivElement | null>(null);
-  const [fixed, setFixed] = useState(false);
   const [CaOpen, SetCaOpen] = useState(false);
 
-  useEffect(() => {
-    const headerScroll = () => {
-      const elmt = bottomRef.current?.getBoundingClientRect();
-      if (!elmt) return;
-      setFixed(elmt.top <= 0);
-    };
+  // 피드백 받고 이상하다 하면 돌려놓기
+  // const bottomRef = useRef<HTMLDivElement | null>(null);
+  // const [fixed, setFixed] = useState(false);
 
-    window.addEventListener("scroll", headerScroll);
-    return () => window.removeEventListener("scroll", headerScroll);
-  }, [bottomRef]);
+  // useEffect(() => {
+  //   const headerScroll = () => {
+  //     const elmt = bottomRef.current?.getBoundingClientRect();
+  //     if (!elmt) return;
+  //     setFixed(elmt.top <= 0);
+  //   };
+
+  //   window.addEventListener("scroll", headerScroll);
+  //   return () => window.removeEventListener("scroll", headerScroll);
+  // }, [bottomRef]);
 
   return (
     <>
-      <div ref={bottomRef}></div>{/* 헤더 높이계산용 더미 */}
-      <div className={`${fixed ? styles.fixed : ""}`}>
+      {/* 헤더 높이계산용 더미 */}
+      {/* <div ref={bottomRef}></div> */}
+      {/* <div className={`${fixed ? styles.fixed : ""}`}> */}
         <HorizontalFlex className="page_container" position="relative">
           <HorizontalFlex gap={25} justifyContent="start">
             <FlexChild
@@ -217,7 +220,7 @@ export function HeaderBottom() {
             </ul>
           </FlexChild>
         </HorizontalFlex>
-      </div>
+      {/* </div> */}
     </>
   );
 }

@@ -531,8 +531,8 @@ function SMS({ setStep, handleUpdate }: StepProps) {
                 }}
                 height={39}
                 maxHeight={300}
-                width={80}
-                minWidth={80}
+                width={114}
+                minWidth={114}
               />
               <FlexChild position="relative">
                 <Input

@@ -78,7 +78,7 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
         loop={true}
         slidesPerView={1}
         speed={600}
-        spaceBetween={40}
+        spaceBetween={0}
         modules={[Pagination, Autoplay]}
         pagination={{
           dynamicBullets: true,
