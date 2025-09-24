@@ -621,8 +621,7 @@ export function DetailTabContainer({
     if (contentRef.current) {
       const top =
         contentRef.current.getBoundingClientRect().top +
-        window.scrollY -
-        100; // 헤더 높이만큼 보정
+        window.scrollY -140; // 헤더 높이만큼 보정
       window.scrollTo({ top, behavior: "smooth" });
     }
   };
