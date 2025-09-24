@@ -41,9 +41,6 @@ export class Product extends BaseEntity {
   @JoinColumn({ name: "brand_id", referencedColumnName: "id" })
   brand?: Brand;
 
-  @Column({ type: "character varying", nullable: true })
-  category_id?: string;
-
   @ManyToMany(() => Category, (ct) => ct.products)
   @JoinTable({
     name: "product_category",
