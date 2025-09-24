@@ -159,7 +159,8 @@ export function GalleryItem({ item }: { item: NoticeData }) {
         onClick={() => navigate(`/board/event/${item.id}`)}
       >
         {/* <Link href={'/board/detail/event_01'}> */}
-        <Image src={item.thumbnail} width={"100%"} height={"auto"} />
+        {/* <Image src={item.thumbnail} width={"100%"} height={"auto"} /> */}
+        <div className={styles.img} style={{backgroundImage: `url(${item.thumbnail})`}}></div>
         {/* {item.durationEnd && (
              // 현재 날짜가 이벤트 종료기간을 지났을때 이 이미지가 나타나기
              // 실시간으로 시간 1초라도 기간 지나면 바로 업데이트해서 나타나게 해야 할지.

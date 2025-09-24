@@ -73,12 +73,20 @@
    /* max-width: 250px; */
 }
 
-.gallery_item .thumb_frame img {
+.gallery_item .thumb_frame .img {
+   --size: 100%;
    position: relative;
    z-index: 1;
+   width: var(--size);
+   background-position: center center;
+   background-size: cover;
+   background-repeat: no-repeat;
+   height: auto;
+   padding-bottom: var(--size);
+   background: #ccc;
 }
 
-.gallery_item .thumb_frame img.durationEnd_img {
+.gallery_item .thumb_frame .img.durationEnd_img {
    position: absolute;
    top: 0;
    left: 0;
