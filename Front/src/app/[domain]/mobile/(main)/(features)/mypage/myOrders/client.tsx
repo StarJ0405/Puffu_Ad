@@ -31,48 +31,6 @@ export function MyOrdersTable({
   const [startDate, setStartDate] = useState(initStartDate);
   const [endDate, setEndDate] = useState(initEndDate);
   const [activePeriod, setActivePeriod] = useState("1week");
-
-  const formatOrders = useCallback((ordersData: any[]) => {
-    return ordersData.map((order) => {
-      const orderDate = new Date(order.created_at).toLocaleDateString("ko-KR", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
-
-      let totalDiscount = 0;
-      let totalPayment = 0;
-
-      const content = order.items.map((item: any) => {
-        const discount = item.total - item.total_discount;
-        totalDiscount += discount;
-        totalPayment += item.total_discount;
-        return {
-          title: item.product_title,
-          thumbnail: item.thumbnail,
-          brand: item.brand.name,
-          price: item.total_discount.toLocaleString(),
-          discountAmount: discount.toLocaleString(),
-          option: item.variant_title
-            ? [{ title: item.variant_title, price: "0" }]
-            : [],
-          delivery: "/resources/icons/cart/cj_icon.png",
-        };
-      });
-
-      return {
-        id: order.id,
-        date: orderDate,
-        orderId: order.display, // Unique order identifier
-        content: content,
-        totalDiscount: totalDiscount.toLocaleString(),
-        totalPayment: totalPayment.toLocaleString(),
-        status: order.status,
-        trackingNumber: order.shipping_methods?.[0]?.tracking_number,
-      };
-    });
-  }, []);
-
   const { orders, mutate } = useData(
     "orders",
     {
@@ -379,16 +337,37 @@ export function MyOrdersTable({
                   </P>
                 </HorizontalFlex>
                 <HorizontalFlex className={styles.summary_row}>
+                  <P>총 상품금액</P>
+                  <P>
+                    <Span>{order.total}</Span>
+                    <Span> 원</Span>
+                  </P>
+                </HorizontalFlex>
+                <HorizontalFlex className={styles.summary_row}>
                   <P>총 할인금액</P>
                   <P>
                     <Span>{order.total_discounted - order.total}</Span>
                     <Span> 원</Span>
                   </P>
                 </HorizontalFlex>
+                <HorizontalFlex
+                  className={styles.summary_row}
+                  hidden={!order.point}
+                >
+                  <P>사용포인트</P>
+                  <P>
+                    <Span>{order.point}</Span>
+                    <Span> P</Span>
+                  </P>
+                </HorizontalFlex>
                 <HorizontalFlex className={styles.summary_row}>
                   <P>총 결제금액</P>
                   <P color="var(--main-color1)" weight={600} fontSize={20}>
-                    <Span>{order.total_discounted}</Span>
+                    <Span>
+                      {order.total_discounted +
+                        (order?.shipping_methods?.[0]?.amount || 0) -
+                        order.point}
+                    </Span>
                     <Span> 원</Span>
                   </P>
                 </HorizontalFlex>
