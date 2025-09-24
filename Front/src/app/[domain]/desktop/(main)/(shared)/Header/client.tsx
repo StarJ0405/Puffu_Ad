@@ -16,6 +16,8 @@ import { HeaderCategory } from "./headerCategory";
 import { useCart } from "@/providers/StoreProvider/StorePorivderClient";
 import useNavigate from "@/shared/hooks/useNavigate";
 import { usePathname } from "next/navigation";
+import NiceModal from "@ebay/nice-modal-react";
+import ConfirmModal from "@/modals/confirm/ConfirmModal";
 
 interface ShopMenuItem {
   name: string;
@@ -207,10 +209,30 @@ export function HeaderBottom() {
 export function Auth() {
   const [, , removeCookie] = useCookies([Cookies.JWT]);
   const { userData } = useAuth();
+   const logoutModal = () => {
+    // 로그아웃
+    NiceModal.show(ConfirmModal, {
+      message: (
+        <FlexChild justifyContent="center" marginBottom={30}>
+          <P color="#333" fontSize={20} weight={600}>
+            로그아웃 하시겠습니까?
+          </P>
+        </FlexChild>
+      ),
+      confirmText: "확인",
+      cancelText: "취소",
+      withCloseButton: true,
+      onConfirm: async () => {
+        removeCookie(Cookies.JWT, getCookieOption());
+      },
+    });
+  };
+  
   return (
     <HorizontalFlex gap={13} className={styles.info_top} width={"auto"}>
       <P
-        onClick={() => removeCookie(Cookies.JWT, getCookieOption())}
+        // onClick={() => removeCookie(Cookies.JWT, getCookieOption())}
+        onClick={logoutModal}
         hidden={!userData?.id}
         cursor="pointer"
         className={styles.logout_txt}
