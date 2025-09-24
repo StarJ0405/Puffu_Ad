@@ -384,14 +384,14 @@ export function CartWrap() {
                 cart_id: cartData?.id,
               };
               switch (payment) {
-                case "toss": {
-                  sessionStorage.setItem(
-                    Sessions.PAYMENT,
-                    JSON.stringify(data)
-                  );
-                  navigate(`/orders/cart/toss`);
-                  break;
-                }
+                // case "toss": {
+                //   sessionStorage.setItem(
+                //     Sessions.PAYMENT,
+                //     JSON.stringify(data)
+                //   );
+                //   navigate(`/orders/cart/toss`);
+                //   break;
+                // }
                 case "credit_card": {
                   const trackId = data.cart_id + "_" + new Date().getTime();
                   const items = cartData?.items?.filter((f) =>

@@ -11,10 +11,10 @@ import {
 } from "typeorm";
 import { generateEntityId } from "utils/functions";
 import { Address } from "./address";
+import { LineItem } from "./line_item";
 import { ShippingMethod } from "./shipping_method";
 import { Store } from "./store";
 import { User } from "./user";
-import { LineItem } from "./line_item";
 
 export enum OrderStatus {
   AWAITING = "awaiting",
@@ -116,8 +116,12 @@ export class Order extends BaseEntity {
 
   @Column({ type: "jsonb", default: {} })
   cancel_data?: Record<string, unknown> | null;
+
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;
+
+  @Column({ type: "integer", default: 0 })
+  point?: number;
 
   @BeforeInsert()
   protected async BeforeInsert(): Promise<void> {
