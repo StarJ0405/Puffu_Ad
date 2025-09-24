@@ -111,6 +111,11 @@ export function CompleteForm({ order }: { order?: OrderData }) {
                 원
               </P>
             </FlexChild>
+            <FlexChild justifyContent="center" hidden={!order?.point}>
+              <P size={16} color="#fff" weight={500}>
+                - 포인트 {Number(order?.point || 0).toLocaleString("ko-KR")}P
+              </P>
+            </FlexChild>
           </VerticalFlex>
 
           <VerticalFlex gap={10} justifyContent="center">
@@ -124,7 +129,8 @@ export function CompleteForm({ order }: { order?: OrderData }) {
               <P size={25} color="var(--main-color1)" weight={600}>
                 {Number(
                   (order?.total_discounted || 0) +
-                    (order?.shipping_methods?.[0]?.amount || 0)
+                    (order?.shipping_methods?.[0]?.amount || 0) -
+                    (order?.point || 0)
                 ).toLocaleString("ko-KR")}
                 원
               </P>
@@ -201,8 +207,11 @@ export function CompleteOrdersTable({ items }: { items: LineItemData[] }) {
                   <FlexChild>
                     <P>할인금액 : </P>
                     <Span>
-                      {(((item.unit_price || 0) - (item.discount_price || 0)) *
-                      item.quantity).toLocaleString("ko-KR")}{" "}원
+                      {(
+                        ((item.unit_price || 0) - (item.discount_price || 0)) *
+                        item.quantity
+                      ).toLocaleString("ko-KR")}{" "}
+                      원
                     </Span>
                   </FlexChild>
 
@@ -211,7 +220,8 @@ export function CompleteOrdersTable({ items }: { items: LineItemData[] }) {
                     <Span color="var(--main-color1)" weight={600} fontSize={20}>
                       {Number(
                         (item.discount_price || 0) * item.quantity
-                      ).toLocaleString("ko-KR")}{" "}원
+                      ).toLocaleString("ko-KR")}{" "}
+                      원
                     </Span>
                   </FlexChild>
                 </HorizontalFlex>

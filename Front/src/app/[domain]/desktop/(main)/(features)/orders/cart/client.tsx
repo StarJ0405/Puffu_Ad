@@ -40,7 +40,7 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import style from "./page.module.css";
 
 export function CartWrap() {
-  const { userData } = useAuth();
+  const { userData, reload } = useAuth();
   const { storeData } = useStore();
   const { cartData } = useCart();
   const { addresses, mutate } = useAddress();
@@ -57,6 +57,7 @@ export function CartWrap() {
   const [agrees, setAgrees] = useState<string[]>([]);
   const [payment, setPayment] = useState<string>("");
   const [total, setTotal] = useState<number>(0);
+  const [point, setPoint] = useState<number>(0);
   const [message, setMessage] = useState<string>("");
   const [totalDiscounted, setTotalDiscounted] = useState<number>(0);
   const [shipping, setShipping] = useState<ShippingMethodData>();
@@ -310,12 +311,48 @@ export function CartWrap() {
                 </P>
               </HorizontalFlex>
             </VerticalFlex>
+            <article>
+              <P className={style.list_title}>포인트</P>
+            </article>
+            <VerticalFlex className={style.info_list}>
+              <HorizontalFlex className={style.info_item}>
+                <Span>보유 포인트</Span>
+
+                <P>
+                  <Span>{userData?.point || 0}</Span>
+                  <Span> P</Span>
+                </P>
+              </HorizontalFlex>
+
+              <HorizontalFlex className={style.info_item}>
+                <InputNumber
+                  width={"100%"}
+                  hideArrow
+                  value={point}
+                  onChange={(value) => setPoint(value as number)}
+                  max={Math.min(
+                    userData?.point || 0,
+                    totalDiscounted + (shipping?.amount || 0)
+                  )}
+                  min={0}
+                />
+                <Button onClick={() => setPoint(0)}>사용 취소</Button>
+              </HorizontalFlex>
+
+              <HorizontalFlex className={style.info_item}>
+                <P>
+                  <Span>사용 후 남은 포인트 </Span>
+                  <Span>{(userData?.point || 0) - point}</Span>
+                  <Span> P</Span>
+                </P>
+              </HorizontalFlex>
+            </VerticalFlex>
           </VerticalFlex>
 
           <FlexChild className={style.total_pay_txt}>
             <Span>총 결제 금액</Span>
             <P color={"var(--main-color1)"}>
-              <Span>{(shipping?.amount || 0) + totalDiscounted}</Span>
+              <Span>{(shipping?.amount || 0) + totalDiscounted - point}</Span>
               <Span color="#fff"> ₩</Span>
             </P>
           </FlexChild>
@@ -327,67 +364,198 @@ export function CartWrap() {
               disabled={agrees.length < 2 || !payment || selected?.length === 0}
               className={style.payment_btn}
               onClick={async () => {
+                if (point > 0) {
+                  setIsLoading(true);
+                  const { user } = await requester.getCurrentUser();
+                  if (user.point < point) {
+                    reload();
+                    return toast({
+                      message: "보유포인트가 사용포인트보다 적습니다.",
+                    });
+                  }
+                }
                 const data: any = {
                   selected,
                   address_id: address?.id,
                   shipping_method_id: shipping?.id,
                   message: message,
                   cart_id: cartData?.id,
+                  point,
                 };
-                switch (payment) {
-                  // case "toss": {
-                  //   sessionStorage.setItem(
-                  //     Sessions.PAYMENT,
-                  //     JSON.stringify(data)
-                  //   );
-                  //   navigate(`/orders/cart/toss`);
-                  //   break;
-                  // }
-                  case "credit_card": {
-                    const trackId = data.cart_id + "_" + new Date().getTime();
-                    const items = cartData?.items?.filter((f) =>
-                      selected.includes(f.id)
-                    );
-                    let total = 0;
-
-                    items
-                      ?.filter((item) => selected.includes(item.id))
-                      .forEach((item) => {
-                        const discount_price =
-                          item?.variant?.discount_price || 0;
-                        const tax = Math.round(
-                          (discount_price *
-                            (item?.variant?.product?.tax_rate || 0)) /
-                            100
-                        );
-                        total +=
-                          discount_price * item.quantity + tax * item.quantity;
+                if (totalDiscounted + (shipping?.amount || 0) - point === 0) {
+                  setIsLoading(true);
+                  requester.createOrder(
+                    data,
+                    ({
+                      content,
+                      error,
+                    }: {
+                      content: OrderData;
+                      error: any;
+                    }) => {
+                      if (error) {
+                        toast({ message: error });
+                        setIsLoading(false);
+                        return;
+                      }
+                      sessionStorage.setItem(
+                        Sessions.ORDER,
+                        JSON.stringify(content)
+                      );
+                      navigate("/orders/complete", {
+                        type: "replace",
                       });
-                    const params = {
-                      paytype: "nestpay",
-                      trackId: trackId,
-                      payMethod: "card",
-                      amount: total + (shipping?.amount || 0),
-                      payerId: userData?.id,
-                      payerName: userData?.name,
-                      payerEmail: userData?.username,
-                      payerTel: userData?.phone,
-                      returnUrl: `${origin}/payment`,
-                      products: items?.map((i) => ({
-                        name: i.variant.total_code || i.variant_id.slice(4),
-                        qty: i.total_quantity,
-                        price: i.variant.discount_price * i.quantity,
-                      })),
-                    };
-                    const result = await requester.requestPaymentApproval(
-                      params
-                    );
+                    }
+                  );
+                } else
+                  switch (payment) {
+                    // case "toss": {
+                    //   sessionStorage.setItem(
+                    //     Sessions.PAYMENT,
+                    //     JSON.stringify(data)
+                    //   );
+                    //   navigate(`/orders/cart/toss`);
+                    //   break;
+                    // }
+                    case "credit_card": {
+                      const trackId = data.cart_id + "_" + new Date().getTime();
+                      const items = cartData?.items?.filter((f) =>
+                        selected.includes(f.id)
+                      );
+                      let total = 0;
 
-                    if (!window._babelPolyfill) {
-                      const jsUrl = process.env.NEXT_PUBLIC_STATIC;
-                      const jsElement = document.createElement("script");
-                      jsElement.src = jsUrl + "?ver=" + new Date().getTime();
-                      jsElement.onload = () => {
+                      items
+                        ?.filter((item) => selected.includes(item.id))
+                        .forEach((item) => {
+                          const discount_price =
+                            item?.variant?.discount_price || 0;
+                          const tax = Math.round(
+                            (discount_price *
+                              (item?.variant?.product?.tax_rate || 0)) /
+                              100
+                          );
+                          total +=
+                            discount_price * item.quantity +
+                            tax * item.quantity;
+                        });
+                      const params = {
+                        paytype: "nestpay",
+                        trackId: trackId,
+                        payMethod: "card",
+                        amount: total + (shipping?.amount || 0) - point,
+                        payerId: userData?.id,
+                        payerName: userData?.name,
+                        payerEmail: userData?.username,
+                        payerTel: userData?.phone,
+                        returnUrl: `${origin}/payment`,
+                        products: items?.map((i) => ({
+                          name: i.variant.total_code || i.variant_id.slice(4),
+                          qty: i.total_quantity,
+                          price: i.variant.discount_price * i.quantity,
+                        })),
+                      };
+                      const result = await requester.requestPaymentApproval(
+                        params
+                      );
+
+                      if (!window._babelPolyfill) {
+                        const jsUrl = process.env.NEXT_PUBLIC_STATIC;
+                        const jsElement = document.createElement("script");
+                        jsElement.src = jsUrl + "?ver=" + new Date().getTime();
+                        jsElement.onload = () => {
+                          if (window.NESTPAY) {
+                            window.NESTPAY.welcome();
+                            window.NESTPAY.pay({
+                              payMethod: "card",
+                              trxId: result?.link?.trxId,
+                              openType: "layer",
+                              onApprove: async (response) => {
+                                if (response.resultCd === "0000") {
+                                  try {
+                                    const approveResult =
+                                      await requester.approvePayment({
+                                        trxId:
+                                          result?.content?.trxId ||
+                                          result?.link?.trxId,
+                                        resultCd: response.resultCd,
+                                        resultMsg: response.resultMsg,
+                                        customerData: JSON.stringify(userData),
+                                      });
+                                    if (
+                                      approveResult?.approveResult?.result
+                                        ?.resultCd === "0000"
+                                    ) {
+                                      setIsLoading(true);
+                                      data.payment =
+                                        approveResult?.approveResult?.pay;
+                                      requester.createOrder(
+                                        data,
+                                        ({
+                                          content,
+                                          error,
+                                        }: {
+                                          content: OrderData;
+                                          error: any;
+                                        }) => {
+                                          if (error) {
+                                            toast({ message: error });
+                                            setIsLoading(false);
+                                            return;
+                                          }
+                                          sessionStorage.setItem(
+                                            Sessions.ORDER,
+                                            JSON.stringify(content)
+                                          );
+                                          navigate("/orders/complete", {
+                                            type: "replace",
+                                          });
+                                        }
+                                      );
+                                    } else {
+                                      NiceModal.show("confirm", {
+                                        clickOutsideToClose: false,
+                                        message:
+                                          approveResult?.approveResult?.result
+                                            ?.resultMsg ||
+                                          "알 수 없는 오류가 발생했습니다.",
+                                        confirmText: "장바구니로 돌아가기",
+                                        onConfirm: () =>
+                                          navigate("/orders/cart"),
+                                      });
+                                    }
+                                  } catch (error) {}
+                                } else if (response.resultCd !== "CB49") {
+                                  NiceModal.show("confirm", {
+                                    clickOutsideToClose: false,
+                                    message:
+                                      response?.resultMsg ||
+                                      "알 수 없는 오류가 발생했습니다.",
+                                    confirmText: "장바구니로 돌아가기",
+                                    onConfirm: () => navigate("/orders/cart"),
+                                  });
+                                }
+                              },
+                            });
+                          }
+                        };
+
+                        const existingScript = document.querySelector(
+                          'script[src*="nestpay.v1.js"]'
+                        );
+                        if (existingScript) {
+                          existingScript.remove();
+                        }
+
+                        document.head.appendChild(jsElement);
+                        return () => {
+                          const script = document.querySelector(
+                            'script[src*="nestpay.v1.js"]'
+                          );
+                          if (script) {
+                            script.remove();
+                          }
+                        };
+                      } else {
                         if (window.NESTPAY) {
                           window.NESTPAY.welcome();
                           window.NESTPAY.pay({
@@ -461,102 +629,10 @@ export function CartWrap() {
                             },
                           });
                         }
-                      };
-
-                      const existingScript = document.querySelector(
-                        'script[src*="nestpay.v1.js"]'
-                      );
-                      if (existingScript) {
-                        existingScript.remove();
                       }
-
-                      document.head.appendChild(jsElement);
-                      return () => {
-                        const script = document.querySelector(
-                          'script[src*="nestpay.v1.js"]'
-                        );
-                        if (script) {
-                          script.remove();
-                        }
-                      };
-                    } else {
-                      if (window.NESTPAY) {
-                        window.NESTPAY.welcome();
-                        window.NESTPAY.pay({
-                          payMethod: "card",
-                          trxId: result?.link?.trxId,
-                          openType: "layer",
-                          onApprove: async (response) => {
-                            if (response.resultCd === "0000") {
-                              try {
-                                const approveResult =
-                                  await requester.approvePayment({
-                                    trxId:
-                                      result?.content?.trxId ||
-                                      result?.link?.trxId,
-                                    resultCd: response.resultCd,
-                                    resultMsg: response.resultMsg,
-                                    customerData: JSON.stringify(userData),
-                                  });
-                                if (
-                                  approveResult?.approveResult?.result
-                                    ?.resultCd === "0000"
-                                ) {
-                                  setIsLoading(true);
-                                  data.payment =
-                                    approveResult?.approveResult?.pay;
-                                  requester.createOrder(
-                                    data,
-                                    ({
-                                      content,
-                                      error,
-                                    }: {
-                                      content: OrderData;
-                                      error: any;
-                                    }) => {
-                                      if (error) {
-                                        toast({ message: error });
-                                        setIsLoading(false);
-                                        return;
-                                      }
-                                      sessionStorage.setItem(
-                                        Sessions.ORDER,
-                                        JSON.stringify(content)
-                                      );
-                                      navigate("/orders/complete", {
-                                        type: "replace",
-                                      });
-                                    }
-                                  );
-                                } else {
-                                  NiceModal.show("confirm", {
-                                    clickOutsideToClose: false,
-                                    message:
-                                      approveResult?.approveResult?.result
-                                        ?.resultMsg ||
-                                      "알 수 없는 오류가 발생했습니다.",
-                                    confirmText: "장바구니로 돌아가기",
-                                    onConfirm: () => navigate("/orders/cart"),
-                                  });
-                                }
-                              } catch (error) {}
-                            } else if (response.resultCd !== "CB49") {
-                              NiceModal.show("confirm", {
-                                clickOutsideToClose: false,
-                                message:
-                                  response?.resultMsg ||
-                                  "알 수 없는 오류가 발생했습니다.",
-                                confirmText: "장바구니로 돌아가기",
-                                onConfirm: () => navigate("/orders/cart"),
-                              });
-                            }
-                          },
-                        });
-                      }
+                      break;
                     }
-                    break;
                   }
-                }
               }}
             >
               <Span>결제하기</Span>
