@@ -88,7 +88,7 @@ export default function BottomNavi() {
                      <Image src={`/resources/images/bottomNavi/navi_cart${linkTypeHandler('/orders/cart') ? '_active' : ''}.png`} width={21} />
                      <FlexChild className={clsx(styles.txt, {[styles.active] : linkTypeHandler('/orders/cart')})}>
                         <P>장바구니</P>
-                        <CountBadge top={'-20px'} right={'-5px'} />
+                        <CountBadge top={'-20px'} right={'0px'} />
                      </FlexChild>
                   </VerticalFlex>
          

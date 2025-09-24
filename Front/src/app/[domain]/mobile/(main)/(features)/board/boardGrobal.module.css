@@ -1,12 +1,11 @@
 
 
 .board_frame {
-   margin: 40px 0 0;
    width: 100%;
 }
 
 .board_frame > .title_box {
-   margin-bottom: 50px;
+   margin-bottom: 35px;
    justify-content: center;
 }
 
