@@ -30,28 +30,6 @@ export function SideMenuBtn() {
 
 
 
-export function CartLength() {
-  const { cartData } = useCart();
-  const [length, setLength] = useState<number>(0);
-
-  useEffect(() => {
-    setLength(cartData?.items.length ?? 0);
-  }, [cartData]);
-  
-  return (
-   <>
-      {
-         length > 0 && (
-            <FlexChild className={styles.cart_length}>
-              {length}
-            </FlexChild>
-         )
-      }
-   </>
-  )
-}
-
-
 interface ShopMenuItem {
    name: string;
    link: string;

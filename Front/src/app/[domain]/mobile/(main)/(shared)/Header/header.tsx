@@ -5,12 +5,13 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import clsx from "clsx";
 import Link from "next/link";
-import { HeaderBottom, SideMenuBtn, CartLength } from './client';
+import { HeaderBottom, SideMenuBtn } from './client';
 import styles from "./header.module.css";
 import { useParams, usePathname } from "next/navigation";
 import MobileSearch from "@/components/mobileSearch/mobileSearch"
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import CountBadge from "@/components/countBadge/countBadge";
 
 
 export default function MobileHeader() {
@@ -29,7 +30,7 @@ export default function MobileHeader() {
    const isDetailPage = !!params?.detail_id;
 
    const shouldHideHeader = 
-   pathname.includes("/orders") || pathname.includes("/border") || pathname.includes("/mypage")
+   pathname.includes("/orders") || pathname.includes("/border") || pathname.includes("/mypage") || pathname.includes("/board") 
    || isDetailPage;
 
    return (
@@ -66,7 +67,7 @@ export default function MobileHeader() {
                                     <Link href={'/orders/cart'}>
                                        <Image src='/resources/icons/main/cart_icon.png' width={25} cursor="pointer"/>
                                     </Link>
-                                    <CartLength />
+                                    <CountBadge bottom="-3px" right="-5px" />
                                  </FlexChild>
                               </HorizontalFlex>
                            </VerticalFlex>

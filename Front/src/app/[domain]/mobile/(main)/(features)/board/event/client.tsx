@@ -17,6 +17,7 @@ import useNavigate from "@/shared/hooks/useNavigate";
 import usePageData from "@/shared/hooks/data/usePageData";
 import { requester } from "@/shared/Requester";
 import { useState, useEffect } from "react";
+import MasonryGrid from "@/components/masonry/MasonryGrid";
 
 // 게시판 리스트 -----------------------------------------------
 export function BoardTitleBox() {
@@ -42,6 +43,11 @@ export function GalleryTable({
   const [active, setActive] = useState<"all" | "before" | "continue" | "end">(
     "all"
   );
+
+  const eventChoiceHandle = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setActive(e.target.value as "all" | "before" | "continue" | "end");
+  }
+
   const { notices, page, maxPage, origin, setPage } = usePageData(
     "notices",
     (pageNumber) => ({
@@ -63,49 +69,64 @@ export function GalleryTable({
 
   return (
     <VerticalFlex>
-      <HorizontalFlex className={styles.event_tab}>
-        <FlexChild
-          className={clsx(styles.tab_btn, {
-            [styles.active]: active === "all",
-          })}
-          onClick={() => setActive("all")}
-        >
-          <P>전체보기</P>
-        </FlexChild>
-        <FlexChild
-          className={clsx(styles.tab_btn, {
-            [styles.active]: active === "before",
-          })}
-          onClick={() => setActive("before")}
-        >
-          <P>예정된 이벤트</P>
-        </FlexChild>
-        <FlexChild
-          className={clsx(styles.tab_btn, {
-            [styles.active]: active === "continue",
-          })}
-          onClick={() => setActive("continue")}
-        >
-          <P>진행중인 이벤트</P>
+      <div className={styles.tab_wrapper}>
+        <FlexChild className={styles.select_box}>
+          <select name="" value={active} id="event_choice" onChange={eventChoiceHandle}>
+            <option value="all">전체 이벤트</option>
+            <option value="before">예정된 이벤트</option>
+            <option value="continue">진행중인 이벤트</option>
+            <option value="end">종료된 이벤트</option>
+          </select>
+          <Image src={"/resources/icons/arrow/arrow_bottom_icon.png"} width={12} />
         </FlexChild>
 
-        <FlexChild
-          className={clsx(styles.tab_btn, {
-            [styles.active]: active === "end",
-          })}
-          onClick={() => setActive("end")}
-        >
-          <P>종료된 이벤트</P>
-        </FlexChild>
-      </HorizontalFlex>
+        {/* <div className={styles.event_tab}>
+          <FlexChild
+            className={clsx(styles.tab_btn, {
+              [styles.active]: active === "all",
+            })}
+            onClick={() => setActive("all")}
+          >
+            <P>전체보기</P>
+          </FlexChild>
+          <FlexChild
+            className={clsx(styles.tab_btn, {
+              [styles.active]: active === "before",
+            })}
+            onClick={() => setActive("before")}
+          >
+            <P>예정된 이벤트</P>
+          </FlexChild>
+          <FlexChild
+            className={clsx(styles.tab_btn, {
+              [styles.active]: active === "continue",
+            })}
+            onClick={() => setActive("continue")}
+          >
+            <P>진행중인 이벤트</P>
+          </FlexChild>
+  
+          <FlexChild
+            className={clsx(styles.tab_btn, {
+              [styles.active]: active === "end",
+            })}
+            onClick={() => setActive("end")}
+          >
+            <P>종료된 이벤트</P>
+          </FlexChild>
+        </div> */}
+      </div>
 
       <FlexChild>
         {notices.length > 0 ? (
-          <VerticalFlex gap={50}>
+          <MasonryGrid gap={25} width={'100%'} breakpoints={{
+            768: 2,
+            580: 1,
+          }}>
             {notices.map((item: NoticeData, i: number) => (
               <GalleryItem key={i} item={item} />
             ))}
-          </VerticalFlex>
+          </MasonryGrid>
         ) : (
           <NoContent type={"게시판"} />
         )}
@@ -138,7 +159,8 @@ export function GalleryItem({ item }: { item: NoticeData }) {
         onClick={() => navigate(`/board/event/${item.id}`)}
       >
         {/* <Link href={'/board/detail/event_01'}> */}
-        <Image src={item.thumbnail} width={"100%"} height={"auto"} />
+        {/* <Image src={item.thumbnail} width={"100%"} height={"auto"} /> */}
+        <div className={styles.img} style={{backgroundImage: `url(${item.thumbnail})`}}></div>
         {/* {item.durationEnd && (
              // 현재 날짜가 이벤트 종료기간을 지났을때 이 이미지가 나타나기
              // 실시간으로 시간 1초라도 기간 지나면 바로 업데이트해서 나타나게 해야 할지.
