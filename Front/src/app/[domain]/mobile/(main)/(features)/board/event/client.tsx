@@ -16,7 +16,7 @@ import { useParams } from "next/navigation";
 import useNavigate from "@/shared/hooks/useNavigate";
 import usePageData from "@/shared/hooks/data/usePageData";
 import { requester } from "@/shared/Requester";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // 게시판 리스트 -----------------------------------------------
 export function BoardTitleBox() {
@@ -42,7 +42,7 @@ export function GalleryTable({
   const [active, setActive] = useState<"all" | "before" | "continue" | "end">(
     "all"
   );
-  const { notices, page, maxPage, origin } = usePageData(
+  const { notices, page, maxPage, origin, setPage } = usePageData(
     "notices",
     (pageNumber) => ({
       ...initCondition,
@@ -56,6 +56,10 @@ export function GalleryTable({
       fallbackData: initNotices,
     }
   );
+
+  useEffect(() => {
+    setPage(0);
+  }, [initCondition.q]);
 
   return (
     <VerticalFlex>
@@ -108,7 +112,7 @@ export function GalleryTable({
       </FlexChild>
 
       <FlexChild className={boardStyle.list_bottom_box}>
-        {/* <ListPagination /> */}
+        <ListPagination page={page} maxPage={maxPage} onChange={setPage} />
       </FlexChild>
     </VerticalFlex>
   );

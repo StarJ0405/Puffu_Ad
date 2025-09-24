@@ -58,19 +58,33 @@ function ListPagination({ page, maxPage, onChange, size = 10 }: Props) {
             />
           </FlexChild>
           <>
-            {pages.map((p) => (
-              <FlexChild
-                key={p}
-                className={clsx(
-                  styles.num_btn,
-                  styles.paging,
-                  p === page && styles.active
-                )}
-                onClick={() => go(p)}
-              >
-                {p + 1}
-              </FlexChild>
-            ))}
+            {
+              pages.length > 0 ? 
+                pages.map((p) => (
+                  <FlexChild
+                    key={p}
+                    className={clsx(
+                      styles.num_btn,
+                      styles.paging,
+                      p === page && styles.active
+                    )}
+                    onClick={() => go(p)}
+                  >
+                    {p + 1}
+                  </FlexChild>
+                ))
+                : (
+                  <FlexChild
+                    className={clsx(
+                      styles.num_btn,
+                      styles.paging,
+                      styles.active
+                    )}
+                  >
+                    1
+                  </FlexChild>
+                )
+            }
           </>
           <FlexChild
             className={clsx(
@@ -129,19 +143,33 @@ function ListPagination({ page, maxPage, onChange, size = 10 }: Props) {
             />
           </FlexChild>
           <>
-            {pages.map((p) => (
-              <FlexChild
-                key={p}
-                className={clsx(
-                  styles.num_btn,
-                  styles.paging,
-                  p === page && styles.active
-                )}
-                onClick={() => go(p)}
-              >
-                {p + 1}
-              </FlexChild>
-            ))}
+            {
+              pages.length > 0 ? 
+                pages.map((p) => (
+                  <FlexChild
+                    key={p}
+                    className={clsx(
+                      styles.num_btn,
+                      styles.paging,
+                      p === page && styles.active
+                    )}
+                    onClick={() => go(p)}
+                  >
+                    {p + 1}
+                  </FlexChild>
+                ))
+                : (
+                  <FlexChild
+                    className={clsx(
+                      styles.num_btn,
+                      styles.paging,
+                      styles.active
+                    )}
+                  >
+                    1
+                  </FlexChild>
+                )
+            }
           </>
           <FlexChild
             className={clsx(
