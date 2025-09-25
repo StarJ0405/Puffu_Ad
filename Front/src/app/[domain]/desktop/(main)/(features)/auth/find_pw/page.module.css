@@ -2,13 +2,18 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100dvh;
+  /* height: 100dvh; */
 }
 
 .findBox {
-  gap: 50px;
+  /* gap: 50px;
   width: 100%;
   max-width: 600px;
+  padding-top: 50px; */
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding-top: 50px;
 }
 
 .findBox .title_box {
@@ -16,6 +21,7 @@
   justify-content: center;
   font-size: 30px;
   font-weight: 600;
+  padding-bottom: 50px;
 }
 
 .findBox .input_wrap {
@@ -32,17 +38,17 @@
   margin-bottom: 20px;
 }
 
-.input_wrap .sub_title > * {
+.input_wrap .sub_title>* {
   width: auto;
 }
 
-.input_wrap .sub_title > .title {
+.input_wrap .sub_title>.title {
   font-size: 20px;
   color: #fff;
   font-weight: 600;
 }
 
-.input_wrap .sub_title > .txt {
+.input_wrap .sub_title>.txt {
   font-size: 16px;
   color: #fff;
 }
@@ -94,6 +100,7 @@
   background: #ccc;
   color: #4d4d4d;
 }
+
 .prev_btn:hover {
   background: gray;
 }
@@ -110,9 +117,12 @@
   margin: 0 auto;
 }
 
-.page_title {justify-content: center; margin-bottom: 50px;}
+.page_title {
+  justify-content: center;
+  margin-bottom: 50px;
+}
 
-.page_title h3{
+.page_title h3 {
   font-size: 50px;
   color: #fff;
   font-weight: 700;
@@ -125,14 +135,16 @@
   position: relative;
 }
 
-.step_root > * {
+.step_root>* {
   width: auto;
 }
 
 .step_root .step_number {
-  width: 32px; height: 32px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  position: relative; z-index: 2;
+  position: relative;
+  z-index: 2;
   background: #621d8f;
   color: #fff;
   font-size: 16px;
@@ -140,11 +152,11 @@
 }
 
 .step_root .step_line {
-  width: 100%; 
+  width: 100%;
   position: absolute;
   z-index: 1;
   height: 2px;
-  background: rgba(255,255,255,0.5);
+  background: rgba(255, 255, 255, 0.5);
   top: 50%;
   left: 0;
   transform: translateY(-50%);
@@ -188,7 +200,8 @@
 }
 
 .agree_item .checkbox label span {
-  font-size: 20px !important; color: #fff;
+  font-size: 20px !important;
+  color: #fff;
   font-weight: 500 !important;
 }
 
@@ -198,8 +211,9 @@
   border-bottom: 1px solid #535353;
 }
 
-.phone_verification .title h5{
-  font-size: 20px; color: #fff;
+.phone_verification .title h5 {
+  font-size: 20px;
+  color: #fff;
   font-weight: 600;
 }
 
@@ -258,11 +272,11 @@
   justify-content: start !important;
 }
 
-.auth_root_box .phone_input_group > div:nth-child(1) {
+.auth_root_box .phone_input_group>div:nth-child(1) {
   width: auto !important;
 }
 
-.auth_root_box .phone_input_group > div:nth-child(1) select {
+.auth_root_box .phone_input_group>div:nth-child(1) select {
   height: 50px;
 }
 
@@ -303,6 +317,26 @@
   transition: all 0.2s;
 }
 
+/* 3단계 */
+.input_item {
+  gap: 10px;
+}
+
+.input_item .label {
+  font-size: 18px;
+  color: #fff;
+}
+
+.input_item .label > span {
+  color: #da1e1e;
+}
+
+.inputError{
+  padding-top: 2px;
+  color: #da1e1e;
+  font-size: 12px;
+}
+
 /* 회원가입 완료 시 */
 
 .continue_box .home_btn {
@@ -335,3 +369,4 @@
 
 
 /* ------------------------------------------------------------- */
+

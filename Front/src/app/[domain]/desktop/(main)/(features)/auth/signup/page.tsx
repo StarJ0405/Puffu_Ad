@@ -83,24 +83,24 @@ export default function () {
               <FlexChild className={styles.page_title}>
                 <h3>회원가입</h3>
               </FlexChild>
-      
+
               <HorizontalFlex className={styles.step_root}>
                 <FlexChild className={styles.step_number}>
                   <Span>1</Span>
                 </FlexChild>
-                
+
                 <FlexChild className={styles.step_number}>
                   <Span>2</Span>
                 </FlexChild>
-                
+
                 <FlexChild className={styles.step_number}>
                   <Span>3</Span>
                 </FlexChild>
-                
+
                 <FlexChild className={styles.step_number}>
                   <Span>4</Span>
                 </FlexChild>
-                
+
                 <FlexChild className={styles.step_line}>
                   <div id={styles.line} style={{ width: percent }}></div>
                   {/* 스탭 진행될때마다 width 값 올리면 됨. */}
@@ -219,10 +219,10 @@ function Certification({ setStep, handleUpdate }: StepProps) {
     <VerticalFlex width={'100%'} maxWidth={600} className={styles.auth_check_group}>
       <FlexChild justifyContent="center">
         <HorizontalFlex className={styles.auth_btn_box}>
-          <FlexChild 
-            gap={10} onClick={() => setType("pass")} justifyContent="center" 
+          <FlexChild
+            gap={10} onClick={() => setType("pass")} justifyContent="center"
             className={clsx(styles.auth_btn, {
-                [styles.active]: type !== "sms",
+              [styles.active]: type !== "sms",
             })}
           >
             {/* <Image
@@ -905,7 +905,7 @@ function PassReady({ setStep, data }: StepProps) {
         src="/resources/images/pass_phone.png"
         width={"100%"}
         maxWidth={"285px"}
-        // height={"auto"}
+      // height={"auto"}
       />
 
       <FlexChild width={"max-content"} gap={7} paddingTop={60} className={styles.continue_box}>
@@ -1221,36 +1221,49 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
             <Span>(필수)</Span>
           </HorizontalFlex>
           <FlexChild>
-            <Input
-              type="password"
-              width={"100%"}
-              placeHolder="비밀번호를 입력하세요"
-              regExp={[passwordFormat]}
-              value={password}
-              onChange={(value) => setPassword(value as string)}
-              onFeedBackChange={(feedback) => setPasswordError(feedback)}
-              feedbackHide
-              className="web_input"
-            />
+            <VerticalFlex alignItems="flex-start">
+              <Input
+                type="password"
+                width={"100%"}
+                placeHolder="비밀번호를 입력하세요"
+                feedback="영문 대소문자, 숫자, 특수문자 조합 최소8자"
+                regExp={[passwordFormat]}
+                value={password}
+                onChange={(value) => setPassword(value as string)}
+                onFeedBackChange={(feedback) => setPasswordError(feedback)}
+                feedbackHide
+                className="web_input"
+              />
+              <Span className={styles.inputError} paddingLeft={6}>
+                {passwordError}
+              </Span>
+            </VerticalFlex>
+
           </FlexChild>
           <FlexChild>
-            <Input
-              type="password"
-              width={"100%"}
-              placeHolder="비밀번호를 한번 더 입력하세요"
-              regExp={[
-                {
-                  exp: {
-                    test: (value) => value === password,
+            <VerticalFlex alignItems="flex-start">
+              <Input
+                type="password"
+                width={"100%"}
+                placeHolder="비밀번호를 한번 더 입력하세요"
+                feedback="비밀번호가 일치하지 않습니다"
+                regExp={[
+                  {
+                    exp: {
+                      test: (value) => value === password,
+                    },
                   },
-                },
-              ]}
-              value={password2}
-              onChange={(value) => setPassword2(value as string)}
-              onFeedBackChange={(feedback) => setPasswordError2(feedback)}
-              feedbackHide
-              className="web_input"
-            />
+                ]}
+                value={password2}
+                onChange={(value) => setPassword2(value as string)}
+                onFeedBackChange={(feedback) => setPasswordError2(feedback)}
+                feedbackHide
+                className="web_input"
+              />
+              <Span className={styles.inputError} paddingLeft={6}>
+                {passwordError2}
+              </Span>
+            </VerticalFlex>
           </FlexChild>
         </VerticalFlex>
 
