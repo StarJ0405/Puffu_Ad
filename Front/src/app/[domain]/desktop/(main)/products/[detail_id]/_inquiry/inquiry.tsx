@@ -51,7 +51,9 @@ export default function Inquiry({
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const handlePageChange = (newPage: number) => {
-    setPage(newPage);
+    const p = Math.max(0, Math.trunc(newPage));
+    setPage(p);
+    setOpenIndex(null);
   };
 
   const getQaTypeKorean = (type: QADataFrame["type"] | "") => {
@@ -104,7 +106,8 @@ export default function Inquiry({
       setContent("");
       setQaType("");
       setIsHidden(false);
-      fetchQAs(1);
+      setPage(0); // ✅ 상태도 0으로 동기화
+      fetchQAs(0); // ✅ 0-based 첫 페이지 재조회
     } else {
       toast({ message: "문의 등록에 실패했습니다." });
     }
@@ -199,7 +202,7 @@ export default function Inquiry({
                 userData?.id === inquiry.user_id;
 
               return (
-                <VerticalFlex key={i} className={styles.inquiry_item}>
+                <VerticalFlex key={inquiry.id ?? i} className={styles.inquiry_item}>
                   <VerticalFlex className={styles.user_question}>
                     <HorizontalFlex
                       alignItems="center"

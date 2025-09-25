@@ -70,7 +70,10 @@ export default function InquiryClient({
   };
 
   const handlePageChange = (newPage: number) => {
-    setPage(newPage);
+    const p = Math.max(0, Math.trunc(newPage));
+    setPage(p);
+    setOpenIndex(null);
+    fetchQAs(p);
   };
 
   const getQaTypeKorean = (type: QADataFrame["type"] | "") => {
@@ -123,7 +126,8 @@ export default function InquiryClient({
       setContent("");
       setQaType("");
       setIsHidden(false);
-      fetchQAs(1);
+      setPage(0);
+      fetchQAs(0);
     } else {
       toast({ message: "문의 등록에 실패했습니다." });
     }
@@ -218,7 +222,7 @@ export default function InquiryClient({
               const canView = canViewPost(inquiry);
 
               return (
-                <VerticalFlex key={i} className={styles.inquiry_item}>
+                <VerticalFlex key={inquiry.id ?? i} className={styles.inquiry_item}>
                   <VerticalFlex className={styles.user_question}>
                     <HorizontalFlex
                       alignItems="center"

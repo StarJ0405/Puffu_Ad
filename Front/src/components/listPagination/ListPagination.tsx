@@ -16,15 +16,22 @@ type Props = {
 function ListPagination({ page, maxPage, onChange, size = 10 }: Props) {
   const { isMobile } = useBrowserEvent();
 
-  const go = (p: number) => onChange(Math.max(0, Math.min(p, maxPage)));
-  const start = page - (page % size);
-  const pages = Array.from(
-    { length: Math.min(size, maxPage - start + 1) },
-    (_, i) => start + i
-  ).filter((f) => f < maxPage);
+  const clampIndex = (p: number) =>
+    Math.max(
+      0,
+      Math.min(Number.isFinite(p) ? Math.trunc(p) : 0, Math.max(0, maxPage - 1))
+    );
 
-  const first = page === 0;
-  const last = page === maxPage;
+  const go = (p: number) => onChange(clampIndex(p));
+
+  const safePage = clampIndex(page);
+  const first = safePage === 0;
+  const last = safePage >= Math.max(0, maxPage - 1);
+
+  // 페이지 블록 계산 (size당 묶음)
+  const start = Math.floor(safePage / size) * size;
+  const len = Math.min(size, Math.max(0, maxPage - start)); // 음수 방지
+  const pages = Array.from({ length: len }, (_, i) => start + i);
 
   return (
     <>
@@ -50,7 +57,7 @@ function ListPagination({ page, maxPage, onChange, size = 10 }: Props) {
               styles.paging,
               first && styles.disabled
             )}
-            onClick={() => !first && go(page - 1)}
+            onClick={() => !first && go(safePage - 1)}
           >
             <Image
               src={"/resources/icons/arrow/list_paging_prev.png"}
@@ -58,33 +65,27 @@ function ListPagination({ page, maxPage, onChange, size = 10 }: Props) {
             />
           </FlexChild>
           <>
-            {
-              pages.length > 0 ? 
-                pages.map((p) => (
-                  <FlexChild
-                    key={p}
-                    className={clsx(
-                      styles.num_btn,
-                      styles.paging,
-                      p === page && styles.active
-                    )}
-                    onClick={() => go(p)}
-                  >
-                    {p + 1}
-                  </FlexChild>
-                ))
-                : (
-                  <FlexChild
-                    className={clsx(
-                      styles.num_btn,
-                      styles.paging,
-                      styles.active
-                    )}
-                  >
-                    1
-                  </FlexChild>
-                )
-            }
+            {pages.length > 0 ? (
+              pages.map((p) => (
+                <FlexChild
+                  key={p}
+                  className={clsx(
+                    styles.num_btn,
+                    styles.paging,
+                    p === safePage && styles.active
+                  )}
+                  onClick={() => go(p)}
+                >
+                  {p + 1}
+                </FlexChild>
+              ))
+            ) : (
+              <FlexChild
+                className={clsx(styles.num_btn, styles.paging, styles.active)}
+              >
+                1
+              </FlexChild>
+            )}
           </>
           <FlexChild
             className={clsx(
@@ -92,7 +93,7 @@ function ListPagination({ page, maxPage, onChange, size = 10 }: Props) {
               styles.paging,
               last && styles.disabled
             )}
-            onClick={() => !last && go(page + 1)}
+            onClick={() => !last && go(safePage + 1)}
           >
             <Image
               src={"/resources/icons/arrow/list_paging_next.png"}
@@ -105,7 +106,7 @@ function ListPagination({ page, maxPage, onChange, size = 10 }: Props) {
               styles.paging,
               last && styles.disabled
             )}
-            onClick={() => !last && go(maxPage)}
+            onClick={() => !last && go(maxPage - 1)}
           >
             <Image
               src={"/resources/icons/arrow/list_paging_last.png"}
@@ -135,7 +136,7 @@ function ListPagination({ page, maxPage, onChange, size = 10 }: Props) {
               styles.paging,
               first && styles.disabled
             )}
-            onClick={() => !first && go(page - 1)}
+            onClick={() => !first && go(safePage - 1)}
           >
             <Image
               src={"/resources/icons/arrow/list_paging_prev.png"}
@@ -143,33 +144,27 @@ function ListPagination({ page, maxPage, onChange, size = 10 }: Props) {
             />
           </FlexChild>
           <>
-            {
-              pages.length > 0 ? 
-                pages.map((p) => (
-                  <FlexChild
-                    key={p}
-                    className={clsx(
-                      styles.num_btn,
-                      styles.paging,
-                      p === page && styles.active
-                    )}
-                    onClick={() => go(p)}
-                  >
-                    {p + 1}
-                  </FlexChild>
-                ))
-                : (
-                  <FlexChild
-                    className={clsx(
-                      styles.num_btn,
-                      styles.paging,
-                      styles.active
-                    )}
-                  >
-                    1
-                  </FlexChild>
-                )
-            }
+            {pages.length > 0 ? (
+              pages.map((p) => (
+                <FlexChild
+                  key={p}
+                  className={clsx(
+                    styles.num_btn,
+                    styles.paging,
+                    p === safePage && styles.active
+                  )}
+                  onClick={() => go(p)}
+                >
+                  {p + 1}
+                </FlexChild>
+              ))
+            ) : (
+              <FlexChild
+                className={clsx(styles.num_btn, styles.paging, styles.active)}
+              >
+                1
+              </FlexChild>
+            )}
           </>
           <FlexChild
             className={clsx(
@@ -177,7 +172,7 @@ function ListPagination({ page, maxPage, onChange, size = 10 }: Props) {
               styles.paging,
               last && styles.disabled
             )}
-            onClick={() => !last && go(page + 1)}
+            onClick={() => !last && go(safePage + 1)}
           >
             <Image
               src={"/resources/icons/arrow/list_paging_next.png"}
@@ -190,7 +185,7 @@ function ListPagination({ page, maxPage, onChange, size = 10 }: Props) {
               styles.paging,
               last && styles.disabled
             )}
-            onClick={() => !last && go(maxPage)}
+            onClick={() => !last && go(maxPage - 1)}
           >
             <Image
               src={"/resources/icons/arrow/list_paging_last.png"}
