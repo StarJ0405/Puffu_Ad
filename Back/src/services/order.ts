@@ -1,6 +1,6 @@
+import axios from "axios";
 import { BaseService } from "data-source";
 import { Order, OrderStatus } from "models/order";
-import { ShippingType } from "models/shipping_method";
 import { LogRepository } from "repositories/log";
 import { OrderRepository } from "repositories/order";
 import { ShippingMethodRepository } from "repositories/shipping_method";
@@ -17,7 +17,6 @@ import {
   MoreThanOrEqual,
 } from "typeorm";
 import { PointService } from "./point";
-import axios from "axios";
 
 @injectable()
 export class OrderService extends BaseService<Order, OrderRepository> {
@@ -212,17 +211,14 @@ export class OrderService extends BaseService<Order, OrderRepository> {
   ): Promise<void> {
     const order = await this.repository.findOne({
       where,
-      relations: ["shipping_methods"],
+      relations: ["shipping_method"],
     });
     if (!order) throw new Error("주문서가 없습니다.");
-    const method = (order?.shipping_methods || []).filter(
-      (f) => f.type === ShippingType.DEFAULT
-    );
-    if (!method || method?.length !== 1)
-      throw new Error("배송방법이 없습니다.");
+    const method = order?.shipping_method;
+    if (!method) throw new Error("배송방법이 없습니다.");
     await this.shippingMethodRepository.update(
       {
-        id: method[0].id,
+        id: method.id,
       },
       {
         tracking_number,

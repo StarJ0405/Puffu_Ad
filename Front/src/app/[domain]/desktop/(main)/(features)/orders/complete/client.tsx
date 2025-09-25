@@ -85,7 +85,7 @@ export function CompleteForm({ order }: { order?: OrderData }) {
                 (order?.total || 0) - (order?.total_discounted || 0)
               ).toLocaleString("kr")}
               원 + 배송비{" "}
-              {Number(order?.shipping_methods?.[0]?.amount || 0).toLocaleString(
+              {Number(order?.shipping_method?.amount || 0).toLocaleString(
                 "ko-KR"
               )}
               원
@@ -101,7 +101,7 @@ export function CompleteForm({ order }: { order?: OrderData }) {
             <P size={26} color="var(--main-color1)" weight={600}>
               {Number(
                 (order?.total_discounted || 0) +
-                  (order?.shipping_methods?.[0]?.amount || 0) -
+                  (order?.shipping_method?.amount || 0) -
                   (order?.point || 0)
               ).toLocaleString("ko-KR")}
               원

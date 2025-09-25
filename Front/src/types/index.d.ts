@@ -304,7 +304,7 @@ interface OrderData extends BaseEntity {
   store?: StoreData;
   address_id: string;
   address?: AddressData;
-  shipping_methods?: ShippingMethodData[];
+  shipping_method?: ShippingMethodData;
   status: "pending" | "fulfilled" | "shipping" | "complete" | "cancel";
   total: number;
   total_tax: number;

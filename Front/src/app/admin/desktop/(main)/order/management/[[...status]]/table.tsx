@@ -100,7 +100,7 @@ export default function ({
           <Span>
             {cell +
               (row?.total_tax || 0) +
-              (row?.shipping_methods?.[0]?.amount || 0) -
+              (row?.shipping_method?.amount || 0) -
               (row?.point || 0)}
           </Span>
           <Span>{row?.store?.currency_unit}</Span>
@@ -160,9 +160,7 @@ export default function ({
       label: "배송지 정보",
       code: "address",
       Cell: ({ cell, row }: { cell: AddressData; row: OrderData }) => {
-        const tracking_number = row?.shipping_methods?.filter(
-          (f: ShippingMethodData) => f.type === "default"
-        )?.[0]?.tracking_number;
+        const tracking_number = row?.shipping_method?.tracking_number;
         return (
           <Tooltip
             position="left"

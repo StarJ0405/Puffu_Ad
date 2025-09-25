@@ -366,7 +366,7 @@ const OrderDetailModal = NiceModal.create(({ order }: { order: OrderData }) => {
                   </P>
                 </FlexChild>
                 <FlexChild width="max-content" padding={"15px 15px 15px 0"}>
-                  <P>{order?.shipping_methods?.[0]?.name}</P>
+                  <P>{order?.shipping_method?.name}</P>
                 </FlexChild>
               </FlexChild>
               <FlexChild
@@ -393,7 +393,7 @@ const OrderDetailModal = NiceModal.create(({ order }: { order: OrderData }) => {
                       NiceModal.show("deliveryCheck", { order: order });
                     }}
                   >
-                    {order?.shipping_methods?.[0]?.tracking_number || "미지정"}
+                    {order?.shipping_method?.tracking_number || "미지정"}
                   </P>
                 </FlexChild>
               </FlexChild>
@@ -419,7 +419,7 @@ const OrderDetailModal = NiceModal.create(({ order }: { order: OrderData }) => {
                     <FlexChild width="max-content" padding={"15px 15px 15px 0"}>
                       <P>
                         {order?.total_discounted +
-                          (order?.shipping_methods?.[0]?.amount || 0) -
+                          (order?.shipping_method?.amount || 0) -
                           order.point}
                       </P>
                       <P>{order?.store?.currency_unit}</P>
@@ -472,7 +472,7 @@ const OrderDetailModal = NiceModal.create(({ order }: { order: OrderData }) => {
                 </FlexChild>
                 <FlexChild width="max-content" padding={"15px 15px 15px 0"}>
                   <HorizontalFlex>
-                    <P>{order?.shipping_methods?.[0]?.amount || 0}</P>
+                    <P>{order?.shipping_method?.amount || 0}</P>
                     <P>{order?.store?.currency_unit}</P>
                   </HorizontalFlex>
                 </FlexChild>

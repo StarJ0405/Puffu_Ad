@@ -186,7 +186,7 @@ const OrderListModal = NiceModal.create(({ user }: { user: UserData }) => {
             initCondition={{
               user_id: user.id,
               order: { display: "asc" },
-              relations: ["items", "address", "shipping_methods", "store"],
+              relations: ["items", "address", "shipping_method", "store"],
             }}
             initLimit={20}
             onSearch={(condition) => adminRequester.getOrders(condition)}

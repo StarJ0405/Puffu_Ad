@@ -21,7 +21,7 @@ async function ProgressModule(
   order: Order,
   callback: (progresses: Progress[]) => Promise<void>
 ) {
-  let tracking_number = order.shipping_methods?.[0]?.tracking_number;
+  let tracking_number = order.shipping_method?.tracking_number;
   if (!tracking_number) return;
   tracking_number = String(tracking_number).replace(/-/g, "");
   const response = await axios.get(
@@ -45,12 +45,12 @@ export function regist(DEV: boolean) {
         const orders = await service.getList({
           where: {
             status: OrderStatus.FULFILLED,
-            shipping_methods: {
+            shipping_method: {
               type: ShippingType.DEFAULT,
               tracking_number: Not(IsNull()),
             },
           },
-          relations: ["shipping_methods"],
+          relations: ["shipping_method"],
         });
         for (const order of orders) {
           await ProgressModule(order, async (progresses) => {
@@ -73,12 +73,12 @@ export function regist(DEV: boolean) {
         const orders = await service.getList({
           where: {
             status: OrderStatus.SHIPPING,
-            shipping_methods: {
+            shipping_method: {
               type: ShippingType.DEFAULT,
               tracking_number: Not(IsNull()),
             },
           },
-          relations: ["shipping_methods"],
+          relations: ["shipping_method"],
         });
         for (const order of orders) {
           await ProgressModule(order, async (progresses) => {
