@@ -54,7 +54,7 @@ export function ProductWrapper({
   const [freeShipping, setFreeShipping] = useState<ShippingMethodData>();
   const [qaList, setQaList] = useState<QAData[]>([]);
   const [totalQaCount, setTotalQaCount] = useState(0);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
   const pageSize = 5;
 
@@ -82,7 +82,7 @@ export function ProductWrapper({
     const res = await requester.getProductQAs(initProduct?.content?.id, {
       relations: ["user"],
       pageSize: pageSize,
-      pageNumber: pageNumber - 1,
+      pageNumber: pageNumber,
     });
     
     if (res) {
