@@ -632,7 +632,7 @@ export function DetailTabContainer({
       paramsName: "description",
       component: <Description product={product} />,
     },
-    // { name: "사용후기", paramsName: "review", component: <Review /> }, 잠시 가려놓음
+    { name: "사용후기", paramsName: "review", component: <Review /> },
     {
       name: "상품 Q&A",
       paramsName: "inquiry",
