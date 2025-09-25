@@ -96,8 +96,12 @@ export class Order extends BaseEntity {
     );
   }
 
-  @Column({ type: "real", default: 0.0 })
-  total_refund?: number;
+  get total_refund(): number {
+    return (
+      this.items?.reduce((acc, now) => acc + (now.total_refund || 0), 0.0) ||
+      0.0
+    );
+  }
 
   @Column({
     type: "timestamp with time zone",

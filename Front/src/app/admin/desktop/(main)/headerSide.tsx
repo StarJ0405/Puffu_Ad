@@ -196,6 +196,11 @@ const SidebarNav: NavParent[] = [
     path: "/user",
     navs: [
       {
+        name: "대시보드",
+        to: "/",
+        icon: "/resources/images/sideNav_member_profile.png",
+      },
+      {
         name: "조회 및 관리",
         to: "/management",
         icon: "/resources/images/sideNav_member_search.png",

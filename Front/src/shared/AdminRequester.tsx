@@ -609,6 +609,23 @@ class _AdminRequester {
     if (callback) callback(await this.post(`/qa/${id}`, data));
     else return await this.post(`/qa/${id}`, data);
   }
+  // 멤버쉽
+  async createGroup(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.post("/groups", data));
+    else return await this.post("/groups", data);
+  }
+  async getGroups(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get("/groups", data));
+    else return await this.get("/groups", data);
+  }
+  async updateGroup(id: string, data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.post(`/groups/${id}`, data));
+    else return await this.post(`/groups/${id}`, data);
+  }
+  async deleteGroup(id: string, data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.delete(`/groups/${id}`, data));
+    else return await this.delete(`/groups/${id}`, data);
+  }
 }
 
 export default _AdminRequester;

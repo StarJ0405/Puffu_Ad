@@ -1,0 +1,45 @@
+.wrap {
+  background-color: white;
+  height: 100%;
+  box-shadow: 0 4px 17px -5px var(--box-shadow-color);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.label {
+  background-color: #3c4b64;
+  padding: 11px 15px;
+}
+
+.dummyWrap {
+  cursor: pointer;
+}
+.button {
+  padding: 6px 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  background-color: var(--admin-color);
+}
+
+.header {
+  font-weight: 600;
+  font-size: 20px;
+  border-bottom: 1px solid #d0d0d0;
+  padding: 5px;
+  top: 0;
+  position: sticky;
+  background-color: #fff;
+}
+
+.row {
+  padding: 5px;
+}
+.row:hover {
+  background-color: #d0d0d0;
+}
+
+.row .button {
+  padding: 4px 9px;
+  font-size: 12px;
+  font-weight: 600;
+}

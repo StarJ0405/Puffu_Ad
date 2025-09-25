@@ -62,6 +62,7 @@ function FlexChild({
   scrollMarginTop,
   transform,
   hidden,
+  hideScrollbar,
   onClick,
   onContextMenu,
   scrollbarGutter,
@@ -74,6 +75,7 @@ function FlexChild({
   parentclass?: React.HTMLAttributes<HTMLElement>["className"];
   addWidth?: CSSProperties["width"];
   flexStart?: boolean;
+  hideScrollbar?: boolean;
 }) {
   // Fixed 여부 체크
   let isFixed = false;
@@ -167,6 +169,8 @@ function FlexChild({
         flexShrink,
         boxShadow,
         scrollMarginTop,
+        scrollbarWidth: hideScrollbar ? "none" : undefined,
+        msOverflowStyle: hideScrollbar ? "none" : undefined,
         ...getDirectionalStyles(), // 방향성 스타일 적용
       }}
       hidden={hidden}
