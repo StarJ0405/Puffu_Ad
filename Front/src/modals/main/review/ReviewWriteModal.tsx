@@ -219,7 +219,7 @@ const ReviewModal = NiceModal.create(
     return (
       <ModalBase
         withHeader
-        width={width}
+        width={700}
         height={height}
         title={title}
         onClose={() => {
@@ -228,6 +228,7 @@ const ReviewModal = NiceModal.create(
         }}
         withCloseButton
         clickOutsideToClose={!isLoading}
+        backgroundColor={'#221f22'}
       >
         <VerticalFlex className={styles.review_write}>
           {/* 상품 요약 */}
