@@ -40,6 +40,7 @@ export function ProductCard({
 
   const navigate = useNavigate();
 
+  console.log(product)
   return (
     <VerticalFlex
       width={width ?? isMobile ? "auto" : 200}
@@ -100,7 +101,7 @@ export function ProductCard({
               }.png`}
               width={20}
             />
-            <Span>{product.wishes ?? 0}</Span>
+            <Span>{product.wishlists?.length || 0}</Span>
           </FlexChild>
         )}
       </FlexChild>
@@ -131,14 +132,14 @@ export function ProductCard({
 
           <HorizontalFlex className={styles.content_item}>
             {/* <Span
-              color="var(--main-color)"
-              weight={600}
-              fontSize={14}
-              hidden={product.discount_rate >= 1}
-              paddingRight={"0.5em"}
-            >
-              {product.discount_rate}%
-            </Span> */}
+                     color="var(--main-color)"
+                     weight={600}
+                     fontSize={14}
+                     hidden={product.discount_rate >= 1}
+                     paddingRight={"0.5em"}
+                  >
+                     {product.discount_rate}%
+                  </Span> */}
             <FlexChild
               className={styles.price_box}
               minHeight={!isMobile ? 36 : 33}
@@ -156,18 +157,23 @@ export function ProductCard({
                 onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
-                  if (product.wish) {
-                    requester.deleteWishList(
-                      product.wish.id,
-                      { soft: false },
-                      () => {
-                        mutate?.();
-                      }
-                    );
-                  } else {
-                    requester.createWishList({ product_id: product.id }, () => {
-                      mutate?.();
-                    });
+                  if (userData) {
+                    if (product.wish) {
+                      requester.deleteWishList(
+                        product.wish.id,
+                        { soft: false },
+                        () => {
+                          mutate?.();
+                        }
+                      );
+                    } else {
+                      requester.createWishList(
+                        { product_id: product.id },
+                        () => {
+                          mutate?.();
+                        }
+                      );
+                    }
                   }
                 }}
                 className={styles.heart_counter}
@@ -178,7 +184,7 @@ export function ProductCard({
                   }.png`}
                   width={23}
                 />
-                <Span>{product.wishes ?? 0}</Span>
+                <Span>{product.wishlists?.length || 0}</Span>
               </FlexChild>
             )}
             {/* <Span fontSize={14} weight={600}>
