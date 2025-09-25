@@ -213,6 +213,12 @@
   color: #da1e1e;
 }
 
+.inputError{
+  padding-top: 2px;
+  color: #da1e1e;
+  font-size: 12px;
+}
+
 
 
 /* 4단계 */

@@ -71,7 +71,7 @@ export default function PwStepBox() {
               <Button
                 className={clsx(styles.button, styles.next_btn)}
                 onClick={() => naviagte("/")}
-                width={'100%'}
+                width={363}
                 margin={"0 auto"}
               >
                 <P>홈으로</P>
@@ -94,7 +94,7 @@ function Certification({ setStep, handleUpdate }: StepProps) {
               [styles.active]: type === "pass",
             })}
             gap={10}
-            justifyContent="center" 
+            justifyContent="center"
             onClick={() => setType("pass")}
           >
             <P size={25} weight={600}>
@@ -105,7 +105,7 @@ function Certification({ setStep, handleUpdate }: StepProps) {
             className={clsx(styles.auth_btn, {
               [styles.active]: type === "sms",
             })}
-            justifyContent="center" 
+            justifyContent="center"
             gap={10}
             onClick={() => setType("sms")}
           >
@@ -262,7 +262,7 @@ function PASS({ setStep, handleUpdate }: StepProps) {
           <FlexChild>
             <Button
               width={"100%"}
-              className={clsx(styles.button, styles.next_btn) }
+              className={clsx(styles.button, styles.next_btn)}
               onClick={async () => {
                 const { mokToken: token } = await requester.getToken();
                 const data = handleUpdate?.([
@@ -771,7 +771,7 @@ function PassReady({ setStep, data, handleUpdate }: StepProps) {
             src="/resources/images/pass_phone.png"
             width={"100%"}
             maxWidth={"285px"}
-            // height={"auto"}
+          // height={"auto"}
           />
         </VerticalFlex>
       </FlexChild>
@@ -832,15 +832,13 @@ function PassReady({ setStep, data, handleUpdate }: StepProps) {
   );
 }
 
-function NotFound({}: StepProps) {
+function NotFound({ }: StepProps) {
   const naviagte = useNavigate();
   return (
-    <VerticalFlex className={styles.wrapper} >
-      <FlexChild alignItems="center">
-        <P className={styles.title} paddingTop={80} paddingBottom={10} color="#fff">
+    <VerticalFlex className={styles.wrapper}>
+        <P textAlign="center" paddingBottom={45} color="#fff">
           {"등록된 아이디가 없습니다\n새로운 계정을 만들어보세요!"}
         </P>
-      </FlexChild>
       <FlexChild paddingBottom={22}>
         <Button
           className={clsx(styles.next_btn, styles.btn)}
@@ -872,7 +870,7 @@ function ChangePassword({ data, setStep }: StepProps) {
   const [passwordError2, setPasswordError2] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   return (
-    <VerticalFlex className={styles.wrapper} >
+    <VerticalFlex className={styles.wrapper} maxWidth={600}>
       <FlexChild width={"max-content"}>
         <P padding={"0px 0 50px 0"} color="#fff" size={18}>
           {"본인인증이 완료되었습니다\n비밀번호를 재설정해주세요"}
@@ -883,55 +881,58 @@ function ChangePassword({ data, setStep }: StepProps) {
         borderRadius={4}
         padding={"40px 44px"}
       >
-        <VerticalFlex>
-          <FlexChild paddingBottom={9}>
-            <P className={styles.inputLabel}>
-              재설정 비밀번호<Span className={styles.inputRequire}>*</Span>
+        <VerticalFlex className={styles.input_item}>
+          <HorizontalFlex className={styles.label}>
+            <P>재설정 비밀번호</P>
+            <Span>(필수)</Span>
+          </HorizontalFlex>
+          <FlexChild paddingBottom={25}>
+            <VerticalFlex alignItems="flex-start">
+              <Input
+                type="password"
+                className={'web_input'}
+                width={"100%"}
+                regExp={[passwordFormat]}
+                placeHolder="영문 대소문자, 숫자, 특수문자 조합 최소8자"
+                feedback="영문 대소문자, 숫자, 특수문자 조합 최소8자"
+                value={password}
+                onChange={(value) => setPassword(value as string)}
+                onFeedBackChange={(feedback) => setPasswordError(feedback)}
+                feedbackHide
+              />
               <Span className={styles.inputError}>
                 {passwordError}
               </Span>
-            </P>
+            </VerticalFlex>
           </FlexChild>
-          <FlexChild paddingBottom={25}>
-            <Input
-              type="password"
-              className={'web_input'}
-              width={"100%"}
-              regExp={[passwordFormat]}
-              placeHolder="영문 대소문자, 숫자, 특수문자 조합 최소8자"
-              feedback="영문 대소문자, 숫자, 특수문자 조합 최소8자"
-              value={password}
-              onChange={(value) => setPassword(value as string)}
-              onFeedBackChange={(feedback) => setPasswordError(feedback)}
-              feedbackHide
-            />
-          </FlexChild>
-          <FlexChild paddingBottom={9}>
-            <P className={styles.inputLabel}>
-              재설정 비밀번호 확인<Span className={styles.inputRequire}>*</Span>
+          <HorizontalFlex className={styles.label}>
+            <P>재설정 비밀번호 확인</P>
+            <Span>(필수)</Span>
+          </HorizontalFlex>
+          <FlexChild paddingBottom={30}>
+            <VerticalFlex alignItems="flex-start">
+              <Input
+                type="password"
+                className={'web_input'}
+                width={"100%"}
+                regExp={[
+                  {
+                    exp: {
+                      test: (value) => value === password,
+                    },
+                  },
+                ]}
+                feedback="비밀번호가 일치하지 않습니다"
+                value={password2}
+                onChange={(value) => setPassword2(value as string)}
+                onFeedBackChange={(feedback) => setPasswordError2(feedback)}
+                feedbackHide
+              />
               <Span className={styles.inputError}>
                 {passwordError2}
               </Span>
-            </P>
-          </FlexChild>
-          <FlexChild paddingBottom={30}>
-            <Input
-              type="password"
-              className={'web_input'}
-              width={"100%"}
-              regExp={[
-                {
-                  exp: {
-                    test: (value) => value === password,
-                  },
-                },
-              ]}
-              feedback="비밀번호가 일치하지 않습니다"
-              value={password2}
-              onChange={(value) => setPassword2(value as string)}
-              onFeedBackChange={(feedback) => setPasswordError2(feedback)}
-              feedbackHide
-            />
+            </VerticalFlex>
+
           </FlexChild>
           <FlexChild position="sticky" marginTop={"auto"} justifyContent="center">
             <Button
