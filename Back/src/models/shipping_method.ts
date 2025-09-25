@@ -6,6 +6,7 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToOne,
 } from "typeorm";
 import { generateEntityId } from "utils/functions";
 import { Brand } from "./brand";
@@ -45,7 +46,7 @@ export class ShippingMethod extends BaseEntity {
   @Column({ type: "character varying", nullable: true })
   order_id?: string;
 
-  @ManyToOne(() => Order, (order) => order.shipping_methods)
+  @OneToOne(() => Order, (order) => order.shipping_method)
   @JoinColumn({ name: "order_id", referencedColumnName: "id" })
   order?: Order;
 

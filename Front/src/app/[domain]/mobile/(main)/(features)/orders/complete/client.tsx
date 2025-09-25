@@ -105,9 +105,9 @@ export function CompleteForm({ order }: { order?: OrderData }) {
             <FlexChild justifyContent="center">
               <P size={16} color="#fff" weight={500}>
                 + 배송비{" "}
-                {Number(
-                  order?.shipping_methods?.[0]?.amount || 0
-                ).toLocaleString("ko-KR")}
+                {Number(order?.shipping_method?.amount || 0).toLocaleString(
+                  "ko-KR"
+                )}
                 원
               </P>
             </FlexChild>
@@ -129,7 +129,7 @@ export function CompleteForm({ order }: { order?: OrderData }) {
               <P size={25} color="var(--main-color1)" weight={600}>
                 {Number(
                   (order?.total_discounted || 0) +
-                    (order?.shipping_methods?.[0]?.amount || 0) -
+                    (order?.shipping_method?.amount || 0) -
                     (order?.point || 0)
                 ).toLocaleString("ko-KR")}
                 원

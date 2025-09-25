@@ -37,7 +37,7 @@ export function MyOrdersTable({
     "orders",
     {
       ...condition,
-      relations: ["items.brand", "shipping_methods", "store", "address"],
+      relations: ["items.brand", "shipping_method", "store", "address"],
       start_date: startDate,
       end_date: endDate,
     },
@@ -202,12 +202,12 @@ export function MyOrdersTable({
                   </Button>
                 )}
                 {(order.status === "shipping" || order.status === "complete") &&
-                  order?.shipping_methods?.[0]?.tracking_number && (
+                  order?.shipping_method?.tracking_number && (
                     <Button
                       className={styles.tracking_btn}
                       onClick={() =>
                         openTrackingNumber(
-                          order?.shipping_methods?.[0]?.tracking_number as any
+                          order?.shipping_method?.tracking_number as any
                         )
                       }
                     >
@@ -346,12 +346,12 @@ export function MyOrdersTable({
               <VerticalFlex className={styles.order_summary}>
                 <HorizontalFlex className={styles.summary_row}>
                   <P>배송비</P>
-                  {order.shipping_methods?.[0].amount === 0 ? (
+                  {order.shipping_method?.amount === 0 ? (
                     <P>무료</P>
                   ) : (
                     <P>
                       <Span>+</Span>
-                      <Span>{order.shipping_methods?.[0].amount}</Span>
+                      <Span>{order.shipping_method?.amount}</Span>
                       <Span>원</Span>
                     </P>
                   )}
@@ -385,7 +385,7 @@ export function MyOrdersTable({
                   <P color="var(--main-color1)" weight={600} fontSize={20}>
                     <Span>
                       {order.total_discounted +
-                        (order.shipping_methods?.[0].amount || 0) -
+                        (order.shipping_method?.amount || 0) -
                         order.point}
                     </Span>
                     <Span>원</Span>

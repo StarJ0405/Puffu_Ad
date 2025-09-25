@@ -53,11 +53,11 @@ export class Order extends BaseEntity {
   })
   address?: Address;
 
-  @OneToMany(() => ShippingMethod, (shipping_method) => shipping_method.order, {
+  @OneToOne(() => ShippingMethod, (shipping_method) => shipping_method.order, {
     cascade: ["insert", "update"],
     orphanedRowAction: "soft-delete",
   })
-  shipping_methods?: ShippingMethod[];
+  shipping_method?: ShippingMethod;
 
   @OneToMany(() => LineItem, (item) => item.order)
   items?: LineItem[];

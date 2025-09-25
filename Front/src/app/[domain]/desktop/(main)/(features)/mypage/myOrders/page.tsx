@@ -15,7 +15,7 @@ export default async function () {
     relations: [
       "items.brand",
       "items.review",
-      "shipping_methods",
+      "shipping_method",
       "store",
       "address",
     ],
