@@ -13,7 +13,11 @@ import mypage from "../mypage.module.css";
 export function WishListTable({ initWishList }: { initWishList: Pageable }) {
   const { wishes, mutate } = usePageData(
     "wishes",
-    (pageNumber) => ({ relations: ["product","product.brand"], pageSize: 10, pageNumber }),
+    (pageNumber) => ({
+      relations: ["product", "product.brand", "product.wishlists"],
+      pageSize: 10,
+      pageNumber,
+    }),
     (condition) => requester.getWishlists(condition),
     (data: Pageable) => data?.totalPages || 0,
     {
@@ -33,13 +37,15 @@ export function WishListTable({ initWishList }: { initWishList: Pageable }) {
       {wishes.length > 0 ? (
         <VerticalFlex>
           <MasonryGrid width={"100%"} gap={15} breakpoints={2}>
-            {wishes.map((wish: WishData, i: number) => {
+            {wishes.map((wish: WishData) => {
+              const productWithWish = { ...(wish.product as any), wish };
               return (
                 <ProductCard
-                  product={wish.product!}
+                  key={wish.id}
+                  product={productWithWish}
                   lineClamp={2}
-                  key={i}
                   width={"100%"}
+                  mutate={mutate}
                 />
               );
             })}

@@ -173,6 +173,10 @@ interface ProductData extends BaseEntity, ProductDataFrame {
   wishlists?: WishData[];
   wish?: WishData;
   wishes?: number;
+  reviews?: {
+    count: number;
+    avg: number;
+  };
 }
 
 interface VariantDataFrame {
