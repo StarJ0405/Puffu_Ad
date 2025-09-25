@@ -19,11 +19,18 @@
    width: auto;
 }
 
+.review_list .all_txt {
+   font-size: 16px;
+   color: #fff;
+   font-weight: 600;
+   gap: 5px;
+}
+
 
 /* 상품정보 */
 .prodcut_data {
    gap: 7px; cursor: pointer; 
-   padding: 0 5px; max-width: 200px; 
+   padding: 0 5px; max-width: 400px; 
    flex: unset !important;
 }
 
@@ -55,10 +62,14 @@
 
 .feedback {
    justify-content: start;
-   gap: 30px;
+   gap: 14px;
 }
 
-.feedback .feed_item { gap: 10px; width: auto;}
+.feedback .feed_item { 
+  gap: 10px; 
+  width: auto;
+  align-self: start;
+}
 
 .feedback .feed_item > * {width: auto;}
 
