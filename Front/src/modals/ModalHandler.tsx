@@ -35,6 +35,8 @@ import ReviewWriteModal from "./main/review/ReviewWriteModal";
 import SearchModal from "./main/search/SearchModal";
 import SelectModal from "./main/select/SelectModal";
 import TableModal from "./table/TableModal";
+import TermContentModal from "./main/policies/TermContentModal";
+import PraivacyContentModal from "./main/policies/PraivacyContentModal";
 
 function ModalHandler() {
   NiceModal.register("toast", ToastModal);
@@ -53,6 +55,8 @@ function ModalHandler() {
   NiceModal.register("postalcode", PostalCodeModal);
   NiceModal.register("optionChange", OptionChangeModal);
   NiceModal.register("reviewWrite", ReviewWriteModal);
+  NiceModal.register("TermContent", TermContentModal);
+  NiceModal.register("PraivacyContent", PraivacyContentModal);
   // admin
   NiceModal.register("bannerDetail", BannerModal);
   NiceModal.register("groupDetail", GroupModal);
