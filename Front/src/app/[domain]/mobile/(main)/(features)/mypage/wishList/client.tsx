@@ -13,7 +13,7 @@ import mypage from "../mypage.module.css";
 export function WishListTable({ initWishList }: { initWishList: Pageable }) {
   const { wishes, mutate } = usePageData(
     "wishes",
-    (pageNumber) => ({ relations: ["product"], pageSize: 10, pageNumber }),
+    (pageNumber) => ({ relations: ["product","product.brand"], pageSize: 10, pageNumber }),
     (condition) => requester.getWishlists(condition),
     (data: Pageable) => data?.totalPages || 0,
     {
