@@ -97,6 +97,8 @@ interface UserData extends BaseEntity, UserDataFrame {
   point: number;
   accounts?: AccountLinkData[];
   adult_mode: boolean;
+  group_id?: string;
+  group?: GroupData;
 }
 interface StoreDataFrame {
   name: string;
@@ -247,6 +249,7 @@ interface LineItemData extends BaseEntity {
   total_discount?: number;
   total_tax?: number;
   currency_unit?: string;
+  refund?: number;
   metadata?: Record<string, unknown> | null;
 }
 
@@ -447,3 +450,14 @@ interface QAData extends BaseEntity, QADataFrame {
 
 interface ReviewDataFrame {}
 interface ReviewData extends BaseEntity, ReviewDataFrame {}
+
+interface GroupDataFrame {
+  name: string;
+  thumbnail?: string;
+  min: number;
+  percent: number;
+  metadata?: Record<string, unknown> | null;
+}
+interface GroupData extends BaseEntity, GroupDataFrame {
+  users?: UserData[];
+}

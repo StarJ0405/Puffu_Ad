@@ -5,6 +5,7 @@ import { User } from "./user";
 
 @Entity({ name: "group" })
 @Index(["created_at"])
+// CREATE INDEX IF NOT EXISTS idx_group_name ON public.group USING GIN (fn_text_to_char_array(name));
 export class Group extends BaseEntity {
   @Column({ type: "character varying", nullable: false })
   name?: string;

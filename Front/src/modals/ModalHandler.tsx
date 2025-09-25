@@ -8,6 +8,7 @@ import CategoriesModal from "./admin/category/CategoriesModal";
 import CategoryListModal from "./admin/category/CategoryListModal";
 import CategoryModal from "./admin/category/CategoryModal";
 import CategorySelectModal from "./admin/category/CategorySelectModal";
+import GroupModal from "./admin/group/GroupModal";
 import LoadingModal from "./admin/LoadingModal";
 import NoticeModal from "./admin/notice/NtoiceModal";
 import OrderDetailModal from "./admin/order/OrderDetailModal";
@@ -54,6 +55,7 @@ function ModalHandler() {
   NiceModal.register("review", ReviewModal);
   // admin
   NiceModal.register("bannerDetail", BannerModal);
+  NiceModal.register("groupDetail", GroupModal);
   NiceModal.register("noticeDetail", NoticeModal);
   NiceModal.register("orderDetail", OrderDetailModal);
   NiceModal.register("orderList", OrderListModal);

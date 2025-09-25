@@ -112,6 +112,9 @@ export class LineItem extends BaseEntity {
   @Column({ type: "character varying", nullable: true })
   currency_unit?: string;
 
+  @Column({ type: "real", default: 0.0 })
+  total_refund?: number;
+
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;
 
