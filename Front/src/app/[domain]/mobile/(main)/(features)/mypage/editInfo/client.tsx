@@ -6,12 +6,16 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import Input from "@/components/inputs/Input";
 import P from "@/components/P/P";
+import Span from "@/components/span/Span";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import { fileRequester } from "@/shared/FileRequester";
 import { requester } from "@/shared/Requester";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import {
+  passwordFormat,
+} from "@/shared/regExp";
 import mypage from "../mypage.module.css";
 import styles from "./page.module.css";
 
@@ -20,6 +24,8 @@ export function EditInfoClient() {
   const { userData, reload } = useAuth();
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [passwordError, setPasswordError] = useState<string>("");
+  const [passwordError2, setPasswordError2] = useState<string>("");
   const [currentName, setCurrentName] = useState("");
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -75,7 +81,7 @@ export function EditInfoClient() {
     try {
       const res = await requester.updateCurrentUser({ password: password, thumbnail: thumbnailUrl });
       alert("사용자 정보가 성공적으로 변경되었습니다.");
-      
+
       router.back();
     } catch (error) {
       console.error("User update failed:", error);
@@ -150,26 +156,51 @@ export function EditInfoClient() {
 
             <VerticalFlex className={styles.input_box}>
               <P className={styles.input_label}>비밀번호</P>
-              <Input
-                className="web_input"
-                type="password"
-                width={"100%"}
-                placeHolder="비밀번호를 입력하세요."
-                value={password}
-                onChange={(value) => setPassword(value as string)}
-              />
+              <VerticalFlex alignItems="start">
+                <Input
+                  className="web_input"
+                  type="password"
+                  width={"100%"}
+                  regExp={[passwordFormat]}
+                  placeHolder="비밀번호를 입력하세요."
+                  feedback="영문 대소문자, 숫자, 특수문자 조합 최소8자"
+                  value={password}
+                  onChange={(value) => setPassword(value as string)}
+                  onFeedBackChange={(feedback) => setPasswordError(feedback)}
+                  feedbackHide
+                />
+                <Span className={styles.inputError} paddingLeft={6}>
+                  {passwordError}
+                </Span>
+              </VerticalFlex>
             </VerticalFlex>
 
             <VerticalFlex className={styles.input_box}>
               <P className={styles.input_label}>비밀번호 확인</P>
-              <Input
-                className="web_input"
-                type="password"
-                width={"100%"}
-                placeHolder="비밀번호를 한번 더 입력하세요."
-                value={passwordConfirm}
-                onChange={(value) => setPasswordConfirm(value as string)}
-              />
+              <VerticalFlex alignItems="start">
+                <Input
+                  className="web_input"
+                  type="password"
+                  width={"100%"}
+                  regExp={[
+                    {
+                      exp: {
+                        test: (value) => value === password,
+                      },
+                    },
+                  ]}
+                  placeHolder="비밀번호를 한번 더 입력하세요."
+                  feedback="비밀번호가 일치하지 않습니다"
+                  value={passwordConfirm}
+                  onChange={(value) => setPasswordConfirm(value as string)}
+                  onFeedBackChange={(feedback) => setPasswordError2(feedback)}
+                  feedbackHide
+                />
+                <Span className={styles.inputError} paddingLeft={6}>
+                  {passwordError2}
+                </Span>
+              </VerticalFlex>
+
             </VerticalFlex>
 
             <VerticalFlex className={styles.input_box}>
