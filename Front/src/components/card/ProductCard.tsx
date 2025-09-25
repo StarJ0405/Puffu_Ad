@@ -44,13 +44,18 @@ export function ProductCard({
     <VerticalFlex
       width={width ?? isMobile ? "auto" : 200}
       // margin={product.margin}
-      className={clsx(styles.prodcut_item, isMobile ? styles.mob_prodcut_item : '')}
+      className={clsx(
+        styles.prodcut_item,
+        isMobile ? styles.mob_prodcut_item : ""
+      )}
     >
       <FlexChild
         className={styles.imgBox}
         height={width ?? isMobile ? "auto" : 200}
       >
-        <FlexChild onClick={() => (onClick ? onClick() : navigate(product_link))}>
+        <FlexChild
+          onClick={() => (onClick ? onClick() : navigate(product_link))}
+        >
           {userData?.adult ? (
             <Image src={product.thumbnail} width={"100%"} height={"auto"} />
           ) : (
@@ -61,7 +66,7 @@ export function ProductCard({
               height={"auto"}
             />
           )}
-  
+
           {commingSoon && ( // 입고예정일때만 나오기
             <Image
               className={styles.specialTypeImg}
@@ -102,13 +107,11 @@ export function ProductCard({
 
       <FlexChild padding={"0 5px"} className={styles.text_box}>
         <VerticalFlex gap={2} alignItems={"start"}>
-          {
-            product?.brand?.name && (
-              <FlexChild className={styles.store_name}>
-                <Span>{product?.brand?.name}</Span>
-              </FlexChild>
-            )
-          }
+          {product?.brand?.name && (
+            <FlexChild className={styles.store_name}>
+              <Span>{product?.brand?.name}</Span>
+            </FlexChild>
+          )}
 
           <FlexChild
             className={styles.product_title}
@@ -128,22 +131,23 @@ export function ProductCard({
 
           <HorizontalFlex className={styles.content_item}>
             {/* <Span
-                     color="var(--main-color)"
-                     weight={600}
-                     fontSize={14}
-                     hidden={product.discount_rate >= 1}
-                     paddingRight={"0.5em"}
-                  >
-                     {product.discount_rate}%
-                  </Span> */}
-            <FlexChild className={styles.price_box} minHeight={!isMobile ? 36 : 33}>
-              {
-                product.discount_rate > 0 && ( // 원가랑 할인가 차이 없으면 표시 안하기
-                  <Span className={styles.through_price}>{product.price}</Span>
-                )
-              }
+              color="var(--main-color)"
+              weight={600}
+              fontSize={14}
+              hidden={product.discount_rate >= 1}
+              paddingRight={"0.5em"}
+            >
+              {product.discount_rate}%
+            </Span> */}
+            <FlexChild
+              className={styles.price_box}
+              minHeight={!isMobile ? 36 : 33}
+            >
+              {product.discount_rate > 0 && ( // 원가랑 할인가 차이 없으면 표시 안하기
+                <Span className={styles.through_price}>{product.price}</Span>
+              )}
               <Span className={styles.discount_price}>
-                {Number(product.discount_price).toLocaleString("ko-KR")}{" "}₩
+                {Number(product.discount_price).toLocaleString("ko-KR")} ₩
               </Span>
             </FlexChild>
 
@@ -154,15 +158,16 @@ export function ProductCard({
                   e.preventDefault();
                   if (product.wish) {
                     requester.deleteWishList(
-                      product.wish.id, { soft: false, }, () => {
+                      product.wish.id,
+                      { soft: false },
+                      () => {
                         mutate?.();
                       }
                     );
                   } else {
-                    requester.createWishList( { product_id: product.id,}, () => {
-                        mutate?.();
-                      }
-                    );
+                    requester.createWishList({ product_id: product.id }, () => {
+                      mutate?.();
+                    });
                   }
                 }}
                 className={styles.heart_counter}
