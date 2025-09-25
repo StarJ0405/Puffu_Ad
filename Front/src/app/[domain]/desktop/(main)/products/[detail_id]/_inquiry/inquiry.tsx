@@ -200,16 +200,18 @@ export default function Inquiry({
                 !inquiry.hidden ||
                 userData?.role === "admin" ||
                 userData?.id === inquiry.user_id;
-
               return (
-                <VerticalFlex key={inquiry.id ?? i} className={styles.inquiry_item}>
+                <VerticalFlex
+                  key={inquiry.id ?? i}
+                  className={styles.inquiry_item}
+                >
                   <VerticalFlex className={styles.user_question}>
                     <HorizontalFlex
                       alignItems="center"
                       className={styles.item_title}
                     >
-                      <P>{inquiry.title}</P>
-                      {inquiry.answer && canView && (
+                      <P>{canView ? inquiry.title : "비공개 문의입니다."}</P>
+                      {canView && (
                         <Button
                           className={clsx(styles.toggle_btn, {
                             [styles.active]: openIndex === i,
@@ -217,7 +219,7 @@ export default function Inquiry({
                           onClick={() =>
                             setOpenIndex((prev) => (prev === i ? null : i))
                           }
-                        >
+                        > 
                           <Image
                             src={`/resources/icons/arrow/board_arrow_bottom_icon.png`}
                             width={20}
@@ -228,46 +230,54 @@ export default function Inquiry({
 
                     <FlexChild className={styles.data_group}>
                       <FlexChild className={styles.response_check}>
-                        <Span color={inquiry.answer ? "#fff" : undefined}>
+                        <Span color={inquiry.answer ? "#F5146E" : "#ffffff"}>
                           {inquiry.answer ? "답변완료" : "답변대기"}
                         </Span>
                       </FlexChild>
 
                       <P className={styles.item_name}>
-                        {maskName(inquiry.user?.name)}
+                        {canView ? maskName(inquiry.user?.name) : "비공개"}
                       </P>
 
                       <P className={styles.item_date}>
                         {formatDate(inquiry.created_at as string)}
                       </P>
                     </FlexChild>
-
-                    <FlexChild className={styles.item_content}>
-                      <P>{canView ? inquiry.content : "비공개 문의입니다."}</P>
-                    </FlexChild>
                   </VerticalFlex>
 
                   {canView && (
                     <AnimatePresence mode="wait">
-                      <motion.div
-                        id="motion"
-                        key={openIndex}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.5, ease: "easeInOut" }}
-                      >
-                        {inquiry.answer && openIndex === i && (
-                          <VerticalFlex className={styles.admin_answer}>
-                            <FlexChild className={styles.answer_title}>
-                              <P color="var(--main-color1)">관리자 답변</P>
+                      {openIndex === i && (
+                        <motion.div
+                          id="motion"
+                          key={openIndex}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.5, ease: "easeInOut" }}
+                        >
+                          <VerticalFlex>
+                            <FlexChild className={styles.item_content}>
+                              <P>
+                                {canView
+                                  ? inquiry.content
+                                  : "비공개 문의입니다."}
+                              </P>
                             </FlexChild>
 
-                            <FlexChild className={styles.item_content}>
-                              <P>{inquiry.answer}</P>
-                            </FlexChild>
+                            {inquiry.answer && openIndex === i && (
+                              <VerticalFlex className={styles.admin_answer}>
+                                <FlexChild className={styles.answer_title}>
+                                  <P color="var(--main-color1)">관리자 답변</P>
+                                </FlexChild>
+
+                                <FlexChild className={styles.item_content}>
+                                  <P>{inquiry.answer}</P>
+                                </FlexChild>
+                              </VerticalFlex>
+                            )}
                           </VerticalFlex>
-                        )}
-                      </motion.div>
+                        </motion.div>
+                      )}
                     </AnimatePresence>
                   )}
                 </VerticalFlex>
