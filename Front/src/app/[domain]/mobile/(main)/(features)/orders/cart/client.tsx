@@ -830,7 +830,8 @@ export function AgreeInfo({
 
               <Span
                 className={style.more_btn}
-                onClick={() => navigate("/policies/term")}
+                // onClick={() => navigate("/policies/term")}
+                onClick={() => NiceModal.show("TermContent")}
               >
                 자세히보기
               </Span>
@@ -846,7 +847,8 @@ export function AgreeInfo({
 
               <Span
                 className={style.more_btn}
-                onClick={() => navigate("/policies/praivacy")}
+                // onClick={() => navigate("/policies/praivacy")}
+                onClick={() => NiceModal.show("PraivacyContent")}
               >
                 자세히보기
               </Span>
