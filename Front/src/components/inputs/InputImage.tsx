@@ -17,7 +17,17 @@ import FlexChild from "../flex/FlexChild";
 import FlexGrid from "../flex/FlexGrid";
 import VerticalFlex from "../flex/VerticalFlex";
 import styles from "./InputImage.module.css";
-import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
+
+export type InputImageHandle = {
+  open: () => void;
+  getName: () => string | undefined;
+  getValue: () => string[] | string;
+  isValid: () => Promise<boolean>;
+  empty: () => void;
+  getSelectedCount: () => number;
+  removeAt: (index: number) => void;
+};
+
 interface InputImageProps {
   name?: string;
   path?: string;
@@ -27,12 +37,13 @@ interface InputImageProps {
   placeHolder?: string;
   maxFiles?: number;
   minFiles?: number;
-  frame?: boolean; // 디자인 부분 제거
+  frame?: boolean;
   backgroundColor?: React.CSSProperties["backgroundColor"];
   color?: React.CSSProperties["color"];
+  onChangeImages?: (images: any[]) => void;
 }
 
-const InputImage = forwardRef(
+const InputImage = forwardRef<InputImageHandle, InputImageProps>(
   (
     {
       name,
@@ -46,6 +57,7 @@ const InputImage = forwardRef(
       frame = true,
       backgroundColor,
       color,
+      onChangeImages,
     }: InputImageProps,
     ref
   ) => {
@@ -55,7 +67,6 @@ const InputImage = forwardRef(
     const [images, setImages] = useState<any[]>([]);
     const [isUploading, setIsUploading] = useState(false);
     const [target, setTarget] = useState(-1);
-    const isMobile = useBrowserEvent;
 
     const processFileToImage = useCallback(async (file: File) => {
       return new Promise((resolve) => {
@@ -82,7 +93,7 @@ const InputImage = forwardRef(
       async (files: File[]) => {
         if (multiple) {
           if (maxFiles) {
-            const length = images.length + files.length;
+            const length = (resultRef.current?.length ?? 0) + files.length;
             if (length > maxFiles) {
               return toast({
                 message: `최대 ${maxFiles}개의 이미지만 선택할 수 있습니다.`,
@@ -97,11 +108,14 @@ const InputImage = forwardRef(
 
         const newFiles = (
           await Promise.all(files.map(processFileToImage))
-        ).filter(Boolean);
-        if (multiple) setImages((prev) => [...prev, ...newFiles]);
-        else setImages(newFiles);
+        ).filter(Boolean) as any[];
+        setImages((prev) => {
+          const next = multiple ? [...prev, ...newFiles] : newFiles;
+          onChangeImages?.(next);
+          return next;
+        });
       },
-      [images]
+      [multiple, maxFiles, processFileToImage, onChangeImages]
     );
     const handleFileChange = useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,7 +131,7 @@ const InputImage = forwardRef(
         handleImageChange(Array.from(e.target.files));
         e.target.value = "";
       },
-      [isUploading, disabled, images]
+      [isUploading, disabled, handleImageChange]
     );
     const handleFileReplace = useCallback(
       async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -126,14 +140,19 @@ const InputImage = forwardRef(
         const file = Array.from(e.target.files)[0];
         const newFile = await processFileToImage(file);
         setImages((prev) => {
-          prev[target] = newFile;
-          return [...prev];
+          const next = [...prev];
+          next[target] = newFile;
+          onChangeImages?.(next);
+          return next;
         });
         e.target.value = "";
       },
       [target]
     );
     useImperativeHandle(ref, () => ({
+      open() {
+        if (!disabled && !isUploading) fileInputRef.current?.click();
+      },
       getName() {
         return name;
       },
@@ -143,13 +162,13 @@ const InputImage = forwardRef(
       },
       async isValid() {
         if (disabled) return true;
-        if (minFiles && minFiles < images.length) {
+        if (minFiles && images.length < minFiles) {
           toast({ message: `최소 ${minFiles}개의 이미지를 선택해야 합니다.` });
           return false;
         }
 
         if (multiple) {
-          if (maxFiles && maxFiles > images.length) {
+          if (maxFiles && images.length > maxFiles) {
             toast({
               message: `최대 ${maxFiles}개의 이미지만 선택할 수 있습니다.`,
             });
@@ -185,11 +204,23 @@ const InputImage = forwardRef(
           }),
         ];
         setImages(resultRef.current);
+        onChangeImages?.(resultRef.current);
         setIsUploading(false);
         return true;
       },
       empty() {
         setImages([]);
+        setTarget(-1);
+      },
+      getSelectedCount() {
+        return resultRef.current?.length ?? 0;
+      },
+      removeAt(index: number) {
+        setImages((prev) => {
+          const next = prev.filter((_, i) => i !== index);
+          onChangeImages?.(next);
+          return next;
+        });
         setTarget(-1);
       },
     }));
@@ -247,14 +278,14 @@ const InputImage = forwardRef(
             {images?.length === 0 ? (
               <VerticalFlex justifyContent="center" gap={10}>
                 <FlexChild justifyContent="center" gap={10}>
-                  <ImageCompnent src="/resources/icons/photo 1.svg" size={!isMobile ? 45 : 35} />
+                  <ImageCompnent src="/resources/icons/photo 1.svg" size={45} />
                   <ImageCompnent
                     src="/resources/icons/add-folder 1.svg"
-                    size={!isMobile ? 45 : 35}
+                    size={45}
                   />
                 </FlexChild>
                 <FlexChild justifyContent="center">
-                  <P fontSize={!isMobile ? 16 : 13} color="#797979">이미지 파일을 드래그 앤 드롭해주세요</P>
+                  <P>이미지 파일을 드래그 앤 드롭해주세요</P>
                 </FlexChild>
                 <FlexChild justifyContent="center">
                   {placeHolder && (
@@ -262,7 +293,7 @@ const InputImage = forwardRef(
                   )}
                 </FlexChild>
                 <FlexChild justifyContent="center">
-                  <Button styleType="admin" fontSize={!isMobile ? 16 : 13} color="#eee" padding={!isMobile ? "8px 16px" : "5px 16px"}>
+                  <Button styleType="admin" fontSize={16} padding={"8px 16px"}>
                     업로드
                   </Button>
                 </FlexChild>
@@ -277,9 +308,9 @@ const InputImage = forwardRef(
                     key={`${image.url.slice(image.url.length - 5)}_${index}`}
                   >
                     <VerticalFlex justifyContent="center" gap={10}>
-                      <ImageCompnent src={image.url} size={!isMobile ? 100 : 50} />
+                      <ImageCompnent src={image.url} size={100} />
                       <P fontSize={"small"}>{image?.name}</P>
-                      <FlexChild justifyContent="center" gap={5} marginTop={10}>
+                      <FlexChild justifyContent="center" gap={5}>
                         <Button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -290,8 +321,6 @@ const InputImage = forwardRef(
                           }}
                           className={styles.button1}
                           styleType="admin2"
-                          color="#fff"
-                          fontSize={!isMobile ? 14 : 13}
                         >
                           변경
                         </Button>

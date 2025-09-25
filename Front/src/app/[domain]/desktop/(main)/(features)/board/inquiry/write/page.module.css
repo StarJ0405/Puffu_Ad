@@ -69,7 +69,7 @@
 .button_group {
    gap: 10px;
    justify-content: center;
-   margin-top: 100px;
+   margin-top: 30px;
 }
 
 .button_group > button {
@@ -88,6 +88,11 @@
 }
 
 .button_group .submit_btn {
+   background: var(--main-color1);
+   transition: all 0.2s;
+}
+
+.button_group .submit_btn:hover {
    background: var(--main-color2);
 }
 

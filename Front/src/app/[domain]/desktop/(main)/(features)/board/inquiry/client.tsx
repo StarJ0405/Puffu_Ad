@@ -12,10 +12,10 @@ import { requester } from "@/shared/Requester";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import boardStyle from "../boardGrobal.module.css";
-
+import ListPagination from "@/components/listPagination/ListPagination";
 import { toast } from "@/shared/utils/Functions";
 import { useRouter } from "next/navigation";
-
+import usePageData from "@/shared/hooks/data/usePageData";
 interface QADataWithUser extends QAData {
   user?: UserData;
 }
@@ -74,8 +74,10 @@ export function BoardTable() {
   };
 
   const handleTitleClick = (item: QADataWithUser) => {
-    if (userData?.role !== "admin" || userData?.id !== item.user?.id) {
-      toast({ message: "비밀글은 작성자만 확인할 수 있습니다." });
+    const isAdmin = String(userData?.role || "").toLowerCase() === "admin";
+    const isOwner = String(userData?.id) === String(item.user?.id);
+    if (!(isAdmin || isOwner)) {
+      toast({ message: "1:1문의는 작성자만 확인할 수 있습니다." });
       return;
     }
     router.push(`/board/inquiry/${item.id}`);
@@ -185,7 +187,7 @@ export function BoardTable() {
         )}
       </FlexChild>
       <FlexChild className={boardStyle.list_bottom_box}>
-        {/* <ListPagination /> */}
+        {/* <ListPagination page={page} maxPage={maxPage} onChange={setPage} /> */}
 
         {/* 누르면 글쓰기로 연결 회원만 글쓰기 가능! 비회원은 안 보이게 하던지, 클릭하면 비회원이면 로그인 페이지로 보내기 */}
         <Link href={"/board/inquiry/write"} className={boardStyle.write_btn}>

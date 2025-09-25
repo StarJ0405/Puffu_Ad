@@ -44,40 +44,40 @@ const SideMenu = NiceModal.create(() => {
   };
 
   const cutomerMenu: PagingItem[] = [
-    {name: '공지사항', link: '/board/notice'},
-    {name: '1:1 문의', link: '/board/inquiry'},
-    {name: '이벤트', link: '/board/event'},
+    { name: '공지사항', link: '/board/notice' },
+    { name: '1:1 문의', link: '/board/inquiry' },
+    { name: '이벤트', link: '/board/event' },
   ]
 
   const shopMenu: PagingItem[] = [
-    {name: '내 주문 관리', link: '/mypage/myOrders'},
-    {name: '최근 본 상품', link: '/mypage/recentlyView'},
-    {name: '관심 리스트', link: '/mypage/wishList'},
+    { name: '내 주문 관리', link: '/mypage/myOrders' },
+    { name: '최근 본 상품', link: '/mypage/recentlyView' },
+    { name: '관심 리스트', link: '/mypage/wishList' },
   ]
 
   const myInfoMenu: PagingItem[] = [
-    {name: '내 정보', link: '/mypage'},
-    {name: '배송지 관리', link: '/mypage/delivery'},
-    {name: '1:1 문의 내역', link: '/mypage/inquiry'},
+    { name: '내 정보', link: '/mypage' },
+    { name: '배송지 관리', link: '/mypage/delivery' },
+    { name: '1:1 문의 내역', link: '/mypage/inquiry' },
     // {name: '리뷰 관리', link: '/mypage/review'},
   ]
 
-  // const logoutModal = () => { // 로그아웃
+  const logoutModal = () => { // 로그아웃
 
-  //   NiceModal.show(ConfirmModal, {
-  //     message: (
-  //       <FlexChild justifyContent="center" marginBottom={30}>
-  //         <P color="#333" fontSize={20} weight={600}>로그아웃 하시겠습니까?</P>
-  //       </FlexChild>
-  //     ),
-  //     confirmText: "확인",
-  //     cancelText: "취소",
-  //     withCloseButton: true,
-  //     onConfirm: () => {
-  //       removeCookie(Cookies.JWT, getCookieOption());
-  //     },
-  //   })
-  // }
+    NiceModal.show(ConfirmModal, {
+      message: (
+        <FlexChild justifyContent="center" marginBottom={30}>
+          <P color="#333" fontSize={20} weight={600}>로그아웃 하시겠습니까?</P>
+        </FlexChild>
+      ),
+      confirmText: "확인",
+      cancelText: "취소",
+      withCloseButton: true,
+      onConfirm: () => {
+        removeCookie(Cookies.JWT, getCookieOption());
+      },
+    })
+  }
 
   return (
     <ModalBase
@@ -91,7 +91,7 @@ const SideMenu = NiceModal.create(() => {
       width={'70%'}
       maxWidth={300}
       minWidth={220}
-      
+
       clickOutsideToClose={true}
       onClose={modal.remove}
     >
@@ -107,31 +107,31 @@ const SideMenu = NiceModal.create(() => {
         </HorizontalFlex>
 
         <FlexChild className={styles.tab_wrap} justifyContent="start">
-          <FlexChild 
+          <FlexChild
             className={
-              clsx(styles.tab_btn, 
-                {[styles.active]: menuTab === "mypage"}
+              clsx(styles.tab_btn,
+                { [styles.active]: menuTab === "mypage" }
               )
-            } 
-              onClick={()=> setMenuTab('mypage')}
+            }
+            onClick={() => setMenuTab('mypage')}
           >
             <P>마이페이지</P>
           </FlexChild>
 
-          <FlexChild 
+          <FlexChild
             className={
-              clsx(styles.tab_btn, 
-                {[styles.active]: menuTab === "cs"}
+              clsx(styles.tab_btn,
+                { [styles.active]: menuTab === "cs" }
               )
-            } 
-            onClick={()=> setMenuTab('cs')}
+            }
+            onClick={() => setMenuTab('cs')}
           >
             <P>고객센터</P>
           </FlexChild>
         </FlexChild>
 
         <AnimatePresence mode="wait">
-          
+
           {/* 마이페이지 */}
           {
             menuTab === 'mypage' && (
@@ -147,66 +147,86 @@ const SideMenu = NiceModal.create(() => {
                     <FlexChild className={styles.inner_title}>
                       <P>쇼핑정보</P>
                     </FlexChild>
-    
+
                     <VerticalFlex className={styles.inner_box} alignItems="start" justifyContent="start">
                       {
-                        shopMenu.map((item, i)=> (
+                        shopMenu.map((item, i) => (
                           <HorizontalFlex key={i} className={styles.inner_btn}>
-                            <FlexChild 
-                              className={styles.inner_txt} 
-                              onClick={()=> {
+                            <FlexChild
+                              className={styles.inner_txt}
+                              onClick={() => {
                                 modalRef.current?.close();
                                 navigate(item.link);
                               }}
                             >
                               <P>{item.name}</P>
                             </FlexChild>
-              
+
                             <Image src={"/resources/icons/arrow/list_paging_next.png"} width={7} />
                           </HorizontalFlex>
                         ))
                       }
                     </VerticalFlex>
                   </VerticalFlex>
-    
+
                   <VerticalFlex className={styles.inner_wrap} alignItems="start" justifyContent="start">
                     <FlexChild className={styles.inner_title}>
                       <P>내 정보 관리</P>
                     </FlexChild>
-    
+
                     <VerticalFlex className={styles.inner_box} alignItems="start" justifyContent="start">
                       {
-                        myInfoMenu.map((item, i)=> (
+                        myInfoMenu.map((item, i) => (
                           <HorizontalFlex key={i} className={styles.inner_btn}>
-                            <FlexChild 
-                              className={styles.inner_txt} 
-                              onClick={()=> {
+                            <FlexChild
+                              className={styles.inner_txt}
+                              onClick={() => {
                                 modalRef.current?.close();
                                 navigate(item.link);
                               }}
                             >
                               <P>{item.name}</P>
                             </FlexChild>
-              
                             <Image src={"/resources/icons/arrow/list_paging_next.png"} width={7} />
                           </HorizontalFlex>
                         ))
                       }
-                          {/* <HorizontalFlex className={styles.inner_btn}>
-                            <FlexChild 
-                              className={styles.inner_txt} 
-                              onClick={()=> {
-                                logoutModal
-                              }}
-                            >
-                              <P>로그아웃</P>
-                            </FlexChild>
-              
-                            <Image src={"/resources/icons/arrow/list_paging_next.png"} width={7} />
-                          </HorizontalFlex> */}
+                      <HorizontalFlex className={styles.inner_btn} hidden={!userData?.id}>
+                        <FlexChild
+                          className={styles.inner_txt}
+                          onClick={logoutModal}
+                        >
+                          <P>로그아웃</P>
+                        </FlexChild>
+                        <Image src={"/resources/icons/arrow/list_paging_next.png"} width={7} />
+                      </HorizontalFlex>
+                      <HorizontalFlex className={styles.inner_btn} hidden={!!userData?.id}>
+                        <FlexChild
+                          className={styles.inner_txt}
+                          onClick={()=> {
+                            modalRef.current?.close();
+                            navigate("/auth/login");
+                          }}
+                        >
+                          <P>로그인</P>
+                        </FlexChild>
+                        <Image src={"/resources/icons/arrow/list_paging_next.png"} width={7} />
+                      </HorizontalFlex>
+                      <HorizontalFlex className={styles.inner_btn} hidden={!!userData?.id}>
+                        <FlexChild
+                          className={styles.inner_txt}
+                          onClick={()=> {
+                            modalRef.current?.close();
+                            navigate("/auth/signup");
+                          }}
+                        >
+                          <P>회원가입</P>
+                        </FlexChild>
+                        <Image src={"/resources/icons/arrow/list_paging_next.png"} width={7} />
+                      </HorizontalFlex>
                     </VerticalFlex>
                   </VerticalFlex>
-    
+
                 </VerticalFlex>
               </motion.div>
             )
@@ -227,21 +247,21 @@ const SideMenu = NiceModal.create(() => {
                     <FlexChild className={styles.inner_title}>
                       <P>고객센터</P>
                     </FlexChild>
-    
+
                     <VerticalFlex className={styles.inner_box} alignItems="start" justifyContent="start">
                       {
-                        cutomerMenu.map((item, i)=> (
+                        cutomerMenu.map((item, i) => (
                           <HorizontalFlex key={i} className={styles.inner_btn}>
-                            <FlexChild 
-                              className={styles.inner_txt} 
-                              onClick={()=> {
+                            <FlexChild
+                              className={styles.inner_txt}
+                              onClick={() => {
                                 modalRef.current?.close();
                                 navigate(item.link);
                               }}
                             >
                               <P>{item.name}</P>
                             </FlexChild>
-              
+
                             <Image src={"/resources/icons/arrow/list_paging_next.png"} width={7} />
                           </HorizontalFlex>
                         ))
@@ -252,9 +272,9 @@ const SideMenu = NiceModal.create(() => {
               </motion.div>
             )
           }
-  
+
         </AnimatePresence>
-        </VerticalFlex>
+      </VerticalFlex>
     </ModalBase>
   );
 });

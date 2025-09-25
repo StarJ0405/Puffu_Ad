@@ -11,12 +11,10 @@ import clsx from "clsx";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import boardStyle from "../boardGrobal.module.css";
-
 import { toast } from "@/shared/utils/Functions";
 import { useRouter } from "next/navigation";
 import { SelectBox } from "../client";
 import NoContent from "@/components/noContent/noContent";
-
 interface QADataWithUser extends QAData {
   user?: UserData;
 }
@@ -74,8 +72,10 @@ export function BoardTable() {
   };
 
   const handleTitleClick = (item: QADataWithUser) => {
-    if (userData?.role !== "admin" || userData?.id !== item.user?.id) {
-      toast({ message: "비밀글은 작성자만 확인할 수 있습니다." });
+    const isAdmin = String(userData?.role || "").toLowerCase() === "admin";
+    const isOwner = String(userData?.id) === String(item.user?.id);
+    if (!(isAdmin || isOwner)) {
+      toast({ message: "1:1문의는 작성자만 확인할 수 있습니다." });
       return;
     }
     router.push(`/board/inquiry/${item.id}`);

@@ -31,10 +31,12 @@ import AddressModal from "./main/address/AddressModal";
 import PostalCodeModal from "./main/address/PostaCodelModal";
 import OptionChangeModal from "./main/product/OptionChangeModal";
 import PurchaseModal from "./main/product/PurchaseModal";
-import ReviewModal from "./main/review/reviewModal";
+import ReviewWriteModal from "./main/review/ReviewWriteModal";
 import SearchModal from "./main/search/SearchModal";
 import SelectModal from "./main/select/SelectModal";
 import TableModal from "./table/TableModal";
+import TermContentModal from "./main/policies/TermContentModal";
+import PraivacyContentModal from "./main/policies/PraivacyContentModal";
 
 function ModalHandler() {
   NiceModal.register("toast", ToastModal);
@@ -52,7 +54,9 @@ function ModalHandler() {
   NiceModal.register("purchase", PurchaseModal);
   NiceModal.register("postalcode", PostalCodeModal);
   NiceModal.register("optionChange", OptionChangeModal);
-  NiceModal.register("review", ReviewModal);
+  NiceModal.register("reviewWrite", ReviewWriteModal);
+  NiceModal.register("TermContent", TermContentModal);
+  NiceModal.register("PraivacyContent", PraivacyContentModal);
   // admin
   NiceModal.register("bannerDetail", BannerModal);
   NiceModal.register("groupDetail", GroupModal);
