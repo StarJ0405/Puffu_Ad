@@ -17,6 +17,7 @@ export default async function ({ params }: { params: Promise<Params> }) {
       "variants.product.discounts.discount",
       "variants.discounts.discount",
       "options.values",
+      "categories",
     ],
   };
   const initProduct = await requester.getProduct(
@@ -32,10 +33,11 @@ export default async function ({ params }: { params: Promise<Params> }) {
     });
   }
   const relationProducts = await requester.getProducts({
-    category_id: initProduct.content.category_id,
+    categories: initProduct?.content?.categories?.map(
+      (cat: CategoryData) => cat?.id
+    ),
     pageSize: 24,
   });
-  
 
   return (
     <ProductWrapper initCondition={initCondition} initProduct={initProduct}>

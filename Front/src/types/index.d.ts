@@ -249,7 +249,7 @@ interface LineItemData extends BaseEntity {
   total_discount?: number;
   total_tax?: number;
   currency_unit?: string;
-  refund?: number;
+  total_refund?: number;
   metadata?: Record<string, unknown> | null;
   review?: any;
 }

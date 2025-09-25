@@ -82,9 +82,19 @@ export class ProductService extends BaseService<Product, ProductRepository> {
       //   );
       // }
       if (where.category_id) {
-        builder = builder.andWhere(`ct.mpath like :category_id`, {
+        builder = builder.andWhere(`ct.mpath LIKE :category_id`, {
           category_id: `%${where.category_id}%`,
         });
+      }
+      if (where.categories) {
+        const categories = Array.isArray(where.categories)
+          ? where.categories
+          : [where.categories];
+        builder = builder.andWhere(
+          `ct.mpath LIKE ANY (ARRAY[${categories.map(
+            (cat: string) => `'%${cat}%'`
+          )}])`
+        );
       }
       if (where.q) {
         const q = where.q;
