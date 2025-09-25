@@ -12,6 +12,7 @@ export class WishlistService extends BaseService<Wishlist, WishlistRepository> {
   }
 
   async getCounts(ids: string[]): Promise<{ id: string; count: number }[]> {
+    if (ids.length === 0) ids.push(`''`);
     return await this.repository
       .builder("wh")
       .select("product_id", "id")
