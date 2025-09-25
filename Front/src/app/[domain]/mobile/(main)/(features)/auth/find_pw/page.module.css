@@ -311,6 +311,26 @@
   transition: all 0.2s;
 }
 
+/* 3단계 */
+.input_item {
+  gap: 10px;
+}
+
+.input_item .label {
+  font-size: 14px;
+  color: #fff;
+}
+
+.input_item .label > span {
+  color: #da1e1e;
+}
+
+.inputError{
+  padding-top: 2px;
+  color: #da1e1e;
+  font-size: 12px;
+}
+
 /* 회원가입 완료 시 */
 
 .continue_box .home_btn {

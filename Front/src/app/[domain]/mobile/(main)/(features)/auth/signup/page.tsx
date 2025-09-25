@@ -1224,36 +1224,48 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
             <Span>(필수)</Span>
           </HorizontalFlex>
           <FlexChild>
-            <Input
-              type="password"
-              width={"100%"}
-              placeHolder="비밀번호를 입력하세요"
-              regExp={[passwordFormat]}
-              value={password}
-              onChange={(value) => setPassword(value as string)}
-              onFeedBackChange={(feedback) => setPasswordError(feedback)}
-              feedbackHide
-              className="web_input"
-            />
+            <VerticalFlex alignItems="flex-start">
+              <Input
+                type="password"
+                width={"100%"}
+                placeHolder="비밀번호를 입력하세요"
+                feedback="영문 대소문자, 숫자, 특수문자 조합 최소8자"
+                regExp={[passwordFormat]}
+                value={password}
+                onChange={(value) => setPassword(value as string)}
+                onFeedBackChange={(feedback) => setPasswordError(feedback)}
+                feedbackHide
+                className="web_input"
+              />
+              <Span className={styles.inputError} paddingLeft={6}>
+                {passwordError}
+              </Span>
+            </VerticalFlex>
           </FlexChild>
           <FlexChild>
-            <Input
-              type="password"
-              width={"100%"}
-              placeHolder="비밀번호를 한번 더 입력하세요"
-              regExp={[
-                {
-                  exp: {
-                    test: (value) => value === password,
+            <VerticalFlex alignItems="flex-start">
+              <Input
+                type="password"
+                width={"100%"}
+                placeHolder="비밀번호를 한번 더 입력하세요"
+                feedback="비밀번호가 일치하지 않습니다"
+                regExp={[
+                  {
+                    exp: {
+                      test: (value) => value === password,
+                    },
                   },
-                },
-              ]}
-              value={password2}
-              onChange={(value) => setPassword2(value as string)}
-              onFeedBackChange={(feedback) => setPasswordError2(feedback)}
-              feedbackHide
-              className="web_input"
-            />
+                ]}
+                value={password2}
+                onChange={(value) => setPassword2(value as string)}
+                onFeedBackChange={(feedback) => setPasswordError2(feedback)}
+                feedbackHide
+                className="web_input"
+              />
+              <Span className={styles.inputError} paddingLeft={6}>
+                {passwordError2}
+              </Span>
+            </VerticalFlex>
           </FlexChild>
         </VerticalFlex>
 
