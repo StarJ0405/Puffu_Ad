@@ -41,6 +41,13 @@
    gap: 15px;
 }
 
+.inputError{
+  padding-top: 2px;
+  color: #da1e1e;
+  font-size: 12px;
+}
+
+
 .button_group {
    gap: 10px;
    justify-content: center;
