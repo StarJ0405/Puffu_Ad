@@ -28,10 +28,10 @@ export function ReviewList({ listCount }: { listCount?: number }) {
         Upkeep: "쉽게 관리 가능해요",
       },
       product: {
-         thumb: '/resources/images/dummy_img/review_img_01.png',
-         title: '적나라 생츄어리',
-         rating: '4.8',
-         reviewcount: '4,567',
+        thumb: '/resources/images/dummy_img/review_img_01.png',
+        title: '적나라 생츄어리',
+        rating: '4.8',
+        reviewcount: '4,567',
       }
     },
     {
@@ -50,10 +50,10 @@ export function ReviewList({ listCount }: { listCount?: number }) {
         Upkeep: "보통이에요",
       },
       product: {
-         thumb: '/resources/images/dummy_img/review_img_01.png',
-         title: '적나라 생츄어리',
-         rating: '4.8',
-         reviewcount: '4,567',
+        thumb: '/resources/images/dummy_img/review_img_01.png',
+        title: '적나라 생츄어리',
+        rating: '4.8',
+        reviewcount: '4,567',
       }
     },
     {
@@ -72,10 +72,10 @@ export function ReviewList({ listCount }: { listCount?: number }) {
         Upkeep: "관리하기 어려울 것 같아요",
       },
       product: {
-         thumb: '/resources/images/dummy_img/review_img_01.png',
-         title: '적나라 생츄어리',
-         rating: '4.8',
-         reviewcount: '4,567',
+        thumb: '/resources/images/dummy_img/review_img_01.png',
+        title: '적나라 생츄어리',
+        rating: '4.8',
+        reviewcount: '4,567',
       }
     },
     {
@@ -91,10 +91,10 @@ export function ReviewList({ listCount }: { listCount?: number }) {
         Upkeep: "보통이에요",
       },
       product: {
-         thumb: '/resources/images/dummy_img/review_img_01.png',
-         title: '적나라 생츄어리',
-         rating: '4.8',
-         reviewcount: '4,567',
+        thumb: '/resources/images/dummy_img/review_img_01.png',
+        title: '적나라 생츄어리',
+        rating: '4.8',
+        reviewcount: '4,567',
       }
     },
   ];
@@ -103,98 +103,103 @@ export function ReviewList({ listCount }: { listCount?: number }) {
     <>
       {reviewTest.length > 0 ? (
         <VerticalFlex className={styles.review_list} gap={35}>
+          <FlexChild className={styles.all_txt}>
+            <P>전체 리뷰 56</P>
+          </FlexChild>
           {reviewTest.slice(0, limit).map((review, i) => (
-            <VerticalFlex alignItems="start" gap={10} key={i}>
-              <FlexChild gap={10} alignSelf="end" width={'auto'} className={styles.review_edit}>
-                <P size={13} color="#ddd" cursor="pointer">수정</P>
-                <P size={13} color="#ddd" cursor="pointer">삭제</P>
-              </FlexChild>
-              <HorizontalFlex gap={35} className={styles.item}>
-                <VerticalFlex className={styles.item_header}>
-  
-                  {/* 상품정보 */}
-                  <HorizontalFlex className={styles.prodcut_data}>
-                    <FlexChild className={styles.img}>
-                      <Image src={review.product.thumb} width={45} />
-                    </FlexChild>
-  
-                    <VerticalFlex className={styles.info}>
-                      <FlexChild className={styles.title}>
-                          <P 
-                            lineClamp={1}
-                            overflow="hidden"
-                            display="--webkit-box"
-                          >
-                            {review.product.title}
+            <VerticalFlex gap={10} key={i}>
+              <VerticalFlex gap={25} className={styles.item}>
+                <HorizontalFlex gap={10}>
+                  <FlexChild>
+                    <VerticalFlex className={styles.item_header}>
+                      {/* 상품정보 */}
+                      <HorizontalFlex className={styles.prodcut_data}>
+                        <FlexChild className={styles.img}>
+                          <Image src={review.product.thumb} width={45} />
+                        </FlexChild>
+
+                        <VerticalFlex className={styles.info}>
+                          <FlexChild className={styles.title}>
+                            <P
+                              lineClamp={1}
+                              overflow="hidden"
+                              display="--webkit-box"
+                            >
+                              {review.product.title}
+                            </P>
+                          </FlexChild>
+                          <FlexChild className={styles.info_rating}>
+                            <P>평가 <Span>{review.product.rating}</Span></P>
+                            <P
+                              lineClamp={1}
+                              overflow="hidden"
+                              display="--webkit-box"
+                            >
+                              리뷰 <Span>{review.product.reviewcount}</Span>
+                            </P>
+                          </FlexChild>
+                        </VerticalFlex>
+                      </HorizontalFlex>
+
+                      <VerticalFlex gap={10}>
+                        <FlexChild>
+                          <Image
+                            src={`/resources/icons/board/review_start_${review.rating}.png`}
+                            width={100}
+                          />
+                        </FlexChild>
+
+                        <FlexChild>
+                          <P color="#797979" size={13}>
+                            {review.date}
                           </P>
-                      </FlexChild>
-                      <FlexChild className={styles.info_rating}>
-                          <P>평가 <Span>{review.product.rating}</Span></P>
-                          <P
-                            lineClamp={1}
-                            overflow="hidden"
-                            display="--webkit-box"
-                          >
-                            리뷰 <Span>{review.product.reviewcount}</Span>
-                          </P>
-                      </FlexChild>
+                        </FlexChild>
+                      </VerticalFlex>
                     </VerticalFlex>
-                  </HorizontalFlex>
-  
-                  <VerticalFlex gap={10}>
-                    <FlexChild gap={15}>
-                      <Image
-                        src={`/resources/icons/board/review_start_${review.rating}.png`}
-                        width={100}
-                      />
-                    </FlexChild>
-    
-                    <FlexChild>
-                      <P color="#797979" size={13}>
-                        {review.date}
-                      </P>
-                    </FlexChild>
-                  </VerticalFlex>
-  
-                </VerticalFlex>
-  
-                <VerticalFlex gap={25}>
-                  <HorizontalFlex className={styles.feedback}>
+                  </FlexChild>
+
+                  <FlexChild gap={10} alignSelf="start" width={'auto'} className={styles.review_edit}>
+                    <P size={13} color="#ddd" cursor="pointer">수정</P>
+                    <P size={13} color="#ddd" cursor="pointer">삭제</P>
+                  </FlexChild>
+                </HorizontalFlex>
+                <VerticalFlex gap={20}>
+                  <VerticalFlex className={styles.feedback}>
                     <FlexChild className={styles.feed_item}>
                       <FlexChild className={styles.feed_title}>
                         <P>외형/디자인</P>
                       </FlexChild>
-    
+
                       <FlexChild className={styles.feed_content}>
                         <P>{review.feedBack.design}</P>
                       </FlexChild>
                     </FlexChild>
-    
+
                     <FlexChild className={styles.feed_item}>
                       <FlexChild className={styles.feed_title}>
                         <P>마감/내구성</P>
                       </FlexChild>
-    
+
                       <FlexChild className={styles.feed_content}>
-                        <P>{review.feedBack.Sturdiness}</P>
+                        <P>{review.feedBack.Sturdiness}1231414</P>
                       </FlexChild>
                     </FlexChild>
-    
+
                     <FlexChild className={styles.feed_item}>
                       <FlexChild className={styles.feed_title}>
                         <P>유지관리</P>
                       </FlexChild>
-    
+
                       <FlexChild className={styles.feed_content}>
                         <P>{review.feedBack.Upkeep}</P>
                       </FlexChild>
                     </FlexChild>
-                  </HorizontalFlex>
-    
-                  <HorizontalFlex className={styles.content}>
+                  </VerticalFlex>
+
+                  <VerticalFlex className={styles.content}>
                     {review.photos.length > 0 && (
                       <FlexChild
-                        width={180}
+                        width={150}
                         className={styles.img_box}
                         cursor="pointer"
                       >
@@ -208,7 +213,7 @@ export function ReviewList({ listCount }: { listCount?: number }) {
                         </Div>
                       </FlexChild>
                     )}
-    
+
                     {/* 이미지 클릭하면 모달로 이미지 슬라이더 나타나서 크게 보여주기 */}
                     {/* {
                                   review.photos?.length > 0 && (
@@ -222,9 +227,9 @@ export function ReviewList({ listCount }: { listCount?: number }) {
                     <P size={14} color="#fff" lineHeight={1.6}>
                       {review.content}
                     </P>
-                  </HorizontalFlex>
+                  </VerticalFlex>
                 </VerticalFlex>
-              </HorizontalFlex>
+              </VerticalFlex>
             </VerticalFlex>
           ))}
         </VerticalFlex>
