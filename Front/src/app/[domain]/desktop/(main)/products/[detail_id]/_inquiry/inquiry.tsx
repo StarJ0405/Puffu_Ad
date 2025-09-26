@@ -44,7 +44,7 @@ export default function Inquiry({
   const domain = params.domain as string;
   const { userData } = useAuth();
 
-  const [qaType, setQaType] = useState<QADataFrame["type"] | "">("");
+  const [qaType, setQaType] = useState<string>("");
   const [content, setContent] = useState("");
   const [isHidden, setIsHidden] = useState(false);
 
@@ -56,12 +56,12 @@ export default function Inquiry({
     setOpenIndex(null);
   };
 
-  const getQaTypeKorean = (type: QADataFrame["type"] | "") => {
+  const getQaTypeKorean = (type: string) => {
     switch (type) {
-      case "exchange":
-        return "교환/환불";
-      case "refund":
-        return "교환/환불";
+      case "product":
+        return "상품관련";
+      case "inventory":
+        return "재고";
       case "etc":
         return "기타";
       default:
@@ -92,13 +92,15 @@ export default function Inquiry({
     }
 
     const payload: QADataFrame = {
-      type: qaType as QADataFrame["type"],
+      category: qaType as QADataFrame["type"],
+      type: 'etc',
       title: `${getQaTypeKorean(qaType)} 관련 문의입니다.`,
       content,
       hidden: isHidden,
       product_id: detail_id as string,
       user_id: userData.id,
     };
+    console.log(payload)
 
     const res = await requester.createQA(payload);
     if (res?.message === "success") {
@@ -150,7 +152,8 @@ export default function Inquiry({
               }}
               width={"100%"}
               options={[
-                { value: "exchange", display: "교환/환불 문의" },
+                { value: "product", display: "상품관련 문의" },
+                { value: "inventory", display: "재고 문의" },
                 { value: "etc", display: "기타 문의" },
               ]}
               placeholder={"문의 유형을 선택하세요."}
@@ -219,7 +222,7 @@ export default function Inquiry({
                           onClick={() =>
                             setOpenIndex((prev) => (prev === i ? null : i))
                           }
-                        > 
+                        >
                           <Image
                             src={`/resources/icons/arrow/board_arrow_bottom_icon.png`}
                             width={20}

@@ -429,7 +429,7 @@ interface ChatroomUserData {
 }
 
 interface QADataFrame {
-  type: "account" | "order" | "receipt" | "event" | "etc";
+  type: "exchange" | "refund" | "etc";
   category?: string; // 유형 등 추가 텍스트가 필요한 경우 사용
   title: string; // 제목
 
