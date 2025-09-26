@@ -11,32 +11,57 @@ import { requester } from "@/shared/Requester";
 import mypage from "../mypage.module.css";
 
 export function WishListTable({ initWishList }: { initWishList: Pageable }) {
-  const { wishes, mutate } = usePageData(
-    "wishes",
+  const PAGE_SIZE = 10;
+  const key = "wishes";
+
+  const {
+    [key]: pageData,
+    mutate,
+    page: page0,
+    setPage: setPage0,
+    maxPage: maxPage0,
+  } = usePageData(
+    key,
     (pageNumber) => ({
-      relations: ["product", "product.brand","product.wishlists"],
-      pageSize: 10,
+      relations: ["product", "product.brand", "product.wishlists"],
+      pageSize: PAGE_SIZE,
       pageNumber,
     }),
-    (condition) => requester.getWishlists(condition),
-    (data: Pageable) => data?.totalPages || 0,
+    (cond) => requester.getWishlists(cond),
+    (d: Pageable) => Math.max(0, Number(d?.totalPages ?? 0) - 1),
     {
-      onReprocessing: (data) => data?.content || [],
-      fallbackData: initWishList,
+      onReprocessing: (d: any) => {
+        const content = Array.isArray(d) ? d : d?.content ?? [];
+        const total = Number(
+          (!Array.isArray(d) &&
+            (d.NumberOfTotalElements ?? d.totalElements ?? d.total)) ??
+            content.length
+        );
+        return { content, total };
+      },
+      fallbackData: {
+        content: initWishList?.content ?? [],
+        total: initWishList?.NumberOfTotalElements ?? 0,
+        totalPages: initWishList?.totalPages ?? 0,
+      },
+      revalidateOnMount: true,
     }
   );
+
+  const list = pageData?.content ?? [];
+  const total = Number(pageData?.total ?? 0);
   return (
     <>
       <HorizontalFlex className={mypage.box_header}>
         <P>관심 리스트</P>
         <FlexChild className={mypage.header_subTitle}>
-          <P>전체 상품 {wishes.length}</P>
+          <P>전체 상품 {total.toLocaleString()}</P>
         </FlexChild>
       </HorizontalFlex>
-      {wishes.length > 0 ? (
+      {list.length > 0 ? (
         <VerticalFlex>
           <MasonryGrid width={"100%"} gap={15} breakpoints={5}>
-            {wishes.map((wish: WishData) => {
+            {list.map((wish: WishData) => {
               const productWithWish = { ...(wish.product as any), wish };
               return (
                 <ProductCard
