@@ -141,14 +141,21 @@ const ReviewModal = NiceModal.create(
       setUploadedPreviews([]);
     }, [isEdit, review]);
 
+    // 지연 유틸
+    const defer = (fn: () => void) =>
+      typeof queueMicrotask === "function"
+        ? queueMicrotask(fn)
+        : setTimeout(fn, 0);
+
     const handleImagesChanged = useCallback((imgs: any[]) => {
-      const urls = imgs.map((i: any) => i.url);
-      setUploadedPreviews(urls);
+      const urls = imgs.map((i: any) => i.url).filter(Boolean);
+      defer(() => setUploadedPreviews(urls));
     }, []);
 
     const removePersistedAt = (idx: number) =>
       setPersisted((prev) => prev.filter((_, i) => i !== idx));
-    const removeUploadedAt = (idx: number) => imgRef.current?.removeAt?.(idx);
+    const removeUploadedAt = (idx: number) =>
+      defer(() => imgRef.current?.removeAt?.(idx));
 
     const disabled = isLoading;
     // rating < 1 || content.trim().length < 10;
