@@ -16,6 +16,8 @@ import { requester } from "@/shared/Requester";
 import { useCallback, useState, useRef, useEffect } from "react";
 import InputImage, { InputImageHandle } from "@/components/inputs/InputImage";
 import { toast } from "@/shared/utils/Functions";
+import useNavigate from "@/shared/hooks/useNavigate";
+import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
 
 const mapDesign = (v?: string) =>
   v === "마음에 쏙 들어요."
@@ -85,6 +87,8 @@ const ReviewModal = NiceModal.create(
       product_title?: string;
       variant_title?: string;
       thumbnail?: string;
+      discount_price?: string | number;
+      unit_price?: string | number;
     };
     review?: any;
     edit?: boolean;
@@ -122,6 +126,9 @@ const ReviewModal = NiceModal.create(
     );
     const [uploadedPreviews, setUploadedPreviews] = useState<string[]>([]);
     const totalImages = persisted.length + uploadedPreviews.length;
+
+    const navigate = useNavigate();
+    const { isMobile } = useBrowserEvent();
 
     // 수정 모드 프리필
     useEffect(() => {
@@ -232,24 +239,37 @@ const ReviewModal = NiceModal.create(
     return (
       <ModalBase
         withHeader
-        width={700}
-        height={height}
+        headerStyle={{
+          backgroundColor: '#221f22',
+          borderBottom: 'none',
+          color: '#fff',
+        }}
+        borderRadius={!isMobile ? 10 : 0}
+        closeBtnWhite
+        width={'100%'}
+        maxWidth={700}
+        height={!isMobile ? height : '100dvh'}
+        // height={height}
         title={title}
         onClose={() => {
           onCancel?.();
           modal.remove();
         }}
-        withCloseButton
+        // withCloseButton
         clickOutsideToClose={!isLoading}
         backgroundColor={'#221f22'}
       >
-        <VerticalFlex className={styles.review_write}>
+        <VerticalFlex className={clsx(styles.review_write, (isMobile && styles.mob_review_write))}>
           {/* 상품 요약 */}
-          <FlexChild className={styles.product_data}>
+          <FlexChild 
+            className={styles.product_data}
+            // 상품 링크 걸어주기
+            // onClick={()=> navigate(`/products/${item?.id}`)}
+          >
             <HorizontalFlex gap={12} alignItems="flex-start">
               <Image
-                width={80}
-                height={80}
+                width={!isMobile ? 80 : 60}
+                height={!isMobile ? 80 : 60}
                 src={
                   item?.thumbnail ||
                   review?.item?.thumbnail ||
@@ -259,26 +279,32 @@ const ReviewModal = NiceModal.create(
                 }
                 borderRadius={5}
               />
-              <VerticalFlex alignItems="flex-start" gap={4}>
-                <Span>
+              <VerticalFlex alignItems="flex-start" className={styles.product_info}>
+                <P lineClamp={2} overflow="hidden" display="--webkit-box" className={styles.brand}>
                   {item?.brand_name ??
                     review?.item?.brand?.name ??
                     review?.item?.brand_name ??
                     "-"}
-                </Span>
-                <Span>
+                </P>
+                <P className={styles.title}>
                   {item?.product_title ??
                     review?.item?.product?.name ??
                     review?.item?.product_title ??
                     review?.item?.title ??
                     "-"}
-                </Span>
-                <Span>
+                </P>
+                <P className={styles.option_title}>
                   {item?.variant_title ??
                     review?.item?.variant_title ??
                     review?.item?.variant?.title ??
                     "상품 옵션"}
-                </Span>
+                </P>
+                {/* <P>
+                  {item?.unit_price}원
+                </P> */}
+                <P className={styles.price}>
+                  {item?.discount_price}원
+                </P>
               </VerticalFlex>
             </HorizontalFlex>
           </FlexChild>
@@ -418,6 +444,7 @@ const ReviewModal = NiceModal.create(
           <VerticalFlex className={styles.uploader_wrapper}>
             {/* 사진 첨부 아이콘 + 안내 */}
             <FlexChild
+              className={styles.upload_btn}
               justifyContent="center"
               gap={10}
               cursor="pointer"
@@ -431,13 +458,15 @@ const ReviewModal = NiceModal.create(
               width={'auto'}
             >
               <FlexChild gap={10} width={"auto"}>
-                <Image
-                  src={"/resources/icons/board/file_upload_btn.png"}
-                  width={35}
-                />
-                <P size={16} color="#fff">
-                  이미지 첨부
-                </P>
+                <FlexChild gap={10} width={"auto"}>
+                  <Image
+                    src={"/resources/icons/board/file_upload_btn.png"}
+                    width={35}
+                  />
+                  <P size={16} color="#fff">
+                    이미지 첨부
+                  </P>
+                </FlexChild>
               </FlexChild>
               <P size={13} color="#797979">
                 ※ 이미지는 최대 4개까지 등록이 가능해요.
@@ -450,32 +479,17 @@ const ReviewModal = NiceModal.create(
                 <FlexChild gap={12} justifyContent="center">
                   {persisted.map((url, idx) => (
                     <FlexChild
+                      className={styles.upload_thumb}
                       key={`p_${url}_${idx}`}
-                      width={64}
-                      height={64}
-                      border={"1px solid #EAEAEA"}
-                      borderRadius={4}
-                      position="relative"
-                      overflow="hidden"
                     >
-                      <Image src={url} width={64} height={64} objectFit="cover" />
+                      <Image src={url} width={'100%'} height={'auto'} objectFit="cover" />
                       <Button
                         className={styles.closeButton}
-                        style={{
-                          position: "absolute",
-                          top: 4,
-                          right: 4,
-                          width: 20,
-                          height: 20,
-                          borderRadius: "50%",
-                          padding: 0,
-                        }}
                         onClick={() => removePersistedAt(idx)}
                         aria-label="remove"
                       >
                         <Image
                           src="/resources/icons/closeBtn_black.png"
-                          size={10}
                         />
                       </Button>
                     </FlexChild>
@@ -516,21 +530,23 @@ const ReviewModal = NiceModal.create(
           </VerticalFlex>
 
           {/* 액션 */}
-          <Button
-            className={clsx('post_btn', disabled && 'disabled')}
-            marginTop={25}
-            disabled={disabled}
-            isLoading={isLoading}
-            onClick={handleSubmit}
-          >
-            <P>
-              {mode === "edit"
-                ? "수정 완료"
-                : mode === "write"
-                ? "리뷰 등록"
-                : "닫기"}
-            </P>
-          </Button>
+          <FlexChild className={clsx(isMobile && styles.mob_submit_btn)}>
+            <Button
+              className={clsx('post_btn', disabled && 'disabled')}
+              marginTop={!isMobile ? 25 : 0}
+              disabled={disabled}
+              isLoading={isLoading}
+              onClick={handleSubmit}
+            >
+              <P>
+                {mode === "edit"
+                  ? "수정 완료"
+                  : mode === "write"
+                  ? "리뷰 등록"
+                  : "닫기"}
+              </P>
+            </Button>
+          </FlexChild>
         </VerticalFlex>
       </ModalBase>
     );
