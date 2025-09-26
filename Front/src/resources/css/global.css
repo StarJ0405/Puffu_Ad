@@ -204,5 +204,9 @@ a {
   .detail_root {
     padding-top: 50px;
   }
+
+  .swiper .swiper-wrapper {
+    align-items: center;
+  }
 }
 

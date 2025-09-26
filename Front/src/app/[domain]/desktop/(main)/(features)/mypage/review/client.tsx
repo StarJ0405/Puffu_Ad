@@ -17,6 +17,7 @@ import StarRate from "@/components/star/StarRate";
 import clsx from "clsx";
 import usePageData from "@/shared/hooks/data/usePageData";
 import NiceModal from "@ebay/nice-modal-react";
+import useNavigate from "@/shared/hooks/useNavigate";
 
 export function Client() {
   const [total, setTotal] = useState(0);
@@ -107,6 +108,8 @@ export function ReviewList({ onTotal }: { onTotal?: (n: number) => void }) {
     },
   } as const;
 
+  const navigate = useNavigate();
+
   const toDisplayDesign = (v?: string) =>
     (DISPLAY.design as any)[v ?? ""] ?? v ?? "-";
   const toDisplayFinish = (v?: string) =>
@@ -178,7 +181,11 @@ export function ReviewList({ onTotal }: { onTotal?: (n: number) => void }) {
               <HorizontalFlex gap={35} className={styles.item}>
                 <VerticalFlex className={styles.item_header}>
                   {/* 상품정보 */}
-                  <HorizontalFlex className={styles.prodcut_data}>
+                  <HorizontalFlex 
+                    className={styles.prodcut_data}
+                    // 상품 아아디 넣어서 링크 이동 걸기
+                    // onClick={()=> navigate(`/products/${r.item.id}`)}
+                  >
                     <FlexChild className={styles.img}>
                       <Image src={r.item.thumbnail} width={45} />
                     </FlexChild>
