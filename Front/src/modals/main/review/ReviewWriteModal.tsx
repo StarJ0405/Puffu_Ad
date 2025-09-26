@@ -78,6 +78,7 @@ const ReviewModal = NiceModal.create(
     onCancel,
     width = "80vw",
     height = "auto",
+    onSuccess,
   }: {
     item?: {
       id: string;
@@ -90,6 +91,7 @@ const ReviewModal = NiceModal.create(
     edit?: boolean;
     onConfirm?: () => void;
     onCancel?: () => void;
+    onSuccess?: () => void;
     width?: React.CSSProperties["width"];
     height?: React.CSSProperties["height"];
   }) => {
@@ -197,18 +199,19 @@ const ReviewModal = NiceModal.create(
         }
 
         // 글자수 제한 별점 체크 통과 못하면 return
-        if(rating < 1) {
-          toast({message: '평점을 1점 이상 평가해 주세요.'});
+        if (rating < 1) {
+          toast({ message: "평점을 1점 이상 평가해 주세요." });
           return;
         }
-        if(content.trim().length < 10) {
-          toast({message: '내용을 10자 이상 적어주세요.'}); 
+        if (content.trim().length < 10) {
+          toast({ message: "내용을 10자 이상 적어주세요." });
           return;
         }
 
         onConfirm?.();
+        onSuccess?.();
         modal.remove();
-        toast({message: '리뷰 작성이 완료되었습니다.'});
+        toast({ message: "리뷰 작성이 완료되었습니다." });
       } catch (e) {
         console.error(e);
       } finally {
@@ -241,7 +244,7 @@ const ReviewModal = NiceModal.create(
         }}
         withCloseButton
         clickOutsideToClose={!isLoading}
-        backgroundColor={'#221f22'}
+        backgroundColor={"#221f22"}
       >
         <VerticalFlex className={styles.review_write}>
           {/* 상품 요약 */}
@@ -302,7 +305,7 @@ const ReviewModal = NiceModal.create(
                   { value: 2, display: "★★(미흡)" },
                   { value: 1, display: "★(매우 미흡)" },
                 ]}
-                width={'100%'}
+                width={"100%"}
                 zIndex={10060}
                 value={rating}
                 onChange={(v: any) =>
@@ -330,7 +333,7 @@ const ReviewModal = NiceModal.create(
                     display: "내 취향은 아니네요.",
                   },
                 ]}
-                width={'100%'}
+                width={"100%"}
                 zIndex={10060}
                 value={design}
                 onChange={(v: any) =>
@@ -355,7 +358,7 @@ const ReviewModal = NiceModal.create(
                   { value: "보통이에요.", display: "보통이에요." },
                   { value: "부실해요.", display: "부실해요." },
                 ]}
-                width={'100%'}
+                width={"100%"}
                 zIndex={10060}
                 value={finish}
                 onChange={(v: any) =>
@@ -386,7 +389,7 @@ const ReviewModal = NiceModal.create(
                     display: "관리하기 어려워요.",
                   },
                 ]}
-                width={'100%'}
+                width={"100%"}
                 zIndex={10060}
                 value={maintenance}
                 onChange={(v: any) =>
@@ -410,9 +413,7 @@ const ReviewModal = NiceModal.create(
               maxLength={2000}
               className={styles.content_txtArea}
             />
-            <P className={styles.helper}>
-              최소 10자, 평점 필수
-            </P>
+            <P className={styles.helper}>최소 10자, 평점 필수</P>
           </VerticalFlex>
 
           <VerticalFlex className={styles.uploader_wrapper}>
@@ -422,13 +423,13 @@ const ReviewModal = NiceModal.create(
               gap={10}
               cursor="pointer"
               onClick={() => {
-                if(totalImages >= MAX_IMAGES) {
+                if (totalImages >= MAX_IMAGES) {
                   toast({ message: "이미지는 최대 4개까지 등록 가능해요." });
                   return;
                 }
                 totalImages < MAX_IMAGES && imgRef.current?.open();
               }}
-              width={'auto'}
+              width={"auto"}
             >
               <FlexChild gap={10} width={"auto"}>
                 <Image
@@ -443,10 +444,13 @@ const ReviewModal = NiceModal.create(
                 ※ 이미지는 최대 4개까지 등록이 가능해요.
               </P>
             </FlexChild>
-  
+
             {/* 미리보기 */}
             {(persisted.length > 0 || uploadedPreviews.length > 0) && (
-              <VerticalFlex className={styles.upload_preview} alignItems="flex-start">
+              <VerticalFlex
+                className={styles.upload_preview}
+                alignItems="flex-start"
+              >
                 <FlexChild gap={12} justifyContent="center">
                   {persisted.map((url, idx) => (
                     <FlexChild
@@ -458,7 +462,12 @@ const ReviewModal = NiceModal.create(
                       position="relative"
                       overflow="hidden"
                     >
-                      <Image src={url} width={64} height={64} objectFit="cover" />
+                      <Image
+                        src={url}
+                        width={64}
+                        height={64}
+                        objectFit="cover"
+                      />
                       <Button
                         className={styles.closeButton}
                         style={{
@@ -485,22 +494,25 @@ const ReviewModal = NiceModal.create(
                       key={`u_${url}_${idx}`}
                       className={styles.upload_thumb}
                     >
-                      <Image src={url} width={'100%'} height={'auto'} objectFit="cover" />
+                      <Image
+                        src={url}
+                        width={"100%"}
+                        height={"auto"}
+                        objectFit="cover"
+                      />
                       <Button
                         className={styles.closeButton}
                         onClick={() => removeUploadedAt(idx)}
                         aria-label="remove"
                       >
-                        <Image
-                          src="/resources/icons/closeBtn_black.png"
-                        />
+                        <Image src="/resources/icons/closeBtn_black.png" />
                       </Button>
                     </FlexChild>
                   ))}
                 </FlexChild>
               </VerticalFlex>
             )}
-  
+
             {/* 업로더 */}
             <InputImage
               key={`uploader_${persisted.length}`}
@@ -517,7 +529,7 @@ const ReviewModal = NiceModal.create(
 
           {/* 액션 */}
           <Button
-            className={clsx('post_btn', disabled && 'disabled')}
+            className={clsx("post_btn", disabled && "disabled")}
             marginTop={25}
             disabled={disabled}
             isLoading={isLoading}
