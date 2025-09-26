@@ -49,7 +49,7 @@ body {
   /* scrollbar-width: none; */
   -ms-overflow-style: none;
   font-family: "pretendard", sans-serif !important;
-  overflow: unset !important;
+  /* overflow: unset !important; */
 }
 
 textarea {font-family: "pretendard", sans-serif !important;}
