@@ -31,7 +31,8 @@
    max-width: 300px;
    flex: unset;
    height: auto;
-   position: sticky; top: 70px;
+   position: sticky; 
+   top: 130px;
 }
 
 

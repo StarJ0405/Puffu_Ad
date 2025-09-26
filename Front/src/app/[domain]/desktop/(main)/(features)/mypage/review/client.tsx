@@ -116,9 +116,11 @@ export function ReviewList({ onTotal }: { onTotal?: (n: number) => void }) {
   return (
     <>
       {list.length > 0 ? (
-        <VerticalFlex className={styles.review_list} gap={35}>
-          {list.map((r: any) => (
-            <VerticalFlex alignItems="start" gap={10} key={r.id}>
+        <VerticalFlex className={styles.review_list} gap={20}>
+          {list.map((r: any) => {
+            console.log(r);
+            return (
+              <VerticalFlex alignItems="start" gap={10} key={r.id}>
               <FlexChild
                 gap={10}
                 alignSelf="end"
@@ -139,6 +141,8 @@ export function ReviewList({ onTotal }: { onTotal?: (n: number) => void }) {
                         product_title: i.product_title,
                         variant_title: i.variant_title,
                         thumbnail: i.thumbnail,
+                        discount_price: i?.discount_price,
+                        unit_price: i?.unit_price,
                       },
                       edit: true,
                       withPCButton: true,
@@ -190,9 +194,12 @@ export function ReviewList({ onTotal }: { onTotal?: (n: number) => void }) {
                         </P>
                       </FlexChild>
                       <FlexChild className={styles.info_rating}>
+                        {/* 이 상품에 달린 전체 리뷰 평균치 */}
                         <P>
                           평가 <Span>{r.star_rate}</Span>
                         </P>
+
+                        {/* 상품에 달린 전체 리뷰 수 */}
                         <P
                           lineClamp={1}
                           overflow="hidden"
@@ -213,6 +220,7 @@ export function ReviewList({ onTotal }: { onTotal?: (n: number) => void }) {
                         score={r.star_rate}
                         readOnly
                       />
+                      {r.star_rate}
                     </FlexChild>
 
                     <FlexChild>
@@ -266,6 +274,11 @@ export function ReviewList({ onTotal }: { onTotal?: (n: number) => void }) {
                         width={180}
                         className={styles.img_box}
                         cursor="pointer"
+                        onClick={()=> 
+                          NiceModal.show('ImgViewSliderModal', {
+                            images: r.images,
+                          })
+                        }
                       >
                         <Image
                           src={r.images[0]}
@@ -288,14 +301,16 @@ export function ReviewList({ onTotal }: { onTotal?: (n: number) => void }) {
                                      ))
                                   )
                                } */}
-                    <P size={14} color="#fff" lineHeight={1.6}>
+                    <P size={15} color="#ddd" lineHeight={1.6}>
                       {r.content}
                     </P>
                   </HorizontalFlex>
                 </VerticalFlex>
               </HorizontalFlex>
             </VerticalFlex>
-          ))}
+            )
+            
+          })}
           <FlexChild>
             <ListPagination page={page} maxPage={maxPage} onChange={setPage} />
           </FlexChild>

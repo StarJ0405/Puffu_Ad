@@ -13,6 +13,7 @@
    align-items: start !important;
    gap: 15px; width: auto;
    flex: unset;
+   min-width: 200px;
 }
 
 .review_list .item .item_header > * {
