@@ -308,7 +308,11 @@ export function CartWrap() {
                   <FlexChild width={"auto"}>
                     <RadioChild id={"credit_card"} />
                   </FlexChild>
-                  <Span>신용카드 결제</Span>
+                  <Span
+                    onClick={() => document.getElementById("credit_card")?.click()}
+                  >
+                    신용카드 결제
+                  </Span>
                 </FlexChild>
                 {/* <FlexChild className={clsx(style.payment_card)}>
                   <FlexChild width={"auto"}>
@@ -473,7 +477,7 @@ export function CartWrap() {
                         const tax = Math.round(
                           (discount_price *
                             (item?.variant?.product?.tax_rate || 0)) /
-                            100
+                          100
                         );
                         total +=
                           discount_price * item.quantity + tax * item.quantity;
@@ -562,7 +566,7 @@ export function CartWrap() {
                                       onConfirm: () => navigate("/orders/cart"),
                                     });
                                   }
-                                } catch (error) {}
+                                } catch (error) { }
                               } else if (response.resultCd !== "CB49") {
                                 NiceModal.show("confirm", {
                                   clickOutsideToClose: false,
@@ -654,7 +658,7 @@ export function CartWrap() {
                                     onConfirm: () => navigate("/orders/cart"),
                                   });
                                 }
-                              } catch (error) {}
+                              } catch (error) { }
                             } else if (response.resultCd !== "CB49") {
                               NiceModal.show("confirm", {
                                 clickOutsideToClose: false,
