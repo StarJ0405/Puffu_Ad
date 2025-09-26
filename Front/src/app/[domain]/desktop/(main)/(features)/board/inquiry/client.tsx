@@ -133,7 +133,13 @@ export function BoardTable() {
                         cursor="pointer"
                         width={"fit-content"}
                       >
-                        {list.hidden && (
+                        {/* {list.hidden && (
+                          <Image
+                            src={"/resources/icons/board/lock_icon.png"}
+                            width={16}
+                          />
+                        )} */}
+                        {list.user?.id !== userData?.id && (
                           <Image
                             src={"/resources/icons/board/lock_icon.png"}
                             width={16}
