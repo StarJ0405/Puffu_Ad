@@ -31,7 +31,7 @@ export function WriteFrame() {
   const { userData } = useAuth();
   const imageRef = useRef<any>(null);
 
-  const [qaType, setQaType] = useState<"account" | "order" | "receipt" | "event" | "etc"| "">("");
+  const [qaType, setQaType] = useState<string>("");
   const [author, setAuthor] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -68,7 +68,8 @@ export function WriteFrame() {
     const images = imageRef.current?.getValue();
 
     const qaData: QADataFrame = {
-      type: qaType,
+      category: qaType as QADataFrame["type"],
+      type: 'etc',
       title,
       user_id: userData?.id || "비회원",
       content,
