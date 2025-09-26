@@ -17,18 +17,18 @@ import Div from "@/components/div/Div";
 
 const getInquiryTypeKorean = (type: string) => {
   switch (type) {
-    case "exchange":
-      return "교환문의";
-    case "refund":
-      return "환불문의";
-    case "product":
-      return "상품문의";
-    case "shipping":
-      return "배송문의";
+    case "account":
+      return "회원정보 관리";
+    case "order":
+      return "주문/결제";
+    case "receipt":
+      return "영수증/증빙서류";
+    case "event":
+      return "상품/이벤트";
     case "etc":
-      return "기타문의";
+      return "기타";
     default:
-      return type;
+      return "기타";
   }
 };
 
@@ -45,7 +45,8 @@ const formatInquiries = (inquiriesData: any[]) => {
 
     return {
       id: inquiry.id,
-      Type: getInquiryTypeKorean(inquiry.type),
+      // Type: getInquiryTypeKorean(inquiry.type),
+      Type: getInquiryTypeKorean(inquiry.category || ""),
       title: inquiry.title,
       content: inquiry.content,
       images: inquiry.images || [],
@@ -74,7 +75,7 @@ export function InquiryTable() {
     "qas-desktop-mypage": inquiries,
     page,
     maxPage,
-    changePage,
+    setPage,
   } = usePageData(
     "qas-desktop-mypage",
     (pageNumber) => ({
@@ -141,7 +142,8 @@ export function InquiryTable() {
                     onClick={() => handleRowClick(list)}
                     style={{ cursor: "pointer" }}
                   >
-                    <td>{inquiries.length - i}</td>
+                    {/* <td>{inquiries.length - i}</td> */}
+                    <td>{(inquiries.length || 0) * page + i + 1}</td>
                     <td>{list.Type}</td>
                     <td>
                       <Div className={styles.td_title}>
@@ -246,7 +248,7 @@ export function InquiryTable() {
           {inquiries?.length === 0 && <NoContent type="문의" />}
         </FlexChild>
         <FlexChild className={styles.list_bottom_box}>
-          <ListPagination page={page} maxPage={maxPage} onChange={changePage} />
+          <ListPagination page={page} maxPage={maxPage} onChange={setPage} />
         </FlexChild>
       </VerticalFlex>
     </>
