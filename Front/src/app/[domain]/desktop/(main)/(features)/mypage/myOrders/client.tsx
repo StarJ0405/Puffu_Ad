@@ -18,6 +18,24 @@ import clsx from "clsx";
 import { useState } from "react";
 import styles from "./page.module.css";
 
+type OrderItem = {
+  id: string | number;
+  product_title?: string;
+  variant_title?: string;
+  total_quantity?: number;
+  total_discount?: number;
+  total_tax?: number;
+  currency_unit?: string;
+  thumbnail?: string;
+  review?: any;
+  variant?: {
+    product_id?: string | number;
+    stack?: number;
+    buyable?: boolean;
+    product?: { buyable?: boolean };
+  };
+};
+
 export function MyOrdersTable({
   initEndDate,
   initStartDate,
@@ -33,11 +51,18 @@ export function MyOrdersTable({
   const [endDate, setEndDate] = useState(initEndDate);
   const [condition, setCondition] = useState<any>({});
   const [activePeriod, setActivePeriod] = useState("1week");
+  const [reviewedSet, setReviewedSet] = useState<Set<string>>(new Set());
   const { orders, mutate } = useData(
     "orders",
     {
       ...condition,
-      relations: ["items.brand","items.review", "shipping_method", "store", "address"],
+      relations: [
+        "items.brand",
+        "items.review",
+        "shipping_method",
+        "store",
+        "address",
+      ],
       start_date: startDate,
       end_date: endDate,
     },
@@ -48,7 +73,8 @@ export function MyOrdersTable({
     }
   );
 
-  console.log(orders);
+  const isReviewed = (it: OrderItem) =>
+    Boolean(it?.review != null || reviewedSet.has(String(it?.id)));
 
   const handlePeriodChange = (period: string) => {
     const newStartDate = new Date();
@@ -237,7 +263,6 @@ export function MyOrdersTable({
                 </HorizontalFlex>
                 <Dummy height={15} />
                 {order.items.map((item: LineItemData) => {
-
                   return (
                     <HorizontalFlex
                       key={item.id}
@@ -247,7 +272,11 @@ export function MyOrdersTable({
                     >
                       {/* 상품 단위 */}
                       <HorizontalFlex className={styles.unit}>
-                        <Image src={item.thumbnail} width={80} borderRadius={5} />
+                        <Image
+                          src={item.thumbnail}
+                          width={80}
+                          borderRadius={5}
+                        />
                         <VerticalFlex
                           className={styles.unit_content}
                           width={"auto"}
@@ -297,32 +326,29 @@ export function MyOrdersTable({
                         {order.status === "complete" && (
                           <FlexChild width={"max-content"}>
                             <VerticalFlex gap={6}>
-                              {
-                                order.items[0]?.review && 
-                                Object.keys(order.items[0].review).length === 0 ? (
-                                  <Button
-                                    onClick={() => {
-                                      const i = item;
-                                      NiceModal.show("reviewWrite", {
-                                        item: {
-                                          id: i.id,
-                                          brand_name: i?.brand?.name,
-                                          product_title: i.product_title,
-                                          variant_title: i.variant_title,
-                                          thumbnail: i.thumbnail,
-                                        },
-                                        edit: true,
-                                        withPCButton: true,
-                                        onSuccess: () => mutate(),
-                                      });
-                                    }}
-                                  >
-                                    리뷰 작성
-                                  </Button>
-                                ) : (
-                                  <P>리뷰 작성 완료</P>
-                                )
-                              }
+                              {!isReviewed(item) ? (
+                                <Button
+                                  onClick={() => {
+                                    const i = item;
+                                    NiceModal.show("reviewWrite", {
+                                      item: {
+                                        id: i.id,
+                                        brand_name: i?.brand?.name,
+                                        product_title: i.product_title,
+                                        variant_title: i.variant_title,
+                                        thumbnail: i.thumbnail,
+                                      },
+                                      edit: true,
+                                      withPCButton: true,
+                                      onSuccess: () => mutate(),
+                                    });
+                                  }}
+                                >
+                                  리뷰 작성
+                                </Button>
+                              ) : (
+                                <P>리뷰 작성 완료</P>
+                              )}
                               <Button
                                 onClick={() =>
                                   document.getElementById("side_chat")?.click()
@@ -366,7 +392,7 @@ export function MyOrdersTable({
                         </FlexChild>
                       </HorizontalFlex>
                     </HorizontalFlex>
-                  )
+                  );
                 })}
               </VerticalFlex>
 
