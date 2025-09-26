@@ -253,7 +253,7 @@ input[type='search']:focus-visible {
 .post_btn {
   width: 100% !important;
   max-width: 233px;
-  background: var(--main-color2) !important;
+  background: var(--main-color1) !important;
   color: #fff !important;
   font-size: 20px;
   font-weight: 600;
@@ -262,7 +262,14 @@ input[type='search']:focus-visible {
 }
 
 .post_btn:active {
-  background: #b84474 !important;
+  background: var(--main-color2) !important;
+}
+
+
+/* 버튼들 비활성화 될 때 */
+.disabled {
+  background: #444 !important;
+  color: #777 !important;
 }
 
 

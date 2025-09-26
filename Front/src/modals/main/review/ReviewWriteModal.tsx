@@ -15,6 +15,7 @@ import InputTextArea from "@/components/inputs/InputTextArea";
 import { requester } from "@/shared/Requester";
 import { useCallback, useState, useRef, useEffect } from "react";
 import InputImage, { InputImageHandle } from "@/components/inputs/InputImage";
+import { toast } from "@/shared/utils/Functions";
 
 const mapDesign = (v?: string) =>
   v === "마음에 쏙 들어요."
@@ -147,7 +148,8 @@ const ReviewModal = NiceModal.create(
       setPersisted((prev) => prev.filter((_, i) => i !== idx));
     const removeUploadedAt = (idx: number) => imgRef.current?.removeAt?.(idx);
 
-    const disabled = isLoading || rating < 1 || content.trim().length < 10;
+    const disabled = isLoading;
+    // rating < 1 || content.trim().length < 10;
 
     const handleSubmit = useCallback(async () => {
       // 작성 모드만 item.id 필수
@@ -194,8 +196,19 @@ const ReviewModal = NiceModal.create(
           );
         }
 
+        // 글자수 제한 별점 체크 통과 못하면 return
+        if(rating < 1) {
+          toast({message: '평점을 1점 이상 평가해 주세요.'});
+          return;
+        }
+        if(content.trim().length < 10) {
+          toast({message: '내용을 10자 이상 적어주세요.'}); 
+          return;
+        }
+
         onConfirm?.();
         modal.remove();
+        toast({message: '리뷰 작성이 완료되었습니다.'});
       } catch (e) {
         console.error(e);
       } finally {
@@ -232,7 +245,7 @@ const ReviewModal = NiceModal.create(
       >
         <VerticalFlex className={styles.review_write}>
           {/* 상품 요약 */}
-          <FlexChild>
+          <FlexChild className={styles.product_data}>
             <HorizontalFlex gap={12} alignItems="flex-start">
               <Image
                 width={80}
@@ -289,6 +302,7 @@ const ReviewModal = NiceModal.create(
                   { value: 2, display: "★★(미흡)" },
                   { value: 1, display: "★(매우 미흡)" },
                 ]}
+                width={'100%'}
                 zIndex={10060}
                 value={rating}
                 onChange={(v: any) =>
@@ -316,6 +330,7 @@ const ReviewModal = NiceModal.create(
                     display: "내 취향은 아니네요.",
                   },
                 ]}
+                width={'100%'}
                 zIndex={10060}
                 value={design}
                 onChange={(v: any) =>
@@ -340,6 +355,7 @@ const ReviewModal = NiceModal.create(
                   { value: "보통이에요.", display: "보통이에요." },
                   { value: "부실해요.", display: "부실해요." },
                 ]}
+                width={'100%'}
                 zIndex={10060}
                 value={finish}
                 onChange={(v: any) =>
@@ -370,6 +386,7 @@ const ReviewModal = NiceModal.create(
                     display: "관리하기 어려워요.",
                   },
                 ]}
+                width={'100%'}
                 zIndex={10060}
                 value={maintenance}
                 onChange={(v: any) =>
@@ -391,126 +408,116 @@ const ReviewModal = NiceModal.create(
                 setContent(typeof v === "string" ? v : v?.target?.value ?? "")
               }
               maxLength={2000}
+              className={styles.content_txtArea}
             />
-            <P
-              className={styles.helper}
-              color="#8B8B8B"
-              size={12}
-              padding={"6px 0 0 0"}
-            >
+            <P className={styles.helper}>
               최소 10자, 평점 필수
             </P>
           </VerticalFlex>
 
-          {/* 사진 첨부 아이콘 + 안내 */}
-          <FlexChild
-            justifyContent="center"
-            gap={10}
-            cursor="pointer"
-            onClick={() => totalImages < MAX_IMAGES && imgRef.current?.open()}
-          >
-            <FlexChild gap={10} width={"auto"}>
-              <Image
-                src={"/resources/icons/board/file_upload_btn.png"}
-                width={35}
-              />
-              <P size={16} color="#fff">
-                이미지 첨부
+          <VerticalFlex className={styles.uploader_wrapper}>
+            {/* 사진 첨부 아이콘 + 안내 */}
+            <FlexChild
+              justifyContent="center"
+              gap={10}
+              cursor="pointer"
+              onClick={() => {
+                if(totalImages >= MAX_IMAGES) {
+                  toast({ message: "이미지는 최대 4개까지 등록 가능해요." });
+                  return;
+                }
+                totalImages < MAX_IMAGES && imgRef.current?.open();
+              }}
+              width={'auto'}
+            >
+              <FlexChild gap={10} width={"auto"}>
+                <Image
+                  src={"/resources/icons/board/file_upload_btn.png"}
+                  width={35}
+                />
+                <P size={16} color="#fff">
+                  이미지 첨부
+                </P>
+              </FlexChild>
+              <P size={13} color="#797979">
+                ※ 이미지는 최대 4개까지 등록이 가능해요.
               </P>
             </FlexChild>
-            <P size={13} color="#797979">
-              ※ 이미지는 최대 4개까지 등록이 가능해요.
-            </P>
-          </FlexChild>
-
-          {/* 미리보기 */}
-          {(persisted.length > 0 || uploadedPreviews.length > 0) && (
-            <VerticalFlex alignItems="flex-start" gap={8} padding={"8px 0 0 0"}>
-              <HorizontalFlex gap={12}>
-                {persisted.map((url, idx) => (
-                  <FlexChild
-                    key={`p_${url}_${idx}`}
-                    width={64}
-                    height={64}
-                    border={"1px solid #EAEAEA"}
-                    borderRadius={4}
-                    position="relative"
-                    overflow="hidden"
-                  >
-                    <Image src={url} width={64} height={64} objectFit="cover" />
-                    <Button
-                      className={styles.closeButton}
-                      style={{
-                        position: "absolute",
-                        top: 4,
-                        right: 4,
-                        width: 20,
-                        height: 20,
-                        borderRadius: "50%",
-                        padding: 0,
-                      }}
-                      onClick={() => removePersistedAt(idx)}
-                      aria-label="remove"
+  
+            {/* 미리보기 */}
+            {(persisted.length > 0 || uploadedPreviews.length > 0) && (
+              <VerticalFlex className={styles.upload_preview} alignItems="flex-start">
+                <FlexChild gap={12} justifyContent="center">
+                  {persisted.map((url, idx) => (
+                    <FlexChild
+                      key={`p_${url}_${idx}`}
+                      width={64}
+                      height={64}
+                      border={"1px solid #EAEAEA"}
+                      borderRadius={4}
+                      position="relative"
+                      overflow="hidden"
                     >
-                      <Image
-                        src="/resources/icons/closeBtn_black.png"
-                        size={10}
-                      />
-                    </Button>
-                  </FlexChild>
-                ))}
-                {uploadedPreviews.map((url, idx) => (
-                  <FlexChild
-                    key={`u_${url}_${idx}`}
-                    width={64}
-                    height={64}
-                    border={"1px solid #EAEAEA"}
-                    borderRadius={4}
-                    position="relative"
-                    overflow="hidden"
-                  >
-                    <Image src={url} width={64} height={64} objectFit="cover" />
-                    <Button
-                      className={styles.closeButton}
-                      style={{
-                        position: "absolute",
-                        top: 4,
-                        right: 4,
-                        width: 20,
-                        height: 20,
-                        borderRadius: "50%",
-                        padding: 0,
-                      }}
-                      onClick={() => removeUploadedAt(idx)}
-                      aria-label="remove"
+                      <Image src={url} width={64} height={64} objectFit="cover" />
+                      <Button
+                        className={styles.closeButton}
+                        style={{
+                          position: "absolute",
+                          top: 4,
+                          right: 4,
+                          width: 20,
+                          height: 20,
+                          borderRadius: "50%",
+                          padding: 0,
+                        }}
+                        onClick={() => removePersistedAt(idx)}
+                        aria-label="remove"
+                      >
+                        <Image
+                          src="/resources/icons/closeBtn_black.png"
+                          size={10}
+                        />
+                      </Button>
+                    </FlexChild>
+                  ))}
+                  {uploadedPreviews.map((url, idx) => (
+                    <FlexChild
+                      key={`u_${url}_${idx}`}
+                      className={styles.upload_thumb}
                     >
-                      <Image
-                        src="/resources/icons/closeBtn_black.png"
-                        size={10}
-                      />
-                    </Button>
-                  </FlexChild>
-                ))}
-              </HorizontalFlex>
-            </VerticalFlex>
-          )}
-
-          {/* 업로더 */}
-          <InputImage
-            key={`uploader_${persisted.length}`}
-            ref={imgRef}
-            name="review-images"
-            path="review"
-            multiple
-            maxFiles={Math.max(0, MAX_IMAGES - persisted.length)}
-            frame={false}
-            placeHolder="10MB 이하, JPG/PNG"
-            onChangeImages={handleImagesChanged}
-          />
+                      <Image src={url} width={'100%'} height={'auto'} objectFit="cover" />
+                      <Button
+                        className={styles.closeButton}
+                        onClick={() => removeUploadedAt(idx)}
+                        aria-label="remove"
+                      >
+                        <Image
+                          src="/resources/icons/closeBtn_black.png"
+                        />
+                      </Button>
+                    </FlexChild>
+                  ))}
+                </FlexChild>
+              </VerticalFlex>
+            )}
+  
+            {/* 업로더 */}
+            <InputImage
+              key={`uploader_${persisted.length}`}
+              ref={imgRef}
+              name="review-images"
+              path="review"
+              multiple
+              maxFiles={Math.max(0, MAX_IMAGES - persisted.length)}
+              frame={false}
+              placeHolder="10MB 이하, JPG/PNG"
+              onChangeImages={handleImagesChanged}
+            />
+          </VerticalFlex>
 
           {/* 액션 */}
           <Button
-            className="post_btn"
+            className={clsx('post_btn', disabled && 'disabled')}
             marginTop={25}
             disabled={disabled}
             isLoading={isLoading}
@@ -518,7 +525,7 @@ const ReviewModal = NiceModal.create(
           >
             <P>
               {mode === "edit"
-                ? "리뷰 저장"
+                ? "수정 완료"
                 : mode === "write"
                 ? "리뷰 등록"
                 : "닫기"}
