@@ -50,7 +50,7 @@ const ImgViewSliderModal = NiceModal.create(({
 
       bullets.forEach((el) => {
          const bullet = el as HTMLElement;
-         bullet.style.setProperty("background-color", "#000", "important");
+         bullet.style.setProperty("background-color", "#fff", "important");
          bullet.style.setProperty("opacity", "0.3", "important");
          bullet.style.setProperty("transform", "scale(1)");
          bullet.style.setProperty("margin", "0 4px", "important");
@@ -72,26 +72,27 @@ const ImgViewSliderModal = NiceModal.create(({
       <ModalBase
          withHeader
          headerStyle={{
-            backgroundColor: '#221f22',
+            backgroundColor: !isMobile ? '#221f22' : 'rgba(0,0,0,0.5)',
             borderBottom: 'none',
             color: '#fff',
          }}
          borderRadius={!isMobile ? 10 : 0}
          closeBtnWhite
-         width={'100%'}
-         maxWidth={700}
+         width={!isMobile ? '100%' : '100%'}
+         maxWidth={!isMobile ? 700 : 'auto'}
          height={!isMobile ? height : '100dvh'}
-         maxHeight={670}
+         maxHeight={'auto'}
          // height={height}
-         title={'첨부 이미지'}
+         title={!isMobile ? '첨부 이미지' : ''}
          onClose={() => {
             onCancel?.();
             modal.remove();
          }}
-         backgroundColor={"#221f22"}
+         // withCloseButton
+         backgroundColor={!isMobile ? '#221f22' : 'rgba(0,0,0,0.5)'}
          clickOutsideToClose={true}
       >
-         <FlexChild className={styles.viewer_swiper} id="view_swiper">
+         <FlexChild className={clsx(styles.viewer_swiper, isMobile && styles.mob_viewer_swiper)} id="view_swiper">
             <Swiper
                loop={true}
                slidesPerView={1}
@@ -124,8 +125,8 @@ const ImgViewSliderModal = NiceModal.create(({
                }}
                >
                {images?.map((thumbnail: string, i: number) => (
-                  <SwiperSlide key={i} className={`swiper_0${i}`}>
-                     <FlexChild height={600} justifyContent="center" alignItems="center">
+                  <SwiperSlide key={i} className={styles.swiper_slide}>
+                     <FlexChild height={'100%'} justifyContent="center" alignItems="center">
                         <Image
                            src={thumbnail}
                            maxWidth={'100%'}

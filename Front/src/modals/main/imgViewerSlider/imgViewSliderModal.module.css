@@ -1,11 +1,21 @@
-.viewer_swiper .swiper-slide{
+.viewer_swiper {
    height: 100%;
-   background: #050505;
+}
+
+.viewer_swiper .swiper_slide {
+   height: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.viewer_swiper .swiper_slide img {
+   object-fit: contain;
 }
 
 .viewer_swiper .naviBtn {
    position: absolute;
-   top: 45%;
+   top: 50%;
    z-index: 100;
    width: 45px; height: 45px;
    border-radius: 50%;
@@ -21,4 +31,12 @@
 .viewer_swiper .nextBtn {right: 10px;}
 .viewer_swiper .nextBtn > img {
    transform: rotate(180deg);
+}
+
+
+
+/* 모바일 스타일 */
+
+.mob_viewer_swiper {
+   padding-bottom: 40px;
 }

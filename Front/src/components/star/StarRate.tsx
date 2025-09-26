@@ -25,7 +25,7 @@ function StarRate({
   starWidth = 15,
   starHeight = 15,
   maxScoreScale = 5,
-  fillColor = "gold",
+  fillColor = "#ffcc00",
   emptyColor = "#cacaca",
   width,
 }: StarRateProps) {
