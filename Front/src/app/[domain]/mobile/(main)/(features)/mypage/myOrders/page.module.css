@@ -80,15 +80,27 @@
 }
 
 /* 주문내역 리스트 */
+.order_items_container {
+  gap: 20px;
+}
 
 .list_item {
-  padding-bottom: 20px;
+  border-bottom: 1px solid #323232;
+  padding-bottom: 15px;
 }
+
+.list_item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
 .list_item .unit {
-  gap: 10px;
+  gap: 15px;
+  align-items: start !important;
 }
+
 .list_item .unit_content {
-  gap: 7px;
+  gap: 5px;
 }
 
 .list_item .unit_content .unit_brand {
@@ -100,7 +112,16 @@
   color: #fff;
   font-size: 15px;
   line-height: 1.3;
-  margin-bottom: 5px !important;
+}
+
+.list_item .unit .unit_content .unit_variant {
+   font-size: 14px !important;
+   line-height: 1.3;
+   color: #c7c7c7;
+}
+
+.list_item .unit .unit_content .unit_price {
+  padding-top: 10px;
 }
 
 .option_list {
@@ -160,17 +181,13 @@
 .order_header p {
   color: #fff;
 }
-.order_items_container {
-  gap: 20px;
+
+.order_group .order_top_info {gap: 10px;}
+.order_header .order_code {
+   font-size: 13px;
+   color: #c7c7c7;
 }
-.list_item {
-  border-bottom: 1px solid #323232;
-  padding-bottom: 15px;
-}
-.list_item:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-}
+
 .item_price_box {
   justify-content: space-between;
   background-color: #333;
@@ -182,6 +199,7 @@
 }
 .item_price_box p {
   color: #aaa;
+  font-size: 13px !important;
 }
 .item_price_box span {
   font-weight: 500;
@@ -210,21 +228,44 @@
 .summary_row p {
   font-weight: 500;
   color: #ddd;
+  font-size: 14px !important;
 }
 
 .summary_row span {
   font-weight: bold;
 }
 
-.summary_row span {
-  font-weight: bold;
-}
 
-.tracking_btn {
+
+
+/* .tracking_btn {
   padding: 5px 10px;
   font-size: 12px;
   background-color: var(--main-color1);
   color: white;
   border-radius: 5px;
   cursor: pointer;
-}
+} */
+
+
+ .order_detail_btn {
+   background: none;
+   border: 1px solid #ccc;
+   font-weight: 300;
+   font-size: 14px;
+   transition: all 0.1s;
+ }
+
+ .order_detail_btn:active {
+   background: #444;
+ }
+
+ .review_btn {
+   background: var(--main-color1);
+   border: none;
+   font-weight: 600;
+ }
+
+ .review_btn:active {
+   background: var(--main-color2);
+ }

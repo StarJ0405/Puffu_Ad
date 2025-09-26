@@ -7,7 +7,27 @@
 }
 
 .review_write .product_data {
+  padding-bottom: 15px;
+  border-bottom: 1px solid #424242;
+}
 
+.review_write .product_data .product_info {
+  color: #fff; gap: 5px;
+}
+.review_write .product_data .product_info .brand {
+  font-size: 13px !important;
+  color: #797979;
+}
+
+.review_write .product_data .product_info .title {
+  font-size: 16px !important;
+  line-height: 1.2;
+}
+
+.review_write .product_data .product_info .price {
+  font-size: 18px !important;
+  color: var(--main-color1);
+  font-weight: 600;
 }
 
 .review_write .feedback_select {
@@ -59,7 +79,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.1);
+  background: rgba(0,0,0,0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -72,4 +92,69 @@
 .uploader_wrapper .closeButton img {
   filter: brightness(10);
   width: 7px;
+}
+
+
+
+
+
+
+/* 모바일 스타일 */
+
+.mob_review_write {
+  padding: 20px 15px 130px;
+  width: 100%;
+  gap: 30px;
+  overflow-y: auto;
+  height: 100%;
+}
+
+/* .review_write .product_data {
+  padding-bottom: 15px;
+} */
+
+/* .review_write .product_data .product_info {
+  color: #fff; gap: 5px;
+} */
+.mob_review_write .product_data .product_info .brand {font-size: 11px !important;}
+.mob_review_write .product_data .product_info .title {font-size: 13px !important;}
+.mob_review_write .product_data .product_info .price {font-size: 15px !important;}
+
+.mob_review_write .feedback_select {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 15px;
+}
+
+.mob_review_write .feedback_select .select_item {gap: 10px;}
+
+.mob_review_write .feedback_select .select_item > .label {
+  min-width: 80px;
+  font-size: 14px;
+  color: #fff;
+  font-weight: 600;
+}
+.mob_review_write .review_content .content_txtArea {
+  background: #333;
+  border: 1px solid #707070;
+  border-radius: 3px;
+  color: #fff;
+  font-size: 14px;
+}
+
+.mob_review_write .review_content .helper {
+  color: #797979 !important;
+  font-size: 11px !important;
+  padding-top: 10px;
+}
+
+
+/* 업로드 */
+.mob_review_write .upload_btn {
+  flex-direction: column;
+}
+
+.mob_review_write .mob_submit_btn {
+  position: absolute; bottom: 15px;
+  width: 100%; max-width: 300px;
 }
