@@ -544,7 +544,7 @@ const ReviewModal = NiceModal.create(
           </VerticalFlex>
 
           {/* 액션 */}
-          <FlexChild className={clsx(isMobile && styles.mob_submit_btn)}>
+          <FlexChild justifyContent="center" className={clsx(isMobile && styles.mob_submit_btn)}>
             <Button
               className={clsx('post_btn', disabled && 'disabled')}
               marginTop={!isMobile ? 25 : 0}

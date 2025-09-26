@@ -171,17 +171,30 @@ export function MypageNavi() {
             </Link>
           </li>
 
-          {myInfoMenu.map((item, i) => (
-            <li key={i}>
-              <Link className={styles.inner_btn} href={item.link}>
-                <Span>{item.name}</Span>
-                <Image
-                  src={"/resources/icons/arrow/slide_arrow.png"}
-                  width={8}
-                />
-              </Link>
-            </li>
-          ))}
+          {myInfoMenu.map((item, i) => {
+
+            const active = pathname === item.link;
+
+            return (
+              <li key={i}>
+                <Link 
+                  className={
+                    clsx(
+                      styles.inner_btn, 
+                      (active && styles.active)
+                    )
+                  }
+                  href={item.link}
+                >
+                  <Span>{item.name}</Span>
+                  <Image
+                    src={"/resources/icons/arrow/slide_arrow.png"}
+                    width={8}
+                  />
+                </Link>
+              </li>
+            )
+          })}
           <li>
             <Link className={styles.inner_btn} href={"/"} onClick={logoutModal}>
               <Span>로그아웃</Span>
