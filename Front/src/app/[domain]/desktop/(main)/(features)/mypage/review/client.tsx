@@ -10,11 +10,13 @@ import Span from "@/components/span/Span";
 import styles from "./page.module.css";
 import ListPagination from "@/components/listPagination/ListPagination";
 import { requester } from "@/shared/Requester";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import mypage from "../mypage.module.css";
 import useData from "@/shared/hooks/data/useData";
 import StarRate from "@/components/star/StarRate";
 import clsx from "clsx";
+import usePageData from "@/shared/hooks/data/usePageData";
+import NiceModal from "@ebay/nice-modal-react";
 
 export function Client() {
   const [total, setTotal] = useState(0);
@@ -36,59 +38,56 @@ export function Client() {
 }
 
 export function ReviewList({ onTotal }: { onTotal?: (n: number) => void }) {
+  const [rev, setRev] = useState(0);
   const PAGE_SIZE = 10;
-  const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [rows, setRows] = useState<any[]>([]);
-  const [total, setTotal] = useState(0);
-
-  const fetchReviews = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await requester.getReviews({
-        pageSize: PAGE_SIZE,
-        pageNumber: page - 1, // 0-base
-        relations: "item,item.brand,item.variant,item.variant.product,user",
-        order: { created_at: "DESC" },
-      });
-
-      const content = Array.isArray(res) ? res : res?.content ?? [];
-      const totalCandidates = [
-        (!Array.isArray(res) && res?.totalElements) as number | undefined,
-        (!Array.isArray(res) && res?.total) as number | undefined,
-        (!Array.isArray(res) && res?.meta?.total) as number | undefined,
-        (!Array.isArray(res) && res?.meta?.totalElements) as number | undefined,
-        (!Array.isArray(res) && (res as any)?.page?.totalElements) as
-          | number
-          | undefined,
-        (!Array.isArray(res) && (res as any)?.NumberOfTotalElements) as
-          | number
-          | undefined,
-        content.length,
-      ].filter((v) => typeof v === "number");
-      const t = Number(totalCandidates[0] ?? 0);
-
-      setRows(content);
-      const safeTotal = Number.isFinite(Number(t)) ? Number(t) : 0;
-      setTotal(safeTotal);
-      onTotal?.(safeTotal);
-    } catch (e) {
-      console.error(e);
-      setRows([]);
-      setTotal(0);
-      onTotal?.(0);
-    } finally {
-      setLoading(false);
+  const key = useMemo(() => `my-reviews:${rev}`, [rev]);
+  const refresh = () => setRev((v) => v + 1);
+  const {
+    [key]: pageData,
+    page: page0,
+    setPage: setPage0,
+    maxPage: maxPage0,
+  } = usePageData(
+    key,
+    (pageNumber) => ({
+      pageSize: PAGE_SIZE,
+      pageNumber, // 0-base
+      relations: "item,item.brand,item.variant,item.variant.product,user",
+      order: { created_at: "DESC" },
+    }),
+    (cond) => requester.getReviews(cond),
+    (data: Pageable) => data?.totalPages || 0,
+    {
+      onReprocessing: (res: any) => {
+        const content = Array.isArray(res) ? res : res?.content ?? [];
+        const total =
+          (!Array.isArray(res) &&
+            (res?.totalElements ??
+              res?.total ??
+              res?.meta?.total ??
+              res?.meta?.totalElements ??
+              (res as any)?.page?.totalElements ??
+              (res as any)?.NumberOfTotalElements)) ??
+          content.length;
+        return { content, total };
+      },
+      fallbackData: { content: [], total: 0, totalPages: 0 },
+      revalidateOnMount: true,
     }
-  }, [page]);
+  );
+
+  // ListPagination 1-base
+  const page = page0 + 1;
+  const maxPage = Math.max(1, (maxPage0 ?? 0) + 1);
+  const setPage = (n: number) => setPage0(n - 1);
+
+  // 렌더용 목록
+  const list = pageData?.content ?? [];
+  const total = Number(pageData?.total ?? 0);
 
   useEffect(() => {
-    fetchReviews();
-  }, [fetchReviews]);
-
-  const totalPages = Math.max(1, Math.ceil((total || 0) / PAGE_SIZE));
-  const list = rows; // 렌더에서 사용
-  console.log(list);
+    onTotal?.(total);
+  }, [total, onTotal]);
 
   const DISPLAY = {
     design: {
@@ -114,12 +113,12 @@ export function ReviewList({ onTotal }: { onTotal?: (n: number) => void }) {
     (DISPLAY.finish as any)[v ?? ""] ?? v ?? "-";
   const toDisplayMaintenance = (v?: string) =>
     (DISPLAY.maintenance as any)[v ?? ""] ?? v ?? "-";
-
+  console.log(list);
   return (
     <>
       {list.length > 0 ? (
         <VerticalFlex className={styles.review_list} gap={35}>
-          {list.map((r) => (
+          {list.map((r: any) => (
             <VerticalFlex alignItems="start" gap={10} key={r.id}>
               <FlexChild
                 gap={10}
@@ -127,10 +126,49 @@ export function ReviewList({ onTotal }: { onTotal?: (n: number) => void }) {
                 width={"auto"}
                 className={styles.review_edit}
               >
-                <P size={13} color="#ddd" cursor="pointer">
+                <P
+                  size={13}
+                  color="#ddd"
+                  cursor="pointer"
+                  onClick={() => {
+                    const i = r.item;
+                    NiceModal.show("reviewWrite", {
+                      review: r,
+                      item: {
+                        id: i.id,
+                        brand_name: i?.brand?.name,
+                        product_title: i.product_title,
+                        variant_title: i.variant_title,
+                        thumbnail: i.thumbnail,
+                      },
+                      edit: true,
+                      withPCButton: true,
+                      onSuccess: refresh,
+                    });
+                  }}
+                >
                   수정
                 </P>
-                <P size={13} color="#ddd" cursor="pointer">
+                <P
+                  size={13}
+                  color="#ddd"
+                  cursor="pointer"
+                  onClick={() =>
+                    NiceModal.show("confirm", {
+                      message: "리뷰를 삭제하시겠습니까?",
+                      confirmText: "삭제",
+                      cancelText: "취소",
+                      width: "324px",
+                      withCloseButton: true,
+                      onConfirm: async () => {
+                        await requester.deleteReview(r?.id, {
+                          soft: false,
+                        });
+                        refresh();
+                      },
+                    })
+                  }
+                >
                   삭제
                 </P>
               </FlexChild>
@@ -257,11 +295,11 @@ export function ReviewList({ onTotal }: { onTotal?: (n: number) => void }) {
                   </HorizontalFlex>
                 </VerticalFlex>
               </HorizontalFlex>
-              {/* <FlexChild>
-                <ListPagination page={page} maxPage={maxPage} onChange={setPage} />
-              </FlexChild> */}
             </VerticalFlex>
           ))}
+          <FlexChild>
+            <ListPagination page={page} maxPage={maxPage} onChange={setPage} />
+          </FlexChild>
         </VerticalFlex>
       ) : (
         <NoContent type="리뷰" />
