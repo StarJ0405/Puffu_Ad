@@ -113,7 +113,6 @@ export function ReviewList({ onTotal }: { onTotal?: (n: number) => void }) {
     (DISPLAY.finish as any)[v ?? ""] ?? v ?? "-";
   const toDisplayMaintenance = (v?: string) =>
     (DISPLAY.maintenance as any)[v ?? ""] ?? v ?? "-";
-  console.log(list);
   return (
     <>
       {list.length > 0 ? (
