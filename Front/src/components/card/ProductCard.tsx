@@ -39,8 +39,6 @@ export function ProductCard({
   const product_link = `/products/${product.id}`;
 
   const navigate = useNavigate();
-
-  console.log(product)
   return (
     <VerticalFlex
       width={width ?? isMobile ? "auto" : 200}

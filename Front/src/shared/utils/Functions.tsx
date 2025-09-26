@@ -610,3 +610,19 @@ export function getItemStatus(order: OrderData, item: LineItemData) {
       return "오류";
   }
 }
+
+
+export function maskTwoThirds(name: string): string {
+  if (!name) return "";
+  const Seg = (Intl as any).Segmenter as
+    | (new (locales?: string | string[], options?: { granularity?: "grapheme" | "word" | "sentence" }) => any)
+    | undefined;
+
+  const units: string[] = Seg
+    ? Array.from(new Seg("ko", { granularity: "grapheme" }).segment(name), (x: any) => x.segment)
+    : Array.from(name);
+
+  const n = units.length;
+  const visible = Math.max(1, Math.ceil(n / 3));
+  return units.slice(0, visible).join("") + "*".repeat(n - visible);
+}
