@@ -100,7 +100,6 @@ export default function Inquiry({
       product_id: detail_id as string,
       user_id: userData.id,
     };
-    console.log(payload)
 
     const res = await requester.createQA(payload);
     if (res?.message === "success") {

@@ -63,11 +63,16 @@ export function BoardTable() {
 
   const getQaTypeKorean = (type: string) => {
     switch (type) {
-      case "exchange":
-        return "교환";
-      case "refund":
-        return "환불";
+      case "account":
+        return "회원정보 관리";
+      case "order":
+        return "주문/결제";
+      case "receipt":
+        return "영수증/증빙서류";
+      case "event":
+        return "상품/이벤트";
       case "etc":
+        return "기타";
       default:
         return "기타";
     }
@@ -118,7 +123,7 @@ export function BoardTable() {
                   <td>{qaList.length - i}</td>
 
                   {/* 분류 */}
-                  <td>{getQaTypeKorean(list.type)}</td>
+                  <td>{getQaTypeKorean(list?.category||"")}</td>
 
                   {/* 제목 */}
                   <td>
