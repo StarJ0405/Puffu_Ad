@@ -12,7 +12,18 @@ export const GET: ApiHandler = async (req, res) => {
     ...where
   } = req.parsedQuery;
   const service: ReviewService = container.resolve(ReviewService);
-  where = { ...where, product_id: id };
+  where = {
+    ...where,
+    item: {
+      variant: { product_id: id },
+    },
+  };
+  relations = relations
+    ? Array.isArray(relations)
+      ? relations
+      : [relations]
+    : [];
+  relations.push("item.variant");
   if (pageSize) {
     const page = await service.getPageable(
       {
