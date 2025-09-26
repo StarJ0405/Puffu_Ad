@@ -29,6 +29,7 @@ import InputTextArea from "@/components/inputs/InputTextArea";
 import usePageData from "@/shared/hooks/data/usePageData";
 import { toast, maskEmail, maskTwoThirds } from "@/shared/utils/Functions";
 import StarRate from "@/components/star/StarRate";
+import NoContent from "@/components/noContent/noContent";
 
 export default function Review({ product }: { product: ProductData }) {
   const navigate = useNavigate();
@@ -148,105 +149,110 @@ export default function Review({ product }: { product: ProductData }) {
       <VerticalFlex className={styles.review_board}>
         {/* 리스트 */}
         <VerticalFlex className={styles.review_list} gap={35}>
-          {list.map((r: any) => {
-            return (
-              <HorizontalFlex key={r} gap={100} className={styles.item}>
-                <VerticalFlex className={styles.item_header} gap={15}>
-                  <FlexChild>
-                    <StarRate
-                      width={100}
-                      starWidth={20}
-                      starHeight={20}
-                      score={r.star_rate}
-                      readOnly
-                    />
-                  </FlexChild>
-
-                  <VerticalFlex gap={10}>
-                    <FlexChild justifyContent="center">
-                      <P color="#d7d7d7" size={18}>
-                        {maskTwoThirds(r.user.name)}
-                      </P>{" "}
-                      {/* 닉네임 뒷글자 *** 표시 */}
+          
+          {
+            list?.length > 0 ? (
+              list.map((r: any) => (
+                <HorizontalFlex key={r} gap={100} className={styles.item}>
+                  <VerticalFlex className={styles.item_header} gap={15}>
+                    <FlexChild>
+                      <StarRate
+                        width={100}
+                        starWidth={20}
+                        starHeight={20}
+                        score={r.star_rate}
+                        readOnly
+                      />
                     </FlexChild>
 
-                    <FlexChild justifyContent="center">
-                      <P color="#797979" size={13}>
-                        {formatDateDots(r?.created_at)}
-                      </P>
-                    </FlexChild>
+                    <VerticalFlex gap={10}>
+                      <FlexChild justifyContent="center">
+                        <P color="#d7d7d7" size={18}>
+                          {maskTwoThirds(r.user.name)}
+                        </P>{" "}
+                        {/* 닉네임 뒷글자 *** 표시 */}
+                      </FlexChild>
+
+                      <FlexChild justifyContent="center">
+                        <P color="#797979" size={13}>
+                          {formatDateDots(r?.created_at)}
+                        </P>
+                      </FlexChild>
+                    </VerticalFlex>
                   </VerticalFlex>
-                </VerticalFlex>
 
-                <VerticalFlex gap={25}>
-                  <HorizontalFlex className={styles.feedback}>
-                    <FlexChild className={styles.feed_item}>
-                      <FlexChild className={styles.feed_title}>
-                        <P>외형/디자인</P>
+                  <VerticalFlex gap={25}>
+                    <HorizontalFlex className={styles.feedback}>
+                      <FlexChild className={styles.feed_item}>
+                        <FlexChild className={styles.feed_title}>
+                          <P>외형/디자인</P>
+                        </FlexChild>
+
+                        <FlexChild className={styles.feed_content}>
+                          <P>{toDisplayDesign(r?.metadata?.aspects?.design)}</P>
+                        </FlexChild>
                       </FlexChild>
 
-                      <FlexChild className={styles.feed_content}>
-                        <P>{toDisplayDesign(r?.metadata?.aspects?.design)}</P>
-                      </FlexChild>
-                    </FlexChild>
+                      <FlexChild className={styles.feed_item}>
+                        <FlexChild className={styles.feed_title}>
+                          <P>마감/내구성</P>
+                        </FlexChild>
 
-                    <FlexChild className={styles.feed_item}>
-                      <FlexChild className={styles.feed_title}>
-                        <P>마감/내구성</P>
-                      </FlexChild>
-
-                      <FlexChild className={styles.feed_content}>
-                        <P>{toDisplayFinish(r?.metadata?.aspects?.finish)}</P>
-                      </FlexChild>
-                    </FlexChild>
-
-                    <FlexChild className={styles.feed_item}>
-                      <FlexChild className={styles.feed_title}>
-                        <P>유지관리</P>
+                        <FlexChild className={styles.feed_content}>
+                          <P>{toDisplayFinish(r?.metadata?.aspects?.finish)}</P>
+                        </FlexChild>
                       </FlexChild>
 
-                      <FlexChild className={styles.feed_content}>
-                        <P>{toDisplayMaintenance(r?.metadata?.aspects?.maintenance)}</P>
-                      </FlexChild>
-                    </FlexChild>
-                  </HorizontalFlex>
+                      <FlexChild className={styles.feed_item}>
+                        <FlexChild className={styles.feed_title}>
+                          <P>유지관리</P>
+                        </FlexChild>
 
-                  <HorizontalFlex className={styles.content}>
-                    {r.images.length > 0 && (
-                      <FlexChild
-                        width={180}
-                        className={styles.img_box}
-                        cursor="pointer"
-                      >
-                        <Image
-                          src={r.images[0]}
-                          width={"100%"}
-                          height={"auto"}
-                        />
-                        <Div className={styles.img_length}>
-                          {r.images.length}
-                        </Div>
+                        <FlexChild className={styles.feed_content}>
+                          <P>{toDisplayMaintenance(r?.metadata?.aspects?.maintenance)}</P>
+                        </FlexChild>
                       </FlexChild>
-                    )}
+                    </HorizontalFlex>
 
-                    {/* 이미지 클릭하면 모달로 이미지 슬라이더 나타나서 크게 보여주기 */}
-                    {/* {
-                                 review.photos?.length > 0 && (
-                                    review.photos?.map((img, j)=> (
-                                       <FlexChild key={j} >
-                                          <Image src={img} width={'100%'} height={'auto'} />
-                                       </FlexChild>
-                                    ))
-                                 )
-                              } */}
-                    <P size={14} color="#fff" lineHeight={1.6}>
-                      {r.content}
-                    </P>
-                  </HorizontalFlex>
-                </VerticalFlex>
-              </HorizontalFlex>
-            );
-          })}
+                    <HorizontalFlex className={styles.content}>
+                      {r.images.length > 0 && (
+                        <FlexChild
+                          width={180}
+                          className={styles.img_box}
+                          cursor="pointer"
+                        >
+                          <Image
+                            src={r.images[0]}
+                            width={"100%"}
+                            height={"auto"}
+                          />
+                          <Div className={styles.img_length}>
+                            {r.images.length}
+                          </Div>
+                        </FlexChild>
+                      )}
+
+                      {/* 이미지 클릭하면 모달로 이미지 슬라이더 나타나서 크게 보여주기 */}
+                      {/* {
+                                  review.photos?.length > 0 && (
+                                      review.photos?.map((img, j)=> (
+                                        <FlexChild key={j} >
+                                            <Image src={img} width={'100%'} height={'auto'} />
+                                        </FlexChild>
+                                      ))
+                                  )
+                                } */}
+                      <P size={14} color="#fff" lineHeight={1.6}>
+                        {r.content}
+                      </P>
+                    </HorizontalFlex>
+                  </VerticalFlex>
+                </HorizontalFlex>
+              ))
+            ) : (
+              <NoContent type={'리뷰'} />
+            )
+          }
         </VerticalFlex>
 
         {/* <ListPagination /> */}
