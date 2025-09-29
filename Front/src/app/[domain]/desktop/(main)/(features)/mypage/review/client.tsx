@@ -52,18 +52,12 @@ export function Client({
         </FlexChild>
       </FlexChild>
 
-      <ReviewList onTotal={setTotal} product={product} />
+      <ReviewList onTotal={setTotal} />
     </VerticalFlex>
   );
 }
 
-export function ReviewList({
-  onTotal,
-  product,
-}: {
-  onTotal?: (n: number) => void;
-  product: ProductData;
-}) {
+export function ReviewList({ onTotal }: { onTotal?: (n: number) => void }) {
   const navigate = useNavigate();
   const [rev, setRev] = useState(0);
   const PAGE_SIZE = 10;
@@ -359,7 +353,7 @@ export function ReviewList({
                     </HorizontalFlex>
 
                     <HorizontalFlex className={styles.content}>
-                      {r.images.length > 0 && (
+                      {Array.isArray(r.images) && r.images.length > 0 && (
                         <FlexChild
                           width={180}
                           className={styles.img_box}
