@@ -26,40 +26,32 @@ import { Swiper as SwiperType } from "swiper";
 export function BoardTitleBox() {
   return (
     <HorizontalFlex className={boardStyle.board_titleBox}>
-      <FlexChild>
-        {/* 여기 현재 path 주소에 맞게 이름 바뀌게 해야 함. */}
+      {/* <FlexChild>
         <h3>포토 사용후기</h3>
-      </FlexChild>
+      </FlexChild> */}
 
-      <FlexChild gap={10} className={boardStyle.search_box}>
-        <FlexChild width={"auto"}>
-          <Select
-            classNames={{
-              header: "web_select",
-              placeholder: "web_select_placholder",
-              line: "web_select_line",
-              arrow: "web_select_arrow",
-              search: "web_select_search",
-            }}
-            width={100}
-            options={[
-              { value: "제목", display: "제목" },
-              { value: "내용", display: "내용" },
-              { value: "작성자", display: "작성자" },
-            ]}
-            // placeholder={'선택 안함'}
-            // value={selectedMessageOption}
-          />
+      <HorizontalFlex className={boardStyle.board_searchBox} marginTop={'unset'}>
+        <FlexChild className={boardStyle.search_box} >
+          <Input
+            type={"search"}
+            // value={q}
+            // onChange={(e) => setQ(e as string)}
+            // onKeyDown={(e) => {
+            //   if (e.key === "Enter") {
+            //     e.preventDefault();
+            //     handleSearch();
+            //   }
+            // }}
+            placeHolder={"검색 내용을 입력해 주세요."}
+          ></Input>
+          <Button 
+            className={boardStyle.searchBtn}
+            // onClick={handleSearch}
+          >
+            <Image src="/resources/icons/search_gray.png" width={20} />
+          </Button>
         </FlexChild>
-
-        <Input
-          type={"search"}
-          placeHolder={"검색 내용을 입력해 주세요."}
-        ></Input>
-        <Link href={"/board/notice/noticeWrite"}>
-          <Button className={boardStyle.searchBtn}>검색</Button>
-        </Link>
-      </FlexChild>
+      </HorizontalFlex>
     </HorizontalFlex>
   );
 }

@@ -47,6 +47,7 @@ export default function SubPageHeader() {
           {pathname === "/mypage/deleteAccount" && <P>회원탈퇴</P>}
           {pathname === "/mypage/review" && <P>리뷰 관리</P>}
           {pathname === "/mypage/coupon" && <P>쿠폰함</P>}
+          {pathname === "/board/photoReview" && <P>포토 사용후기</P>}
         </FlexChild>
       </FlexChild>
 
