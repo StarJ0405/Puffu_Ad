@@ -97,6 +97,7 @@ export function BestReviewSlider({
 }) {
   const PAGE_SIZE = 300; // 랭킹 근사치용 벌크 수집
   const TOP_N = 21; // 슬라이드 상단 노출 개수
+  const slideMax = 7; // 처음 보일 슬라이드 개수
   const [rows, setRows] = useState<ApiReview[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -199,7 +200,7 @@ export function BestReviewSlider({
       <FlexChild id={id} className={styles.ProductSlider}>
         <Swiper
           loop={true}
-          slidesPerView={7}
+          slidesPerView={slideMax}
           speed={600}
           spaceBetween={20}
           modules={[Autoplay, Navigation]}
@@ -213,8 +214,8 @@ export function BestReviewSlider({
             <SwiperSlide key={review.id}>
               <ReviewImgCard
                 review={review}
-                width={"142px"}
-                height={"142px"}
+                width={"100%"}
+                height={'auto'}
                 board="photoReviewSlide"
                 slide={true}
                 lineClamp={lineClamp ?? 2}
@@ -222,13 +223,18 @@ export function BestReviewSlider({
             </SwiperSlide>
           ))}
         </Swiper>
-
-        <div className={clsx(styles.naviBtn, styles.prevBtn)}>
-          <Image src={"/resources/icons/arrow/slide_arrow.png"} width={10} />
-        </div>
-        <div className={clsx(styles.naviBtn, styles.nextBtn)}>
-          <Image src={"/resources/icons/arrow/slide_arrow.png"} width={10} />
-        </div>
+        {
+          ranked.length > slideMax && (
+            <>
+              <div className={clsx(styles.naviBtn, styles.prevBtn)}>
+                <Image src={"/resources/icons/arrow/slide_arrow.png"} width={10} />
+              </div>
+              <div className={clsx(styles.naviBtn, styles.nextBtn)}>
+                <Image src={"/resources/icons/arrow/slide_arrow.png"} width={10} />
+              </div>
+            </>
+          )
+        }
       </FlexChild>
     </>
   );
@@ -299,13 +305,13 @@ export function GalleryTable() {
     <VerticalFlex>
       <FlexChild>
         {items.length > 0 ? (
-          <MasonryGrid gap={20} breakpoints={3}>
+          <MasonryGrid breakpoints={5} width={'100%'}>
             {items.map((item, i) => (
               <ReviewImgCard
                 key={item.id ?? i}
                 review={item}
-                width={244}
-                height={"244px"}
+                width={'100%'}
+                height={'auto'}
               />
             ))}
           </MasonryGrid>

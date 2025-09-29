@@ -62,7 +62,8 @@ export default function ReviewImgCard({
 
   return (
     <VerticalFlex
-      width={width ?? 244}
+      width={width ?? '100%'}
+      maxWidth={244}
       className={clsx(
         styles.review_item,
         boardValue !== "normal" && styles.slide_item
@@ -72,16 +73,17 @@ export default function ReviewImgCard({
       <FlexChild
         className={styles.imgBox}
         onClick={openDetail}
-        minWidth={142}
-        minHeight={142}
-        maxWidth={244}
-        maxHeight={244}
+        // minWidth={142}
+        // minHeight={142}
+        // maxWidth={244}
+        // maxHeight={244}
       >
-        <Image
-          src={adultOk ? thumbnail : "/resources/images/19_only.png"}
-          width={"100%"}
-          height={height}
-        />
+        <div 
+          className={styles.img} 
+          style={{
+            backgroundImage: `url(${adultOk ? thumbnail : "/resources/images/19_only.png"})`
+        }}>
+        </div>
       </FlexChild>
 
       <FlexChild padding={"0 5px"} className={styles.text_box}>
