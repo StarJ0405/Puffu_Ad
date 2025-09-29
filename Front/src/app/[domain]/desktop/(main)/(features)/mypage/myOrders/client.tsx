@@ -478,53 +478,62 @@ export function MyOrdersTable({
                               </FlexChild>
                             )}
                           </FlexChild>
-                          <FlexChild hidden={!item.refunds?.length} gap={20}>
-                            <P>
-                              환불 후 남은 개수 :{" "}
-                              {item.quantity -
-                                (item.refunds
-                                  ?.filter((f) => f.refund?.completed_at)
-                                  ?.reduce(
-                                    (acc, now) => acc + now.quantity,
-                                    0
-                                  ) || 0)}
-                            </P>
-                            <P>
-                              (안쓰셔도 상관없어요!) 환불중인 개수 :{" "}
-                              {item.refunds
-                                ?.filter((f) => !f.refund?.completed_at)
-                                ?.reduce((acc, now) => acc + now.quantity, 0) ||
-                                0}
-                            </P>
-                            <P>
-                              할인 금액 :{" "}
-                              <Span>
-                                {((item.discount_price || 0) -
-                                  (item.unit_price || 0)) *
-                                  (item.quantity -
+                          <FlexChild className={styles.refunds_wrap} hidden={!item.refunds?.length}>
+                            <Image
+                              src={"/resources/icons/board/comment_reply_icon.png"}
+                              width={20}
+                            />
+
+                            <VerticalFlex className={styles.refunds_box} gap={20}>
+                              <HorizontalFlex className={styles.item}>
+                                <P>
+                                  환불 후 남은 개수 :{" "}
+                                  {item.quantity -
                                     (item.refunds
                                       ?.filter((f) => f.refund?.completed_at)
                                       ?.reduce(
                                         (acc, now) => acc + now.quantity,
                                         0
-                                      ) || 0))}
-                              </Span>
-                              <Span>원</Span>
-                            </P>
-                            <P>
-                              결제 금액 :{" "}
-                              <Span>
-                                {(item.discount_price || 0) *
-                                  (item.quantity -
-                                    (item.refunds
-                                      ?.filter((f) => f.refund?.completed_at)
-                                      ?.reduce(
-                                        (acc, now) => acc + now.quantity,
-                                        0
-                                      ) || 0))}
-                              </Span>
-                              <Span>원</Span>
-                            </P>
+                                      ) || 0)}
+                                </P>
+                                <P>
+                                  환불중인 개수 :{" "}
+                                  {item.refunds
+                                    ?.filter((f) => !f.refund?.completed_at)
+                                    ?.reduce((acc, now) => acc + now.quantity, 0) ||
+                                    0}
+                                </P>
+                              </HorizontalFlex>
+  
+                              <HorizontalFlex className={styles.item}>
+                                <P>
+                                  할인 금액 :{" "}
+                                  <Span>
+                                    {(
+                                      ((item.discount_price || 0) - (item.unit_price || 0)) *
+                                      (item.quantity -
+                                        (item.refunds
+                                          ?.filter((f) => f.refund?.completed_at)
+                                          ?.reduce((acc, now) => acc + now.quantity, 0) || 0))
+                                    ).toLocaleString("ko-KR")}
+                                  </Span>
+                                  <Span>원</Span>
+                                </P>
+                                <P>
+                                  결제 금액 :{" "}
+                                  <Span>
+                                    {(
+                                      (item.discount_price || 0) *
+                                      (item.quantity -
+                                        (item.refunds
+                                          ?.filter((f) => f.refund?.completed_at)
+                                          ?.reduce((acc, now) => acc + now.quantity, 0) || 0))
+                                    ).toLocaleString("ko-KR")}
+                                  </Span>
+                                  <Span>원</Span>
+                                </P>
+                              </HorizontalFlex>
+                            </VerticalFlex>
                           </FlexChild>
                         </VerticalFlex>
                       </HorizontalFlex>

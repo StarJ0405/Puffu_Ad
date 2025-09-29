@@ -138,6 +138,28 @@
  }
 
 
+/* 환불, 교환 처리중 박스 */
+
+.refunds_wrap {
+   gap: 20px;
+}
+
+.refunds_box {
+   border-radius: 10px;
+   background: #383838;
+   padding: 15px;
+   margin-top: 10px;
+   width: auto;
+   flex: unset;
+}
+
+.refunds_box .item {
+   gap: 25px;
+   font-size: 14px;
+}
+
+
+
  .order_detail_btn {
    background: none;
    border: 1px solid #ccc;

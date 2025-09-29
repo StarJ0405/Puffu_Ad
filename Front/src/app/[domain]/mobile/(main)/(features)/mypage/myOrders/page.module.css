@@ -81,12 +81,12 @@
 
 /* 주문내역 리스트 */
 .order_items_container {
-  gap: 20px;
+  gap: 25px;
 }
 
 .list_item {
-  border-bottom: 1px solid #323232;
-  padding-bottom: 15px;
+  border-bottom: 1px solid #797979;
+  padding-bottom: 25px;
 }
 
 .list_item:last-child {
@@ -235,7 +235,37 @@
   font-weight: bold;
 }
 
+/* 환불, 교환 처리 */
 
+.refunds_btn {
+  width: 100%;
+  padding: 10px 5px;
+  font-size: 14px;
+  border: 1px solid #aaa;
+  background: #050505;
+}
+
+.refunds_wrap {
+   gap: 20px;
+}
+
+.refunds_box {
+   border-radius: 10px;
+   background: #050505;
+   padding: 15px;
+}
+
+.refunds_box .item {
+   gap: 25px;
+   font-size: 14px;
+}
+
+.refund_unit {
+  gap: 10px;
+}
+
+.refund_unit p {font-size: 14px !important; color: #797979 !important;}
+.refund_unit span {font-size: 16px !important;}
 
 
 /* .tracking_btn {
