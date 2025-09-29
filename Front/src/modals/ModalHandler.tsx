@@ -35,8 +35,7 @@ import ReviewWriteModal from "./main/review/ReviewWriteModal";
 import SearchModal from "./main/search/SearchModal";
 import SelectModal from "./main/select/SelectModal";
 import TableModal from "./table/TableModal";
-import TermContentModal from "./main/policies/TermContentModal";
-import PraivacyContentModal from "./main/policies/PraivacyContentModal";
+import AgreeContentModal from "./main/policies/AgreeContentModal";
 import ImgViewSliderModal from "./main/imgViewerSlider/imgViewSliderModal";
 import PhotoReviewDetailModal from "./main/photoReviewDetailModal/photoReviewDetailModal";
 
@@ -57,8 +56,7 @@ function ModalHandler() {
   NiceModal.register("postalcode", PostalCodeModal);
   NiceModal.register("optionChange", OptionChangeModal);
   NiceModal.register("reviewWrite", ReviewWriteModal);
-  NiceModal.register("TermContent", TermContentModal);
-  NiceModal.register("PraivacyContent", PraivacyContentModal);
+  NiceModal.register("AgreeContent", AgreeContentModal);
   NiceModal.register("ImgViewSliderModal", ImgViewSliderModal);
   NiceModal.register("photoReviewDetailModal", PhotoReviewDetailModal);
   // admin
