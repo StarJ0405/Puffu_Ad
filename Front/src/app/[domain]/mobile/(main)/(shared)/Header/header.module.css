@@ -1,42 +1,43 @@
-
 .header {
-   background: #272727;
-   padding: 15px 0 0;
-   display: flex;
-   flex-direction: column;
-   position: fixed;
-   z-index: 1000;
-   width: 100%;
-   left: 0;
-   top: 0;
+  background: #272727;
+  padding: 15px 0 0;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  z-index: 1000;
+  width: 100%;
+  left: 0;
+  top: 0;
 }
 
 /* 스크롤 fixed - header 안에 자식에 걸림 */
 .fixed {
-   position: fixed;
-   top: 0;
-   background: #1a1a1a;
-   border-bottom: 1px solid rgba(255,255,255,0.4);
+  position: fixed;
+  top: 0;
+  background: #1a1a1a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 .headerTop {
-   position: relative;
-   padding: 0 10px 10px;
+  position: relative;
+  padding: 0 10px 10px;
 }
 
 
 /* 하단 메뉴 */
 
 .Menu_box {
-   padding: 5px 10px !important;
-   position: relative;
-   overflow-x: auto;
-   background: linear-gradient(180deg, #313131, #1E1E20);
+  padding: 5px 10px !important;
+  position: relative;
+  overflow-x: auto;
+  background: linear-gradient(180deg, #313131, #1E1E20);
 }
 
 .Menu_box::-webkit-scrollbar {
-  width: 0;  /* 세로 스크롤바 두께 */
-  height: 3px; /* 가로 스크롤바 두께 */
+  width: 0;
+  /* 세로 스크롤바 두께 */
+  height: 3px;
+  /* 가로 스크롤바 두께 */
   display: none;
 }
 
@@ -46,28 +47,62 @@
 }
 
 .outerMenu {
-   display: flex;
-   gap: 25px;
-   align-items: center;
+  display: flex;
+  gap: 25px;
+  align-items: center;
 }
 
 .outerMenu > li {
-   display: flex;
+  position: relative;
+  /* display: flex;
    gap: 5px;
    align-items: center;
-   position: relative;
+   
    font-size: 14px;
    color: #fff;
    transition: all 0.2s;
    white-space: nowrap;
-   cursor: pointer;
+   cursor: pointer; */
+}
+
+.outerMenu > li > a {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  color: #fff;
+  transition: all 0.2s;
+}
+
+.outerMenu > li > .active_line {
+  position: absolute;
+  z-index: 1;
+  bottom: -6px;
+  background: #fff;
+  display: block;
+  width: 0;
+  height: 3px;
+  right: 0;
+  transition: all 0.2s;
 }
 
 .outerMenu > li:hover {
-   color: var(--main-color1);
+  color: var(--main-color1);
+}
+
+.outerMenu > li:hover > .active_line,
+.outerMenu > li.active > .active_line {
+  left: 0;
+  right: unset;
+  width: 100%;
+}
+
+.outerMenu > li:hover > a,
+.outerMenu > li.active > a {
+  color: var(--main-color1);
 }
 
 
 .cart_btn {
-   position: relative;
+  position: relative;
 }
