@@ -16,6 +16,7 @@ import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import { useState } from "react";
 import styles from "./page.module.css";
+import { AnimatePresence, motion } from "framer-motion";
 
 type OrderItem = {
   id: string | number;
@@ -120,6 +121,8 @@ export function MyOrdersTable({
     if (q) setCondition({ q });
     else setCondition({});
   };
+
+  const [refundCheck, setRefundCheck] = useState<{ [key: string]: boolean }>({});
 
   return (
     <>
@@ -258,6 +261,8 @@ export function MyOrdersTable({
 
               <VerticalFlex className={styles.order_items_container}>
                 {order.items.map((item: LineItemData) => {
+                  const isChecked = refundCheck[item.id] || false;
+
                   return (
                     <VerticalFlex
                       key={item.id}
@@ -449,6 +454,7 @@ export function MyOrdersTable({
                           </FlexChild>
                         </FlexChild>
                       )}
+
                       {/* 가격 박스 */}
                       <HorizontalFlex className={styles.item_price_box}>
                         <FlexChild>
@@ -475,6 +481,97 @@ export function MyOrdersTable({
                           </P>
                         </FlexChild>
                       </HorizontalFlex>
+
+                      <FlexChild hidden={!item.refunds?.length}>
+                        <Button 
+                          className={styles.refunds_btn}
+                          
+                          onClick={() =>
+                            setRefundCheck(prev => ({
+                              ...prev,
+                              [item.id]: !prev[item.id], // item.id별 토글
+                            }))
+                          }
+                        >
+                          {
+                            isChecked ? '닫기' : '환불 상세'
+                          } 
+                        </Button>
+                      </FlexChild>
+
+                      <AnimatePresence mode="wait">
+                      {
+                        isChecked && (
+
+                          <motion.div
+                            // key={refund}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <FlexChild
+                              className={styles.refunds_wrap}
+                              hidden={!item.refunds?.length}
+                            >
+                              <VerticalFlex className={styles.refunds_box} gap={20}>
+                                <HorizontalFlex className={styles.item}>
+                                  <VerticalFlex className={styles.refund_unit}>
+                                    <P>환불 후 남은 개수{" "}</P>
+                                    <Span>
+                                      {item.quantity -
+                                        (item.refunds
+                                          ?.filter((f) => f.refund?.completed_at)
+                                          ?.reduce(
+                                            (acc, now) => acc + now.quantity,
+                                            0
+                                          ) || 0)}
+                                    </Span>
+                                  </VerticalFlex>
+                                  <VerticalFlex className={styles.refund_unit}>
+                                    <P>환불중인 개수 {" "}</P>
+                                    <Span>
+                                      {item.refunds
+                                        ?.filter((f) => !f.refund?.completed_at)
+                                        ?.reduce((acc, now) => acc + now.quantity, 0) ||
+                                        0}
+                                    </Span>
+                                  </VerticalFlex>
+                                </HorizontalFlex>
+
+                                <HorizontalFlex className={styles.item}>
+                                  <VerticalFlex className={styles.refund_unit}>
+                                    <P>할인 금액 {" "}</P>
+                                    <Span>
+                                      {(
+                                        ((item.discount_price || 0) - (item.unit_price || 0)) *
+                                        (item.quantity -
+                                          (item.refunds
+                                            ?.filter((f) => f.refund?.completed_at)
+                                            ?.reduce((acc, now) => acc + now.quantity, 0) || 0))
+                                      ).toLocaleString("ko-KR")}원
+                                    </Span>
+                                  </VerticalFlex>
+                                  <VerticalFlex className={styles.refund_unit}>
+                                    <P>결제 금액 {" "}</P>
+                                    <Span>
+                                      {(
+                                        (item.discount_price || 0) *
+                                        (item.quantity -
+                                          (item.refunds
+                                            ?.filter((f) => f.refund?.completed_at)
+                                            ?.reduce((acc, now) => acc + now.quantity, 0) || 0))
+                                      ).toLocaleString("ko-KR")}원
+                                    </Span>
+                                  </VerticalFlex>
+                                </HorizontalFlex>
+                              </VerticalFlex>
+                            </FlexChild>
+                          </motion.div>
+                        )
+                      }
+                      </AnimatePresence>
+                      
                     </VerticalFlex>
                   );
                 })}
