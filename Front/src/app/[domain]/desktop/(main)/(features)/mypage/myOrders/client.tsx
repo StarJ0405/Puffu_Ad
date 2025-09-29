@@ -368,7 +368,8 @@ export function MyOrdersTable({
                                   width={"auto"}
                                   hidden={
                                     item.confirmation ||
-                                    !order.shipping_method?.shipped_at
+                                    !order.shipping_method?.shipped_at ||
+                                    !!item.refunds?.length
                                   }
                                 >
                                   <Button
@@ -421,7 +422,15 @@ export function MyOrdersTable({
                                 </FlexChild>
                                 <FlexChild
                                   width={"auto"}
-                                  hidden={!item.confirmation}
+                                  hidden={
+                                    !item.confirmation ||
+                                    item.quantity -
+                                      (item.refunds?.reduce(
+                                        (acc, now) => acc + now.quantity,
+                                        0
+                                      ) || 0) ===
+                                      0
+                                  }
                                 >
                                   {!isReviewed(item) ? (
                                     <Button
@@ -478,13 +487,21 @@ export function MyOrdersTable({
                               </FlexChild>
                             )}
                           </FlexChild>
-                          <FlexChild className={styles.refunds_wrap} hidden={!item.refunds?.length}>
+                          <FlexChild
+                            className={styles.refunds_wrap}
+                            hidden={!item.refunds?.length}
+                          >
                             <Image
-                              src={"/resources/icons/board/comment_reply_icon.png"}
+                              src={
+                                "/resources/icons/board/comment_reply_icon.png"
+                              }
                               width={20}
                             />
 
-                            <VerticalFlex className={styles.refunds_box} gap={20}>
+                            <VerticalFlex
+                              className={styles.refunds_box}
+                              gap={20}
+                            >
                               <HorizontalFlex className={styles.item}>
                                 <P>
                                   환불 후 남은 개수 :{" "}
@@ -500,21 +517,29 @@ export function MyOrdersTable({
                                   환불중인 개수 :{" "}
                                   {item.refunds
                                     ?.filter((f) => !f.refund?.completed_at)
-                                    ?.reduce((acc, now) => acc + now.quantity, 0) ||
-                                    0}
+                                    ?.reduce(
+                                      (acc, now) => acc + now.quantity,
+                                      0
+                                    ) || 0}
                                 </P>
                               </HorizontalFlex>
-  
+
                               <HorizontalFlex className={styles.item}>
                                 <P>
                                   할인 금액 :{" "}
                                   <Span>
                                     {(
-                                      ((item.discount_price || 0) - (item.unit_price || 0)) *
+                                      ((item.discount_price || 0) -
+                                        (item.unit_price || 0)) *
                                       (item.quantity -
                                         (item.refunds
-                                          ?.filter((f) => f.refund?.completed_at)
-                                          ?.reduce((acc, now) => acc + now.quantity, 0) || 0))
+                                          ?.filter(
+                                            (f) => f.refund?.completed_at
+                                          )
+                                          ?.reduce(
+                                            (acc, now) => acc + now.quantity,
+                                            0
+                                          ) || 0))
                                     ).toLocaleString("ko-KR")}
                                   </Span>
                                   <Span>원</Span>
@@ -526,8 +551,13 @@ export function MyOrdersTable({
                                       (item.discount_price || 0) *
                                       (item.quantity -
                                         (item.refunds
-                                          ?.filter((f) => f.refund?.completed_at)
-                                          ?.reduce((acc, now) => acc + now.quantity, 0) || 0))
+                                          ?.filter(
+                                            (f) => f.refund?.completed_at
+                                          )
+                                          ?.reduce(
+                                            (acc, now) => acc + now.quantity,
+                                            0
+                                          ) || 0))
                                     ).toLocaleString("ko-KR")}
                                   </Span>
                                   <Span>원</Span>
