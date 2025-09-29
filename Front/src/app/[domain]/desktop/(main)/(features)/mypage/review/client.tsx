@@ -64,6 +64,7 @@ export function ReviewList({
   onTotal?: (n: number) => void;
   product: ProductData;
 }) {
+  const navigate = useNavigate();
   const [rev, setRev] = useState(0);
   const PAGE_SIZE = 10;
   const key = useMemo(() => `my-reviews:${rev}`, [rev]);
@@ -264,7 +265,7 @@ export function ReviewList({
                     <HorizontalFlex
                       className={styles.prodcut_data}
                       // 상품 아아디 넣어서 링크 이동 걸기
-                      // onClick={()=> navigate(`/products/${r.item.id}`)}
+                      onClick={() => navigate(`/products/${pid}`)}
                     >
                       <FlexChild className={styles.img}>
                         <Image src={r.item.thumbnail} width={45} />
@@ -304,7 +305,7 @@ export function ReviewList({
                           width={100}
                           starWidth={20}
                           starHeight={20}
-                          score={Number(r.star_rate )}
+                          score={Number(r.star_rate)}
                           // score={Number(4.5)}
                           readOnly
                           emptyColor={"#595959"}
