@@ -11,10 +11,25 @@ import { useAuth } from "@/providers/AuthPorivder/AuthPorivder";
 import { notFound } from "next/navigation";
 import useData from "@/shared/hooks/data/useData";
 
-export default async function () {
+export default async function ({ params }: { params: Promise<Params> }) {
+  const { detail_id } = await params;
+  const initCondition = {
+    relations: [
+      "brand.methods",
+      "variants.values",
+      "variants.product.discounts.discount",
+      "variants.discounts.discount",
+      "options.values",
+      "categories",
+    ],
+  };
+  const initProduct = await requester.getProduct(
+    detail_id as string,
+    initCondition
+  );
   return (
     <>
-      <Client />
+      <Client initCondition={initCondition} initProduct={initProduct}/>
     </>
   );
 }
