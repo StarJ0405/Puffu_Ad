@@ -71,7 +71,10 @@ type ApiReview = {
   content?: string;
   created_at?: string;
   star_rate?: number;
-  metadata?: { source?: string; aspects?: { design?: string; finish?: string; maintenance?: string}};
+  metadata?: {
+    source?: string;
+    aspects?: { design?: string; finish?: string; maintenance?: string };
+  };
   user?: { id?: string; name?: string };
   item?: {
     variant?: {
@@ -239,7 +242,10 @@ type ReviewEntity = {
   count: number;
   created_at?: string;
   star_rate?: number;
-  metadata?: { source?: string; aspects?: { design?: string; finish?: string; maintenance?: string}};
+  metadata?: {
+    source?: string;
+    aspects?: { design?: string; finish?: string; maintenance?: string };
+  };
   user?: { id?: string; name?: string };
   item?: {
     id?: string;
@@ -295,7 +301,12 @@ export function GalleryTable() {
         {items.length > 0 ? (
           <MasonryGrid gap={20} breakpoints={3}>
             {items.map((item, i) => (
-              <ReviewImgCard key={item.id ?? i} review={item} width={244} height={"244px"} />
+              <ReviewImgCard
+                key={item.id ?? i}
+                review={item}
+                width={244}
+                height={"244px"}
+              />
             ))}
           </MasonryGrid>
         ) : (
