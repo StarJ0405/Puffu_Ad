@@ -248,7 +248,7 @@ type ReviewEntity = {
   };
 };
 export function GalleryTable() {
-  const PAGE_SIZE = 20;
+  const PAGE_SIZE = 10;
   const [items, setItems] = useState<ReviewEntity[]>([]);
   const [pageNumber, setPageNumber] = useState(0);
   const [totalPages, setTotalPages] = useState<number | null>(null);
