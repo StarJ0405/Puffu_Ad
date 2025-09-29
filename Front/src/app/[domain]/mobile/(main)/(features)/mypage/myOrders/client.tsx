@@ -122,7 +122,9 @@ export function MyOrdersTable({
     else setCondition({});
   };
 
-  const [refundCheck, setRefundCheck] = useState<{ [key: string]: boolean }>({});
+  const [refundCheck, setRefundCheck] = useState<{ [key: string]: boolean }>(
+    {}
+  );
 
   return (
     <>
@@ -348,7 +350,14 @@ export function MyOrdersTable({
                       {/* isReviewed */}
                       {order.status === "complete" && (
                         <FlexChild gap={6}>
-                          <FlexChild justifyContent="center">
+                          <FlexChild
+                            justifyContent="center"
+                            hidden={
+                              item.confirmation ||
+                              !order.shipping_method?.shipped_at ||
+                              !!item.refunds?.length
+                            }
+                          >
                             <Button
                               width={"100%"}
                               className={clsx(
@@ -398,9 +407,17 @@ export function MyOrdersTable({
                           </FlexChild>
                           <FlexChild
                             justifyContent="center"
-                            hidden={!item.confirmation}
+                            hidden={
+                              !item.confirmation ||
+                              item.quantity -
+                                (item.refunds?.reduce(
+                                  (acc, now) => acc + now.quantity,
+                                  0
+                                ) || 0) ===
+                                0
+                            }
                           >
-                            {isReviewed(item) ? (
+                            {!isReviewed(item) ? (
                               <Button
                                 width={"100%"}
                                 className={clsx(
@@ -483,26 +500,21 @@ export function MyOrdersTable({
                       </HorizontalFlex>
 
                       <FlexChild hidden={!item.refunds?.length}>
-                        <Button 
+                        <Button
                           className={styles.refunds_btn}
-                          
                           onClick={() =>
-                            setRefundCheck(prev => ({
+                            setRefundCheck((prev) => ({
                               ...prev,
                               [item.id]: !prev[item.id], // item.id별 토글
                             }))
                           }
                         >
-                          {
-                            isChecked ? '닫기' : '환불 상세'
-                          } 
+                          {isChecked ? "닫기" : "환불 상세"}
                         </Button>
                       </FlexChild>
 
                       <AnimatePresence mode="wait">
-                      {
-                        isChecked && (
-
+                        {isChecked && (
                           <motion.div
                             // key={refund}
                             initial={{ opacity: 0 }}
@@ -514,14 +526,19 @@ export function MyOrdersTable({
                               className={styles.refunds_wrap}
                               hidden={!item.refunds?.length}
                             >
-                              <VerticalFlex className={styles.refunds_box} gap={20}>
+                              <VerticalFlex
+                                className={styles.refunds_box}
+                                gap={20}
+                              >
                                 <HorizontalFlex className={styles.item}>
                                   <VerticalFlex className={styles.refund_unit}>
-                                    <P>환불 후 남은 개수{" "}</P>
+                                    <P>환불 후 남은 개수 </P>
                                     <Span>
                                       {item.quantity -
                                         (item.refunds
-                                          ?.filter((f) => f.refund?.completed_at)
+                                          ?.filter(
+                                            (f) => f.refund?.completed_at
+                                          )
                                           ?.reduce(
                                             (acc, now) => acc + now.quantity,
                                             0
@@ -529,49 +546,62 @@ export function MyOrdersTable({
                                     </Span>
                                   </VerticalFlex>
                                   <VerticalFlex className={styles.refund_unit}>
-                                    <P>환불중인 개수 {" "}</P>
+                                    <P>환불중인 개수 </P>
                                     <Span>
                                       {item.refunds
                                         ?.filter((f) => !f.refund?.completed_at)
-                                        ?.reduce((acc, now) => acc + now.quantity, 0) ||
-                                        0}
+                                        ?.reduce(
+                                          (acc, now) => acc + now.quantity,
+                                          0
+                                        ) || 0}
                                     </Span>
                                   </VerticalFlex>
                                 </HorizontalFlex>
 
                                 <HorizontalFlex className={styles.item}>
                                   <VerticalFlex className={styles.refund_unit}>
-                                    <P>할인 금액 {" "}</P>
+                                    <P>할인 금액 </P>
                                     <Span>
                                       {(
-                                        ((item.discount_price || 0) - (item.unit_price || 0)) *
+                                        ((item.discount_price || 0) -
+                                          (item.unit_price || 0)) *
                                         (item.quantity -
                                           (item.refunds
-                                            ?.filter((f) => f.refund?.completed_at)
-                                            ?.reduce((acc, now) => acc + now.quantity, 0) || 0))
-                                      ).toLocaleString("ko-KR")}원
+                                            ?.filter(
+                                              (f) => f.refund?.completed_at
+                                            )
+                                            ?.reduce(
+                                              (acc, now) => acc + now.quantity,
+                                              0
+                                            ) || 0))
+                                      ).toLocaleString("ko-KR")}
+                                      원
                                     </Span>
                                   </VerticalFlex>
                                   <VerticalFlex className={styles.refund_unit}>
-                                    <P>결제 금액 {" "}</P>
+                                    <P>결제 금액 </P>
                                     <Span>
                                       {(
                                         (item.discount_price || 0) *
                                         (item.quantity -
                                           (item.refunds
-                                            ?.filter((f) => f.refund?.completed_at)
-                                            ?.reduce((acc, now) => acc + now.quantity, 0) || 0))
-                                      ).toLocaleString("ko-KR")}원
+                                            ?.filter(
+                                              (f) => f.refund?.completed_at
+                                            )
+                                            ?.reduce(
+                                              (acc, now) => acc + now.quantity,
+                                              0
+                                            ) || 0))
+                                      ).toLocaleString("ko-KR")}
+                                      원
                                     </Span>
                                   </VerticalFlex>
                                 </HorizontalFlex>
                               </VerticalFlex>
                             </FlexChild>
                           </motion.div>
-                        )
-                      }
+                        )}
                       </AnimatePresence>
-                      
                     </VerticalFlex>
                   );
                 })}
