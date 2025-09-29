@@ -35,7 +35,6 @@ const AddressListModal = NiceModal.create(
     return (
       <ModalBase
         borderRadius={10}
-        headerStyle
         zIndex={10055}
         ref={modal}
         width={width}

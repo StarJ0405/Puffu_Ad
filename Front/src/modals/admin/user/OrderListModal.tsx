@@ -161,7 +161,6 @@ const OrderListModal = NiceModal.create(({ user }: { user: UserData }) => {
   return (
     <ModalBase
       borderRadius={10}
-      headerStyle
       zIndex={10055}
       ref={modal}
       width={width}

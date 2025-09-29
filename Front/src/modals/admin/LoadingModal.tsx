@@ -32,7 +32,6 @@ const LoadingModal = NiceModal.create(
     }));
     return (
       <ModalBase
-        headerStyle
         zIndex={10055}
         ref={modal}
         // ref={ref}

@@ -64,7 +64,6 @@ const OrderRefundModal = NiceModal.create(
     return (
       <ModalBase
         borderRadius={"10px"}
-        headerStyle
         ref={modal}
         width={width}
         height={height}

@@ -1,7 +1,6 @@
 "use client";
 import Button from "@/components/buttons/Button";
 import DatePicker from "@/components/date-picker/DatePicker";
-import Dummy from "@/components/dummy/Dummy";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
@@ -216,23 +215,6 @@ export function MyOrdersTable({
                     <Span color="var(--main-color1)">
                       [{getOrderStatus(order)}]
                     </Span>
-
-                    {/* 교환 처리 상태 */}
-                    <Span
-                      hidden
-                      className={styles.progress_txt}
-                      color="var(--main-color1)"
-                    >
-                      [교환 처리중]
-                    </Span>
-
-                    {/* 환불 처리 상태 */}
-                    <Span
-                      className={styles.progress_txt}
-                      color="var(--main-color1)"
-                    >
-                      [환불 처리중]
-                    </Span>
                   </FlexChild>
                   {/* 주문번호 */}
                   <FlexChild className={styles.order_code}>
@@ -311,6 +293,27 @@ export function MyOrdersTable({
                           gap={7}
                         >
                           <FlexChild gap={5}>
+                            {/* 교환 처리 상태 */}
+                            <Span
+                              hidden
+                              className={styles.progress_txt}
+                              color="var(--main-color1)"
+                            >
+                              [교환 처리중]
+                            </Span>
+
+                            {/* 환불 처리 상태 */}
+                            <Span
+                              hidden={
+                                !item.refunds?.filter(
+                                  (f) => !f.refund?.completed_at
+                                )?.length
+                              }
+                              className={styles.progress_txt}
+                              color="var(--main-color1)"
+                            >
+                              [환불 처리중]
+                            </Span>
                             <Span className={styles.unit_brand}>
                               {item?.brand?.name}
                             </Span>

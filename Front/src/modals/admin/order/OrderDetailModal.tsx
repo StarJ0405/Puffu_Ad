@@ -22,7 +22,6 @@ const OrderDetailModal = NiceModal.create(({ order }: { order: OrderData }) => {
   return (
     <ModalBase
       borderRadius={"10px"}
-      headerStyle
       ref={modal}
       width={width}
       height={height}
