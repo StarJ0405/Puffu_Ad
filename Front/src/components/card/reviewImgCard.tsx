@@ -8,6 +8,7 @@ import Span from "@/components/span/Span";
 import clsx from "clsx";
 import { useState } from "react";
 import styles from "./reviewImgCard.module.css";
+import NiceModal from "@ebay/nice-modal-react";
 
 
 
@@ -34,6 +35,7 @@ export default function (
       width, 
       autoPlay,
       board,
+      slide = false,
       onClick,
    }: { 
       review: ReviewItem;
@@ -42,6 +44,7 @@ export default function (
       autoPlay? : number;
       onClick?: (product: ProductData) => void;
       board? : string;
+      slide? : boolean;
    }) 
 {
 
@@ -65,7 +68,14 @@ export default function (
          }
          }}
       >
-         <FlexChild className={styles.imgBox}>
+         <FlexChild 
+            className={styles.imgBox}
+            onClick={()=> {
+               NiceModal.show("photoReviewDetailModal", {
+                 
+               });
+            }}
+         >
             {
                adultCheck === true ? 
                <Image src={review.thumbnail} width={"100%"} height={"auto"}/>
@@ -88,7 +98,7 @@ export default function (
                </FlexChild>
 
                {
-                  board === 'normal' && (
+                  !slide && (
                      <HorizontalFlex className={styles.title_box}>
                         <FlexChild className={styles.date}>
                            <Span>{review.date}</Span>
@@ -102,7 +112,8 @@ export default function (
                }
             </VerticalFlex>
          </FlexChild>
-
+         
+         {/* 상품 정보 */}
          <HorizontalFlex className={styles.prodcut_data}>
             <FlexChild className={styles.img}>
                {

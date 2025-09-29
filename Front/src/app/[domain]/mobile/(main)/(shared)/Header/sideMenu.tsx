@@ -58,8 +58,12 @@ const SideMenu = NiceModal.create(() => {
   const myInfoMenu: PagingItem[] = [
     { name: '내 정보', link: '/mypage' },
     { name: '배송지 관리', link: '/mypage/delivery' },
-    { name: '1:1 문의 내역', link: '/mypage/inquiry' },
-    // {name: '리뷰 관리', link: '/mypage/review'},
+    { name: '문의 내역', link: '/mypage/inquiry' },
+    {name: '리뷰 관리', link: '/mypage/review'},
+  ]
+
+  const communityMenu: PagingItem[] = [
+    { name: '포토 사용후기', link: '/board/photoReview' },
   ]
 
   const logoutModal = () => { // 로그아웃
@@ -106,174 +110,229 @@ const SideMenu = NiceModal.create(() => {
           </FlexChild>
         </HorizontalFlex>
 
-        <FlexChild className={styles.tab_wrap} justifyContent="start">
-          <FlexChild
-            className={
-              clsx(styles.tab_btn,
-                { [styles.active]: menuTab === "mypage" }
+        <VerticalFlex className={styles.tab_container}>
+          <FlexChild className={styles.tab_wrap} justifyContent="start">
+            <FlexChild
+              className={
+                clsx(styles.tab_btn,
+                  { [styles.active]: menuTab === "mypage" }
+                )
+              }
+              onClick={() => setMenuTab('mypage')}
+            >
+              <P>마이페이지</P>
+            </FlexChild>
+  
+            <FlexChild
+              className={
+                clsx(styles.tab_btn,
+                  { [styles.active]: menuTab === "cs" }
+                )
+              }
+              onClick={() => setMenuTab('cs')}
+            >
+              <P>고객센터</P>
+            </FlexChild>
+  
+            <FlexChild
+              className={
+                clsx(styles.tab_btn,
+                  { [styles.active]: menuTab === "community" }
+                )
+              }
+              onClick={() => setMenuTab('community')}
+            >
+              <P>커뮤니티</P>
+            </FlexChild>
+          </FlexChild>
+  
+          <AnimatePresence mode="wait">
+  
+            {/* 마이페이지 */}
+            {
+              menuTab === 'mypage' && (
+                <motion.div
+                  key="mypage"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <VerticalFlex className={styles.menu_inner}>
+                    <VerticalFlex className={styles.inner_wrap} alignItems="start" justifyContent="start">
+                      <FlexChild className={styles.inner_title}>
+                        <P>쇼핑정보</P>
+                      </FlexChild>
+  
+                      <VerticalFlex className={styles.inner_box} alignItems="start" justifyContent="start">
+                        {
+                          shopMenu.map((item, i) => (
+                            <HorizontalFlex key={i} className={styles.inner_btn}>
+                              <FlexChild
+                                className={styles.inner_txt}
+                                onClick={() => {
+                                  modalRef.current?.close();
+                                  navigate(item.link);
+                                }}
+                              >
+                                <P>{item.name}</P>
+                              </FlexChild>
+  
+                              <Image src={"/resources/icons/arrow/list_paging_next.png"} width={7} />
+                            </HorizontalFlex>
+                          ))
+                        }
+                      </VerticalFlex>
+                    </VerticalFlex>
+  
+                    <VerticalFlex className={styles.inner_wrap} alignItems="start" justifyContent="start">
+                      <FlexChild className={styles.inner_title}>
+                        <P>내 정보 관리</P>
+                      </FlexChild>
+  
+                      <VerticalFlex className={styles.inner_box} alignItems="start" justifyContent="start">
+                        {
+                          myInfoMenu.map((item, i) => (
+                            <HorizontalFlex key={i} className={styles.inner_btn}>
+                              <FlexChild
+                                className={styles.inner_txt}
+                                onClick={() => {
+                                  modalRef.current?.close();
+                                  navigate(item.link);
+                                }}
+                              >
+                                <P>{item.name}</P>
+                              </FlexChild>
+                              <Image src={"/resources/icons/arrow/list_paging_next.png"} width={7} />
+                            </HorizontalFlex>
+                          ))
+                        }
+                        <HorizontalFlex className={styles.inner_btn} hidden={!userData?.id}>
+                          <FlexChild
+                            className={styles.inner_txt}
+                            onClick={logoutModal}
+                          >
+                            <P>로그아웃</P>
+                          </FlexChild>
+                          <Image src={"/resources/icons/arrow/list_paging_next.png"} width={7} />
+                        </HorizontalFlex>
+                        <HorizontalFlex className={styles.inner_btn} hidden={!!userData?.id}>
+                          <FlexChild
+                            className={styles.inner_txt}
+                            onClick={()=> {
+                              modalRef.current?.close();
+                              navigate("/auth/login");
+                            }}
+                          >
+                            <P>로그인</P>
+                          </FlexChild>
+                          <Image src={"/resources/icons/arrow/list_paging_next.png"} width={7} />
+                        </HorizontalFlex>
+                        <HorizontalFlex className={styles.inner_btn} hidden={!!userData?.id}>
+                          <FlexChild
+                            className={styles.inner_txt}
+                            onClick={()=> {
+                              modalRef.current?.close();
+                              navigate("/auth/signup");
+                            }}
+                          >
+                            <P>회원가입</P>
+                          </FlexChild>
+                          <Image src={"/resources/icons/arrow/list_paging_next.png"} width={7} />
+                        </HorizontalFlex>
+                      </VerticalFlex>
+                    </VerticalFlex>
+  
+                  </VerticalFlex>
+                </motion.div>
               )
             }
-            onClick={() => setMenuTab('mypage')}
-          >
-            <P>마이페이지</P>
-          </FlexChild>
-
-          <FlexChild
-            className={
-              clsx(styles.tab_btn,
-                { [styles.active]: menuTab === "cs" }
+  
+            {/* 고객센터 */}
+            {
+              menuTab === 'cs' && (
+                <motion.div
+                  key="cs"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <VerticalFlex className={styles.menu_inner}>
+                    <VerticalFlex className={styles.inner_wrap} alignItems="start" justifyContent="start">
+                      <FlexChild className={styles.inner_title}>
+                        <P>고객센터</P>
+                      </FlexChild>
+  
+                      <VerticalFlex className={styles.inner_box} alignItems="start" justifyContent="start">
+                        {
+                          cutomerMenu.map((item, i) => (
+                            <HorizontalFlex key={i} className={styles.inner_btn}>
+                              <FlexChild
+                                className={styles.inner_txt}
+                                onClick={() => {
+                                  modalRef.current?.close();
+                                  navigate(item.link);
+                                }}
+                              >
+                                <P>{item.name}</P>
+                              </FlexChild>
+  
+                              <Image src={"/resources/icons/arrow/list_paging_next.png"} width={7} />
+                            </HorizontalFlex>
+                          ))
+                        }
+                      </VerticalFlex>
+                    </VerticalFlex>
+                  </VerticalFlex>
+                </motion.div>
               )
             }
-            onClick={() => setMenuTab('cs')}
-          >
-            <P>고객센터</P>
-          </FlexChild>
-        </FlexChild>
-
-        <AnimatePresence mode="wait">
-
-          {/* 마이페이지 */}
-          {
-            menuTab === 'mypage' && (
-              <motion.div
-                key="mypage"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                <VerticalFlex className={styles.menu_inner}>
-                  <VerticalFlex className={styles.inner_wrap} alignItems="start" justifyContent="start">
-                    <FlexChild className={styles.inner_title}>
-                      <P>쇼핑정보</P>
-                    </FlexChild>
-
-                    <VerticalFlex className={styles.inner_box} alignItems="start" justifyContent="start">
-                      {
-                        shopMenu.map((item, i) => (
-                          <HorizontalFlex key={i} className={styles.inner_btn}>
-                            <FlexChild
-                              className={styles.inner_txt}
-                              onClick={() => {
-                                modalRef.current?.close();
-                                navigate(item.link);
-                              }}
-                            >
-                              <P>{item.name}</P>
-                            </FlexChild>
-
-                            <Image src={"/resources/icons/arrow/list_paging_next.png"} width={7} />
-                          </HorizontalFlex>
-                        ))
-                      }
+  
+  
+            {/* 고객센터 */}
+            {
+              menuTab === 'community' && (
+                <motion.div
+                  key="community"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <VerticalFlex className={styles.menu_inner}>
+                    <VerticalFlex className={styles.inner_wrap} alignItems="start" justifyContent="start">
+                      <FlexChild className={styles.inner_title}>
+                        <P>커뮤니티</P>
+                      </FlexChild>
+  
+                      <VerticalFlex className={styles.inner_box} alignItems="start" justifyContent="start">
+                        {
+                          communityMenu.map((item, i) => (
+                            <HorizontalFlex key={i} className={styles.inner_btn}>
+                              <FlexChild
+                                className={styles.inner_txt}
+                                onClick={() => {
+                                  modalRef.current?.close();
+                                  navigate(item.link);
+                                }}
+                              >
+                                <P>{item.name}</P>
+                              </FlexChild>
+  
+                              <Image src={"/resources/icons/arrow/list_paging_next.png"} width={7} />
+                            </HorizontalFlex>
+                          ))
+                        }
+                      </VerticalFlex>
                     </VerticalFlex>
                   </VerticalFlex>
-
-                  <VerticalFlex className={styles.inner_wrap} alignItems="start" justifyContent="start">
-                    <FlexChild className={styles.inner_title}>
-                      <P>내 정보 관리</P>
-                    </FlexChild>
-
-                    <VerticalFlex className={styles.inner_box} alignItems="start" justifyContent="start">
-                      {
-                        myInfoMenu.map((item, i) => (
-                          <HorizontalFlex key={i} className={styles.inner_btn}>
-                            <FlexChild
-                              className={styles.inner_txt}
-                              onClick={() => {
-                                modalRef.current?.close();
-                                navigate(item.link);
-                              }}
-                            >
-                              <P>{item.name}</P>
-                            </FlexChild>
-                            <Image src={"/resources/icons/arrow/list_paging_next.png"} width={7} />
-                          </HorizontalFlex>
-                        ))
-                      }
-                      <HorizontalFlex className={styles.inner_btn} hidden={!userData?.id}>
-                        <FlexChild
-                          className={styles.inner_txt}
-                          onClick={logoutModal}
-                        >
-                          <P>로그아웃</P>
-                        </FlexChild>
-                        <Image src={"/resources/icons/arrow/list_paging_next.png"} width={7} />
-                      </HorizontalFlex>
-                      <HorizontalFlex className={styles.inner_btn} hidden={!!userData?.id}>
-                        <FlexChild
-                          className={styles.inner_txt}
-                          onClick={()=> {
-                            modalRef.current?.close();
-                            navigate("/auth/login");
-                          }}
-                        >
-                          <P>로그인</P>
-                        </FlexChild>
-                        <Image src={"/resources/icons/arrow/list_paging_next.png"} width={7} />
-                      </HorizontalFlex>
-                      <HorizontalFlex className={styles.inner_btn} hidden={!!userData?.id}>
-                        <FlexChild
-                          className={styles.inner_txt}
-                          onClick={()=> {
-                            modalRef.current?.close();
-                            navigate("/auth/signup");
-                          }}
-                        >
-                          <P>회원가입</P>
-                        </FlexChild>
-                        <Image src={"/resources/icons/arrow/list_paging_next.png"} width={7} />
-                      </HorizontalFlex>
-                    </VerticalFlex>
-                  </VerticalFlex>
-
-                </VerticalFlex>
-              </motion.div>
-            )
-          }
-
-          {/* 고객센터 */}
-          {
-            menuTab === 'cs' && (
-              <motion.div
-                key="cs"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                <VerticalFlex className={styles.menu_inner}>
-                  <VerticalFlex className={styles.inner_wrap} alignItems="start" justifyContent="start">
-                    <FlexChild className={styles.inner_title}>
-                      <P>고객센터</P>
-                    </FlexChild>
-
-                    <VerticalFlex className={styles.inner_box} alignItems="start" justifyContent="start">
-                      {
-                        cutomerMenu.map((item, i) => (
-                          <HorizontalFlex key={i} className={styles.inner_btn}>
-                            <FlexChild
-                              className={styles.inner_txt}
-                              onClick={() => {
-                                modalRef.current?.close();
-                                navigate(item.link);
-                              }}
-                            >
-                              <P>{item.name}</P>
-                            </FlexChild>
-
-                            <Image src={"/resources/icons/arrow/list_paging_next.png"} width={7} />
-                          </HorizontalFlex>
-                        ))
-                      }
-                    </VerticalFlex>
-                  </VerticalFlex>
-                </VerticalFlex>
-              </motion.div>
-            )
-          }
-
-        </AnimatePresence>
+                </motion.div>
+              )
+            }
+  
+          </AnimatePresence>
+        </VerticalFlex>
       </VerticalFlex>
     </ModalBase>
   );

@@ -186,8 +186,9 @@ export function BestReviewSlider({id, lineClamp }: { id: string, lineClamp?: num
                      <SwiperSlide key={i}>
                         <ReviewImgCard
                            review={review}
-                           width={142}
+                           width={'100%'}
                            board="photoReviewSlide"
+                           slide={true}
                            // lineClamp={lineClamp ?? 2}
                         />
                      </SwiperSlide>
