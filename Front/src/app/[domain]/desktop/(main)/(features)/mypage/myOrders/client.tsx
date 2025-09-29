@@ -482,10 +482,19 @@ export function MyOrdersTable({
                             <P>
                               환불 후 남은 개수 :{" "}
                               {item.quantity -
-                                (item.refunds?.reduce(
-                                  (acc, now) => acc + now.quantity,
-                                  0
-                                ) || 0)}
+                                (item.refunds
+                                  ?.filter((f) => f.refund?.completed_at)
+                                  ?.reduce(
+                                    (acc, now) => acc + now.quantity,
+                                    0
+                                  ) || 0)}
+                            </P>
+                            <P>
+                              (안쓰셔도 상관없어요!) 환불중인 개수 :{" "}
+                              {item.refunds
+                                ?.filter((f) => !f.refund?.completed_at)
+                                ?.reduce((acc, now) => acc + now.quantity, 0) ||
+                                0}
                             </P>
                             <P>
                               할인 금액 :{" "}
@@ -493,10 +502,12 @@ export function MyOrdersTable({
                                 {((item.discount_price || 0) -
                                   (item.unit_price || 0)) *
                                   (item.quantity -
-                                    (item.refunds?.reduce(
-                                      (acc, now) => acc + now.quantity,
-                                      0
-                                    ) || 0))}
+                                    (item.refunds
+                                      ?.filter((f) => f.refund?.completed_at)
+                                      ?.reduce(
+                                        (acc, now) => acc + now.quantity,
+                                        0
+                                      ) || 0))}
                               </Span>
                               <Span>원</Span>
                             </P>
@@ -505,10 +516,12 @@ export function MyOrdersTable({
                               <Span>
                                 {(item.discount_price || 0) *
                                   (item.quantity -
-                                    (item.refunds?.reduce(
-                                      (acc, now) => acc + now.quantity,
-                                      0
-                                    ) || 0))}
+                                    (item.refunds
+                                      ?.filter((f) => f.refund?.completed_at)
+                                      ?.reduce(
+                                        (acc, now) => acc + now.quantity,
+                                        0
+                                      ) || 0))}
                               </Span>
                               <Span>원</Span>
                             </P>

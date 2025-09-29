@@ -244,18 +244,47 @@ const RefundDetailModal = NiceModal.create(
                   width={"100%"}
                   options={
                     refund?.order?.items.map((item) => ({
+                      disabled:
+                        item.quantity -
+                          (item.refunds?.reduce(
+                            (acc, now) => acc + now.quantity,
+                            0
+                          ) || 0) <=
+                        0,
                       display: (
-                        <HorizontalFlex key={item.id} color="#111">
+                        <HorizontalFlex
+                          key={item.id}
+                          color="#111"
+                          textDecorationLine={
+                            item.quantity -
+                              (item.refunds?.reduce(
+                                (acc, now) => acc + now.quantity,
+                                0
+                              ) || 0) <=
+                            0
+                              ? "line-through"
+                              : undefined
+                          }
+                        >
                           <FlexChild gap={10}>
                             <Image src={item.thumbnail} size={40} />
                             <P>{item.title}</P>
                           </FlexChild>
                           <FlexChild width={"max-content"}>
                             <P>
-                              {` X ${item.quantity}
-                      ${
-                        item.extra_quantity ? ` + ${item.extra_quantity}` : ""
-                      }`}
+                              <Span>X </Span>
+                              <Span>
+                                {item.quantity -
+                                  (item.refunds?.reduce(
+                                    (acc, now) => acc + now.quantity,
+                                    0
+                                  ) || 0)}
+                              </Span>
+                              <Span>
+                                {item.extra_quantity
+                                  ? ` + ${item.extra_quantity}`
+                                  : ""}
+                              </Span>
                             </P>
                           </FlexChild>
                         </HorizontalFlex>
