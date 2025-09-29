@@ -71,6 +71,7 @@ type ApiReview = {
   content?: string;
   created_at?: string;
   star_rate?: number;
+  metadata?: { source?: string; aspects?: { design?: string; finish?: string; maintenance?: string}};
   user?: { id?: string; name?: string };
   item?: {
     variant?: {
@@ -238,6 +239,7 @@ type ReviewEntity = {
   count: number;
   created_at?: string;
   star_rate?: number;
+  metadata?: { source?: string; aspects?: { design?: string; finish?: string; maintenance?: string}};
   user?: { id?: string; name?: string };
   item?: {
     id?: string;
