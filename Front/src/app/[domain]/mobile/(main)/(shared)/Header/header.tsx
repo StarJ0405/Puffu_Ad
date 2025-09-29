@@ -35,8 +35,9 @@ export default function MobileHeader() {
 
    return (
       <>
-         {
-            !shouldHideHeader || pathname === '/board/photoReview' ? (
+         {  
+            // || pathname === '/board/photoReview' 
+            !shouldHideHeader ? (
                <>
                   <header className={styles.header}>
                      <HorizontalFlex className={clsx('page_container',styles.headerTop)}>

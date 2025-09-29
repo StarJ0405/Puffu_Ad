@@ -34,8 +34,9 @@
 .tab_wrap {
    flex: unset;
    padding-bottom: 13px;
-   justify-content: space-between !important;
-   gap: 10px;
+   justify-content: center !important;
+   /* justify-content: space-between !important; */
+   gap: 20px;
 }
 
 .tab_wrap .tab_btn {
