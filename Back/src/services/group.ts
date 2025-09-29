@@ -82,136 +82,136 @@ export class GroupService extends BaseService<Group, GroupRepository> {
   }
   async updateUserGroups() {
     return await this.repository.query(`
-      UPDATE 
-        public.user uu 
-      set 
-        group_id = (
-          SELECT 
-            g.id 
-          FROM 
-            (
-              SELECT 
-                * 
-              FROM 
-                public.user u 
-                LEFT JOIN (
-                  SELECT 
-                    o.user_id, 
-                    SUM(l.sum) 
-                  FROM 
-                    public.order o 
-                    JOIN (
-                      SELECT 
-                        l.order_id, 
-                        SUM(
-                          round(
-                            (
-                              l.quantity - COALESCE(ri.quantity, 0)
-                            ) * (
-                              l.discount_price + l.shared_price
+        UPDATE 
+          public.user uu 
+        set 
+          group_id = (
+            SELECT 
+              g.id 
+            FROM 
+              (
+                SELECT 
+                  * 
+                FROM 
+                  public.user u 
+                  LEFT JOIN (
+                    SELECT 
+                      o.user_id, 
+                      SUM(l.sum) 
+                    FROM 
+                      public.order o 
+                      JOIN (
+                        SELECT 
+                          l.order_id, 
+                          SUM(
+                            round(
+                              (
+                                l.quantity - COALESCE(ri.quantity, 0)
+                              ) * (
+                                l.discount_price + COALESCE(l.shared_price,0)
+                              )
                             )
-                          )
-                        ) -- (구매 갯수 - 환불 및 환불 예정 개수) * (단일가(할인된) + 책임금(배송비 - 포인트 - 기타 할인가))
-                      FROM 
-                        public.line_item l 
-                        LEFT JOIN public.refund_item ri ON ri.item_id = l.id 
-                        AND ri.deleted_at IS NULL 
-                      WHERE 
-                        l.confirmation IS TRUE 
-                        AND l.quantity > COALESCE(ri.quantity, 0) 
-                        AND l.discount_price + l.shared_price > 0 
-                      GROUP BY 
-                        l.order_id
-                    ) l ON l.order_id = o.id 
-                  WHERE 
-                    o.status != 'cancel' -- 주문 취소 여부
-                  GROUP BY 
-                    o.user_id
-                ) o ON o.user_id = u.id
-            ) u 
-            LEFT JOIN LATERAL (
-              SELECT 
-                * 
-              FROM 
-                public.group as g 
-              WHERE 
-                u.sum >= g.min 
-                AND g.deleted_at IS NULL 
-              ORDER BY 
-                g.percent DESC 
-              LIMIT 
-                1
-            ) AS G ON true 
-          WHERE 
-            u.id = uu.id
-        )
+                          ) -- (구매 갯수 - 환불 및 환불 예정 개수) * (단일가(할인된) + 책임금(배송비 - 포인트 - 기타 할인가))
+                        FROM 
+                          public.line_item l 
+                          LEFT JOIN public.refund_item ri ON ri.item_id = l.id 
+                          AND ri.deleted_at IS NULL 
+                        WHERE 
+                          l.confirmation IS TRUE 
+                          AND l.quantity > COALESCE(ri.quantity, 0) 
+                          AND l.discount_price + COALESCE(l.shared_price,0) > 0 
+                        GROUP BY 
+                          l.order_id
+                      ) l ON l.order_id = o.id 
+                    WHERE 
+                      o.status != 'cancel' -- 주문 취소 여부
+                    GROUP BY 
+                      o.user_id
+                  ) o ON o.user_id = u.id
+              ) u 
+              LEFT JOIN LATERAL (
+                SELECT 
+                  * 
+                FROM 
+                  public.group as g 
+                WHERE 
+                  COALESCE(u.sum,0) >= g.min 
+                  AND g.deleted_at IS NULL 
+                ORDER BY 
+                  g.percent DESC 
+                LIMIT 
+                  1
+              ) AS G ON true 
+            WHERE 
+              u.id = uu.id
+          )
       `);
   }
   async updateUserGroup(user_id: string) {
     return await this.repository.query(`
-      UPDATE 
-        public.user uu 
-      set 
-        group_id = (
-          SELECT 
-            g.id 
-          FROM 
-            (
-              SELECT 
-                * 
-              FROM 
-                public.user u 
-                LEFT JOIN (
-                  SELECT 
-                    o.user_id, 
-                    SUM(l.sum) 
-                  FROM 
-                    public.order o 
-                    JOIN (
-                      SELECT 
-                        l.order_id, 
-                        SUM(
-                          round(
-                            (
-                              l.quantity - COALESCE(ri.quantity, 0)
-                            ) * (
-                              l.discount_price + l.shared_price
+        UPDATE 
+          public.user uu 
+        set 
+          group_id = (
+            SELECT 
+              g.id 
+            FROM 
+              (
+                SELECT 
+                  * 
+                FROM 
+                  public.user u 
+                  LEFT JOIN (
+                    SELECT 
+                      o.user_id, 
+                      SUM(l.sum) 
+                    FROM 
+                      public.order o 
+                      JOIN (
+                        SELECT 
+                          l.order_id, 
+                          SUM(
+                            round(
+                              (
+                                l.quantity - COALESCE(ri.quantity, 0)
+                              ) * (
+                                l.discount_price + COALESCE(l.shared_price,0)
+                              )
                             )
-                          )
-                        ) -- (구매 갯수 - 환불 및 환불 예정 개수) * (단일가(할인된) + 책임금(배송비 - 포인트 - 기타 할인가))
-                      FROM 
-                        public.line_item l 
-                        LEFT JOIN public.refund_item ri ON ri.item_id = l.id 
-                        AND ri.deleted_at IS NULL 
-                      WHERE 
-                        l.confirmation IS TRUE 
-                        AND l.quantity > COALESCE(ri.quantity, 0) 
-                        AND l.discount_price + l.shared_price > 0 
-                      GROUP BY 
-                        l.order_id
-                    ) l ON l.order_id = o.id 
-                  WHERE 
-                    o.status != 'cancel' -- 주문 취소 여부
-                  GROUP BY 
-                    o.user_id
-                ) o ON o.user_id = u.id
-            ) u 
-            LEFT JOIN LATERAL (
-              SELECT 
-                * 
-              FROM 
-                public.group as g 
-              WHERE 
-                u.sum >= g.min 
-                AND g.deleted_at IS NULL 
-              ORDER BY 
-                g.percent DESC 
-              LIMIT 
-                1
-            ) AS G ON true 
-          WHERE 
-            u.id = uu.id
-        )
+                          ) -- (구매 갯수 - 환불 및 환불 예정 개수) * (단일가(할인된) + 책임금(배송비 - 포인트 - 기타 할인가))
+                        FROM 
+                          public.line_item l 
+                          LEFT JOIN public.refund_item ri ON ri.item_id = l.id 
+                          AND ri.deleted_at IS NULL 
+                        WHERE 
+                          l.confirmation IS TRUE 
+                          AND l.quantity > COALESCE(ri.quantity, 0) 
+                          AND l.discount_price + COALESCE(l.shared_price,0) > 0 
+                        GROUP BY 
+                          l.order_id
+                      ) l ON l.order_id = o.id 
+                    WHERE 
+                      o.status != 'cancel' -- 주문 취소 여부
+                    GROUP BY 
+                      o.user_id
+                  ) o ON o.user_id = u.id
+              ) u 
+              LEFT JOIN LATERAL (
+                SELECT 
+                  * 
+                FROM 
+                  public.group as g 
+                WHERE 
+                  COALESCE(u.sum,0) >= g.min 
+                  AND g.deleted_at IS NULL 
+                ORDER BY 
+                  g.percent DESC 
+                LIMIT 
+                  1
+              ) AS G ON true 
+            WHERE 
+              u.id = uu.id
+          )
         WHERE 
           uu.id = '${user_id}'
       `);
