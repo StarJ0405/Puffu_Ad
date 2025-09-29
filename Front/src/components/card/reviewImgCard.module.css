@@ -7,6 +7,14 @@
    margin-bottom: 17px;
 }
 
+.review_item .imgBox .img {
+   background-size: cover;
+   background-position: center center;
+   background-repeat: no-repeat;
+   width: 100%;
+   padding-bottom: 100%;
+}
+
 .review_item .text_box {
    padding: 0 5px;
 }
@@ -78,7 +86,7 @@
 /* .slide_item {gap: 10px;} */
 
 .slide_item .text_box .content {
-   font-size: 13px; min-height: 32px;
+   font-size: 13px; min-height: 47px;
 }
 
 .slide_item .prodcut_data .info .info_rating {
