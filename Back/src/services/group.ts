@@ -104,16 +104,27 @@ export class GroupService extends BaseService<Group, GroupRepository> {
                       SELECT 
                         l.order_id, 
                         SUM(
-                          l.quantity * l.discount_price
-                        ) -- 구매 갯수 * 단일가(할인된) - 총 환불금
+                          round(
+                            (
+                              l.quantity - COALESCE(ri.quantity, 0)
+                            ) * (
+                              l.discount_price + l.shared_price
+                            )
+                          )
+                        ) -- (구매 갯수 - 환불 및 환불 예정 개수) * (단일가(할인된) + 책임금(배송비 - 포인트 - 기타 할인가))
                       FROM 
                         public.line_item l 
+                        LEFT JOIN public.refund_item ri ON ri.item_id = l.id 
+                        AND ri.deleted_at IS NULL 
+                      WHERE 
+                        l.confirmation IS TRUE 
+                        AND l.quantity > COALESCE(ri.quantity, 0) 
+                        AND l.discount_price + l.shared_price > 0 
                       GROUP BY 
                         l.order_id
                     ) l ON l.order_id = o.id 
                   WHERE 
                     o.status != 'cancel' -- 주문 취소 여부
-                    AND o.created_at >= NOW() - INTERVAL '3 months' -- 3개월 체크
                   GROUP BY 
                     o.user_id
                 ) o ON o.user_id = u.id
@@ -133,14 +144,14 @@ export class GroupService extends BaseService<Group, GroupRepository> {
             ) AS G ON true 
           WHERE 
             u.id = uu.id
-        ) 
+        )
       `);
   }
   async updateUserGroup(user_id: string) {
     return await this.repository.query(`
       UPDATE 
         public.user uu 
-      set   
+      set 
         group_id = (
           SELECT 
             g.id 
@@ -160,16 +171,27 @@ export class GroupService extends BaseService<Group, GroupRepository> {
                       SELECT 
                         l.order_id, 
                         SUM(
-                          l.quantity * l.discount_price
-                        ) -- 구매 갯수 * 단일가(할인된) - 총 환불금
+                          round(
+                            (
+                              l.quantity - COALESCE(ri.quantity, 0)
+                            ) * (
+                              l.discount_price + l.shared_price
+                            )
+                          )
+                        ) -- (구매 갯수 - 환불 및 환불 예정 개수) * (단일가(할인된) + 책임금(배송비 - 포인트 - 기타 할인가))
                       FROM 
                         public.line_item l 
+                        LEFT JOIN public.refund_item ri ON ri.item_id = l.id 
+                        AND ri.deleted_at IS NULL 
+                      WHERE 
+                        l.confirmation IS TRUE 
+                        AND l.quantity > COALESCE(ri.quantity, 0) 
+                        AND l.discount_price + l.shared_price > 0 
                       GROUP BY 
                         l.order_id
                     ) l ON l.order_id = o.id 
                   WHERE 
                     o.status != 'cancel' -- 주문 취소 여부
-                    AND o.created_at >= NOW() - INTERVAL '3 months' -- 3개월 체크
                   GROUP BY 
                     o.user_id
                 ) o ON o.user_id = u.id

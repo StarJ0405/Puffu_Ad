@@ -17,7 +17,6 @@ import { Swiper as SwiperType } from "swiper";
 import { Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import styles from "./RefundDetailModal.module.css";
-import { SP } from "next/dist/shared/lib/utils";
 
 const RefundDetailModal = NiceModal.create(
   ({
@@ -163,9 +162,15 @@ const RefundDetailModal = NiceModal.create(
                     </P>
                   </FlexChild>
                   <FlexChild width="max-content" padding={"15px 15px 15px 0"}>
-                    <P>
+                    <P
+                      hidden={
+                        (refund.order?.total_discounted || 0) +
+                          (refund.order?.shipping_method?.amount || 0) ===
+                        refund.order?.point
+                      }
+                    >
                       <Span color="green">
-                        {refund.items?.reduce(
+                        {selects?.reduce(
                           (acc, item) =>
                             acc +
                             ((item.item?.discount_price || 0) +
@@ -174,9 +179,52 @@ const RefundDetailModal = NiceModal.create(
                           0
                         ) || 0}
                       </Span>
-                      <Span>원 | </Span>
+                      <Span>원</Span>
+                      <Span fontSize={14}>(상품 </Span>
+                      <Span fontSize={14}>
+                        {(selects?.reduce(
+                          (acc, item) =>
+                            acc +
+                            ((item.item?.discount_price || 0) +
+                              (item?.item?.shared_price || 0)) *
+                              item.quantity,
+                          0
+                        ) || 0) -
+                          ((refund.order?.shipping_method?.amount || 0) /
+                            (refund?.order?.total_discounted || 0)) *
+                            (selects?.reduce(
+                              (acc, now) =>
+                                acc +
+                                (now.item?.discount_price || 0) * now.quantity,
+                              0
+                            ) || 0)}
+                      </Span>
+                      <Span fontSize={14}>원 + 배송비</Span>
+                      <Span fontSize={14}>
+                        {((refund.order?.shipping_method?.amount || 0) /
+                          (refund?.order?.total_discounted || 0)) *
+                          (selects?.reduce(
+                            (acc, now) =>
+                              acc +
+                              (now.item?.discount_price || 0) * now.quantity,
+                            0
+                          ) || 0)}
+                      </Span>
+                      <Span fontSize={14}>원)</Span>
+                    </P>
+                    <P
+                      padding={"0 0.5em"}
+                      hidden={
+                        (refund.order?.total_discounted || 0) +
+                          (refund.order?.shipping_method?.amount || 0) ===
+                          refund.order?.point || refund.order?.point === 0
+                      }
+                    >
+                      <Span> | </Span>
+                    </P>
+                    <P hidden={refund.order?.point === 0}>
                       <Span color="green">
-                        {refund.items?.reduce(
+                        {selects?.reduce(
                           (acc, item) =>
                             acc +
                             ((refund?.order?.point || 0) /
@@ -187,7 +235,7 @@ const RefundDetailModal = NiceModal.create(
                         ) || 0}
                       </Span>
                       <Span>P</Span>
-                      <Span> / (</Span>
+                      {/* <Span> / (</Span>
                       <Span>
                         {(refund?.order?.shipping_method?.amount || 0) +
                           (refund?.order?.total_discounted || 0) -
@@ -195,7 +243,7 @@ const RefundDetailModal = NiceModal.create(
                       </Span>
                       <Span>원 | </Span>
                       <Span>{refund?.order?.point}</Span>
-                      <Span>P)</Span>
+                      <Span>P)</Span> */}
                     </P>
                   </FlexChild>
                 </FlexChild>
@@ -246,10 +294,10 @@ const RefundDetailModal = NiceModal.create(
                     refund?.order?.items.map((item) => ({
                       disabled:
                         item.quantity -
-                          (item.refunds?.reduce(
-                            (acc, now) => acc + now.quantity,
-                            0
-                          ) || 0) <=
+                          (item.refunds
+                            ?.filter((f) => f.refund_id !== refund.id)
+                            ?.reduce((acc, now) => acc + now.quantity, 0) ||
+                            0) <=
                         0,
                       display: (
                         <HorizontalFlex
@@ -257,10 +305,10 @@ const RefundDetailModal = NiceModal.create(
                           color="#111"
                           textDecorationLine={
                             item.quantity -
-                              (item.refunds?.reduce(
-                                (acc, now) => acc + now.quantity,
-                                0
-                              ) || 0) <=
+                              (item.refunds
+                                ?.filter((f) => f.refund_id !== refund.id)
+                                ?.reduce((acc, now) => acc + now.quantity, 0) ||
+                                0) <=
                             0
                               ? "line-through"
                               : undefined
@@ -275,10 +323,12 @@ const RefundDetailModal = NiceModal.create(
                               <Span>X </Span>
                               <Span>
                                 {item.quantity -
-                                  (item.refunds?.reduce(
-                                    (acc, now) => acc + now.quantity,
-                                    0
-                                  ) || 0)}
+                                  (item.refunds
+                                    ?.filter((f) => f.refund_id !== refund.id)
+                                    ?.reduce(
+                                      (acc, now) => acc + now.quantity,
+                                      0
+                                    ) || 0)}
                               </Span>
                               <Span>
                                 {item.extra_quantity
@@ -610,6 +660,33 @@ const Item = forwardRef(
                 quantity}
             </Span>
             <Span>원</Span>
+            <Span fontSize={16} fontWeight={500}>
+              (상품{" "}
+            </Span>
+            <Span fontSize={16} fontWeight={500}>
+              {((item.item?.discount_price || 0) +
+                (item?.item?.shared_price || 0)) *
+                quantity -
+                ((refund?.order?.shipping_method?.amount || 0) /
+                  (refund?.order?.total_discounted || 0)) *
+                  (item?.item?.discount_price || 0) *
+                  quantity}
+            </Span>
+            <Span fontSize={16} fontWeight={500}>
+              원 + 배송비{" "}
+            </Span>
+            <Span fontSize={16} fontWeight={500}>
+              {((refund?.order?.shipping_method?.amount || 0) /
+                (refund?.order?.total_discounted || 0)) *
+                (item?.item?.discount_price || 0) *
+                quantity}
+            </Span>
+            <Span fontSize={16} fontWeight={500}>
+              원
+            </Span>
+            <Span fontSize={16} fontWeight={500}>
+              )
+            </Span>
           </P>
         </FlexChild>
         <FlexChild className={styles.row}>
