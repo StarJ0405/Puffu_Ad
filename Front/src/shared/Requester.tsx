@@ -548,6 +548,19 @@ class _Requester {
     if (callback) callback(await this.delete(`/users/me/reviews/${id}`, data));
     else return await this.delete(`/users/me/reviews/${id}`, data);
   }
+  // 전체 리뷰 관련
+  async getPublicReviews(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/reviews`, data));
+    else return await this.get(`/reviews`, data);
+  }
+  async getPublicReview(
+    id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.get(`/reviews/${id}`, data));
+    else return await this.get(`/reviews/${id}`, data);
+  }
   // 포인트 사용 내역
   async getPoints(data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.get(`/users/me/points`, data));
