@@ -15,6 +15,7 @@ import { LineItem } from "./line_item";
 import { ShippingMethod } from "./shipping_method";
 import { Store } from "./store";
 import { User } from "./user";
+import { Refund } from "./refund";
 
 export enum OrderStatus {
   AWAITING = "awaiting",
@@ -96,13 +97,6 @@ export class Order extends BaseEntity {
     );
   }
 
-  get total_refund(): number {
-    return (
-      this.items?.reduce((acc, now) => acc + (now.total_refund || 0), 0.0) ||
-      0.0
-    );
-  }
-
   @Column({
     type: "timestamp with time zone",
     default: () => "CURRENT_TIMESTAMP",
@@ -126,6 +120,9 @@ export class Order extends BaseEntity {
 
   @Column({ type: "integer", default: 0 })
   point?: number;
+
+  @OneToMany(() => Refund, (refund) => refund.order)
+  refunds?: Refund[];
 
   @BeforeInsert()
   protected async BeforeInsert(): Promise<void> {

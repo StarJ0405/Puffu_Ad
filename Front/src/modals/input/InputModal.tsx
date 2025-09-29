@@ -20,6 +20,7 @@ interface InputProps {
   label: React.ReactNode;
   placeHolder?: HTMLInputElement["placeholder"];
   regExp?: { exp: { test: (value: any) => boolean } }[];
+  max?: number;
 }
 const InputModal = NiceModal.create(
   ({
@@ -29,13 +30,15 @@ const InputModal = NiceModal.create(
     input = [],
     cancelText,
     confirmText,
+    preventable = false,
   }: {
-    onConfirm: (value: any | any[]) => void;
+    onConfirm: (value: any | any[]) => boolean | void;
     onCancel: () => void;
-    message: string;
+    message: React.ReactNode | string;
     input: InputProps | InputProps[];
     cancelText: string;
     confirmText: string;
+    preventable?: boolean;
   }) => {
     const [withHeader, withFooter] = [false, false];
     const [width, height] = ["min(80%, 400px)", "auto"];
@@ -59,11 +62,11 @@ const InputModal = NiceModal.create(
         let isAsyncFn =
           onConfirm.constructor.name === "AsyncFunction" ? true : false;
         if (isAsyncFn) {
-          await onConfirm(value.length === 1 ? value[0] : value);
-          modal.current.close();
+          const result = await onConfirm(value.length === 1 ? value[0] : value);
+          if (!preventable || result) modal.current.close();
         } else {
-          onConfirm(value.length === 1 ? value[0] : value);
-          modal.current.close();
+          const result = onConfirm(value.length === 1 ? value[0] : value);
+          if (!preventable || result) modal.current.close();
         }
       } else {
         modal.current.close();
@@ -97,15 +100,19 @@ const InputModal = NiceModal.create(
         <FlexChild padding={"50px 24px 24px 24px"} height="100%">
           <VerticalFlex gap={20} height={"100%"}>
             <FlexChild>
-              <P
-                width="100%"
-                textAlign="center"
-                size={isMobile ? 16 : 18}
-                color={"#111"}
-                weight={600}
-              >
-                {message}
-              </P>
+              {typeof message === "string" ? (
+                <P
+                  width="100%"
+                  textAlign="center"
+                  size={isMobile ? 16 : 18}
+                  color={"#111"}
+                  weight={600}
+                >
+                  {message}
+                </P>
+              ) : (
+                message
+              )}
             </FlexChild>
             {(Array.isArray(input) ? input : [input]).map((value, index) => (
               <FlexChild key={`inputs_${index}_${value.label}`}>
@@ -150,6 +157,7 @@ const InputModal = NiceModal.create(
                         }}
                         value={value.value}
                         type={value?.type}
+                        max={value.max}
                         placeHolder={value.placeHolder}
                         regExp={value.regExp || []}
                         onKeyDown={(e) => {

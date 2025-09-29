@@ -312,7 +312,6 @@ export function MyOrdersTable({
                               width={13}
                             />
                           </FlexChild>
-
                           <P
                             className={styles.unit_title}
                             lineClamp={2}

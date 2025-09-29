@@ -68,6 +68,9 @@ export class ShippingMethod extends BaseEntity {
   @Column({ type: "character varying", nullable: true })
   tracking_number?: string;
 
+  @Column({ type: "timestamp with time zone", nullable: true })
+  shipped_at?: Date | string | null;
+
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;
 

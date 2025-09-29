@@ -1,0 +1,57 @@
+.total {
+  text-decoration-line: line-through;
+  color: #333;
+}
+
+.select_row {
+  border-right: 1px solid #d0d0d0;
+  border-left: 1px solid #d0d0d0;
+  border-bottom: 1px solid #d0d0d0;
+}
+
+.emtpy_wrapper {
+  border: 1px solid #d0d0d0;
+  height: 100%;
+}
+
+.content_wrapper {
+  border-top: 1px solid #d0d0d0;
+  height: 100%;
+}
+.content_wrapper .row {
+  border-bottom: 1px solid #d0d0d0;
+  border-left: 1px solid #d0d0d0;
+  border-right: 1px solid #d0d0d0;
+  gap: 10px;
+  align-items: stretch !important;
+}
+.content_wrapper .header {
+  padding: 15px;
+  width: 200px;
+  min-width: 200px;
+  max-width: 200px;
+  text-align: center;
+  background-color: #f5f6fb;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 20px;
+}
+
+.content_wrapper .value {
+  padding: 15px;
+  font-weight: 600;
+  font-size: 20px;
+}
+.cancel_button {
+  border: 1px solid var(--admin-color);
+  color: var(--admin-color);
+  background-color: #fff;
+  width: 100%;
+  padding: 12.5px;
+}
+.confirm_button {
+  background-color: var(--admin-color);
+  color: #fff;
+  width: 100%;
+  padding: 12.5px;
+}

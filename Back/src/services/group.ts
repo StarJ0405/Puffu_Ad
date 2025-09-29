@@ -104,7 +104,7 @@ export class GroupService extends BaseService<Group, GroupRepository> {
                       SELECT 
                         l.order_id, 
                         SUM(
-                          l.quantity * l.discount_price - l.total_refund
+                          l.quantity * l.discount_price
                         ) -- 구매 갯수 * 단일가(할인된) - 총 환불금
                       FROM 
                         public.line_item l 
@@ -160,7 +160,7 @@ export class GroupService extends BaseService<Group, GroupRepository> {
                       SELECT 
                         l.order_id, 
                         SUM(
-                          l.quantity * l.discount_price - l.total_refund
+                          l.quantity * l.discount_price
                         ) -- 구매 갯수 * 단일가(할인된) - 총 환불금
                       FROM 
                         public.line_item l 

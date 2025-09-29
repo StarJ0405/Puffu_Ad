@@ -147,7 +147,7 @@ function Select<T extends string | number>({
           const newSelectedValues = new Set(prevSelectedValues);
           if (newSelectedValues.has(option.value)) {
             // 이미 선택된 항목은 제한 없이 해제 가능
-            if (cancelable) newSelectedValues.delete(option.value);
+            if (cancelable || multiple) newSelectedValues.delete(option.value);
           } else {
             // 새 항목을 추가할 때만 제한 검사
             if (
@@ -167,7 +167,7 @@ function Select<T extends string | number>({
       } else {
         // 단일 선택 모드 (이전과 동일)
         if (currentSelectedValues.has(option.value)) {
-          if (cancelable) {
+          if (cancelable || multiple) {
             setCurrentSelectedValues(new Set());
             onChange?.(undefined);
           }
@@ -247,7 +247,7 @@ function Select<T extends string | number>({
             })
             .map((option, index) => (
               <div
-                style={{fontSize: isMobile ? "12px" : ""}}
+                style={{ fontSize: isMobile ? "12px" : "" }}
                 key={String(option?.value) + index}
                 className={clsx(
                   styles.optionItem,
@@ -404,6 +404,7 @@ function Select<T extends string | number>({
       <div
         className={styles.inline}
         style={{
+          minHeight,
           height: isOpen ? `${36 * options.length}px` : 0,
           opacity: isOpen ? 1 : 0,
           pointerEvents: !isOpen ? "none" : undefined,
@@ -413,7 +414,7 @@ function Select<T extends string | number>({
       </div>
     </div>
   ) : (
-    <div style={{position: 'relative'}}>
+    <div style={{ position: "relative" }}>
       <div
         ref={selectRef}
         className={clsx(styles.selectContainer)}
@@ -435,6 +436,7 @@ function Select<T extends string | number>({
           style={{
             padding: searchable && isOpen ? 0 : undefined,
             scrollMarginTop,
+            minHeight,
           }}
         >
           {searchable && isOpen ? (

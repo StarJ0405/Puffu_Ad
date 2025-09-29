@@ -6,6 +6,7 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
 } from "typeorm";
 import { generateEntityId } from "utils/functions";
@@ -14,6 +15,7 @@ import { Cart } from "./cart";
 import { Order } from "./order";
 import { Review } from "./review";
 import { Variant } from "./variant";
+import { RefundItem } from "./refund_item";
 
 @Entity({ name: "line_item" })
 @Index(["created_at"])
@@ -89,6 +91,9 @@ export class LineItem extends BaseEntity {
   @Column({ type: "real", nullable: true })
   discount_price?: number;
 
+  @Column({ type: "real", nullable: true })
+  shared_price?: number;
+
   get total(): number | undefined {
     if (typeof this.unit_price !== "undefined")
       return this.quantity * this.unit_price;
@@ -112,14 +117,17 @@ export class LineItem extends BaseEntity {
   @Column({ type: "character varying", nullable: true })
   currency_unit?: string;
 
-  @Column({ type: "real", default: 0.0 })
-  total_refund?: number;
+  @Column({ type: "boolean", default: false })
+  confirmation?: boolean;
 
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;
 
   @OneToOne(() => Review, (review) => review.item)
   review?: Review;
+
+  @OneToMany(() => RefundItem, (refund) => refund.item)
+  refunds?: RefundItem[];
 
   @BeforeInsert()
   protected async BeforeInsert(): Promise<void> {

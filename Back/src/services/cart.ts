@@ -189,6 +189,8 @@ export class CartService extends BaseService<Cart, CartRepository> {
       ...shipping_method,
       id: undefined,
       store_id: null,
+      created_at: undefined,
+      updated_at: undefined,
     };
 
     // if (point > 0) {
@@ -218,6 +220,16 @@ export class CartService extends BaseService<Cart, CartRepository> {
       payment_data: payment,
       point: point || 0,
     });
+
+    // line_item 총 지분 금액 계산 : 배송비 - 포인트 - 기타 할인비
+    const shared_total = (_shipping_method?.amount || 0) - (point || 0) - 0;
+    const total =
+      items?.reduce(
+        (acc, item) =>
+          acc + (item.variant?.discount_price || 0) * item.quantity,
+        0
+      ) || 0;
+
     await Promise.all(
       (items || []).map(async (item) => {
         await this.lineItemRepository.update(
@@ -235,6 +247,8 @@ export class CartService extends BaseService<Cart, CartRepository> {
             currency_unit: cart.store?.currency_unit,
             brand_id: item.variant?.product?.brand_id,
             tax_rate: item.variant?.product?.tax_rate,
+            shared_price:
+              (shared_total / total) * (item.variant?.discount_price || 0),
           }
         );
         await this.variantRepository.update(

@@ -87,7 +87,7 @@ export class OrderService extends BaseService<Order, OrderRepository> {
                   typeof relation === "string" && relation.includes("user")
               )
             ) {
-              _where.push(..._where, this.Search({}, ["user.name"], q, true));
+              _where.push(..._where, this.Search({}, ["user.name"], q));
               _relations.push("user");
             }
 
@@ -168,7 +168,7 @@ export class OrderService extends BaseService<Order, OrderRepository> {
                   typeof relation === "string" && relation.includes("user")
               )
             ) {
-              _where.push(..._where, this.Search({}, ["user.name"], q, true));
+              _where.push(..._where, this.Search({}, ["user.name"], q));
               _relations.push("user");
             }
 
@@ -285,7 +285,6 @@ export class OrderService extends BaseService<Order, OrderRepository> {
           // TOSS
           const secret = process.env.BRAND_PAY_SECRET_KEY?.trim();
           const auth = "Basic " + Buffer.from(`${secret}:`).toString("base64");
-          // 부분취소시 cancelAmount
           const response = await fetch(
             `https://api.tosspayments.com/v1/payments/${payment_data.paymentKey}/cancel`,
             {

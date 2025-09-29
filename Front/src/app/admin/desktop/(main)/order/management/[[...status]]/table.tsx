@@ -3,6 +3,7 @@
 import Button from "@/components/buttons/Button";
 import Center from "@/components/center/Center";
 import DatePicker from "@/components/date-picker/DatePicker";
+import Div from "@/components/div/Div";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
@@ -25,7 +26,7 @@ import {
 } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
-import _, { max } from "lodash";
+import _ from "lodash";
 import { RefObject, useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
 export default function ({
@@ -71,7 +72,7 @@ export default function ({
                 <P>{cell.name}</P>
               </FlexChild>
               <FlexChild>
-                <P width={80}>이메일</P>
+                <P width={80}>아이디</P>
                 <P>{cell.username}</P>
               </FlexChild>
               <FlexChild>
@@ -88,24 +89,183 @@ export default function ({
         common: {
           style: {
             width: 60,
+            minWidth: 60,
           },
         },
       },
     },
     {
-      label: "구매금액",
+      label: "결제금액",
       code: "total_discounted",
-      Cell: ({ cell, row }) => (
-        <P width={150}>
-          <Span>
-            {cell +
-              (row?.total_tax || 0) +
-              (row?.shipping_method?.amount || 0) -
-              (row?.point || 0)}
-          </Span>
-          <Span>{row?.store?.currency_unit}</Span>
-        </P>
-      ),
+      Cell: ({ cell, row }) => {
+        const value =
+          cell +
+          (row?.total_tax || 0) +
+          (row?.shipping_method?.amount || 0) -
+          (row?.point || 0);
+        const type =
+          value <= 0
+            ? "포인트 결제"
+            : row?.payment_data?.bank
+            ? "무통장"
+            : row?.payment_data?.trackId
+            ? "NESTPAY(신용카드)"
+            : row?.payment_data?.type === "BRANDPAY"
+            ? "토스"
+            : "알 수 없음";
+        const { refundValue, refundPoint } = (
+          (row.refunds || []) as RefundData[]
+        ).reduce(
+          (acc, now) => {
+            acc.refundValue += now.value;
+            acc.refundPoint += now.point;
+            return acc;
+          },
+          { refundValue: 0, refundPoint: 0 }
+        );
+
+        return (
+          <Tooltip
+            disable={refundPoint <= 0 && refundValue <= 0}
+            content={
+              <VerticalFlex
+                backgroundColor="#fff"
+                border={"1px solid #d0d0d0"}
+                padding={10}
+                minWidth={200}
+              >
+                <FlexChild hidden={value <= 0} paddingBottom={"0.5em"}>
+                  <HorizontalFlex>
+                    <P fontWeight={700} fontSize={18}>
+                      결제
+                    </P>
+                    <P color="green">
+                      <Span>{value - refundValue}</Span>
+                      <Span>원</Span>
+                    </P>
+                  </HorizontalFlex>
+                </FlexChild>
+                <FlexChild
+                  hidden={
+                    row.refunds.filter((f: RefundData) => f.value > 0)
+                      .length === 0
+                  }
+                >
+                  <VerticalFlex>
+                    <FlexChild>
+                      <P textIndent={"1em"}>- 기본 결제액</P>
+                    </FlexChild>
+                    <FlexChild justifyContent="flex-end">
+                      <P>
+                        <Span>{value}</Span>
+                        <Span>원</Span>
+                      </P>
+                    </FlexChild>
+                    <FlexChild>
+                      <P textIndent={"1em"}>- 환불액</P>
+                    </FlexChild>
+                    {row.refunds
+                      .filter((f: RefundData) => f.value > 0)
+                      .map((refund: RefundData) => (
+                        <FlexChild justifyContent="flex-end" key={refund.id}>
+                          <P color="red">
+                            <Span>{-refund.value}</Span>
+                            <Span>원</Span>
+                          </P>
+                        </FlexChild>
+                      ))}
+                  </VerticalFlex>
+                </FlexChild>
+                <FlexChild hidden={row.point <= 0} paddingBottom={"0.5em"}>
+                  <HorizontalFlex>
+                    <P fontWeight={700} fontSize={18}>
+                      포인트
+                    </P>
+                    <P color="green">
+                      <Span>{row.point - refundPoint}</Span>
+                      <Span>P</Span>
+                    </P>
+                  </HorizontalFlex>
+                </FlexChild>
+                <FlexChild
+                  hidden={
+                    row.refunds.filter((f: RefundData) => f.point > 0)
+                      .length === 0
+                  }
+                >
+                  <VerticalFlex>
+                    <FlexChild>
+                      <P textIndent={"1em"}>- 기본 포인트</P>
+                    </FlexChild>
+                    <FlexChild justifyContent="flex-end">
+                      <P>
+                        <Span>{row.point}</Span>
+                        <Span>P</Span>
+                      </P>
+                    </FlexChild>
+                    <FlexChild>
+                      <P textIndent={"1em"}>- 환불 포인트</P>
+                    </FlexChild>
+                    {row.refunds
+                      .filter((f: RefundData) => f.point > 0)
+                      .map((refund: RefundData) => (
+                        <FlexChild justifyContent="flex-end" key={refund.id}>
+                          <P color="red">
+                            <Span>{-refund.point}</Span>
+                            <Span>P</Span>
+                          </P>
+                        </FlexChild>
+                      ))}
+                  </VerticalFlex>
+                </FlexChild>
+              </VerticalFlex>
+            }
+          >
+            <VerticalFlex>
+              <P lineHeight={1.3} width={150} fontWeight={600}>
+                {type}
+              </P>
+              <P
+                width={150}
+                hidden={value <= 0}
+                textDecorationLine={
+                  refundValue > 0 ? "line-through" : undefined
+                }
+              >
+                <Span>{value}</Span>
+                <Span>원</Span>
+              </P>
+              <P
+                color="green"
+                width={150}
+                hidden={value <= 0 || refundValue === 0}
+              >
+                <Span>{value - refundValue}</Span>
+                <Span>원</Span>
+              </P>
+
+              <P
+                width={150}
+                hidden={row?.point <= 0}
+                textDecorationLine={
+                  refundPoint > 0 ? "line-through" : undefined
+                }
+              >
+                <Span>{row?.point}</Span>
+                <Span>P</Span>
+              </P>
+              <P
+                color="green"
+                width={150}
+                hidden={row?.point <= 0 || refundPoint === 0}
+              >
+                <Span>{row.point - refundPoint}</Span>
+                <Span>P</Span>
+              </P>
+            </VerticalFlex>
+          </Tooltip>
+        );
+      },
       styling: {
         common: {
           style: {
@@ -116,7 +276,7 @@ export default function ({
       },
     },
     {
-      label: "상품명",
+      label: "상품",
       code: "items",
       Cell: ({ cell }) => (
         <VerticalFlex gap={10}>
@@ -134,25 +294,52 @@ export default function ({
                 )
               )
             )
-            ?.map((item: LineItemData) => (
-              <FlexChild key={item.id}>
-                <Tooltip
-                  position="right"
-                  content={
-                    <Image src={item.thumbnail} size={"min(30vw,30vh)"} />
-                  }
+            ?.map((item: LineItemData) => {
+              const total =
+                item.quantity -
+                (item.refunds
+                  ?.filter((f) => f.refund?.completed_at)
+                  ?.reduce((acc, now) => acc + now.quantity, 0) || 0);
+              return (
+                <FlexChild
+                  key={item.id}
+                  flexGrow={0}
+                  flexShrink={0}
+                  flexBasis={"auto"}
                 >
-                  <Image src={item.thumbnail} size={50} />
-                </Tooltip>
-                <P>({item?.brand?.name})</P>
-                <P>{item.title}</P>
-                <P>
-                  X {item.total_quantity}
-                  {item.extra_quantity > 0 &&
-                    `(${item.quantity} + ${item.extra_quantity})`}
-                </P>
-              </FlexChild>
-            ))}
+                  <Tooltip
+                    position="right"
+                    content={
+                      <Image src={item.thumbnail} size={"min(30vw,30vh)"} />
+                    }
+                  >
+                    <Image src={item.thumbnail} size={50} />
+                  </Tooltip>
+                  <P>({item?.brand?.name})</P>
+                  <P>{item.title}</P>
+                  <Div>
+                    <VerticalFlex>
+                      <P
+                        textDecorationLine={
+                          !!item.refunds?.length ? "line-through" : undefined
+                        }
+                      >
+                        <Span>X </Span>
+                        <Span>
+                          {item.total_quantity}
+                          {item.extra_quantity > 0 &&
+                            `(${item.quantity} + ${item.extra_quantity})`}
+                        </Span>
+                      </P>
+                      <P hidden={!item.refunds?.length}>
+                        <Span>X </Span>
+                        <Span color="red">{total}</Span>
+                      </P>
+                    </VerticalFlex>
+                  </Div>
+                </FlexChild>
+              );
+            })}
         </VerticalFlex>
       ),
     },
@@ -384,6 +571,25 @@ export default function ({
                   }
                 );
               },
+            }),
+        });
+      }
+      if (
+        status === "completed" &&
+        row.items.some(
+          (item: LineItemData) =>
+            item.quantity -
+              (item.refunds?.reduce((acc, now) => acc + now.quantity, 0) || 0) >
+            0
+        )
+      ) {
+        rows.push({
+          label: "환불 신청",
+          hotKey: "f",
+          onClick: () =>
+            NiceModal.show("orderRefund", {
+              order: row,
+              onSuccess: () => table.current.research(),
             }),
         });
       }

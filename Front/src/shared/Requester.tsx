@@ -428,6 +428,26 @@ class _Requester {
     if (callback) callback(await this.delete(`/users/me/order/${id}`, data));
     else return await this.delete(`/users/me/order/${id}`, data);
   }
+  // 주문서 상품
+  async confirmItem(
+    order_id: string,
+    item_id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback)
+      callback(
+        await this.post(
+          `/users/me/order/${order_id}/item/${item_id}/confirmation`,
+          data
+        )
+      );
+    else
+      return await this.post(
+        `/users/me/order/${order_id}/item/${item_id}/confirmation`,
+        data
+      );
+  }
 
   // 키워드 관련
   async addKeyword(data?: any, callback?: Function): Promise<any> {
@@ -483,7 +503,11 @@ class _Requester {
     if (callback) callback(await this.get(`/qa`, data));
     else return await this.get(`/qa`, data);
   }
-  async getProductQAs(product_id:string,data?: any, callback?: Function): Promise<any> {
+  async getProductQAs(
+    product_id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
     if (callback) callback(await this.get(`/products/${product_id}/qa`, data));
     else return await this.get(`/products/${product_id}/qa`, data);
   }

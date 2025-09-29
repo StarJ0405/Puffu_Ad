@@ -2,6 +2,7 @@ import axios from "axios";
 import { Order, OrderStatus } from "models/order";
 import { ShippingType } from "models/shipping_method";
 import { OrderService } from "services/order";
+import { ShippingMethodService } from "services/shipping_method";
 import { container } from "tsyringe";
 import { IsNull, Not } from "typeorm";
 import { schedule } from "../module";
@@ -40,6 +41,7 @@ export function regist(DEV: boolean) {
     "*/30 * * * * *",
     async () => {
       const service = container.resolve(OrderService);
+      const shippingService = container.resolve(ShippingMethodService);
       // 배송대기
       {
         const orders = await service.getList({
@@ -82,15 +84,23 @@ export function regist(DEV: boolean) {
         });
         for (const order of orders) {
           await ProgressModule(order, async (progresses) => {
-            if (
-              progresses.some(
-                (progress) => progress?.status?.id === "delivered"
-              )
-            ) {
+            const find = progresses.find(
+              (progress) => progress?.status?.id === "delivered"
+            );
+            if (find) {
               await service.update(
                 { id: order.id },
                 {
                   status: OrderStatus.COMPLETE,
+                }
+              );
+              await shippingService.update(
+                {
+                  order_id: order.id,
+                  type: ShippingType.DEFAULT,
+                },
+                {
+                  shipped_at: new Date(find.time),
                 }
               );
             }
