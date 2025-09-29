@@ -36,6 +36,7 @@ import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
+import { title } from "process";
 
 export function CartWrap() {
   const { userData } = useAuth();
@@ -326,7 +327,7 @@ export function CartWrap() {
         </FlexChild>
 
         <FlexChild className={clsx(styles.agree_info, styles.itemBox)}>
-          <AgreeInfo setAgrees={setAgrees} />
+          <AgreeInfo setAgrees={setAgrees} agrees={agrees} />
         </FlexChild>
       </VerticalFlex>
 
@@ -801,11 +802,15 @@ export function Item({ item }: { item: LineItemData }) {
 }
 
 export function AgreeInfo({
+  agrees,
   setAgrees,
 }: {
+  agrees: string[];
   setAgrees: Dispatch<SetStateAction<string[]>>;
 }) {
-  const navigate = useNavigate();
+  const showModal = (type: 'term_check' | 'privacy_check') => {
+    NiceModal.show("AgreeContent", { type, setAgrees });
+  };
 
   return (
     <VerticalFlex alignItems="start">
@@ -813,7 +818,7 @@ export function AgreeInfo({
         <P className={styles.list_title}>이용약관 동의</P>
       </article>
 
-      <CheckboxGroup name={"agree_check"} onChange={setAgrees}>
+      <CheckboxGroup name={"agree_check"} onChange={setAgrees} values={agrees}>
         <VerticalFlex className={styles.agree_list}>
           <HorizontalFlex className={styles.agree_item}>
             <FlexChild width={"auto"} gap={10}>
@@ -831,8 +836,7 @@ export function AgreeInfo({
 
               <Span
                 className={styles.more_btn}
-                // onClick={() => navigate("/policies/term")}
-                onClick={() => NiceModal.show("TermContent")}
+                onClick={() => showModal('term_check')}
               >
                 자세히보기
               </Span>
@@ -848,8 +852,7 @@ export function AgreeInfo({
 
               <Span
                 className={styles.more_btn}
-                // onClick={() => navigate("/policies/praivacy")}
-                onClick={() => NiceModal.show("PraivacyContent")}
+                onClick={() => showModal('privacy_check')}
               >
                 자세히보기
               </Span>
