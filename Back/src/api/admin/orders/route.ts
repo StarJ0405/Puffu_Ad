@@ -1,6 +1,5 @@
 import { Order } from "models/order";
 import { OrderService } from "services/order";
-import { ShippingMethodService } from "services/shipping_method";
 import { container } from "tsyringe";
 import { In } from "typeorm";
 

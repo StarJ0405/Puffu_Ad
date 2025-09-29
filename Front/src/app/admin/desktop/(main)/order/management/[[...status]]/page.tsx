@@ -11,7 +11,15 @@ export default async function ({ params }: { params: Promise<Params> }) {
     pageSize: 20,
     pageNumber: 0,
     order: { display: "asc" },
-    relations: ["items.brand", "address", "shipping_method", "user", "store"],
+    relations: [
+      "items.brand",
+      "items.refunds.refund",
+      "address",
+      "shipping_method",
+      "user",
+      "store",
+      "refunds.items.item",
+    ],
     start_date,
   };
 

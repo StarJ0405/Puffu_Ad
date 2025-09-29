@@ -437,6 +437,44 @@ class _AdminRequester {
     if (callback) callback(await this.post(`/orders/cancel`, data));
     else return await this.post(`/orders/cancel`, data);
   }
+
+  async refundOrder(
+    order_id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.post(`/orders/${order_id}/refund`, data));
+    else return await this.post(`/orders/${order_id}/refund`, data);
+  }
+  // 주문서 환불
+  async getReufnds(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/refunds`, data));
+    else return await this.get(`/refunds`, data);
+  }
+  async updateRefund(
+    refund_id?: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.post(`/refunds/${refund_id}`, data));
+    else return await this.post(`/refunds/${refund_id}`, data);
+  }
+  async completeRefund(
+    refund_id?: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.put(`/refunds/${refund_id}`, data));
+    else return await this.put(`/refunds/${refund_id}`, data);
+  }
+  async cancelRefund(
+    refund_id?: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.delete(`/refunds/${refund_id}`, data));
+    else return await this.delete(`/refunds/${refund_id}`, data);
+  }
   // 공지사항
   async createNotices(data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.post(`/notices`, data));

@@ -245,12 +245,14 @@ interface LineItemData extends BaseEntity {
   unit_price?: number;
   tax_rate?: number;
   discount_price?: number;
+  shared_price?: number;
   total?: number;
   total_discount?: number;
   total_tax?: number;
   currency_unit?: string;
-  total_refund?: number;
   metadata?: Record<string, unknown> | null;
+  confirmation: boolean;
+  refunds?: RefundItemData[];
 }
 
 interface CartData extends BaseEntity {
@@ -276,7 +278,9 @@ interface ShippingMethodDataFrame {
   tracking_number?: string;
   type: "default" | "refund" | "exchange";
 }
-interface ShippingMethodData extends BaseEntity, ShippingMethodDataFrame {}
+interface ShippingMethodData extends BaseEntity, ShippingMethodDataFrame {
+  shipped_at?: Date | string | null;
+}
 
 interface AddressDataFrame {
   id?: string;
@@ -308,12 +312,12 @@ interface OrderData extends BaseEntity {
   total: number;
   total_tax: number;
   total_discounted: number;
-  total_refund: number;
   captured_at: string | Date;
   payment_data?: Record<string, unknown> | null;
   metadata?: Record<string, unknown> | null;
   items: LineItemData[];
   point: number;
+  refunds?: RefundData[];
 }
 
 interface AccountLinkData extends BaseEntity {
@@ -460,4 +464,23 @@ interface GroupDataFrame {
 }
 interface GroupData extends BaseEntity, GroupDataFrame {
   users?: UserData[];
+}
+interface RefundData extends BaseEntity {
+  order_id: string;
+  order?: OrderData;
+  value: number;
+  point: number;
+  completed_at?: Data | string | null;
+  data?: Record<string, unknown> | null;
+  items?: RefundItemData[];
+  metadata?: Record<string, unknown> | null;
+}
+interface RefundItemData extends BaseEntity {
+  refund_id: string;
+  refund?: RefundData;
+  item_id: string;
+  item?: LineItemData;
+  quantity: number;
+  memo?: string;
+  metadata?: Record<string, unknown> | null;
 }

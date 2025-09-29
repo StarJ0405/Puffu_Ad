@@ -289,6 +289,51 @@ export function MyOrdersTable({
                         <FlexChild width={"max-content"}>
                           <VerticalFlex gap={6}>
                             <Button
+                              hidden={
+                                item.confirmation ||
+                                !order.shipping_method?.shipped_at
+                              }
+                              onClick={() => {
+                                if (order.shipping_method?.shipped_at) {
+                                  const shipped_at = new Date(
+                                    order.shipping_method?.shipped_at
+                                  );
+                                  const date = new Date();
+                                  date.setDate(date.getDate() - 3);
+                                  if (shipped_at.getTime() <= date.getTime()) {
+                                    NiceModal.show("confirm", {
+                                      message: (
+                                        <VerticalFlex>
+                                          <P>
+                                            구매 확정시 교환/환불이
+                                            불가능합니다.
+                                          </P>
+                                          <P>진행하시겠습니까?</P>
+                                        </VerticalFlex>
+                                      ),
+                                      confirmText: "진행",
+                                      cancelText: "취소",
+                                      onConfirm: () =>
+                                        requester.confirmItem(
+                                          order.id,
+                                          item.id,
+                                          {},
+                                          () => mutate()
+                                        ),
+                                    });
+                                  } else {
+                                    NiceModal.show("confirm", {
+                                      message:
+                                        "배송완료일 기준으로 3일 후부터 구매를 확정할 수 있습니다.",
+                                      confirmText: "확인",
+                                    });
+                                  }
+                                }
+                              }}
+                            >
+                              구매확정
+                            </Button>
+                            <Button
                               onClick={() =>
                                 NiceModal.show("review", {
                                   edit: true,
@@ -298,6 +343,7 @@ export function MyOrdersTable({
                               리뷰 작성
                             </Button>
                             <Button
+                              hidden={item.confirmation}
                               onClick={() =>
                                 document.getElementById("side_chat")?.click()
                               }

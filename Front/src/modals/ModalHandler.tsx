@@ -12,6 +12,7 @@ import GroupModal from "./admin/group/GroupModal";
 import LoadingModal from "./admin/LoadingModal";
 import NoticeModal from "./admin/notice/NtoiceModal";
 import OrderDetailModal from "./admin/order/OrderDetailModal";
+import RefundDetailModal from "./admin/order/RefundDetailModal";
 import ProductModal from "./admin/product/ProductModal";
 import VariantListModal from "./admin/product/VariantListModal";
 import VariantModal from "./admin/product/VariantModal";
@@ -35,6 +36,7 @@ import ReviewModal from "./main/review/reviewModal";
 import SearchModal from "./main/search/SearchModal";
 import SelectModal from "./main/select/SelectModal";
 import TableModal from "./table/TableModal";
+import OrderRefundModal from "./admin/order/OrderRefundModal";
 
 function ModalHandler() {
   NiceModal.register("toast", ToastModal);
@@ -58,6 +60,8 @@ function ModalHandler() {
   NiceModal.register("groupDetail", GroupModal);
   NiceModal.register("noticeDetail", NoticeModal);
   NiceModal.register("orderDetail", OrderDetailModal);
+  NiceModal.register("orderRefund", OrderRefundModal);
+  NiceModal.register("refundDetail", RefundDetailModal);
   NiceModal.register("orderList", OrderListModal);
   NiceModal.register("userDetail", UserModal);
   NiceModal.register("productDetail", ProductModal);

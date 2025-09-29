@@ -12,7 +12,6 @@ import {
 } from "react";
 import { useTranslation } from "react-i18next";
 import style from "./InputNumber.module.css";
-import P from "../P/P";
 
 // Props type definition for better type safety
 interface InputNumberProps {
@@ -443,7 +442,10 @@ const InputNumber = forwardRef<refInterface, InputNumberProps>((props, ref) => {
                 },
                 "notranslate"
               )}
-              style={{ width: props.width, ...props.style }}
+              style={{
+                width: props.width,
+                ...props.style,
+              }}
               onChange={onChangeHandler}
               onKeyDown={onKeyDownHandler}
               value={displayValue} // Input is controlled by displayValue

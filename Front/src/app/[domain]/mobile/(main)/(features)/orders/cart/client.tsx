@@ -403,7 +403,7 @@ export function CartWrap() {
           <FlexChild className={style.total_pay_txt}>
             <Span>총 결제 금액</Span>
             <P color={"var(--main-color1)"}>
-              <Span>{(shipping?.amount || 0) + totalDiscounted}</Span>
+              <Span>{(shipping?.amount || 0) + totalDiscounted - point}</Span>
               <Span color="#fff"> ₩</Span>
             </P>
           </FlexChild>

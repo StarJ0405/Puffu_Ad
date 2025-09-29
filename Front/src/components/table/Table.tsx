@@ -58,7 +58,7 @@ export interface Column {
     row: any;
     cell: any;
     index: number;
-  }) => JSX.Element | string;
+  }) => JSX.Element | string | boolean | number;
 }
 const Table = forwardRef(
   (
