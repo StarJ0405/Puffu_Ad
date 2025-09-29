@@ -218,12 +218,19 @@ export function MyOrdersTable({
                     </Span>
 
                     {/* 교환 처리 상태 */}
-                    <Span hidden className={styles.progress_txt} color="var(--main-color1)">
+                    <Span
+                      hidden
+                      className={styles.progress_txt}
+                      color="var(--main-color1)"
+                    >
                       [교환 처리중]
                     </Span>
 
                     {/* 환불 처리 상태 */}
-                    <Span className={styles.progress_txt} color="var(--main-color1)">
+                    <Span
+                      className={styles.progress_txt}
+                      color="var(--main-color1)"
+                    >
                       [환불 처리중]
                     </Span>
                   </FlexChild>
@@ -253,7 +260,8 @@ export function MyOrdersTable({
                       주문 취소
                     </Button>
                   )}
-                  {(order.status === "shipping" || order.status === "complete") &&
+                  {(order.status === "shipping" ||
+                    order.status === "complete") &&
                     order?.shipping_method?.tracking_number && (
                       <Button
                         className={styles.order_detail_btn}
@@ -283,7 +291,6 @@ export function MyOrdersTable({
                 </HorizontalFlex>
 
                 {order.items.map((item: LineItemData) => {
-                  console.log(item);
                   return (
                     <HorizontalFlex
                       key={item.id}
@@ -320,18 +327,16 @@ export function MyOrdersTable({
                           >
                             {item.product_title}
                           </P>
-                          {
-                            item.variant_title && (
-                              <P
-                                className={styles.unit_variant}
-                                lineClamp={1}
-                                overflow="hidden"
-                                display="--webkit-box"
-                              >
-                                - {item.variant_title}
-                              </P>
-                            )
-                          }
+                          {item.variant_title && (
+                            <P
+                              className={styles.unit_variant}
+                              lineClamp={1}
+                              overflow="hidden"
+                              display="--webkit-box"
+                            >
+                              - {item.variant_title}
+                            </P>
+                          )}
 
                           <FlexChild paddingTop={10}>
                             <P
@@ -347,53 +352,122 @@ export function MyOrdersTable({
                             </P>
 
                             {order.status === "complete" && (
-                              <FlexChild width={"max-content"} paddingLeft={15} gap={15}>
-                                  <FlexChild width={'auto'}>
-                                    {!isReviewed(item) ? (
-                                      <Button
-                                        className={clsx(styles.order_detail_btn, styles.review_btn)}
-                                        onClick={() => {
-                                          const i = item;
-                                          NiceModal.show("reviewWrite", {
-                                            item: {
-                                              id: i.id,
-                                              brand_name: i?.brand?.name,
-                                              product_title: i.product_title,
-                                              variant_title: i.variant_title,
-                                              thumbnail: i.thumbnail,
-                                              discount_price: i?.discount_price,
-                                              unit_price: i?.unit_price,
-                                              // review: i?.review,
-                                            },
-                                            edit: true,
-                                            withPCButton: true,
-                                            onSuccess: () => mutate(),
-                                          });
-                                        }}
-                                      >
-                                        리뷰 작성
-                                      </Button>
-                                    ) : (
-                                      <P size={14} color="#eee">리뷰 작성 완료</P>
+                              <FlexChild
+                                width={"max-content"}
+                                paddingLeft={15}
+                                gap={15}
+                              >
+                                <FlexChild
+                                  width={"auto"}
+                                  hidden={
+                                    item.confirmation ||
+                                    !order.shipping_method?.shipped_at
+                                  }
+                                >
+                                  <Button
+                                    className={clsx(
+                                      styles.order_detail_btn,
+                                      styles.review_btn
                                     )}
-                                  </FlexChild>
-
-                                  <FlexChild width={'auto'}>
-                                    {/* 교환 환불 처리 */}
-                                    <Button
-                                      className={styles.order_detail_btn}
-                                      onClick={() =>
-                                        document.getElementById("side_chat")?.click()
+                                    onClick={() => {
+                                      if (order.shipping_method?.shipped_at) {
+                                        const shipped_at = new Date(
+                                          order.shipping_method?.shipped_at
+                                        );
+                                        const date = new Date();
+                                        date.setDate(date.getDate() - 3);
+                                        if (
+                                          shipped_at.getTime() <= date.getTime()
+                                        ) {
+                                          NiceModal.show("confirm", {
+                                            message: (
+                                              <VerticalFlex>
+                                                <P>
+                                                  구매 확정시 교환/환불이
+                                                  불가능합니다.
+                                                </P>
+                                                <P>진행하시겠습니까?</P>
+                                              </VerticalFlex>
+                                            ),
+                                            confirmText: "진행",
+                                            cancelText: "취소",
+                                            onConfirm: () =>
+                                              requester.confirmItem(
+                                                order.id,
+                                                item.id,
+                                                {},
+                                                () => mutate()
+                                              ),
+                                          });
+                                        } else {
+                                          NiceModal.show("confirm", {
+                                            message:
+                                              "배송완료일 기준으로 3일 후부터 구매를 확정할 수 있습니다.",
+                                            confirmText: "확인",
+                                          });
+                                        }
                                       }
+                                    }}
+                                  >
+                                    구매확정
+                                  </Button>
+                                </FlexChild>
+                                <FlexChild
+                                  width={"auto"}
+                                  hidden={!item.confirmation}
+                                >
+                                  {!isReviewed(item) ? (
+                                    <Button
+                                      className={clsx(
+                                        styles.order_detail_btn,
+                                        styles.review_btn
+                                      )}
+                                      onClick={() => {
+                                        const i = item;
+                                        NiceModal.show("reviewWrite", {
+                                          item: {
+                                            id: i.id,
+                                            brand_name: i?.brand?.name,
+                                            product_title: i.product_title,
+                                            variant_title: i.variant_title,
+                                            thumbnail: i.thumbnail,
+                                            discount_price: i?.discount_price,
+                                            unit_price: i?.unit_price,
+                                            // review: i?.review,
+                                          },
+                                          edit: true,
+                                          withPCButton: true,
+                                          onSuccess: () => mutate(),
+                                        });
+                                      }}
                                     >
-                                      교환/환불 문의
+                                      리뷰 작성
                                     </Button>
-                                    
-                                    {/* 교환 환불 처리되면 이걸로 출력 */}
-                                    <P hidden size={14} color="#eee">
-                                      교환 완료 | 환불 완료
+                                  ) : (
+                                    <P size={14} color="#eee">
+                                      리뷰 작성 완료
                                     </P>
-                                  </FlexChild>
+                                  )}
+                                </FlexChild>
+
+                                <FlexChild width={"auto"}>
+                                  {/* 교환 환불 처리 */}
+                                  <Button
+                                    className={styles.order_detail_btn}
+                                    onClick={() =>
+                                      document
+                                        .getElementById("side_chat")
+                                        ?.click()
+                                    }
+                                  >
+                                    교환/환불 문의
+                                  </Button>
+
+                                  {/* 교환 환불 처리되면 이걸로 출력 */}
+                                  <P hidden size={14} color="#eee">
+                                    교환 완료 | 환불 완료
+                                  </P>
+                                </FlexChild>
                               </FlexChild>
                             )}
                           </FlexChild>
