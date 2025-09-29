@@ -25,21 +25,28 @@
    font-weight: 600;
 }
 
+
+/* 탭이랑 내용들 */
+.tab_container {
+   padding: 0 15px;
+}
+
 .tab_wrap {
    flex: unset;
    padding-bottom: 13px;
-   justify-content: center !important;
+   justify-content: space-between !important;
+   gap: 10px;
 }
 
 .tab_wrap .tab_btn {
    --active-color: #cdcdcd;
    justify-content: center;
    color: #595959;
-   font-size: 16px;
+   font-size: 15px;
    transition: all 0.2s;
    flex: unset;
    cursor: pointer;
-   padding: 15px;
+   padding: 15px 0;
    width: auto;
 }
 
@@ -63,10 +70,7 @@
 
 
 
-.menu_inner {
-   padding: 0 15px;
-   gap: 20px;
-}
+.menu_inner {gap: 20px;}
 
 .menu_inner .inner_wrap {gap: 10px; flex: unset;}
 .menu_inner .inner_wrap > * {width: auto;}

@@ -202,6 +202,7 @@
   font-size: 16px;
   color: #fff;
   line-height: 1.4;
+  font-weight: 600 !important;
 }
 
 .info_list .info_item.info_select_box {
@@ -272,7 +273,7 @@
 
 .payment_block {
   position: sticky;
-  top: 100px;
+  top: 130px;
 }
 
 .payment_block .total_pay_txt {
@@ -318,5 +319,27 @@
   background: var(--button-disabled-bg) !important;
   color: #7a7a7a !important;
 }
+
+
+.point_box {
+  align-items: start !important;
+  padding: 15px;
+  border-radius: 10px;
+  /* background: var(--main-color1); */
+  gap: 20px;
+  border: 1px solid #7a7a7a;
+}
+
+.point_box .info_item > span {color: #fff;}
+
+.point_box .info_item .my_point {font-size: 20px;}
+
+.point_box .point_input_box {justify-content: end !important;}
+
+.point_box .cancel_btn {background: transparent; border: 1px solid #fff; font-weight: 500; font-size: 13px;}
+.point_box .cancel_btn:active {background: #050505; border-color: #666;}
+
+.point_box .point_total {gap: 15px;}
+
 
 /* 오른쪽 결제정보 end -------------------------------------------------- */

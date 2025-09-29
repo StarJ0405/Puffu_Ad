@@ -173,6 +173,10 @@ interface ProductData extends BaseEntity, ProductDataFrame {
   wishlists?: WishData[];
   wish?: WishData;
   wishes?: number;
+  reviews?: {
+    count: number;
+    avg: number;
+  };
 }
 
 interface VariantDataFrame {
@@ -253,6 +257,7 @@ interface LineItemData extends BaseEntity {
   metadata?: Record<string, unknown> | null;
   confirmation: boolean;
   refunds?: RefundItemData[];
+  review?: any;
 }
 
 interface CartData extends BaseEntity {
@@ -428,7 +433,7 @@ interface ChatroomUserData {
 }
 
 interface QADataFrame {
-  type: "etc" | "exchange" | "refund"; // 기타, 환불 ,교환
+  type: "exchange" | "refund" | "etc";
   category?: string; // 유형 등 추가 텍스트가 필요한 경우 사용
   title: string; // 제목
 

@@ -18,6 +18,24 @@ import clsx from "clsx";
 import { useState } from "react";
 import styles from "./page.module.css";
 
+type OrderItem = {
+  id: string | number;
+  product_title?: string;
+  variant_title?: string;
+  total_quantity?: number;
+  total_discount?: number;
+  total_tax?: number;
+  currency_unit?: string;
+  thumbnail?: string;
+  review?: any;
+  variant?: {
+    product_id?: string | number;
+    stack?: number;
+    buyable?: boolean;
+    product?: { buyable?: boolean };
+  };
+};
+
 export function MyOrdersTable({
   initEndDate,
   initStartDate,
@@ -33,11 +51,18 @@ export function MyOrdersTable({
   const [endDate, setEndDate] = useState(initEndDate);
   const [condition, setCondition] = useState<any>({});
   const [activePeriod, setActivePeriod] = useState("1week");
+  const [reviewedSet, setReviewedSet] = useState<Set<string>>(new Set());
   const { orders, mutate } = useData(
     "orders",
     {
       ...condition,
-      relations: ["items.brand", "shipping_method", "store", "address"],
+      relations: [
+        "items.brand",
+        "items.review",
+        "shipping_method",
+        "store",
+        "address",
+      ],
       start_date: startDate,
       end_date: endDate,
     },
@@ -47,6 +72,10 @@ export function MyOrdersTable({
       fallbackData: initOrders,
     }
   );
+
+  const isReviewed = (it: OrderItem) =>
+    Boolean(it?.review != null || reviewedSet.has(String(it?.id)));
+
   const handlePeriodChange = (period: string) => {
     const newStartDate = new Date();
     const newEndDate = new Date();
@@ -174,47 +203,71 @@ export function MyOrdersTable({
         {orders.length > 0 ? (
           orders.map((order: OrderData) => (
             <VerticalFlex key={order.id} className={styles.order_group}>
-              <FlexChild className={styles.order_header}>
-                <P size={15} weight={500} padding={"0 10px 0 0"}>
-                  {new Date(order.created_at).toLocaleDateString("ko-KR", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                  <Span color="var(--main-color1)" padding={"0 0 0 4px"}>
-                    [{getOrderStatus(order)}]
-                  </Span>
-                </P>
-                {order.status === "pending" && (
-                  <Button
-                    className={styles.tracking_btn}
-                    onClick={() =>
-                      NiceModal.show("confirm", {
-                        message: "주문을 취소하시겠습니까?",
-                        confirmText: "진행하기",
-                        cancelText: "그만두기",
-                        onConfirm: () =>
-                          requester.cancelOrder(order.id, {}, () => mutate()),
-                      })
-                    }
-                  >
-                    주문취소
-                  </Button>
-                )}
-                {(order.status === "shipping" || order.status === "complete") &&
-                  order?.shipping_method?.tracking_number && (
+              <HorizontalFlex className={styles.order_header}>
+                <VerticalFlex className={styles.order_top_info}>
+                  <FlexChild gap={7}>
+                    <P size={20} weight={500}>
+                      {new Date(order.created_at).toLocaleDateString("ko-KR", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </P>
+                    <Span color="var(--main-color1)">
+                      [{getOrderStatus(order)}]
+                    </Span>
+
+                    {/* 교환 처리 상태 */}
+                    <Span hidden className={styles.progress_txt} color="var(--main-color1)">
+                      [교환 처리중]
+                    </Span>
+
+                    {/* 환불 처리 상태 */}
+                    <Span className={styles.progress_txt} color="var(--main-color1)">
+                      [환불 처리중]
+                    </Span>
+                  </FlexChild>
+                  {/* 주문번호 */}
+                  <FlexChild className={styles.order_code}>
+                    <P>
+                      <Span>주문번호 : </Span>
+                      <Span>{order.display}</Span>
+                    </P>
+                  </FlexChild>
+                </VerticalFlex>
+
+                <FlexChild className={styles.order_btn_group}>
+                  {order.status === "pending" && (
                     <Button
-                      className={styles.tracking_btn}
+                      className={styles.order_detail_btn}
                       onClick={() =>
-                        openTrackingNumber(
-                          order?.shipping_method?.tracking_number as any
-                        )
+                        NiceModal.show("confirm", {
+                          message: "주문을 취소하시겠습니까?",
+                          confirmText: "진행하기",
+                          cancelText: "그만두기",
+                          onConfirm: () =>
+                            requester.cancelOrder(order.id, {}, () => mutate()),
+                        })
                       }
                     >
-                      배송조회
+                      주문 취소
                     </Button>
                   )}
-              </FlexChild>
+                  {(order.status === "shipping" || order.status === "complete") &&
+                    order?.shipping_method?.tracking_number && (
+                      <Button
+                        className={styles.order_detail_btn}
+                        onClick={() =>
+                          openTrackingNumber(
+                            order?.shipping_method?.tracking_number as any
+                          )
+                        }
+                      >
+                        배송조회
+                      </Button>
+                    )}
+                </FlexChild>
+              </HorizontalFlex>
 
               <VerticalFlex className={styles.order_items_container}>
                 <HorizontalFlex backgroundColor={"#323232"} padding={"12px 0"}>
@@ -228,165 +281,154 @@ export function MyOrdersTable({
                     <P color={"#cfcfcf"}>결제금액</P>
                   </FlexChild>
                 </HorizontalFlex>
-                <Dummy height={15} />
-                {order.items.map((item: LineItemData) => (
-                  <HorizontalFlex
-                    key={item.id}
-                    className={styles.list_item}
-                    gap={15}
-                    padding={"0 0 15px 0"}
-                  >
-                    {/* 상품 단위 */}
-                    <HorizontalFlex className={styles.unit}>
-                      <Image src={item.thumbnail} width={80} borderRadius={5} />
-                      <VerticalFlex
-                        className={styles.unit_content}
-                        width={"auto"}
-                        alignItems="start"
-                        padding={"0 0 0 10px"}
-                        gap={10}
-                      >
-                        <FlexChild gap={5}>
-                          <Span className={styles.unit_brand}>
-                            {item?.brand?.name}
-                          </Span>
-                          <Image
-                            src={"/resources/icons/cart/cj_icon.png"}
-                            width={13}
-                          />
-                        </FlexChild>
 
-                        <P
-                          className={styles.unit_title}
-                          lineClamp={2}
-                          overflow="hidden"
-                          display="--webkit-box"
-                        >
-                          {item.product_title}
-                        </P>
-                        <P
-                          className={styles.unit_title}
-                          lineClamp={1}
-                          overflow="hidden"
-                          display="--webkit-box"
-                        >
-                          {item.variant_title}
-                        </P>
-
-                        <P
-                          className={styles.unit_title}
-                          lineClamp={2}
-                          overflow="hidden"
-                          display="--webkit-box"
-                        >
-                          <Span>{item.total_quantity}</Span>
-                          <Span>개 / </Span>
-                          <Span>{item.unit_price}</Span>
-                          <Span>원</Span>
-                        </P>
-                      </VerticalFlex>
-                      {order.status === "complete" && (
-                        <FlexChild width={"max-content"}>
-                          <VerticalFlex gap={6}>
-                            <Button
-                              hidden={
-                                item.confirmation ||
-                                !order.shipping_method?.shipped_at
-                              }
-                              onClick={() => {
-                                if (order.shipping_method?.shipped_at) {
-                                  const shipped_at = new Date(
-                                    order.shipping_method?.shipped_at
-                                  );
-                                  const date = new Date();
-                                  date.setDate(date.getDate() - 3);
-                                  if (shipped_at.getTime() <= date.getTime()) {
-                                    NiceModal.show("confirm", {
-                                      message: (
-                                        <VerticalFlex>
-                                          <P>
-                                            구매 확정시 교환/환불이
-                                            불가능합니다.
-                                          </P>
-                                          <P>진행하시겠습니까?</P>
-                                        </VerticalFlex>
-                                      ),
-                                      confirmText: "진행",
-                                      cancelText: "취소",
-                                      onConfirm: () =>
-                                        requester.confirmItem(
-                                          order.id,
-                                          item.id,
-                                          {},
-                                          () => mutate()
-                                        ),
-                                    });
-                                  } else {
-                                    NiceModal.show("confirm", {
-                                      message:
-                                        "배송완료일 기준으로 3일 후부터 구매를 확정할 수 있습니다.",
-                                      confirmText: "확인",
-                                    });
-                                  }
-                                }
-                              }}
-                            >
-                              구매확정
-                            </Button>
-                            <Button
-                              onClick={() =>
-                                NiceModal.show("review", {
-                                  edit: true,
-                                })
-                              }
-                            >
-                              리뷰 작성
-                            </Button>
-                            <Button
-                              hidden={item.confirmation}
-                              onClick={() =>
-                                document.getElementById("side_chat")?.click()
-                              }
-                            >
-                              교환/환불 문의
-                            </Button>
-                          </VerticalFlex>
-                        </FlexChild>
-                      )}
-                    </HorizontalFlex>
-
-                    {/* 가격 박스 */}
+                {order.items.map((item: LineItemData) => {
+                  console.log(item);
+                  return (
                     <HorizontalFlex
-                      width={"30%"}
-                      className={styles.item_price_box}
-                      paddingBottom={30}
+                      key={item.id}
+                      className={styles.list_item}
+                      gap={15}
                     >
-                      <FlexChild justifyContent={"center"}>
-                        <P>
-                          <Span>
-                            {((item.discount_price || 0) -
-                              (item.unit_price || 0)) *
-                              item.quantity}
-                          </Span>
-                          <Span>원</Span>
-                        </P>
-                      </FlexChild>
-
-                      <FlexChild justifyContent={"center"}>
-                        <P
-                          color="var(--main-color1)"
-                          weight={600}
-                          fontSize={18}
+                      {/* 상품 단위 */}
+                      <HorizontalFlex className={styles.unit}>
+                        <Image
+                          src={item.thumbnail}
+                          width={80}
+                          borderRadius={5}
+                        />
+                        <VerticalFlex
+                          className={styles.unit_content}
+                          width={"auto"}
+                          alignItems="start"
+                          gap={7}
                         >
-                          <Span>
-                            {(item.discount_price || 0) * item.quantity}
-                          </Span>
-                          <Span>원</Span>
-                        </P>
-                      </FlexChild>
+                          <FlexChild gap={5}>
+                            <Span className={styles.unit_brand}>
+                              {item?.brand?.name}
+                            </Span>
+                            <Image
+                              src={"/resources/icons/cart/cj_icon.png"}
+                              width={13}
+                            />
+                          </FlexChild>
+                          <P
+                            className={styles.unit_title}
+                            lineClamp={2}
+                            overflow="hidden"
+                            display="--webkit-box"
+                          >
+                            {item.product_title}
+                          </P>
+                          {
+                            item.variant_title && (
+                              <P
+                                className={styles.unit_variant}
+                                lineClamp={1}
+                                overflow="hidden"
+                                display="--webkit-box"
+                              >
+                                - {item.variant_title}
+                              </P>
+                            )
+                          }
+
+                          <FlexChild paddingTop={10}>
+                            <P
+                              className={styles.unit_price}
+                              lineClamp={2}
+                              overflow="hidden"
+                              display="--webkit-box"
+                            >
+                              <Span>{item.total_quantity}</Span>
+                              <Span>개 / </Span>
+                              <Span>{item.unit_price}</Span>
+                              <Span>원</Span>
+                            </P>
+
+                            {order.status === "complete" && (
+                              <FlexChild width={"max-content"} paddingLeft={15} gap={15}>
+                                  <FlexChild width={'auto'}>
+                                    {!isReviewed(item) ? (
+                                      <Button
+                                        className={clsx(styles.order_detail_btn, styles.review_btn)}
+                                        onClick={() => {
+                                          const i = item;
+                                          NiceModal.show("reviewWrite", {
+                                            item: {
+                                              id: i.id,
+                                              brand_name: i?.brand?.name,
+                                              product_title: i.product_title,
+                                              variant_title: i.variant_title,
+                                              thumbnail: i.thumbnail,
+                                              discount_price: i?.discount_price,
+                                              unit_price: i?.unit_price,
+                                              // review: i?.review,
+                                            },
+                                            edit: true,
+                                            withPCButton: true,
+                                            onSuccess: () => mutate(),
+                                          });
+                                        }}
+                                      >
+                                        리뷰 작성
+                                      </Button>
+                                    ) : (
+                                      <P size={14} color="#eee">리뷰 작성 완료</P>
+                                    )}
+                                  </FlexChild>
+
+                                  <FlexChild width={'auto'}>
+                                    {/* 교환 환불 처리 */}
+                                    <Button
+                                      className={styles.order_detail_btn}
+                                      onClick={() =>
+                                        document.getElementById("side_chat")?.click()
+                                      }
+                                    >
+                                      교환/환불 문의
+                                    </Button>
+                                    
+                                    {/* 교환 환불 처리되면 이걸로 출력 */}
+                                    <P hidden size={14} color="#eee">
+                                      교환 완료 | 환불 완료
+                                    </P>
+                                  </FlexChild>
+                              </FlexChild>
+                            )}
+                          </FlexChild>
+                        </VerticalFlex>
+                      </HorizontalFlex>
+
+                      {/* 가격 박스 */}
+                      <HorizontalFlex className={styles.item_price_box}>
+                        <FlexChild justifyContent={"center"}>
+                          <P>
+                            <Span>
+                              {((item.discount_price || 0) -
+                                (item.unit_price || 0)) *
+                                item.quantity}
+                            </Span>
+                            <Span>원</Span>
+                          </P>
+                        </FlexChild>
+
+                        <FlexChild justifyContent={"center"}>
+                          <P
+                            color="var(--main-color1)"
+                            weight={600}
+                            fontSize={18}
+                          >
+                            <Span>
+                              {(item.discount_price || 0) * item.quantity}
+                            </Span>
+                            <Span>원</Span>
+                          </P>
+                        </FlexChild>
+                      </HorizontalFlex>
                     </HorizontalFlex>
-                  </HorizontalFlex>
-                ))}
+                  );
+                })}
               </VerticalFlex>
 
               <VerticalFlex className={styles.order_summary}>

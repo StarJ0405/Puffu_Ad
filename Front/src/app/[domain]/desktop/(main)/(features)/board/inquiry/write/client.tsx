@@ -27,7 +27,7 @@ export function WriteFrame() {
   const { userData } = useAuth();
   const imageRef = useRef<any>(null);
 
-  const [qaType, setQaType] = useState<"etc" | "exchange" | "refund" | "">("");
+  const [qaType, setQaType] = useState<string>("");
   const [author, setAuthor] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -64,7 +64,8 @@ export function WriteFrame() {
     const images = imageRef.current?.getValue();
 
     const qaData: QADataFrame = {
-      type: qaType,
+      category: qaType as QADataFrame["type"],
+      type: 'etc',
       title,
       user_id: userData?.id || "비회원",
       content,
@@ -79,7 +80,6 @@ export function WriteFrame() {
       toast({ message: "문의 등록에 실패했습니다." });
     }
   };
-
   return (
     <VerticalFlex className={styles.write_container}>
       <HorizontalFlex className={styles.input_group} justifyContent="start">
@@ -95,15 +95,18 @@ export function WriteFrame() {
                 search: "web_select_search",
               }}
               options={[
-                // { value: "exchange", display: "교환" },
-                // { value: "refund", display: "환불" },
+                { value: "account", display: "회원정보 관리" },
+                { value: "order", display: "주문/결제" },
+                { value: "receipt", display: "영수증/증빙서류" },
+                { value: "event", display: "상품/이벤트" },
                 { value: "etc", display: "기타" },
               ]}
               placeholder={"문의 유형 선택"}
               value={qaType}
-              onChange={(value) =>
-                setQaType(value as "etc" | "exchange" | "refund")
-              }
+              // onChange={(value) =>
+              //   setQaType(value as "account" | "order" | "receipt" | "event" | "etc" )
+              // }
+              onChange={(value) => setQaType(value as QADataFrame["type"])}
             />
           </FlexChild>
         </FlexChild>

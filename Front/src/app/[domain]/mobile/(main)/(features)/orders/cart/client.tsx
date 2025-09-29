@@ -35,7 +35,8 @@ import { toast } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import style from "./page.module.css";
+import styles from "./page.module.css";
+import { title } from "process";
 
 export function CartWrap() {
   const { userData } = useAuth();
@@ -142,16 +143,16 @@ export function CartWrap() {
     reload();
   }, []);
   return (
-    <VerticalFlex className={style.cart_wrap}>
-      <VerticalFlex className={style.cart_data}>
+    <VerticalFlex className={styles.cart_wrap}>
+      <VerticalFlex className={styles.cart_data}>
         <CheckboxGroup
           name="carts"
           initialValues={selected}
           onChange={setSelected}
         >
-          <VerticalFlex className={style.product_list}>
+          <VerticalFlex className={styles.product_list}>
             <article>
-              <P className={style.list_title}>담은 상품</P>
+              <P className={styles.list_title}>담은 상품</P>
               <FlexChild alignItems="center" gap={10} paddingBottom={25}>
                 <CheckboxAll />
                 <Span size={14}>전체선택</Span>
@@ -193,20 +194,20 @@ export function CartWrap() {
             </VerticalFlex>
         </FlexChild> */}
 
-        <FlexChild className={style.delivery_info}>
+        <FlexChild className={clsx(styles.delivery_info, styles.itemBox)}>
           <VerticalFlex alignItems="start">
             <article>
-              <P className={style.list_title}>배송 정보</P>
+              <P className={styles.list_title}>배송 정보</P>
               {addresses.length > 0 ? (
                 <Button
-                  className={style.delivery_list_btn}
+                  className={styles.delivery_list_btn}
                   onClick={deliveryListModal}
                 >
                   배송지 목록
                 </Button>
               ) : (
                 <Button
-                  className={style.delivery_list_btn}
+                  className={styles.delivery_list_btn}
                   onClick={deliveryAddModal}
                 >
                   배송지 추가
@@ -215,13 +216,13 @@ export function CartWrap() {
             </article>
             {/* {1 < 0 ? ( */}
             {address ? (
-              <VerticalFlex className={style.info_list}>
-                <HorizontalFlex className={style.info_item}>
+              <VerticalFlex className={styles.info_list}>
+                <HorizontalFlex className={styles.info_item}>
                   <Span>이름</Span>
                   <P>{address.name}</P>
                 </HorizontalFlex>
 
-                <HorizontalFlex className={style.info_item}>
+                <HorizontalFlex className={styles.info_item}>
                   <Span>배송주소</Span>
                   <P>
                     ({address.postal_code}) {address.address1}{" "}
@@ -229,13 +230,13 @@ export function CartWrap() {
                   </P>
                 </HorizontalFlex>
 
-                <HorizontalFlex className={style.info_item}>
+                <HorizontalFlex className={styles.info_item}>
                   <Span>연락처</Span>
                   <P>{address.phone}</P>
                 </HorizontalFlex>
 
                 <VerticalFlex
-                  className={clsx(style.info_item, style.info_select_box)}
+                  className={clsx(styles.info_item, styles.info_select_box)}
                 >
                   <Span>배송 요청사항 선택</Span>
 
@@ -277,7 +278,7 @@ export function CartWrap() {
                   {selectedMessageOption === "직접 입력하기" && (
                     <Input
                       width={"100%"}
-                      className={style.direct_input}
+                      className={styles.direct_input}
                       placeHolder={"배송 요청사항을 입력해 주세요."}
                       onChange={(value) => setMessage(value as string)}
                       maxLength={50}
@@ -292,23 +293,27 @@ export function CartWrap() {
           </VerticalFlex>
         </FlexChild>
 
-        <FlexChild className={style.payment_root}>
+        <FlexChild className={clsx(styles.payment_root, styles.itemBox)}>
           <VerticalFlex alignItems="start">
             <article>
-              <P className={style.list_title}>결제수단</P>
-              <P className={style.list_txt}>결제수단을 선택해 주세요.</P>
+              <P className={styles.list_title}>결제수단</P>
+              <P className={styles.list_txt}>결제수단을 선택해 주세요.</P>
             </article>
 
             <RadioGroup
               name={"payment_root"}
               onValueChange={(value) => setPayment(value)}
             >
-              <VerticalFlex className={style.payment_deak}>
-                <FlexChild className={clsx(style.payment_card)}>
+              <VerticalFlex className={styles.payment_deak}>
+                <FlexChild className={clsx(styles.payment_card)}>
                   <FlexChild width={"auto"}>
                     <RadioChild id={"credit_card"} />
                   </FlexChild>
-                  <Span>신용카드 결제</Span>
+                  <Span
+                    onClick={() => document.getElementById("credit_card")?.click()}
+                  >
+                    신용카드 결제
+                  </Span>
                 </FlexChild>
                 {/* <FlexChild className={clsx(style.payment_card)}>
                   <FlexChild width={"auto"}>
@@ -321,20 +326,20 @@ export function CartWrap() {
           </VerticalFlex>
         </FlexChild>
 
-        <FlexChild className={style.agree_info}>
-          <AgreeInfo setAgrees={setAgrees} />
+        <FlexChild className={clsx(styles.agree_info, styles.itemBox)}>
+          <AgreeInfo setAgrees={setAgrees} agrees={agrees} />
         </FlexChild>
       </VerticalFlex>
 
-      <FlexChild className={style.payment_block}>
+      <FlexChild className={clsx(styles.payment_block, styles.itemBox)}>
         <VerticalFlex>
           <VerticalFlex alignItems="start">
             <article>
-              <P className={style.list_title}>결제 금액</P>
+              <P className={styles.list_title}>결제 금액</P>
             </article>
 
-            <VerticalFlex className={style.info_list}>
-              <HorizontalFlex className={style.info_item}>
+            <VerticalFlex className={styles.info_list}>
+              <HorizontalFlex className={styles.info_item}>
                 <Span>상품 금액</Span>
 
                 <P>
@@ -343,7 +348,7 @@ export function CartWrap() {
                 </P>
               </HorizontalFlex>
 
-              <HorizontalFlex className={style.info_item}>
+              <HorizontalFlex className={styles.info_item}>
                 <Span>배송비</Span>
 
                 <P>
@@ -352,7 +357,7 @@ export function CartWrap() {
                 </P>
               </HorizontalFlex>
 
-              <HorizontalFlex className={style.info_item}>
+              <HorizontalFlex className={styles.info_item}>
                 <Span>합계</Span>
 
                 <P color={"var(--main-color1)"}>
@@ -361,21 +366,18 @@ export function CartWrap() {
                 </P>
               </HorizontalFlex>
             </VerticalFlex>
-            <article>
-              <P className={style.list_title}>포인트</P>
-            </article>
 
-            <VerticalFlex className={style.info_list}>
-              <HorizontalFlex className={style.info_item}>
+            <VerticalFlex className={clsx(styles.info_list, styles.point_box)}>
+              <HorizontalFlex className={styles.info_item}>
                 <Span>보유 포인트</Span>
 
-                <P>
+                <P className={styles.my_point}>
                   <Span>{userData?.point || 0}</Span>
                   <Span> P</Span>
                 </P>
               </HorizontalFlex>
 
-              <HorizontalFlex className={style.info_item}>
+              <HorizontalFlex className={clsx(styles.info_item, styles.point_input_box)}>
                 <InputNumber
                   width={"100%"}
                   hideArrow
@@ -387,12 +389,12 @@ export function CartWrap() {
                   )}
                   min={0}
                 />
-                <Button onClick={() => setPoint(0)}>사용 취소</Button>
+                <Button className={styles.cancel_btn} onClick={() => setPoint(0)}>사용 취소</Button>
               </HorizontalFlex>
 
-              <HorizontalFlex className={style.info_item}>
-                <P>
-                  <Span>사용 후 남은 포인트 </Span>
+              <HorizontalFlex className={clsx(styles.info_item, styles.point_total)}>
+                <P><Span>사용 후 남은 포인트 </Span></P>
+                <P className={styles.my_point}>
                   <Span>{(userData?.point || 0) - point}</Span>
                   <Span> P</Span>
                 </P>
@@ -400,7 +402,7 @@ export function CartWrap() {
             </VerticalFlex>
           </VerticalFlex>
 
-          <FlexChild className={style.total_pay_txt}>
+          <FlexChild className={styles.total_pay_txt}>
             <Span>총 결제 금액</Span>
             <P color={"var(--main-color1)"}>
               <Span>{(shipping?.amount || 0) + totalDiscounted - point}</Span>
@@ -412,7 +414,7 @@ export function CartWrap() {
           <Button
             isLoading={isLoading}
             disabled={agrees.length < 2 || !payment || selected?.length === 0}
-            className={style.payment_btn}
+            className={styles.payment_btn}
             onClick={async () => {
               if (point > 0) {
                 setIsLoading(true);
@@ -476,7 +478,7 @@ export function CartWrap() {
                         const tax = Math.round(
                           (discount_price *
                             (item?.variant?.product?.tax_rate || 0)) /
-                            100
+                          100
                         );
                         total +=
                           discount_price * item.quantity + tax * item.quantity;
@@ -565,7 +567,7 @@ export function CartWrap() {
                                       onConfirm: () => navigate("/orders/cart"),
                                     });
                                   }
-                                } catch (error) {}
+                                } catch (error) { }
                               } else if (response.resultCd !== "CB49") {
                                 NiceModal.show("confirm", {
                                   clickOutsideToClose: false,
@@ -657,7 +659,7 @@ export function CartWrap() {
                                     onConfirm: () => navigate("/orders/cart"),
                                   });
                                 }
-                              } catch (error) {}
+                              } catch (error) { }
                             } else if (response.resultCd !== "CB49") {
                               NiceModal.show("confirm", {
                                 clickOutsideToClose: false,
@@ -694,24 +696,24 @@ export function Item({ item }: { item: LineItemData }) {
   }, [item]);
 
   return (
-    <VerticalFlex className={style.cart_item} gap={20}>
+    <VerticalFlex className={styles.cart_item} gap={20}>
       <HorizontalFlex justifyContent="start" position="relative">
         <FlexChild width={"auto"} marginRight={15} alignSelf="start">
-          <CheckboxChild className={style.checkbox} id={item.id} />
+          <CheckboxChild className={styles.checkbox} id={item.id} />
         </FlexChild>
 
-        <FlexChild className={style.unit}>
+        <FlexChild className={styles.unit}>
           <Image
             src={item?.variant?.thumbnail || item?.variant?.product?.thumbnail}
             width={80}
             borderRadius={5}
           />
-          <VerticalFlex className={style.unit_content} alignItems="start">
-            <Span className={style.unit_brand}>
+          <VerticalFlex className={styles.unit_content} alignItems="start">
+            <Span className={styles.unit_brand}>
               {item?.variant?.product?.brand?.name}
             </Span>
             <P
-              className={style.unit_title}
+              className={styles.unit_title}
               lineClamp={2}
               overflow="hidden"
               display="--webkit-box"
@@ -719,7 +721,7 @@ export function Item({ item }: { item: LineItemData }) {
               {item.variant.product.title}
             </P>
             <P
-              className={style.unit_title}
+              className={styles.unit_title}
               lineClamp={2}
               overflow="hidden"
               display="--webkit-box"
@@ -740,7 +742,7 @@ export function Item({ item }: { item: LineItemData }) {
 
         {/* 삭제 버튼 */}
         <FlexChild
-          className={style.delete_box}
+          className={styles.delete_box}
           onClick={() =>
             requester.removeItem(
               {
@@ -760,7 +762,7 @@ export function Item({ item }: { item: LineItemData }) {
       </HorizontalFlex>
 
       {/* 갯수 추가 */}
-      <HorizontalFlex className={style.totalPrice} justifyContent="end">
+      <HorizontalFlex className={styles.totalPrice}>
         <FlexChild width={"auto"}>
           <InputNumber
             min={1}
@@ -800,21 +802,25 @@ export function Item({ item }: { item: LineItemData }) {
 }
 
 export function AgreeInfo({
+  agrees,
   setAgrees,
 }: {
+  agrees: string[];
   setAgrees: Dispatch<SetStateAction<string[]>>;
 }) {
-  const navigate = useNavigate();
+  const showModal = (type: 'term_check' | 'privacy_check') => {
+    NiceModal.show("AgreeContent", { type, setAgrees });
+  };
 
   return (
     <VerticalFlex alignItems="start">
       <article>
-        <P className={style.list_title}>이용약관 동의</P>
+        <P className={styles.list_title}>이용약관 동의</P>
       </article>
 
-      <CheckboxGroup name={"agree_check"} onChange={setAgrees}>
-        <VerticalFlex className={style.agree_list}>
-          <HorizontalFlex className={style.agree_item}>
+      <CheckboxGroup name={"agree_check"} onChange={setAgrees} values={agrees}>
+        <VerticalFlex className={styles.agree_list}>
+          <HorizontalFlex className={styles.agree_item}>
             <FlexChild width={"auto"} gap={10}>
               <CheckboxAll></CheckboxAll>
               <Span size={14}>전체 이용약관 동의</Span>
@@ -822,15 +828,15 @@ export function AgreeInfo({
           </HorizontalFlex>
 
           <VerticalFlex gap={10}>
-            <HorizontalFlex className={style.agree_item}>
+            <HorizontalFlex className={styles.agree_item}>
               <FlexChild width={"auto"} gap={10}>
                 <CheckboxChild id={"term_check"} />
                 <Span size={14}>[필수] 구매조건 확인 및 결제진행 동의</Span>
               </FlexChild>
 
               <Span
-                className={style.more_btn}
-                onClick={() => navigate("/policies/term")}
+                className={styles.more_btn}
+                onClick={() => showModal('term_check')}
               >
                 자세히보기
               </Span>
@@ -838,15 +844,15 @@ export function AgreeInfo({
           </VerticalFlex>
 
           <VerticalFlex gap={10}>
-            <HorizontalFlex className={style.agree_item}>
+            <HorizontalFlex className={styles.agree_item}>
               <FlexChild width={"auto"} gap={10}>
                 <CheckboxChild id={"privacy_check"} />
                 <Span size={14}>[필수] 개인정보 수집 및 이용 동의</Span>
               </FlexChild>
 
               <Span
-                className={style.more_btn}
-                onClick={() => navigate("/policies/praivacy")}
+                className={styles.more_btn}
+                onClick={() => showModal('privacy_check')}
               >
                 자세히보기
               </Span>

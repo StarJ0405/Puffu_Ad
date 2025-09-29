@@ -2,109 +2,97 @@
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import Image from "@/components/Image/Image";
+import Span from "@/components/span/Span";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import styles from "./header.module.css";
 import NiceModal from "@ebay/nice-modal-react";
 import SideMenu from "./sideMenu";
 import { useCart } from "@/providers/StoreProvider/StorePorivderClient";
+import Link from "next/link";
 
 
 // 햄버거 메뉴
 export function SideMenuBtn() {
 
-   const SideMenuOpen = () => {
+  const SideMenuOpen = () => {
     NiceModal.show(SideMenu);
   };
 
-   return (
-      <FlexChild gap={10} width={'auto'} cursor="pointer" onClick={SideMenuOpen}>
-         <Image 
-            src='/resources/images/header/category_menu_icon.png'
-            width={18}
-         />
-      </FlexChild>
-   )
-}
-
-
-
-export function CartLength() {
-  const { cartData } = useCart();
-  const [length, setLength] = useState<number>(0);
-
-  useEffect(() => {
-    setLength(cartData?.items.length ?? 0);
-  }, [cartData]);
-  
   return (
-   <>
-      {
-         length > 0 && (
-            <FlexChild className={styles.cart_length}>
-              {length}
-            </FlexChild>
-         )
-      }
-   </>
+    <FlexChild gap={10} width={'auto'} cursor="pointer" onClick={SideMenuOpen}>
+      <Image
+        src='/resources/images/header/category_menu_icon.png'
+        width={18}
+      />
+    </FlexChild>
   )
 }
 
 
+
 interface ShopMenuItem {
-   name: string;
-   link: string;
-   icon?: string; // menu1에 icon이 있음
+  name: string;
+  link: string;
+  icon?: string; // menu1에 icon이 있음
 }
 
 interface HeaderBottomProps {
-   menu1: ShopMenuItem[];
+  menu1: ShopMenuItem[];
 }
 
-export function HeaderBottom({menu1} : HeaderBottomProps) {
+export function HeaderBottom({ menu1 }: HeaderBottomProps) {
 
-   const bottomRef = useRef<HTMLDivElement | null>(null);
-   const [fixed, setFixed] = useState(false);
-   const [CaOpen, SetCaOpen] = useState(false);
-   const router = useRouter();
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+  const [fixed, setFixed] = useState(false);
+  const [CaOpen, SetCaOpen] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
 
-   useEffect(()=> {
-      const headerScroll = () => {
-         const elmt = bottomRef.current?.getBoundingClientRect();
-         if (!elmt) return;
-         setFixed(elmt.top <= 0);
-      }
+  useEffect(() => {
+    const headerScroll = () => {
+      const elmt = bottomRef.current?.getBoundingClientRect();
+      if (!elmt) return;
+      setFixed(elmt.top <= 0);
+    }
 
-      window.addEventListener('scroll', headerScroll);
-      return () => window.removeEventListener('scroll', headerScroll);
+    window.addEventListener('scroll', headerScroll);
+    return () => window.removeEventListener('scroll', headerScroll);
 
-   }, [bottomRef]);
+  }, [bottomRef]);
 
-   return (
-      <>
+  return (
+    <>
       {/* <HeaderCatgeory CaOpen={CaOpen} /> */}
       <div ref={bottomRef}></div>{/* 헤더 높이계산용 더미 */}
       <div className={`${fixed ? styles.fixed : ''}`}>
-         <HorizontalFlex 
-            className={clsx('page_container', styles.Menu_box)} 
-         >
-            <nav>
-               <ul className={clsx(styles.outerMenu, styles.shop_outer)}>
-                  {
-                     menu1.map((item, i)=> (
-                        <li key={i} onClick={() => router.push(item.link)} className="SacheonFont">
-                           {item.name}
-                           {item.icon ? <Image src={item.icon} width={12} /> : null}
-                        </li>
-                     ))
-                  }
-               </ul>
-            </nav>
-         </HorizontalFlex>
+        <HorizontalFlex
+          className={clsx('page_container', styles.Menu_box)}
+        >
+          <nav>
+            <ul className={clsx(styles.outerMenu, styles.shop_outer)}>
+              {
+                menu1.map((item, i) => (
+                  <li key={i}
+                    onClick={() => router.push(item.link)}
+                    className={clsx({ [styles.active]: pathname === item.link })}
+                  >
+                    <Link href={item.link} className="SacheonFont">
+                      {item.name}
+                      {item.icon ? <Image src={item.icon} width={12} /> : null}
+                    </Link>
+                    <Span className={styles.active_line}></Span>
+                  </li>
+                ))
+              }
+            </ul>
+          </nav>
+        </HorizontalFlex>
       </div>
-      </>
-   )
+    </>
+  )
 }
 
 

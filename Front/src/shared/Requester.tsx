@@ -526,36 +526,36 @@ class _Requester {
   // 리뷰
   async createReview(data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.post(`/users/me/reviews`, data));
-    else return await this.post(`/users/me/review`, data);
+    else return await this.post(`/users/me/reviews`, data);
   }
   async getReviews(data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.get(`/users/me/reviews`, data));
-    else return await this.get(`/users/me/review`, data);
+    else return await this.get(`/users/me/reviews`, data);
   }
   async updateReviews(
     id: string,
     data?: any,
     callback?: Function
   ): Promise<any> {
-    if (callback) callback(await this.post(`/users/me/review/${id}`, data));
-    else return await this.post(`/users/me/review/${id}`, data);
+    if (callback) callback(await this.post(`/users/me/reviews/${id}`, data));
+    else return await this.post(`/users/me/reviews/${id}`, data);
   }
   async deleteReview(
     id: string,
     data?: any,
     callback?: Function
   ): Promise<any> {
-    if (callback) callback(await this.delete(`/users/me/review/${id}`, data));
-    else return await this.delete(`/users/me/review/${id}`, data);
+    if (callback) callback(await this.delete(`/users/me/reviews/${id}`, data));
+    else return await this.delete(`/users/me/reviews/${id}`, data);
   }
   // 포인트 사용 내역
   async getPoints(data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.get(`/users/me/points`, data));
-    else return await this.get(`/users/me/point`, data);
+    else return await this.get(`/users/me/points`, data);
   }
   // 채팅 관련
   async getChatroom(data?: any, callback?: Function): Promise<any> {
-    if (callback) callback(await this.get(`/users/me/chatroom`, data));
+    if (callback) callback(await this.get(`/users/me/chatrooms`, data));
     else return await this.get(`/users/me/chatrooms`, data);
   }
   async getChats(id: string, data?: any, callback?: Function): Promise<any> {

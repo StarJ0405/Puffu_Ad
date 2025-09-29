@@ -15,18 +15,18 @@ import clsx from "clsx";
 
 const getInquiryTypeKorean = (type: string) => {
   switch (type) {
-    case "exchange":
-      return "교환문의";
-    case "refund":
-      return "환불문의";
-    case "product":
-      return "상품문의";
-    case "shipping":
-      return "배송문의";
+    case "account":
+      return "회원정보 관리";
+    case "order":
+      return "주문/결제";
+    case "receipt":
+      return "영수증/증빙서류";
+    case "event":
+      return "상품/이벤트";
     case "etc":
-      return "기타문의";
+      return "기타";
     default:
-      return type;
+      return "기타";
   }
 };
 
@@ -43,7 +43,7 @@ const formatInquiries = (inquiriesData: any[]) => {
 
     return {
       id: inquiry.id,
-      Type: getInquiryTypeKorean(inquiry.type),
+      Type: getInquiryTypeKorean(inquiry.category || ""),
       title: inquiry.title,
       content: inquiry.content,
       images: inquiry.images || [],

@@ -213,6 +213,11 @@
   color: var(--main-color2);
 }
 
+.inputError{
+  padding-top: 2px;
+  color: #da1e1e;
+  font-size: 12px;
+}
 
 
 /* 4단계 */
@@ -225,7 +230,7 @@
 }
 
 .completed_ttitle {
-  font-size: 50px;
+  font-size: 20px;
   color: #fff;
   font-weight: 600;
   margin-bottom: 25px;
@@ -235,9 +240,10 @@
 .completed_txt {
   text-align: center;
   line-height: 1.4;
-  font-size: 20px;
+  font-size: 18px;
   color: #aaaaaa;
-  margin-bottom: 200px;
+  margin-bottom: 100px;
+  word-break: keep-all;
 }
 
 
@@ -285,6 +291,7 @@
 /* 회원가입 완료 시 */
 
 .continue_box .home_btn {
+  width: 363px;
   background: transparent;
   border: 1px solid #fff;
 }

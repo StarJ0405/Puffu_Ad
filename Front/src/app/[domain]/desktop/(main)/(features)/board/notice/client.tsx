@@ -107,7 +107,7 @@ export function BoardTable({
               <col style={{ width: "10%", maxWidth: "130px" }} />
               <col style={{ width: "55%" }} />
               <col style={{ width: "10%", maxWidth: "130px" }} />
-              <col style={{ width: "15%" }} />
+              {/* <col style={{ width: "15%" }} /> */}
               <col style={{ width: "10%", maxWidth: "130px" }} />
             </colgroup>
 
@@ -117,7 +117,7 @@ export function BoardTable({
                 <th>번호</th>
                 <th>제목</th>
                 <th>작성자</th>
-                <th>조회</th>
+                <th hidden>조회</th>
                 <th>날짜</th>
               </tr>
             </thead>
@@ -180,8 +180,9 @@ export function BoardTable({
                     </td>
 
                     {/* 조회수 */}
-                    <td>
-                      <Span weight={400}>{notice.views || 0}</Span>
+                    <td hidden>
+                      <Image src="/resources/icons/board/views_icon.png" width={14}/>
+                      <Span weight={400} paddingLeft={3}>{notice.views || 0}</Span>
                     </td>
 
 

@@ -17,7 +17,7 @@
 .cart_length_mob {
    padding: 3px 2px;
    width: 100%;
-   max-width: 20px;
+   max-width: 15px;
    background: var(--main-color2);
    justify-content: center !important;
    font-size: 11px;

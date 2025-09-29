@@ -44,7 +44,7 @@ export default function InquiryClient({
   const domain = params.domain as string;
   const { userData } = useAuth();
 
-  const [qaType, setQaType] = useState<QADataFrame["type"] | "">("");
+  const [qaType, setQaType] = useState<string | "">("");
   const [content, setContent] = useState("");
   const [isHidden, setIsHidden] = useState(false);
 
@@ -70,15 +70,18 @@ export default function InquiryClient({
   };
 
   const handlePageChange = (newPage: number) => {
-    setPage(newPage);
+    const p = Math.max(0, Math.trunc(newPage));
+    setPage(p);
+    setOpenIndex(null);
+    fetchQAs(p);
   };
 
-  const getQaTypeKorean = (type: QADataFrame["type"] | "") => {
+  const getQaTypeKorean = (type: string) => {
     switch (type) {
-      case "exchange":
-        return "교환/환불";
-      case "refund":
-        return "교환/환불";
+      case "product":
+        return "상품관련";
+      case "inventory":
+        return "재고";
       case "etc":
         return "기타";
       default:
@@ -109,7 +112,8 @@ export default function InquiryClient({
     }
 
     const payload: QADataFrame = {
-      type: qaType as QADataFrame["type"],
+      category: qaType as QADataFrame["type"],
+      type: 'etc',
       title: `${getQaTypeKorean(qaType)} 관련 문의입니다.`,
       content,
       hidden: isHidden,
@@ -123,7 +127,8 @@ export default function InquiryClient({
       setContent("");
       setQaType("");
       setIsHidden(false);
-      fetchQAs(1);
+      setPage(0);
+      fetchQAs(0);
     } else {
       toast({ message: "문의 등록에 실패했습니다." });
     }
@@ -166,7 +171,8 @@ export default function InquiryClient({
               }}
               width={"100%"}
               options={[
-                { value: "exchange", display: "교환/환불 문의" },
+                { value: "product", display: "상품관련 문의" },
+                { value: "inventory", display: "재고 문의" },
                 { value: "etc", display: "기타 문의" },
               ]}
               placeholder={"문의 유형을 선택하세요."}
@@ -218,14 +224,17 @@ export default function InquiryClient({
               const canView = canViewPost(inquiry);
 
               return (
-                <VerticalFlex key={i} className={styles.inquiry_item}>
+                <VerticalFlex
+                  key={inquiry.id ?? i}
+                  className={styles.inquiry_item}
+                >
                   <VerticalFlex className={styles.user_question}>
                     <HorizontalFlex
                       alignItems="center"
                       className={styles.item_title}
                     >
-                      <P>{inquiry.title}</P>
-                      {inquiry.answer && canView && (
+                      <P>{canView ? inquiry.title : "비공개 문의입니다."}</P>
+                      {canView && (
                         <Button
                           className={clsx(styles.toggle_btn, {
                             [styles.active]: openIndex === i,
@@ -244,46 +253,54 @@ export default function InquiryClient({
 
                     <FlexChild className={styles.data_group}>
                       <FlexChild className={styles.response_check}>
-                        <Span color={inquiry.answer ? "#fff" : undefined}>
+                        <Span color={inquiry.answer ? "#F5146E" : "#ffffff"}>
                           {inquiry.answer ? "답변완료" : "답변대기"}
                         </Span>
                       </FlexChild>
 
                       <P className={styles.item_name}>
-                        {maskName(inquiry?.user?.name)}
+                        {canView ? maskName(inquiry.user?.name) : "비공개"}
                       </P>
 
                       <P className={styles.item_date}>
                         {formatDate(inquiry.created_at as string)}
                       </P>
                     </FlexChild>
-
-                    <FlexChild className={styles.item_content}>
-                      <P>{canView ? inquiry.content : "비공개 문의입니다."}</P>
-                    </FlexChild>
                   </VerticalFlex>
 
                   {canView && (
                     <AnimatePresence mode="wait">
-                      <motion.div
-                        id="motion"
-                        key={openIndex}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.5, ease: "easeInOut" }}
-                      >
-                        {inquiry.answer && openIndex === i && (
-                          <VerticalFlex className={styles.admin_answer}>
-                            <FlexChild className={styles.answer_title}>
-                              <P color="var(--main-color1)">관리자 답변</P>
+                      {openIndex === i && (
+                        <motion.div
+                          id="motion"
+                          key={openIndex}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.5, ease: "easeInOut" }}
+                        >
+                          <VerticalFlex>
+                            <FlexChild className={styles.item_content}>
+                              <P>
+                                {canView
+                                  ? inquiry.content
+                                  : "비공개 문의입니다."}
+                              </P>
                             </FlexChild>
 
-                            <FlexChild className={styles.item_content}>
-                              <P>{inquiry.answer}</P>
-                            </FlexChild>
+                            {inquiry.answer && openIndex === i && (
+                              <VerticalFlex className={styles.admin_answer}>
+                                <FlexChild className={styles.answer_title}>
+                                  <P color="var(--main-color1)">관리자 답변</P>
+                                </FlexChild>
+
+                                <FlexChild className={styles.item_content}>
+                                  <P>{inquiry.answer}</P>
+                                </FlexChild>
+                              </VerticalFlex>
+                            )}
                           </VerticalFlex>
-                        )}
-                      </motion.div>
+                        </motion.div>
+                      )}
                     </AnimatePresence>
                   )}
                 </VerticalFlex>

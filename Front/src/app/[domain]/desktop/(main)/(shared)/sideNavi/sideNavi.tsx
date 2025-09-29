@@ -51,7 +51,7 @@ export default function SideNavi() {
             </li>
 
             <li>
-              <Link href={"/mypage/wishList"}>위시리스트</Link>
+              <Link href={"/mypage/wishList"}>관심리스트</Link>
             </li>
 
             <li>

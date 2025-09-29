@@ -75,9 +75,10 @@ export function DetailFrame({ initNotice }: { initNotice: any }) {
             <P>관리자</P>
           </FlexChild>
 
-          <FlexChild className={styles.view_comment_box} gap={10}>
+          <FlexChild className={styles.view_comment_box} gap={10} hidden>
             <FlexChild className={styles.view}>
-              <P>
+              <Image src="/resources/icons/board/views_icon.png" width={14}/>
+              <P paddingLeft={3}>
                 조회수 <b>{notice.views || 0}</b>
               </P>
             </FlexChild>

@@ -11,12 +11,10 @@ import clsx from "clsx";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import boardStyle from "../boardGrobal.module.css";
-
 import { toast } from "@/shared/utils/Functions";
 import { useRouter } from "next/navigation";
 import { SelectBox } from "../client";
 import NoContent from "@/components/noContent/noContent";
-
 interface QADataWithUser extends QAData {
   user?: UserData;
 }
@@ -63,19 +61,26 @@ export function BoardTable() {
 
   const getQaTypeKorean = (type: string) => {
     switch (type) {
-      case "exchange":
-        return "교환";
-      case "refund":
-        return "환불";
+     case "account":
+        return "회원정보 관리";
+      case "order":
+        return "주문/결제";
+      case "receipt":
+        return "영수증/증빙서류";
+      case "event":
+        return "상품/이벤트";
       case "etc":
+        return "기타";
       default:
         return "기타";
     }
   };
 
   const handleTitleClick = (item: QADataWithUser) => {
-    if (userData?.role !== "admin" || userData?.id !== item.user?.id) {
-      toast({ message: "비밀글은 작성자만 확인할 수 있습니다." });
+    const isAdmin = String(userData?.role || "").toLowerCase() === "admin";
+    const isOwner = String(userData?.id) === String(item.user?.id);
+    if (!(isAdmin || isOwner)) {
+      toast({ message: "1:1문의는 작성자만 확인할 수 있습니다." });
       return;
     }
     router.push(`/board/inquiry/${item.id}`);
@@ -118,7 +123,7 @@ export function BoardTable() {
                       cursor="pointer"
                     >
                       <FlexChild width={"auto"}>
-                        <P>{getQaTypeKorean(list.type)} - </P>
+                        <P>{getQaTypeKorean(list?.category || "")} - </P>
                       </FlexChild>
 
                       <FlexChild gap={5} width={"100%"}>
@@ -129,7 +134,13 @@ export function BoardTable() {
                         >
                           {list.title}
                         </P>
-                        {list.hidden && (
+                        {/* {list.hidden && (
+                          <Image
+                            src={"/resources/icons/board/lock_icon.png"}
+                            width={16}
+                          />
+                        )} */}
+                        {list.user?.id !== userData?.id && (
                           <Image
                             src={"/resources/icons/board/lock_icon.png"}
                             width={16}

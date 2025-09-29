@@ -49,7 +49,7 @@ body {
   /* scrollbar-width: none; */
   -ms-overflow-style: none;
   font-family: "pretendard", sans-serif !important;
-  overflow: unset !important;
+  /* overflow: unset !important; */
 }
 
 textarea {font-family: "pretendard", sans-serif !important;}
@@ -190,7 +190,7 @@ a {
     max-width: 992px;
     margin: 0 auto;
     color: var(--default-color);
-    padding: 0 10px;
+    padding: 0 13px;
   }
 
   .root {
@@ -203,6 +203,10 @@ a {
   /* 디테일 페이지용 */
   .detail_root {
     padding-top: 50px;
+  }
+
+  .swiper .swiper-wrapper {
+    align-items: center;
   }
 }
 

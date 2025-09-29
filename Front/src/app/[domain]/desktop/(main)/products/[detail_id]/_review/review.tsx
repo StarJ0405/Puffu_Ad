@@ -19,77 +19,106 @@ import { requester } from "@/shared/Requester";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import { useParams } from "next/navigation";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { useMemo, useCallback, useEffect, useRef, useState } from "react";
 import ProductCard from "@/components/card/dummyProductCard";
 import Input from "@/components/inputs/Input";
 import InputNumber from "@/components/inputs/InputNumber";
 import ListPagination from "@/components/listPagination/ListPagination";
 import styles from "./review.module.css";
 import InputTextArea from "@/components/inputs/InputTextArea";
+import usePageData from "@/shared/hooks/data/usePageData";
+import { toast, maskEmail, maskTwoThirds } from "@/shared/utils/Functions";
+import StarRate from "@/components/star/StarRate";
+import NoContent from "@/components/noContent/noContent";
 
-export default function Review() {
-  const reviewTest = [
-    // 리뷰 게시글 테스트용
-    {
-      name: "test",
-      rating: 5,
-      date: "2025-08-07",
-      content: "옷 예쁘네요. 우리 존재 화이팅",
-      photos: [],
-      feedBack: {
-        design: "마음에 쏙 들어요",
-        Sturdiness: "부실해요",
-        Upkeep: "쉽게 관리 가능해요",
-      },
-    },
-    {
-      name: "test",
-      rating: 3,
-      date: "2025-08-07",
-      content: `
-            구조가 매우 복잡한 만큼 뒷처리도 힘듬
+export default function Review({ product }: { product: ProductData }) {
+  const navigate = useNavigate();
+  const observer = useRef<any>(null);
 
-            단단해서 잘 안늘어나려고 하고 벌릴순 있지만 타이트해서 스텐봉 샤워기헤드 대신 쓸만한거
+  const avg = Number(product?.reviews?.avg ?? 0);
+  const count = Number(product?.reviews?.count ?? 0);
 
-            하나사서 꼽은다음 물 트는게 가장 효과적으로 세척할 수 있을거같다
-         `,
-      photos: [],
-      feedBack: {
-        design: "마음에 쏙 들어요",
-        Sturdiness: "양품이에요",
-        Upkeep: "보통이에요",
-      },
-    },
+  const [tab, setTab] = useState<"all" | "photo">("all");
+  const PAGE_SIZE = 10;
+  const ready = !!product?.id;
+
+  const key = useMemo(() => `reviews:${product.id}:${tab}`, [product.id, tab]);
+
+  const {
+    [key]: reviewsPage,
+    page,
+    setPage,
+    maxPage,
+  } = usePageData(
+    key,
+    (pageNumber) => ({
+      pageSize: PAGE_SIZE,
+      pageNumber, // 0-based
+      relations: "item,item.brand,item.variant.product,user",
+      order: { created_at: "DESC" },
+    }),
+    (cond) => requester.getProductReviews(product.id, cond),
+    (data: Pageable) => data?.totalPages || 0,
     {
-      name: "test",
-      rating: 4,
-      date: "2025-08-07",
-      content: "옷 예쁘네요. 우리 존재 화이팅",
-      photos: [
-        "/resources/images/dummy_img/review_img_01.png",
-        "/resources/images/dummy_img/product_04.jpg",
-        "/resources/images/dummy_img/review_img_02.jpg",
-      ],
-      feedBack: {
-        design: "마음에 쏙 들어요",
-        Sturdiness: "양품이에요",
-        Upkeep: "관리하기 어려울 것 같아요",
+      onReprocessing: (res: any) => {
+        const reviews = Array.isArray(res) ? res : res?.content ?? [];
+        const total =
+          (!Array.isArray(res) &&
+            (res?.totalElements ?? res?.total ?? res?.meta?.total)) ??
+          reviews.length;
+        return { reviews, total };
       },
+      fallbackData: { reviews: [], total: 0, totalPages: 0 },
+      revalidateOnMount: true,
+      pause: !ready,
+    }
+  );
+
+  const listAll = reviewsPage?.reviews ?? [];
+  const list =
+    tab === "photo"
+      ? listAll.filter(
+          (r: any) => Array.isArray(r?.images) && r.images.length > 0
+        )
+      : listAll;
+
+  const totalPages = Math.max(1, (maxPage ?? 0) + 1);
+
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const toggleExpand = (id: string) =>
+    setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
+
+  const formatDateDots = (iso?: string) => {
+    if (!iso) return "-";
+    const d = new Date(iso);
+    return Number.isNaN(d.getTime())
+      ? "-"
+      : d.toISOString().slice(0, 10).replaceAll("-", ".");
+  };
+  const DISPLAY = {
+    design: {
+      love: "마음에 쏙 들어요.",
+      ok: "보통이에요.",
+      not_my_style: "내 취향은 아니네요.",
     },
-    {
-      name: "test",
-      rating: 2,
-      date: "2025-08-07",
-      content:
-        "배송 빠릅니다. 유명하다 해서 주문해봤습니다. 감사합니다. 다음에 또 이용하겠습니다. 최신제조 상품같습니다.",
-      photos: ["/resources/images/dummy_img/review_img_01.png"],
-      feedBack: {
-        design: "마음에 쏙 들어요",
-        Sturdiness: "보통이에요",
-        Upkeep: "보통이에요",
-      },
+    finish: {
+      good: "양품이에요.",
+      ok: "보통이에요.",
+      poor: "부실해요.",
     },
-  ];
+    maintenance: {
+      easy: "쉽게 관리 가능해요.",
+      ok: "보통이에요.",
+      hard: "관리하기 어려워요.",
+    },
+  } as const;
+
+  const toDisplayDesign = (v?: string) =>
+    (DISPLAY.design as any)[v ?? ""] ?? v ?? "-";
+  const toDisplayFinish = (v?: string) =>
+    (DISPLAY.finish as any)[v ?? ""] ?? v ?? "-";
+  const toDisplayMaintenance = (v?: string) =>
+    (DISPLAY.maintenance as any)[v ?? ""] ?? v ?? "-";
 
   return (
     <VerticalFlex className={styles.review_wrap}>
@@ -99,239 +128,131 @@ export default function Review() {
             src={"/resources/icons/board/review_start_rating.png"}
             width={35}
           />
-          <P className={styles.rating}>4.5</P>
+          <P className={styles.rating}>{avg}</P>
           <P className={styles.total_rating}>
             총{" "}
             <Span color="#fff" weight={600}>
-              34
+              {count}
             </Span>
             건 리뷰
           </P>
         </FlexChild>
 
-        <Button className={styles.link_btn}>포토후기 이동</Button>
+        <Button
+          className={styles.link_btn}
+          onClick={() => navigate("/board/photoReview")}
+        >
+          포토후기 이동
+        </Button>
       </VerticalFlex>
 
       <VerticalFlex className={styles.review_board}>
-        <VerticalFlex className={styles.review_write}>
-          <HorizontalFlex className={styles.feedback_select}>
-            <FlexChild className={styles.select_item}>
-              <Span className={styles.label}>평점</Span>
-              <Select
-                classNames={{
-                  header: "web_select",
-                  placeholder: "web_select_placholder",
-                  line: "web_select_line",
-                  arrow: "web_select_arrow",
-                  search: "web_select_search",
-                }}
-                options={[
-                  { value: "★★★★★(아주 만족)", display: "★★★★★(아주 만족)" },
-                  { value: "★★★★(만족)", display: "★★★★(만족)" },
-                  { value: "★★★(보통)", display: "★★★(보통)" },
-                  { value: "★★(미흡)", display: "★★(미흡)" },
-                  { value: "★(매우 미흡)", display: "★(매우 미흡)" },
-                ]}
-                // placeholder={'선택 안함'}
-                // value={selectedMessageOption}
-              />
-            </FlexChild>
-
-            <FlexChild className={styles.select_item}>
-              <Span className={styles.label}>외형/디자인</Span>
-              <Select
-                classNames={{
-                  header: "web_select",
-                  placeholder: "web_select_placholder",
-                  line: "web_select_line",
-                  arrow: "web_select_arrow",
-                  search: "web_select_search",
-                }}
-                options={[
-                  { value: "마음에 쏙 들어요.", display: "마음에 쏙 들어요." },
-                  { value: "보통이에요.", display: "보통이에요." },
-                  {
-                    value: "내 취향은 아니네요.",
-                    display: "내 취향은 아니네요.",
-                  },
-                ]}
-                // placeholder={'선택 안함'}
-                // value={selectedMessageOption}
-              />
-            </FlexChild>
-
-            <FlexChild className={styles.select_item}>
-              <Span className={styles.label}>마감/내구성</Span>
-              <Select
-                classNames={{
-                  header: "web_select",
-                  placeholder: "web_select_placholder",
-                  line: "web_select_line",
-                  arrow: "web_select_arrow",
-                  search: "web_select_search",
-                }}
-                options={[
-                  { value: "양품이에요.", display: "양품이에요." },
-                  { value: "보통이에요.", display: "보통이에요." },
-                  { value: "부실해요.", display: "부실해요." },
-                ]}
-                // placeholder={'선택 안함'}
-                // value={selectedMessageOption}
-              />
-            </FlexChild>
-
-            <FlexChild className={styles.select_item}>
-              <Span className={styles.label}>유지관리</Span>
-              <Select
-                classNames={{
-                  header: "web_select",
-                  placeholder: "web_select_placholder",
-                  line: "web_select_line",
-                  arrow: "web_select_arrow",
-                  search: "web_select_search",
-                }}
-                options={[
-                  {
-                    value: "쉽게 관리 가능해요.",
-                    display: "쉽게 관리 가능해요.",
-                  },
-                  { value: "보통이에요.", display: "보통이에요." },
-                  {
-                    value: "관리하기 어려울 것 같아요.",
-                    display: "관리하기 어려울 것 같아요.",
-                  },
-                ]}
-                // placeholder={'선택 안함'}
-                // value={selectedMessageOption}
-              />
-            </FlexChild>
-          </HorizontalFlex>
-
-          <VerticalFlex className={clsx("textarea_box", styles.review_content)}>
-            <InputTextArea
-              width={"100%"}
-              style={{ height: "150px" }}
-              placeHolder="다른 고객님에게도 도움이 되도록 솔직한 평가를 남겨주세요."
-            />
-          </VerticalFlex>
-
-          <FlexChild justifyContent="center" gap={10} cursor="pointer">
-            <FlexChild gap={10} width={"auto"}>
-              <Image
-                src={"/resources/icons/board/file_upload_btn.png"}
-                width={35}
-              />
-              <P size={16} color="#fff">
-                이미지 첨부
-              </P>
-            </FlexChild>
-
-            <P size={13} color="#797979">
-              ※ 이미지는 최대 4개까지 등록이 가능해요.
-            </P>
-          </FlexChild>
-
-          <Button className="post_btn" marginTop={25}>
-            <P>리뷰 등록</P>
-          </Button>
-        </VerticalFlex>
-
         {/* 리스트 */}
         <VerticalFlex className={styles.review_list} gap={35}>
-          {reviewTest.map((review, i) => (
-            <HorizontalFlex key={i} gap={100} className={styles.item}>
-              <VerticalFlex className={styles.item_header} gap={15}>
-                <FlexChild>
-                  <Image
-                    src={`/resources/icons/board/review_start_${review.rating}.png`}
-                    width={100}
-                  />
-                </FlexChild>
-
-                <VerticalFlex gap={10}>
-                  <FlexChild justifyContent="center">
-                    <P color="#d7d7d7" size={18}>
-                      {review.name}
-                    </P>{" "}
-                    {/* 닉네임 뒷글자 *** 표시 */}
-                  </FlexChild>
-
-                  <FlexChild justifyContent="center">
-                    <P color="#797979" size={13}>
-                      {review.date}
-                    </P>
-                  </FlexChild>
-                </VerticalFlex>
-              </VerticalFlex>
-
-              <VerticalFlex gap={25}>
-                <HorizontalFlex className={styles.feedback}>
-                  <FlexChild className={styles.feed_item}>
-                    <FlexChild className={styles.feed_title}>
-                      <P>외형/디자인</P>
-                    </FlexChild>
-
-                    <FlexChild className={styles.feed_content}>
-                      <P>{review.feedBack.design}</P>
-                    </FlexChild>
-                  </FlexChild>
-
-                  <FlexChild className={styles.feed_item}>
-                    <FlexChild className={styles.feed_title}>
-                      <P>마감/내구성</P>
-                    </FlexChild>
-
-                    <FlexChild className={styles.feed_content}>
-                      <P>{review.feedBack.Sturdiness}</P>
-                    </FlexChild>
-                  </FlexChild>
-
-                  <FlexChild className={styles.feed_item}>
-                    <FlexChild className={styles.feed_title}>
-                      <P>유지관리</P>
-                    </FlexChild>
-
-                    <FlexChild className={styles.feed_content}>
-                      <P>{review.feedBack.Upkeep}</P>
-                    </FlexChild>
-                  </FlexChild>
-                </HorizontalFlex>
-
-                <HorizontalFlex className={styles.content}>
-                  {review.photos.length > 0 && (
-                    <FlexChild
-                      width={180}
-                      className={styles.img_box}
-                      cursor="pointer"
-                    >
-                      <Image
-                        src={review.photos[0]}
-                        width={"100%"}
-                        height={"auto"}
+          
+          {
+            list?.length > 0 ? (
+              list.map((r: any) => (
+                <HorizontalFlex key={r} gap={100} className={styles.item}>
+                  <VerticalFlex className={styles.item_header} gap={15}>
+                    <FlexChild>
+                      <StarRate
+                        width={100}
+                        starWidth={20}
+                        starHeight={20}
+                        score={r.star_rate}
+                        readOnly
                       />
-                      <Div className={styles.img_length}>
-                        {review.photos.length}
-                      </Div>
                     </FlexChild>
-                  )}
 
-                  {/* 이미지 클릭하면 모달로 이미지 슬라이더 나타나서 크게 보여주기 */}
-                  {/* {
-                                 review.photos?.length > 0 && (
-                                    review.photos?.map((img, j)=> (
-                                       <FlexChild key={j} >
-                                          <Image src={img} width={'100%'} height={'auto'} />
-                                       </FlexChild>
-                                    ))
-                                 )
-                              } */}
-                  <P size={14} color="#fff" lineHeight={1.6}>
-                    {review.content}
-                  </P>
+                    <VerticalFlex gap={10}>
+                      <FlexChild justifyContent="center">
+                        <P color="#d7d7d7" size={18}>
+                          {maskTwoThirds(r.user.name)}
+                        </P>{" "}
+                        {/* 닉네임 뒷글자 *** 표시 */}
+                      </FlexChild>
+
+                      <FlexChild justifyContent="center">
+                        <P color="#797979" size={13}>
+                          {formatDateDots(r?.created_at)}
+                        </P>
+                      </FlexChild>
+                    </VerticalFlex>
+                  </VerticalFlex>
+
+                  <VerticalFlex gap={25}>
+                    <HorizontalFlex className={styles.feedback}>
+                      <FlexChild className={styles.feed_item}>
+                        <FlexChild className={styles.feed_title}>
+                          <P>외형/디자인</P>
+                        </FlexChild>
+
+                        <FlexChild className={styles.feed_content}>
+                          <P>{toDisplayDesign(r?.metadata?.aspects?.design)}</P>
+                        </FlexChild>
+                      </FlexChild>
+
+                      <FlexChild className={styles.feed_item}>
+                        <FlexChild className={styles.feed_title}>
+                          <P>마감/내구성</P>
+                        </FlexChild>
+
+                        <FlexChild className={styles.feed_content}>
+                          <P>{toDisplayFinish(r?.metadata?.aspects?.finish)}</P>
+                        </FlexChild>
+                      </FlexChild>
+
+                      <FlexChild className={styles.feed_item}>
+                        <FlexChild className={styles.feed_title}>
+                          <P>유지관리</P>
+                        </FlexChild>
+
+                        <FlexChild className={styles.feed_content}>
+                          <P>{toDisplayMaintenance(r?.metadata?.aspects?.maintenance)}</P>
+                        </FlexChild>
+                      </FlexChild>
+                    </HorizontalFlex>
+
+                    <HorizontalFlex className={styles.content}>
+                      {r.images.length > 0 && (
+                        <FlexChild
+                          width={180}
+                          className={styles.img_box}
+                          cursor="pointer"
+                        >
+                          <Image
+                            src={r.images[0]}
+                            width={"100%"}
+                            height={"auto"}
+                          />
+                          <Div className={styles.img_length}>
+                            {r.images.length}
+                          </Div>
+                        </FlexChild>
+                      )}
+
+                      {/* 이미지 클릭하면 모달로 이미지 슬라이더 나타나서 크게 보여주기 */}
+                      {/* {
+                                  review.photos?.length > 0 && (
+                                      review.photos?.map((img, j)=> (
+                                        <FlexChild key={j} >
+                                            <Image src={img} width={'100%'} height={'auto'} />
+                                        </FlexChild>
+                                      ))
+                                  )
+                                } */}
+                      <P size={14} color="#fff" lineHeight={1.6}>
+                        {r.content}
+                      </P>
+                    </HorizontalFlex>
+                  </VerticalFlex>
                 </HorizontalFlex>
-              </VerticalFlex>
-            </HorizontalFlex>
-          ))}
+              ))
+            ) : (
+              <NoContent type={'리뷰'} />
+            )
+          }
         </VerticalFlex>
 
         {/* <ListPagination /> */}

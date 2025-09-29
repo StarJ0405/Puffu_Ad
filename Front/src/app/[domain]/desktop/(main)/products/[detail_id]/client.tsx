@@ -54,7 +54,8 @@ export function ProductWrapper({
   const [freeShipping, setFreeShipping] = useState<ShippingMethodData>();
   const [qaList, setQaList] = useState<QAData[]>([]);
   const [totalQaCount, setTotalQaCount] = useState(0);
-  const [page, setPage] = useState(1);
+  const [totalReviewCount, setTotalReviewCount] = useState(0);
+  const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
   const pageSize = 5;
 
@@ -82,9 +83,9 @@ export function ProductWrapper({
     const res = await requester.getProductQAs(initProduct?.content?.id, {
       relations: ["user"],
       pageSize: pageSize,
-      pageNumber: pageNumber - 1,
+      pageNumber: pageNumber,
     });
-    
+
     if (res) {
       setQaList(res.content);
       setTotalPage(res.totalPages);
@@ -97,7 +98,6 @@ export function ProductWrapper({
       fetchQAs(page);
     }
   }, [initProduct?.content?.id, page]);
-
 
   const onWishClick = () => {
     if (product.wish) {
@@ -198,6 +198,9 @@ export function ProductWrapper({
       }
     }
   };
+  useEffect(() => {
+    setTotalReviewCount(Number(product?.reviews?.count ?? 0));
+  }, [product?.reviews?.count]);
 
   return (
     <section className="root">
@@ -224,6 +227,7 @@ export function ProductWrapper({
             totalQaCount={totalQaCount}
             qaList={qaList}
             page={page}
+            totalReviewCount={totalReviewCount}
             totalPage={totalPage}
             setPage={setPage}
             fetchQAs={fetchQAs}
@@ -593,6 +597,7 @@ export function ProductSlider({
 // 제품 정보 및 내용
 export function DetailTabContainer({
   product,
+  totalReviewCount,
   totalQaCount,
   qaList,
   page,
@@ -601,6 +606,7 @@ export function DetailTabContainer({
   fetchQAs,
 }: {
   product: ProductData;
+  totalReviewCount: number;
   totalQaCount: number;
   qaList: QAData[];
   page: number;
@@ -620,8 +626,7 @@ export function DetailTabContainer({
 
     if (contentRef.current) {
       const top =
-        contentRef.current.getBoundingClientRect().top +
-        window.scrollY -140; // 헤더 높이만큼 보정
+        contentRef.current.getBoundingClientRect().top + window.scrollY - 140; // 헤더 높이만큼 보정
       window.scrollTo({ top, behavior: "smooth" });
     }
   };
@@ -632,7 +637,12 @@ export function DetailTabContainer({
       paramsName: "description",
       component: <Description product={product} />,
     },
-    // { name: "사용후기", paramsName: "review", component: <Review /> }, 잠시 가려놓음
+    {
+      name: "사용후기",
+      paramsName: "review",
+      component: <Review product={product} />,
+      count: totalReviewCount,
+    },
     {
       name: "상품 Q&A",
       paramsName: "inquiry",
@@ -645,6 +655,7 @@ export function DetailTabContainer({
           fetchQAs={fetchQAs}
         />
       ),
+      count: totalQaCount,
     },
     {
       name: "배송/반품/교환/안내",
@@ -664,22 +675,20 @@ export function DetailTabContainer({
               tabParams === `${item.paramsName}` && styles.active
             )}
             onClick={() => {
-              handleTabClick(`${item.paramsName}`); 
+              handleTabClick(`${item.paramsName}`);
               tabParamsChange(`${item.paramsName}`);
             }}
           >
             <P>
               {item.name}
               {["review", "inquiry"].includes(item.paramsName) && (
-                <Span className={styles.list_count}>{totalQaCount}</Span> // 리뷰, qna 개수 출력
+                <Span className={styles.list_count}>{item.count}</Span> // 리뷰, qna 개수 출력
               )}
             </P>
           </FlexChild>
         ))}
       </HorizontalFlex>
-
       <div ref={contentRef}></div> {/* 탭 스크롤 이동 추적용 */}
-
       <VerticalFlex className={styles.content_view}>
         <article key={tabParams} className={styles.tab_fade}>
           {tabAraays.find((t) => t.paramsName === tabParams)?.component}

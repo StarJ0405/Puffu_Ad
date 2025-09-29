@@ -144,11 +144,11 @@ const ModalBase = forwardRef((props: any, ref) => {
       }
     }
   }, []);
-  const customHeaderStyle = {
-    // 관리자 모달헤더 색 바꾸고 싶을때 여기 수정
-    backgroundColor: "#3C4B64",
-    color: "white",
-  };
+  // const customHeaderStyle = {
+  //   // 관리자 모달헤더 색 바꾸고 싶을때 여기 수정
+  //   backgroundColor: "#3C4B64",
+  //   color: "white",
+  // };
 
   useEffect(() => {
     document.addEventListener("keydown", keyFunction);
@@ -237,8 +237,8 @@ const ModalBase = forwardRef((props: any, ref) => {
                   </div>
                 ) : (
                   <ModalBaseHeader
-                    // headerStyle={props.headerStyle}
-                    headerStyle={props.headerStyle && customHeaderStyle}
+                    headerStyle={props.headerStyle}
+                    // headerStyle={props.headerStyle && customHeaderStyle}
                     title={props.title}
                     color={props.color}
                     modalClose={modalClose}

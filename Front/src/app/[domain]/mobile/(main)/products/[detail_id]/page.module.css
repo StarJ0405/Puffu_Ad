@@ -323,7 +323,7 @@
 }
 
 .contents_container .tab_wrap {
-   gap: 20px;
+   gap: 10px;
    position: sticky;
    top: 50px;
    z-index: 100;
@@ -331,7 +331,7 @@
    background: #221f22;
    border-bottom: 1px solid #595959;
    display: grid;
-   grid-template-columns: repeat(3, 1fr);
+   grid-template-columns: repeat(4, 1fr);
 }
 
 .contents_container .tab_wrap .content_tab {
@@ -384,7 +384,7 @@
 /* 하단 정보 스타일 */
 
 .contents_container .content_view {
-   padding-top: 20px;
+   padding-top: 40px;
 }
 
 /* 탭 내용 바뀔때 애니메이션 변경 */

@@ -17,7 +17,7 @@ export const GET: ApiHandler = async (req, res) => {
     const page = await service.getPageable(
       {
         pageSize: Number(pageSize),
-        pageNumber: Number(pageNumber),
+        pageNumber: Math.max(0, Number(pageNumber) || 0),
       },
       { select, order, relations, where }
     );
