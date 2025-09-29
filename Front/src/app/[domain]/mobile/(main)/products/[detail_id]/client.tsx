@@ -54,9 +54,9 @@ export function ProductWrapper({
   const { reload } = useCart();
   const [shipping, setShipping] = useState<ShippingMethodData>();
   const [freeShipping, setFreeShipping] = useState<ShippingMethodData>();
-
   const [qaList, setQaList] = useState<QAData[]>([]);
   const [totalQaCount, setTotalQaCount] = useState(0);
+  const [totalReviewCount, setTotalReviewCount] = useState(0);
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
   const pageSize = 5;
@@ -202,6 +202,9 @@ export function ProductWrapper({
     }
     return false;
   };
+  useEffect(() => {
+    setTotalReviewCount(Number(product?.reviews?.count ?? 0));
+  }, [product?.reviews?.count]);
 
   return (
     <section className="root detail_root">
@@ -221,6 +224,7 @@ export function ProductWrapper({
           <DetailTabContainer
             product={product}
             totalQaCount={totalQaCount}
+            totalReviewCount={totalReviewCount}
             page={page}
             setPage={setPage}
             fetchQAs={fetchQAs}
@@ -694,6 +698,7 @@ export function ProductSlider({
 // 제품 정보 및 내용
 export function DetailTabContainer({
   product,
+  totalReviewCount,
   totalQaCount,
   qaList,
   page,
@@ -702,6 +707,7 @@ export function DetailTabContainer({
   fetchQAs,
 }: {
   product: ProductData;
+  totalReviewCount: number;
   totalQaCount: number;
   qaList: QAData[];
   page: number;
@@ -731,7 +737,12 @@ export function DetailTabContainer({
       paramsName: "description",
       component: <Description product={product} />,
     },
-    { name: "사용후기", paramsName: "review", component: <Review product={product} /> },
+    {
+      name: "사용후기",
+      paramsName: "review",
+      component: <Review product={product} />,
+      count: totalReviewCount,
+    },
     {
       name: "상품 Q&A",
       paramsName: "inquiry",
@@ -744,6 +755,7 @@ export function DetailTabContainer({
           fetchQAs={fetchQAs}
         />
       ),
+      count: totalQaCount,
     },
     {
       name: "배송/반품/교환/안내",
@@ -770,7 +782,7 @@ export function DetailTabContainer({
             <P>
               {item.name}
               {["review", "inquiry"].includes(item.paramsName) && (
-                <Span className={styles.list_count}>{totalQaCount}</Span> // 리뷰, qna 개수 출력
+                <Span className={styles.list_count}>{item.count}</Span> // 리뷰, qna 개수 출력
               )}
             </P>
           </FlexChild>
