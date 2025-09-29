@@ -32,6 +32,7 @@ import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import DeliveryGuide from "./_deliveryGuide/deliveryGuide";
 import Description from "./_description/description";
 import InquiryClient from "./_inquiry/client";
+import Review from "./_review/review";
 
 interface Variant {
   variant_id: string;
@@ -730,7 +731,7 @@ export function DetailTabContainer({
       paramsName: "description",
       component: <Description product={product} />,
     },
-    // { name: "사용후기", paramsName: "review", component: <Review /> },
+    { name: "사용후기", paramsName: "review", component: <Review product={product} /> },
     {
       name: "상품 Q&A",
       paramsName: "inquiry",
