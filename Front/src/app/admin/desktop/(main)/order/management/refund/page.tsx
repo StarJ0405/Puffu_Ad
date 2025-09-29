@@ -9,7 +9,7 @@ export default async function ({ params }: { params: Promise<Params> }) {
     order: JSON.stringify({ order: { display: "asc" } }),
     relations: [
       "order.user",
-      "order.items",
+      "order.items.refunds",
       "order.shipping_method",
       "order.store",
       "items.item.brand",
