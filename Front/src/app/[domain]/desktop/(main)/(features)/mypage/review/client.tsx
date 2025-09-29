@@ -19,8 +19,27 @@ import usePageData from "@/shared/hooks/data/usePageData";
 import NiceModal from "@ebay/nice-modal-react";
 import useNavigate from "@/shared/hooks/useNavigate";
 
-export function Client() {
+export function Client({
+  initProduct,
+  initCondition,
+}: {
+  initProduct: any;
+  initCondition: any;
+}) {
   const [total, setTotal] = useState(0);
+  const { product, mutate } = useData(
+    "product",
+    { ...initCondition, id: initProduct?.content?.id },
+    (condition) => {
+      const id = condition.id;
+      delete condition.id;
+      return requester.getProduct(id, condition);
+    },
+    {
+      onReprocessing: (data) => data.content,
+      fallbackData: initProduct,
+    }
+  );
   return (
     <VerticalFlex
       className={clsx(mypage.box_frame, styles.delivery_box)}
@@ -33,12 +52,18 @@ export function Client() {
         </FlexChild>
       </FlexChild>
 
-      <ReviewList onTotal={setTotal} />
+      <ReviewList onTotal={setTotal} product={product} />
     </VerticalFlex>
   );
 }
 
-export function ReviewList({ onTotal }: { onTotal?: (n: number) => void }) {
+export function ReviewList({
+  onTotal,
+  product,
+}: {
+  onTotal?: (n: number) => void;
+  product: ProductData;
+}) {
   const [rev, setRev] = useState(0);
   const PAGE_SIZE = 10;
   const key = useMemo(() => `my-reviews:${rev}`, [rev]);
@@ -53,7 +78,13 @@ export function ReviewList({ onTotal }: { onTotal?: (n: number) => void }) {
     (pageNumber) => ({
       pageSize: PAGE_SIZE,
       pageNumber, // 0-base
-      relations: "item,item.brand,item.variant,item.variant.product,user",
+      relations: [
+        "item",
+        "item.brand",
+        "item.variant",
+        "item.variant.product",
+        "user",
+      ],
       order: { created_at: "DESC" },
     }),
     (cond) => requester.getReviews(cond),
@@ -108,198 +139,249 @@ export function ReviewList({ onTotal }: { onTotal?: (n: number) => void }) {
     },
   } as const;
 
-  const navigate = useNavigate();
-
   const toDisplayDesign = (v?: string) =>
     (DISPLAY.design as any)[v ?? ""] ?? v ?? "-";
   const toDisplayFinish = (v?: string) =>
     (DISPLAY.finish as any)[v ?? ""] ?? v ?? "-";
   const toDisplayMaintenance = (v?: string) =>
     (DISPLAY.maintenance as any)[v ?? ""] ?? v ?? "-";
+
+  const formatDate = (iso: string) => {
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return "-";
+    const z = (n: number) => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${z(d.getMonth() + 1)}-${z(d.getDate())}`;
+  };
+
+  const getProductId = (r: any) => r?.item?.variant?.product_id ?? null;
+
+  const productIds = useMemo(
+    () => Array.from(new Set((list || []).map(getProductId).filter(Boolean))),
+    [list]
+  );
+
+  const statsKey = useMemo(
+    () => `review-stats:${productIds.join(",")}`,
+    [productIds]
+  );
+
+  const { [statsKey]: statsMap } = useData(
+    statsKey,
+    { ids: productIds },
+    async ({ ids }) => {
+      const arr = await Promise.all(
+        ids.map((id: string) =>
+          requester.getProduct(id, { select: ["id"], relations: [] })
+        )
+      );
+      return ids.reduce(
+        (
+          m: Record<string, { avg: number; count: number }>,
+          id: any,
+          i: any
+        ) => {
+          const rv = arr[i]?.content?.reviews || {};
+          m[id] = { avg: Number(rv.avg || 0), count: Number(rv.count || 0) };
+          return m;
+        },
+        {}
+      );
+    },
+    {
+      fallbackData: {},
+      pause: productIds.length === 0,
+      revalidateOnMount: true,
+    }
+  );
+  const avgOf = (id?: string | null) => (id && statsMap?.[id]?.avg) ?? 0;
+  const cntOf = (id?: string | null) => (id && statsMap?.[id]?.count) ?? 0;
+
   return (
     <>
       {list.length > 0 ? (
         <VerticalFlex className={styles.review_list} gap={20}>
           {list.map((r: any) => {
-            console.log(r);
+            const pid = r?.item?.variant?.product_id;
             return (
               <VerticalFlex alignItems="start" gap={10} key={r.id}>
-              <FlexChild
-                gap={10}
-                alignSelf="end"
-                width={"auto"}
-                className={styles.review_edit}
-              >
-                <P
-                  size={13}
-                  color="#ddd"
-                  cursor="pointer"
-                  onClick={() => {
-                    const i = r.item;
-                    NiceModal.show("reviewWrite", {
-                      review: r,
-                      item: {
-                        id: i.id,
-                        brand_name: i?.brand?.name,
-                        product_title: i.product_title,
-                        variant_title: i.variant_title,
-                        thumbnail: i.thumbnail,
-                        discount_price: i?.discount_price,
-                        unit_price: i?.unit_price,
-                      },
-                      edit: true,
-                      withPCButton: true,
-                      onSuccess: refresh,
-                    });
-                  }}
+                <FlexChild
+                  gap={10}
+                  alignSelf="end"
+                  width={"auto"}
+                  className={styles.review_edit}
                 >
-                  수정
-                </P>
-                <P
-                  size={13}
-                  color="#ddd"
-                  cursor="pointer"
-                  onClick={() =>
-                    NiceModal.show("confirm", {
-                      message: "리뷰를 삭제하시겠습니까?",
-                      confirmText: "삭제",
-                      cancelText: "취소",
-                      width: "324px",
-                      withCloseButton: true,
-                      onConfirm: async () => {
-                        await requester.deleteReview(r?.id, {
-                          soft: false,
-                        });
-                        refresh();
-                      },
-                    })
-                  }
-                >
-                  삭제
-                </P>
-              </FlexChild>
-              <HorizontalFlex gap={35} className={styles.item}>
-                <VerticalFlex className={styles.item_header}>
-                  {/* 상품정보 */}
-                  <HorizontalFlex 
-                    className={styles.prodcut_data}
-                    // 상품 아아디 넣어서 링크 이동 걸기
-                    // onClick={()=> navigate(`/products/${r.item.id}`)}
+                  <P
+                    size={13}
+                    color="#ddd"
+                    cursor="pointer"
+                    onClick={() => {
+                      const i = r.item;
+                      NiceModal.show("reviewWrite", {
+                        review: r,
+                        item: {
+                          id: i.id,
+                          brand_name: i?.brand?.name,
+                          product_title: i.product_title,
+                          variant_title: i.variant_title,
+                          thumbnail: i.thumbnail,
+                          discount_price: i?.discount_price,
+                          unit_price: i?.unit_price,
+                        },
+                        edit: true,
+                        withPCButton: true,
+                        onSuccess: refresh,
+                      });
+                    }}
                   >
-                    <FlexChild className={styles.img}>
-                      <Image src={r.item.thumbnail} width={45} />
-                    </FlexChild>
-
-                    <VerticalFlex className={styles.info}>
-                      <FlexChild className={styles.title}>
-                        <P
-                          lineClamp={1}
-                          overflow="hidden"
-                          display="--webkit-box"
-                        >
-                          {r.item.product_title}
-                        </P>
+                    수정
+                  </P>
+                  <P
+                    size={13}
+                    color="#ddd"
+                    cursor="pointer"
+                    onClick={() =>
+                      NiceModal.show("confirm", {
+                        message: "리뷰를 삭제하시겠습니까?",
+                        confirmText: "삭제",
+                        cancelText: "취소",
+                        width: "324px",
+                        withCloseButton: true,
+                        onConfirm: async () => {
+                          await requester.deleteReview(r?.id, {
+                            soft: false,
+                          });
+                          refresh();
+                        },
+                      })
+                    }
+                  >
+                    삭제
+                  </P>
+                </FlexChild>
+                <HorizontalFlex gap={35} className={styles.item}>
+                  <VerticalFlex className={styles.item_header}>
+                    {/* 상품정보 */}
+                    <HorizontalFlex
+                      className={styles.prodcut_data}
+                      // 상품 아아디 넣어서 링크 이동 걸기
+                      // onClick={()=> navigate(`/products/${r.item.id}`)}
+                    >
+                      <FlexChild className={styles.img}>
+                        <Image src={r.item.thumbnail} width={45} />
                       </FlexChild>
-                      <FlexChild className={styles.info_rating}>
-                        {/* 이 상품에 달린 전체 리뷰 평균치 */}
-                        <P>
-                          평가 <Span>{r.star_rate}</Span>
-                        </P>
 
-                        {/* 상품에 달린 전체 리뷰 수 */}
-                        <P
-                          lineClamp={1}
-                          overflow="hidden"
-                          display="--webkit-box"
-                        >
-                          리뷰 <Span>{r.length}</Span>
+                      <VerticalFlex className={styles.info}>
+                        <FlexChild className={styles.title}>
+                          <P
+                            lineClamp={1}
+                            overflow="hidden"
+                            display="--webkit-box"
+                          >
+                            {r.item.product_title}
+                          </P>
+                        </FlexChild>
+                        <FlexChild className={styles.info_rating}>
+                          {/* 이 상품에 달린 전체 리뷰 평균치 */}
+                          <P>
+                            평가 <Span>{avgOf(pid).toFixed(1)}</Span>
+                          </P>
+
+                          {/* 상품에 달린 전체 리뷰 수 */}
+                          <P
+                            lineClamp={1}
+                            overflow="hidden"
+                            display="--webkit-box"
+                          >
+                            리뷰 <Span>{cntOf(pid)}</Span>
+                          </P>
+                        </FlexChild>
+                      </VerticalFlex>
+                    </HorizontalFlex>
+
+                    <VerticalFlex gap={10}>
+                      <FlexChild gap={15}>
+                        <StarRate
+                          width={100}
+                          starWidth={20}
+                          starHeight={20}
+                          score={Number(r.star_rate )}
+                          // score={Number(4.5)}
+                          readOnly
+                          emptyColor={"#595959"}
+                        />
+                        {r.star_rate}
+                      </FlexChild>
+
+                      <FlexChild>
+                        <P color="#797979" size={13}>
+                          {formatDate(r.created_at as string)}
                         </P>
                       </FlexChild>
                     </VerticalFlex>
-                  </HorizontalFlex>
-
-                  <VerticalFlex gap={10}>
-                    <FlexChild gap={15}>
-                      <StarRate
-                        width={100}
-                        starWidth={20}
-                        starHeight={20}
-                        score={r.star_rate}
-                        readOnly
-                      />
-                      {r.star_rate}
-                    </FlexChild>
-
-                    <FlexChild>
-                      <P color="#797979" size={13}>
-                        {r.date}
-                      </P>
-                    </FlexChild>
                   </VerticalFlex>
-                </VerticalFlex>
 
-                <VerticalFlex gap={25}>
-                  <HorizontalFlex className={styles.feedback}>
-                    <FlexChild className={styles.feed_item}>
-                      <FlexChild className={styles.feed_title}>
-                        <P>외형/디자인</P>
+                  <VerticalFlex gap={25}>
+                    <HorizontalFlex className={styles.feedback}>
+                      <FlexChild className={styles.feed_item}>
+                        <FlexChild className={styles.feed_title}>
+                          <P>외형/디자인</P>
+                        </FlexChild>
+
+                        <FlexChild className={styles.feed_content}>
+                          <P>{toDisplayDesign(r?.metadata?.aspects?.design)}</P>
+                        </FlexChild>
                       </FlexChild>
 
-                      <FlexChild className={styles.feed_content}>
-                        <P>{toDisplayDesign(r?.metadata?.aspects?.design)}</P>
-                      </FlexChild>
-                    </FlexChild>
+                      <FlexChild className={styles.feed_item}>
+                        <FlexChild className={styles.feed_title}>
+                          <P>마감/내구성</P>
+                        </FlexChild>
 
-                    <FlexChild className={styles.feed_item}>
-                      <FlexChild className={styles.feed_title}>
-                        <P>마감/내구성</P>
-                      </FlexChild>
-
-                      <FlexChild className={styles.feed_content}>
-                        <P>{toDisplayFinish(r?.metadata?.aspects?.finish)}</P>
-                      </FlexChild>
-                    </FlexChild>
-
-                    <FlexChild className={styles.feed_item}>
-                      <FlexChild className={styles.feed_title}>
-                        <P>유지관리</P>
+                        <FlexChild className={styles.feed_content}>
+                          <P>{toDisplayFinish(r?.metadata?.aspects?.finish)}</P>
+                        </FlexChild>
                       </FlexChild>
 
-                      <FlexChild className={styles.feed_content}>
-                        <P>
-                          {toDisplayMaintenance(
-                            r?.metadata?.aspects?.maintenance
-                          )}
-                        </P>
-                      </FlexChild>
-                    </FlexChild>
-                  </HorizontalFlex>
+                      <FlexChild className={styles.feed_item}>
+                        <FlexChild className={styles.feed_title}>
+                          <P>유지관리</P>
+                        </FlexChild>
 
-                  <HorizontalFlex className={styles.content}>
-                    {r.images.length > 0 && (
-                      <FlexChild
-                        width={180}
-                        className={styles.img_box}
-                        cursor="pointer"
-                        onClick={()=> 
-                          NiceModal.show('ImgViewSliderModal', {
-                            images: r.images,
-                          })
-                        }
-                      >
-                        <Image
-                          src={r.images[0]}
-                          width={"100%"}
-                          height={"auto"}
-                        />
-                        <Div className={styles.img_length}>
-                          {r.images.length}
-                        </Div>
+                        <FlexChild className={styles.feed_content}>
+                          <P>
+                            {toDisplayMaintenance(
+                              r?.metadata?.aspects?.maintenance
+                            )}
+                          </P>
+                        </FlexChild>
                       </FlexChild>
-                    )}
+                    </HorizontalFlex>
 
-                    {/* 이미지 클릭하면 모달로 이미지 슬라이더 나타나서 크게 보여주기 */}
-                    {/* {
+                    <HorizontalFlex className={styles.content}>
+                      {r.images.length > 0 && (
+                        <FlexChild
+                          width={180}
+                          className={styles.img_box}
+                          cursor="pointer"
+                          onClick={() =>
+                            NiceModal.show("ImgViewSliderModal", {
+                              images: r.images,
+                            })
+                          }
+                        >
+                          <Image
+                            src={r.images[0]}
+                            width={"100%"}
+                            height={"auto"}
+                          />
+                          <Div className={styles.img_length}>
+                            {r.images.length}
+                          </Div>
+                        </FlexChild>
+                      )}
+
+                      {/* 이미지 클릭하면 모달로 이미지 슬라이더 나타나서 크게 보여주기 */}
+                      {/* {
                                   review.photos?.length > 0 && (
                                      review.photos?.map((img, j)=> (
                                         <FlexChild key={j} >
@@ -308,15 +390,14 @@ export function ReviewList({ onTotal }: { onTotal?: (n: number) => void }) {
                                      ))
                                   )
                                } */}
-                    <P size={15} color="#ddd" lineHeight={1.6}>
-                      {r.content}
-                    </P>
-                  </HorizontalFlex>
-                </VerticalFlex>
-              </HorizontalFlex>
-            </VerticalFlex>
-            )
-            
+                      <P size={15} color="#ddd" lineHeight={1.6}>
+                        {r.content}
+                      </P>
+                    </HorizontalFlex>
+                  </VerticalFlex>
+                </HorizontalFlex>
+              </VerticalFlex>
+            );
           })}
           <FlexChild>
             <ListPagination page={page} maxPage={maxPage} onChange={setPage} />

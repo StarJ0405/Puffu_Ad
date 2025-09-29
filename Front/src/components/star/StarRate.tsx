@@ -61,10 +61,8 @@ function StarRate({
   // displayScore는 이제 internalScore만 참조 (호버 없음)
   const displayScore = internalScore;
   const ratesResArr = calculateStarFillWidths(displayScore);
-
   const scoreUnitPerStar = maxScoreScale / starCount;
   const halfScoreUnitValue = 0.5 * scoreUnitPerStar;
-
   // handleMouseEnter 제거
   // const handleMouseEnter = useCallback((event: MouseEvent<HTMLSpanElement>, index: number) => {
   //   if (readOnly) return;
