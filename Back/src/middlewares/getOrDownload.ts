@@ -5,7 +5,6 @@ import path from "path";
 const download = (req: Request, res: Response, next: NextFunction) => {
   try {
     const _path = path.resolve(__dirname, `../..${decodeURI(req.path)}`);
-    console.log(_path);
     if (!fs.existsSync(_path)) {
       return res.status(404).send("File not found.");
     }
