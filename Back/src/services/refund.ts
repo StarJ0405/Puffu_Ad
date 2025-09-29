@@ -6,6 +6,7 @@ import { RefundRepository } from "repositories/refund";
 import { RefundItemRepository } from "repositories/refund_item";
 import { inject, injectable } from "tsyringe";
 import { FindManyOptions, FindOneOptions, FindOptionsWhere, In } from "typeorm";
+import { GroupService } from "./group";
 import { PointService } from "./point";
 
 @injectable()
@@ -17,7 +18,9 @@ export class RefundService extends BaseService<Refund, RefundRepository> {
     @inject(LogRepository)
     protected logRepository: LogRepository,
     @inject(PointService)
-    protected pointService: PointService
+    protected pointService: PointService,
+    @inject(GroupService)
+    protected groupService: GroupService
   ) {
     super(refundRepository);
   }
@@ -285,6 +288,8 @@ export class RefundService extends BaseService<Refund, RefundRepository> {
           { completed_at: new Date(), point }
         );
     }
+    if (refund.order?.user_id)
+      await this.groupService.updateUserGroup(refund.order?.user_id);
   }
   async delete(
     where: FindOptionsWhere<Refund> | FindOptionsWhere<Refund>[],

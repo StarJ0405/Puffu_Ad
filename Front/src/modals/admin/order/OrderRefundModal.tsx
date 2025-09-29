@@ -12,7 +12,13 @@ import ModalBase from "@/modals/ModalBase";
 import { adminRequester } from "@/shared/AdminRequester";
 import { copy, toast } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
-import { forwardRef, useImperativeHandle, useRef, useState } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { Swiper as SwiperType } from "swiper";
 import { Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -86,39 +92,13 @@ const OrderRefundModal = NiceModal.create(
           }}
         >
           <VerticalFlex gap={10}>
-            <VerticalFlex height={294} maxHeight={294} minHeight={294}>
-              <HorizontalFlex
-                justifyContent="flex-start"
-                gap={20}
-                borderBottom={"1px solid #EFEFEF"}
-              >
-                <FlexChild
-                  width={120}
-                  padding={"18px 15px"}
-                  backgroundColor={"#F5F6FB"}
-                  justifyContent={"center"}
+            <VerticalFlex flexGrow={0} marginBottom={0}>
+              <HorizontalFlex>
+                <HorizontalFlex
+                  justifyContent="flex-start"
+                  gap={20}
+                  borderBottom={"1px solid #EFEFEF"}
                 >
-                  <P size={16} weight={600}>
-                    주문번호
-                  </P>
-                </FlexChild>
-                <FlexChild width="max-content" padding={"15px 15px 15px 0"}>
-                  <P
-                    cursor="pointer"
-                    textHover
-                    onClick={() =>
-                      copy({
-                        text: order?.display,
-                        message: "주문번호를 복사했습니다",
-                      })
-                    }
-                  >
-                    {order?.display}
-                  </P>
-                </FlexChild>
-              </HorizontalFlex>
-              <HorizontalFlex justifyContent="flex-start">
-                <FlexChild gap={20} borderBottom={"1px solid #EFEFEF"}>
                   <FlexChild
                     width={120}
                     padding={"18px 15px"}
@@ -126,14 +106,43 @@ const OrderRefundModal = NiceModal.create(
                     justifyContent={"center"}
                   >
                     <P size={16} weight={600}>
-                      주문자
+                      주문번호
                     </P>
                   </FlexChild>
                   <FlexChild width="max-content" padding={"15px 15px 15px 0"}>
-                    <P>{order?.user?.name}</P>
+                    <P
+                      cursor="pointer"
+                      textHover
+                      onClick={() =>
+                        copy({
+                          text: order?.display,
+                          message: "주문번호를 복사했습니다",
+                        })
+                      }
+                    >
+                      {order?.display}
+                    </P>
                   </FlexChild>
-                </FlexChild>
+                </HorizontalFlex>
+                <HorizontalFlex justifyContent="flex-start">
+                  <FlexChild gap={20} borderBottom={"1px solid #EFEFEF"}>
+                    <FlexChild
+                      width={120}
+                      padding={"18px 15px"}
+                      backgroundColor={"#F5F6FB"}
+                      justifyContent={"center"}
+                    >
+                      <P size={16} weight={600}>
+                        주문자
+                      </P>
+                    </FlexChild>
+                    <FlexChild width="max-content" padding={"15px 15px 15px 0"}>
+                      <P>{order?.user?.name}</P>
+                    </FlexChild>
+                  </FlexChild>
+                </HorizontalFlex>
               </HorizontalFlex>
+
               <HorizontalFlex justifyContent="flex-start">
                 <FlexChild
                   alignItems="stretch"
@@ -167,6 +176,113 @@ const OrderRefundModal = NiceModal.create(
                       <Span>{order.point}</Span>
 
                       <Span>P)</Span>
+                    </P>
+                  </FlexChild>
+                </FlexChild>
+              </HorizontalFlex>
+              <HorizontalFlex justifyContent="flex-start">
+                <FlexChild
+                  alignItems="stretch"
+                  gap={20}
+                  borderTop={"1px solid #EFEFEF"}
+                  borderBottom={"1px solid #EFEFEF"}
+                >
+                  <FlexChild
+                    width={120}
+                    padding={"18px 15px"}
+                    backgroundColor={"#F5F6FB"}
+                    justifyContent={"center"}
+                  >
+                    <P size={16} weight={600}>
+                      환불가능 금액
+                    </P>
+                  </FlexChild>
+                  <FlexChild width="max-content" padding={"15px 15px 15px 0"}>
+                    <P
+                      hidden={
+                        order.point ===
+                        (order.total_discounted || 0) +
+                          (order.shipping_method?.amount || 0)
+                      }
+                    >
+                      <Span color="green">
+                        {selects?.reduce(
+                          (acc, item) =>
+                            acc +
+                            ((item?.discount_price || 0) +
+                              (item?.shared_price || 0)) *
+                              ((item as any).select || 0),
+                          0
+                        ) || 0}
+                      </Span>
+                      <Span>원</Span>
+                      <Span fontSize={14}>(상품 </Span>
+                      <Span fontSize={14}>
+                        {(selects?.reduce(
+                          (acc, item) =>
+                            acc +
+                            ((item?.discount_price || 0) +
+                              (item?.shared_price || 0)) *
+                              ((item as any).select || 0),
+                          0
+                        ) || 0) -
+                          ((order?.shipping_method?.amount || 0) /
+                            (order?.total_discounted || 0)) *
+                            (selects?.reduce(
+                              (acc, item) =>
+                                acc +
+                                (item?.discount_price || 0) *
+                                  ((item as any).select || 0),
+                              0
+                            ) || 0)}
+                      </Span>
+                      <Span fontSize={14}>원 + 배송비 </Span>
+                      <Span fontSize={14}>
+                        {((order?.shipping_method?.amount || 0) /
+                          (order?.total_discounted || 0)) *
+                          (selects?.reduce(
+                            (acc, item) =>
+                              acc +
+                              (item?.discount_price || 0) *
+                                ((item as any).select || 0),
+                            0
+                          ) || 0)}
+                      </Span>
+                      <Span fontSize={14}>원)</Span>
+                    </P>
+                    <P
+                      padding={"0 0.5em"}
+                      hidden={
+                        order.point === 0 ||
+                        order.point ===
+                          (order.total_discounted || 0) +
+                            (order.shipping_method?.amount || 0)
+                      }
+                    >
+                      <Span> | </Span>
+                    </P>
+                    <P hidden={order.point === 0}>
+                      <Span color="green">
+                        {selects?.reduce(
+                          (acc, item) =>
+                            acc +
+                            ((order?.point || 0) /
+                              (order?.total_discounted || 0)) *
+                              (item?.discount_price || 0) *
+                              ((item as any).select || 0),
+                          0
+                        ) || 0}
+                      </Span>
+                      <Span>P</Span>
+                      {/* <Span> / (</Span>
+                      <Span>
+                        {(refund?.order?.shipping_method?.amount || 0) +
+                          (refund?.order?.total_discounted || 0) -
+                          (refund?.order?.point || 0)}
+                      </Span>
+                      <Span>원 | </Span>
+                      <Span>{refund?.order?.point}</Span>
+                      <Span>P)</Span> */}
                     </P>
                   </FlexChild>
                 </FlexChild>
@@ -282,6 +398,11 @@ const OrderRefundModal = NiceModal.create(
                       }}
                       order={order}
                       select={select}
+                      handleUpdate={(quantity) => {
+                        (select as any).select = quantity;
+                        selects[index] = select;
+                        setSelects([...selects]);
+                      }}
                     />
                   </SwiperSlide>
                 ))}
@@ -335,7 +456,18 @@ const OrderRefundModal = NiceModal.create(
 );
 
 const Item = forwardRef(
-  ({ select, order }: { select: LineItemData; order: OrderData }, ref) => {
+  (
+    {
+      select,
+      order,
+      handleUpdate,
+    }: {
+      select: LineItemData;
+      order: OrderData;
+      handleUpdate: (quantity: number) => void;
+    },
+    ref
+  ) => {
     const max =
       select.quantity -
       (select.refunds?.reduce((acc, now) => acc + now.quantity, 0) || 0);
@@ -346,6 +478,9 @@ const Item = forwardRef(
         return { item_id: select.id, quantity, memo };
       },
     }));
+    useEffect(() => {
+      handleUpdate(quantity);
+    }, [quantity]);
     return (
       <VerticalFlex marginTop={20} className={styles.content_wrapper}>
         <FlexChild className={styles.row}>
@@ -443,6 +578,34 @@ const Item = forwardRef(
                 quantity}
             </Span>
             <Span>원</Span>
+            <Span fontSize={16} fontWeight={500}>
+              (
+            </Span>
+            <Span fontSize={16} fontWeight={500}>
+              상품{" "}
+            </Span>
+            <Span fontSize={16} fontWeight={500}>
+              {((select?.discount_price || 0) + (select.shared_price || 0)) *
+                quantity -
+                ((order.shipping_method?.amount || 0) /
+                  order.total_discounted) *
+                  (select.discount_price || 0) *
+                  quantity}
+            </Span>
+            <Span fontSize={16} fontWeight={500}>
+              원 + 배송비{" "}
+            </Span>
+            <Span fontSize={16} fontWeight={500}>
+              {((order.shipping_method?.amount || 0) / order.total_discounted) *
+                (select.discount_price || 0) *
+                quantity}
+            </Span>
+            <Span fontSize={16} fontWeight={500}>
+              원
+            </Span>
+            <Span fontSize={16} fontWeight={500}>
+              )
+            </Span>
           </P>
         </FlexChild>
         <FlexChild className={styles.row}>
