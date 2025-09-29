@@ -3,6 +3,7 @@
 import clsx from "clsx";
 import React, { MouseEvent, useCallback, useEffect, useState } from "react";
 import styles from "./StarRate.module.css";
+import { uniqueId } from "lodash";
 
 interface StarRateProps {
   score?: number;
@@ -29,6 +30,7 @@ function StarRate({
   emptyColor = "#cacaca",
   width,
 }: StarRateProps) {
+  const [uuid] = useState(uniqueId());
   const [internalScore, setInternalScore] = useState(score);
   // hoverScore 상태 제거
   // const [hoverScore, setHoverScore] = useState(0);
@@ -135,17 +137,17 @@ function StarRate({
             fill={emptyColor}
             style={{ width: starWidth, height: starHeight }}
           >
-            <clipPath id={`starClip_${idx}`}>
+            <clipPath id={`starClip${uuid}_${idx}`}>
               <rect width={`${ratesResArr[idx]}`} height={starHeight} />
             </clipPath>
             <path
-              id={`starPath_${idx}`}
+              id={`starPath${uuid}_${idx}`}
               d="M9,2l2.163,4.279L16,6.969,12.5,10.3l.826,4.7L9,12.779,4.674,15,5.5,10.3,2,6.969l4.837-.69Z"
               transform="translate(-2 -2)"
             />
             <use
-              clipPath={`url(#starClip_${idx})`}
-              href={`#starPath_${idx}`}
+              clipPath={`url(#starClip${uuid}_${idx})`}
+              href={`#starPath${uuid}_${idx}`}
               fill={fillColor}
             />
           </svg>
