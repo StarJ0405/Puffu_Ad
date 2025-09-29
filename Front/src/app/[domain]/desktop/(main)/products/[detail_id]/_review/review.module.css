@@ -81,7 +81,7 @@
 
 .review_list .item {
   align-items: start !important;
-  border-bottom: 1px solid #535353;
+  /* border-bottom: 1px solid #535353; */
   padding-bottom: 20px;
 }
 
@@ -144,4 +144,16 @@
   line-height: 1;
   border-radius: 3px;
   font-size: 12px;
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+  row-gap: 35px;           /* 아이템 사이 간격 유지 */
+}
+
+/* 마지막을 제외한 아이템에만 하단 보더 */
+.items > .item:not(:last-child) {
+  border-bottom: 1px solid var(--line-color, #2b2b2b);
+  padding-bottom: 20px;    /* 필요 시 간격 조정 */
 }
