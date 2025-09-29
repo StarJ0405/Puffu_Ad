@@ -368,8 +368,10 @@ const RefundDetailModal = NiceModal.create(
                       refund.items?.reduce(
                         (acc, item) =>
                           acc +
-                          ((item.item?.discount_price || 0) +
-                            (item?.item?.shared_price || 0)) *
+                          Math.round(
+                            (item.item?.discount_price || 0) +
+                              (item?.item?.shared_price || 0)
+                          ) *
                             item.quantity,
                         0
                       ) || 0;
@@ -377,9 +379,11 @@ const RefundDetailModal = NiceModal.create(
                       refund.items?.reduce(
                         (acc, item) =>
                           acc +
-                          ((refund?.order?.point || 0) /
-                            (refund?.order?.total_discounted || 0)) *
-                            (item?.item?.discount_price || 0) *
+                          Math.round(
+                            ((refund?.order?.point || 0) /
+                              (refund?.order?.total_discounted || 0)) *
+                              (item?.item?.discount_price || 0)
+                          ) *
                             item.quantity,
                         0
                       ) || 0;

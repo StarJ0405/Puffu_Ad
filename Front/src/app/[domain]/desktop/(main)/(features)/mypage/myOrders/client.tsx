@@ -56,6 +56,8 @@ export function MyOrdersTable({
     {
       ...condition,
       relations: [
+        "refunds.items",
+        "items.refunds.refund",
         "items.brand",
         "items.review",
         "shipping_method",
@@ -304,15 +306,17 @@ export function MyOrdersTable({
 
                             {/* 환불 처리 상태 */}
                             <Span
-                              hidden={
-                                !item.refunds?.filter(
-                                  (f) => !f.refund?.completed_at
-                                )?.length
-                              }
+                              hidden={!item.refunds?.length}
                               className={styles.progress_txt}
                               color="var(--main-color1)"
                             >
-                              [환불 처리중]
+                              [
+                              {item.refunds?.filter(
+                                (f) => !f.refund?.completed_at
+                              ).length
+                                ? "환불 처리중"
+                                : "환불 완료"}
+                              ]
                             </Span>
                             <Span className={styles.unit_brand}>
                               {item?.brand?.name}
@@ -474,6 +478,41 @@ export function MyOrdersTable({
                               </FlexChild>
                             )}
                           </FlexChild>
+                          <FlexChild hidden={!item.refunds?.length} gap={20}>
+                            <P>
+                              환불 후 남은 개수 :{" "}
+                              {item.quantity -
+                                (item.refunds?.reduce(
+                                  (acc, now) => acc + now.quantity,
+                                  0
+                                ) || 0)}
+                            </P>
+                            <P>
+                              할인 금액 :{" "}
+                              <Span>
+                                {((item.discount_price || 0) -
+                                  (item.unit_price || 0)) *
+                                  (item.quantity -
+                                    (item.refunds?.reduce(
+                                      (acc, now) => acc + now.quantity,
+                                      0
+                                    ) || 0))}
+                              </Span>
+                              <Span>원</Span>
+                            </P>
+                            <P>
+                              결제 금액 :{" "}
+                              <Span>
+                                {(item.discount_price || 0) *
+                                  (item.quantity -
+                                    (item.refunds?.reduce(
+                                      (acc, now) => acc + now.quantity,
+                                      0
+                                    ) || 0))}
+                              </Span>
+                              <Span>원</Span>
+                            </P>
+                          </FlexChild>
                         </VerticalFlex>
                       </HorizontalFlex>
 
@@ -541,7 +580,7 @@ export function MyOrdersTable({
                 >
                   <P>사용포인트</P>
                   <P>
-                    <Span>-{order.point}</Span>
+                    <Span>{-order.point}</Span>
                     <Span>P</Span>
                   </P>
                 </HorizontalFlex>
