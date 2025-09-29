@@ -456,7 +456,7 @@ function getColumns(status: string) {
 
             0
           )
-          .toLocaleString("ko-kr")} 원`,
+          .toLocaleString("ko-kr", { maximumFractionDigits: 0 })} 원`,
     },
     {
       label: "환불된 금액",
@@ -469,7 +469,10 @@ function getColumns(status: string) {
           },
         },
       },
-      Cell: ({ cell }) => `${Number(cell).toLocaleString("ko-kr")} 원`,
+      Cell: ({ cell }) =>
+        `${Number(cell).toLocaleString("ko-kr", {
+          maximumFractionDigits: 0,
+        })} 원`,
     },
     {
       label: "환불가능 포인트",
@@ -491,7 +494,7 @@ function getColumns(status: string) {
                 now.quantity,
             0
           )
-          .toLocaleString("ko-kr")} P`,
+          .toLocaleString("ko-kr", { maximumFractionDigits: 0 })} P`,
     },
     {
       label: "환불된 포인트",
@@ -504,7 +507,10 @@ function getColumns(status: string) {
           },
         },
       },
-      Cell: ({ cell }) => `${Number(cell).toLocaleString("ko-kr")} P`,
+      Cell: ({ cell }) =>
+        `${Number(cell).toLocaleString("ko-kr", {
+          maximumFractionDigits: 0,
+        })} P`,
     },
   ];
   switch (status) {
