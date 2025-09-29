@@ -38,6 +38,7 @@ import TableModal from "./table/TableModal";
 import TermContentModal from "./main/policies/TermContentModal";
 import PraivacyContentModal from "./main/policies/PraivacyContentModal";
 import ImgViewSliderModal from "./main/imgViewerSlider/imgViewSliderModal";
+import PhotoReviewDetailModal from "./main/photoReviewDetailModal/photoReviewDetailModal";
 
 function ModalHandler() {
   NiceModal.register("toast", ToastModal);
@@ -59,6 +60,7 @@ function ModalHandler() {
   NiceModal.register("TermContent", TermContentModal);
   NiceModal.register("PraivacyContent", PraivacyContentModal);
   NiceModal.register("ImgViewSliderModal", ImgViewSliderModal);
+  NiceModal.register("photoReviewDetailModal", PhotoReviewDetailModal);
   // admin
   NiceModal.register("bannerDetail", BannerModal);
   NiceModal.register("groupDetail", GroupModal);
