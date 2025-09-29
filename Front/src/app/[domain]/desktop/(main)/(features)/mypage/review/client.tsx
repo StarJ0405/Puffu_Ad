@@ -361,6 +361,7 @@ export function ReviewList({ onTotal }: { onTotal?: (n: number) => void }) {
                           onClick={() =>
                             NiceModal.show("ImgViewSliderModal", {
                               images: r.images,
+                              height: "auto",
                             })
                           }
                         >
@@ -374,17 +375,6 @@ export function ReviewList({ onTotal }: { onTotal?: (n: number) => void }) {
                           </Div>
                         </FlexChild>
                       )}
-
-                      {/* 이미지 클릭하면 모달로 이미지 슬라이더 나타나서 크게 보여주기 */}
-                      {/* {
-                                  review.photos?.length > 0 && (
-                                     review.photos?.map((img, j)=> (
-                                        <FlexChild key={j} >
-                                           <Image src={img} width={'100%'} height={'auto'} />
-                                        </FlexChild>
-                                     ))
-                                  )
-                               } */}
                       <P size={15} color="#ddd" lineHeight={1.6}>
                         {r.content}
                       </P>
