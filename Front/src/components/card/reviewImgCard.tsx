@@ -10,6 +10,7 @@ import { useState } from "react";
 import styles from "./reviewImgCard.module.css";
 import NiceModal from "@ebay/nice-modal-react";
 import { maskTwoThirds } from "@/shared/utils/Functions";
+import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
 
 type ReviewEntity = {
   id: string;
@@ -60,13 +61,16 @@ export default function ReviewImgCard({
     NiceModal.show("photoReviewDetailModal", { review });
   };
 
+  const { isMobile } = useBrowserEvent();
+
   return (
     <VerticalFlex
       width={width ?? '100%'}
-      maxWidth={244}
+      maxWidth={!isMobile ? 244 : ''}
       className={clsx(
         styles.review_item,
-        boardValue !== "normal" && styles.slide_item
+        boardValue !== "normal" && styles.slide_item,
+        isMobile && styles.mob_review_item
       )}
       onClick={openDetail}
     >

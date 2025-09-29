@@ -193,7 +193,7 @@ export function BestReviewSlider({
         <FlexChild id={id} className={styles.ProductSlider}>
           <Swiper
             loop={true}
-            slidesPerView={3}
+            slidesPerView={2.2}
             speed={600}
             spaceBetween={20}
             modules={[Autoplay, Navigation]}
@@ -208,8 +208,8 @@ export function BestReviewSlider({
                 <SwiperSlide key={i}>
                   <ReviewImgCard
                     review={review}
-                    width={"142px"}
-                    height={"142px"}
+                    width={"100%"}
+                    height={"auto"}
                     board="photoReviewSlide"
                     slide={true}
                     lineClamp={lineClamp ?? 2}
@@ -221,7 +221,7 @@ export function BestReviewSlider({
           {
             // 슬라이드옵션들 props로 빼버리고 그 값 따라서 조건문 걸기
           }
-          <div className={clsx(styles.naviBtn, styles.prevBtn)}>
+          {/* <div className={clsx(styles.naviBtn, styles.prevBtn)}>
             <Image
               src={"/resources/icons/arrow/slide_arrow.png"}
               width={10}
@@ -232,7 +232,7 @@ export function BestReviewSlider({
               src={"/resources/icons/arrow/slide_arrow.png"}
               width={10}
             ></Image>
-          </div>
+          </div> */}
         </FlexChild>
       ) : (
         <NoContent type="리뷰" />
@@ -306,13 +306,13 @@ export function GalleryTable() {
     <VerticalFlex>
       <FlexChild>
         {items.length > 0 ? (
-          <MasonryGrid gap={20} breakpoints={3}>
+          <MasonryGrid gap={20} breakpoints={1} width={'100%'}>
             {items.map((item, i) => (
               <ReviewImgCard
                 key={item.id ?? i}
                 review={item}
-                width={244}
-                height={"244px"}
+                width={'100%'}
+                height={'auto'}
               />
             ))}
           </MasonryGrid>
