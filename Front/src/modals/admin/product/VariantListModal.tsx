@@ -362,8 +362,6 @@ const VariantListModal = NiceModal.create(
     return (
       <ModalBase
         borderRadius={10}
-        r
-        headerStyle
         zIndex={10055}
         ref={modal}
         width={width}

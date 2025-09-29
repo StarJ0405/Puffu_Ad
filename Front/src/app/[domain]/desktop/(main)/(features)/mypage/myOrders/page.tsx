@@ -13,6 +13,7 @@ export default async function () {
   const endDate = new Date();
   const initOrders = await requester.getOrders({
     relations: [
+      "items.refunds.refund",
       "items.brand",
       "items.review",
       "shipping_method",
