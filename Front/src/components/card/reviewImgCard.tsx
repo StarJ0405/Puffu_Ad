@@ -17,6 +17,7 @@ type ReviewEntity = {
   images?: string[];
   avg?: number;
   count: number;
+  recommend_count: number;
   content?: string;
   created_at?: string;
   star_rate?: number;
@@ -34,7 +35,7 @@ export default function ReviewImgCard({
   width,
   height,
   board,
-  borderRadius= 0,
+  borderRadius = 0,
   slide = false,
   onClick,
 }: {
@@ -59,6 +60,7 @@ export default function ReviewImgCard({
   const productTitle = review.item?.variant?.product?.title ?? "";
   const count = review.count;
   const avg = review.avg;
+  const recommendCount = review?.recommend_count;
   const openDetail = () => {
     if (onClick) return onClick(review);
     NiceModal.show("photoReviewDetailModal", { review });
@@ -68,8 +70,8 @@ export default function ReviewImgCard({
 
   return (
     <VerticalFlex
-      width={width ?? '100%'}
-      maxWidth={!isMobile ? 244 : ''}
+      width={width ?? "100%"}
+      maxWidth={!isMobile ? 244 : ""}
       className={clsx(
         styles.review_item,
         boardValue !== "normal" && styles.slide_item,
@@ -85,13 +87,15 @@ export default function ReviewImgCard({
         // maxWidth={244}
         // maxHeight={244}
       >
-        <div 
-          className={styles.img} 
+        <div
+          className={styles.img}
           style={{
-            backgroundImage: `url(${adultOk ? thumbnail : "/resources/images/19_only.png"})`,
-            borderRadius: borderRadius, 
-        }}>
-        </div>
+            backgroundImage: `url(${
+              adultOk ? thumbnail : "/resources/images/19_only.png"
+            })`,
+            borderRadius: borderRadius,
+          }}
+        ></div>
       </FlexChild>
 
       <FlexChild padding={"0 5px"} className={styles.text_box}>
@@ -133,12 +137,19 @@ export default function ReviewImgCard({
             </P>
           </FlexChild>
           <FlexChild className={styles.info_rating}>
-            <P>
-              평가 <Span>{avg}</Span>
-            </P>
-            <P>
-              리뷰 <Span>{count}</Span>
-            </P>
+            <HorizontalFlex>
+              <FlexChild justifyContent="flex-start" flexGrow={"unset"} width={"auto"}>
+                <VerticalFlex>
+                  <P>
+                    평가 <Span>{avg}</Span>
+                  </P>
+                  <P>
+                    리뷰 <Span>{count}</Span>
+                  </P>
+                </VerticalFlex>
+              </FlexChild>
+              <P> 추천수 <Span>{recommendCount}</Span></P>
+            </HorizontalFlex>
           </FlexChild>
         </VerticalFlex>
       </HorizontalFlex>

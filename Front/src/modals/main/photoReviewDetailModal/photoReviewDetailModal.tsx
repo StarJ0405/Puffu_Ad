@@ -160,10 +160,20 @@ const PhotoReviewDetailModal = NiceModal.create(
         if (!liked) {
           await requester.createRecommend({ review_id: review.id });
           setLiked(true);
+          window.dispatchEvent(
+            new CustomEvent("review:recommend-changed", {
+              detail: { id: review.id, delta: +1 },
+            })
+          );
           toast({ message: "리뷰가 추천되었습니다." });
         } else {
           await requester.deleteRecommend(review.id);
           setLiked(false);
+          window.dispatchEvent(
+            new CustomEvent("review:recommend-changed", {
+              detail: { id: review.id, delta: -1 },
+            })
+          );
           toast({ message: "추천이 취소되었습니다." });
         }
       } catch (e: any) {
@@ -360,7 +370,10 @@ const PhotoReviewDetailModal = NiceModal.create(
             <VerticalFlex className={styles.recommend}>
               <P>이 리뷰가 도움이 되었나요?</P>
               <Button
-                className={clsx(styles.recommend_btn, liked && styles.recommend_btnActive)}
+                className={clsx(
+                  styles.recommend_btn,
+                  liked && styles.recommend_btnActive
+                )}
                 aria-pressed={liked}
                 data-active={liked}
                 disabled={likeLoading}
