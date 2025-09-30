@@ -19,6 +19,7 @@ import { useCookies } from "react-cookie";
 import { useEffect, useState } from "react";
 import { requester } from "@/shared/Requester";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
+import HorizontalFlex from "@/components/flex/HorizontalFlex";
 
 
 
@@ -35,7 +36,7 @@ const editInfoModal = (userData: any, navigate: (path: string) => void) => { // 
     onConfirm: async () => {
       try {
         const res = await requester.checkCurrentPassword({ password });
-        
+
         if (res.message === 'success') {
           navigate('/mypage/editInfo');
         } else {
@@ -55,42 +56,114 @@ export function Profile() {
 
   const navigate = useNavigate();
   const { userData } = useAuth(); // 유저정보 받아오기
-  
+
 
   return (
     <VerticalFlex className={clsx(styles.profile, styles.box_frame)}>
-      <VerticalFlex gap={20}>
+      <HorizontalFlex gap={20} paddingBottom={10}>
         <FlexChild width={"auto"} position="relative">
-          <FlexChild className={styles.thumbnail} width={"auto"}>
-            <Image
-              src={userData?.thumbnail || "/resources/icons/mypage/user_no_img.png"}
-              width={60}
-            />
-          </FlexChild>
-        </FlexChild>
+          <HorizontalFlex gap={20}>
+            <FlexChild className={styles.thumbnail} width={"auto"}>
+              <Image
+                src={userData?.thumbnail || "/resources/icons/mypage/user_no_img.png"}
+                width={60}
+              />
+            </FlexChild>
+            <FlexChild width={"auto"} className={styles.profile_name}>
+              <P>{userData?.name ?? "익명"}</P>
+            </FlexChild>
+          </HorizontalFlex>
 
-        <FlexChild width={"auto"} className={styles.profile_name}>
-          <P>{userData?.name ?? "익명"}</P>
+        </FlexChild>
+        <FlexChild className={styles.setting_btn} onClick={() => editInfoModal(userData, navigate)}>
+          {/* <Image
+            src={"/resources/icons/mypage/setting_icon.png"}
+            width={14}
+          /> */}
+          개인정보 수정
+        </FlexChild>
+      </HorizontalFlex>
+      <VerticalFlex className={styles.membership_box}>
+        <HorizontalFlex className={styles.title_box}>
+          <FlexChild className={styles.level}>
+            <P>중급자</P>
+          </FlexChild>
+          <HorizontalFlex
+            className={styles.more_btn}
+            onClick={() => navigate("/mypage")}
+          >
+            <P>등급별 혜택 보기</P>
+            <Image src="resources/icons/arrow/mypage_arrow.png" width={8} />
+          </HorizontalFlex>
+        </HorizontalFlex>
+        <VerticalFlex padding={"0 10px"}>
+          <VerticalFlex className={styles.amount_box}>
+            <FlexChild className={styles.title}>
+              <P>현재 누적금액</P>
+            </FlexChild>
+            <FlexChild className={styles.amount}>
+              <P>4,560,000</P>
+              <P>원</P>
+            </FlexChild>
+          </VerticalFlex>
+          <VerticalFlex className={styles.amount_box}>
+            <FlexChild className={styles.title}>
+              <P>다음 등급까지 필요한 구매금액</P>
+            </FlexChild>
+            <FlexChild className={styles.amount}>
+              <P>44,000</P>
+              <P>원</P>
+            </FlexChild>
+          </VerticalFlex>
+        </VerticalFlex>
+      </VerticalFlex>
+      <VerticalFlex className={styles.point_box}>
+        <HorizontalFlex className={styles.title_box}>
+          <FlexChild>
+            <P paddingRight={4}>나의 포인트</P>
+            <P className={styles.currency}>P</P>
+          </FlexChild>
+          <HorizontalFlex
+            className={styles.more_btn}
+            onClick={() => navigate("/mypage")}
+          >
+            <P>자세히 보기</P>
+            <Image src="resources/icons/arrow/mypage_arrow.png" width={8} />
+          </HorizontalFlex>
+        </HorizontalFlex>
+        <FlexChild className={styles.point}>
+          <P paddingRight={4}>10,000,000</P>
+          <P className={styles.currency}>P</P>
         </FlexChild>
       </VerticalFlex>
-
-      <FlexChild gap={10} justifyContent="center">
-        <FlexChild className={styles.wish_btn} onClick={()=> navigate('/mypage/wishList')}>
+      <VerticalFlex className={styles.coupon_box}>
+        <HorizontalFlex className={styles.title_box}>
+          <FlexChild>
+            <Image src="resources/icons/mypage/coupon_icon.png" width={30} paddingRight={6}/>
+            <P>보유쿠폰</P>
+          </FlexChild>
+          <HorizontalFlex
+            className={styles.more_btn}
+            onClick={() => navigate("/mypage")}
+          >
+            <P>자세히 보기</P>
+            <Image src="resources/icons/arrow/mypage_arrow.png" width={8} />
+          </HorizontalFlex>
+        </HorizontalFlex>
+        <FlexChild className={styles.coupon}>
+          <P>3</P>
+          <P>개</P>
+        </FlexChild>
+      </VerticalFlex>
+      {/* <FlexChild gap={10} justifyContent="center">
+        <FlexChild className={styles.wish_btn} onClick={() => navigate('/mypage/wishList')}>
           <Image
             src={"/resources/icons/main/mob_heart_active.png"}
             width={16}
           />
           관심 리스트
         </FlexChild>
-
-        <FlexChild className={styles.setting_btn} onClick={() => editInfoModal(userData, navigate)}>
-          <Image
-            src={"/resources/icons/mypage/setting_icon.png"}
-            width={14}
-          />
-          개인정보 수정
-        </FlexChild>
-      </FlexChild>
+      </FlexChild> */}
     </VerticalFlex>
   )
 }
@@ -165,7 +238,7 @@ export function MypageNavi() {
   const [, , removeCookie] = useCookies([Cookies.JWT]);
   const { userData } = useAuth();
   const navigate = useNavigate();
-  
+
   const logoutModal = () => { // 로그아웃
 
     NiceModal.show(ConfirmModal, {
@@ -183,18 +256,18 @@ export function MypageNavi() {
     })
   }
 
-   const myshopMenu = [
-      { name: "내 주문 내역", link: "/mypage/myOrders" },
-      { name: "최근 본 상품", link: "/mypage/recentlyView" },
-      { name: "관심리스트", link: "/mypage/wishList" },
-   ];
+  const myshopMenu = [
+    { name: "내 주문 내역", link: "/mypage/myOrders" },
+    { name: "최근 본 상품", link: "/mypage/recentlyView" },
+    { name: "관심리스트", link: "/mypage/wishList" },
+  ];
 
-   const myInfoMenu = [
-      { name: "배송지 관리", link: "/mypage/delivery" },
-      { name: "문의내역", link: "/mypage/inquiry" },
-      // { name: "리뷰 관리", link: "/mypage/review" },
-      { name: "회원탈퇴", link: "/mypage/deleteAccount" },
-   ];
+  const myInfoMenu = [
+    { name: "배송지 관리", link: "/mypage/delivery" },
+    { name: "문의내역", link: "/mypage/inquiry" },
+    // { name: "리뷰 관리", link: "/mypage/review" },
+    { name: "회원탈퇴", link: "/mypage/deleteAccount" },
+  ];
 
   return (
     <VerticalFlex className={clsx(styles.mypage_navi, styles.box_frame)}>
