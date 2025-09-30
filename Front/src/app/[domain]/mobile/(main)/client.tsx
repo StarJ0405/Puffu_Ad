@@ -10,6 +10,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import styles from "./page.module.css";
+import ReviewImgCard from "@/components/card/reviewImgCard";
 
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import NoContent from "@/components/noContent/noContent";
@@ -20,7 +21,7 @@ import useData from "@/shared/hooks/data/useData";
 import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
 import { requester } from "@/shared/Requester";
 import { Swiper as SwiperType } from "swiper";
-import { Autoplay, Pagination } from "swiper/modules";
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 export function MainBanner({ initBanners }: { initBanners: Pageable }) {
@@ -477,18 +478,18 @@ export function ProductList({
   );
 }
 
-// type ReviewItem = {
-//   thumbnail: string;
-//   content: string;
-//   name: string;
-//   date: string;
-//   product: {
-//     thumb: string;
-//     title: string;
-//     rating: string;
-//     reviewcount: string;
-//   };
-// };
+type ReviewItem = {
+  thumbnail: string;
+  content: string;
+  name: string;
+  date: string;
+  product: {
+    thumb: string;
+    title: string;
+    rating: string;
+    reviewcount: string;
+  };
+};
 
 // export function ProductSlider({
 //   id,

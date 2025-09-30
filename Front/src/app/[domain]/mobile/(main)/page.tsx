@@ -1,5 +1,9 @@
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import { requester } from "@/shared/Requester";
+import FlexChild from "@/components/flex/FlexChild";
+import HorizontalFlex from "@/components/flex/HorizontalFlex";
+import styles from "./page.module.css"
+import Link from "next/link";
 import {
   HotDealWrapper,
   LinkBanner,

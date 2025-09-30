@@ -22,6 +22,7 @@
    position: relative;
    z-index: 2;
    border: 1px solid #fff;
+   overflow: hidden;
 }
 
 /* 프로덕트 슬라이더 */
@@ -29,8 +30,8 @@
    font-size: 20px;
 }
 
-.ProductSlider {position: relative;}
-.ProductSlider .naviBtn {
+.BestSlider {position: relative;}
+.BestSlider .naviBtn {
    position: absolute;
    top: 40%;
    z-index: 100;
@@ -45,13 +46,13 @@
    transition: all 0.2s;
 }
 
-.ProductSlider .prevBtn {left: -55px;}
-.ProductSlider .nextBtn {right: -55px;}
-.ProductSlider .nextBtn > img {
+.BestSlider .prevBtn {left: 10px;}
+.BestSlider .nextBtn {right: 10px;}
+.BestSlider .nextBtn > img {
    transform: rotate(180deg);
 }
 
-.ProductSlider .naviBtn:hover {
+.BestSlider .naviBtn:hover {
    background: #000;
 }
 

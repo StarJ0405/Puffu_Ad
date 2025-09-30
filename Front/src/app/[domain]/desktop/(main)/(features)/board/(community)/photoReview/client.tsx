@@ -210,18 +210,25 @@ export function BestReviewSlider({
             nextEl: `#${id} .${styles.nextBtn}`,
           }}
         >
-          {ranked.map((review) => (
-            <SwiperSlide key={review.id}>
-              <ReviewImgCard
-                review={review}
-                width={"100%"}
-                height={'auto'}
-                board="photoReviewSlide"
-                slide={true}
-                lineClamp={lineClamp ?? 2}
-              />
-            </SwiperSlide>
-          ))}
+          {ranked.map((review) => {
+            // 이미지 없으면 들어가는 값 때문에 이미지 없는 리뷰도 출력되서 이렇게 처리해버림.
+            // 문제 되면 지우기
+            const hasGood = review.images?.some(url => url.includes("good"));
+
+            if (hasGood) return null;
+            return (
+              <SwiperSlide key={review.id}>
+                <ReviewImgCard
+                  review={review}
+                  width={"100%"}
+                  height={'auto'}
+                  board="photoReviewSlide"
+                  slide={true}
+                  lineClamp={lineClamp ?? 2}
+                />
+              </SwiperSlide>
+            )
+          })}
         </Swiper>
         {
           ranked.length > slideMax && (
@@ -306,14 +313,23 @@ export function GalleryTable() {
       <FlexChild>
         {items.length > 0 ? (
           <MasonryGrid breakpoints={5} width={'100%'}>
-            {items.map((item, i) => (
-              <ReviewImgCard
-                key={item.id ?? i}
-                review={item}
-                width={'100%'}
-                height={'auto'}
-              />
-            ))}
+            {items.map((item, i) => {
+              // 이미지 없으면 들어가는 값 때문에 이미지 없는 리뷰도 출력되서 이렇게 처리해버림.
+              // 문제 되면 지우기
+              const hasGood = item.images?.some(url => url.includes("good"));
+
+              if (hasGood) return null;
+
+              return (
+                <ReviewImgCard
+                  key={item.id ?? i}
+                  review={item}
+                  width={'100%'}
+                  height={'auto'}
+                  borderRadius={5}
+                />
+              )
+            })}
           </MasonryGrid>
         ) : (
           !loading && <NoContent type="리뷰" />

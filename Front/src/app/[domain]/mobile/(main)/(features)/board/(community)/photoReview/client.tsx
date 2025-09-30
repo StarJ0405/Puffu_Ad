@@ -184,31 +184,51 @@ export function BestReviewSlider({
   }, [rows]);
 
   if (!loading && ranked.length === 0) {
-    return <NoContent type="리뷰" />;
+    return <NoContent type="리뷰" />
   }
 
   return (
     <>
       {ranked.length > 0 ? (
-        <FlexChild id={id} className={styles.ProductSlider}>
+        <FlexChild id={id} className={styles.BestSlider}>
           <Swiper
             loop={true}
-            slidesPerView={2.2}
+            slidesPerView={1.6}
             speed={600}
             spaceBetween={20}
             modules={[Autoplay, Navigation]}
-            autoplay={{ delay: 4000 }}
+            autoplay={{ delay: 40000 }}
             navigation={{
               prevEl: `#${id} .${styles.prevBtn}`,
               nextEl: `#${id} .${styles.nextBtn}`,
             }}
+            breakpoints={{
+              580: {
+                slidesPerView: 2,
+              },
+              680: {
+                slidesPerView: 3,
+              },
+              768: {
+                slidesPerView: 4,
+              },
+
+              1080: {
+                slidesPerView: 4,
+              },
+            }}
           >
             {ranked.map((review, i) => {
+              // 이미지 없으면 들어가는 값 때문에 이미지 없는 리뷰도 출력되서 이렇게 처리해버림.
+              // 문제 되면 지우기
+              const hasGood = review.images?.some(url => url.includes("good"));
+
+              if (hasGood) return null;
               return (
                 <SwiperSlide key={i}>
                   <ReviewImgCard
                     review={review}
-                    width={"100%"}
+                    width={'100%'}
                     height={"auto"}
                     board="photoReviewSlide"
                     slide={true}
@@ -306,15 +326,24 @@ export function GalleryTable() {
     <VerticalFlex>
       <FlexChild>
         {items.length > 0 ? (
-          <MasonryGrid gap={20} breakpoints={1} width={'100%'}>
-            {items.map((item, i) => (
-              <ReviewImgCard
-                key={item.id ?? i}
-                review={item}
-                width={'100%'}
-                height={'auto'}
-              />
-            ))}
+          <MasonryGrid gap={20} breakpoints={{768: 3, 650: 2, 550: 1}} width={'100%'}>
+            {items.map((item, i) => {
+              // 이미지 없으면 들어가는 값 때문에 이미지 없는 리뷰도 출력되서 이렇게 처리해버림.
+              // 문제 되면 지우기
+              const hasGood = item.images?.some(url => url.includes("good"));
+
+              if (hasGood) return null;
+
+              return (
+                <ReviewImgCard
+                  key={item.id ?? i}
+                  review={item}
+                  width={'100%'}
+                  height={'auto'}
+                  borderRadius={10}
+                />
+              )
+            })}
           </MasonryGrid>
         ) : (
           !loading && <NoContent type="리뷰" />

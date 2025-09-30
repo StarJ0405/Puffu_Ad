@@ -86,7 +86,7 @@
 /* .slide_item {gap: 10px;} */
 
 .slide_item .text_box .content {
-   font-size: 13px; min-height: 47px;
+   font-size: 13px; min-height: 32px;
 }
 
 .slide_item .prodcut_data .info .info_rating {
@@ -94,10 +94,6 @@
    flex-direction: column;
    align-items: start !important;
    gap: 3px;
-}
-
-.slide_item .prodcut_data .img img {
-   width: 45px !important;
 }
 
 
