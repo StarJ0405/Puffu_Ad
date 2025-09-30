@@ -8,7 +8,7 @@ import MasonryGrid from "@/components/masonry/MasonryGrid";
 import Span from "@/components/span/Span";
 import clsx from "clsx";
 import Link from "next/link";
-import { useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
 
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
@@ -19,9 +19,10 @@ import useData from "@/shared/hooks/data/useData";
 import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
 import { requester } from "@/shared/Requester";
 import { Swiper as SwiperType } from "swiper";
-import { Autoplay, Pagination } from "swiper/modules";
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
+import ReviewImgCard from "@/components/card/reviewImgCard";
 
 export function MainBanner({ initBanners }: { initBanners: Pageable }) {
   const { userData } = useAuth();
@@ -430,143 +431,129 @@ export function ProductList({
   );
 }
 
-// type ReviewItem = {
-//   thumbnail: string;
-//   content: string;
-//   name: string;
-//   date: string;
-//   product: {
-//     thumb: string;
-//     title: string;
-//     rating: string;
-//     reviewcount: string;
-//   };
-// };
 
-// // 리뷰 슬라이더
-// export function ProductSlider({
-//   id,
-//   lineClamp,
-// }: {
-//   id: string;
-//   lineClamp?: number;
-// }) {
-//   const reviewTest: ReviewItem[] = [
-//     {
-//       thumbnail: "/resources/images/dummy_img/review_img_01.png",
-//       content: "벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.",
-//       name: "김한별",
-//       date: "2025-08-01",
-//       product: {
-//         thumb: "/resources/images/dummy_img/review_img_01.png",
-//         title: "적나라 생츄어리",
-//         rating: "4.8",
-//         reviewcount: "4,567",
-//       },
-//     },
-//     {
-//       thumbnail: "/resources/images/dummy_img/review_img_01.png",
-//       content: "벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.",
-//       name: "김한별",
-//       date: "2025-08-01",
-//       product: {
-//         thumb: "/resources/images/dummy_img/review_img_01.png",
-//         title: "적나라 생츄어리",
-//         rating: "4.8",
-//         reviewcount: "4,567",
-//       },
-//     },
-//     {
-//       thumbnail: "/resources/images/dummy_img/review_img_01.png",
-//       content: "벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.",
-//       name: "김한별",
-//       date: "2025-08-01",
-//       product: {
-//         thumb: "/resources/images/dummy_img/review_img_01.png",
-//         title: "적나라 생츄어리",
-//         rating: "4.8",
-//         reviewcount: "4,567",
-//       },
-//     },
-//     {
-//       thumbnail: "/resources/images/dummy_img/review_img_01.png",
-//       content: "벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.",
-//       name: "김한별",
-//       date: "2025-08-01",
-//       product: {
-//         thumb: "/resources/images/dummy_img/review_img_01.png",
-//         title: "적나라 생츄어리",
-//         rating: "4.8",
-//         reviewcount: "4,567",
-//       },
-//     },
-//     {
-//       thumbnail: "/resources/images/dummy_img/review_img_01.png",
-//       content: "벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.",
-//       name: "김한별",
-//       date: "2025-08-01",
-//       product: {
-//         thumb: "/resources/images/dummy_img/review_img_01.png",
-//         title: "적나라 생츄어리",
-//         rating: "4.8",
-//         reviewcount: "4,567",
-//       },
-//     },
-//     {
-//       thumbnail: "/resources/images/dummy_img/review_img_01.png",
-//       content: "벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.",
-//       name: "김한별",
-//       date: "2025-08-01",
-//       product: {
-//         thumb: "/resources/images/dummy_img/review_img_01.png",
-//         title: "적나라 생츄어리",
-//         rating: "4.8",
-//         reviewcount: "4,567",
-//       },
-//     },
-//   ];
 
-//   return (
-//     <>
-//       {reviewTest.length > 0 ? (
-//         <FlexChild id={id} className={styles.ProductSlider}>
-//           <Swiper
-//             loop={true}
-//             slidesPerView={5}
-//             speed={600}
-//             spaceBetween={20}
-//             modules={[Autoplay, Navigation]}
-//             autoplay={{ delay: 4000 }}
-//             navigation={{
-//               prevEl: `#${id} .${styles.prevBtn}`,
-//               nextEl: `#${id} .${styles.nextBtn}`,
-//             }}
-//           >
-//             {reviewTest.map((review, i) => {
-//               return (
-//                 <SwiperSlide key={i}>
-//                   <ReviewImgCard review={review} lineClamp={lineClamp ?? 2} />
-//                 </SwiperSlide>
-//               );
-//             })}
-//           </Swiper>
+type ReviewEntity = {
+  id: string;
+  images?: string[];
+  content?: string;
+  avg?: number;
+  count: number;
+  created_at?: string;
+  star_rate?: number;
+  metadata?: {
+    source?: string;
+    aspects?: { design?: string; finish?: string; maintenance?: string };
+  };
+  user?: { id?: string; name?: string };
+  item?: {
+    id?: string;
+    variant?: {
+      id?: string;
+      product?: { id?: string; title?: string; thumbnail?: string };
+    };
+  };
+};
 
-//           <div className={clsx(styles.naviBtn, styles.prevBtn)}>
-//             <Image
-//               src={"/resources/icons/arrow/slide_arrow.png"}
-//               width={10}
-//             ></Image>
-//           </div>
-//           <div className={clsx(styles.naviBtn, styles.nextBtn)}>
-//             <Image
-//               src={"/resources/icons/arrow/slide_arrow.png"}
-//               width={10}
-//             ></Image>
-//           </div>
-//         </FlexChild>
-//       ) : (
-//         <NoContent type="상품" />
-//       )}
-//     </>
-//   );
-// }
+// 리뷰 슬라이더
+export function ProductSlider({
+  id,
+  lineClamp,
+}: {
+  id: string;
+  lineClamp?: number;
+}) {
+  
+  const PAGE_SIZE = 10;
+  const [items, setItems] = useState<ReviewEntity[]>([]);
+  const [pageNumber, setPageNumber] = useState(0);
+  const [totalPages, setTotalPages] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  const fetchPage = useCallback(async (pn: number) => {
+    setLoading(true);
+    try {
+      const params: any = {
+        pageSize: PAGE_SIZE,
+        pageNumber: pn,
+        photo: true,
+        relations: "item,item.variant.product,user",
+        order: { created_at: "DESC" },
+      };
+      const res = await requester.getPublicReviews(params);
+      const data = res?.data ?? res;
+      const list: ReviewEntity[] = data?.content ?? [];
+
+      setItems((prev) => (pn === 0 ? list : prev.concat(list)));
+      if (typeof data?.totalPages === "number") {
+        setTotalPages(data.totalPages);
+        setHasMore(pn + 1 < data.totalPages);
+      } else {
+        setTotalPages(null);
+        setHasMore(list.length === PAGE_SIZE);
+      }
+      setPageNumber(pn);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchPage(0);
+  }, [fetchPage]);
+
+  return (
+    <>
+      {items.length > 0 ? (
+        <FlexChild id={id} className={styles.ProductSlider}>
+          <Swiper
+            loop={false}
+            slidesPerView={5}
+            speed={600}
+            spaceBetween={20}
+            modules={[Autoplay, Navigation]}
+            autoplay={{ delay: 4000 }}
+            navigation={{
+              prevEl: `#${id} .${styles.prevBtn}`,
+              nextEl: `#${id} .${styles.nextBtn}`,
+            }}
+          >
+            {[...items]
+            .sort(()=> Math.random() -0.5)
+            .map((item, i) => {
+              const hasGood = item.images?.some(url => url.includes("good"));
+
+              if (hasGood) return null;
+              return (
+                <SwiperSlide key={item.id ?? i}>
+                  <ReviewImgCard 
+                    review={item} 
+                    lineClamp={lineClamp ?? 2}
+                    width={'100%'}
+                    height={'auto'}
+                  />
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
+
+          <div className={clsx(styles.naviBtn, styles.prevBtn)}>
+            <Image
+              src={"/resources/icons/arrow/slide_arrow.png"}
+              width={10}
+            ></Image>
+          </div>
+          <div className={clsx(styles.naviBtn, styles.nextBtn)}>
+            <Image
+              src={"/resources/icons/arrow/slide_arrow.png"}
+              width={10}
+            ></Image>
+          </div>
+        </FlexChild>
+      ) : (
+        <NoContent type="상품" />
+      )}
+    </>
+  );
+}

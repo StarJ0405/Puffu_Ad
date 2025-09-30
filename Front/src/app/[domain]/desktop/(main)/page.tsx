@@ -15,7 +15,7 @@ import {
   ProductList,
   SubBanner1,
   SubBanner2,
-  // ProductSlider,
+  ProductSlider,
 } from "./client";
 import styles from "./page.module.css";
 
@@ -102,7 +102,7 @@ export default async function () {
         </FlexChild>
         <SubBanner1 />
         <MiniBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
-        {/* <FlexChild>
+        <FlexChild>
           <VerticalFlex>
             <HorizontalFlex
               className={styles.titleBox}
@@ -126,7 +126,7 @@ export default async function () {
               </Link>
             </FlexChild>
           </VerticalFlex>
-        </FlexChild> */}
+        </FlexChild>
       </VerticalFlex>
     </section>
   );
