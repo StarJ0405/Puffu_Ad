@@ -1,5 +1,5 @@
 .review_wrap {
-  gap: 40px;
+  gap: 80px;
   width: 100%;
 }
 
@@ -130,8 +130,41 @@
   gap: 15px;
 }
 
+.review_list .recommend {
+  gap: 15px; margin-top: 30px;
+}
+
+.review_list .recommend > p {color: #fff !important; font-size: 14px !important;}
+.review_list .recommend .recommend_btn {
+   border: 1px solid #fff; border-radius: 5px;
+   background: transparent;
+   font-size: 14px; color: #fff;
+   padding: 8px 0;
+   width: 100%;
+   max-width: 130px;
+   display: flex;
+   gap: 10px;
+   justify-content: center;
+   align-items: center;
+   transition: all 0.2s;
+}
+
+@media (min-width: 769px) {
+   .review_list .recommend .recommend_btn:hover {
+      border-color: var(--main-color1);
+      color: var(--main-color1);
+   }
+}
+
 .review_list .item .content .img_box {
   position: relative;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.review_list .item .content .img_box:hover .click_layer {
+   opacity: 1;
 }
 
 .review_list .item .content .img_box .img_length {
@@ -144,6 +177,20 @@
   line-height: 1;
   border-radius: 3px;
   font-size: 12px;
+}
+
+.review_list .item .content .img_box .click_layer {
+   position: absolute;
+   left: 0; top: 0;
+   width: 100%; height: 100%;
+   background: rgba(0,0,0,0.5);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   font-size: 15px;
+   color: #fff;
+   transition: 0.2s;
+   opacity: 0;
 }
 
 .items {

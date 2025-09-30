@@ -6,12 +6,12 @@
 
 .container::-webkit-scrollbar {width: 7px;}
 .container::-webkit-scrollbar-track {
-  background: #f0f0f0; /* 트랙 배경 */
+  background: #555; /* 트랙 배경 */
   border-radius: 4px;
 }
 
 .container::-webkit-scrollbar-thumb {
-  background-color: #888888; /* 스크롤바 색 */
+  background-color: #CCC; /* 스크롤바 색 */
   border-radius: 4px;     /* 둥글게 */
 }
 
@@ -28,7 +28,8 @@
 .container .itemBox .product_info {gap: 10px;}
 .container .itemBox .product_info img {border-radius: 5px;}
 .container .itemBox .product_info .txt_box {
-   color: #fff; gap: 10px;
+   color: #fff; gap: 10px; align-items: start !important;
+   margin-top: 5px;
 }
 
 .container .itemBox .product_info .txt_box .title {font-size: 14px;}
@@ -110,8 +111,16 @@
 
 
 /* 하단 리뷰 내용 */
+.container .user_box {
+   flex-direction: unset;
+   margin-bottom: 20px;
+   justify-content: space-between !important;
+}
+
+.container .user_box > * {width: auto;}
+
 .container .user_data {
-   gap: 10px; margin-bottom: 20px; font-size: 14px;
+   gap: 10px; font-size: 14px;
 }
 .container .user_data .name {
    color: #fff;
@@ -152,6 +161,7 @@
 @media (min-width: 769px) {
    .container .user_data_wrap .recommend .recommend_btn:hover {
       border-color: var(--main-color1);
+      color: var(--main-color1);
    }
 }
 
@@ -160,8 +170,6 @@
 /* 모바일 스타일 -----------------------------------------------*/
 
 .mob_container {padding: 25px 15px 70px;}
-.mob_container::-webkit-scrollbar-track {background: #111; /* 트랙 배경 */}
-.mob_container::-webkit-scrollbar-thumb {background-color: #333; /* 스크롤바 색 */}
 
 .mob_container .itemBox {
    flex-direction: column;
@@ -183,9 +191,20 @@
 }
 
 /* 유저정보 */
+
+.mob_container .user_box {
+   flex-direction: column;
+   margin-bottom: 10px;
+   justify-content: start !important;
+   gap: 15px;
+}
+
+.mob_container .user_box > * {
+   width: 100%;
+}
+
 .mob_container .user_data {
    gap: 10px; justify-content: space-between !important;
-   margin-bottom: 10px;
 }
 .mob_container .user_data .name {color: #fff; margin-left: auto !important;}
 .mob_container .user_data .date {color: #797979;}

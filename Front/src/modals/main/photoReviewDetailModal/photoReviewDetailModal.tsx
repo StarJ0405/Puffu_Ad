@@ -9,7 +9,7 @@ import Span from "@/components/span/Span";
 import StarRate from "@/components/star/StarRate";
 import ModalBase from "@/modals/ModalBase";
 import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
-import { maskTwoThirds } from "@/shared/utils/Functions";
+import { toast, maskTwoThirds } from "@/shared/utils/Functions";
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import { useRef } from "react";
@@ -165,7 +165,7 @@ const PhotoReviewDetailModal = NiceModal.create(
               <FlexChild className={styles.product_info} alignItems="start">
                 <Image
                   src={productThumb}
-                  width={!isMobile ? 120 : 60}
+                  width={!isMobile ? 100 : 60}
                   height={"auto"}
                 />
                 <VerticalFlex className={styles.txt_box}>
@@ -207,7 +207,7 @@ const PhotoReviewDetailModal = NiceModal.create(
                     </FlexChild>
                   )}
                   {(showAvg || showCount) && (
-                    <FlexChild gap={7}>
+                    <FlexChild gap={10}>
                       {showAvg && (
                         <StarRate width={80} score={prodAvg!} readOnly />
                       )}
@@ -222,7 +222,7 @@ const PhotoReviewDetailModal = NiceModal.create(
               </FlexChild>
             )}
             {
-              // 모바일일때만 --------------------------------------------------------------------------------
+              // 모바일일때만 -----------
               isMobile && (
                 <UserData
                   starRate={review.star_rate}
@@ -322,7 +322,11 @@ const PhotoReviewDetailModal = NiceModal.create(
 
             <VerticalFlex className={styles.recommend}>
               <P>이 리뷰가 도움이 되었나요?</P>
-              <Button className={styles.recommend_btn}>
+              <Button 
+                className={styles.recommend_btn}
+
+                onClick={()=> toast({ message: '리뷰가 추천되었습니다.' })}
+              >
                 <Image
                   src={"/resources/icons/board/review_like.png"}
                   width={20}
@@ -350,17 +354,24 @@ function UserData({
   starSize: [number, number];
 }) {
   return (
-    <FlexChild className={styles.user_data}>
-      <StarRate
-        width={starSize[0]}
-        score={starRate ?? 0}
-        starWidth={starSize[1]}
-        starHeight={starSize[1]}
-        readOnly
-      />
-      <P className={styles.name}>{userName}</P>
-      <P className={styles.date}>{date}</P>
-    </FlexChild>
+    <VerticalFlex className={styles.user_box}>
+      <FlexChild className={styles.user_data}>
+        <StarRate
+          width={starSize[0]}
+          score={starRate ?? 0}
+          starWidth={starSize[1]}
+          starHeight={starSize[1]}
+          readOnly
+        />
+        <P className={styles.name}>{userName}</P>
+        <P className={styles.date}>{date}</P>
+      </FlexChild>
+
+      <FlexChild hidden>
+        {/* 리뷰 추천 표시 */}
+        <P size={14} color="#fff">{3}명에게 도움이 되었어요.</P>
+      </FlexChild>
+    </VerticalFlex>
   );
 }
 

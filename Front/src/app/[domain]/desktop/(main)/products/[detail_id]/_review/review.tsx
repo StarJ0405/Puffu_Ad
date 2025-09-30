@@ -155,7 +155,7 @@ export default function Review({ product }: { product: ProductData }) {
           {list?.length > 0 ? (
             <div className={styles.items}>
               {list.map((r: any) => (
-                <HorizontalFlex key={r} gap={100} className={styles.item}>
+                <HorizontalFlex key={r.id} gap={100} className={styles.item}>
                   <VerticalFlex className={styles.item_header} gap={15}>
                     <FlexChild>
                       <StarRate
@@ -180,6 +180,26 @@ export default function Review({ product }: { product: ProductData }) {
                           {formatDateDots(r?.created_at)}
                         </P>
                       </FlexChild>
+
+                      <FlexChild hidden>
+                        {/* 리뷰 추천 표시 */}
+                        <P size={14} color="#eee">{3}명에게 도움이 되었어요.</P>
+                      </FlexChild>
+                    </VerticalFlex>
+
+                    <VerticalFlex className={styles.recommend} gap={15}>
+                      <P>이 리뷰가 도움이 되었나요?</P>
+                      <Button 
+                        className={styles.recommend_btn}
+                        onClick={()=> toast({ message: '리뷰가 추천되었습니다.' })}
+                      >
+                        <Image
+                          src={"/resources/icons/board/review_like.png"}
+                          width={16}
+                          height={"auto"}
+                        />
+                        <P>도움이 됐어요</P>
+                      </Button>
                     </VerticalFlex>
                   </VerticalFlex>
 
@@ -219,30 +239,37 @@ export default function Review({ product }: { product: ProductData }) {
                         </FlexChild>
                       </FlexChild>
                     </HorizontalFlex>
+                    
 
                     <HorizontalFlex className={styles.content}>
-                      {r.images.length > 0 && (
-                        <FlexChild
-                          width={180}
-                          className={styles.img_box}
-                          cursor="pointer"
-                          onClick={() =>
-                            NiceModal.show("ImgViewSliderModal", {
-                              images: r.images,
-                              height: "auto",
-                            })
-                          }
-                        >
-                          <Image
-                            src={r.images[0]}
-                            width={"100%"}
-                            height={"auto"}
-                          />
-                          <Div className={styles.img_length}>
-                            {r.images.length}
-                          </Div>
-                        </FlexChild>
-                      )}
+                      {
+                        r.images.length > 0 &&
+                        // good 들어간 노이미지 때문에 자꾸 이미지 있는 걸로 인식해서 처리해버림.
+                        !r.images.some((url: string) => url.includes("good")) && (
+                          <FlexChild
+                            width={180}
+                            height={180}
+                            overflow="hidden"
+                            className={styles.img_box}
+                            cursor="pointer"
+                            onClick={() =>
+                              NiceModal.show("ImgViewSliderModal", {
+                                images: r.images,
+                                height: "auto",
+                              })
+                            }
+                            backgroundImage={`url(${r.images[0]})`}
+                          >
+                            <Div className={styles.img_length}>
+                              {r.images.length}
+                            </Div>
+
+                            <Div className={styles.click_layer}>
+                              자세히 보기
+                            </Div>
+                          </FlexChild>
+                        )
+                      }
                       <P size={14} color="#fff" lineHeight={1.6}>
                         {r.content}
                       </P>

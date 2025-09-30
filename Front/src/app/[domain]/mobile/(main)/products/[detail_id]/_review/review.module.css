@@ -1,5 +1,5 @@
 .review_wrap {
-  gap: 40px;
+  gap: 60px;
   width: 100%;
   padding: 0 10px;
 }
@@ -96,6 +96,9 @@
 .feedback {
   justify-content: start;
   gap: 15px;
+  padding: 15px;
+  background: #2b2b2b;
+  border-radius: 5px;
 }
 
 .feedback .feed_item {
@@ -144,6 +147,9 @@
 
 .review_list .item .content .img_box {
   position: relative;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
 .review_list .item .content .img_box .img_length {
@@ -170,4 +176,29 @@
 
 .review_more_btn:active {
    background: var(--main-color2);
+}
+
+
+.review_list .recommend {
+  gap: 15px; justify-content: center;
+}
+
+.review_list .recommend > p {color: #fff !important; font-size: 13px !important;}
+.review_list .recommend .recommend_btn {
+   border: 1px solid #fff; border-radius: 5px;
+   background: transparent;
+   font-size: 12px; color: #fff;
+   padding: 8px 0;
+   width: 100%;
+   max-width: 110px;
+   display: flex;
+   gap: 10px;
+   justify-content: center;
+   align-items: center;
+   transition: all 0.2s;
+}
+
+.review_list .recommend .recommend_btn:active {
+   border-color: var(--main-color1);
+   color: var(--main-color1);
 }
