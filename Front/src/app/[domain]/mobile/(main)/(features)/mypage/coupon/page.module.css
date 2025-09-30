@@ -1,3 +1,95 @@
 .coupon_box {
-   
+  padding-bottom: 40px;
+}
+
+.total_count {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px 8px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 100px;
+  aspect-ratio: 1/1;
+  background-color: var(--main-color2);
+}
+
+.item{
+  /* padding: 20px 10px; */
+  max-height: 100px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #2F2F2F 0%, #404040 50%, #3A3A3A 100%);
+}
+
+.item.expired, 
+.item.used {
+  background: #000;
+}
+
+.item .name {
+  font-size: 15px;
+  font-weight: 600;
+  word-break: keep-all;
+}
+
+.item .name.expired,
+.item .name.used,
+.item .date.expired,
+.item .date.used {
+  opacity: 20%;
+}
+
+.item .date {
+  font-size: 13px;
+  color: #d7d7d7;
+}
+
+.cutout_wrap{
+  position: relative;
+  width: 20px;
+  height: 100%;
+  min-height: 100px;
+  margin: 0 10px;
+  display: flex;
+  align-items: stretch;
+}
+
+.cutout_left,
+.cutout_right {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--mainBg);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.cutout_left {
+  top: 0;
+  transform: translate(-50%, -50%);
+}
+
+.cutout_right {
+  bottom: 0;
+  transform: translate(-50%, 50%);
+}
+
+.dashed_line {
+  position: absolute;
+  left: 50%;
+  height: 100%;
+  min-height: 100px;
+  border-left: 1px dashed #fff;
+}
+
+.icon_wrap {
+  min-width: 12%;
+  padding-right: 10px;
+}
+
+.icon_wrap .txt {
+  font-size: 13px;
+  font-weight: 600;
 }
