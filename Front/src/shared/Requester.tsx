@@ -523,7 +523,8 @@ class _Requester {
     if (callback) callback(await this.delete(`/users/me/qa/${id}`, data));
     else return await this.delete(`/users/me/qa/${id}`, data);
   }
-  async adminUpdateQA(  //문의 / 어드민 답변작성
+  async adminUpdateQA(
+    //문의 / 어드민 답변작성
     id: string,
     data: any,
     callback?: Function
@@ -569,6 +570,39 @@ class _Requester {
   ): Promise<any> {
     if (callback) callback(await this.get(`/reviews/${id}`, data));
     else return await this.get(`/reviews/${id}`, data);
+  }
+  // 리뷰 추천 관련
+  
+  async createRecommend(// 생성: 리뷰 추천
+    data: { review_id: string; metadata?: any; return_data?: boolean },
+    callback?: Function
+  ): Promise<any> {
+    const path = `/users/me/recommend`;
+    if (callback) callback(await this.post(path, data));
+    else return await this.post(path, data);
+  }
+  async getRecommend(// 단건 조회: 해당 리뷰에 내가 추천했는지 확인
+    review_id: string,
+    params?: any,
+    callback?: Function
+  ): Promise<any> {
+    const path = `/users/me/recommend/${review_id}`;
+    if (callback) callback(await this.get(path, params));
+    else return await this.get(path, params);
+  }
+  async getRecommends(params?: any, callback?: Function): Promise<any> {  // 목록 조회: 내가 추천한 전체 목록(페이지네이션/필터 옵션 포함)
+    const path = `/users/me/recommend`;
+    if (callback) callback(await this.get(path, params));
+    else return await this.get(path, params);
+  }
+  async deleteRecommend(// 취소: 해당 리뷰 추천 해제
+    review_id: string,
+    params?: any,
+    callback?: Function
+  ): Promise<any> {
+    const path = `/users/me/recommend/${review_id}`;
+    if (callback) callback(await this.delete(path, params));
+    else return await this.delete(path, params);
   }
   // 포인트 사용 내역
   async getPoints(data?: any, callback?: Function): Promise<any> {

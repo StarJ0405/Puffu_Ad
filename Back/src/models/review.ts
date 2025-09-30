@@ -6,11 +6,13 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
 } from "typeorm";
 import { generateEntityId } from "utils/functions";
 import { LineItem } from "./line_item";
 import { User } from "./user";
+import { Recommend } from "./recommend";
 
 @Entity({ name: "review" })
 @Index(["created_at"])
@@ -42,6 +44,9 @@ export class Review extends BaseEntity {
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;
 
+  @OneToMany(() => Recommend, (recommend) => recommend.review)
+  recommends?: Recommend[];
+  
   @BeforeInsert()
   protected async BeforeInsert(): Promise<void> {
     this.id = generateEntityId(this.id, "rvw");
