@@ -82,7 +82,16 @@
    gap: 15px;
 }
 
-.review_list .item .content .img_box {position: relative;}
+.review_list .item .content .img_box {
+   position: relative;
+   background-size: cover;
+   background-position: center center;
+   background-repeat: no-repeat;
+}
+
+.review_list .item .content .img_box:hover .click_layer {
+   opacity: 1;
+}
 
 .review_list .item .content .img_box .img_length {
    position: absolute; bottom: 0; right: 0;
@@ -92,4 +101,18 @@
    line-height: 1;
    border-radius: 3px;
    font-size: 12px;
+}
+
+.review_list .item .content .img_box .click_layer {
+   position: absolute;
+   left: 0; top: 0;
+   width: 100%; height: 100%;
+   background: rgba(0,0,0,0.5);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   font-size: 15px;
+   color: #fff;
+   transition: 0.2s;
+   opacity: 0;
 }

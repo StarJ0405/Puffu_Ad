@@ -319,6 +319,7 @@ export function ReviewList() {
                       {r.images.length > 0 && (
                         <FlexChild
                           width={150}
+                          height={150}
                           className={styles.img_box}
                           cursor="pointer"
                           onClick={() =>
@@ -326,15 +327,20 @@ export function ReviewList() {
                               images: r.images,
                             })
                           }
+                          backgroundImage={`url(${r.images[0]})`}
                         >
-                          <Image
+                          {/* <Image
                             src={r.images[0]}
                             width={"100%"}
                             height={"auto"}
-                          />
+                          /> */}
                           <Div className={styles.img_length}>
                             {r.images.length}
                           </Div>
+
+                          {/* <Div className={styles.click_layer}>
+                            자세히 보기
+                          </Div> */}
                         </FlexChild>
                       )}
                       <P size={14} color="#ddd" lineHeight={1.6}>

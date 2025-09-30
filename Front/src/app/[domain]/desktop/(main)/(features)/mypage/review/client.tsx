@@ -356,6 +356,8 @@ export function ReviewList({ onTotal }: { onTotal?: (n: number) => void }) {
                       {Array.isArray(r.images) && r.images.length > 0 && (
                         <FlexChild
                           width={180}
+                          height={180}
+                          overflow="hidden"
                           className={styles.img_box}
                           cursor="pointer"
                           onClick={() =>
@@ -364,14 +366,20 @@ export function ReviewList({ onTotal }: { onTotal?: (n: number) => void }) {
                               height: "auto",
                             })
                           }
+                          backgroundImage={`url(${r.images[0]})`}
                         >
-                          <Image
+                          {/* <Image
                             src={r.images[0]}
                             width={"100%"}
                             height={"auto"}
-                          />
+                            objectFit="cover"
+                          /> */}
                           <Div className={styles.img_length}>
                             {r.images.length}
+                          </Div>
+
+                          <Div className={styles.click_layer}>
+                            자세히 보기
                           </Div>
                         </FlexChild>
                       )}
