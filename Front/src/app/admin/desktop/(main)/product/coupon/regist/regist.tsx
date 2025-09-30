@@ -35,7 +35,13 @@ const options: { display: string; value: DateUnit; suffix: string }[] = [
   { display: "일", value: "date", suffix: "일" },
   { display: "시간", value: "hours", suffix: "시간" },
 ];
-export default function ({ initStores }: { initStores: StoreData[] }) {
+export default function ({
+  initStores,
+  initGroups,
+}: {
+  initStores: Pageable;
+  initGroups: Pageable;
+}) {
   const { stores } = useData(
     "stores",
     { select: ["id", "name", "currency_unit"] },
@@ -45,12 +51,23 @@ export default function ({ initStores }: { initStores: StoreData[] }) {
       fallbackData: initStores,
     }
   );
+  const { groups } = useData(
+    "groups",
+    { select: ["id", "name", "min"] },
+    (condition) => adminRequester.getGroups(condition),
+    {
+      onReprocessing: (data) => data?.content || [],
+      fallbackData: initGroups,
+    }
+  );
   const [store, setStore] = useState<string>("");
+  const [group, setGroup] = useState<string>("");
   const [type, setType] = useState<CouponType>("order");
   const [calc, setCalc] = useState<CalcType>("fix");
   const [date, setDate] = useState<DateType>("fixed");
   const [dates, setDates] = useState<[Date, Date]>(getInitDate());
   const [unit, setUnit] = useState<DateUnit>();
+  const [target, setTarget] = useState<Target>("etc");
   const inputs = useRef<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -75,6 +92,7 @@ export default function ({ initStores }: { initStores: StoreData[] }) {
           calc,
           date,
           value,
+          target,
         };
         if (date === "fixed") {
           _data.starts_at = dates[0];
@@ -82,6 +100,9 @@ export default function ({ initStores }: { initStores: StoreData[] }) {
         } else if (date === "range") {
           _data.date_unit = unit;
           _data.range = range;
+        }
+        if (target === "group") {
+          _data.group_id = group;
         }
 
         adminRequester.createCoupon(
@@ -479,6 +500,106 @@ export default function ({ initStores }: { initStores: StoreData[] }) {
                               </FlexChild>
                             )
                           )}
+                        </FlexChild>
+                      </HorizontalFlex>
+                    </FlexChild>
+                    <FlexChild>
+                      <HorizontalFlex
+                        gap={20}
+                        border={"1px solid #EFEFEF"}
+                        borderRight={"none"}
+                        borderLeft={"none"}
+                        borderTop={"none"}
+                        justifyContent={"flex-start"}
+                      >
+                        <FlexChild
+                          width={"130px"}
+                          padding={"18px 15px"}
+                          backgroundColor={"#F5F6FB"}
+                          justifyContent={"center"}
+                        >
+                          <P size={16} weight={600}>
+                            적용대상
+                          </P>
+                        </FlexChild>
+                        <FlexChild width={500}>
+                          <RadioGroup
+                            name="target"
+                            value={target}
+                            onValueChange={(value) =>
+                              setTarget(value as Target)
+                            }
+                          >
+                            <HorizontalFlex
+                              justifyContent="flex-start"
+                              gap={12}
+                            >
+                              {(
+                                [
+                                  {
+                                    display: "기타",
+                                    value: "etc",
+                                  },
+                                  {
+                                    display: "멤버쉽",
+                                    value: "group",
+                                  },
+                                  {
+                                    display: "신규회원",
+                                    value: "sign_up",
+                                  },
+                                ] as { display: string; value: Target }[]
+                              ).map((date) => (
+                                <FlexChild
+                                  key={date.value}
+                                  gap={6}
+                                  width={"max-content"}
+                                >
+                                  <RadioChild id={date.value} />
+                                  <P>{date.display}</P>
+                                </FlexChild>
+                              ))}
+                            </HorizontalFlex>
+                          </RadioGroup>
+                        </FlexChild>
+                      </HorizontalFlex>
+                    </FlexChild>
+                    <FlexChild hidden={target !== "group"}>
+                      <HorizontalFlex
+                        gap={20}
+                        border={"1px solid #EFEFEF"}
+                        borderRight={"none"}
+                        borderLeft={"none"}
+                        borderTop={"none"}
+                        justifyContent={"flex-start"}
+                      >
+                        <FlexChild
+                          width={"130px"}
+                          padding={"18px 15px"}
+                          backgroundColor={"#F5F6FB"}
+                          justifyContent={"center"}
+                        >
+                          <P size={16} weight={600}>
+                            대상 설정
+                          </P>
+                        </FlexChild>
+                        <FlexChild width={500}>
+                          <Select
+                            classNames={{ header: styles.select }}
+                            id="group"
+                            scrollMarginTop={150}
+                            options={groups
+                              .sort(
+                                (g1: GroupData, g2: GroupData) =>
+                                  g1.min - g2.min
+                              )
+                              .map((group: GroupData) => ({
+                                display: group.name,
+                                value: group.id,
+                              }))}
+                            value={group}
+                            onChange={(value) => setGroup(value as string)}
+                          />
                         </FlexChild>
                       </HorizontalFlex>
                     </FlexChild>

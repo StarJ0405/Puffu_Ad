@@ -1,6 +1,7 @@
 import { BaseEntity } from "data-source";
 import { BeforeInsert, Column, Entity, Index, OneToMany } from "typeorm";
 import { generateEntityId } from "utils/functions";
+import { Coupon } from "./coupon";
 import { User } from "./user";
 
 @Entity({ name: "group" })
@@ -24,6 +25,9 @@ export class Group extends BaseEntity {
 
   @OneToMany(() => User, (user) => user.group)
   users?: User[];
+
+  @OneToMany(() => Coupon, (coupon) => coupon.group)
+  coupons?: Coupon[];
 
   @BeforeInsert()
   protected async BeforeInsert(): Promise<void> {

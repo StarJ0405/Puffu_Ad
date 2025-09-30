@@ -5,7 +5,9 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import { MemberShip } from "./dashboard";
 import { adminRequester } from "@/shared/AdminRequester";
 export default async function () {
-  const initGroups = await adminRequester.getGroups();
+  const initGroups = await adminRequester.getGroups({
+    relations: ["coupons"],
+  });
   return (
     <Container padding={20} width={"100%"} maxWidth={1380} margin={"0 auto"}>
       <VerticalFlex gap={20} flexStart={true}>

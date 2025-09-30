@@ -12,11 +12,13 @@ import { adminRequester } from "@/shared/AdminRequester";
 import useData from "@/shared/hooks/data/useData";
 import NiceModal from "@ebay/nice-modal-react";
 import styles from "./page.module.css";
+import Tooltip from "@/components/tooltip/Tooltip";
+import { getCouponDate } from "../product/coupon/management/table";
 
 export function MemberShip({ initGroups }: { initGroups: Pageable }) {
   const { groups, mutate } = useData(
     "groups",
-    {},
+    { relations: ["coupons"] },
     (condition) => adminRequester.getGroups(condition),
     {
       fallbackData: initGroups,
@@ -112,7 +114,24 @@ export function MemberShip({ initGroups }: { initGroups: Pageable }) {
                         <P>{group.percent}%</P>
                       </FlexChild>
                       <FlexChild justifyContent="center">
-                        <P>미설정</P>
+                        {group.coupons?.length ? (
+                          <VerticalFlex>
+                            {group.coupons.map((coupon) => (
+                              <VerticalFlex key={coupon.id}>
+                                <P>{coupon.name}</P>
+                                <P>
+                                  <Span>({getCouponDate(coupon)} / </Span>
+                                  <Span>{coupon.value}</Span>
+                                  <Span>
+                                    {coupon.calc === "fix" ? "원" : "%"})
+                                  </Span>
+                                </P>
+                              </VerticalFlex>
+                            ))}
+                          </VerticalFlex>
+                        ) : (
+                          <P>미설정</P>
+                        )}
                       </FlexChild>
                       <FlexChild justifyContent="center" gap={3}>
                         <Button

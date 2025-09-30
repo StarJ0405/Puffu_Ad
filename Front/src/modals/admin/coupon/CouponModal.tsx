@@ -9,15 +9,16 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import Input from "@/components/inputs/Input";
 import InputNumber from "@/components/inputs/InputNumber";
 import P from "@/components/P/P";
+import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
 import { adminRequester } from "@/shared/AdminRequester";
+import useData from "@/shared/hooks/data/useData";
 import useClientEffect from "@/shared/hooks/useClientEffect";
 import { toast, validateInputs } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import { useEffect, useRef, useState } from "react";
 import ModalBase from "../../ModalBase";
 import styles from "./CouponModal.module.css";
-import Select from "@/components/select/Select";
 const getInitDate = (): [Date, Date] => {
   const start = new Date();
   start.setHours(0, 0, 0, 0);
@@ -41,6 +42,14 @@ const CouponModal = NiceModal.create(
     edit?: boolean;
     onSuccess?: () => void;
   }) => {
+    const { groups } = useData(
+      "groups",
+      { select: ["id", "name", "min"] },
+      (condition) => adminRequester.getGroups(condition),
+      {
+        onReprocessing: (data) => data?.content || [],
+      }
+    );
     const [withHeader, withFooter] = [true, false];
     const [width, height] = ["min(95%, 900px)", "auto"];
     const withCloseButton = true;
@@ -50,6 +59,7 @@ const CouponModal = NiceModal.create(
     const modal = useRef<any>(null);
     const inputs = useRef<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [group, setGroup] = useState<string>(coupon.group_id);
     const [error, setError] = useState<string>("");
     const [type, setType] = useState<CouponType>(coupon.type);
     const [calc, setCalc] = useState<CalcType>(coupon.calc);
@@ -60,6 +70,7 @@ const CouponModal = NiceModal.create(
         : getInitDate()
     );
     const [unit, setUnit] = useState<DateUnit>(coupon.date_unit);
+    const [target, setTarget] = useState<Target>(coupon.target);
 
     const handleSave = () => {
       setIsLoading(true);
@@ -83,6 +94,7 @@ const CouponModal = NiceModal.create(
               calc,
               date,
               value,
+              target,
             };
             if (date === "fixed") {
               _data.starts_at = dates[0];
@@ -99,6 +111,11 @@ const CouponModal = NiceModal.create(
               _data.ends_at = null;
               _data.date_unit = null;
               _data.range = 0;
+            }
+            if (target === "group") {
+              _data.group_id = group;
+            } else {
+              _data.group_id = null;
             }
 
             adminRequester.updateCoupon(
@@ -350,6 +367,89 @@ const CouponModal = NiceModal.create(
                   <P>{getCouponDate(coupon)}</P>
                 </FlexChild>
               )}
+            </HorizontalFlex>
+          </FlexChild>
+          <FlexChild>
+            <HorizontalFlex justifyContent="flex-start">
+              <FlexChild className={styles.head}>
+                <P>적용대상</P>
+              </FlexChild>
+
+              <FlexChild className={styles.content}>
+                {edit ? (
+                  <RadioGroup
+                    name="target"
+                    value={target}
+                    onValueChange={(value) => setTarget(value as Target)}
+                  >
+                    <HorizontalFlex justifyContent="flex-start" gap={12}>
+                      {(
+                        [
+                          {
+                            display: "기타",
+                            value: "etc",
+                          },
+                          {
+                            display: "멤버쉽",
+                            value: "group",
+                          },
+                          {
+                            display: "신규회원",
+                            value: "sign_up",
+                          },
+                        ] as { display: string; value: Target }[]
+                      ).map((date) => (
+                        <FlexChild
+                          key={date.value}
+                          gap={6}
+                          width={"max-content"}
+                        >
+                          <RadioChild id={date.value} />
+                          <P>{date.display}</P>
+                        </FlexChild>
+                      ))}
+                    </HorizontalFlex>
+                  </RadioGroup>
+                ) : (
+                  <P>
+                    {(() => {
+                      switch (target) {
+                        case "etc":
+                          return "기타";
+                        case "sign_up":
+                          return "신규회원";
+                        case "group":
+                          return `멤버쉽[${coupon.group.name}]`;
+                      }
+                      return "알 수 없음";
+                    })()}
+                  </P>
+                )}
+              </FlexChild>
+            </HorizontalFlex>
+          </FlexChild>
+          <FlexChild hidden={!edit || target !== "group"}>
+            <HorizontalFlex justifyContent="flex-start">
+              <FlexChild className={styles.head}>
+                <P>대상 설정</P>
+              </FlexChild>
+
+              <FlexChild className={styles.content}>
+                <Select
+                  zIndex={10080}
+                  classNames={{ header: styles.select }}
+                  id="group"
+                  scrollMarginTop={150}
+                  options={groups
+                    .sort((g1: GroupData, g2: GroupData) => g1.min - g2.min)
+                    .map((group: GroupData) => ({
+                      display: group.name,
+                      value: group.id,
+                    }))}
+                  value={group}
+                  onChange={(value) => setGroup(value as string)}
+                />
+              </FlexChild>
             </HorizontalFlex>
           </FlexChild>
           {edit ? (
