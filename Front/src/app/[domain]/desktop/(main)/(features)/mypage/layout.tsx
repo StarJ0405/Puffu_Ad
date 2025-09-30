@@ -26,7 +26,7 @@ export default async function ({
           <HorizontalFlex alignItems="start" gap={30}>
             {/* 왼쪽 메뉴 */}
             <VerticalFlex gap={20} className={mypage.left_bar}>
-              <Profile />
+              {/* <Profile /> */}
 
               <MypageNavi />
             </VerticalFlex>
