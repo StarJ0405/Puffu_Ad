@@ -523,6 +523,15 @@ class _Requester {
     if (callback) callback(await this.delete(`/users/me/qa/${id}`, data));
     else return await this.delete(`/users/me/qa/${id}`, data);
   }
+  async adminUpdateQA(  //문의 / 어드민 답변작성
+    id: string,
+    data: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.post(`/admin/qa/${id}`, data));
+    else return await this.post(`/admin/qa/${id}`, data);
+  }
+
   // 리뷰
   async createReview(data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.post(`/users/me/reviews`, data));
