@@ -99,13 +99,6 @@ const PhotoReviewDetailModal = NiceModal.create(
     const prodCount = review?.count;
     const showAvg =  prodAvg > 0;
     const showCount = Number(prodCount) > 0;
-
-    console.log(review)
-    console.log(prodAvg)
-    console.log(prodCount)
-    console.log(showAvg)
-    console.log(showCount)
-
     const userName = maskTwoThirds(review.user?.name ?? "익명");
     const date = (review.created_at ?? "").slice(0, 10);
     const DISPLAY = {
