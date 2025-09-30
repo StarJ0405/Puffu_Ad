@@ -30,7 +30,7 @@ export function BoardTitleBox() {
         <h3>포토 사용후기</h3>
       </FlexChild> */}
 
-      <HorizontalFlex className={boardStyle.board_searchBox} marginTop={'unset'}>
+      <HorizontalFlex className={boardStyle.board_searchBox} marginTop={'unset'} hidden>
         <FlexChild className={boardStyle.search_box} >
           <Input
             type={"search"}

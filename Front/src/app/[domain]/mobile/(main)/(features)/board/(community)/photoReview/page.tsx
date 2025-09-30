@@ -27,10 +27,10 @@ import ChoiceGroup from "@/components/choice/ChoiceGroup";
 export default async function PhotoReview() {
   return (
     <>
-      <VerticalFlex className={boardStyle.board_frame}>
+      <VerticalFlex className={boardStyle.board_frame} gap={40}>
         <BoardTitleBox />
 
-        <VerticalFlex className={styles.best_review_box}>
+        <VerticalFlex className={styles.best_review_box} hidden>
           <FlexChild className={styles.title}>
             <P className="SacheonFont">사용후기 베스트</P>
           </FlexChild>
