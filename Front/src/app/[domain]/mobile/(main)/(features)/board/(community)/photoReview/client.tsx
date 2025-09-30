@@ -30,8 +30,12 @@ export function BoardTitleBox() {
         <h3>포토 사용후기</h3>
       </FlexChild> */}
 
-      <HorizontalFlex className={boardStyle.board_searchBox} marginTop={'unset'} hidden>
-        <FlexChild className={boardStyle.search_box} >
+      <HorizontalFlex
+        className={boardStyle.board_searchBox}
+        marginTop={"unset"}
+        hidden
+      >
+        <FlexChild className={boardStyle.search_box}>
           <Input
             type={"search"}
             // value={q}
@@ -44,7 +48,7 @@ export function BoardTitleBox() {
             // }}
             placeHolder={"검색 내용을 입력해 주세요."}
           ></Input>
-          <Button 
+          <Button
             className={boardStyle.searchBtn}
             // onClick={handleSearch}
           >
@@ -62,6 +66,7 @@ type ApiReview = {
   avg?: number;
   count: number;
   content?: string;
+  recommend_count: number;
   created_at?: string;
   star_rate?: number;
   metadata?: {
@@ -184,7 +189,7 @@ export function BestReviewSlider({
   }, [rows]);
 
   if (!loading && ranked.length === 0) {
-    return <NoContent type="리뷰" />
+    return <NoContent type="리뷰" />;
   }
 
   return (
@@ -221,14 +226,16 @@ export function BestReviewSlider({
             {ranked.map((review, i) => {
               // 이미지 없으면 들어가는 값 때문에 이미지 없는 리뷰도 출력되서 이렇게 처리해버림.
               // 문제 되면 지우기
-              const hasGood = review.images?.some(url => url.includes("good"));
+              const hasGood = review.images?.some((url) =>
+                url.includes("good")
+              );
 
               if (hasGood) return null;
               return (
                 <SwiperSlide key={i}>
                   <ReviewImgCard
                     review={review}
-                    width={'100%'}
+                    width={"100%"}
                     height={"auto"}
                     board="photoReviewSlide"
                     slide={true}
@@ -269,6 +276,7 @@ type ReviewEntity = {
   count: number;
   created_at?: string;
   star_rate?: number;
+  recommend_count: number;
   metadata?: {
     source?: string;
     aspects?: { design?: string; finish?: string; maintenance?: string };
@@ -326,11 +334,15 @@ export function GalleryTable() {
     <VerticalFlex>
       <FlexChild>
         {items.length > 0 ? (
-          <MasonryGrid gap={20} breakpoints={{768: 3, 650: 2, 550: 1}} width={'100%'}>
+          <MasonryGrid
+            gap={20}
+            breakpoints={{ 768: 3, 650: 2, 550: 1 }}
+            width={"100%"}
+          >
             {items.map((item, i) => {
               // 이미지 없으면 들어가는 값 때문에 이미지 없는 리뷰도 출력되서 이렇게 처리해버림.
               // 문제 되면 지우기
-              const hasGood = item.images?.some(url => url.includes("good"));
+              const hasGood = item.images?.some((url) => url.includes("good"));
 
               if (hasGood) return null;
 
@@ -338,11 +350,11 @@ export function GalleryTable() {
                 <ReviewImgCard
                   key={item.id ?? i}
                   review={item}
-                  width={'100%'}
-                  height={'auto'}
+                  width={"100%"}
+                  height={"auto"}
                   borderRadius={10}
                 />
-              )
+              );
             })}
           </MasonryGrid>
         ) : (
