@@ -6,28 +6,28 @@ import Span from "@/components/span/Span";
 import clsx from "clsx";
 import { Params } from "next/dist/server/request/params";
 import mypage from "./mypage.module.css";
-import {Profile, MypageNavi, DeliveryInfo} from "./client"
-
+import { Profile, MypageNavi, DeliveryInfo } from "./client";
+import { requester } from "@/shared/Requester";
 
 // import {RecentlyViewTable} from '../recentlyView/client'
 
 export default async function ({ params }: { params: Promise<Params> }) {
   const { id } = await params;
-  
+
+  const initGroups = await requester.getGroups();
 
   return (
     <>
       {/* 오른쪽 내용 */}
       <VerticalFlex className={mypage.mypage_wrap}>
-
         {/* 프로필 */}
-        <Profile />
+        <Profile initGroups={initGroups} />
 
         {/* 배송정보 */}
         <DeliveryInfo />
 
         {/* 하단 메뉴 */}
-        <MypageNavi/>      
+        <MypageNavi />
       </VerticalFlex>
     </>
   );

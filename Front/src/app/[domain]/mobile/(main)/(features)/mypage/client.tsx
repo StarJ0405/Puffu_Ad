@@ -22,15 +22,18 @@ import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import useData from "@/shared/hooks/data/useData";
 
-
-
-
-const editInfoModal = (userData: any, navigate: (path: string) => void) => { // 개인정보 수정
-  let password = '';
+const editInfoModal = (userData: any, navigate: (path: string) => void) => {
+  // 개인정보 수정
+  let password = "";
   NiceModal.show(ConfirmModal, {
     // title: '개인정보 수정',
     message: (
-      <EditINfo userData={userData} onPasswordChange={(p) => { password = p; }} />
+      <EditINfo
+        userData={userData}
+        onPasswordChange={(p) => {
+          password = p;
+        }}
+      />
     ),
     confirmText: "확인",
     withCloseButton: true,
@@ -38,27 +41,43 @@ const editInfoModal = (userData: any, navigate: (path: string) => void) => { // 
       try {
         const res = await requester.checkCurrentPassword({ password });
 
-        if (res.message === 'success') {
-          navigate('/mypage/editInfo');
+        if (res.message === "success") {
+          navigate("/mypage/editInfo");
         } else {
-          alert('비밀번호가 일치하지 않습니다.');
+          alert("비밀번호가 일치하지 않습니다.");
         }
       } catch (error) {
-        console.error('Password check failed:', error);
-        alert('비밀번호 확인 중 오류가 발생했습니다.');
+        console.error("Password check failed:", error);
+        alert("비밀번호 확인 중 오류가 발생했습니다.");
       }
     },
-  })
-}
+  });
+};
 
-
-
-export function Profile() {
-
+export function Profile({ initGroups }: { initGroups: Pageable }) {
   const navigate = useNavigate();
   const { userData } = useAuth(); // 유저정보 받아오기
-
-
+  const { groups } = useData(
+    "groups",
+    {},
+    (condition) => requester.getGroups(condition),
+    {
+      onReprocessing: (data) => data?.content || [],
+      fallbackData: initGroups,
+    }
+  );
+  const [nextGroup, setNexGroup] = useState(
+    groups
+      .sort((g1: GroupData, g2: GroupData) => g1.min - g2.min)
+      .find((f: GroupData) => f.min > (userData?.stored || 0))
+  );
+  useEffect(() => {
+    setNexGroup(
+      groups
+        .sort((g1: GroupData, g2: GroupData) => g1.min - g2.min)
+        .find((f: GroupData) => f.min > (userData?.stored || 0))
+    );
+  }, [groups, userData]);
   return (
     <VerticalFlex className={clsx(styles.profile, styles.box_frame)}>
       <HorizontalFlex gap={20} paddingBottom={10}>
@@ -66,7 +85,10 @@ export function Profile() {
           <HorizontalFlex gap={20}>
             <FlexChild className={styles.thumbnail} width={"auto"}>
               <Image
-                src={userData?.thumbnail || "/resources/icons/mypage/user_no_img.png"}
+                src={
+                  userData?.thumbnail ||
+                  "/resources/icons/mypage/user_no_img.png"
+                }
                 width={60}
               />
             </FlexChild>
@@ -74,9 +96,11 @@ export function Profile() {
               <P>{userData?.name ?? "익명"}</P>
             </FlexChild>
           </HorizontalFlex>
-
         </FlexChild>
-        <FlexChild className={styles.setting_btn} onClick={() => editInfoModal(userData, navigate)}>
+        <FlexChild
+          className={styles.setting_btn}
+          onClick={() => editInfoModal(userData, navigate)}
+        >
           {/* <Image
             src={"/resources/icons/mypage/setting_icon.png"}
             width={14}
@@ -87,7 +111,7 @@ export function Profile() {
       <VerticalFlex className={styles.membership_box}>
         <HorizontalFlex className={styles.title_box}>
           <FlexChild className={styles.level}>
-            <P>중급자</P>
+            <P>{userData?.group?.name}</P>
           </FlexChild>
           <HorizontalFlex
             hidden
@@ -104,19 +128,37 @@ export function Profile() {
               <P>현재 누적금액</P>
             </FlexChild>
             <FlexChild className={styles.amount}>
-              <P>4,560,000</P>
+              <P>{userData?.stored}</P>
               <P>원</P>
             </FlexChild>
           </VerticalFlex>
-          <VerticalFlex className={styles.amount_box}>
-            <FlexChild className={styles.title}>
-              <P>다음 등급까지 필요한 구매금액</P>
-            </FlexChild>
-            <FlexChild className={styles.amount}>
-              <P>44,000</P>
-              <P>원</P>
-            </FlexChild>
-          </VerticalFlex>
+          {nextGroup?.id ? (
+            <VerticalFlex className={styles.amount_box}>
+              <FlexChild className={styles.title}>
+                <P> {nextGroup.name}까지 필요한 구매 금액</P>
+              </FlexChild>
+              <FlexChild className={styles.amount}>
+                <P>{nextGroup.min - (userData?.stored || 0)}</P>
+                <P>원</P>
+              </FlexChild>
+            </VerticalFlex>
+          ) : (
+            <VerticalFlex className={styles.amount_box}>
+              <P className={styles.title}>
+                와우! 고객님, 드디어 저희 쇼핑몰 멤버십의 정상에 등극하셨군요!
+                👑
+                <br />
+                음... 뭐라고 불러드려야 할까요? 고객님이라고 하기엔 너무
+                약하고... 혹시 저희 쇼핑몰 운영자이신가요? 😳 멤버십 레벨이 너무
+                '최고'라서, 솔직히 깜짝 놀랐지 뭐예요!
+                <br />더 이상 올라갈 곳이 없어요! 당신이 바로 저희 쇼핑몰의
+                ✨**베스트(최고)**✨입니다! 👍 이렇게 대단한 활약에 무한한
+                감사와 존경을 표합니다! 짝짝짝! 💖
+                <br />
+                by 리튼 AI
+              </P>
+            </VerticalFlex>
+          )}
         </VerticalFlex>
       </VerticalFlex>
       <VerticalFlex className={styles.point_box}>
@@ -142,7 +184,11 @@ export function Profile() {
       <VerticalFlex className={styles.coupon_box}>
         <HorizontalFlex className={styles.title_box}>
           <FlexChild>
-            <Image src="resources/icons/mypage/coupon_icon.png" width={30} paddingRight={6}/>
+            <Image
+              src="resources/icons/mypage/coupon_icon.png"
+              width={30}
+              paddingRight={6}
+            />
             <P>보유쿠폰</P>
           </FlexChild>
           <HorizontalFlex
@@ -155,7 +201,7 @@ export function Profile() {
           </HorizontalFlex>
         </HorizontalFlex>
         <FlexChild className={styles.coupon}>
-          <P>0</P>
+          <P>{userData?.coupon}</P>
           <P>개</P>
         </FlexChild>
       </VerticalFlex>
@@ -169,7 +215,7 @@ export function Profile() {
         </FlexChild>
       </FlexChild> */}
     </VerticalFlex>
-  )
+  );
 }
 
 export function DeliveryInfo() {
@@ -193,7 +239,10 @@ export function DeliveryInfo() {
         };
         res.content.forEach((item: { status: string; count: string }) => {
           if (item.status in counts) {
-            counts[item.status as keyof typeof counts] = parseInt(item.count, 10);
+            counts[item.status as keyof typeof counts] = parseInt(
+              item.count,
+              10
+            );
           }
         });
         setStatusCounts(counts);
@@ -230,25 +279,30 @@ export function DeliveryInfo() {
         </VerticalFlex>
       </FlexChild>
 
-      <FlexChild className={styles.link_btn} onClick={() => navigate("/mypage/myOrders")}>
+      <FlexChild
+        className={styles.link_btn}
+        onClick={() => navigate("/mypage/myOrders")}
+      >
         <Button>내 주문 확인</Button>
       </FlexChild>
     </VerticalFlex>
-  )
+  );
 }
-
 
 export function MypageNavi() {
   const [, , removeCookie] = useCookies([Cookies.JWT]);
   const { userData } = useAuth();
   const navigate = useNavigate();
 
-  const logoutModal = () => { // 로그아웃
+  const logoutModal = () => {
+    // 로그아웃
 
     NiceModal.show(ConfirmModal, {
       message: (
         <FlexChild justifyContent="center" marginBottom={30}>
-          <P color="#333" fontSize={20} weight={600}>로그아웃 하시겠습니까?</P>
+          <P color="#333" fontSize={20} weight={600}>
+            로그아웃 하시겠습니까?
+          </P>
         </FlexChild>
       ),
       confirmText: "확인",
@@ -257,8 +311,8 @@ export function MypageNavi() {
       onConfirm: () => {
         removeCookie(Cookies.JWT, getCookieOption());
       },
-    })
-  }
+    });
+  };
 
   const myshopMenu = [
     { name: "내 주문 내역", link: "/mypage/myOrders" },
@@ -298,17 +352,16 @@ export function MypageNavi() {
 
         <ul className={styles.inner_menu}>
           <li>
-            <Link className={styles.inner_btn} href={"/mypage/editInfo"}
+            <Link
+              className={styles.inner_btn}
+              href={"/mypage/editInfo"}
               onClick={(e) => {
                 e.preventDefault();
                 editInfoModal(userData, navigate);
               }}
             >
               <Span>개인정보 수정</Span>
-              <Image
-                src={"/resources/icons/arrow/slide_arrow.png"}
-                width={8}
-              />
+              <Image src={"/resources/icons/arrow/slide_arrow.png"} width={8} />
             </Link>
           </li>
 
@@ -326,10 +379,7 @@ export function MypageNavi() {
           <li>
             <FlexChild className={styles.inner_btn} onClick={logoutModal}>
               <Span>로그아웃</Span>
-              <Image
-                src={"/resources/icons/arrow/slide_arrow.png"}
-                width={8}
-              />
+              <Image src={"/resources/icons/arrow/slide_arrow.png"} width={8} />
             </FlexChild>
           </li>
         </ul>
@@ -338,26 +388,44 @@ export function MypageNavi() {
   );
 }
 
-
 // 개인정보 수정 모달 내용
-export function EditINfo({ userData, onPasswordChange }: { userData: any, onPasswordChange: (password: string) => void }) {
+export function EditINfo({
+  userData,
+  onPasswordChange,
+}: {
+  userData: any;
+  onPasswordChange: (password: string) => void;
+}) {
   return (
     <VerticalFlex className="modal_edit_info" gap={50}>
       <FlexChild className="title" justifyContent="center">
-        <P size={25} weight={600}>개인정보 수정</P>
+        <P size={25} weight={600}>
+          개인정보 수정
+        </P>
       </FlexChild>
 
       <VerticalFlex alignItems="start" gap={30}>
-        <VerticalFlex className={'input_box'} alignItems="start" gap={10}>
-          <P size={16} color="#333" weight={600}>아이디</P>
-          <P size={16} color="#797979">{userData?.username ?? "mynameistony"}</P>
+        <VerticalFlex className={"input_box"} alignItems="start" gap={10}>
+          <P size={16} color="#333" weight={600}>
+            아이디
+          </P>
+          <P size={16} color="#797979">
+            {userData?.username ?? "mynameistony"}
+          </P>
         </VerticalFlex>
 
-        <VerticalFlex className={'input_box'} alignItems="start" gap={10}>
-          <P size={16} color="#333" weight={600}>비밀번호</P>
-          <Input type="password" width={'100%'} placeHolder="비밀번호를 입력하세요." onChange={(value) => onPasswordChange(value as string)} />
+        <VerticalFlex className={"input_box"} alignItems="start" gap={10}>
+          <P size={16} color="#333" weight={600}>
+            비밀번호
+          </P>
+          <Input
+            type="password"
+            width={"100%"}
+            placeHolder="비밀번호를 입력하세요."
+            onChange={(value) => onPasswordChange(value as string)}
+          />
         </VerticalFlex>
       </VerticalFlex>
     </VerticalFlex>
-  )
+  );
 }

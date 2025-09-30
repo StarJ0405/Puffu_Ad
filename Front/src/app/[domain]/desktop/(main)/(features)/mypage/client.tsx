@@ -9,25 +9,32 @@ import clsx from "clsx";
 import Link from "next/link";
 import styles from "./mypage.module.css";
 
+import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import Input from "@/components/inputs/Input";
 import ConfirmModal from "@/modals/confirm/ConfirmModal";
-import NiceModal from "@ebay/nice-modal-react";
-import { useState, useEffect } from "react";
-import { useCookies } from "react-cookie";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
+import useData from "@/shared/hooks/data/useData";
+import useNavigate from "@/shared/hooks/useNavigate";
+import { requester } from "@/shared/Requester";
 import { Cookies } from "@/shared/utils/Data";
 import { getCookieOption } from "@/shared/utils/Functions";
-import { requester } from "@/shared/Requester";
-import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
-import useNavigate from "@/shared/hooks/useNavigate";
+import NiceModal from "@ebay/nice-modal-react";
 import { usePathname } from "next/navigation";
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
+import { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
 
-const editInfoModal = (userData: any, navigate: (path: string) => void) => { // 개인정보 수정
-  let password = '';
+const editInfoModal = (userData: any, navigate: (path: string) => void) => {
+  // 개인정보 수정
+  let password = "";
   NiceModal.show(ConfirmModal, {
     // title: '개인정보 수정',
     message: (
-      <EditINfo userData={userData} onPasswordChange={(p) => { password = p; }} />
+      <EditINfo
+        userData={userData}
+        onPasswordChange={(p) => {
+          password = p;
+        }}
+      />
     ),
     confirmText: "확인",
     withCloseButton: true,
@@ -35,24 +42,43 @@ const editInfoModal = (userData: any, navigate: (path: string) => void) => { // 
       try {
         const res = await requester.checkCurrentPassword({ password });
 
-        if (res.message === 'success') {
-          navigate('/mypage/editInfo');
+        if (res.message === "success") {
+          navigate("/mypage/editInfo");
         } else {
-          alert('비밀번호가 일치하지 않습니다.');
+          alert("비밀번호가 일치하지 않습니다.");
         }
       } catch (error) {
-        console.error('Password check failed:', error);
-        alert('비밀번호 확인 중 오류가 발생했습니다.');
+        console.error("Password check failed:", error);
+        alert("비밀번호 확인 중 오류가 발생했습니다.");
       }
     },
-  })
-}
+  });
+};
 
-export function Profile() {
-
+export function Profile({ initGroups }: { initGroups: Pageable }) {
   const navigate = useNavigate();
   const { userData } = useAuth(); // 유저정보 받아오기
-
+  const { groups } = useData(
+    "groups",
+    {},
+    (condition) => requester.getGroups(condition),
+    {
+      onReprocessing: (data) => data?.content || [],
+      fallbackData: initGroups,
+    }
+  );
+  const [nextGroup, setNexGroup] = useState(
+    groups
+      .sort((g1: GroupData, g2: GroupData) => g1.min - g2.min)
+      .find((f: GroupData) => f.min > (userData?.stored || 0))
+  );
+  useEffect(() => {
+    setNexGroup(
+      groups
+        .sort((g1: GroupData, g2: GroupData) => g1.min - g2.min)
+        .find((f: GroupData) => f.min > (userData?.stored || 0))
+    );
+  }, [groups, userData]);
   return (
     <VerticalFlex className={clsx(styles.profile, styles.box_frame)}>
       <HorizontalFlex padding={"25px 45px"} gap={45}>
@@ -61,7 +87,10 @@ export function Profile() {
             <FlexChild width={"auto"} position="relative">
               <FlexChild className={styles.thumbnail} width={"auto"}>
                 <Image
-                  src={userData?.thumbnail || "/resources/icons/mypage/user_no_img.png"}
+                  src={
+                    userData?.thumbnail ||
+                    "/resources/icons/mypage/user_no_img.png"
+                  }
                   width={80}
                 />
               </FlexChild>
@@ -69,16 +98,22 @@ export function Profile() {
             <FlexChild width={"auto"} className={styles.profile_name}>
               <P>{userData?.name ?? "익명"}</P>
 
-              <FlexChild width={"auto"} cursor="pointer" onClick={() => editInfoModal(userData, navigate)}>
+              <FlexChild
+                width={"auto"}
+                cursor="pointer"
+                onClick={() => editInfoModal(userData, navigate)}
+              >
                 <Image
                   src={"/resources/icons/mypage/setting_icon.png"}
                   width={16}
                 />
               </FlexChild>
             </FlexChild>
-            <P className={styles.membership_level}>중급자 등급</P>
+            <P className={styles.membership_level}>{userData?.group?.name}</P>
             <FlexChild className={styles.link_btn}>
-              <Button onClick={() => navigate('/mypage/wishList')}>관심 리스트</Button>
+              <Button onClick={() => navigate("/mypage/wishList")}>
+                관심 리스트
+              </Button>
             </FlexChild>
           </VerticalFlex>
         </FlexChild>
@@ -93,25 +128,51 @@ export function Profile() {
               <VerticalFlex className={styles.amount_box}>
                 <P className={styles.title}>현재 누적 금액</P>
                 <FlexChild className={styles.amount}>
-                  <P>4,560,000</P><P>원</P>
+                  <P>{userData?.stored}</P>
+                  <P>원</P>
                 </FlexChild>
               </VerticalFlex>
-              <VerticalFlex className={styles.amount_box}>
-                <P className={styles.title}>다음 등급까지 필요한 구매 금액</P>
-                <FlexChild className={styles.amount}>
-                  <P>44,000</P><P>원</P>
-                </FlexChild>
-              </VerticalFlex>
+              {nextGroup?.id ? (
+                <VerticalFlex className={styles.amount_box}>
+                  <P className={styles.title}>
+                    {nextGroup.name}까지 필요한 구매 금액
+                  </P>
+                  <FlexChild className={styles.amount}>
+                    <P>{nextGroup.min - (userData?.stored || 0)}</P>
+                    <P>원</P>
+                  </FlexChild>
+                </VerticalFlex>
+              ) : (
+                <VerticalFlex className={styles.amount_box}>
+                  <P className={styles.title}>
+                    와우! 고객님, 드디어 저희 쇼핑몰 멤버십의 정상에
+                    등극하셨군요! 👑
+                    <br />
+                    음... 뭐라고 불러드려야 할까요? 고객님이라고 하기엔 너무
+                    약하고... 혹시 저희 쇼핑몰 운영자이신가요? 😳 멤버십 레벨이
+                    너무 '최고'라서, 솔직히 깜짝 놀랐지 뭐예요!
+                    <br />더 이상 올라갈 곳이 없어요! 당신이 바로 저희 쇼핑몰의
+                    ✨**베스트(최고)**✨입니다! 👍 이렇게 대단한 활약에 무한한
+                    감사와 존경을 표합니다! 짝짝짝! 💖
+                    <br />
+                    by 리튼 AI
+                  </P>
+                </VerticalFlex>
+              )}
             </VerticalFlex>
 
             <VerticalFlex>
               <VerticalFlex className={styles.coupon_box}>
                 <FlexChild>
-                  <Image src="resources/icons/mypage/coupon_icon.png" width={28} paddingRight={7} />
+                  <Image
+                    src="resources/icons/mypage/coupon_icon.png"
+                    width={28}
+                    paddingRight={7}
+                  />
                   <P>보유쿠폰</P>
                 </FlexChild>
                 <FlexChild className={styles.coupon}>
-                  <P>0</P>
+                  <P>{userData?.coupon}</P>
                   <P>개</P>
                 </FlexChild>
               </VerticalFlex>
@@ -126,15 +187,11 @@ export function Profile() {
                 </FlexChild>
               </VerticalFlex>
             </VerticalFlex>
-
           </HorizontalFlex>
         </FlexChild>
       </HorizontalFlex>
       <FlexChild hidden className={styles.membership_btn}>
-        <P
-          onClick={() => navigate('/mypage')}
-          cursor="pointer"
-        >
+        <P onClick={() => navigate("/mypage")} cursor="pointer">
           등급별 혜택 확인하기
         </P>
       </FlexChild>
@@ -188,16 +245,12 @@ export function MypageNavi() {
 
         <ul className={styles.inner_menu}>
           {myshopMenu.map((item, i) => {
-
             const active = pathname === item.link;
 
             return (
               <li key={i}>
-                <Link className={
-                  clsx(
-                    styles.inner_btn,
-                    (active && styles.active)
-                  )}
+                <Link
+                  className={clsx(styles.inner_btn, active && styles.active)}
                   href={item.link}
                 >
                   <Span>{item.name}</Span>
@@ -207,7 +260,7 @@ export function MypageNavi() {
                   />
                 </Link>
               </li>
-            )
+            );
           })}
         </ul>
       </VerticalFlex>
@@ -231,18 +284,12 @@ export function MypageNavi() {
           </li>
 
           {myInfoMenu.map((item, i) => {
-
             const active = pathname === item.link;
 
             return (
               <li key={i}>
                 <Link
-                  className={
-                    clsx(
-                      styles.inner_btn,
-                      (active && styles.active)
-                    )
-                  }
+                  className={clsx(styles.inner_btn, active && styles.active)}
                   href={item.link}
                 >
                   <Span>{item.name}</Span>
@@ -252,7 +299,7 @@ export function MypageNavi() {
                   />
                 </Link>
               </li>
-            )
+            );
           })}
           <li>
             <Link className={styles.inner_btn} href={"/"} onClick={logoutModal}>
@@ -266,7 +313,13 @@ export function MypageNavi() {
   );
 }
 
-export function EditINfo({ userData, onPasswordChange }: { userData: any, onPasswordChange: (password: string) => void }) {
+export function EditINfo({
+  userData,
+  onPasswordChange,
+}: {
+  userData: any;
+  onPasswordChange: (password: string) => void;
+}) {
   return (
     <VerticalFlex className="modal_edit_info" gap={50}>
       <FlexChild className="title" justifyContent="center">
@@ -289,16 +342,19 @@ export function EditINfo({ userData, onPasswordChange }: { userData: any, onPass
           <P size={16} color="#333" weight={600}>
             비밀번호
           </P>
-          <Input type="password" width={'100%'} placeHolder="비밀번호를 입력하세요." onChange={(value) => onPasswordChange(value as string)} />
+          <Input
+            type="password"
+            width={"100%"}
+            placeHolder="비밀번호를 입력하세요."
+            onChange={(value) => onPasswordChange(value as string)}
+          />
         </VerticalFlex>
       </VerticalFlex>
     </VerticalFlex>
   );
 }
 
-
 export function DeliveryInfo() {
-
   const navigate = useNavigate();
   const [statusCounts, setStatusCounts] = useState({
     pending: 0,
@@ -319,7 +375,10 @@ export function DeliveryInfo() {
         };
         res.content.forEach((item: { status: string; count: string }) => {
           if (item.status in counts) {
-            counts[item.status as keyof typeof counts] = parseInt(item.count, 10);
+            counts[item.status as keyof typeof counts] = parseInt(
+              item.count,
+              10
+            );
           }
         });
         setStatusCounts(counts);
@@ -356,9 +415,12 @@ export function DeliveryInfo() {
         </VerticalFlex>
       </FlexChild>
 
-      <FlexChild className={styles.link_btn} onClick={() => navigate('/mypage/myOrders')}>
+      <FlexChild
+        className={styles.link_btn}
+        onClick={() => navigate("/mypage/myOrders")}
+      >
         <Button>내 주문 확인</Button>
       </FlexChild>
     </VerticalFlex>
-  )
+  );
 }

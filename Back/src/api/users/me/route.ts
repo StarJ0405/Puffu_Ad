@@ -18,7 +18,8 @@ export const GET: ApiHandler = async (req, res) => {
         );
       }
     }
-
+    const service = container.resolve(UserService);
+    user.stored = await service.getStorePayment(user.id);
     return res.json({
       user,
       access_token,

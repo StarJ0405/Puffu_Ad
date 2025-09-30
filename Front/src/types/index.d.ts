@@ -95,10 +95,13 @@ interface UserData extends BaseEntity, UserDataFrame {
   adult: boolean;
   role: "member" | "developer" | "admin" | "member";
   point: number;
+  coupon: number;
   accounts?: AccountLinkData[];
   adult_mode: boolean;
   group_id?: string;
   group?: GroupData;
+  coupons?: CouponData[];
+  stored: number;
 }
 interface StoreDataFrame {
   name: string;

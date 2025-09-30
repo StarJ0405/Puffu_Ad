@@ -9,6 +9,7 @@ export function regist(DEV: boolean) {
   // 스케줄링된 작업 시작
   schedule(
     "0 0 0 1 * *",
+    // "*/10 * * * * *",
     async () => {
       const userService = container.resolve(UserService);
       const service = container.resolve(CouponService);
