@@ -311,6 +311,7 @@ const CouponModal = NiceModal.create(
               {edit ? (
                 date === "fixed" ? (
                   <DatePicker
+                    zIndex={10080}
                     showTimePicker
                     selectionMode="range"
                     defaultSelectedRange={dates}

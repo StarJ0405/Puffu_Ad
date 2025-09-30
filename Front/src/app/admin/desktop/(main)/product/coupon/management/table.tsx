@@ -187,7 +187,7 @@ export default function ({
             NiceModal.show("confirm", {
               confirmText: "삭제",
               cancelText: "취소",
-              message: `${row.title} 을 삭제하시겠습니까?`,
+              message: `${row.name} 을 삭제하시겠습니까?`,
               onConfirm: async () => {
                 await adminRequester.deleteCoupon(row.id);
                 table.current.research();
