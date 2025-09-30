@@ -30,7 +30,7 @@ export default async function PhotoReview() {
       <VerticalFlex className={boardStyle.board_frame}>
         <BoardTitleBox />
 
-        <VerticalFlex className={styles.best_review_box}>
+        <VerticalFlex className={styles.best_review_box} hidden>
           <FlexChild className={styles.title}>
             <P className="SacheonFont">사용후기 베스트</P>
           </FlexChild>

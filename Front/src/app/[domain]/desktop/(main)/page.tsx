@@ -101,7 +101,7 @@ export default async function () {
           </VerticalFlex>
         </FlexChild>
         <SubBanner1 />
-        <MiniBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
+        
         <FlexChild>
           <VerticalFlex>
             <HorizontalFlex
@@ -127,6 +127,8 @@ export default async function () {
             </FlexChild>
           </VerticalFlex>
         </FlexChild>
+
+        <MiniBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
       </VerticalFlex>
     </section>
   );

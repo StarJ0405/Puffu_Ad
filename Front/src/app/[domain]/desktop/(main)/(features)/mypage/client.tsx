@@ -111,7 +111,7 @@ export function Profile() {
                   <P>보유쿠폰</P>
                 </FlexChild>
                 <FlexChild className={styles.coupon}>
-                  <P>3</P>
+                  <P>0</P>
                   <P>개</P>
                 </FlexChild>
               </VerticalFlex>
@@ -121,7 +121,7 @@ export function Profile() {
                   <P className={styles.currency}>P</P>
                 </FlexChild>
                 <FlexChild className={styles.point}>
-                  <P paddingRight={4}>10,000,000</P>
+                  <P paddingRight={4}>{userData?.point}</P>
                   <P className={styles.currency}>P</P>
                 </FlexChild>
               </VerticalFlex>
@@ -130,7 +130,7 @@ export function Profile() {
           </HorizontalFlex>
         </FlexChild>
       </HorizontalFlex>
-      <FlexChild className={styles.membership_btn}>
+      <FlexChild hidden className={styles.membership_btn}>
         <P
           onClick={() => navigate('/mypage')}
           cursor="pointer"

@@ -25,12 +25,12 @@ import { Swiper as SwiperType } from "swiper";
 export function BoardTitleBox() {
   return (
     <HorizontalFlex className={boardStyle.board_titleBox}>
-      <FlexChild>
+      <FlexChild justifyContent="center">
         {/* 여기 현재 path 주소에 맞게 이름 바뀌게 해야 함. */}
         <h3>포토 사용후기</h3>
       </FlexChild>
 
-      <FlexChild gap={10} className={boardStyle.search_box}>
+      <FlexChild gap={10} className={boardStyle.search_box} hidden>
         <FlexChild width={"auto"}>
           <Select
             classNames={{

@@ -579,7 +579,7 @@ export function ProductSlider({
           </Swiper>
         </FlexChild>
       ) : (
-        <NoContent type="상품" />
+        <NoContent type="리뷰" />
       )}
     </>
   );
