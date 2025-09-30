@@ -34,6 +34,7 @@ export default function ReviewImgCard({
   width,
   height,
   board,
+  borderRadius= 0,
   slide = false,
   onClick,
 }: {
@@ -41,8 +42,10 @@ export default function ReviewImgCard({
   lineClamp?: number;
   width?: number | string;
   height?: number | string;
-  onClick?: (review: ReviewEntity) => void;
   board?: string;
+  borderRadius?: number;
+  onClick?: (review: ReviewEntity) => void;
+
   slide?: boolean;
 }) {
   const boardValue = board ?? "normal";
@@ -85,7 +88,8 @@ export default function ReviewImgCard({
         <div 
           className={styles.img} 
           style={{
-            backgroundImage: `url(${adultOk ? thumbnail : "/resources/images/19_only.png"})`
+            backgroundImage: `url(${adultOk ? thumbnail : "/resources/images/19_only.png"})`,
+            borderRadius: borderRadius, 
         }}>
         </div>
       </FlexChild>

@@ -1,27 +1,22 @@
 "use client";
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
-import P from "@/components/P/P";
-import ModalBase from "@/modals/ModalBase";
-import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import Button from "@/components/buttons/Button";
 import FlexChild from "@/components/flex/FlexChild";
+import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import styles from "./photoReviewDetailModal.module.css";
-import Select from "@/components/select/Select";
-import Span from "@/components/span/Span";
 import Image from "@/components/Image/Image";
-import clsx from "clsx";
-import InputTextArea from "@/components/inputs/InputTextArea";
-import { requester } from "@/shared/Requester";
-import { useCallback, useState, useRef, useEffect } from "react";
-import InputImage, { InputImageHandle } from "@/components/inputs/InputImage";
-import { toast, maskTwoThirds } from "@/shared/utils/Functions";
-import useNavigate from "@/shared/hooks/useNavigate";
-import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
+import P from "@/components/P/P";
+import Span from "@/components/span/Span";
 import StarRate from "@/components/star/StarRate";
+import ModalBase from "@/modals/ModalBase";
+import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
+import { maskTwoThirds } from "@/shared/utils/Functions";
+import NiceModal, { useModal } from "@ebay/nice-modal-react";
+import clsx from "clsx";
+import { useRef } from "react";
 import { Swiper as SwiperType } from "swiper";
-import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import styles from "./photoReviewDetailModal.module.css";
 
 type ReviewEntity = {
   id: string;
@@ -143,7 +138,7 @@ const PhotoReviewDetailModal = NiceModal.create(
       <ModalBase
         withHeader
         headerStyle={{
-          backgroundColor: !isMobile ? "#221f22" : "rgba(0,0,0,0.5)",
+          backgroundColor: "#221f22",
           borderBottom: "none",
           color: "#fff",
         }}
@@ -153,12 +148,12 @@ const PhotoReviewDetailModal = NiceModal.create(
         maxWidth={!isMobile ? 700 : "auto"}
         height={!isMobile ? height : "100dvh"}
         maxHeight={"auto"}
-        title={!isMobile ? "" : ""}
+        title={!isMobile ? "" : "사용 후기"}
         onClose={() => {
           onCancel?.();
           modal.remove();
         }}
-        backgroundColor={!isMobile ? "#221f22" : "rgba(0,0,0,0.5)"}
+        backgroundColor={"#221f22"}
         clickOutsideToClose
       >
         <VerticalFlex
@@ -167,8 +162,12 @@ const PhotoReviewDetailModal = NiceModal.create(
           <HorizontalFlex className={styles.itemBox}>
             {/* 상품 정보: 존재 시 표시 */}
             {(productTitle || brandName || price || discountPrice) && (
-              <FlexChild className={styles.product_info}>
-                <Image src={productThumb} width={120} height={"auto"} />
+              <FlexChild className={styles.product_info} alignItems="start">
+                <Image
+                  src={productThumb}
+                  width={!isMobile ? 120 : 60}
+                  height={"auto"}
+                />
                 <VerticalFlex className={styles.txt_box}>
                   {brandName && (
                     <Span className={styles.brand}>{brandName}</Span>
@@ -184,7 +183,7 @@ const PhotoReviewDetailModal = NiceModal.create(
                     </P>
                   )}
                   {(price || discountPrice) && (
-                    <FlexChild>
+                    <FlexChild gap={5}>
                       {price && (
                         <Span
                           className={styles.price}
@@ -208,7 +207,7 @@ const PhotoReviewDetailModal = NiceModal.create(
                     </FlexChild>
                   )}
                   {(showAvg || showCount) && (
-                    <FlexChild>
+                    <FlexChild gap={7}>
                       {showAvg && (
                         <StarRate width={80} score={prodAvg!} readOnly />
                       )}
@@ -222,6 +221,17 @@ const PhotoReviewDetailModal = NiceModal.create(
                 </VerticalFlex>
               </FlexChild>
             )}
+            {
+              // 모바일일때만 --------------------------------------------------------------------------------
+              isMobile && (
+                <UserData
+                  starRate={review.star_rate}
+                  starSize={[130, 23]}
+                  userName={userName}
+                  date={date}
+                />
+              )
+            }
             <VerticalFlex className={styles.feedBack}>
               <FlexChild className={styles.item}>
                 <P className={styles.label}>외형/디자인</P>
@@ -276,30 +286,36 @@ const PhotoReviewDetailModal = NiceModal.create(
                 </SwiperSlide>
               ))}
             </Swiper>
-            <div className={clsx(styles.naviBtn, styles.prevBtn)}>
-              <Image
-                src={"/resources/icons/arrow/slide_arrow.png"}
-                width={10}
-              />
-            </div>
-            <div className={clsx(styles.naviBtn, styles.nextBtn)}>
-              <Image
-                src={"/resources/icons/arrow/slide_arrow.png"}
-                width={10}
-              />
-            </div>
+            {
+              imgs.length > 1 && (
+                <>
+                  <div className={clsx(styles.naviBtn, styles.prevBtn)}>
+                    <Image src={"/resources/icons/arrow/slide_arrow.png"} />
+                  </div>
+                  <div className={clsx(styles.naviBtn, styles.nextBtn)}>
+                    <Image src={"/resources/icons/arrow/slide_arrow.png"} />
+                  </div>
+                </>
+              )
+            }
           </FlexChild>
 
           {/* 사용자·리뷰 본문 */}
-          <VerticalFlex className={styles.user_data}>
-            <FlexChild className={styles.user_data}>
-              <StarRate width={130} score={review.star_rate ?? 0} readOnly />
-              <P className={styles.name}>{userName}</P>
-              <P className={styles.date}>{date}</P>
-            </FlexChild>
+          <VerticalFlex className={styles.user_data_wrap}>
+            {
+              // pc일때만 --------------------------------------------------------------------------------
+              !isMobile && (
+                <UserData
+                  starRate={review.star_rate}
+                  starSize={[130, 23]}
+                  userName={userName}
+                  date={date}
+                />
+              )
+            }
 
             {review.content && (
-              <FlexChild className={styles.content}>
+              <FlexChild className={styles.content} alignItems="start">
                 <P>{review.content}</P>
               </FlexChild>
             )}
@@ -321,5 +337,31 @@ const PhotoReviewDetailModal = NiceModal.create(
     );
   }
 );
+
+function UserData({
+  starRate,
+  userName,
+  date,
+  starSize,
+}: {
+  starRate: number | undefined;
+  userName: string;
+  date: string;
+  starSize: [number, number];
+}) {
+  return (
+    <FlexChild className={styles.user_data}>
+      <StarRate
+        width={starSize[0]}
+        score={starRate ?? 0}
+        starWidth={starSize[1]}
+        starHeight={starSize[1]}
+        readOnly
+      />
+      <P className={styles.name}>{userName}</P>
+      <P className={styles.date}>{date}</P>
+    </FlexChild>
+  );
+}
 
 export default PhotoReviewDetailModal;
