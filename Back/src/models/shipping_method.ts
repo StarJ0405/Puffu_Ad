@@ -6,10 +6,12 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
 } from "typeorm";
 import { generateEntityId } from "utils/functions";
 import { Brand } from "./brand";
+import { Coupon } from "./coupon";
 import { Order } from "./order";
 import { Store } from "./store";
 
@@ -49,6 +51,9 @@ export class ShippingMethod extends BaseEntity {
   @OneToOne(() => Order, (order) => order.shipping_method)
   @JoinColumn({ name: "order_id", referencedColumnName: "id" })
   order?: Order;
+
+  @OneToMany(() => Coupon, (coupon) => coupon.shipping_method)
+  coupons?: Coupon[];
 
   @Column({ type: "character varying", nullable: false })
   name?: string;

@@ -489,3 +489,29 @@ interface RefundItemData extends BaseEntity {
   memo?: string;
   metadata?: Record<string, unknown> | null;
 }
+
+type CouponType = "item" | "order" | "shipping";
+type CalcType = "percent" | "fix";
+type DateType = "fixed" | "range" | "day" | "week" | "month" | "year";
+type DateUnit = "year" | "month" | "date" | "hours";
+interface CouponDataFrame {
+  name: string;
+  type: CouponType;
+  store_id?: string;
+  value: number;
+  calc: CalcType;
+  starts_at?: Date | null | string;
+  ends_at?: Date | null | string;
+  date: DateType;
+  date_unit?: DateUnit | null;
+  range?: number;
+}
+
+interface CouponData extends BaseEntity, CouponDataFrame {
+  item_id?: string;
+  item?: LineItemData;
+  order_id?: string;
+  order?: OrderData;
+  shipping_method_id?: string;
+  shipping_method?: ShippingMethodData;
+}

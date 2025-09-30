@@ -99,7 +99,7 @@ export function ProductCard({
               }.png`}
               width={20}
             />
-            <Span>{product.wishlists?.length || 0}</Span>
+            <Span>{product.wishes || product.wishlists?.length || 0}</Span>
           </FlexChild>
         )}
       </FlexChild>
@@ -182,7 +182,7 @@ export function ProductCard({
                   }.png`}
                   width={23}
                 />
-                <Span>{product.wishlists?.length || 0}</Span>
+                <Span>{product.wishes || product.wishlists?.length || 0}</Span>
               </FlexChild>
             )}
             {/* <Span fontSize={14} weight={600}>

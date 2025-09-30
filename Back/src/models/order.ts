@@ -16,6 +16,7 @@ import { ShippingMethod } from "./shipping_method";
 import { Store } from "./store";
 import { User } from "./user";
 import { Refund } from "./refund";
+import { Coupon } from "./coupon";
 
 export enum OrderStatus {
   AWAITING = "awaiting",
@@ -123,6 +124,9 @@ export class Order extends BaseEntity {
 
   @OneToMany(() => Refund, (refund) => refund.order)
   refunds?: Refund[];
+
+  @OneToMany(() => Coupon, (coupon) => coupon.order)
+  coupons?: Coupon[];
 
   @BeforeInsert()
   protected async BeforeInsert(): Promise<void> {

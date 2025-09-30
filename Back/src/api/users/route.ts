@@ -1,4 +1,5 @@
 import { UserRole } from "models/user";
+import { GroupService } from "services/group";
 import { UserService } from "services/user";
 import { container } from "tsyringe";
 import { generateToken } from "utils/functions";
@@ -18,6 +19,8 @@ export const POST: ApiHandler = async (req, res) => {
     metadata,
     role: UserRole.MEMBER,
   });
+  const groupService = container.resolve(GroupService);
+  await groupService.updateUserGroup(user.id);
 
   return res.json({
     access_token: generateToken(
