@@ -582,29 +582,29 @@ class _Requester {
     if (callback) callback(await this.post(path, data));
     else return await this.post(path, data);
   }
-  async getRecommend(
-    // 단건 조회: 해당 리뷰에 내가 추천했는지 확인
-    review_id: string,
+
+  async getRecommend(// 단건 조회: 해당 리뷰에 내가 추천했는지 확인
+    id: string,
     params?: any,
     callback?: Function
   ): Promise<any> {
-    const path = `/users/me/recommend/${review_id}`;
+    const path = `/users/me/recommend/${id}`;
     if (callback) callback(await this.get(path, params));
     else return await this.get(path, params);
   }
-  async getRecommends(params?: any, callback?: Function): Promise<any> {
-    // 목록 조회: 내가 추천한 전체 목록(페이지네이션/필터 옵션 포함)
+
+  async getRecommends(params?: any, callback?: Function): Promise<any> {  // 목록 조회: 내가 추천한 전체 목록
     const path = `/users/me/recommend`;
     if (callback) callback(await this.get(path, params));
     else return await this.get(path, params);
   }
-  async deleteRecommend(
-    // 취소: 해당 리뷰 추천 해제
-    review_id: string,
+
+  async deleteRecommend(// 취소
+    id: string,
     params?: any,
     callback?: Function
   ): Promise<any> {
-    const path = `/users/me/recommend/${review_id}`;
+    const path = `/users/me/recommend/${id}`;
     if (callback) callback(await this.delete(path, params));
     else return await this.delete(path, params);
   }
