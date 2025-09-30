@@ -1,34 +1,26 @@
-import Button from "@/components/buttons/Button";
-import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import P from "@/components/P/P";
-import Span from "@/components/span/Span";
 import clsx from "clsx";
 import { Params } from "next/dist/server/request/params";
 import styles from "./mypage.module.css";
 
-import {DeliveryInfo} from "./client"
-import {Profile} from "./client"
+import { DeliveryInfo, Profile } from "./client";
 
 // 불러온 내용
-import { MyOrdersTable } from "./myOrders/client";
+import { requester } from "@/shared/Requester";
 import { RecentlyViewTable } from "./recentlyView/client";
-import { ReviewList } from "./review/client";
-
 
 // import {RecentlyViewTable} from '../recentlyView/client'
 
 export default async function ({ params }: { params: Promise<Params> }) {
   const { id } = await params;
-  
+  const initGroups = await requester.getGroups();
 
   return (
     <>
       {/* 오른쪽 내용 */}
       <VerticalFlex className={styles.right_bar}>
-
         {/* 프로필 및 멤버쉽 */}
-        <Profile />
+        <Profile initGroups={initGroups} />
 
         {/* 배송정보 */}
         <DeliveryInfo />
@@ -48,7 +40,6 @@ export default async function ({ params }: { params: Promise<Params> }) {
 
           <ReviewList listCount={3} />
         </VerticalFlex> */}
-
 
         <VerticalFlex className={clsx(styles.box_frame, styles.delivery_box)}>
           <RecentlyViewTable />

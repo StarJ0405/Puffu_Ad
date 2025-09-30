@@ -1,6 +1,7 @@
 import { Group } from "models/group";
 import { GroupService } from "services/group";
 import { container } from "tsyringe";
+import { IsNull } from "typeorm";
 
 export const POST: ApiHandler = async (req, res) => {
   const {
@@ -45,6 +46,9 @@ export const GET: ApiHandler = async (req, res) => {
     select,
     ...where
   } = req.parsedQuery;
+  if (where?.coupons?.user_id === null) {
+    where.coupons.user_id = IsNull();
+  }
   const service: GroupService = container.resolve(GroupService);
   if (pageSize) {
     const page = await service.getPageable(

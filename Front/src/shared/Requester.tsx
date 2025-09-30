@@ -572,8 +572,9 @@ class _Requester {
     else return await this.get(`/reviews/${id}`, data);
   }
   // 리뷰 추천 관련
-  
-  async createRecommend(// 생성: 리뷰 추천
+
+  async createRecommend(
+    // 생성: 리뷰 추천
     data?: any,
     callback?: Function
   ): Promise<any> {
@@ -581,6 +582,7 @@ class _Requester {
     if (callback) callback(await this.post(path, data));
     else return await this.post(path, data);
   }
+
   async getRecommend(// 단건 조회: 해당 리뷰에 내가 추천했는지 확인
     id: string,
     params?: any,
@@ -590,11 +592,13 @@ class _Requester {
     if (callback) callback(await this.get(path, params));
     else return await this.get(path, params);
   }
+
   async getRecommends(params?: any, callback?: Function): Promise<any> {  // 목록 조회: 내가 추천한 전체 목록
     const path = `/users/me/recommend`;
     if (callback) callback(await this.get(path, params));
     else return await this.get(path, params);
   }
+
   async deleteRecommend(// 취소
     id: string,
     params?: any,
@@ -645,6 +649,16 @@ class _Requester {
       console.error("Payment approval error:", error);
       throw error;
     }
+  }
+  // 멤버쉽
+  async getGroups(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/groups`, data));
+    else return await this.get(`/groups`, data);
+  }
+  // 쿠폰
+  async getCoupons(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/users/me/coupons`, data));
+    else return await this.get(`/users/me/coupons`, data);
   }
 }
 

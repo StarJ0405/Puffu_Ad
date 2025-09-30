@@ -110,6 +110,16 @@ export class User extends BaseEntity {
     }
     return 0;
   }
+  get coupon(): number {
+    if (this.coupons && this.coupons.length > 0) {
+      const now_time = new Date().getTime();
+      return this.coupons.filter(
+        (coupon) =>
+          coupon.ends_at && new Date(coupon?.ends_at).getTime() > now_time
+      ).length;
+    }
+    return 0;
+  }
   @BeforeInsert()
   protected BeforeInsert(): void {
     this.id = generateEntityId(this.id, "usr");
@@ -119,8 +129,10 @@ export class User extends BaseEntity {
       ...this,
       adult: this.adult,
       point: this.point,
+      coupon: this.coupon,
     };
     delete result.points;
+    delete result.coupons;
     return result;
   }
 }

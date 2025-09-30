@@ -18,7 +18,12 @@ import { getCouponDate } from "../product/coupon/management/table";
 export function MemberShip({ initGroups }: { initGroups: Pageable }) {
   const { groups, mutate } = useData(
     "groups",
-    { relations: ["coupons"] },
+    {
+      relations: ["coupons"],
+      coupons: {
+        user_id: null,
+      },
+    },
     (condition) => adminRequester.getGroups(condition),
     {
       fallbackData: initGroups,
