@@ -62,9 +62,9 @@ const SideMenu = NiceModal.create(() => {
     {name: '리뷰 관리', link: '/mypage/review'},
   ]
 
-  // const communityMenu: PagingItem[] = [
-  //   { name: '포토 사용후기', link: '/board/photoReview' },
-  // ]
+  const communityMenu: PagingItem[] = [
+    { name: '포토 사용후기', link: '/board/photoReview' },
+  ]
 
   const logoutModal = () => { // 로그아웃
 
@@ -111,7 +111,7 @@ const SideMenu = NiceModal.create(() => {
         </HorizontalFlex>
 
         <VerticalFlex className={styles.tab_container}>
-          <FlexChild className={styles.tab_wrap} justifyContent="start">
+          <FlexChild className={styles.tab_wrap} justifyContent="space-between">
             <FlexChild
               className={
                 clsx(styles.tab_btn,
@@ -134,7 +134,7 @@ const SideMenu = NiceModal.create(() => {
               <P>고객센터</P>
             </FlexChild>
   
-            {/* <FlexChild
+            <FlexChild
               className={
                 clsx(styles.tab_btn,
                   { [styles.active]: menuTab === "community" }
@@ -143,7 +143,7 @@ const SideMenu = NiceModal.create(() => {
               onClick={() => setMenuTab('community')}
             >
               <P>커뮤니티</P>
-            </FlexChild> */}
+            </FlexChild>
           </FlexChild>
   
           <AnimatePresence mode="wait">
@@ -291,7 +291,7 @@ const SideMenu = NiceModal.create(() => {
   
   
             {/* 고객센터 */}
-            {/* {
+            {
               menuTab === 'community' && (
                 <motion.div
                   key="community"
@@ -329,7 +329,7 @@ const SideMenu = NiceModal.create(() => {
                   </VerticalFlex>
                 </motion.div>
               )
-            } */}
+            }
   
           </AnimatePresence>
         </VerticalFlex>

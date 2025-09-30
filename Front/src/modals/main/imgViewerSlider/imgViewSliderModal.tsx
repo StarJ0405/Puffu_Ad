@@ -28,7 +28,7 @@ const ImgViewSliderModal = NiceModal.create(({
    onConfirm,
    onCancel,
    width = "80vw",
-   height = "80dvh",
+   height = "70dvh",
 }: {
    images: [];
    onConfirm?: () => void;
@@ -81,7 +81,7 @@ const ImgViewSliderModal = NiceModal.create(({
          width={!isMobile ? '100%' : '100%'}
          maxWidth={!isMobile ? 700 : 'auto'}
          height={!isMobile ? height : '100dvh'}
-         maxHeight={'auto'}
+         maxHeight={'80dvh'}
          // height={height}
          title={!isMobile ? '첨부 이미지' : ''}
          onClose={() => {
@@ -131,18 +131,24 @@ const ImgViewSliderModal = NiceModal.create(({
                            src={thumbnail}
                            maxWidth={'100%'}
                            maxHeight={'100%'}
-                           objectFit="contain"
+                           height={'100%'}
                         />
                      </FlexChild>
                   </SwiperSlide>
                ))}
             </Swiper>
-            <div className={clsx(styles.naviBtn, styles.prevBtn)}>
-               <Image src={"/resources/icons/arrow/slide_arrow.png"} width={10}/>
-            </div>
-            <div className={clsx(styles.naviBtn, styles.nextBtn)}>
-               <Image src={"/resources/icons/arrow/slide_arrow.png"} width={10} />
-            </div>
+            {
+               images.length > 1 && (
+                  <>
+                     <div className={clsx(styles.naviBtn, styles.prevBtn)}>
+                        <Image src={"/resources/icons/arrow/slide_arrow.png"} width={10}/>
+                     </div>
+                     <div className={clsx(styles.naviBtn, styles.nextBtn)}>
+                        <Image src={"/resources/icons/arrow/slide_arrow.png"} width={10} />
+                     </div>
+                  </>
+               )
+            }
          </FlexChild>
       </ModalBase>
    ) 

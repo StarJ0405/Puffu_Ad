@@ -88,7 +88,7 @@ export function HeaderBottom() {
 
   const menu2 = [
     // 임시 데이터
-    // { name: "포토 사용후기", link: "/board/photoReview" },
+    { name: "포토 사용후기", link: "/board/photoReview" },
     { name: "공지사항", link: "/board/notice" },
     { name: "1:1문의", link: "/board/inquiry" },
     { name: "이벤트", link: "/board/event" },

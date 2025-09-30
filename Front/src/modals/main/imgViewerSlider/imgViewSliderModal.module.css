@@ -1,5 +1,6 @@
 .viewer_swiper {
-   height: 100%;
+   height: min(700px, calc(100vw * 700 / 1920));
+   padding-bottom: 30px;
 }
 
 .viewer_swiper .swiper_slide {
@@ -38,5 +39,6 @@
 /* 모바일 스타일 */
 
 .mob_viewer_swiper {
+   height: 100%;
    padding-bottom: 40px;
 }
