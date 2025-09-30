@@ -8,7 +8,7 @@ import MasonryGrid from "@/components/masonry/MasonryGrid";
 import Span from "@/components/span/Span";
 import clsx from "clsx";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
 import ReviewImgCard from "@/components/card/reviewImgCard";
 
@@ -478,125 +478,109 @@ export function ProductList({
   );
 }
 
-type ReviewItem = {
-  thumbnail: string;
-  content: string;
-  name: string;
-  date: string;
-  product: {
-    thumb: string;
-    title: string;
-    rating: string;
-    reviewcount: string;
+type ReviewEntity = {
+  id: string;
+  images?: string[];
+  content?: string;
+  avg?: number;
+  count: number;
+  created_at?: string;
+  star_rate?: number;
+  metadata?: {
+    source?: string;
+    aspects?: { design?: string; finish?: string; maintenance?: string };
+  };
+  user?: { id?: string; name?: string };
+  item?: {
+    id?: string;
+    variant?: {
+      id?: string;
+      product?: { id?: string; title?: string; thumbnail?: string };
+    };
   };
 };
 
-// export function ProductSlider({
-//   id,
-//   lineClamp,
-// }: {
-//   id: string;
-//   lineClamp?: number;
-// }) {
-//   const reviewTest: ReviewItem[] = [
-//     {
-//       thumbnail: "/resources/images/dummy_img/review_img_01.png",
-//       content: "벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.",
-//       name: "김한별",
-//       date: "2025-08-01",
-//       product: {
-//         thumb: "/resources/images/dummy_img/review_img_01.png",
-//         title: "적나라 생츄어리",
-//         rating: "4.8",
-//         reviewcount: "4,567",
-//       },
-//     },
-//     {
-//       thumbnail: "/resources/images/dummy_img/review_img_01.png",
-//       content: "벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.",
-//       name: "김한별",
-//       date: "2025-08-01",
-//       product: {
-//         thumb: "/resources/images/dummy_img/review_img_01.png",
-//         title: "적나라 생츄어리",
-//         rating: "4.8",
-//         reviewcount: "4,567",
-//       },
-//     },
-//     {
-//       thumbnail: "/resources/images/dummy_img/review_img_01.png",
-//       content: "벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.",
-//       name: "김한별",
-//       date: "2025-08-01",
-//       product: {
-//         thumb: "/resources/images/dummy_img/review_img_01.png",
-//         title: "적나라 생츄어리",
-//         rating: "4.8",
-//         reviewcount: "4,567",
-//       },
-//     },
-//     {
-//       thumbnail: "/resources/images/dummy_img/review_img_01.png",
-//       content: "벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.",
-//       name: "김한별",
-//       date: "2025-08-01",
-//       product: {
-//         thumb: "/resources/images/dummy_img/review_img_01.png",
-//         title: "적나라 생츄어리",
-//         rating: "4.8",
-//         reviewcount: "4,567",
-//       },
-//     },
-//     {
-//       thumbnail: "/resources/images/dummy_img/review_img_01.png",
-//       content: "벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.",
-//       name: "김한별",
-//       date: "2025-08-01",
-//       product: {
-//         thumb: "/resources/images/dummy_img/review_img_01.png",
-//         title: "적나라 생츄어리",
-//         rating: "4.8",
-//         reviewcount: "4,567",
-//       },
-//     },
-//     {
-//       thumbnail: "/resources/images/dummy_img/review_img_01.png",
-//       content: "벌써 2번째 구매네요. 항상 잘 쓰고 있습니다.",
-//       name: "김한별",
-//       date: "2025-08-01",
-//       product: {
-//         thumb: "/resources/images/dummy_img/review_img_01.png",
-//         title: "적나라 생츄어리",
-//         rating: "4.8",
-//         reviewcount: "4,567",
-//       },
-//     },
-//   ];
+export function ProductSlider({
+  id,
+  lineClamp,
+}: {
+  id: string;
+  lineClamp?: number;
+}) {
 
-//   return (
-//     <>
-//       {reviewTest.length > 0 ? (
-//         <FlexChild id={id} className={styles.ProductSlider}>
-//           <Swiper
-//             loop={true}
-//             slidesPerView={1.5}
-//             speed={600}
-//             spaceBetween={15}
-//             modules={[Autoplay, Navigation]}
-//             autoplay={{ delay: 4000 }}
-//           >
-//             {reviewTest.map((review, i) => {
-//               return (
-//                 <SwiperSlide key={i}>
-//                   <ReviewImgCard width={'auto'} review={review} lineClamp={lineClamp ?? 2} />
-//                 </SwiperSlide>
-//               );
-//             })}
-//           </Swiper>
-//         </FlexChild>
-//       ) : (
-//         <NoContent type="상품" />
-//       )}
-//     </>
-//   );
-// }
+    const PAGE_SIZE = 10;
+    const [items, setItems] = useState<ReviewEntity[]>([]);
+    const [pageNumber, setPageNumber] = useState(0);
+    const [totalPages, setTotalPages] = useState<number | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [hasMore, setHasMore] = useState(true);
+  
+    const fetchPage = useCallback(async (pn: number) => {
+      setLoading(true);
+      try {
+        const params: any = {
+          pageSize: PAGE_SIZE,
+          pageNumber: pn,
+          photo: true,
+          relations: "item,item.variant.product,user",
+          order: { created_at: "DESC" },
+        };
+        const res = await requester.getPublicReviews(params);
+        const data = res?.data ?? res;
+        const list: ReviewEntity[] = data?.content ?? [];
+  
+        setItems((prev) => (pn === 0 ? list : prev.concat(list)));
+        if (typeof data?.totalPages === "number") {
+          setTotalPages(data.totalPages);
+          setHasMore(pn + 1 < data.totalPages);
+        } else {
+          setTotalPages(null);
+          setHasMore(list.length === PAGE_SIZE);
+        }
+        setPageNumber(pn);
+      } finally {
+        setLoading(false);
+      }
+    }, []);
+  
+    useEffect(() => {
+      fetchPage(0);
+    }, [fetchPage]);
+  
+  return (
+    <>
+      {items.length > 0 ? (
+        <FlexChild id={id} className={styles.ProductSlider}>
+          <Swiper
+            loop={false}
+            slidesPerView={1.5}
+            speed={600}
+            spaceBetween={15}
+            modules={[Autoplay, Navigation]}
+            autoplay={{ delay: 4000 }}
+          >
+            {[...items]
+            .sort(()=> Math.random() -0.5)
+            .map((item, i) => {
+              const hasGood = item.images?.some(url => url.includes("good"));
+
+              if (hasGood) return null;
+              return (
+                <SwiperSlide key={item.id}>
+                  <ReviewImgCard 
+                    width={'auto'} 
+                    height={'auto'}
+                    review={item} 
+                    lineClamp={lineClamp ?? 2} 
+                  />
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
+        </FlexChild>
+      ) : (
+        <NoContent type="상품" />
+      )}
+    </>
+  );
+}

@@ -12,7 +12,7 @@ import {
   MiniBanner,
   NewProducts,
   // ProductList,
-  // ProductSlider,
+  ProductSlider,
   SubBanner1,
   SubBanner2,
 } from "./client";
@@ -52,9 +52,9 @@ export default async function () {
         <SubBanner2 />
         <NewProducts initProducts={bestProducts} /> {/* 메인, 상세 리스트 */}
         <SubBanner1 />
-        <MiniBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
+
         {/* 포토 사용 후기 */}
-        {/* <FlexChild marginTop={30}>
+        <FlexChild marginTop={30}>
           <VerticalFlex>
             <HorizontalFlex
               className={styles.titleBox}
@@ -70,12 +70,14 @@ export default async function () {
             <ProductSlider id={"new"} />
 
             <FlexChild justifyContent="center">
-              <Link href={"/photoReview"} className={styles.link_more_btn}>
+              <Link href={"board/photoReview"} className={styles.link_more_btn}>
                 후기 더보기
               </Link>
             </FlexChild>
           </VerticalFlex>
-        </FlexChild> */}
+        </FlexChild>
+
+        <MiniBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
       </VerticalFlex>
     </section>
   );
