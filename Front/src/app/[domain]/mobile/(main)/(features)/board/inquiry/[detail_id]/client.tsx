@@ -21,6 +21,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import { useEffect, useState } from "react";
 import { toast } from "@/shared/utils/Functions";
+import InputTextArea from "@/components/inputs/InputTextArea";
 
 export function BoardTitleBox() {
   return (
@@ -36,18 +37,49 @@ export function BoardTitleBox() {
 export function DetailFrame() {
   const router = useRouter();
   const { detail_id } = useParams();
-  const {userData} = useAuth();
+  const { userData } = useAuth();
   const [qaData, setQaData] = useState<QAData | null>(null);
   const [loading, setLoading] = useState(true);
-
+  const [qaMod, setQaMod] = useState(false);
+  const isAdmin = String(userData?.role || "").toLowerCase() === "admin";
+  const [answer, setAnswer] = useState<string>("");
+  const [submitting, setSubmitting] = useState(false);
+  // 관리자 답변 제출 핸들러
+  const handleSubmitAnswer = async () => {
+    if (!isAdmin) {
+      toast({ message: "권한이 없습니다." });
+      return;
+    }
+    const text = answer?.trim();
+    if (!text) {
+      toast({ message: "답변을 입력해 주세요." });
+      return;
+    }
+    try {
+      setSubmitting(true);
+      await requester.adminUpdateQA(String(detail_id), {
+        answer: text,
+        return_data: false,
+      });
+      setQaData((prev) => (prev ? ({ ...prev, answer: text } as any) : prev));
+      setQaMod(false);
+      toast({ message: "답변이 저장되었습니다." });
+    } catch (e: any) {
+      toast({
+        message: e?.message || "답변 저장에 실패했습니다.",
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
   useEffect(() => {
     if (detail_id) {
       const fetchQaData = async () => {
-        const res = await requester.getQAs({
+        const res = await requester.getTotalQAs({
           id: detail_id,
           relations: ["user"],
         });
-        
+
         if (res?.content?.[0]) {
           const data = res.content[0];
           setQaData(data);
@@ -96,7 +128,6 @@ export function DetailFrame() {
             <P>{userData?.name || "비회원"}</P>
           </FlexChild>
         </HorizontalFlex>
-
       </VerticalFlex>
       <VerticalFlex className={styles.content_box} padding={"25px 10px 40px"}>
         <FlexChild marginBottom={50}>
@@ -112,8 +143,8 @@ export function DetailFrame() {
           ))}
         </VerticalFlex>
       </VerticalFlex>
-      
-      {qaData.answer && (
+
+      {qaData.answer ? (
         <VerticalFlex className={styles.answer_container}>
           <HorizontalFlex className={styles.answer_header}>
             <P weight={600} size={18}>
@@ -124,10 +155,60 @@ export function DetailFrame() {
             <P>{qaData.answer}</P>
           </div>
         </VerticalFlex>
+      ) : (
+        <VerticalFlex className={styles.answer_container}>
+          <HorizontalFlex className={styles.answer_header}>
+            {!qaMod && isAdmin ? (
+              <Button
+                className={styles.qa_btn}
+                onClick={() => {
+                  setQaMod(true);
+                  setAnswer(qaData.answer ?? "");
+                }}
+              >
+                답변 작성
+              </Button>
+            ) : isAdmin ? (
+              <VerticalFlex gap={15}>
+                <InputTextArea
+                  className={styles.answer_write}
+                  width={"100%"}
+                  placeHolder="답변을 입력해 주세요."
+                  value={answer}
+                  onChange={(val: string) => setAnswer(val)}
+                  disabled={submitting}
+                />
+                <HorizontalFlex justifyContent="flex-end" gap={10}>
+                  <Button
+                    className={styles.qa_btn}
+                    disabled={submitting}
+                    onClick={() => {
+                      setQaMod(false);
+                      setAnswer("");
+                    }}
+                  >
+                    취소
+                  </Button>
+                  <Button
+                    justifyContent="flex-end"
+                    className={styles.qa_btn}
+                    onClick={handleSubmitAnswer}
+                    disabled={submitting || !answer?.trim()}
+                  >
+                    {submitting ? "저장 중..." : "작성 완료"}
+                  </Button>
+                </HorizontalFlex>
+              </VerticalFlex>
+            ) : null}
+          </HorizontalFlex>
+        </VerticalFlex>
       )}
 
       <FlexChild justifyContent="center">
-        <Button className={styles.list_btn} onClick={() => router.push("/board/inquiry")}>
+        <Button
+          className={styles.list_btn}
+          onClick={() => router.push("/board/inquiry")}
+        >
           목록으로
         </Button>
       </FlexChild>

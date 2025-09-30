@@ -44,10 +44,10 @@
 }
 
 .edit_button_group button.edit_btn {border-color: var(--main-color2);}
-.edit_button_group button.delete_btn:hover {
+.edit_button_group button.delete_btn:active {
    border-color: var(--main-color2);
 }
-.edit_button_group button:hover {background: var(--main-color2);}
+.edit_button_group button:active {background: var(--main-color2);}
 
 .list_btn {
    width: 100%;
@@ -58,9 +58,17 @@
    background: #050505;
    transition: all 0.2s;
 }
-
-
-
+.list_btn:active {background: var(--main-color2);}
+.qa_btn {
+   width: 70px;
+   padding: 5px 5px;
+   font-size: 14px;
+   font-weight: 600;
+   color: #e4e4e4;
+   background: var(--main-color2);
+   transition: all 0.2s;
+}
+.qa_btn:active {background: #050505;}
 /* 댓글창 */
 
 .answer_container {
@@ -84,4 +92,13 @@
   line-height: 1.6;
   font-size: 14px;
   min-height: 100px;
+}
+
+.answer_write {
+  background-color: #2c2c2c;
+  padding: 20px;
+  border-radius: 5px;
+  color: #fff;
+  white-space: pre-wrap;
+  line-height: 1.6;
 }
