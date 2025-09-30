@@ -12,11 +12,12 @@ import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventPr
 import { toast, maskTwoThirds } from "@/shared/utils/Functions";
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import clsx from "clsx";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Swiper as SwiperType } from "swiper";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import styles from "./photoReviewDetailModal.module.css";
+import { requester } from "@/shared/Requester";
 
 type ReviewEntity = {
   id: string;
@@ -63,6 +64,8 @@ const PhotoReviewDetailModal = NiceModal.create(
     const modal = useModal();
     const { isMobile } = useBrowserEvent();
     const swiperRef = useRef<SwiperType | null>(null);
+    const [liked, setLiked] = useState(false);
+    const [likeLoading, setLikeLoading] = useState(false);
 
     const paintBullets = (swiper: SwiperType) => {
       const bullets = swiper.pagination?.el?.querySelectorAll(
@@ -97,7 +100,7 @@ const PhotoReviewDetailModal = NiceModal.create(
     const discountPrice = product?.discount_price;
     const prodAvg = review?.avg;
     const prodCount = review?.count;
-    const showAvg =  prodAvg > 0;
+    const showAvg = prodAvg > 0;
     const showCount = Number(prodCount) > 0;
     const userName = maskTwoThirds(review.user?.name ?? "익명");
     const date = (review.created_at ?? "").slice(0, 10);
@@ -133,6 +136,42 @@ const PhotoReviewDetailModal = NiceModal.create(
       review.metadata?.aspects?.maintenance
     );
     const finishText = mapAspect("finish", review.metadata?.aspects?.finish);
+
+    useEffect(() => {
+      let alive = true;
+      (async () => {
+        try {
+          const res = await requester.getRecommend(review.id);
+          if (!alive) return;
+          setLiked(Boolean(res?.content?.id));
+        } catch {
+          /* noop */
+        }
+      })();
+      return () => {
+        alive = false;
+      };
+    }, [review.id]);
+
+    const toggleRecommend = async () => {
+      if (likeLoading) return;
+      setLikeLoading(true);
+      try {
+        if (!liked) {
+          await requester.createRecommend({ review_id: review.id });
+          setLiked(true);
+          toast({ message: "리뷰가 추천되었습니다." });
+        } else {
+          await requester.deleteRecommend(review.id);
+          setLiked(false);
+          toast({ message: "추천이 취소되었습니다." });
+        }
+      } catch (e: any) {
+        toast({ message: e?.message || "처리에 실패했습니다." });
+      } finally {
+        setLikeLoading(false);
+      }
+    };
 
     return (
       <ModalBase
@@ -286,18 +325,16 @@ const PhotoReviewDetailModal = NiceModal.create(
                 </SwiperSlide>
               ))}
             </Swiper>
-            {
-              imgs.length > 1 && (
-                <>
-                  <div className={clsx(styles.naviBtn, styles.prevBtn)}>
-                    <Image src={"/resources/icons/arrow/slide_arrow.png"} />
-                  </div>
-                  <div className={clsx(styles.naviBtn, styles.nextBtn)}>
-                    <Image src={"/resources/icons/arrow/slide_arrow.png"} />
-                  </div>
-                </>
-              )
-            }
+            {imgs.length > 1 && (
+              <>
+                <div className={clsx(styles.naviBtn, styles.prevBtn)}>
+                  <Image src={"/resources/icons/arrow/slide_arrow.png"} />
+                </div>
+                <div className={clsx(styles.naviBtn, styles.nextBtn)}>
+                  <Image src={"/resources/icons/arrow/slide_arrow.png"} />
+                </div>
+              </>
+            )}
           </FlexChild>
 
           {/* 사용자·리뷰 본문 */}
@@ -322,17 +359,23 @@ const PhotoReviewDetailModal = NiceModal.create(
 
             <VerticalFlex className={styles.recommend}>
               <P>이 리뷰가 도움이 되었나요?</P>
-              <Button 
-                className={styles.recommend_btn}
-
-                onClick={()=> toast({ message: '리뷰가 추천되었습니다.' })}
+              <Button
+                className={clsx(styles.recommend_btn, liked && styles.recommend_btnActive)}
+                aria-pressed={liked}
+                data-active={liked}
+                disabled={likeLoading}
+                onClick={toggleRecommend}
               >
                 <Image
-                  src={"/resources/icons/board/review_like.png"}
+                  src={
+                    liked
+                      ? "/resources/icons/board/review_like.png"
+                      : "/resources/icons/board/review_like.png"
+                  }
                   width={20}
                   height={"auto"}
                 />
-                <P>도움이 됐어요</P>
+                <P>{liked ? "추천 취소" : "도움이 됐어요"}</P>
               </Button>
             </VerticalFlex>
           </VerticalFlex>
@@ -369,7 +412,9 @@ function UserData({
 
       <FlexChild hidden>
         {/* 리뷰 추천 표시 */}
-        <P size={14} color="#fff">{3}명에게 도움이 되었어요.</P>
+        <P size={14} color="#fff">
+          {3}명에게 도움이 되었어요.
+        </P>
       </FlexChild>
     </VerticalFlex>
   );
