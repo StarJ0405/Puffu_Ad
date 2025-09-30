@@ -1,0 +1,25 @@
+.image {
+  border: 2px solid var(--admin-color);
+}
+
+.head {
+  width: 140px;
+  padding: 15px;
+}
+.content {
+  padding: 15px;
+  /* max-width: calc(min(95%, 900px) - 40px - 130px); */
+  max-width: calc(100% - 30px);
+  /* width: 500px; */
+}
+
+.content > div img {
+  width: 100%;
+}
+.content > div {
+  display: flex;
+  flex-direction: column;
+}
+.select div {
+  color: #111 !important;
+}

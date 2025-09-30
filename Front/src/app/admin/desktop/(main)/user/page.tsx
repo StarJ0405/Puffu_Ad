@@ -10,10 +10,7 @@ export default async function () {
     <Container padding={20} width={"100%"} maxWidth={1380} margin={"0 auto"}>
       <VerticalFlex gap={20} flexStart={true}>
         <HorizontalFlex gap={15} justifyContent={"flex-start"}>
-          <FlexChild width="49.4%">
-            <MemberShip initGroups={initGroups} />
-          </FlexChild>
-          <FlexChild width="49.4%"></FlexChild>
+          <MemberShip initGroups={initGroups} />
         </HorizontalFlex>
       </VerticalFlex>
     </Container>

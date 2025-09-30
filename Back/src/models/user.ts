@@ -11,9 +11,10 @@ import {
 import { generateEntityId } from "utils/functions";
 import { AccountLink } from "./account_link";
 import { Cart } from "./cart";
+import { Coupon } from "./coupon";
+import { Group } from "./group";
 import { Order } from "./order";
 import { Point } from "./point";
-import { Group } from "./group";
 
 export enum UserRole {
   ADMIN = "admin",
@@ -94,6 +95,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Point, (point) => point.user)
   points?: Point[];
+
+  @OneToMany(() => Coupon, (coupon) => coupon.user)
+  coupons?: Coupon[];
 
   get point(): number {
     if (this.points && this.points?.length > 0) {

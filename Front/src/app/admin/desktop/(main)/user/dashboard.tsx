@@ -76,11 +76,16 @@ export function MemberShip({ initGroups }: { initGroups: Pageable }) {
             >
               <FlexChild className={styles.header}>
                 <HorizontalFlex flexGrow={1}>
-                  {["등급명", "누적금액", "적립금", " "].map((str, index) => (
-                    <FlexChild key={`${str}_${index}`} justifyContent="center">
-                      <P>{str}</P>
-                    </FlexChild>
-                  ))}
+                  {["등급명", "누적금액", "적립금", "쿠폰", " "].map(
+                    (str, index) => (
+                      <FlexChild
+                        key={`${str}_${index}`}
+                        justifyContent="center"
+                      >
+                        <P>{str}</P>
+                      </FlexChild>
+                    )
+                  )}
                 </HorizontalFlex>
               </FlexChild>
               {groups
@@ -93,12 +98,21 @@ export function MemberShip({ initGroups }: { initGroups: Pageable }) {
                       </FlexChild>
                       <FlexChild justifyContent="center">
                         <P>
-                          <Span>{group.min}</Span>
-                          <Span>원 이상</Span>
+                          {group.min === 0 ? (
+                            <Span>가입 즉시</Span>
+                          ) : (
+                            <>
+                              <Span>{group.min}</Span>
+                              <Span>원 이상</Span>
+                            </>
+                          )}
                         </P>
                       </FlexChild>
                       <FlexChild justifyContent="center">
                         <P>{group.percent}%</P>
+                      </FlexChild>
+                      <FlexChild justifyContent="center">
+                        <P>미설정</P>
                       </FlexChild>
                       <FlexChild justifyContent="center" gap={3}>
                         <Button

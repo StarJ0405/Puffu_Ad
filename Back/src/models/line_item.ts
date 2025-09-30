@@ -16,6 +16,7 @@ import { Order } from "./order";
 import { Review } from "./review";
 import { Variant } from "./variant";
 import { RefundItem } from "./refund_item";
+import { Coupon } from "./coupon";
 
 @Entity({ name: "line_item" })
 @Index(["created_at"])
@@ -128,6 +129,9 @@ export class LineItem extends BaseEntity {
 
   @OneToMany(() => RefundItem, (refund) => refund.item)
   refunds?: RefundItem[];
+
+  @OneToMany(() => Coupon, (coupons) => coupons.item)
+  coupons?: Coupon[];
 
   @BeforeInsert()
   protected async BeforeInsert(): Promise<void> {

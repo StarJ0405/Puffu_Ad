@@ -664,6 +664,34 @@ class _AdminRequester {
     if (callback) callback(await this.delete(`/groups/${id}`, data));
     else return await this.delete(`/groups/${id}`, data);
   }
+  // 쿠폰
+  async createCoupon(
+    data?: CouponDataFrame,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.post(`/coupons`, data));
+    else return await this.post(`/coupons`, data);
+  }
+  async getCoupons(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/coupons`, data));
+    else return await this.get(`/coupons`, data);
+  }
+  async updateCoupon(
+    id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.post(`/coupons/${id}`, data));
+    else return await this.post(`/coupons/${id}`, data);
+  }
+  async deleteCoupon(
+    id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.delete(`/coupons/${id}`, data));
+    else return await this.delete(`/coupons/${id}`, data);
+  }
 }
 
 export default _AdminRequester;

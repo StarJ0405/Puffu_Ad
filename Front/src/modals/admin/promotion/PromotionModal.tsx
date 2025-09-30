@@ -44,7 +44,7 @@ const PromotionModal = NiceModal.create(
       try {
         const title = inputs.current[0].getValue();
         if (!title) {
-          return setError("프로모션이 입력되지 않았습니다.");
+          return setError("프로모션명이 입력되지 않았습니다.");
         }
         validateInputs([...inputs.current])
           .then(({ isValid }: { isValid: boolean }) => {
