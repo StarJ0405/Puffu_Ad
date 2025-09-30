@@ -574,7 +574,7 @@ class _Requester {
   // 리뷰 추천 관련
   
   async createRecommend(// 생성: 리뷰 추천
-    data: { review_id: string; metadata?: any; return_data?: boolean },
+    data?: any,
     callback?: Function
   ): Promise<any> {
     const path = `/users/me/recommend`;
