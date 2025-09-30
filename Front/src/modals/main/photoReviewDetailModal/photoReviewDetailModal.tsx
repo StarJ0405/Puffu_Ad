@@ -20,6 +20,8 @@ import styles from "./photoReviewDetailModal.module.css";
 
 type ReviewEntity = {
   id: string;
+  avg: number;
+  count: number;
   images?: string[];
   content?: string;
   created_at?: string;
@@ -85,7 +87,6 @@ const PhotoReviewDetailModal = NiceModal.create(
         active.style.setProperty("transform", "scale(1.66)");
       }
     };
-
     // 파생 데이터
     const imgs = review.images ?? [];
     const product = review.item?.variant?.product;
@@ -94,10 +95,16 @@ const PhotoReviewDetailModal = NiceModal.create(
     const productThumb = product?.thumbnail ?? "/resources/images/no_img.png";
     const price = product?.price;
     const discountPrice = product?.discount_price;
-    const prodAvg = product?.reviews?.avg;
-    const prodCount = product?.reviews?.count;
-    const showAvg = typeof prodAvg === "number" && prodAvg > 0;
-    const showCount = typeof prodCount === "number" && prodCount > 0;
+    const prodAvg = review?.avg;
+    const prodCount = review?.count;
+    const showAvg =  prodAvg > 0;
+    const showCount = Number(prodCount) > 0;
+
+    console.log(review)
+    console.log(prodAvg)
+    console.log(prodCount)
+    console.log(showAvg)
+    console.log(showCount)
 
     const userName = maskTwoThirds(review.user?.name ?? "익명");
     const date = (review.created_at ?? "").slice(0, 10);
