@@ -153,33 +153,40 @@ export default function Review({ product }: { product: ProductData }) {
           {
             list?.length > 0 ? (
               list.map((r: any) => (
-                <VerticalFlex key={r} gap={25} className={styles.item}>
-                  <HorizontalFlex className={styles.item_header} gap={15}>
-                    <FlexChild>
-                      <StarRate
-                        width={110}
-                        starWidth={20}
-                        starHeight={20}
-                        score={r.star_rate}
-                        readOnly
-                      />
-                    </FlexChild>
-
-                    <FlexChild gap={10}>
-                      <FlexChild justifyContent="center">
-                        <P color="#d7d7d7" size={18}>
-                          {maskTwoThirds(r.user.name)}
-                        </P>{" "}
-                        {/* 닉네임 뒷글자 *** 표시 */}
+                <VerticalFlex key={r.id} gap={25} className={styles.item}>
+                  <VerticalFlex gap={15}>
+                    <HorizontalFlex className={styles.item_header} gap={15}>
+                      <FlexChild>
+                        <StarRate
+                          width={110}
+                          starWidth={20}
+                          starHeight={20}
+                          score={r.star_rate}
+                          readOnly
+                        />
                       </FlexChild>
-
-                      <FlexChild justifyContent="center">
-                        <P color="#797979" size={13}>
-                          {formatDateDots(r?.created_at)}
-                        </P>
+  
+                      <FlexChild gap={10}>
+                        <FlexChild justifyContent="center">
+                          <P color="#d7d7d7" size={18}>
+                            {maskTwoThirds(r.user.name)}
+                          </P>{" "}
+                          {/* 닉네임 뒷글자 *** 표시 */}
+                        </FlexChild>
+  
+                        <FlexChild justifyContent="center">
+                          <P color="#797979" size={13}>
+                            {formatDateDots(r?.created_at)}
+                          </P>
+                        </FlexChild>
                       </FlexChild>
+                    </HorizontalFlex>
+
+                    <FlexChild hidden>
+                      {/* 리뷰 추천 표시 */}
+                      <P size={12} color="#797979">{3}명에게 도움이 되었어요.</P>
                     </FlexChild>
-                  </HorizontalFlex>
+                  </VerticalFlex>
 
                   <VerticalFlex gap={25}>
                     <VerticalFlex className={styles.feedback} alignItems="start">
@@ -219,9 +226,14 @@ export default function Review({ product }: { product: ProductData }) {
                         {r.content}
                       </P>
 
-                      {r.images.length > 0 && (
+                      {
+                        r.images.length > 0 &&
+                        // good 들어간 노이미지 때문에 자꾸 이미지 있는 걸로 인식해서 처리해버림.
+                        !r.images.some((url: string) => url.includes("good")) &&  (
                         <FlexChild
                           width={100}
+                          height={100}
+                          overflow="hidden"
                           className={styles.img_box}
                           cursor="pointer"
                           onClick={()=> 
@@ -229,19 +241,36 @@ export default function Review({ product }: { product: ProductData }) {
                               images: r.images,
                             })
                           }
+                          backgroundImage={`url(${r.images[0]})`}
                         >
-                          <Image
+                          {/* <Image
                             src={r.images[0]}
                             width={"100%"}
                             height={"auto"}
-                          />
+                          /> */}
                           <Div className={styles.img_length}>
                             {r.images.length}
                           </Div>
                         </FlexChild>
-                      )}
+                      )
+                      }
                     </VerticalFlex>
                   </VerticalFlex>
+
+                  <FlexChild className={styles.recommend} gap={15}>
+                      <P>이 리뷰가 도움이 되었나요?</P>
+                      <Button 
+                        className={styles.recommend_btn}
+                        onClick={()=> toast({ message: '리뷰가 추천되었습니다.' })}
+                      >
+                        <Image
+                          src={"/resources/icons/board/review_like.png"}
+                          width={16}
+                          height={"auto"}
+                        />
+                        <P>도움이 됐어요</P>
+                      </Button>
+                    </FlexChild>
                 </VerticalFlex>
               ))
             ) : (
