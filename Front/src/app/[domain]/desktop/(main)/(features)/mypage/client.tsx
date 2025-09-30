@@ -20,6 +20,7 @@ import { requester } from "@/shared/Requester";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import useNavigate from "@/shared/hooks/useNavigate";
 import { usePathname } from "next/navigation";
+import HorizontalFlex from "@/components/flex/HorizontalFlex";
 
 const editInfoModal = (userData: any, navigate: (path: string) => void) => { // 개인정보 수정
   let password = '';
@@ -33,7 +34,7 @@ const editInfoModal = (userData: any, navigate: (path: string) => void) => { // 
     onConfirm: async () => {
       try {
         const res = await requester.checkCurrentPassword({ password });
-        
+
         if (res.message === 'success') {
           navigate('/mypage/editInfo');
         } else {
@@ -54,30 +55,88 @@ export function Profile() {
 
   return (
     <VerticalFlex className={clsx(styles.profile, styles.box_frame)}>
-      <VerticalFlex gap={20}>
-        <FlexChild width={"auto"} position="relative">
-          <FlexChild className={styles.thumbnail} width={"auto"}>
-            <Image
-              src={userData?.thumbnail || "/resources/icons/mypage/user_no_img.png"}
-              width={80}
-            />
-          </FlexChild>
+      <HorizontalFlex padding={"25px 45px"} gap={45}>
+        <FlexChild className={styles.profile_wrap} width={"fit-content"}>
+          <VerticalFlex gap={15}>
+            <FlexChild width={"auto"} position="relative">
+              <FlexChild className={styles.thumbnail} width={"auto"}>
+                <Image
+                  src={userData?.thumbnail || "/resources/icons/mypage/user_no_img.png"}
+                  width={80}
+                />
+              </FlexChild>
+            </FlexChild>
+            <FlexChild width={"auto"} className={styles.profile_name}>
+              <P>{userData?.name ?? "익명"}</P>
+
+              <FlexChild width={"auto"} cursor="pointer" onClick={() => editInfoModal(userData, navigate)}>
+                <Image
+                  src={"/resources/icons/mypage/setting_icon.png"}
+                  width={16}
+                />
+              </FlexChild>
+            </FlexChild>
+            <P className={styles.membership_level}>중급자 등급</P>
+            <FlexChild className={styles.link_btn}>
+              <Button onClick={() => navigate('/mypage/wishList')}>관심 리스트</Button>
+            </FlexChild>
+          </VerticalFlex>
         </FlexChild>
 
-        <FlexChild width={"auto"} className={styles.profile_name}>
-          <P>{userData?.name ?? "익명"}</P>
+        <FlexChild>
+          <HorizontalFlex gap={30}>
+            <VerticalFlex
+              gap={15}
+              borderLeft={"1px solid #797979"}
+              paddingLeft={45}
+            >
+              <VerticalFlex className={styles.amount_box}>
+                <P className={styles.title}>현재 누적 금액</P>
+                <FlexChild className={styles.amount}>
+                  <P>4,560,000</P><P>원</P>
+                </FlexChild>
+              </VerticalFlex>
+              <VerticalFlex className={styles.amount_box}>
+                <P className={styles.title}>다음 등급까지 필요한 구매 금액</P>
+                <FlexChild className={styles.amount}>
+                  <P>44,000</P><P>원</P>
+                </FlexChild>
+              </VerticalFlex>
+            </VerticalFlex>
 
-          <FlexChild width={"auto"} cursor="pointer" onClick={() => editInfoModal(userData, navigate)}>
-            <Image
-              src={"/resources/icons/mypage/setting_icon.png"}
-              width={16}
-            />
-          </FlexChild>
+            <VerticalFlex>
+              <VerticalFlex className={styles.coupon_box}>
+                <FlexChild>
+                  <Image src="resources/icons/mypage/coupon_icon.png" width={28} paddingRight={7} />
+                  <P>보유쿠폰</P>
+                </FlexChild>
+                <FlexChild className={styles.coupon}>
+                  <P>3</P>
+                  <P>개</P>
+                </FlexChild>
+              </VerticalFlex>
+              <VerticalFlex className={styles.point_box}>
+                <FlexChild>
+                  <P paddingRight={4}>나의 포인트</P>
+                  <P className={styles.currency}>P</P>
+                </FlexChild>
+                <FlexChild className={styles.point}>
+                  <P paddingRight={4}>10,000,000</P>
+                  <P className={styles.currency}>P</P>
+                </FlexChild>
+              </VerticalFlex>
+            </VerticalFlex>
+
+          </HorizontalFlex>
         </FlexChild>
-      </VerticalFlex>
-
-      <FlexChild className={styles.link_btn}>
-        <Button onClick={()=> navigate('/mypage/wishList')}>관심 리스트</Button>
+      </HorizontalFlex>
+      <FlexChild className={styles.membership_btn}>
+        <P
+          onClick={() => navigate('/mypage')}
+          cursor="pointer"
+        >
+          등급별 혜택 확인하기
+        </P>
       </FlexChild>
     </VerticalFlex>
   );
@@ -136,9 +195,9 @@ export function MypageNavi() {
               <li key={i}>
                 <Link className={
                   clsx(
-                    styles.inner_btn, 
+                    styles.inner_btn,
                     (active && styles.active)
-                  )} 
+                  )}
                   href={item.link}
                 >
                   <Span>{item.name}</Span>
@@ -177,10 +236,10 @@ export function MypageNavi() {
 
             return (
               <li key={i}>
-                <Link 
+                <Link
                   className={
                     clsx(
-                      styles.inner_btn, 
+                      styles.inner_btn,
                       (active && styles.active)
                     )
                   }
@@ -271,35 +330,35 @@ export function DeliveryInfo() {
 
   return (
     <VerticalFlex className={clsx(styles.box_frame, styles.delivery_box)}>
-          <FlexChild className={styles.box_header}>
-            <P>주문 배송 현황</P>
-          </FlexChild>
+      <FlexChild className={styles.box_header}>
+        <P>주문 배송 현황</P>
+      </FlexChild>
 
-          <FlexChild className={styles.deli_itemBox}>
-            <VerticalFlex className={styles.deli_item}>
-              <P>{statusCounts.pending}</P>
-              <Span>상품 준비중</Span>
-            </VerticalFlex>
-
-            <VerticalFlex className={styles.deli_item}>
-              <P>{statusCounts.fulfilled}</P>
-              <Span>배송준비</Span>
-            </VerticalFlex>
-
-            <VerticalFlex className={styles.deli_item}>
-              <P>{statusCounts.shipping}</P>
-              <Span>배송중</Span>
-            </VerticalFlex>
-
-            <VerticalFlex className={styles.deli_item}>
-              <P>{statusCounts.complete}</P>
-              <Span>배송완료</Span>
-            </VerticalFlex>
-          </FlexChild>
-
-          <FlexChild className={styles.link_btn} onClick={()=> navigate('/mypage/myOrders')}>
-            <Button>내 주문 확인</Button>
-          </FlexChild>
+      <FlexChild className={styles.deli_itemBox}>
+        <VerticalFlex className={styles.deli_item}>
+          <P>{statusCounts.pending}</P>
+          <Span>상품 준비중</Span>
         </VerticalFlex>
+
+        <VerticalFlex className={styles.deli_item}>
+          <P>{statusCounts.fulfilled}</P>
+          <Span>배송준비</Span>
+        </VerticalFlex>
+
+        <VerticalFlex className={styles.deli_item}>
+          <P>{statusCounts.shipping}</P>
+          <Span>배송중</Span>
+        </VerticalFlex>
+
+        <VerticalFlex className={styles.deli_item}>
+          <P>{statusCounts.complete}</P>
+          <Span>배송완료</Span>
+        </VerticalFlex>
+      </FlexChild>
+
+      <FlexChild className={styles.link_btn} onClick={() => navigate('/mypage/myOrders')}>
+        <Button>내 주문 확인</Button>
+      </FlexChild>
+    </VerticalFlex>
   )
 }

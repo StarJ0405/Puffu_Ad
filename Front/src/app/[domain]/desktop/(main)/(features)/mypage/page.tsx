@@ -8,6 +8,7 @@ import { Params } from "next/dist/server/request/params";
 import styles from "./mypage.module.css";
 
 import {DeliveryInfo} from "./client"
+import {Profile} from "./client"
 
 // 불러온 내용
 import { MyOrdersTable } from "./myOrders/client";
@@ -25,6 +26,9 @@ export default async function ({ params }: { params: Promise<Params> }) {
     <>
       {/* 오른쪽 내용 */}
       <VerticalFlex className={styles.right_bar}>
+
+        {/* 프로필 및 멤버쉽 */}
+        <Profile />
 
         {/* 배송정보 */}
         <DeliveryInfo />
