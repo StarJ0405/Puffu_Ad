@@ -71,6 +71,7 @@ type ApiReview = {
   content?: string;
   created_at?: string;
   star_rate?: number;
+  recommend_count: number;
   metadata?: {
     source?: string;
     aspects?: { design?: string; finish?: string; maintenance?: string };
@@ -100,7 +101,6 @@ export function BestReviewSlider({
   const slideMax = 7; // 처음 보일 슬라이드 개수
   const [rows, setRows] = useState<ApiReview[]>([]);
   const [loading, setLoading] = useState(false);
-
   const fetchBulk = useCallback(async () => {
     setLoading(true);
     try {
@@ -122,73 +122,46 @@ export function BestReviewSlider({
   useEffect(() => {
     fetchBulk();
   }, [fetchBulk]);
-
-  type ProductLite = { id: string; title?: string; thumbnail?: string };
+  
+  useEffect(() => {
+    const onChanged = (e: any) => {
+      const { id, delta } = e?.detail ?? {};
+      if (!id || !delta) return;
+      setRows((prev) =>
+        prev.map((r) =>
+          r.id === id
+            ? {
+                ...r,
+                recommend_count: Number(r.recommend_count ?? 0) + Number(delta),
+              }
+            : r
+        )
+      );
+    };
+    window.addEventListener(
+      "review:recommend-changed",
+      onChanged as EventListener
+    );
+    return () =>
+      window.removeEventListener(
+        "review:recommend-changed",
+        onChanged as EventListener
+      );
+  }, []);
 
   const ranked: ApiReview[] = useMemo(() => {
-    const map = new Map<
-      string,
-      { product: ProductLite; reviews: ApiReview[]; sum: number }
-    >();
-
-    for (const r of rows) {
-      const p = r.item?.variant?.product;
-      if (!p?.id) continue;
-      if (!r.images?.length) continue; // 포토만
-      const star = Number(r.star_rate ?? 0);
-
-      if (!map.has(p.id)) {
-        map.set(p.id, {
-          product: { id: p.id, title: p.title, thumbnail: p.thumbnail },
-          reviews: [r],
-          sum: star,
-        });
-      } else {
-        const g = map.get(p.id)!;
-        g.reviews.push(r);
-        g.sum += star;
-      }
-    }
-
-    const enriched: ApiReview[] = [];
-    for (const [, g] of map) {
-      const count = g.reviews.length;
-      const avg = count ? g.sum / count : 0;
-
-      g.reviews.sort(
-        (a, b) =>
-          new Date(b.created_at ?? 0).getTime() -
-          new Date(a.created_at ?? 0).getTime()
-      );
-      const rep = { ...g.reviews[0] };
-
-      const injected = {
-        ...rep,
-        item: {
-          ...rep.item,
-          variant: {
-            ...rep.item?.variant,
-            product: {
-              ...(rep.item?.variant?.product ?? {}),
-              reviews: { count, avg },
-            },
-          },
-        },
-      } as ApiReview;
-
-      enriched.push(injected);
-    }
-
-    enriched.sort((a, b) => {
-      const ac = a.item?.variant?.product?.reviews?.count ?? 0;
-      const bc = b.item?.variant?.product?.reviews?.count ?? 0;
-      if (bc !== ac) return bc - ac;
-      const aa = a.item?.variant?.product?.reviews?.avg ?? 0;
-      const ba = b.item?.variant?.product?.reviews?.avg ?? 0;
-      return ba - aa;
-    });
-
-    return enriched.slice(0, TOP_N);
+    return [...rows]
+      .filter((r) => (r.images?.length ?? 0) > 0)
+      .sort((a, b) => {
+        const cb = Number(b.recommend_count ?? 0);
+        const ca = Number(a.recommend_count ?? 0);
+        if (cb !== ca) return cb - ca;
+        const tb = new Date(b.created_at ?? 0).getTime();
+        const ta = new Date(a.created_at ?? 0).getTime();
+        return tb - ta;
+        // return ta - tb; 
+      })
+      .slice(0, TOP_N);
   }, [rows]);
 
   if (!loading && ranked.length === 0) {
@@ -213,7 +186,7 @@ export function BestReviewSlider({
           {ranked.map((review) => {
             // 이미지 없으면 들어가는 값 때문에 이미지 없는 리뷰도 출력되서 이렇게 처리해버림.
             // 문제 되면 지우기
-            const hasGood = review.images?.some(url => url.includes("good"));
+            const hasGood = review.images?.some((url) => url.includes("good"));
 
             if (hasGood) return null;
             return (
@@ -221,27 +194,31 @@ export function BestReviewSlider({
                 <ReviewImgCard
                   review={review}
                   width={"100%"}
-                  height={'auto'}
+                  height={"auto"}
                   board="photoReviewSlide"
                   slide={true}
                   lineClamp={lineClamp ?? 2}
                 />
               </SwiperSlide>
-            )
+            );
           })}
         </Swiper>
-        {
-          ranked.length > slideMax && (
-            <>
-              <div className={clsx(styles.naviBtn, styles.prevBtn)}>
-                <Image src={"/resources/icons/arrow/slide_arrow.png"} width={10} />
-              </div>
-              <div className={clsx(styles.naviBtn, styles.nextBtn)}>
-                <Image src={"/resources/icons/arrow/slide_arrow.png"} width={10} />
-              </div>
-            </>
-          )
-        }
+        {ranked.length > slideMax && (
+          <>
+            <div className={clsx(styles.naviBtn, styles.prevBtn)}>
+              <Image
+                src={"/resources/icons/arrow/slide_arrow.png"}
+                width={10}
+              />
+            </div>
+            <div className={clsx(styles.naviBtn, styles.nextBtn)}>
+              <Image
+                src={"/resources/icons/arrow/slide_arrow.png"}
+                width={10}
+              />
+            </div>
+          </>
+        )}
       </FlexChild>
     </>
   );
@@ -253,6 +230,7 @@ type ReviewEntity = {
   content?: string;
   avg?: number;
   count: number;
+  recommend_count: number;
   created_at?: string;
   star_rate?: number;
   metadata?: {
@@ -312,11 +290,11 @@ export function GalleryTable() {
     <VerticalFlex>
       <FlexChild>
         {items.length > 0 ? (
-          <MasonryGrid breakpoints={5} width={'100%'}>
+          <MasonryGrid breakpoints={5} width={"100%"}>
             {items.map((item, i) => {
               // 이미지 없으면 들어가는 값 때문에 이미지 없는 리뷰도 출력되서 이렇게 처리해버림.
               // 문제 되면 지우기
-              const hasGood = item.images?.some(url => url.includes("good"));
+              const hasGood = item.images?.some((url) => url.includes("good"));
 
               if (hasGood) return null;
 
@@ -324,11 +302,11 @@ export function GalleryTable() {
                 <ReviewImgCard
                   key={item.id ?? i}
                   review={item}
-                  width={'100%'}
-                  height={'auto'}
+                  width={"100%"}
+                  height={"auto"}
                   borderRadius={5}
                 />
-              )
+              );
             })}
           </MasonryGrid>
         ) : (

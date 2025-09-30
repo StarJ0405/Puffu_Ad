@@ -3,10 +3,15 @@ import { Review } from "models/review";
 import { ReviewRepository } from "repositories/review";
 import { inject, injectable } from "tsyringe";
 import { FindManyOptions, FindOneOptions } from "typeorm";
+import { RecommendService } from "services/recommend";
 
 @injectable()
 export class ReviewService extends BaseService<Review, ReviewRepository> {
-  constructor(@inject(ReviewRepository) ReviewRepository: ReviewRepository) {
+  constructor(
+    @inject(ReviewRepository) ReviewRepository: ReviewRepository,
+    @inject(RecommendService)
+    private readonly recommendService: RecommendService
+  ) {
     super(ReviewRepository);
   }
   async getPageable(
@@ -61,6 +66,19 @@ export class ReviewService extends BaseService<Review, ReviewRepository> {
         });
       }
     }
+
+    const ids = (result.content ?? []).map((r: any) => r.id).filter(Boolean);
+    if (ids.length) {
+      const counts = await this.recommendService.getCounts(ids);
+      const map = new Map<string, number>(
+        counts.map((c) => [String(c.id), Number(c.count) || 0])
+      );
+      result.content = (result.content ?? []).map((r: any) => ({
+        ...r,
+        recommend_count: map.get(String(r.id)) ?? 0,
+      }));
+    }
+
     return result;
   }
   async getList(options?: FindManyOptions<Review>): Promise<Review[]> {
@@ -113,6 +131,19 @@ export class ReviewService extends BaseService<Review, ReviewRepository> {
         });
       }
     }
+
+    const ids = (content ?? []).map((r: any) => r.id).filter(Boolean);
+    if (ids.length) {
+      const counts = await this.recommendService.getCounts(ids);
+      const map = new Map<string, number>(
+        counts.map((c) => [String(c.id), Number(c.count) || 0])
+      );
+      content = (content ?? []).map((r: any) => ({
+        ...r,
+        recommend_count: map.get(String(r.id)) ?? 0,
+      }));
+    }
+
     return content;
   }
 

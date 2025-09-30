@@ -17,7 +17,8 @@ export class RecommendService extends BaseService<Recommend, RecommendRepository
       .builder("rec")
       .select("review_id", "id")
       .addSelect("COUNT(*)", "count")
-      .where(`review_id IN (${ids.map((id) => `'${id}'`).join(",")})`)
+      // .where(`review_id IN (${ids.map((id) => `'${id}'`).join(",")})`)
+      .where("rec.review_id IN (:...ids)", { ids })
       .groupBy("review_id")
       .getRawMany();
   }
