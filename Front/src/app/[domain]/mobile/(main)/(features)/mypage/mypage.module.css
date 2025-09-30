@@ -1,8 +1,8 @@
-.mypage_wrap {gap: 60px; padding-bottom: 40px;}
+.mypage_wrap {gap: 25px; padding-bottom: 40px;}
 
 
 /* 프로필 */
-.profile {gap: 35px;}
+.profile {gap: 15px;}
 
 .profile .thumbnail {
    border-radius: 50%;
@@ -38,21 +38,111 @@
 
 .profile .setting_btn {
    width: auto;
-   border-radius: 5px;
-   border: 1px solid #fff;
+   border-radius: 100px;
+   border: 1px solid #797979;
    color: #fff;
    font-size: 13px;
-   font-weight: 600;
-   padding: 10px 15px;
+   font-weight: 500;
+   line-height: 120%;
+   padding: 8px 10px;
    gap: 4px;
    cursor: pointer;
-   min-height: 39px;
 }
 
 .profile .setting_btn:active {
    border-color: #ababab;
    color: #ababab;
 }
+
+/* 멤버쉽, 포인트, 쿠폰 */
+.membership_box {
+  border-radius: 0 0 5px 5px;
+  background-color: #323232;
+}
+
+.membership_box .title_box {
+  padding: 13px 10px;
+  border-radius: 5px 5px 0 0;
+  background-color: var(--main-color1);
+}
+
+.membership_box .level {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 120%;
+}
+
+.membership_box .more_btn {
+  width: fit-content;
+  gap: 7px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 120%;
+  white-space: nowrap;
+}
+
+.membership_box .amount_box {
+  width: 100%;
+  padding: 15px 0;
+  gap: 15px;
+}
+.membership_box .amount_box:first-child {
+  border-bottom: 1px solid #797979;
+}
+
+.membership_box .amount_box .title {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 120%;
+}
+
+.membership_box .amount_box .amount {
+  justify-content: flex-end;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.point_box,
+.coupon_box {
+  gap: 15px;
+  padding: 15px 10px;
+  border-radius: 10px;
+  background-color: #323232;
+}
+
+.point_box .title_box,
+.coupon_box .title_box {
+  font-size: 14px;
+  line-height: 120%;
+}
+
+.point_box .more_btn,
+.coupon_box .more_btn {
+  width: fit-content;
+  gap: 7px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 120%;
+  white-space: nowrap;
+}
+
+.point_box .title_box .currency {
+  font-weight: 900;
+  color: var(--main-color2);
+}
+
+.point_box .point,
+.coupon_box .coupon {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 120%;
+  justify-content: flex-end;
+}
+
+.point_box .point .currency {
+  color: var(--main-color2);
+}
+
 
 
 
@@ -112,7 +202,7 @@
    font-weight: 400; width: auto;
 }
 
-.delivery_box {gap: 25px;}
+.delivery_box {gap: 25px; padding-bottom: 15px;}
 
 .delivery_box .deli_itemBox {
    gap: 30px; align-items: end !important;
