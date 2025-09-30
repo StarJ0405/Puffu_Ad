@@ -469,6 +469,7 @@ interface GroupDataFrame {
 }
 interface GroupData extends BaseEntity, GroupDataFrame {
   users?: UserData[];
+  coupons?: CouponData[];
 }
 interface RefundData extends BaseEntity {
   order_id: string;
@@ -494,6 +495,7 @@ type CouponType = "item" | "order" | "shipping";
 type CalcType = "percent" | "fix";
 type DateType = "fixed" | "range" | "day" | "week" | "month" | "year";
 type DateUnit = "year" | "month" | "date" | "hours";
+type Target = "sign_up" | "group" | "link" | "etc";
 interface CouponDataFrame {
   name: string;
   type: CouponType;
@@ -505,6 +507,8 @@ interface CouponDataFrame {
   date: DateType;
   date_unit?: DateUnit | null;
   range?: number;
+  group_id?: string | null;
+  target: Target;
 }
 
 interface CouponData extends BaseEntity, CouponDataFrame {
@@ -514,4 +518,5 @@ interface CouponData extends BaseEntity, CouponDataFrame {
   order?: OrderData;
   shipping_method_id?: string;
   shipping_method?: ShippingMethodData;
+  group?: GroupData;
 }

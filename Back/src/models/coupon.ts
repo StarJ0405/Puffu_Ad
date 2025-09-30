@@ -13,24 +13,26 @@ import { Order } from "./order";
 import { ShippingMethod } from "./shipping_method";
 import { Store } from "./store";
 import { User } from "./user";
+import { Group } from "./group";
 
 /*
  * user_id가 없는 경우는 미리 작성된 쿠폰 형태
  * item_id : 상품 쿠폰 / order_id : 주문서 쿠폰 / shipping_method_id : 배송 쿠폰
  * CalcType : percent는 퍼센트 할인, fix는 고정값 할인
- * DateType : fixed는 고정일, starts_at과 ends_at 동일하게 복제, range는 획득일 기준으로 기간 (starts_at-ends_at)으로 계산,
+ * DateType : fixed는 고정일, starts_at과 ends_at 동일하게 복제, range는 획득일 기준으로 기간 range 및 DateUnit으로 계산,
  *            day는 당일로 starts_at과 ends_at은 시간만 영향 받게 생성, week는 해당 주 월요일~일요일, month는 1일부터 말일, year는 1월 1일부터 연말까지
+ * Target : SIGNUP은 회원가입시, GROUP은 멤버쉽 월별 쿠폰(group_id 필수), LINK는 링크, ETC는 기타
  */
-enum CouponType {
+export enum CouponType {
   ITEM = "item",
   ORDER = "order",
   SHIPPING = "shipping",
 }
-enum CalcType {
+export enum CalcType {
   PERCENT = "percent",
   FIX = "fix",
 }
-enum DateType {
+export enum DateType {
   FIXED = "fixed",
   RANGE = "range",
   DAY = "day",
@@ -39,11 +41,17 @@ enum DateType {
   YEAR = "year",
 }
 
-enum DateUnit {
+export enum DateUnit {
   YEAR = "year",
   MONTH = "month",
   DATE = "date",
   HOURS = "hours",
+}
+export enum Target {
+  SIGNUP = "sign_up",
+  GROUP = "group",
+  LINK = "link",
+  ETC = "etc",
 }
 @Entity({ name: "coupon" })
 @Index(["created_at"])
@@ -62,6 +70,13 @@ export class Coupon extends BaseEntity {
   @ManyToOne(() => Store)
   @JoinColumn({ name: "store_id", referencedColumnName: "id" })
   store?: Store;
+
+  @Column({ type: "character varying", nullable: true })
+  group_id?: string;
+
+  @ManyToOne(() => Group)
+  @JoinColumn({ name: "group_id", referencedColumnName: "id" })
+  group?: Group;
 
   @Column({ type: "character varying", nullable: true })
   user_id?: string;
@@ -111,6 +126,9 @@ export class Coupon extends BaseEntity {
 
   @Column({ type: "timestamp with time zone", nullable: true })
   ends_at?: Date | string | null;
+
+  @Column({ type: "enum", enum: Target, default: Target.ETC })
+  target?: Target;
 
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;

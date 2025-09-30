@@ -56,9 +56,19 @@ export default function ({
 }) {
   const columns: Column[] = [
     {
-      label: "스토어",
-      code: "store",
-      Cell: ({ cell }) => cell?.name || "오류",
+      label: "대상",
+      code: "target",
+      Cell: ({ cell, row }) => {
+        switch (cell) {
+          case "etc":
+            return "기타";
+          case "sign_up":
+            return "신규회원";
+          case "group":
+            return `멤버쉽[${row.group.name}]`;
+        }
+        return "알 수 없음";
+      },
       styling: {
         common: {
           style: {

@@ -23,7 +23,7 @@ export class UserService extends BaseService<User, UserRepository> {
   ): Promise<Pageable<User>> {
     if (options) {
       let where: any = options.where;
-      if (where.q) {
+      if (where?.q) {
         const q = where.q;
         delete where.q;
         where = this.Search(
@@ -45,7 +45,7 @@ export class UserService extends BaseService<User, UserRepository> {
   async getList(options?: FindManyOptions<User>): Promise<User[]> {
     if (options) {
       let where: any = options.where;
-      if (where.q) {
+      if (where?.q) {
         const q = where.q;
         delete where.q;
         where = this.Search(
