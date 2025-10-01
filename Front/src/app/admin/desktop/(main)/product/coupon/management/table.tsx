@@ -45,6 +45,21 @@ export const getCouponDate = (coupon: CouponData): string => {
   }
   return "알 수 없는 오류";
 };
+export const getCouponTarget = (target: Target, coupon: CouponData) => {
+  switch (target) {
+    case "etc":
+      return "기본";
+    case "group":
+      return `멤버쉽${coupon.group?.name ? `[${coupon.group.name}]` : ""} 매월`;
+    case "sign_up":
+      return "신규회원 가입시";
+    case "birthday":
+      return "생일";
+    case "link":
+      return "링크";
+  }
+  return "알 수 없음";
+};
 export default function ({
   initCondition,
   initData,
@@ -58,22 +73,12 @@ export default function ({
     {
       label: "대상",
       code: "target",
-      Cell: ({ cell, row }) => {
-        switch (cell) {
-          case "etc":
-            return "기타";
-          case "sign_up":
-            return "신규회원";
-          case "group":
-            return `멤버쉽[${row.group.name}]`;
-        }
-        return "알 수 없음";
-      },
+      Cell: ({ cell, row }) => getCouponTarget(cell, row),
       styling: {
         common: {
           style: {
-            width: 120,
-            minWidth: 120,
+            width: 200,
+            minWidth: 200,
           },
         },
       },

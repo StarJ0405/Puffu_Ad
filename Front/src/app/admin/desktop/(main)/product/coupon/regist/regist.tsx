@@ -371,145 +371,6 @@ export default function ({
                         borderRight={"none"}
                         borderLeft={"none"}
                         borderTop={"none"}
-                      >
-                        <FlexChild
-                          width={"130px"}
-                          padding={"18px 15px"}
-                          backgroundColor={"#F5F6FB"}
-                          justifyContent={"center"}
-                        >
-                          <P size={16} weight={600}>
-                            날짜적용방식
-                          </P>
-                        </FlexChild>
-                        <FlexChild>
-                          <RadioGroup
-                            name="date"
-                            value={date}
-                            onValueChange={(value) =>
-                              setDate(value as DateType)
-                            }
-                          >
-                            <HorizontalFlex
-                              justifyContent="flex-start"
-                              gap={12}
-                            >
-                              {(
-                                [
-                                  {
-                                    display: "지정일",
-                                    value: "fixed",
-                                  },
-                                  {
-                                    display: "기간",
-                                    value: "range",
-                                  },
-                                  {
-                                    display: "당일",
-                                    value: "day",
-                                  },
-                                  {
-                                    display: "해당주",
-                                    value: "week",
-                                  },
-                                  {
-                                    display: "해당월",
-                                    value: "month",
-                                  },
-                                  {
-                                    display: "해당년도",
-                                    value: "year",
-                                  },
-                                ] as { display: string; value: DateType }[]
-                              ).map((date) => (
-                                <FlexChild
-                                  key={date.value}
-                                  gap={6}
-                                  width={"max-content"}
-                                >
-                                  <RadioChild id={date.value} />
-                                  <P>{date.display}</P>
-                                </FlexChild>
-                              ))}
-                            </HorizontalFlex>
-                          </RadioGroup>
-                        </FlexChild>
-                      </HorizontalFlex>
-                    </FlexChild>
-                    <FlexChild hidden={date !== "fixed" && date !== "range"}>
-                      <HorizontalFlex
-                        gap={20}
-                        border={"1px solid #EFEFEF"}
-                        borderRight={"none"}
-                        borderLeft={"none"}
-                        borderTop={"none"}
-                        justifyContent={"flex-start"}
-                      >
-                        <FlexChild
-                          width={"130px"}
-                          padding={"18px 15px"}
-                          backgroundColor={"#F5F6FB"}
-                          justifyContent={"center"}
-                        >
-                          <P size={16} weight={600}>
-                            적용기간
-                          </P>
-                        </FlexChild>
-                        <FlexChild width={500}>
-                          {date === "fixed" ? (
-                            <DatePicker
-                              showTimePicker
-                              selectionMode="range"
-                              defaultSelectedRange={dates}
-                              onChange={(dates) =>
-                                setDates(dates as [Date, Date])
-                              }
-                            />
-                          ) : (
-                            date === "range" && (
-                              <FlexChild
-                                gap={6}
-                                width={"max-content"}
-                                color="#111"
-                              >
-                                <Select
-                                  classNames={{
-                                    header: styles.select,
-                                  }}
-                                  value={unit}
-                                  width={100}
-                                  maxWidth={100}
-                                  options={options}
-                                  onChange={(value) =>
-                                    setUnit(value as DateUnit)
-                                  }
-                                />
-                                <InputNumber
-                                  hideArrow
-                                  ref={(el) => {
-                                    inputs.current[2] = el;
-                                  }}
-                                  min={0}
-                                  max={999999}
-                                  width={100}
-                                  suffix={
-                                    options.find((f) => f.value === unit)
-                                      ?.suffix
-                                  }
-                                />
-                              </FlexChild>
-                            )
-                          )}
-                        </FlexChild>
-                      </HorizontalFlex>
-                    </FlexChild>
-                    <FlexChild>
-                      <HorizontalFlex
-                        gap={20}
-                        border={"1px solid #EFEFEF"}
-                        borderRight={"none"}
-                        borderLeft={"none"}
-                        borderTop={"none"}
                         justifyContent={"flex-start"}
                       >
                         <FlexChild
@@ -526,9 +387,11 @@ export default function ({
                           <RadioGroup
                             name="target"
                             value={target}
-                            onValueChange={(value) =>
-                              setTarget(value as Target)
-                            }
+                            onValueChange={(value) => {
+                              setTarget(value as Target);
+                              if (value !== "etc" && date === "fixed")
+                                setDate("range");
+                            }}
                           >
                             <HorizontalFlex
                               justifyContent="flex-start"
@@ -604,6 +467,147 @@ export default function ({
                             value={group}
                             onChange={(value) => setGroup(value as string)}
                           />
+                        </FlexChild>
+                      </HorizontalFlex>
+                    </FlexChild>
+                    <FlexChild>
+                      <HorizontalFlex
+                        gap={20}
+                        border={"1px solid #EFEFEF"}
+                        borderRight={"none"}
+                        borderLeft={"none"}
+                        borderTop={"none"}
+                      >
+                        <FlexChild
+                          width={"130px"}
+                          padding={"18px 15px"}
+                          backgroundColor={"#F5F6FB"}
+                          justifyContent={"center"}
+                        >
+                          <P size={16} weight={600}>
+                            날짜적용방식
+                          </P>
+                        </FlexChild>
+                        <FlexChild>
+                          <RadioGroup
+                            name="date"
+                            value={date}
+                            onValueChange={(value) =>
+                              setDate(value as DateType)
+                            }
+                          >
+                            <HorizontalFlex
+                              justifyContent="flex-start"
+                              gap={12}
+                            >
+                              {(
+                                [
+                                  {
+                                    display: "지정일",
+                                    value: "fixed",
+                                  },
+                                  {
+                                    display: "기간",
+                                    value: "range",
+                                  },
+                                  {
+                                    display: "당일",
+                                    value: "day",
+                                  },
+                                  {
+                                    display: "해당주",
+                                    value: "week",
+                                  },
+                                  {
+                                    display: "해당월",
+                                    value: "month",
+                                  },
+                                  {
+                                    display: "해당년도",
+                                    value: "year",
+                                  },
+                                ] as { display: string; value: DateType }[]
+                              )
+                                .slice(target === "etc" ? 0 : 1)
+                                .map((date) => (
+                                  <FlexChild
+                                    key={date.value}
+                                    gap={6}
+                                    width={"max-content"}
+                                  >
+                                    <RadioChild id={date.value} />
+                                    <P>{date.display}</P>
+                                  </FlexChild>
+                                ))}
+                            </HorizontalFlex>
+                          </RadioGroup>
+                        </FlexChild>
+                      </HorizontalFlex>
+                    </FlexChild>
+                    <FlexChild hidden={date !== "fixed" && date !== "range"}>
+                      <HorizontalFlex
+                        gap={20}
+                        border={"1px solid #EFEFEF"}
+                        borderRight={"none"}
+                        borderLeft={"none"}
+                        borderTop={"none"}
+                        justifyContent={"flex-start"}
+                      >
+                        <FlexChild
+                          width={"130px"}
+                          padding={"18px 15px"}
+                          backgroundColor={"#F5F6FB"}
+                          justifyContent={"center"}
+                        >
+                          <P size={16} weight={600}>
+                            적용기간
+                          </P>
+                        </FlexChild>
+                        <FlexChild width={500}>
+                          {date === "fixed" ? (
+                            <DatePicker
+                              showTimePicker
+                              selectionMode="range"
+                              defaultSelectedRange={dates}
+                              onChange={(dates) =>
+                                setDates(dates as [Date, Date])
+                              }
+                            />
+                          ) : (
+                            date === "range" && (
+                              <FlexChild
+                                gap={6}
+                                width={"max-content"}
+                                color="#111"
+                              >
+                                <Select
+                                  classNames={{
+                                    header: styles.select,
+                                  }}
+                                  value={unit}
+                                  width={100}
+                                  maxWidth={100}
+                                  options={options}
+                                  onChange={(value) =>
+                                    setUnit(value as DateUnit)
+                                  }
+                                />
+                                <InputNumber
+                                  hideArrow
+                                  ref={(el) => {
+                                    inputs.current[2] = el;
+                                  }}
+                                  min={0}
+                                  max={999999}
+                                  width={100}
+                                  suffix={
+                                    options.find((f) => f.value === unit)
+                                      ?.suffix
+                                  }
+                                />
+                              </FlexChild>
+                            )
+                          )}
                         </FlexChild>
                       </HorizontalFlex>
                     </FlexChild>
