@@ -5,15 +5,17 @@ import FlexChild from "../flex/FlexChild";
 import HorizontalFlex from "../flex/HorizontalFlex";
 import Image from "../Image/Image";
 import styles from "./ListPagination.module.css";
+import { useEffect, useState, RefObject } from "react";
 
 type Props = {
   page: number;
   maxPage: number;
   onChange: (next: number) => void;
   size?: number;
+  scrollTargetRef?: React.RefObject<HTMLElement>;
 };
 
-function ListPagination({ page, maxPage, onChange, size = 10 }: Props) {
+function ListPagination({ page, maxPage, onChange, size = 10, scrollTargetRef }: Props) {
   const { isMobile } = useBrowserEvent();
 
   const clampIndex = (p: number) =>
@@ -22,7 +24,14 @@ function ListPagination({ page, maxPage, onChange, size = 10 }: Props) {
       Math.min(Number.isFinite(p) ? Math.trunc(p) : 0, Math.max(0, maxPage - 1))
     );
 
-  const go = (p: number) => onChange(clampIndex(p));
+  const go = (p: number) => {
+    onChange(clampIndex(p));
+    if (scrollTargetRef?.current) {
+      scrollTargetRef.current.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth'});
+    }
+  };
 
   const safePage = clampIndex(page);
   const first = safePage === 0;
