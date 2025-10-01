@@ -13,6 +13,7 @@ import { requester } from "@/shared/Requester";
 import clsx from "clsx";
 import mypage from "../mypage.module.css";
 import styles from "./page.module.css";
+import ListPagination from "@/components/listPagination/ListPagination";
 
 export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
   const { userData } = useAuth();
@@ -31,7 +32,10 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
   );
 
   return (
-    <VerticalFlex className={clsx(mypage.box_frame, styles.coupon_box)}>
+    <VerticalFlex
+      
+      className={clsx(mypage.box_frame, styles.coupon_box)}
+    >
       <HorizontalFlex className={mypage.box_header}>
         <P>쿠폰함</P>
         <FlexChild className={mypage.header_subTitle}>
@@ -41,7 +45,7 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
           </P>
         </FlexChild>
       </HorizontalFlex>
-      <FlexChild>
+      <FlexChild minHeight={400} alignItems="flex-start">
         {coupons?.length > 0 ? (
           <HorizontalFlex gap={15} flexWrap="wrap" justifyContent="flex-start">
             {coupons?.map((coupon: CouponData) => (
@@ -51,6 +55,9 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
         ) : (
           <NoContent type="상품" />
         )}
+      </FlexChild>
+      <FlexChild>
+        <ListPagination page={page} maxPage={maxPage} onChange={setPage} size={5}/>
       </FlexChild>
     </VerticalFlex>
   );

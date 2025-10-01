@@ -14,14 +14,14 @@
   background-color: var(--main-color2);
 }
 
-.item{
+.item {
   max-height: 100px;
   max-width: 294px;
   border-radius: 10px;
-  background: linear-gradient(90deg, #2F2F2F 0%, #404040 50%, #3A3A3A 100%);
+  background: linear-gradient(90deg, #2f2f2f 0%, #404040 50%, #3a3a3a 100%);
 }
 
-.item.expired, 
+.item.expired,
 .item.used {
   background: #000;
 }
@@ -44,7 +44,7 @@
   opacity: 20%;
 }
 
-.cutout_wrap{
+.cutout_wrap {
   position: relative;
   width: 20px;
   height: 100%;
