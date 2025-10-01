@@ -15,6 +15,8 @@ export default function SubPageHeader() {
   const params = useParams();
   const pathname = usePathname();
 
+  const mypageCheck = pathname.includes('/mypage');
+
   return (
     <HorizontalFlex className={styles.subHeader}>
       <FlexChild gap={20}>
@@ -53,7 +55,7 @@ export default function SubPageHeader() {
       </FlexChild>
 
       <FlexChild gap={15}>
-        <FlexChild width={"auto"} onClick={() => navigate("/")}>
+        <FlexChild width={"auto"} onClick={() => navigate( !mypageCheck ? "/" : '/mypage')}>
           <Image
             src={"/resources/images/bottomNavi/navi_home.png"}
             width={26}
