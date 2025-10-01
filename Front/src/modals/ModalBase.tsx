@@ -220,6 +220,7 @@ const ModalBase = forwardRef((props: any, ref) => {
             padding: props.padding,
             borderRadius: props.borderRadius,
             backgroundColor: props.backgroundColor,
+            scrollbarWidth: props.scrollbarWidth,
             ...overflowStyles,
           }}
           onClick={insideClickPropagation}

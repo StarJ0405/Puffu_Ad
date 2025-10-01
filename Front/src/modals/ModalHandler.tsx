@@ -13,6 +13,7 @@ import GroupModal from "./admin/group/GroupModal";
 import LoadingModal from "./admin/LoadingModal";
 import NoticeModal from "./admin/notice/NtoiceModal";
 import OrderDetailModal from "./admin/order/OrderDetailModal";
+import OrderExchangeModal from "./admin/order/OrderExchangeModal";
 import OrderRefundModal from "./admin/order/OrderRefundModal";
 import RefundDetailModal from "./admin/order/RefundDetailModal";
 import ProductModal from "./admin/product/ProductModal";
@@ -68,6 +69,7 @@ function ModalHandler() {
   NiceModal.register("noticeDetail", NoticeModal);
   NiceModal.register("orderDetail", OrderDetailModal);
   NiceModal.register("orderRefund", OrderRefundModal);
+  NiceModal.register("orderExchange", OrderExchangeModal);
   NiceModal.register("refundDetail", RefundDetailModal);
   NiceModal.register("orderList", OrderListModal);
   NiceModal.register("userDetail", UserModal);
