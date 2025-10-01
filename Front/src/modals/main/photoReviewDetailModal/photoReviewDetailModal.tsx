@@ -18,6 +18,7 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import styles from "./photoReviewDetailModal.module.css";
 import { requester } from "@/shared/Requester";
+import RecommendButton from "@/components/buttons/RecommendButton";
 
 type ReviewEntity = {
   id: string;
@@ -360,37 +361,19 @@ const PhotoReviewDetailModal = NiceModal.create(
                 />
               )
             }
-
             {review.content && (
               <FlexChild className={styles.content} alignItems="start">
                 <P>{review.content}</P>
               </FlexChild>
             )}
-
-            <VerticalFlex className={styles.recommend}>
-              <P>이 리뷰가 도움이 되었나요?</P>
-              <Button
-                className={clsx(
-                  styles.recommend_btn,
-                  liked && styles.recommend_btnActive
-                )}
-                aria-pressed={liked}
-                data-active={liked}
-                disabled={likeLoading}
-                onClick={toggleRecommend}
-              >
-                <Image
-                  src={
-                    liked
-                      ? "/resources/icons/board/review_like.png"
-                      : "/resources/icons/board/review_like.png"
-                  }
-                  width={20}
-                  height={"auto"}
-                />
-                <P>{liked ? "추천 취소" : "도움이 됐어요"}</P>
-              </Button>
-            </VerticalFlex>
+            <RecommendButton
+              reviewId={review.id}
+              classNames={{
+                wrap: styles.recommend,
+                button: styles.recommend_btn,
+                buttonActive: styles.recommend_btnActive,
+              }}
+            />
           </VerticalFlex>
         </VerticalFlex>
       </ModalBase>

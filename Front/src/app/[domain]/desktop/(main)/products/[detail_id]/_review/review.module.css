@@ -204,3 +204,21 @@
   border-bottom: 1px solid var(--line-color, #2b2b2b);
   padding-bottom: 20px;    /* 필요 시 간격 조정 */
 }
+
+.mob_container .user_data_wrap .recommend .recommend_btn:active {
+  border-color: var(--main-color1);
+  color: var(--main-color1);
+}
+
+.container .user_data_wrap .recommend .recommend_btnActive,
+.mob_container .user_data_wrap .recommend .recommend_btnActive {
+  border-color: var(--main-color1);
+  color: var(--main-color1);
+  background: color-mix(in srgb, var(--main-color1) 15%, transparent);
+}
+
+
+.container .user_data_wrap .recommend .recommend_btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
