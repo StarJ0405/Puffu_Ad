@@ -182,9 +182,22 @@
 
 
 
-/* 랭크 아이콘 */
-.item_wrap {position: relative;}
 
+/* .motion_wrap {
+   animation: itemOpacity 1s forwards;
+   transition-delay: calc(var(--index_count) * 1s);
+}
+
+@keyframes itemOpacity {
+   from {opacity: 0; transform: translateY(10%);}
+   to {opacity: 1; transform: translateY(0);}
+} */
+
+.item_wrap {
+   position: relative;
+}
+
+/* 랭크 아이콘 */
 .item_wrap .rank {
    position: absolute;
    top: 7px; left: 7px;

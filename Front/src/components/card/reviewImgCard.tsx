@@ -150,7 +150,7 @@ export default function ReviewImgCard({
                   </P>
                 </VerticalFlex>
               </FlexChild>
-              <P> 추천수 <Span>{recommendCount}</Span></P>
+              <P hidden> 추천수 <Span>{recommendCount}</Span></P>
             </HorizontalFlex>
           </FlexChild>
         </VerticalFlex>
