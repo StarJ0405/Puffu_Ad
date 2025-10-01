@@ -30,6 +30,7 @@ import usePageData from "@/shared/hooks/data/usePageData";
 import { toast, maskEmail, maskTwoThirds } from "@/shared/utils/Functions";
 import StarRate from "@/components/star/StarRate";
 import NoContent from "@/components/noContent/noContent";
+import RecommendButton from "@/components/buttons/RecommendButton";
 
 export default function Review({ product }: { product: ProductData }) {
   const navigate = useNavigate();
@@ -181,26 +182,21 @@ export default function Review({ product }: { product: ProductData }) {
                         </P>
                       </FlexChild>
 
-                      <FlexChild >
+                      <FlexChild>
                         {/* 리뷰 추천 표시 */}
-                        <P size={14} color="#eee">{3}명에게 도움이 되었어요.</P>
+                        <P size={14} color="#eee">
+                          {3}명에게 도움이 되었어요.
+                        </P>
                       </FlexChild>
                     </VerticalFlex>
-
-                    <VerticalFlex className={styles.recommend} gap={15}>
-                      <P>이 리뷰가 도움이 되었나요?</P>
-                      <Button 
-                        className={styles.recommend_btn}
-                        onClick={()=> toast({ message: '리뷰가 추천되었습니다.' })}
-                      >
-                        <Image
-                          src={"/resources/icons/board/review_like.png"}
-                          width={16}
-                          height={"auto"}
-                        />
-                        <P>도움이 됐어요</P>
-                      </Button>
-                    </VerticalFlex>
+                    <RecommendButton
+                      reviewId={r.id}
+                      classNames={{
+                        wrap: styles.recommend,
+                        button: styles.recommend_btn,
+                        buttonActive: styles.recommend_btnActive,
+                      }}
+                    />
                   </VerticalFlex>
 
                   <VerticalFlex gap={25}>
@@ -239,35 +235,30 @@ export default function Review({ product }: { product: ProductData }) {
                         </FlexChild>
                       </FlexChild>
                     </HorizontalFlex>
-                    
 
                     <HorizontalFlex className={styles.content}>
-                      {
-                        r.images.length > 0 && (
-                          <FlexChild
-                            width={180}
-                            height={180}
-                            overflow="hidden"
-                            className={styles.img_box}
-                            cursor="pointer"
-                            onClick={() =>
-                              NiceModal.show("ImgViewSliderModal", {
-                                images: r.images,
-                                height: "auto",
-                              })
-                            }
-                            backgroundImage={`url(${r.images[0]})`}
-                          >
-                            <Div className={styles.img_length}>
-                              {r.images.length}
-                            </Div>
+                      {r.images.length > 0 && (
+                        <FlexChild
+                          width={180}
+                          height={180}
+                          overflow="hidden"
+                          className={styles.img_box}
+                          cursor="pointer"
+                          onClick={() =>
+                            NiceModal.show("ImgViewSliderModal", {
+                              images: r.images,
+                              height: "auto",
+                            })
+                          }
+                          backgroundImage={`url(${r.images[0]})`}
+                        >
+                          <Div className={styles.img_length}>
+                            {r.images.length}
+                          </Div>
 
-                            <Div className={styles.click_layer}>
-                              자세히 보기
-                            </Div>
-                          </FlexChild>
-                        )
-                      }
+                          <Div className={styles.click_layer}>자세히 보기</Div>
+                        </FlexChild>
+                      )}
                       <P size={14} color="#fff" lineHeight={1.6}>
                         {r.content}
                       </P>
