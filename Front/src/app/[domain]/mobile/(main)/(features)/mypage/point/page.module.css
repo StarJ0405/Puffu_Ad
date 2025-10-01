@@ -1,0 +1,110 @@
+.my_point_box {
+  gap: 15px;
+  padding: 15px 10px;
+  border-radius: 10px;
+  background-color: var(--main-color2);
+}
+
+.my_point_box .title {
+  justify-content: flex-start;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.my_point {
+  justify-content: flex-end;
+  font-size: 25px;
+  font-weight: 700;
+}
+
+/* 기간선택 */
+.picker_input_box {
+  padding-bottom: 10px;
+}
+
+.picker_input_box .dataPicker_box {
+  gap: 15px;
+}
+
+.picker_input_box .dataPicker_box .btn_wrap {
+  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.picker_input_box .dataPicker_box .btn_wrap .term_btn {
+  padding: 5px;
+  width: 100%;
+  max-width: 100px;
+  border: 1px solid #797979;
+  border-radius: 5px;
+  font-size: 14px;
+  color: #797979;
+  background: #222;
+}
+
+.picker_input_box .dataPicker_box .btn_wrap .term_btn.active {
+  color: #fff;
+  border-color: #fff;
+  background: #050505;
+}
+
+.picker_input_box .dataPicker_box .picker_wrap {
+  gap: 10px;
+}
+.picker_input_box .dataPicker_box .picker_input {
+  color: #ddd !important;
+}
+
+.datePickerWrapper {
+  width: 100%;
+}
+
+.datePickerWrapper > :global(div[class*="datePickerContainer"]) {
+  display: block;
+  width: 100%;
+}
+
+.datePickerWrapper :global(div[class*="dateDisplay"]) {
+  width: 100%;
+  box-sizing: border-box;
+  background: #222;
+  border-color: #797979;
+  color: #ddd;
+}
+
+/* 포인트 내역 */
+.point_history {
+  padding-bottom: 40px;
+}
+
+.point_history .dete{
+  font-size: 15px;
+}
+
+.point_history .title {
+  font-size: 14px;
+}
+
+.point_history .time,
+.point_history .points_balance {
+  font-size: 13px;
+  color: #797979;
+}
+
+.point_history .point {
+  font-weight: 600;
+}
+
+.point_history .status {
+  font-weight: 600;
+}
+
+.point_history .status.used {
+  color: var(--main-color2);
+}
+
+.point_history .space_line {
+  height: 11px;
+  width: 100%;
+  background-color: #323232;
+}
