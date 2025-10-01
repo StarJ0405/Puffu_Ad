@@ -2,7 +2,7 @@ import { BaseService } from "data-source";
 import { Coupon } from "models/coupon";
 import { CouponRepository } from "repositories/coupon";
 import { inject, injectable } from "tsyringe";
-import { FindManyOptions, FindOneOptions, In } from "typeorm";
+import { Brackets, FindManyOptions, FindOneOptions } from "typeorm";
 
 @injectable()
 export class CouponService extends BaseService<Coupon, CouponRepository> {
@@ -47,6 +47,73 @@ export class CouponService extends BaseService<Coupon, CouponRepository> {
       }
     }
     return super.getList(options);
+  }
+  async getWithOrder(options: FindOneOptions<Coupon>, pageData?: PageData) {
+    const where: any = options?.where;
+    let builder = this.repository.builder("cu");
+    if (where.user_id)
+      builder = builder.andWhere(`user_id = :user_id`, {
+        user_id: where.user_id,
+      });
+    if ("used" in where) {
+      if (where.used)
+        builder = builder.andWhere(
+          `(cu.item_id IS NOT NULL OR cu.order_id IS NOT NULL OR cu.shipping_method_id IS NOT NULL OR cu.ends_at <= NOW())`
+        );
+      else
+        builder = builder.andWhere(
+          `(cu.item_id IS NULL AND cu.order_id IS NULL AND cu.shipping_method_id IS NULL AND cu.ends_at > NOW())`
+        );
+    }
+    if (where.q) {
+      const q = where.q;
+      builder = builder.andWhere(
+        new Brackets((sub) =>
+          sub
+            .where(
+              `fn_text_to_char_array(cu.name) @> fn_text_to_char_array(:q)`,
+              {
+                q,
+              }
+            )
+            .orWhere(
+              `fn_text_to_char_array(cu.id) @> fn_text_to_char_array(:q)`
+            )
+        )
+      );
+    }
+    if (!options.order) {
+      builder = builder
+        .addSelect(
+          `CASE WHEN cu.item_id IS NULL AND cu.order_id IS NULL AND cu.shipping_method_id IS NULL AND cu.ends_at > NOW() THEN 0 ELSE 1 END, cu.ends_at`,
+          "ord"
+        )
+        .orderBy("ord", "DESC")
+        .addOrderBy("cu.created_at", "DESC");
+    }
+    if (pageData) {
+      const { pageSize, pageNumber = 0 } = pageData;
+      const NumberOfTotalElements = await builder.getCount();
+      const content = await builder
+        .take(pageSize)
+        .skip(pageNumber * pageSize)
+        .getMany();
+      const NumberOfElements = content.length;
+      const totalPages =
+        pageSize > 0 ? Math.ceil(NumberOfTotalElements / pageSize) : 0;
+      const last = pageNumber === totalPages - 1;
+      return {
+        content,
+        pageSize,
+        pageNumber,
+        NumberOfTotalElements,
+        NumberOfElements,
+        totalPages,
+        last,
+      };
+    } else {
+      return await builder.getMany();
+    }
   }
   async giveCoupon(user_id: string, coupons: Coupon | Coupon[]) {
     coupons = Array.isArray(coupons) ? coupons : [coupons];

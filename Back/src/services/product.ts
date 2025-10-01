@@ -131,7 +131,7 @@ export class ProductService extends BaseService<Product, ProductRepository> {
           break;
         }
         case "low_price": {
-          builder
+          builder = builder
             .leftJoin(
               `(SELECT dp.product_id AS id, MAX(value) as value
                 FROM discount_product dp 
@@ -155,7 +155,7 @@ export class ProductService extends BaseService<Product, ProductRepository> {
           break;
         }
         case "high_price": {
-          builder
+          builder = builder
             .leftJoin(
               `(SELECT dp.product_id AS id, MAX(value) as value
                   FROM discount_product dp 
@@ -179,7 +179,7 @@ export class ProductService extends BaseService<Product, ProductRepository> {
           break;
         }
         case "sell": {
-          builder
+          builder = builder
             .leftJoin(
               `(SELECT v.product_id AS id, SUM(l.quantity + l.extra_quantity) AS sell FROM line_item l JOIN "order" o on l.order_id = o.id JOIN variant v ON v.id = l.variant_id GROUP BY v.product_id)`,
               "sell",
@@ -255,7 +255,7 @@ export class ProductService extends BaseService<Product, ProductRepository> {
           break;
         }
         case "random": {
-          builder
+          builder = builder
             .addSelect("Random()", "rand")
             .orderBy("rand", "DESC")
             .addOrderBy("p.created_at", "DESC");
