@@ -8,12 +8,12 @@ import {
   ManyToOne,
 } from "typeorm";
 import { generateEntityId } from "utils/functions";
+import { Group } from "./group";
 import { LineItem } from "./line_item";
 import { Order } from "./order";
 import { ShippingMethod } from "./shipping_method";
 import { Store } from "./store";
 import { User } from "./user";
-import { Group } from "./group";
 
 /*
  * user_id가 없는 경우는 미리 작성된 쿠폰 형태
@@ -130,6 +130,9 @@ export class Coupon extends BaseEntity {
   @Column({ type: "enum", enum: Target, default: Target.ETC })
   target?: Target;
 
+  get used(): boolean {
+    return !!(this.item_id || this.order_id || this.shipping_method_id);
+  }
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;
 
@@ -140,6 +143,7 @@ export class Coupon extends BaseEntity {
   toJSON() {
     const result = {
       ...this,
+      used: this.used,
     };
     return result;
   }

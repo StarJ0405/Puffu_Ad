@@ -13,7 +13,7 @@ export default function ({ children }: { children: React.ReactNode }) {
   useClientEffect(() => {
     if (pathname === "/login") {
       if (
-        userData &&
+        userData?.id &&
         (userData.role === "admin" || userData.role === "developer")
       ) {
         const redirect_url = searchParams.get("redirect_url");
@@ -21,7 +21,7 @@ export default function ({ children }: { children: React.ReactNode }) {
       }
     } else {
       if (
-        !userData ||
+        !userData?.id ||
         (userData.role !== "admin" && userData.role !== "developer")
       ) {
         navigate(

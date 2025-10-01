@@ -1,4 +1,3 @@
-
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import mypage from "../mypage.module.css";
 import clsx from "clsx";
@@ -8,18 +7,16 @@ import { CouponList } from "./client";
 import { requester } from "@/shared/Requester";
 
 export default async function () {
-  // const initWishList = await requester.getWishlists({
-  //   relations: ["product"],
-  //   pageSize: 10,
-  // });
+  const initCoupons = await requester.getCoupons({
+    pageSize: 12,
+  });
   return (
     <>
       <VerticalFlex
         className={clsx(mypage.box_frame, styles.coupon_box)}
         gap={35}
       >
-
-        <CouponList />
+        <CouponList initCoupons={initCoupons} />
       </VerticalFlex>
     </>
   );

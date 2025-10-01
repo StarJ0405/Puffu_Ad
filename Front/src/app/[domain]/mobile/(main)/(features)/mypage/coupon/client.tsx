@@ -12,38 +12,91 @@ import mypage from "../mypage.module.css";
 import Span from "@/components/span/Span";
 import Image from "@/components/Image/Image";
 import Div from "@/components/div/Div";
-import styles from './page.module.css'
+import styles from "./page.module.css";
 import clsx from "clsx";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 
-export function CouponList() {
-
+export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
+  const { userData } = useAuth();
+  const { coupons, page, maxPage, setPage } = usePageData(
+    "coupons",
+    (pageNumber) => ({
+      pageNumber,
+      pageSize: 12,
+    }),
+    (condition) => requester.getCoupons(condition),
+    (data: Pageable) => data?.totalPages || 0,
+    {
+      fallbackData: initCoupons,
+      onReprocessing: (data) => data?.content || [],
+    }
+  );
   const test = [
-    { name: '리얼 후기왕 선정 30% 할인쿠폰', date: ' 2025-11-20', expired: false, used: false },
-    { name: '리얼 후기왕 선정 30% 할인쿠폰', date: ' 2025-11-20', expired: false, used: false },
-    { name: '리얼 후기왕 선정 30% 할인쿠폰', date: ' 2025-11-20', expired: false, used: false },
-    { name: '리얼 후기왕 선정 30% 할인쿠폰', date: ' 2025-11-20', expired: true, used: false },
-    { name: '리얼 후기왕 선정 30% 할인쿠폰', date: ' 2025-11-20', expired: false, used: true },
-  ]
+    {
+      name: "리얼 후기왕 선정 30% 할인쿠폰",
+      date: " 2025-11-20",
+      expired: false,
+      used: false,
+    },
+    {
+      name: "리얼 후기왕 선정 30% 할인쿠폰",
+      date: " 2025-11-20",
+      expired: false,
+      used: false,
+    },
+    {
+      name: "리얼 후기왕 선정 30% 할인쿠폰",
+      date: " 2025-11-20",
+      expired: false,
+      used: false,
+    },
+    {
+      name: "리얼 후기왕 선정 30% 할인쿠폰",
+      date: " 2025-11-20",
+      expired: true,
+      used: false,
+    },
+    {
+      name: "리얼 후기왕 선정 30% 할인쿠폰",
+      date: " 2025-11-20",
+      expired: false,
+      used: true,
+    },
+  ];
 
   return (
     <>
       <HorizontalFlex className={mypage.box_header} justifyContent="flex-start">
         <P>사용 가능 쿠폰</P>
         <P className={styles.total_count}>
-          <Span>3</Span>
+          <Span>{userData?.coupon}</Span>
         </P>
       </HorizontalFlex>
-      {test.length > 0 ? (
+      {coupons?.length > 0 ? (
         <VerticalFlex gap={15}>
-          {test.map((item, i) => {
-
-            return (
-              <CouponCard
-                key={i}
-                item={item}
-              />
-            );
-          })}
+          {coupons
+            ?.sort((c1: CouponData, c2: CouponData) => {
+              const c1Check =
+                c1.used ||
+                new Date(c1.ends_at || 0).getTime() < new Date().getTime();
+              const c2Check =
+                c2.used ||
+                new Date(c2.ends_at || 0).getTime() < new Date().getTime();
+              if ((c1Check && c2Check) || (!c1Check && !c2Check)) {
+                return (
+                  new Date(c1.ends_at || 0).getTime() -
+                  new Date(c2.ends_at || 0).getTime()
+                );
+              } else if (c1Check) {
+                return 1;
+              } else if (c2Check) {
+                return -1;
+              }
+              return 0;
+            })
+            ?.map((coupon: CouponData) => (
+              <CouponCard key={coupon.id} coupon={coupon} />
+            ))}
         </VerticalFlex>
       ) : (
         <NoContent type="상품" />
@@ -52,20 +105,40 @@ export function CouponList() {
   );
 }
 
-
-function CouponCard({
-  item
-}: {
-  item: any;
-}) {
-  const isExpired = item.expired;
-  const isUsed = item.used;
+function CouponCard({ coupon }: { coupon: CouponData }) {
+  const isExpired =
+    new Date(coupon.ends_at || 0).getTime() < new Date().getTime();
+  const isUsed = coupon.used;
   return (
-    <FlexChild className={clsx(styles.item, isExpired && styles.expired, isUsed && styles.used)}>
+    <FlexChild
+      className={clsx(styles.item, {
+        [styles.expired]: isExpired,
+        [styles.used]: isUsed,
+      })}
+    >
       <HorizontalFlex>
-        <VerticalFlex gap={10} padding={"20px 0 20px 15px"} alignItems="flex-start">
-          <P className={clsx(styles.name, isExpired && styles.expired, isUsed && styles.used)}>{item.name}</P>
-          <P className={clsx(styles.date, isExpired && styles.expired, isUsed && styles.used)}>사용기간 {item.date} 까지</P>
+        <VerticalFlex
+          gap={10}
+          padding={"20px 0 20px 15px"}
+          alignItems="flex-start"
+        >
+          <P
+            className={clsx(styles.name, {
+              [styles.expired]: isExpired,
+              [styles.used]: isUsed,
+            })}
+          >
+            {coupon.name}
+          </P>
+          <P
+            className={clsx(
+              styles.date,
+              isExpired && styles.expired,
+              isUsed && styles.used
+            )}
+          >
+            사용기간 {new Date(coupon?.ends_at || 0).toLocaleDateString()} 까지
+          </P>
         </VerticalFlex>
 
         <FlexChild className={styles.cutout_wrap}>
@@ -78,11 +151,15 @@ function CouponCard({
         <FlexChild className={styles.icon_wrap} width={"fit-content"}>
           {isUsed ? (
             <P className={styles.txt}>
-              사용<br />완료
+              사용
+              <br />
+              완료
             </P>
           ) : isExpired ? (
             <P className={styles.txt}>
-              기간<br />만료
+              기간
+              <br />
+              만료
             </P>
           ) : (
             <Image
@@ -92,8 +169,7 @@ function CouponCard({
             />
           )}
         </FlexChild>
-
       </HorizontalFlex>
     </FlexChild>
-  )
+  );
 }
