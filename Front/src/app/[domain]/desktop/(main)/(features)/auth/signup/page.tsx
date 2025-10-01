@@ -354,8 +354,8 @@ function PASS({ setStep, handleUpdate }: StepProps) {
                 }}
                 height={50}
                 maxHeight={300}
-                width={114}
-                minWidth={114}
+                width={"100%"}
+                minWidth={130}
               />
               <FlexChild>
                 <Input
@@ -655,8 +655,8 @@ function SMS({ setStep, handleUpdate }: StepProps) {
                 }}
                 height={50}
                 maxHeight={300}
-                width={114}
-                minWidth={114}
+                width={"100%"}
+                minWidth={130}
               />
               <FlexChild position="relative">
                 <Input
