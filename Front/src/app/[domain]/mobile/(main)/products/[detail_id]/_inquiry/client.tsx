@@ -22,6 +22,7 @@ import styles from "./inquiry.module.css";
 import NoContent from "@/components/noContent/noContent";
 import ConfirmModal from "@/modals/confirm/ConfirmModal";
 import NiceModal from "@ebay/nice-modal-react";
+import React, { useRef } from "react";
 
 interface InquiryClientProps {
   qaList: QAData[];
@@ -155,6 +156,8 @@ export default function InquiryClient({
     );
   };
 
+  const inquiryRef = useRef<HTMLDivElement>(null);
+
   return (
     <VerticalFlex className={styles.inquiry_wrap}>
       <VerticalFlex className={styles.inquiry_board}>
@@ -203,7 +206,7 @@ export default function InquiryClient({
               </label>
             </CheckboxGroup>
           </VerticalFlex>
-
+          <div ref={inquiryRef}/>
           <FlexChild justifyContent="center" marginTop={10}>
             <Button className="post_btn" onClick={handleSubmit}>
               문의하기
@@ -309,12 +312,13 @@ export default function InquiryClient({
           ) : (
             <NoContent type="문의" />
           )}
-
+          
           <FlexChild justifyContent="center">
             <ListPagination
               page={page}
               maxPage={totalPage}
               onChange={handlePageChange}
+              scrollTargetRef={inquiryRef as React.RefObject<HTMLElement>}
             />
           </FlexChild>
         </VerticalFlex>
