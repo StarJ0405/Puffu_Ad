@@ -403,7 +403,7 @@ function UserData({
 
       <FlexChild hidden>
         {/* 리뷰 추천 표시 */}
-        <P size={14} color="#fff">
+        <P size={14} color="#fff" hidden>
           {3}명에게 도움이 되었어요.
         </P>
       </FlexChild>
