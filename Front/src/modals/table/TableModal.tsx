@@ -10,16 +10,20 @@ import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventPr
 import NiceModal from "@ebay/nice-modal-react";
 
 import _ from "lodash";
-import { useRef } from "react";
+import React, { useRef } from "react";
 import ModalBase from "../ModalBase";
 import styles from "./TableModal.module.css";
 
 const TableModal = NiceModal.create(
   ({
     name = "modal",
+    indexing = true,
     slideUp = true,
     width = "100vw",
     height = "100%",
+    maxHeight,
+    overflow,
+    scrollbarWidth,
     columns = [],
     initCondition = {},
     limit = 20,
@@ -32,11 +36,19 @@ const TableModal = NiceModal.create(
     onReprocessing,
     onSearch,
     onSelect,
+    onInput = (q) => {
+      if (q) return { q };
+      return {};
+    },
   }: {
     name?: string;
+    indexing?: boolean;
     slideUp?: boolean;
     width?: React.CSSProperties["width"];
     height?: React.CSSProperties["height"];
+    maxHeight?: React.CSSProperties["maxHeight"];
+    overflow?: React.CSSProperties["overflow"];
+    scrollbarWidth?: React.CSSProperties["scrollbarWidth"];
     columns?: Column[];
     initCondition?: any;
     limit?: number;
@@ -49,6 +61,7 @@ const TableModal = NiceModal.create(
     onReprocessing?: (data: any) => any;
     onSearch?: (condition: any) => any;
     onSelect?: (data: any) => void;
+    onInput?: (q: string) => any;
   }) => {
     const [withHeader, withFooter] = [false, false];
     const title = "";
@@ -71,6 +84,9 @@ const TableModal = NiceModal.create(
         buttonText={buttonText}
         borderRadius={6}
         slideUp={slideUp}
+        maxHeight={maxHeight}
+        overflow={overflow}
+        scrollbarWidth={scrollbarWidth}
       >
         <FlexChild backgroundColor={"#FFF"} hidden={!isMobile}>
           <VerticalFlex padding={16}>
@@ -99,6 +115,7 @@ const TableModal = NiceModal.create(
         )}
 
         <Table
+          indexing={indexing}
           ref={tableRef}
           name={name}
           columns={columns}
@@ -139,9 +156,9 @@ const TableModal = NiceModal.create(
                   placeHolder="검색어를 입력하세요"
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      const data: any = {};
                       const q = e.currentTarget.value;
-                      if (q) data.q = q;
+                      const data: any = onInput(q);
+
                       tableRef.current.setCondition(data, true);
                     }
                   }}
@@ -159,8 +176,7 @@ const TableModal = NiceModal.create(
                         `${uuid}_table_input`
                       ) as HTMLInputElement
                     ).value;
-                    const data: any = {};
-                    if (q) data.q = q;
+                    const data: any = onInput(q);
                     tableRef.current.setCondition(data, true);
                   }}
                 />

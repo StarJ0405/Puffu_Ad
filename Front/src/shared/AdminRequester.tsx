@@ -446,6 +446,15 @@ class _AdminRequester {
     if (callback) callback(await this.post(`/orders/${order_id}/refund`, data));
     else return await this.post(`/orders/${order_id}/refund`, data);
   }
+  async exchangeOrder(
+    order_id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback)
+      callback(await this.post(`/orders/${order_id}/exchange`, data));
+    else return await this.post(`/orders/${order_id}/exchange`, data);
+  }
   // 주문서 환불
   async getReufnds(data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.get(`/refunds`, data));

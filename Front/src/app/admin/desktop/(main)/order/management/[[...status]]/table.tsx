@@ -583,15 +583,26 @@ export default function ({
             0
         )
       ) {
-        rows.push({
-          label: "환불 신청",
-          hotKey: "f",
-          onClick: () =>
-            NiceModal.show("orderRefund", {
-              order: row,
-              onSuccess: () => table.current.research(),
-            }),
-        });
+        rows.push(
+          {
+            label: "환불 신청",
+            hotKey: "f",
+            onClick: () =>
+              NiceModal.show("orderRefund", {
+                order: row,
+                onSuccess: () => table.current.research(),
+              }),
+          },
+          {
+            label: "교환 신청",
+            hotKey: "x",
+            onClick: () =>
+              NiceModal.show("orderExchange", {
+                order: row,
+                onSuccess: () => table.current.research(),
+              }),
+          }
+        );
       }
     }
     return { x, y, rows };
