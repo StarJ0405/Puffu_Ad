@@ -8,6 +8,7 @@ import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import { requester } from "@/shared/Requester";
 import { toast } from "@/shared/utils/Functions";
+import styles from "@/components/buttons/RecommendButton.module.css";
 
 type ClassNames = {
   wrap?: string;
@@ -27,13 +28,23 @@ type RecommendButtonProps = {
 
 export default function RecommendButton({
   reviewId,
-  classNames,
+  classNames: _classNames = {
+    wrap: styles.wrap,
+    button: styles.button,
+    buttonActive: styles.buttonActive,
+  },
   iconSrc = "/resources/icons/board/review_like.png",
   promptText = "이 리뷰가 도움이 되었나요?",
   confirmText = "도움이 됐어요",
   cancelText = "추천 취소",
   onToggle,
 }: RecommendButtonProps) {
+  const classNames = {
+    wrap: styles.wrap,
+    button: styles.button,
+    buttonActive: styles.buttonActive,
+    ..._classNames,
+  };
   const [liked, setLiked] = useState(false);
   const [likeLoading, setLikeLoading] = useState(false);
 
@@ -88,8 +99,8 @@ export default function RecommendButton({
     <VerticalFlex className={classNames?.wrap} gap={15}>
       <P>{promptText}</P>
       <Button
-        className={clsx(classNames?.button, {
-          [classNames?.buttonActive!]: liked,
+        className={clsx(classNames.button, {
+          [classNames.buttonActive!]: liked,
         })}
         aria-pressed={liked}
         data-active={liked}

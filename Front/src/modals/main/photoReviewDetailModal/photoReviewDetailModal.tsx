@@ -368,11 +368,6 @@ const PhotoReviewDetailModal = NiceModal.create(
             )}
             <RecommendButton
               reviewId={review.id}
-              classNames={{
-                wrap: styles.recommend,
-                button: styles.recommend_btn,
-                buttonActive: styles.recommend_btnActive,
-              }}
             />
           </VerticalFlex>
         </VerticalFlex>
