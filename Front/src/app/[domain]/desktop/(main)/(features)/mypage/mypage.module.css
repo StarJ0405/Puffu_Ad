@@ -110,6 +110,12 @@
   justify-content: flex-end;
   font-size: 25px;
   font-weight: 700;
+  cursor: pointer;
+}
+
+.profile .coupon_box .coupon:hover,
+.profile .point_box .point:hover {
+  text-decoration: underline;
 }
 
 .profile .point_box .currency {

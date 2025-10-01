@@ -316,6 +316,8 @@ export function MypageNavi() {
 
   const myInfoMenu = [
     { name: "배송지 관리", link: "/mypage/delivery" },
+    { name: "쿠폰함", link: "/mypage/coupon" },
+    { name: "포인트 내역", link: "/mypage/point" },
     { name: "문의내역", link: "/mypage/inquiry" },
     { name: "리뷰 관리", link: "/mypage/review" },
     { name: "회원탈퇴", link: "/mypage/deleteAccount" },

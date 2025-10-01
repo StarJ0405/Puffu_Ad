@@ -8,29 +8,33 @@
 }
 
 .point_detail .store {
-  font-size: 12px;
+  font-size: 13px;
   color: #797979;
 }
 
 .point_detail .title,
 .point_detail .option {
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .point_detail .points_balance_txt {
-  padding-top: 10px;
-  font-size: 14px;
+  padding-top: 15px;
+  font-size: 15px;
   color: #797979;
 }
 
 .point_detail .point_box {
-  padding: 14px 10px;
+  padding: 20px 10px;
   border-radius: 10px;
   background-color: #383838;
 }
 
+.point_detail .point_box .point_txt {
+   font-size: 18px;
+}
+
 .point_detail .point_box .point {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
 }
 .point_detail .point_box .point.used {
