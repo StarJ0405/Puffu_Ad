@@ -184,7 +184,7 @@ export default function Review({ product }: { product: ProductData }) {
 
                       <FlexChild>
                         {/* 리뷰 추천 표시 */}
-                        <P size={14} color="#eee">
+                        <P size={14} color="#eee" hidden>
                           {3}명에게 도움이 되었어요.
                         </P>
                       </FlexChild>

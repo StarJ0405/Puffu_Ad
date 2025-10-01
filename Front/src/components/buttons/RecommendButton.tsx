@@ -96,7 +96,7 @@ export default function RecommendButton({
   }, [liked, likeLoading, reviewId, onToggle]);
 
   return (
-    <VerticalFlex className={classNames?.wrap} gap={15}>
+    <VerticalFlex className={classNames?.wrap} gap={15} hidden>
       <P>{promptText}</P>
       <Button
         className={clsx(classNames.button, {
