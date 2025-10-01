@@ -31,39 +31,6 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
       onReprocessing: (data) => data?.content || [],
     }
   );
-  const test = [
-    {
-      name: "리얼 후기왕 선정 30% 할인쿠폰",
-      date: " 2025-11-20",
-      expired: false,
-      used: false,
-    },
-    {
-      name: "리얼 후기왕 선정 30% 할인쿠폰",
-      date: " 2025-11-20",
-      expired: false,
-      used: false,
-    },
-    {
-      name: "리얼 후기왕 선정 30% 할인쿠폰",
-      date: " 2025-11-20",
-      expired: false,
-      used: false,
-    },
-    {
-      name: "리얼 후기왕 선정 30% 할인쿠폰",
-      date: " 2025-11-20",
-      expired: true,
-      used: false,
-    },
-    {
-      name: "리얼 후기왕 선정 30% 할인쿠폰",
-      date: " 2025-11-20",
-      expired: false,
-      used: true,
-    },
-  ];
-
   return (
     <>
       <HorizontalFlex className={mypage.box_header} justifyContent="flex-start">
