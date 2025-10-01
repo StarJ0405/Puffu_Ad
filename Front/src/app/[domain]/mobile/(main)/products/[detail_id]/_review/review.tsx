@@ -30,6 +30,7 @@ import usePageData from "@/shared/hooks/data/usePageData";
 import { toast, maskEmail, maskTwoThirds } from "@/shared/utils/Functions";
 import StarRate from "@/components/star/StarRate";
 import NoContent from "@/components/noContent/noContent";
+import RecommendButton from "@/components/buttons/RecommendButton";
 
 export default function Review({ product }: { product: ProductData }) {
   const navigate = useNavigate();
@@ -255,20 +256,7 @@ export default function Review({ product }: { product: ProductData }) {
                     </VerticalFlex>
                   </VerticalFlex>
 
-                  <FlexChild className={styles.recommend} gap={15}>
-                      <P>이 리뷰가 도움이 되었나요?</P>
-                      <Button 
-                        className={styles.recommend_btn}
-                        onClick={()=> toast({ message: '리뷰가 추천되었습니다.' })}
-                      >
-                        <Image
-                          src={"/resources/icons/board/review_like.png"}
-                          width={16}
-                          height={"auto"}
-                        />
-                        <P>도움이 됐어요</P>
-                      </Button>
-                    </FlexChild>
+                  <RecommendButton reviewId={r.id} />
                 </VerticalFlex>
               ))
             ) : (
