@@ -522,4 +522,5 @@ interface CouponData extends BaseEntity, CouponDataFrame {
   shipping_method_id?: string;
   shipping_method?: ShippingMethodData;
   group?: GroupData;
+  used: boolean;
 }
