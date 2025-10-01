@@ -165,7 +165,7 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
                   />
                   <P>보유쿠폰</P>
                 </FlexChild>
-                <FlexChild className={styles.coupon}>
+                <FlexChild className={styles.coupon} onClick={()=> navigate('/mypage/coupon')}>
                   <P>{userData?.coupon}</P>
                   <P>개</P>
                 </FlexChild>
@@ -175,7 +175,7 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
                   <P paddingRight={4}>나의 포인트</P>
                   <P className={styles.currency}>P</P>
                 </FlexChild>
-                <FlexChild className={styles.point}>
+                <FlexChild className={styles.point} onClick={()=> navigate('/mypage/point')}>
                   <P paddingRight={4}>{userData?.point}</P>
                   <P className={styles.currency}>P</P>
                 </FlexChild>
@@ -208,6 +208,8 @@ export function MypageNavi() {
 
   const myInfoMenu = [
     { name: "배송지 관리", link: "/mypage/delivery" },
+    { name: "쿠폰함", link: "/mypage/coupon" },
+    { name: "포인트 내역", link: "/mypage/point" },
     { name: "문의내역", link: "/mypage/inquiry" },
     { name: "리뷰 관리", link: "/mypage/review" },
     { name: "회원탈퇴", link: "/mypage/deleteAccount" },

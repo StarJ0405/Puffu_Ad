@@ -9,11 +9,28 @@ import clsx from "clsx";
 import styles from "./page.module.css";
 
 export function PointDetail() {
-  const isUsed = true;
+  const isUsed = false;
   const test = [
     {
       store: "푸푸토이",
       title: "[손가락 콘돔] 핑돔 1box 24pcs (Findom 1box) - FD24 (ALC)",
+      img: "/resources/images/dummy_img/product_01.png",
+      count: "2",
+      price: "34,900",
+    },
+
+    {
+      store: "푸푸토이",
+      title: "[손가락 콘돔] 핑돔 1box 24pcs (Findom 1box) - FD24 (ALC)",
+      img: "/resources/images/dummy_img/product_01.png",
+      count: "2",
+      price: "34,900",
+    },
+
+    {
+      store: "푸푸토이",
+      title: "[손가락 콘돔] 핑돔 1box 24pcs (Findom 1box) - FD24 (ALC)",
+      img: "/resources/images/dummy_img/product_01.png",
       count: "2",
       price: "34,900",
     },
@@ -28,12 +45,12 @@ export function PointDetail() {
             return (
               <FlexChild
                 key={index}
-                borderBottom={"1px solid #797979"}
+                borderBottom={"1px solid #444"}
                 paddingBottom={15}
               >
-                <HorizontalFlex gap={7} alignItems="flex-start">
+                <HorizontalFlex gap={15} alignItems="flex-start">
                   <FlexChild width={"fit-content"}>
-                    <Image src="/resources/icons/mypage/user_no_img.png" width={66} />
+                    <Image src={item.img} width={66} />
                   </FlexChild>
                   <VerticalFlex alignItems="flex-start" gap={10}>
                     <P className={styles.store}>{item.store}</P>
@@ -42,8 +59,8 @@ export function PointDetail() {
                       <Span>{item.count}</Span>
                       <Span>개</Span>
                       <Span> / </Span>
-                      <Span>{item.price}</Span>
-                      <Span>원</Span>
+                      <Span color="var(--main-color1)">{item.price}</Span>
+                      <Span color="var(--main-color1)">원</Span>
                     </P>
                   </VerticalFlex>
                 </HorizontalFlex>
@@ -54,7 +71,7 @@ export function PointDetail() {
       ) : (
         <>
           <FlexChild
-            borderBottom={"1px solid #797979"}
+            borderBottom={"1px solid #444"}
             padding={"20px 0 15px 0"}>
             <P>초보자 등급 적립금</P>
           </FlexChild>
@@ -64,7 +81,7 @@ export function PointDetail() {
       <FlexChild>
         <VerticalFlex>
           <HorizontalFlex className={styles.point_box}>
-            <P>
+            <P className={styles.point_txt}>
               {isUsed ? "사용포인트" : "적립포인트"}
             </P>
             <P className={clsx(styles.point, {
@@ -76,6 +93,7 @@ export function PointDetail() {
             </P>
           </HorizontalFlex>
           <HorizontalFlex justifyContent="flex-end">
+            {/* 이 당시 포인트 썼을때 잔액 표시 */}
             <P className={styles.points_balance_txt}>
               <Span>잔액 </Span>
               <Span>9,860</Span>

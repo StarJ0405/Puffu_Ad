@@ -84,7 +84,7 @@ export function BoardTitleBox({
     (Array.isArray(v) ? v[0] : v) ?? fallback;
   return (
     <HorizontalFlex className={boardStyle.board_titleBox}>
-      <FlexChild justifyContent="center">
+      <FlexChild>
         {/* 여기 현재 path 주소에 맞게 이름 바뀌게 해야 함. */}
         <h3>포토 사용후기</h3>
       </FlexChild>
