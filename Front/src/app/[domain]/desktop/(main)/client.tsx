@@ -522,9 +522,6 @@ export function ProductSlider({
             {[...items]
             .sort(()=> Math.random() -0.5)
             .map((item, i) => {
-              const hasGood = item.images?.some(url => url.includes("good"));
-
-              if (hasGood) return null;
               return (
                 <SwiperSlide key={item.id ?? i}>
                   <ReviewImgCard 

@@ -227,9 +227,7 @@ export default function Review({ product }: { product: ProductData }) {
                       </P>
 
                       {
-                        r.images.length > 0 &&
-                        // good 들어간 노이미지 때문에 자꾸 이미지 있는 걸로 인식해서 처리해버림.
-                        !r.images.some((url: string) => url.includes("good")) &&  (
+                        r.images.length > 0 && (
                         <FlexChild
                           width={100}
                           height={100}

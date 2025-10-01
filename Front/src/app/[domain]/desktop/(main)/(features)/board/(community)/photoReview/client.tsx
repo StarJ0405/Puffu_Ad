@@ -184,11 +184,6 @@ export function BestReviewSlider({
           }}
         >
           {ranked.map((review) => {
-            // 이미지 없으면 들어가는 값 때문에 이미지 없는 리뷰도 출력되서 이렇게 처리해버림.
-            // 문제 되면 지우기
-            const hasGood = review.images?.some((url) => url.includes("good"));
-
-            if (hasGood) return null;
             return (
               <SwiperSlide key={review.id}>
                 <ReviewImgCard
@@ -292,12 +287,6 @@ export function GalleryTable() {
         {items.length > 0 ? (
           <MasonryGrid breakpoints={5} width={"100%"}>
             {items.map((item, i) => {
-              // 이미지 없으면 들어가는 값 때문에 이미지 없는 리뷰도 출력되서 이렇게 처리해버림.
-              // 문제 되면 지우기
-              const hasGood = item.images?.some((url) => url.includes("good"));
-
-              if (hasGood) return null;
-
               return (
                 <ReviewImgCard
                   key={item.id ?? i}
