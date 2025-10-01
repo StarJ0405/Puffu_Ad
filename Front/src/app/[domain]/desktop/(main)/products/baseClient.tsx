@@ -155,7 +155,7 @@ export function BaseProductList({
           {/* sortOptions={sortOptions} */}
           <VerticalFlex alignItems="start">
             <MasonryGrid gap={20} width={"100%"} breakpoints={6}>
-              {listArray.map((product: ProductData, i: number) => {
+              {listArray.map((product: ProductData, i:number) => {
                 return (
                   <FlexChild key={product.id} className={Pstyles.item_wrap}>
                     {
