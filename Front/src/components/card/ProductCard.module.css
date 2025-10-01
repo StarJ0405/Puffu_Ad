@@ -48,6 +48,10 @@
    cursor: pointer;
 }
 
+.prodcut_item .product_title p {
+   word-break: break-all;
+}
+
 .prodcut_item .content_item {
    gap: 10px;
    align-items: center !important;
