@@ -1,0 +1,38 @@
+.point_detail {
+  padding-bottom: 40px;
+}
+
+.point_detail .date{
+  padding-bottom: 5px;
+  font-size: 20px;
+}
+
+.point_detail .store {
+  font-size: 12px;
+  color: #797979;
+}
+
+.point_detail .title,
+.point_detail .option {
+  font-size: 14px;
+}
+
+.point_detail .points_balance_txt {
+  padding-top: 10px;
+  font-size: 14px;
+  color: #797979;
+}
+
+.point_detail .point_box {
+  padding: 14px 10px;
+  border-radius: 10px;
+  background-color: #383838;
+}
+
+.point_detail .point_box .point {
+  font-size: 18px;
+  font-weight: 600;
+}
+.point_detail .point_box .point.used {
+  color: var(--main-color2);
+}

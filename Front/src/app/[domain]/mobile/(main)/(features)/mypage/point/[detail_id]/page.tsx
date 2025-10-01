@@ -1,8 +1,8 @@
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import mypage from '../mypage.module.css';
+import mypage from '../../mypage.module.css';
 import clsx from "clsx";
 import styles from './page.module.css';
-// import { PointHistory } from "./client";
+import { PointDetail } from "./client";
 
 export default async function () {
   const startDate = new Date();
@@ -10,7 +10,7 @@ export default async function () {
   const endDate = new Date();
   return (
     <VerticalFlex className={clsx(mypage.box_frame, styles.delivery_box)} gap={35}>
-      
+      <PointDetail />
     </VerticalFlex>
   );
 }
