@@ -12,7 +12,6 @@ import useNavigate from "@/shared/hooks/useNavigate";
 import clsx from "clsx";
 import styles from "./page.module.css";
 
-
 export function PointHistory({
   initEndDate,
   initStartDate,
@@ -20,6 +19,7 @@ export function PointHistory({
   initStartDate: Date;
   initEndDate: Date;
 }) {
+  const navigate = useNavigate();
   const [q, setQ] = useState("");
   const [condition, setCondition] = useState<any>({});
   const [startDate, setStartDate] = useState(initStartDate);
@@ -97,16 +97,14 @@ export function PointHistory({
         <FlexChild gap={30}>
           <VerticalFlex className={styles.my_point_box}>
             <FlexChild className={styles.title}>
-              <P>
-                현재 적립 포인트
-              </P>
+              <P>현재 적립 포인트</P>
             </FlexChild>
             <FlexChild className={styles.my_point}>
               <P>10,000,000</P>
               <P>P</P>
             </FlexChild>
           </VerticalFlex>
-  
+
           {/* 기간선택 */}
           <VerticalFlex className={styles.picker_input_box}>
             <VerticalFlex className={styles.dataPicker_box}>
@@ -144,7 +142,7 @@ export function PointHistory({
                   6개월
                 </Button>
               </FlexChild>
-  
+
               <FlexChild className={styles.picker_wrap}>
                 <div className={styles.datePickerWrapper}>
                   <DatePicker
@@ -160,19 +158,25 @@ export function PointHistory({
 
         {/* 포인트 내역 */}
         <VerticalFlex className={styles.history_wrapper} gap={25}>
-          <VerticalFlex className={styles.point_history} alignItems="flex-start" gap={20}>
+          <VerticalFlex
+            className={styles.point_history}
+            alignItems="flex-start"
+            gap={20}
+          >
             <FlexChild className={styles.history_title}>
               <P className={styles.date}>2025.09.01</P>
             </FlexChild>
-  
+
             {test.map((point, index) => {
               const isUsed = point.used;
-              const navigate = useNavigate();
+
               return (
                 <FlexChild
                   key={index}
-                  borderBottom={"1px solid #444"}
-                  paddingBottom={15}
+                  borderBottom={
+                    index === test.length - 1 ? "none" : "1px solid #444"
+                  }
+                  paddingBottom={index === test.length - 1 ? 0 : 15}
                   onClick={() => navigate(`/mypage/point/${point.id}`)}
                 >
                   <HorizontalFlex>
@@ -182,14 +186,16 @@ export function PointHistory({
                     </VerticalFlex>
                     <VerticalFlex alignItems="flex-end" gap={10}>
                       <P className={styles.point}>
-                        <Span>{isUsed ? '+' : '-'}</Span>
+                        <Span>{isUsed ? "+" : "-"}</Span>
                         <Span>{point.point}</Span>
                         <Span>P</Span>
                       </P>
-                      <P className={clsx(styles.status,{
-                          [styles.used] : !isUsed,
-                        })}>
-                        {isUsed ? '적립' : '사용'}
+                      <P
+                        className={clsx(styles.status, {
+                          [styles.used]: !isUsed,
+                        })}
+                      >
+                        {isUsed ? "적립" : "사용"}
                       </P>
                       <P className={styles.points_balance}>
                         <Span>잔액 </Span>
@@ -199,11 +205,11 @@ export function PointHistory({
                     </VerticalFlex>
                   </HorizontalFlex>
                 </FlexChild>
-              )
+              );
             })}
           </VerticalFlex>
         </VerticalFlex>
       </VerticalFlex>
     </>
-  )
+  );
 }
