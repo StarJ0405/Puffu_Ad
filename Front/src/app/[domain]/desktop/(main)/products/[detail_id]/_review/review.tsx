@@ -191,11 +191,6 @@ export default function Review({ product }: { product: ProductData }) {
                     </VerticalFlex>
                     <RecommendButton
                       reviewId={r.id}
-                      classNames={{
-                        wrap: styles.recommend,
-                        button: styles.recommend_btn,
-                        buttonActive: styles.recommend_btnActive,
-                      }}
                     />
                   </VerticalFlex>
 
