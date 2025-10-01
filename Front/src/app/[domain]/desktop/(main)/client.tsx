@@ -445,6 +445,7 @@ type ReviewEntity = {
     source?: string;
     aspects?: { design?: string; finish?: string; maintenance?: string };
   };
+  recommend_count: number;
   user?: { id?: string; name?: string };
   item?: {
     id?: string;
