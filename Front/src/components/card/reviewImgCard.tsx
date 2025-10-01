@@ -63,7 +63,7 @@ export default function ReviewImgCard({
   const avg = review.avg;
   const recommendCount = review?.recommend_count;
   const openDetail = () => {
-    if(!userData?.adult)return;
+    if(!userData?.adult) return;
     if (onClick) return onClick(review);
     NiceModal.show("photoReviewDetailModal", { review });
   };
