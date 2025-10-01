@@ -1,4 +1,7 @@
-import { getCouponDate } from "@/app/admin/desktop/(main)/product/coupon/management/table";
+import {
+  getCouponDate,
+  getCouponTarget,
+} from "@/app/admin/desktop/(main)/product/coupon/management/table";
 import Button from "@/components/buttons/Button";
 import RadioChild from "@/components/choice/radio/RadioChild";
 import RadioGroup from "@/components/choice/radio/RadioGroup";
@@ -271,6 +274,84 @@ const CouponModal = NiceModal.create(
               </FlexChild>
             </HorizontalFlex>
           </FlexChild>
+          <FlexChild>
+            <HorizontalFlex justifyContent="flex-start">
+              <FlexChild className={styles.head}>
+                <P>적용대상</P>
+              </FlexChild>
+
+              <FlexChild className={styles.content}>
+                {edit ? (
+                  <RadioGroup
+                    name="target"
+                    value={target}
+                    onValueChange={(value) => {
+                      setTarget(value as Target);
+                      if (value !== "etc" && date === "fixed") setDate("range");
+                    }}
+                  >
+                    <HorizontalFlex justifyContent="flex-start" gap={12}>
+                      {(
+                        [
+                          {
+                            display: "기본",
+                            value: "etc",
+                          },
+                          {
+                            display: "멤버쉽 매월",
+                            value: "group",
+                          },
+                          {
+                            display: "신규회원 가입시",
+                            value: "sign_up",
+                          },
+                          {
+                            display: "생일",
+                            value: "birthday",
+                          },
+                        ] as { display: string; value: Target }[]
+                      ).map((date) => (
+                        <FlexChild
+                          key={date.value}
+                          gap={6}
+                          width={"max-content"}
+                        >
+                          <RadioChild id={date.value} />
+                          <P>{date.display}</P>
+                        </FlexChild>
+                      ))}
+                    </HorizontalFlex>
+                  </RadioGroup>
+                ) : (
+                  <P>{getCouponTarget(target, coupon)}</P>
+                )}
+              </FlexChild>
+            </HorizontalFlex>
+          </FlexChild>
+          <FlexChild hidden={!edit || target !== "group"}>
+            <HorizontalFlex justifyContent="flex-start">
+              <FlexChild className={styles.head}>
+                <P>대상 설정</P>
+              </FlexChild>
+
+              <FlexChild className={styles.content}>
+                <Select
+                  zIndex={10080}
+                  classNames={{ header: styles.select }}
+                  id="group"
+                  scrollMarginTop={150}
+                  options={groups
+                    .sort((g1: GroupData, g2: GroupData) => g1.min - g2.min)
+                    .map((group: GroupData) => ({
+                      display: group.name,
+                      value: group.id,
+                    }))}
+                  value={group}
+                  onChange={(value) => setGroup(value as string)}
+                />
+              </FlexChild>
+            </HorizontalFlex>
+          </FlexChild>
           <FlexChild hidden={!edit}>
             <HorizontalFlex>
               <FlexChild className={styles.head}>
@@ -308,12 +389,18 @@ const CouponModal = NiceModal.create(
                         display: "해당년도",
                         value: "year",
                       },
-                    ].map((date) => (
-                      <FlexChild key={date.value} gap={6} width={"max-content"}>
-                        <RadioChild id={date.value} />
-                        <P>{date.display}</P>
-                      </FlexChild>
-                    ))}
+                    ]
+                      .slice(target === "etc" ? 0 : 1)
+                      .map((date) => (
+                        <FlexChild
+                          key={date.value}
+                          gap={6}
+                          width={"max-content"}
+                        >
+                          <RadioChild id={date.value} />
+                          <P>{date.display}</P>
+                        </FlexChild>
+                      ))}
                   </HorizontalFlex>
                 </RadioGroup>
               </FlexChild>
@@ -369,89 +456,7 @@ const CouponModal = NiceModal.create(
               )}
             </HorizontalFlex>
           </FlexChild>
-          <FlexChild>
-            <HorizontalFlex justifyContent="flex-start">
-              <FlexChild className={styles.head}>
-                <P>적용대상</P>
-              </FlexChild>
 
-              <FlexChild className={styles.content}>
-                {edit ? (
-                  <RadioGroup
-                    name="target"
-                    value={target}
-                    onValueChange={(value) => setTarget(value as Target)}
-                  >
-                    <HorizontalFlex justifyContent="flex-start" gap={12}>
-                      {(
-                        [
-                          {
-                            display: "기타",
-                            value: "etc",
-                          },
-                          {
-                            display: "멤버쉽",
-                            value: "group",
-                          },
-                          {
-                            display: "신규회원",
-                            value: "sign_up",
-                          },
-                        ] as { display: string; value: Target }[]
-                      ).map((date) => (
-                        <FlexChild
-                          key={date.value}
-                          gap={6}
-                          width={"max-content"}
-                        >
-                          <RadioChild id={date.value} />
-                          <P>{date.display}</P>
-                        </FlexChild>
-                      ))}
-                    </HorizontalFlex>
-                  </RadioGroup>
-                ) : (
-                  <P>
-                    {(() => {
-                      switch (target) {
-                        case "etc":
-                          return "기타";
-                        case "sign_up":
-                          return "신규회원";
-                        case "group":
-                          return `멤버쉽[${coupon.group.name}]`;
-                      }
-                      return "알 수 없음";
-                    })()}
-                  </P>
-                )}
-              </FlexChild>
-            </HorizontalFlex>
-          </FlexChild>
-          <FlexChild hidden={!edit || target !== "group"}>
-            <HorizontalFlex justifyContent="flex-start">
-              <FlexChild className={styles.head}>
-                <P>대상 설정</P>
-              </FlexChild>
-
-              <FlexChild className={styles.content}>
-                <Select
-                  zIndex={10080}
-                  classNames={{ header: styles.select }}
-                  id="group"
-                  scrollMarginTop={150}
-                  options={groups
-                    .sort((g1: GroupData, g2: GroupData) => g1.min - g2.min)
-                    .map((group: GroupData) => ({
-                      display: group.name,
-                      value: group.id,
-                    }))}
-                  value={group}
-                  onChange={(value) => setGroup(value as string)}
-                />
-              </FlexChild>
-            </HorizontalFlex>
-          </FlexChild>
           {edit ? (
             <FlexChild
               justifyContent="center"

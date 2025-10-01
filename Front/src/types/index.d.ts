@@ -498,7 +498,7 @@ type CouponType = "item" | "order" | "shipping";
 type CalcType = "percent" | "fix";
 type DateType = "fixed" | "range" | "day" | "week" | "month" | "year";
 type DateUnit = "year" | "month" | "date" | "hours";
-type Target = "sign_up" | "group" | "link" | "etc";
+type Target = "sign_up" | "group" | "link" | "etc" | "birthday";
 interface CouponDataFrame {
   name: string;
   type: CouponType;

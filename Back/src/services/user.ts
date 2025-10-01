@@ -7,6 +7,7 @@ import {
   FindManyOptions,
   FindOneOptions,
   FindOptionsWhere,
+  Raw,
 } from "typeorm";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 import { comparePasswords, hashPassword } from "utils/functions";
@@ -17,12 +18,47 @@ export class UserService extends BaseService<User, UserRepository> {
     super(userRepository);
   }
 
+  async getCount(options?: FindOneOptions<User> | undefined): Promise<number> {
+    if (options) {
+      let where: any = options.where;
+      if (where.birthday) {
+        where.birthday = Raw(
+          (birthday) =>
+            `DATE_PART('month', ${birthday}) = DATE_PART('month', CURRENT_DATE) AND DATE_PART('day', ${birthday}) = DATE_PART('day', CURRENT_DATE)`
+        );
+        // where.created_at = Raw(alias=>`${alias} <= CURRENT_TIMESTAMP - INTERVAL '1 year'`)
+        where.created_at = Raw(
+          (alias) => `${alias} <= CURRENT_DATE - INTERVAL '1 year'`
+        );
+      }
+      if (where?.q) {
+        const q = where.q;
+        delete where.q;
+        where = this.Search(
+          where,
+          ["username", "id", "phone", "nickname", "name"],
+          q
+        );
+        options.where = where;
+      }
+    }
+    return super.getCount(options);
+  }
   async getPageable(
     pageData: PageData,
     options: FindOneOptions<User>
   ): Promise<Pageable<User>> {
     if (options) {
       let where: any = options.where;
+      if (where.birthday) {
+        where.birthday = Raw(
+          (birthday) =>
+            `DATE_PART('month', ${birthday}) = DATE_PART('month', CURRENT_DATE) AND DATE_PART('day', ${birthday}) = DATE_PART('day', CURRENT_DATE)`
+        );
+        where.created_at = Raw(
+          (alias) => `${alias} <= CURRENT_DATE - INTERVAL '1 year'`
+        );
+      }
       if (where?.q) {
         const q = where.q;
         delete where.q;
@@ -45,6 +81,15 @@ export class UserService extends BaseService<User, UserRepository> {
   async getList(options?: FindManyOptions<User>): Promise<User[]> {
     if (options) {
       let where: any = options.where;
+      if (where.birthday) {
+        where.birthday = Raw(
+          (birthday) =>
+            `DATE_PART('month', ${birthday}) = DATE_PART('month', CURRENT_DATE) AND DATE_PART('day', ${birthday}) = DATE_PART('day', CURRENT_DATE)`
+        );
+        where.created_at = Raw(
+          (alias) => `${alias} <= CURRENT_DATE - INTERVAL '1 year'`
+        );
+      }
       if (where?.q) {
         const q = where.q;
         delete where.q;
