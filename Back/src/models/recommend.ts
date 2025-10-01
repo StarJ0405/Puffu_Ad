@@ -14,7 +14,7 @@ import { User } from "./user";
 
 @Entity({ name: "recommend" })
 @Index(["created_at", "user_id"])
-@Unique("user-reivew", ["user_id", "review_id"])
+@Unique("user-review", ["user_id", "review_id"])
 export class Recommend extends BaseEntity {
   @Column({ type: "character varying", nullable: true })
   user_id?: string;
@@ -26,7 +26,10 @@ export class Recommend extends BaseEntity {
   @Column({ type: "character varying", nullable: true })
   review_id?: string;
 
-  @ManyToOne(() => Review, (review) => review.recommends)
+  @ManyToOne(() => Review, (review) => review.recommends, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  })
   @JoinColumn({ name: "review_id", referencedColumnName: "id" })
   review?: Review;
 
