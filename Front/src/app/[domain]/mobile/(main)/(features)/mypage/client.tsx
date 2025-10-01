@@ -143,19 +143,13 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
               </FlexChild>
             </VerticalFlex>
           ) : (
-            <VerticalFlex className={styles.amount_box}>
+            <VerticalFlex className={clsx(styles.amount_box, styles.master_rank)}>
+              <Image
+                src="resources/icons/mypage/master_rank.png"
+                width={50}
+              />
               <P className={styles.title}>
-                와우! 고객님, 드디어 저희 쇼핑몰 멤버십의 정상에 등극하셨군요!
-                👑
-                <br />
-                음... 뭐라고 불러드려야 할까요? 고객님이라고 하기엔 너무
-                약하고... 혹시 저희 쇼핑몰 운영자이신가요? 😳 멤버십 레벨이 너무
-                '최고'라서, 솔직히 깜짝 놀랐지 뭐예요!
-                <br />더 이상 올라갈 곳이 없어요! 당신이 바로 저희 쇼핑몰의
-                ✨**베스트(최고)**✨입니다! 👍 이렇게 대단한 활약에 무한한
-                감사와 존경을 표합니다! 짝짝짝! 💖
-                <br />
-                by 리튼 AI
+                현재 멤버십 최고 등급입니다.
               </P>
             </VerticalFlex>
           )}
