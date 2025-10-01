@@ -21,8 +21,64 @@ import { requester } from "@/shared/Requester";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay, Navigation } from "swiper/modules";
 import { Swiper as SwiperType } from "swiper";
+
+export function Client() {
+  const [searchField, setSearchField] = useState<
+    "content" | "product" | "user"
+  >("content");
+  const [keyword, setKeyword] = useState("");
+
+  const handleSearch = useCallback(() => {
+    // 필요 시 최소 길이 제한 등 추가
+    // if (keyword.trim().length < 2) return;
+    // 여기서는 GalleryTable useEffect가 props 변화를 감지해 곧바로 재조회합니다.
+  }, [keyword]);
+  return (
+    <>
+      <VerticalFlex className={boardStyle.board_frame}>
+        <BoardTitleBox
+          searchField={searchField}
+          setSearchField={setSearchField}
+          keyword={keyword}
+          setKeyword={setKeyword}
+          onSearch={handleSearch}
+        />
+
+        <VerticalFlex className={styles.best_review_box} hidden>
+          <FlexChild className={styles.title}>
+            <P className="SacheonFont">사용후기 베스트</P>
+          </FlexChild>
+
+          <FlexChild className={styles.slide_body}>
+            <BestReviewSlider id={"best_review"} />
+          </FlexChild>
+        </VerticalFlex>
+
+        <GalleryTable searchField={searchField} keyword={keyword} />
+      </VerticalFlex>
+    </>
+  );
+}
 // 게시판 리스트 -----------------------------------------------
-export function BoardTitleBox() {
+export function BoardTitleBox({
+  searchField,
+  setSearchField,
+  keyword,
+  setKeyword,
+  onSearch,
+}: {
+  searchField: "content" | "product" | "user";
+  setSearchField: (v: "content" | "product" | "user") => void;
+  keyword: string;
+  setKeyword: (v: string) => void;
+  onSearch: () => void;
+}) {
+  // 상단에 타입/유틸 (선택)
+  type OptionLabel = "내용" | "상품명" | "작성자";
+  type SelectValue = OptionLabel | OptionLabel[] | undefined;
+
+  const normalize = (v: SelectValue, fallback: OptionLabel): OptionLabel =>
+    (Array.isArray(v) ? v[0] : v) ?? fallback;
   return (
     <HorizontalFlex className={boardStyle.board_titleBox}>
       <FlexChild justifyContent="center">
@@ -30,7 +86,7 @@ export function BoardTitleBox() {
         <h3>포토 사용후기</h3>
       </FlexChild>
 
-      <FlexChild gap={10} className={boardStyle.search_box} hidden>
+      <FlexChild gap={10} className={boardStyle.search_box}>
         <FlexChild width={"auto"}>
           <Select
             classNames={{
@@ -41,11 +97,27 @@ export function BoardTitleBox() {
               search: "web_select_search",
             }}
             width={100}
+            value={
+              searchField === "content"
+                ? "내용"
+                : searchField === "product"
+                ? "상품명"
+                : "작성자"
+            }
             options={[
-              { value: "제목", display: "제목" },
               { value: "내용", display: "내용" },
+              { value: "상품명", display: "상품명" },
               { value: "작성자", display: "작성자" },
             ]}
+            onChange={(selected: SelectValue) => {
+              const v = normalize(selected, "내용"); // 배열/undefined 안전 처리
+              const map: Record<OptionLabel, "content" | "product" | "user"> = {
+                내용: "content",
+                상품명: "product",
+                작성자: "user",
+              };
+              setSearchField(map[v]);
+            }}
             // placeholder={'선택 안함'}
             // value={selectedMessageOption}
           />
@@ -54,10 +126,15 @@ export function BoardTitleBox() {
         <Input
           type={"search"}
           placeHolder={"검색 내용을 입력해 주세요."}
+          value={keyword}
+          onChange={(e: any) => setKeyword(e?.target?.value ?? "")}
+          onKeyDown={(e: any) => {
+            if (e.key === "Enter") onSearch();
+          }}
         ></Input>
-        <Link href={"/board/notice/noticeWrite"}>
-          <Button className={boardStyle.searchBtn}>검색</Button>
-        </Link>
+        <Button className={boardStyle.searchBtn} onClick={onSearch} hidden>
+          검색
+        </Button>
       </FlexChild>
     </HorizontalFlex>
   );
@@ -122,7 +199,7 @@ export function BestReviewSlider({
   useEffect(() => {
     fetchBulk();
   }, [fetchBulk]);
-  
+
   useEffect(() => {
     const onChanged = (e: any) => {
       const { id, delta } = e?.detail ?? {};
@@ -159,7 +236,7 @@ export function BestReviewSlider({
         const tb = new Date(b.created_at ?? 0).getTime();
         const ta = new Date(a.created_at ?? 0).getTime();
         return tb - ta;
-        // return ta - tb; 
+        // return ta - tb;
       })
       .slice(0, TOP_N);
   }, [rows]);
@@ -241,7 +318,13 @@ type ReviewEntity = {
     };
   };
 };
-export function GalleryTable() {
+export function GalleryTable({
+  searchField,
+  keyword,
+}: {
+  searchField: "content" | "product" | "user";
+  keyword: string;
+}) {
   const PAGE_SIZE = 10;
   const [items, setItems] = useState<ReviewEntity[]>([]);
   const [pageNumber, setPageNumber] = useState(0);
@@ -249,37 +332,55 @@ export function GalleryTable() {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-  const fetchPage = useCallback(async (pn: number) => {
-    setLoading(true);
-    try {
-      const params: any = {
-        pageSize: PAGE_SIZE,
-        pageNumber: pn,
-        photo: true,
-        relations: "item,item.variant.product,user",
-        order: { created_at: "DESC" },
-      };
-      const res = await requester.getPublicReviews(params);
-      const data = res?.data ?? res;
-      const list: ReviewEntity[] = data?.content ?? [];
-
-      setItems((prev) => (pn === 0 ? list : prev.concat(list)));
-      if (typeof data?.totalPages === "number") {
-        setTotalPages(data.totalPages);
-        setHasMore(pn + 1 < data.totalPages);
-      } else {
-        setTotalPages(null);
-        setHasMore(list.length === PAGE_SIZE);
-      }
-      setPageNumber(pn);
-    } finally {
-      setLoading(false);
+  const buildWhere = useCallback(() => {
+    const k = (keyword ?? "").trim();
+    if (!k) return {};
+    if (searchField === "product") {
+      return { "where.item.variant.product.titleIlike": `%${k}%` };
     }
-  }, []);
+    if (searchField === "user") {
+      return { "where.user.nameIlike": `%${k}%` };
+    }
+    // default: content
+    return { "where.contentIlike": `%${k}%` };
+  }, [searchField, keyword]);
 
+  const fetchPage = useCallback(
+    async (pn: number) => {
+      setLoading(true);
+      try {
+        const params: any = {
+          pageSize: PAGE_SIZE,
+          pageNumber: pn,
+          photo: true,
+          relations: "item,item.variant.product,user",
+          order: { created_at: "DESC" },
+          ...buildWhere(),
+        };
+        const res = await requester.getPublicReviews(params);
+        const data = res?.data ?? res;
+        const list: ReviewEntity[] = data?.content ?? [];
+
+        setItems((prev) => (pn === 0 ? list : prev.concat(list)));
+        if (typeof data?.totalPages === "number") {
+          setTotalPages(data.totalPages);
+          setHasMore(pn + 1 < data.totalPages);
+        } else {
+          setTotalPages(null);
+          setHasMore(list.length === PAGE_SIZE);
+        }
+        setPageNumber(pn);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [buildWhere]
+  );
+  //검색 조건 변경 시 페이지 리셋 & 재조회
   useEffect(() => {
+    // 키워드가 비어있을 수도 있으니 항상 0페이지부터 다시
     fetchPage(0);
-  }, [fetchPage]);
+  }, [searchField, keyword, fetchPage]);
 
   return (
     <VerticalFlex>
