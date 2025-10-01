@@ -16,7 +16,7 @@ import Link from "next/link";
 import boardStyle from "../../boardGrobal.module.css";
 import styles from "./photoReview.module.css";
 import MasonryGrid from "@/components/masonry/MasonryGrid";
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { requester } from "@/shared/Requester";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay, Navigation } from "swiper/modules";
@@ -27,12 +27,15 @@ export function Client() {
     "content" | "product" | "user"
   >("content");
   const [keyword, setKeyword] = useState("");
+  const [appliedField, setAppliedField] = useState<
+    "content" | "product" | "user"
+  >("content");
+  const [appliedKeyword, setAppliedKeyword] = useState("");
 
   const handleSearch = useCallback(() => {
-    // 필요 시 최소 길이 제한 등 추가
-    // if (keyword.trim().length < 2) return;
-    // 여기서는 GalleryTable useEffect가 props 변화를 감지해 곧바로 재조회합니다.
-  }, [keyword]);
+    setAppliedField(searchField);
+    setAppliedKeyword(keyword);
+  }, [searchField, keyword]);
   return (
     <>
       <VerticalFlex className={boardStyle.board_frame}>
@@ -54,7 +57,7 @@ export function Client() {
           </FlexChild>
         </VerticalFlex>
 
-        <GalleryTable searchField={searchField} keyword={keyword} />
+        <GalleryTable searchField={searchField} keyword={appliedKeyword} />
       </VerticalFlex>
     </>
   );
@@ -127,12 +130,12 @@ export function BoardTitleBox({
           type={"search"}
           placeHolder={"검색 내용을 입력해 주세요."}
           value={keyword}
-          onChange={(e: any) => setKeyword(e?.target?.value ?? "")}
-          onKeyDown={(e: any) => {
-            if (e.key === "Enter") onSearch();
+          onChange={(v: any) => {
+            const next = typeof v === "string" ? v : v?.target?.value ?? "";
+            setKeyword(next);
           }}
         ></Input>
-        <Button className={boardStyle.searchBtn} onClick={onSearch} hidden>
+        <Button className={boardStyle.searchBtn} onClick={onSearch}>
           검색
         </Button>
       </FlexChild>
@@ -331,23 +334,21 @@ export function GalleryTable({
   const [totalPages, setTotalPages] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const reqSeq = useRef(0);
 
   const buildWhere = useCallback(() => {
     const k = (keyword ?? "").trim();
     if (!k) return {};
-    if (searchField === "product") {
-      return { "where.item.variant.product.titleIlike": `%${k}%` };
-    }
-    if (searchField === "user") {
-      return { "where.user.nameIlike": `%${k}%` };
-    }
-    // default: content
+    if (searchField === "product")
+      return { "where.productTitleIlike": `%${k}%` };
+    if (searchField === "user") return { "where.userNameIlike": `%${k}%` };
     return { "where.contentIlike": `%${k}%` };
   }, [searchField, keyword]);
 
   const fetchPage = useCallback(
     async (pn: number) => {
       setLoading(true);
+      const mySeq = ++reqSeq.current; // ← 요청 시퀀스
       try {
         const params: any = {
           pageSize: PAGE_SIZE,
@@ -358,6 +359,8 @@ export function GalleryTable({
           ...buildWhere(),
         };
         const res = await requester.getPublicReviews(params);
+        if (mySeq !== reqSeq.current) return; // ← 이전 응답 폐기
+
         const data = res?.data ?? res;
         const list: ReviewEntity[] = data?.content ?? [];
 
@@ -371,14 +374,15 @@ export function GalleryTable({
         }
         setPageNumber(pn);
       } finally {
-        setLoading(false);
+        if (mySeq === reqSeq.current) setLoading(false); // 최신 요청만 로딩 해제
       }
     },
     [buildWhere]
   );
   //검색 조건 변경 시 페이지 리셋 & 재조회
   useEffect(() => {
-    // 키워드가 비어있을 수도 있으니 항상 0페이지부터 다시
+    setHasMore(true);
+    setPageNumber(0);
     fetchPage(0);
   }, [searchField, keyword, fetchPage]);
 
