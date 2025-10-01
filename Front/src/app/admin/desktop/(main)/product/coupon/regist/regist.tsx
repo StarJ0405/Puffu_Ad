@@ -537,16 +537,20 @@ export default function ({
                               {(
                                 [
                                   {
-                                    display: "기타",
+                                    display: "기본",
                                     value: "etc",
                                   },
                                   {
-                                    display: "멤버쉽",
+                                    display: "멤버쉽 매월",
                                     value: "group",
                                   },
                                   {
-                                    display: "신규회원",
+                                    display: "신규회원 가입시",
                                     value: "sign_up",
+                                  },
+                                  {
+                                    display: "생일",
+                                    value: "birthday",
                                   },
                                 ] as { display: string; value: Target }[]
                               ).map((date) => (

@@ -51,6 +51,7 @@ export enum Target {
   SIGNUP = "sign_up",
   GROUP = "group",
   LINK = "link",
+  BIRTHDAY = "birthday",
   ETC = "etc",
 }
 @Entity({ name: "coupon" })

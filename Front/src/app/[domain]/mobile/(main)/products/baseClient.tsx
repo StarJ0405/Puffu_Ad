@@ -18,7 +18,11 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import Pstyles from "./products.module.css";
 
-export function ProdcutCategoryFilter({ ConditionOrder }: { ConditionOrder: any }) {
+export function ProdcutCategoryFilter({
+  ConditionOrder,
+}: {
+  ConditionOrder: any;
+}) {
   // 대분류 카테고리
 
   const pathname = usePathname();
@@ -36,7 +40,11 @@ export function ProdcutCategoryFilter({ ConditionOrder }: { ConditionOrder: any 
         {/* ca_item에 active 클래스 주기. active 클래스만 걸리면 효과 들어감. */}
         {pathname !== "/" ? (
           <VerticalFlex
-            className={clsx(Pstyles.ca_item, Pstyles.ca_all, !currentCategoryId && Pstyles.active)}
+            className={clsx(
+              Pstyles.ca_item,
+              Pstyles.ca_all,
+              !currentCategoryId && Pstyles.active
+            )}
             onClick={() => navigate(`/products/${order}`)}
           >
             <FlexChild className={Pstyles.ca_thumb}>
@@ -49,7 +57,6 @@ export function ProdcutCategoryFilter({ ConditionOrder }: { ConditionOrder: any 
         {categoriesData
           .sort((c1, c2) => c1.index - c2.index)
           .map((cat, i) => {
-
             const cat_check =
               pathname === `/products/${order}` &&
               currentCategoryId === String(cat.id);
@@ -58,14 +65,16 @@ export function ProdcutCategoryFilter({ ConditionOrder }: { ConditionOrder: any 
               <VerticalFlex
                 className={clsx(Pstyles.ca_item, cat_check && Pstyles.active)}
                 key={i}
-                onClick={() => navigate(`/products/${order}?category_id=${cat.id}`)}
+                onClick={() =>
+                  navigate(`/products/${order}?category_id=${cat.id}`)
+                }
               >
                 <FlexChild className={Pstyles.ca_thumb}>
                   <Image src={cat.thumbnail} />
                 </FlexChild>
                 <Span>{cat.name}</Span>
               </VerticalFlex>
-            )
+            );
           })}
       </nav>
     </VerticalFlex>
@@ -161,8 +170,9 @@ export function BaseProductList({
           />
           {/* sortOptions={sortOptions} */}
           <VerticalFlex alignItems="start">
-            <MasonryGrid 
-              width={"100%"} gap={20} 
+            <MasonryGrid
+              width={"100%"}
+              gap={20}
               breakpoints={{
                 992: 5,
                 768: 4,
@@ -175,15 +185,17 @@ export function BaseProductList({
                   <FlexChild className={Pstyles.item_wrap} key={product.id}>
                     {
                       // 프로덕트, new일때만 나타나기. 제품 인기순 표시임
-                      (pathname === "/products/new" || 
-                      pathname === "/products/best") && (
+                      (pathname === "/products/new" ||
+                        pathname === "/products/best") && (
                         <FlexChild
                           className={clsx(
                             Pstyles.rank,
-                            i < 3 ? Pstyles.topRank : ""
+                            i + page * 12 < 3 ? Pstyles.topRank : ""
                           )}
                         >
-                          <Span className="SacheonFont">{i + 1}</Span>
+                          <Span className="SacheonFont">
+                            {page * 12 + i + 1}
+                          </Span>
                         </FlexChild>
                       )
                     }
