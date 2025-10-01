@@ -74,29 +74,9 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
       </HorizontalFlex>
       {coupons?.length > 0 ? (
         <VerticalFlex gap={15}>
-          {coupons
-            ?.sort((c1: CouponData, c2: CouponData) => {
-              const c1Check =
-                c1.used ||
-                new Date(c1.ends_at || 0).getTime() < new Date().getTime();
-              const c2Check =
-                c2.used ||
-                new Date(c2.ends_at || 0).getTime() < new Date().getTime();
-              if ((c1Check && c2Check) || (!c1Check && !c2Check)) {
-                return (
-                  new Date(c1.ends_at || 0).getTime() -
-                  new Date(c2.ends_at || 0).getTime()
-                );
-              } else if (c1Check) {
-                return 1;
-              } else if (c2Check) {
-                return -1;
-              }
-              return 0;
-            })
-            ?.map((coupon: CouponData) => (
-              <CouponCard key={coupon.id} coupon={coupon} />
-            ))}
+          {coupons?.map((coupon: CouponData) => (
+            <CouponCard key={coupon.id} coupon={coupon} />
+          ))}
         </VerticalFlex>
       ) : (
         <NoContent type="상품" />

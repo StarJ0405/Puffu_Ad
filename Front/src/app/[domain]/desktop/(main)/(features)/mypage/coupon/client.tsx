@@ -44,29 +44,9 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
       <FlexChild>
         {coupons?.length > 0 ? (
           <HorizontalFlex gap={15} flexWrap="wrap" justifyContent="flex-start">
-            {coupons
-              .sort((c1: CouponData, c2: CouponData) => {
-                const c1Check =
-                  c1.used ||
-                  new Date(c1.ends_at || 0).getTime() < new Date().getTime();
-                const c2Check =
-                  c2.used ||
-                  new Date(c2.ends_at || 0).getTime() < new Date().getTime();
-                if ((c1Check && c2Check) || (!c1Check && !c2Check)) {
-                  return (
-                    new Date(c1.ends_at || 0).getTime() -
-                    new Date(c2.ends_at || 0).getTime()
-                  );
-                } else if (c1Check) {
-                  return 1;
-                } else if (c2Check) {
-                  return -1;
-                }
-                return 0;
-              })
-              .map((coupon: CouponData) => {
-                return <CouponCard key={coupon.id} coupon={coupon} />;
-              })}
+            {coupons?.map((coupon: CouponData) => (
+              <CouponCard key={coupon.id} coupon={coupon} />
+            ))}
           </HorizontalFlex>
         ) : (
           <NoContent type="상품" />
@@ -102,11 +82,10 @@ function CouponCard({ coupon }: { coupon: CouponData }) {
             {coupon.name}
           </P>
           <P
-            className={clsx(
-              styles.date,
-              isExpired && styles.expired,
-              isUsed && styles.used
-            )}
+            className={clsx(styles.date, {
+              [styles.expired]: isExpired,
+              [styles.used]: isUsed,
+            })}
           >
             사용기간 {new Date(coupon?.ends_at || 0).toLocaleDateString()} 까지
           </P>
