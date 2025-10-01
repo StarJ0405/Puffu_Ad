@@ -15,22 +15,32 @@ import Div from "@/components/div/Div";
 import styles from "./page.module.css";
 import clsx from "clsx";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
+import Button from "@/components/buttons/Button";
+import { useEffect, useState, useRef } from "react";
+import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
 
 export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
   const { userData } = useAuth();
-  const { coupons, page, maxPage, setPage } = usePageData(
+  const { coupons, page, maxPage, Load, setPage } = useInfiniteData(
     "coupons",
     (pageNumber) => ({
       pageNumber,
-      pageSize: 12,
+      pageSize: 5,
     }),
     (condition) => requester.getCoupons(condition),
     (data: Pageable) => data?.totalPages || 0,
     {
-      fallbackData: initCoupons,
+      fallbackData: [initCoupons],
       onReprocessing: (data) => data?.content || [],
     }
   );
+  useEffect(() => {
+    setPage(0)
+  }, []);
+  const showMore = () => {
+    Load();
+  };
+
   return (
     <>
       <HorizontalFlex className={mypage.box_header} justifyContent="flex-start">
@@ -44,6 +54,13 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
           {coupons?.map((coupon: CouponData) => (
             <CouponCard key={coupon.id} coupon={coupon} />
           ))}
+          <Button
+            className={styles.list_more_btn}
+            hidden={maxPage < 1 || page >= maxPage}
+            onClick={showMore}
+          >
+            쿠폰 더보기
+          </Button>
         </VerticalFlex>
       ) : (
         <NoContent type="상품" />
