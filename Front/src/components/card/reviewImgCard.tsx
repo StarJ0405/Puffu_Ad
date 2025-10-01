@@ -11,6 +11,7 @@ import styles from "./reviewImgCard.module.css";
 import NiceModal from "@ebay/nice-modal-react";
 import { maskTwoThirds } from "@/shared/utils/Functions";
 import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 
 type ReviewEntity = {
   id: string;
@@ -49,8 +50,8 @@ export default function ReviewImgCard({
 
   slide?: boolean;
 }) {
+  const {userData}=useAuth()
   const boardValue = board ?? "normal";
-  const [adultOk] = useState(true);
 
   const thumbnail = review.images?.[0] ?? "/resources/images/no_img.png";
   const date = (review.created_at ?? "").slice(0, 10);
@@ -62,6 +63,7 @@ export default function ReviewImgCard({
   const avg = review.avg;
   const recommendCount = review?.recommend_count;
   const openDetail = () => {
+    if(!userData?.adult)return;
     if (onClick) return onClick(review);
     NiceModal.show("photoReviewDetailModal", { review });
   };
@@ -91,7 +93,7 @@ export default function ReviewImgCard({
           className={styles.img}
           style={{
             backgroundImage: `url(${
-              adultOk ? thumbnail : "/resources/images/19_only.png"
+              userData?.adult ? thumbnail : "/resources/images/19_only.png"
             })`,
             borderRadius: borderRadius,
           }}
@@ -126,7 +128,7 @@ export default function ReviewImgCard({
       <HorizontalFlex className={styles.prodcut_data}>
         <FlexChild className={styles.img}>
           <Image
-            src={adultOk ? productThumb : "/resources/images/19_only.png"}
+            src={userData?.adult ? productThumb : "/resources/images/19_only.png"}
             width={boardValue == "normal" ? 35 : 45}
           />
         </FlexChild>

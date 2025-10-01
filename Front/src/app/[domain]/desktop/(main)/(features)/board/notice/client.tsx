@@ -128,7 +128,7 @@ export function BoardTable({
                 notices.map((notice: NoticeData, index: number) => (
                   <tr key={notice.id}>
                     {/* 번호 */}
-                    <td>{(origin.pageSize || 0) * page + index}</td>
+                    <td>{(origin.pageSize || 0) * page + index + 1}</td>
 
                     {/* 제목 */}
                     <td>
