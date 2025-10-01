@@ -159,7 +159,7 @@ export default function InquiryClient({
     <VerticalFlex className={styles.inquiry_wrap}>
       <VerticalFlex className={styles.inquiry_board}>
         {/* 문의글 작성란 */}
-        <VerticalFlex className={styles.inquiry_write} gap={25}>
+        <VerticalFlex className={styles.inquiry_write} gap={10}>
           <FlexChild className={styles.select_item}>
             <Select
               classNames={{
@@ -184,7 +184,7 @@ export default function InquiryClient({
           <VerticalFlex className={styles.inquiry_content} gap={10}>
             <InputTextArea
               width={"100%"}
-              style={{ height: "150px" }}
+              className={styles.content_textArea}
               placeHolder="문의글을 작성해 주세요."
               value={content}
               onChange={(value) => setContent(value as string)}
