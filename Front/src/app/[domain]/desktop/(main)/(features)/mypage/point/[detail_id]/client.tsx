@@ -8,101 +8,101 @@ import Image from "@/components/Image/Image";
 import clsx from "clsx";
 import styles from "./page.module.css";
 
-export function PointDetail() {
-  const isUsed = false;
-  const test = [
-    {
-      store: "푸푸토이",
-      title: "[손가락 콘돔] 핑돔 1box 24pcs (Findom 1box) - FD24 (ALC)",
-      img: "/resources/images/dummy_img/product_01.png",
-      count: "2",
-      price: "34,900",
-    },
+export function PointDetail({
+  initDetail,
+  initOrder,
+}: {
+  initDetail: any;
+  initOrder?: any | null;
+  }) {
+  const fmtNumber = (n: number | string | undefined) =>
+    new Intl.NumberFormat("ko-KR").format(Number(n ?? 0));
+  const fmtKST = (iso?: string) =>
+    iso
+      ? new Date(iso).toLocaleString("ko-KR", {
+          timeZone: "Asia/Seoul",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        })
+      : "";
 
-    {
-      store: "푸푸토이",
-      title: "[손가락 콘돔] 핑돔 1box 24pcs (Findom 1box) - FD24 (ALC)",
-      img: "/resources/images/dummy_img/product_01.png",
-      count: "2",
-      price: "34,900",
-    },
+  const point = Number(initDetail?.data?.point ?? 0);
+  const isUsed = point < 0;
+  const absPoint = Math.abs(point);
+  const balance = Number(initDetail?.data?.total ?? 0);
 
-    {
-      store: "푸푸토이",
-      title: "[손가락 콘돔] 핑돔 1box 24pcs (Findom 1box) - FD24 (ALC)",
-      img: "/resources/images/dummy_img/product_01.png",
-      count: "2",
-      price: "34,900",
-    },
-  ];
+  const order = initOrder || null;
+  const items: any[] = Array.isArray(order?.items) ? order.items : [];
+
+  const titleFromItem = (it: any) =>
+    it?.title ??
+    (it?.variant?.product?.title
+      ? it.variant.product.title
+      : "");
+
+  const imgFromItem = (it: any) =>
+    it?.variant?.product?.thumbnail ?? "/resources/images/no_img.png";
 
   return (
     <VerticalFlex className={styles.point_detail} alignItems="flex-start" gap={20}>
-      <P className={styles.date}>2025년 9월 1일 13:30</P>
-      {isUsed ? (
+      <P className={styles.date}>{fmtKST(initDetail?.created_at)}</P>
+
+      {isUsed && items.length > 0 ? (
         <>
-          {test.map((item, index) => {
-            return (
-              <FlexChild
-                key={index}
-                borderBottom={"1px solid #444"}
-                paddingBottom={15}
-              >
-                <HorizontalFlex gap={15} alignItems="flex-start">
-                  <FlexChild width={"fit-content"}>
-                    <Image src={item.img} width={66} />
-                  </FlexChild>
-                  <VerticalFlex alignItems="flex-start" gap={10}>
-                    <P className={styles.store}>{item.store}</P>
-                    <P className={styles.title}>{item.title}</P>
-                    <P className={styles.option}>
-                      <Span>{item.count}</Span>
-                      <Span>개</Span>
-                      <Span> / </Span>
-                      <Span color="var(--main-color1)">{item.price}</Span>
-                      <Span color="var(--main-color1)">원</Span>
-                    </P>
-                  </VerticalFlex>
-                </HorizontalFlex>
-              </FlexChild>
-            )
-          })}
+          {items.map((it, idx) => (
+            <FlexChild
+              key={it?.id ?? idx}
+              borderBottom={"1px solid #444"}
+              paddingBottom={15}
+            >
+              <HorizontalFlex gap={15} alignItems="flex-start">
+                <FlexChild width={"fit-content"}>
+                  <Image src={imgFromItem(it)} width={66} />
+                </FlexChild>
+                <VerticalFlex alignItems="flex-start" gap={10}>
+                  <P className={styles.store}>{order?.store?.name ?? ""}</P>
+                  <P className={styles.title}>{titleFromItem(it)}</P>
+                  <P className={styles.option}>
+                    <Span>{fmtNumber(it?.quantity ?? it?.count ?? 0)}</Span>
+                    <Span>개</Span>
+                    <Span> / </Span>
+                    <Span color="var(--main-color1)">{fmtNumber(it?.price ?? 0)}</Span>
+                    <Span color="var(--main-color1)">원</Span>
+                  </P>
+                </VerticalFlex>
+              </HorizontalFlex>
+            </FlexChild>
+          ))}
         </>
       ) : (
-        <>
-          <FlexChild
-            borderBottom={"1px solid #444"}
-            padding={"20px 0 15px 0"}>
-            <P>초보자 등급 적립금</P>
-          </FlexChild>
-        </>
+        <FlexChild borderBottom={"1px solid #444"} padding={"20px 0 15px 0"}>
+          <P>{initDetail?.name ?? "포인트 내역"}</P>
+        </FlexChild>
       )}
 
       <FlexChild>
         <VerticalFlex>
           <HorizontalFlex className={styles.point_box}>
-            <P className={styles.point_txt}>
-              {isUsed ? "사용포인트" : "적립포인트"}
-            </P>
-            <P className={clsx(styles.point, {
-              [styles.used]: isUsed,
-            })}>
+            <P className={styles.point_txt}>{isUsed ? "사용포인트" : "적립포인트"}</P>
+            <P className={clsx(styles.point, { [styles.used]: isUsed })}>
               <Span>{isUsed ? "-" : "+"}</Span>
-              <Span>1,000</Span>
+              <Span>{fmtNumber(absPoint)}</Span>
               <Span>P</Span>
             </P>
           </HorizontalFlex>
           <HorizontalFlex justifyContent="flex-end">
-            {/* 이 당시 포인트 썼을때 잔액 표시 */}
             <P className={styles.points_balance_txt}>
               <Span>잔액 </Span>
-              <Span>9,860</Span>
+              <Span>{fmtNumber(balance)}</Span>
               <Span>P</Span>
             </P>
           </HorizontalFlex>
         </VerticalFlex>
       </FlexChild>
     </VerticalFlex>
-
-  )
+  );
 }
