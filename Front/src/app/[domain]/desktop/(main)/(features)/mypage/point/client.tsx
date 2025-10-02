@@ -21,9 +21,13 @@ type LogRow = {
 };
 
 const fmtYmd = (d: Date) =>
-  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`;
-const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
-const endOfDay   = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999);
+  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(
+    d.getDate()
+  ).padStart(2, "0")}`;
+const startOfDay = (d: Date) =>
+  new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
+const endOfDay = (d: Date) =>
+  new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999);
 
 export function PointHistory({
   initEndDate,
@@ -38,13 +42,15 @@ export function PointHistory({
   const [rows, setRows] = useState<LogRow[]>([]);
   const [startDate, setStartDate] = useState(initStartDate);
   const [endDate, setEndDate] = useState(initEndDate);
-  const [activePeriod, setActivePeriod] = useState<"1week" | "1month" | "3months" | "6months" | "custom">("1week");
+  const [activePeriod, setActivePeriod] = useState<
+    "1week" | "1month" | "3months" | "6months" | "custom"
+  >("1week");
 
   const fetchPointsByRange = useCallback(async (from: Date, to: Date) => {
     const params: any = {
       order: { created_at: "DESC" },
       starts_at: startOfDay(from).toISOString(),
-      ends_at:   endOfDay(to).toISOString(),
+      ends_at: endOfDay(to).toISOString(),
     };
     const res = await requester.getPoints(params);
     const list = res?.content ?? res?.data?.content ?? [];
@@ -55,7 +61,9 @@ export function PointHistory({
     fetchPointsByRange(startOfDay(initStartDate), endOfDay(initEndDate));
   }, [fetchPointsByRange, initStartDate, initEndDate]);
 
-  const handlePeriodChange = (period: "1week" | "1month" | "3months" | "6months") => {
+  const handlePeriodChange = (
+    period: "1week" | "1month" | "3months" | "6months"
+  ) => {
     const now = new Date();
     const from = new Date(now);
     if (period === "1week") from.setDate(now.getDate() - 7);
@@ -88,14 +96,14 @@ export function PointHistory({
       const d = new Date(row.created_at);
       const hh = String(d.getHours()).padStart(2, "0");
       const mm = String(d.getMinutes()).padStart(2, "0");
-      const amt = Number(row?.data?.point ?? 0);     // 금액/부호 = log.data.point
-      const total = row?.data?.total;                // 잔액 = log.data.total
-      
+      const amt = Number(row?.data?.point ?? 0); // 금액/부호 = log.data.point
+      const total = row?.data?.total; // 잔액 = log.data.total
+
       return {
         id: row.id,
         date: fmtYmd(d),
         title: row.name ?? "-",
-        used: amt > 0,                                // true=적립(+), false=사용(-)
+        used: amt > 0, // true=적립(+), false=사용(-)
         point: Math.abs(amt).toLocaleString(),
         balance: total != null ? Number(total).toLocaleString() : "-", // per-row 잔액
         time: `${hh} : ${mm}`,
@@ -134,25 +142,33 @@ export function PointHistory({
           <VerticalFlex className={styles.dataPicker_box}>
             <FlexChild className={styles.btn_wrap}>
               <Button
-                className={clsx(styles.term_btn, { [styles.active]: activePeriod === "1week" })}
+                className={clsx(styles.term_btn, {
+                  [styles.active]: activePeriod === "1week",
+                })}
                 onClick={() => handlePeriodChange("1week")}
               >
                 1주일
               </Button>
               <Button
-                className={clsx(styles.term_btn, { [styles.active]: activePeriod === "1month" })}
+                className={clsx(styles.term_btn, {
+                  [styles.active]: activePeriod === "1month",
+                })}
                 onClick={() => handlePeriodChange("1month")}
               >
                 1개월
               </Button>
               <Button
-                className={clsx(styles.term_btn, { [styles.active]: activePeriod === "3months" })}
+                className={clsx(styles.term_btn, {
+                  [styles.active]: activePeriod === "3months",
+                })}
                 onClick={() => handlePeriodChange("3months")}
               >
                 3개월
               </Button>
               <Button
-                className={clsx(styles.term_btn, { [styles.active]: activePeriod === "6months" })}
+                className={clsx(styles.term_btn, {
+                  [styles.active]: activePeriod === "6months",
+                })}
                 onClick={() => handlePeriodChange("6months")}
               >
                 6개월
@@ -161,7 +177,11 @@ export function PointHistory({
 
             <FlexChild className={styles.picker_wrap}>
               <div className={styles.datePickerWrapper}>
-                <DatePicker selectionMode="range" values={[startDate, endDate]} onChange={handleDateChange} />
+                <DatePicker
+                  selectionMode="range"
+                  values={[startDate, endDate]}
+                  onChange={handleDateChange}
+                />
               </div>
             </FlexChild>
           </VerticalFlex>
@@ -171,7 +191,12 @@ export function PointHistory({
       {/* 포인트 내역 */}
       <VerticalFlex className={styles.history_wrapper} gap={25}>
         {grouped.map(([date, items]) => (
-          <VerticalFlex key={date} className={styles.point_history} alignItems="flex-start" gap={20}>
+          <VerticalFlex
+            key={date}
+            className={styles.point_history}
+            alignItems="flex-start"
+            gap={20}
+          >
             <FlexChild className={styles.history_title}>
               <P className={styles.date}>{date}</P>
             </FlexChild>
@@ -181,7 +206,9 @@ export function PointHistory({
               return (
                 <FlexChild
                   key={point.id ?? index}
-                  borderBottom={index === items.length - 1 ? "none" : "1px solid #444"}
+                  borderBottom={
+                    index === items.length - 1 ? "none" : "1px solid #444"
+                  }
                   paddingBottom={index === items.length - 1 ? 0 : 15}
                   onClick={() => navigate(`/mypage/point/${point.id}`)}
                 >
@@ -196,7 +223,11 @@ export function PointHistory({
                         <Span>{point.point}</Span>
                         <Span>P</Span>
                       </P>
-                      <P className={clsx(styles.status, { [styles.used]: !isUsed })}>
+                      <P
+                        className={clsx(styles.status, {
+                          [styles.used]: !isUsed,
+                        })}
+                      >
                         {isUsed ? "적립" : "사용"}
                       </P>
                       {point.balance !== "-" && (
