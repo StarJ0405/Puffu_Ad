@@ -5,6 +5,7 @@ import styles from "./page.module.css";
 import { PointDetail } from "./client";
 import { requester } from "@/shared/Requester";
 import { notFound } from "next/navigation";
+import { Params } from "next/dist/server/request/params";
 
 async function getPointById(detail_id: string) {
   const direct = await requester.getPoints({
@@ -74,10 +75,10 @@ async function getOrderByDisplay(display: string, logCreatedAt?: string) {
   return order;
 }
 
-export default async function Page({ params }: { params: { detail_id: string } }) {
-  const { detail_id } = params;
+export default async function Page({ params }: { params: Promise<Params> }) {
+  const { detail_id } = await params;
 
-  const initDetail = await getPointById(detail_id);
+  const initDetail = await getPointById(detail_id as string);
   if (!initDetail) return notFound();
 
   const display: string | undefined = initDetail?.data?.display;
@@ -86,7 +87,10 @@ export default async function Page({ params }: { params: { detail_id: string } }
     : null;
 
   return (
-    <VerticalFlex className={clsx(mypage.box_frame, styles.delivery_box)} gap={35}>
+    <VerticalFlex
+      className={clsx(mypage.box_frame, styles.delivery_box)}
+      gap={35}
+    >
       <PointDetail initDetail={initDetail} initOrder={initOrder} />
     </VerticalFlex>
   );
