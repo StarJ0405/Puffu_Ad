@@ -6,38 +6,21 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
-  OneToMany,
-  OneToOne,
 } from "typeorm";
 import { generateEntityId } from "utils/functions";
-import { Brand } from "./brand";
-import { Cart } from "./cart";
-import { Coupon } from "./coupon";
 import { ExchangeItem } from "./exchange_item";
-import { Order } from "./order";
-import { RefundItem } from "./refund_item";
-import { Review } from "./review";
 import { Variant } from "./variant";
+import { Brand } from "./brand";
 
-@Entity({ name: "line_item" })
+@Entity({ name: "swap_item" })
 @Index(["created_at"])
-// CREATE INDEX IF NOT EXISTS idx_line_item_id ON public.line_item USING GIN (fn_text_to_char_array(id));
-// CREATE INDEX IF NOT EXISTS idx_line_item_product_title ON public.line_item USING GIN (fn_text_to_char_array(product_title));
-// CREATE INDEX IF NOT EXISTS idx_line_item_variant_title ON public.line_item USING GIN (fn_text_to_char_array(variant_title));
-export class LineItem extends BaseEntity {
-  @Column({ type: "character varying", nullable: true })
-  cart_id?: string | null;
+export class SwapItem extends BaseEntity {
+  @Column({ type: "character varying", nullable: false })
+  exchange_item_id?: string;
 
-  @ManyToOne(() => Cart, (cart) => cart.items)
-  @JoinColumn({ name: "cart_id", referencedColumnName: "id" })
-  cart?: Cart;
-
-  @Column({ type: "character varying", nullable: true })
-  order_id?: string;
-
-  @ManyToOne(() => Order, (order) => order.items)
-  @JoinColumn({ name: "order_id", referencedColumnName: "id" })
-  order?: Order;
+  @ManyToOne(() => ExchangeItem, (item) => item.swaps)
+  @JoinColumn({ name: "exchange_item_id", referencedColumnName: "id" })
+  exchange_item?: ExchangeItem;
 
   @Column({ type: "character varying", nullable: false })
   variant_id?: string;
@@ -46,7 +29,7 @@ export class LineItem extends BaseEntity {
   @JoinColumn({ name: "variant_id", referencedColumnName: "id" })
   variant?: Variant;
 
-  @Column({ type: "character varying", nullable: true })
+  @Column({ type: "character varying", nullable: false })
   brand_id?: string;
 
   @ManyToOne(() => Brand)
@@ -56,14 +39,11 @@ export class LineItem extends BaseEntity {
   @Column({ type: "integer", nullable: false, default: 0 })
   quantity!: number;
 
-  @Column({ type: "integer", nullable: false, default: 0 })
-  extra_quantity!: number;
+  @Column({ type: "character varying", nullable: true })
+  product_title?: string;
 
-  get total_quantity(): number {
-    return this.quantity + this.extra_quantity;
-  }
-
-  // 이 밑은 구매 완료 후 채워지는 내용들
+  @Column({ type: "character varying", nullable: true })
+  variant_title?: string;
   get title(): string | undefined {
     if (this.product_title && this.variant_title)
       return this.product_title + " " + this.variant_title;
@@ -71,13 +51,6 @@ export class LineItem extends BaseEntity {
     else if (this.variant_title) return this.variant_title;
     else return undefined;
   }
-
-  @Column({ type: "character varying", nullable: true })
-  product_title?: string;
-
-  @Column({ type: "character varying", nullable: true })
-  variant_title?: string;
-
   @Column({ type: "character varying", nullable: true })
   description?: string;
 
@@ -92,9 +65,6 @@ export class LineItem extends BaseEntity {
 
   @Column({ type: "real", nullable: true })
   discount_price?: number;
-
-  @Column({ type: "real", nullable: true })
-  shared_price?: number;
 
   get total(): number | undefined {
     if (typeof this.unit_price !== "undefined")
@@ -115,36 +85,20 @@ export class LineItem extends BaseEntity {
       return this.quantity * this.discount_price;
     return undefined;
   }
-
   @Column({ type: "character varying", nullable: true })
   currency_unit?: string;
-
-  @Column({ type: "boolean", default: false })
-  confirmation?: boolean;
 
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;
 
-  @OneToOne(() => Review, (review) => review.item)
-  review?: Review;
-
-  @OneToMany(() => RefundItem, (refund) => refund.item)
-  refunds?: RefundItem[];
-
-  @OneToMany(() => ExchangeItem, (exchange) => exchange.item)
-  exchanges?: ExchangeItem[];
-
-  @OneToMany(() => Coupon, (coupons) => coupons.item)
-  coupons?: Coupon[];
-
   @BeforeInsert()
   protected async BeforeInsert(): Promise<void> {
-    this.id = generateEntityId(this.id, "ltm");
+    this.id = generateEntityId(this.id, "swi");
   }
+
   toJSON() {
     return {
       ...this,
-      total_quantity: this.total_quantity,
       title: this.title,
       total: this.total,
       total_discount: this.total_discount,

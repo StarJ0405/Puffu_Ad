@@ -63,6 +63,8 @@ export function MyOrdersTable({
         "shipping_method",
         "store",
         "address",
+        "items.exchanges.exchange",
+        "items.exchanges.swaps",
       ],
       start_date: startDate,
       end_date: endDate,
@@ -297,11 +299,17 @@ export function MyOrdersTable({
                           <FlexChild gap={5}>
                             {/* 교환 처리 상태 */}
                             <Span
-                              hidden
+                              hidden={!item.exchanges?.length}
                               className={styles.progress_txt}
                               color="var(--main-color1)"
                             >
-                              [교환 처리중]
+                              [{" "}
+                              {item.exchanges?.filter(
+                                (f) => !f.exchange?.completed_at
+                              ).length
+                                ? "교환 처리중"
+                                : "교환 완료"}
+                              ]
                             </Span>
 
                             {/* 환불 처리 상태 */}
@@ -429,7 +437,11 @@ export function MyOrdersTable({
                                         (acc, now) => acc + now.quantity,
                                         0
                                       ) || 0) ===
-                                      0
+                                      0 -
+                                        (item.exchanges?.reduce(
+                                          (acc, now) => acc + now.quantity,
+                                          0
+                                        ) || 0)
                                   }
                                 >
                                   {!isReviewed(item) ? (
@@ -478,11 +490,6 @@ export function MyOrdersTable({
                                   >
                                     교환/환불 문의
                                   </Button>
-
-                                  {/* 교환 환불 처리되면 이걸로 출력 */}
-                                  <P hidden size={14} color="#eee">
-                                    교환 완료 | 환불 완료
-                                  </P>
                                 </FlexChild>
                               </FlexChild>
                             )}

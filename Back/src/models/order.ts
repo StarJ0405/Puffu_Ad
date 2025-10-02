@@ -17,6 +17,7 @@ import { Store } from "./store";
 import { User } from "./user";
 import { Refund } from "./refund";
 import { Coupon } from "./coupon";
+import { Exchange } from "./exchange";
 
 export enum OrderStatus {
   AWAITING = "awaiting",
@@ -124,6 +125,9 @@ export class Order extends BaseEntity {
 
   @OneToMany(() => Refund, (refund) => refund.order)
   refunds?: Refund[];
+
+  @OneToMany(() => Exchange, (exchange) => exchange.order)
+  exchanges?: Exchange[];
 
   @OneToMany(() => Coupon, (coupon) => coupon.order)
   coupons?: Coupon[];

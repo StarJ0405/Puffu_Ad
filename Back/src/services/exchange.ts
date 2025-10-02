@@ -1,20 +1,22 @@
-import axios from "axios";
 import { BaseService } from "data-source";
-import { Refund } from "models/refund";
+import { Exchange } from "models/exchange";
+import { ExchangeRepository } from "repositories/exchange";
+import { ExchangeItemRepository } from "repositories/exchange_item";
 import { LogRepository } from "repositories/log";
-import { RefundRepository } from "repositories/refund";
-import { RefundItemRepository } from "repositories/refund_item";
+import { SwapItemRepository } from "repositories/swap_item";
 import { inject, injectable } from "tsyringe";
 import { FindManyOptions, FindOneOptions, FindOptionsWhere, In } from "typeorm";
 import { GroupService } from "./group";
 import { PointService } from "./point";
 
 @injectable()
-export class RefundService extends BaseService<Refund, RefundRepository> {
+export class ExchangeService extends BaseService<Exchange, ExchangeRepository> {
   constructor(
-    @inject(RefundRepository) refundRepository: RefundRepository,
-    @inject(RefundItemRepository)
-    protected refundItemRepository: RefundItemRepository,
+    @inject(ExchangeRepository) exchangeRepository: ExchangeRepository,
+    @inject(ExchangeItemRepository)
+    protected exchangeItemRepository: ExchangeItemRepository,
+    @inject(SwapItemRepository)
+    protected swapItemRepository: SwapItemRepository,
     @inject(LogRepository)
     protected logRepository: LogRepository,
     @inject(PointService)
@@ -22,12 +24,12 @@ export class RefundService extends BaseService<Refund, RefundRepository> {
     @inject(GroupService)
     protected groupService: GroupService
   ) {
-    super(refundRepository);
+    super(exchangeRepository);
   }
   async getPageable(
     pageData: PageData,
-    options: FindOneOptions<Refund>
-  ): Promise<Pageable<Refund>> {
+    options: FindOneOptions<Exchange>
+  ): Promise<Pageable<Exchange>> {
     if (options) {
       if (options.where) {
         let where: any = options.where;
@@ -75,6 +77,23 @@ export class RefundService extends BaseService<Refund, RefundRepository> {
               relations.some(
                 (relation) =>
                   typeof relation === "string" &&
+                  relation.includes("items.swaps")
+              )
+            ) {
+              _where.push(
+                this.Search(
+                  {},
+                  ["items.swaps.product_title", "items.swaps.variant_title"],
+                  q,
+                  true
+                )
+              );
+              _relations.push("items.swaps");
+            }
+            if (
+              relations.some(
+                (relation) =>
+                  typeof relation === "string" &&
                   relation.includes("order.user")
               )
             ) {
@@ -108,7 +127,7 @@ export class RefundService extends BaseService<Refund, RefundRepository> {
     }
     return super.getPageable(pageData, options);
   }
-  async getList(options?: FindManyOptions<Refund>): Promise<Refund[]> {
+  async getList(options?: FindManyOptions<Exchange>): Promise<Exchange[]> {
     if (options) {
       if (options.where) {
         let where: any = options.where;
@@ -190,123 +209,28 @@ export class RefundService extends BaseService<Refund, RefundRepository> {
     return super.getList(options);
   }
 
-  async refund(
-    refund_id: string,
-    data: { value: number; point: number; reason?: string }
-  ) {
-    const refund = await this.repository.findOne({
-      where: { id: refund_id },
-      relations: ["order"],
-    });
-    if (!refund) throw new Error("환불 정보가 없습니다.");
-    const { value = 0, point = 0, reason = "구매자가 취소를 원함" } = data;
-    if (value > 0) {
-      // 환불 처리
-      if (refund.order?.payment_data) {
-        const payment_data = refund.order.payment_data;
-        if (payment_data.trackId) {
-          // NESTPAY
-          const NESTPAY_BASE_URL = process.env.NESTPAY_BASE_URL;
-          const NESTPAY_SECRET_KEY = process.env.NESTPAY_SECRET_KEY;
-
-          const nestpayAxios = axios.create({
-            timeout: 30000,
-            maxRedirects: 5,
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              Authorization: NESTPAY_SECRET_KEY,
-            },
-          });
-          const trackId = payment_data.trackId;
-          const rootTrxId = payment_data.trxId;
-          const amount = value;
-          const response = await nestpayAxios.post(
-            `${NESTPAY_BASE_URL}/api/refund`,
-            { refund: { trackId, rootTrxId, amount, reason } }
-          );
-          if (response.data) {
-            const data = await response.data;
-            await this.repository.update(
-              { id: refund.id },
-              {
-                data,
-                completed_at: new Date(),
-                value,
-                point,
-              }
-            );
-          }
-        } else if (payment_data.type === "BRANDPAY") {
-          // TOSS
-          const secret = process.env.BRAND_PAY_SECRET_KEY?.trim();
-          const auth = "Basic " + Buffer.from(`${secret}:`).toString("base64");
-          const response = await fetch(
-            `https://api.tosspayments.com/v1/payments/${payment_data.paymentKey}/cancel`,
-            {
-              method: "POST",
-              headers: {
-                Authorization: auth,
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                cancelReason: "구매자가 취소를 원함",
-                cancelAmount: value,
-              }),
-            }
-          );
-          const data = await response.json();
-          await this.repository.update(
-            { id: refund.id },
-            {
-              data,
-              completed_at: new Date(),
-              value,
-              point,
-            }
-          );
-        }
-      }
-    }
-    if (point > 0) {
-      // 포인트 환급
-      await this.pointService.create({
-        user_id: refund.order?.user_id,
-        point,
-      });
-      const total = await this.pointService.getTotalPoint(
-        refund.order?.user_id || ""
-      );
-      await this.logRepository.create({
-        type: "point",
-        name: "상품환불(환급)",
-        data: {
-          point,
-          user_id: refund.order?.user_id,
-          total,
-        },
-      });
-      if (value <= 0)
-        await this.repository.update(
-          { id: refund.id },
-          { completed_at: new Date(), point }
-        );
-    }
-    if (refund.order?.user_id)
-      await this.groupService.updateUserGroup(refund.order?.user_id);
-  }
   async delete(
-    where: FindOptionsWhere<Refund> | FindOptionsWhere<Refund>[],
+    where: FindOptionsWhere<Exchange> | FindOptionsWhere<Exchange>[],
     soft?: boolean
   ): Promise<number> {
-    const refunds = await this.repository.findAll({ where });
+    const exchanges = await this.repository.findAll({
+      where,
+      relations: ["items"],
+    });
     await Promise.all(
-      refunds.map(
-        async (refund) =>
-          await this.refundItemRepository.delete({
-            refund_id: refund.id,
-          })
-      )
+      exchanges.map(async (exchange) => {
+        await Promise.all(
+          (exchange?.items || [])?.map(
+            async (item) =>
+              await this.swapItemRepository.delete({
+                exchange_item_id: item.id,
+              })
+          )
+        );
+        await this.exchangeItemRepository.delete({
+          exchange_id: exchange.id,
+        });
+      })
     );
     return await super.delete(where, soft);
   }

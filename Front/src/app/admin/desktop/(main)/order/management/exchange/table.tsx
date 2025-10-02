@@ -16,7 +16,7 @@ import Tooltip from "@/components/tooltip/Tooltip";
 import { RowInterface } from "@/modals/context/ContextMenuModal";
 import { adminRequester } from "@/shared/AdminRequester";
 import useData from "@/shared/hooks/data/useData";
-import { toast } from "@/shared/utils/Functions";
+import { openTrackingNumber, toast } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import { useRef, useState } from "react";
 import styles from "./page.module.css";
@@ -87,7 +87,7 @@ export default function ({
   }: {
     x: number;
     y: number;
-    row?: RefundData;
+    row?: ExchangeData;
   }) => {
     const rows: RowInterface[] = [
       {
@@ -105,8 +105,8 @@ export default function ({
         label: "상세보기",
         hotKey: "i",
         onClick: () => {
-          NiceModal.show("refundDetail", {
-            refund: row,
+          NiceModal.show("exchangeDetail", {
+            exchange: row,
             onSuccess: () => table.current.research(),
           });
         },
@@ -117,8 +117,8 @@ export default function ({
             label: "편집",
             hotKey: "e",
             onClick: () => {
-              NiceModal.show("refundDetail", {
-                refund: row,
+              NiceModal.show("exchangeDetail", {
+                exchange: row,
                 edit: true,
                 onSuccess: () => table.current.research(),
               });
@@ -131,14 +131,14 @@ export default function ({
               NiceModal.show("confirm", {
                 message: (
                   <VerticalFlex>
-                    <P>환불 신청을 철회하시겠습니까?</P>
+                    <P>교환 신청을 철회하시겠습니까?</P>
                     <P>수정이 필요한 경우 반드시 [편집 기능]을 이용해주세요</P>
                   </VerticalFlex>
                 ),
                 confirmText: "철회",
                 cancelText: "그만두기",
                 onConfirm: () =>
-                  adminRequester.cancelRefund(row.id, {}, () => {
+                  adminRequester.cancelExchange(row.id, {}, () => {
                     table.current.research();
                   }),
               }),
@@ -151,8 +151,8 @@ export default function ({
   const onDetailClick = (e: React.MouseEvent, row: any) => {
     e.preventDefault();
     e.stopPropagation();
-    NiceModal.show("refundDetail", {
-      refund: row,
+    NiceModal.show("exchangeDetail", {
+      exchange: row,
       onSuccess: () => table.current.research(),
     });
   };
@@ -320,7 +320,7 @@ export default function ({
           initLimit={20}
           initData={initData}
           onSearch={(condition) => {
-            return adminRequester.getRefunds(condition);
+            return adminRequester.getExchanges(condition);
           }}
           onMaxPage={(data) => {
             return Number(data?.totalPages);
@@ -390,11 +390,16 @@ function getColumns(status: string) {
         },
       },
     },
-
     {
       label: "상태",
-      code: "completed_at",
-      Cell: ({ cell, row }) => (cell ? "완료" : "진행중"),
+      Cell: ({ row }) =>
+        row.completed_at
+          ? "완료"
+          : row?.tracking_number
+          ? row.pickup_at
+            ? "배송중"
+            : "배송대기"
+          : "진행중",
       styling: {
         common: {
           style: {
@@ -410,7 +415,7 @@ function getColumns(status: string) {
       Cell: ({ cell }) => (
         <VerticalFlex gap={10}>
           {cell
-            ?.sort((i1: RefundItemData, i2: RefundItemData) =>
+            ?.sort((i1: ExchangeItemData, i2: ExchangeItemData) =>
               String(
                 `${i1.item?.brand_id} ${i1.item?.product_title} ${new Date(
                   i1.created_at
@@ -423,137 +428,100 @@ function getColumns(status: string) {
                 )
               )
             )
-            ?.map((item: RefundItemData) => (
+            ?.map((item: ExchangeItemData) => (
               <FlexChild key={item.id}>
-                <Tooltip
-                  position="right"
-                  content={
-                    <Image src={item.item?.thumbnail} size={"min(30vw,30vh)"} />
-                  }
-                >
-                  <Image src={item.item?.thumbnail} size={50} />
-                </Tooltip>
-                <P width={"max-content"} textOverflow="clip" overflow="visible">
-                  ({item.item?.brand?.name})
-                </P>
-                <P whiteSpace="wrap">{item.item?.title}</P>
-                <P
-                  width={"max-content"}
-                  textOverflow="clip"
-                  overflow="visible"
-                >{`X ${item.quantity}`}</P>
+                <VerticalFlex>
+                  <FlexChild>
+                    <Tooltip
+                      position="right"
+                      content={
+                        <Image
+                          src={item.item?.thumbnail}
+                          size={"min(30vw,30vh)"}
+                        />
+                      }
+                    >
+                      <Image src={item.item?.thumbnail} size={50} />
+                    </Tooltip>
+                    <P
+                      width={"max-content"}
+                      textOverflow="clip"
+                      overflow="visible"
+                    >
+                      ({item.item?.brand?.name})
+                    </P>
+                    <P whiteSpace="wrap">{item.item?.title}</P>
+                    <P
+                      width={"max-content"}
+                      textOverflow="clip"
+                      overflow="visible"
+                    >{`X ${item.quantity}`}</P>
+                  </FlexChild>
+
+                  {item?.swaps?.map((swap) => (
+                    <FlexChild key={swap.id}>
+                      <Image
+                        src="/resources/images/bottom-right-arrow.png"
+                        size={50}
+                      />
+                      <Tooltip
+                        position="right"
+                        content={
+                          <Image src={swap.thumbnail} size={"min(30vw,30vh)"} />
+                        }
+                      >
+                        <Image src={swap?.thumbnail} size={50} />
+                      </Tooltip>
+                      <P
+                        width={"max-content"}
+                        textOverflow="clip"
+                        overflow="visible"
+                      >
+                        ({swap?.brand?.name})
+                      </P>
+                      <P whiteSpace="wrap">{swap?.title}</P>
+                      <P
+                        width={"max-content"}
+                        textOverflow="clip"
+                        overflow="visible"
+                      >{`X ${swap.quantity}`}</P>
+                    </FlexChild>
+                  ))}
+                </VerticalFlex>
               </FlexChild>
             ))}
         </VerticalFlex>
       ),
     },
-  ];
-  const extra: Column[] = [
     {
-      label: "환불가능 금액",
+      label: "운송장번호",
+      code: "tracking_number",
+      Cell: ({ cell }) =>
+        cell ? (
+          <P
+            cursor="pointer"
+            width={200}
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              openTrackingNumber(cell);
+            }}
+          >
+            {cell}
+          </P>
+        ) : (
+          "없음"
+        ),
       styling: {
         common: {
           style: {
-            width: 120,
-            minWidth: 120,
+            width: 200,
+            minWidth: 200,
           },
         },
       },
-      Cell: ({ row }) =>
-        `${(row.items as RefundItemData[])
-          .reduce(
-            (acc, now) =>
-              acc +
-              ((now.item?.shared_price || 0) +
-                (now.item?.discount_price || 0)) *
-                now.quantity,
+    },
+  ];
 
-            0
-          )
-          .toLocaleString("ko-kr", { maximumFractionDigits: 0 })} 원`,
-    },
-    {
-      label: "환불된 금액",
-      code: "value",
-      styling: {
-        common: {
-          style: {
-            width: 120,
-            minWidth: 120,
-          },
-        },
-      },
-      Cell: ({ cell }) =>
-        `${Number(cell).toLocaleString("ko-kr", {
-          maximumFractionDigits: 0,
-        })} 원`,
-    },
-    {
-      label: "환불가능 포인트",
-      styling: {
-        common: {
-          style: {
-            width: 140,
-            minWidth: 140,
-          },
-        },
-      },
-      Cell: ({ row }) =>
-        `${(row.items as RefundItemData[])
-          .reduce(
-            (acc, now) =>
-              acc +
-              (row.order.point / row.order.total_discounted) *
-                (now.item?.discount_price || 0) *
-                now.quantity,
-            0
-          )
-          .toLocaleString("ko-kr", { maximumFractionDigits: 0 })} P`,
-    },
-    {
-      label: "환불된 포인트",
-      code: "point",
-      styling: {
-        common: {
-          style: {
-            width: 120,
-            minWidth: 120,
-          },
-        },
-      },
-      Cell: ({ cell }) =>
-        `${Number(cell).toLocaleString("ko-kr", {
-          maximumFractionDigits: 0,
-        })} P`,
-    },
-  ];
-  switch (status) {
-    case "all":
-      columns = [
-        ...columns.slice(0, 1),
-        {
-          label: "상태",
-          Cell: ({ row }) =>
-            row.deleted_at ? "취소" : row.completed_at ? "완료" : "진행중",
-          styling: {
-            common: {
-              style: {
-                width: 60,
-                minWidth: 60,
-              },
-            },
-          },
-        },
-        ...columns.slice(1),
-      ];
-      columns.push(...extra);
-      break;
-    case "not":
-      columns.push(extra[0], extra[2]);
-      break;
-    case "completed":
-      columns.push(extra[1], extra[3]);
-      break;
-  }
   return columns;
 }

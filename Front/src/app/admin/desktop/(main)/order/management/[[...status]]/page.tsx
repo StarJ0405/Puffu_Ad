@@ -14,11 +14,15 @@ export default async function ({ params }: { params: Promise<Params> }) {
     relations: [
       "items.brand",
       "items.refunds.refund",
+      "items.exchanges.exchange",
+      "items.exchanges.swaps.brand",
       "address",
       "shipping_method",
       "user",
       "store",
       "refunds.items.item",
+      "exchanges.items.item",
+      "exchanges.items.swaps.brand",
     ],
     start_date,
   };

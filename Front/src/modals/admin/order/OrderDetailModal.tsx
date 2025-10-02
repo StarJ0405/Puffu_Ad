@@ -166,78 +166,107 @@ const OrderDetailModal = NiceModal.create(({ order }: { order: OrderData }) => {
                         )
                       )
                       ?.map((item: LineItemData) => {
-                        const refund_total =
-                          item.total_quantity -
-                          (item.refunds
+                        const refund =
+                          item.refunds
                             ?.filter((f) => f.refund?.completed_at)
-                            ?.reduce((acc, now) => acc + now.quantity, 0) || 0);
+                            ?.reduce((acc, now) => acc + now.quantity, 0) || 0;
+                        const exchange =
+                          item.exchanges?.reduce(
+                            (acc, now) => acc + now.quantity,
+                            0
+                          ) || 0;
                         return (
-                          <HorizontalFlex
-                            key={item?.id}
-                            gap={10}
-                            flexShrink={1}
-                          >
-                            <FlexChild width={"max-content"}>
-                              <Image src={item?.thumbnail} size={40} />
-                            </FlexChild>
-                            <FlexChild flexShrink={1} gap={10}>
-                              <FlexChild>
-                                <P>{item.title}</P>
-                              </FlexChild>
-                              <FlexChild width={"max-content"}>
-                                <VerticalFlex>
-                                  <P
-                                    width={"max-content"}
-                                    textDecorationLine={
-                                      item?.refunds?.length
-                                        ? "line-through"
-                                        : undefined
-                                    }
+                          <FlexChild key={item?.id}>
+                            <VerticalFlex>
+                              <HorizontalFlex gap={10} flexShrink={1}>
+                                <FlexChild width={"max-content"}>
+                                  <Image src={item?.thumbnail} size={40} />
+                                </FlexChild>
+                                <FlexChild flexShrink={1} gap={10}>
+                                  <FlexChild>
+                                    <P>{item.title}</P>
+                                  </FlexChild>
+                                  <FlexChild width={"max-content"}>
+                                    <VerticalFlex>
+                                      <P
+                                        width={"max-content"}
+                                        textDecorationLine={
+                                          item?.refunds?.length
+                                            ? "line-through"
+                                            : undefined
+                                        }
+                                      >
+                                        <Span>X {item.total_quantity}</Span>
+                                        <Span hidden={!item.refunds?.length}>
+                                          {item.extra_quantity > 0
+                                            ? ` (${item.quantity} + ${item.extra_quantity})`
+                                            : ""}
+                                        </Span>
+                                      </P>
+                                      <P
+                                        width={"max-content"}
+                                        hidden={!item.refunds?.length}
+                                      >
+                                        <Span color="red">{refund}</Span>
+                                        <Span>개 환불</Span>
+                                      </P>{" "}
+                                      <P
+                                        width={"max-content"}
+                                        hidden={!item.exchanges?.length}
+                                      >
+                                        <Span color="red">{exchange}</Span>
+                                        <Span>개 교환</Span>
+                                      </P>
+                                    </VerticalFlex>
+                                  </FlexChild>
+                                </FlexChild>
+                                <FlexChild gap={"0.5em"} width={80}>
+                                  <VerticalFlex>
+                                    <P className={styles.total}>
+                                      <Span>
+                                        {((item.total || 0) / item.quantity) *
+                                          (item.quantity - refund)}
+                                      </Span>
+                                      <Span>{item.currency_unit}</Span>
+                                    </P>
+                                  </VerticalFlex>
+                                </FlexChild>
+                              </HorizontalFlex>
+                              {item?.exchanges?.map((exchange) =>
+                                exchange?.swaps?.map((swap) => (
+                                  <HorizontalFlex
+                                    gap={10}
+                                    flexShrink={1}
+                                    key={swap.id}
                                   >
-                                    <Span>X {item.total_quantity}</Span>
-                                    <Span hidden={!item.refunds?.length}>
-                                      {item.extra_quantity > 0
-                                        ? ` (${item.quantity} + ${item.extra_quantity})`
-                                        : ""}
-                                    </Span>
-                                  </P>
-                                  <P
-                                    width={"max-content"}
-                                    hidden={!item.refunds?.length}
-                                  >
-                                    <Span>X </Span>
-                                    <Span color="red">{refund_total}</Span>
-                                  </P>
-                                </VerticalFlex>
-                              </FlexChild>
-                            </FlexChild>
-                            <FlexChild gap={"0.5em"} width={80}>
-                              <VerticalFlex>
-                                <P
-                                  hidden={
-                                    item.total === item.total_discount ||
-                                    refund_total === 0
-                                  }
-                                  className={styles.total}
-                                  fontSize={12}
-                                >
-                                  <Span>
-                                    {((item.total || 0) * refund_total) /
-                                      item.quantity}
-                                  </Span>
-                                  <Span>{item.currency_unit}</Span>
-                                </P>
-                                <P>
-                                  <Span>
-                                    {((item.total_discount || 0) *
-                                      refund_total) /
-                                      item.quantity}
-                                  </Span>
-                                  <Span>{item.currency_unit}</Span>
-                                </P>
-                              </VerticalFlex>
-                            </FlexChild>
-                          </HorizontalFlex>
+                                    <FlexChild width={"max-content"}>
+                                      <Image
+                                        src={
+                                          "/resources/images/bottom-right-arrow.png"
+                                        }
+                                        size={40}
+                                      />
+                                    </FlexChild>
+                                    <FlexChild width={"max-content"}>
+                                      <Image src={swap?.thumbnail} size={40} />
+                                    </FlexChild>
+                                    <FlexChild flexShrink={1} gap={10}>
+                                      <FlexChild>
+                                        <P>{swap.title}</P>
+                                      </FlexChild>
+                                      <FlexChild width={"max-content"}>
+                                        <VerticalFlex>
+                                          <P width={"max-content"}>
+                                            <Span>X {swap.quantity}</Span>
+                                          </P>
+                                        </VerticalFlex>
+                                      </FlexChild>
+                                    </FlexChild>
+                                  </HorizontalFlex>
+                                ))
+                              )}
+                            </VerticalFlex>
+                          </FlexChild>
                         );
                       })}
                   </VerticalFlex>
@@ -653,7 +682,7 @@ const OrderDetailModal = NiceModal.create(({ order }: { order: OrderData }) => {
                           justifyContent={"center"}
                         >
                           <P size={16} weight={600}>
-                            환불 신청일
+                            신청일
                           </P>
                         </FlexChild>
                         <FlexChild
@@ -677,7 +706,7 @@ const OrderDetailModal = NiceModal.create(({ order }: { order: OrderData }) => {
                           justifyContent={"center"}
                         >
                           <P size={16} weight={600}>
-                            환불 상태
+                            상태
                           </P>
                         </FlexChild>
                         <FlexChild
@@ -786,6 +815,160 @@ const OrderDetailModal = NiceModal.create(({ order }: { order: OrderData }) => {
                               <Span> X </Span>
                               <Span>{item.quantity}</Span>
                             </P>
+                          ))}
+                        </FlexChild>
+                      </HorizontalFlex>
+                    </VerticalFlex>
+                  </FlexChild>
+                ))}
+              </VerticalFlex>
+            </FlexChild>
+            <FlexChild hidden={order.exchanges?.length === 0}>
+              <VerticalFlex>
+                <FlexChild marginTop={20}>
+                  <P fontWeight={700} fontSize={20}>
+                    교환내역
+                  </P>
+                </FlexChild>
+                {order.exchanges?.map((exchange) => (
+                  <FlexChild key={exchange.id} marginTop={10}>
+                    <VerticalFlex>
+                      <HorizontalFlex
+                        justifyContent="flex-start"
+                        gap={20}
+                        alignItems="stretch"
+                        borderBottom={"1px solid #EFEFEF"}
+                      >
+                        <FlexChild
+                          width={120}
+                          padding={"18px 15px"}
+                          backgroundColor={"#F5F6FB"}
+                          justifyContent={"center"}
+                        >
+                          <P size={16} weight={600}>
+                            신청일
+                          </P>
+                        </FlexChild>
+                        <FlexChild
+                          width="100%"
+                          padding={"15px 15px 15px 0"}
+                          flex={1}
+                        >
+                          <P>{dateToString(exchange.created_at, true)}</P>
+                        </FlexChild>
+                      </HorizontalFlex>
+                      <HorizontalFlex
+                        justifyContent="flex-start"
+                        gap={20}
+                        alignItems="stretch"
+                        borderBottom={"1px solid #EFEFEF"}
+                      >
+                        <FlexChild
+                          width={120}
+                          padding={"18px 15px"}
+                          backgroundColor={"#F5F6FB"}
+                          justifyContent={"center"}
+                        >
+                          <P size={16} weight={600}>
+                            상태
+                          </P>
+                        </FlexChild>
+                        <FlexChild
+                          width="100%"
+                          padding={"15px 15px 15px 0"}
+                          flex={1}
+                        >
+                          <P>
+                            {exchange.completed_at
+                              ? `교환 완료 (${dateToString(
+                                  exchange.completed_at,
+                                  true
+                                )})`
+                              : "처리중"}
+                          </P>
+                        </FlexChild>
+                      </HorizontalFlex>
+                      <HorizontalFlex
+                        justifyContent="flex-start"
+                        gap={20}
+                        alignItems="stretch"
+                        borderBottom={"1px solid #EFEFEF"}
+                      >
+                        <FlexChild
+                          width={120}
+                          padding={"18px 15px"}
+                          backgroundColor={"#F5F6FB"}
+                          justifyContent={"center"}
+                        >
+                          <P size={16} weight={600}>
+                            교환 상품
+                          </P>
+                        </FlexChild>
+                        <FlexChild
+                          // width="100%"
+                          padding={"15px 15px 15px 0"}
+                          flex={1}
+                          gap={8}
+                          flexWrap="wrap"
+                        >
+                          {exchange.items?.map((item) => (
+                            <FlexChild
+                              key={item.id}
+                              borderRadius={5}
+                              border="1px solid #d0d0d0"
+                            >
+                              <HorizontalFlex alignItems="stretch">
+                                <FlexChild
+                                  borderRight={"1px solid #d0d0d0"}
+                                  alignItems="stretch"
+                                >
+                                  <FlexChild
+                                    width={"max-content"}
+                                    padding={"5px 10px"}
+                                    borderRight={"1px solid #d0d0d0"}
+                                  >
+                                    <P whiteSpace="nowrap">{item.quantity}개</P>
+                                  </FlexChild>
+                                  <FlexChild padding={"5px 10px"}>
+                                    <P>
+                                      <Span>{item?.item?.title}</Span>
+                                    </P>
+                                  </FlexChild>
+                                </FlexChild>
+                                <FlexChild>
+                                  <VerticalFlex>
+                                    {item?.swaps?.map((swap, index) => (
+                                      <FlexChild
+                                        key={swap.id}
+                                        padding={"5px 10px"}
+                                        borderTop={
+                                          index === 0
+                                            ? undefined
+                                            : "1px solid #d0d0d0"
+                                        }
+                                      >
+                                        <FlexChild
+                                          padding={"5px 10px"}
+                                          borderRight={"1px solid #d0d0d0"}
+                                        >
+                                          <P>
+                                            <Span>{swap?.title}</Span>
+                                          </P>
+                                        </FlexChild>
+                                        <FlexChild
+                                          padding={"5px 10px"}
+                                          width={"max-content"}
+                                        >
+                                          <P whiteSpace="nowrap">
+                                            {swap.quantity}개
+                                          </P>
+                                        </FlexChild>
+                                      </FlexChild>
+                                    ))}
+                                  </VerticalFlex>
+                                </FlexChild>
+                              </HorizontalFlex>
+                            </FlexChild>
                           ))}
                         </FlexChild>
                       </HorizontalFlex>

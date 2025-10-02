@@ -23,6 +23,7 @@ import { Swiper as SwiperType } from "swiper";
 import { Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import styles from "./OrderExchangeModal.module.css";
+import { useStore } from "@/providers/StoreProvider/StorePorivderClient";
 
 const OrderExchangeModal = NiceModal.create(
   ({ order, onSuccess }: { order: OrderData; onSuccess?: () => void }) => {
@@ -171,13 +172,34 @@ const OrderExchangeModal = NiceModal.create(
                 }}
                 width={"100%"}
                 options={order.items.map((item) => ({
-                  disabled: item.quantity <= 0,
+                  disabled:
+                    item.quantity -
+                      (item.exchanges?.reduce(
+                        (acc, now) => acc + now.quantity,
+                        0
+                      ) || 0) -
+                      (item.refunds?.reduce(
+                        (acc, now) => acc + now.quantity,
+                        0
+                      ) || 0) <=
+                    0,
                   display: (
                     <HorizontalFlex
                       key={item.id}
                       color="#111"
                       textDecorationLine={
-                        item.quantity <= 0 ? "line-through" : undefined
+                        item.quantity -
+                          (item.exchanges?.reduce(
+                            (acc, now) => acc + now.quantity,
+                            0
+                          ) || 0) -
+                          (item.refunds?.reduce(
+                            (acc, now) => acc + now.quantity,
+                            0
+                          ) || 0) <=
+                        0
+                          ? "line-through"
+                          : undefined
                       }
                     >
                       <FlexChild gap={10}>
@@ -187,7 +209,17 @@ const OrderExchangeModal = NiceModal.create(
                       <FlexChild width={"max-content"}>
                         <P>
                           <Span>X </Span>
-                          <Span>{item.quantity}</Span>
+                          <Span>
+                            {item.quantity -
+                              (item.exchanges?.reduce(
+                                (acc, now) => acc + now.quantity,
+                                0
+                              ) || 0) -
+                              (item.refunds?.reduce(
+                                (acc, now) => acc + now.quantity,
+                                0
+                              ) || 0)}
+                          </Span>
                           <Span>
                             {item.extra_quantity
                               ? ` + ${item.extra_quantity}`
@@ -311,7 +343,10 @@ const Item = forwardRef(
     ref
   ) => {
     const swapRef = useRef<any[]>([]);
-    const max = select.quantity;
+    const max =
+      select.quantity -
+      (select.exchanges?.reduce((acc, now) => acc + now.quantity, 0) || 0) -
+      (select.refunds?.reduce((acc, now) => acc + now.quantity, 0) || 0);
     const [swaps, setSwaps] = useState<VariantData[]>([]);
     const [quantity, setQuantity] = useState<number>(max);
     const [memo, setMemo] = useState<string>("");
@@ -379,6 +414,7 @@ const Item = forwardRef(
                   scrollbarWidth: "none",
                   initCondition: {
                     relations: [
+                      "product.store",
                       "product.discounts.discount",
                       "discounts.discount",
                     ],
@@ -438,7 +474,14 @@ const Item = forwardRef(
                   search: true,
                   onMaxPage: (data: Pageable) => data?.totalPages || 0,
                   onReprocessing: (data: any) => data?.content || [],
-                  onSelect: (data: any) => setSwaps([...swaps, ...data]),
+                  onSelect: (data: any) =>
+                    setSwaps([
+                      ...swaps,
+                      ...data.filter(
+                        (f: VariantData) =>
+                          f.stack > 0 && !swaps.some((swap) => swap.id === f.id)
+                      ),
+                    ]),
                   onSearch: (condition: any) =>
                     adminRequester.getVariants(condition),
                 })
@@ -449,7 +492,7 @@ const Item = forwardRef(
           </FlexChild>
           <FlexChild>
             {swaps.length === 0 ? (
-              <P>없음</P>
+              <P className={styles.value}>없음</P>
             ) : (
               <VerticalFlex>
                 {swaps.map((swap, index) => (
@@ -498,7 +541,19 @@ const SwapItem = forwardRef(
     const [quantity, setQuantity] = useState<number>(1);
     useImperativeHandle(ref, () => ({
       getValue() {
-        return { varaint_id: swap.id, quantity };
+        return {
+          variant_id: swap.id,
+          brand_id: swap.product.brand_id,
+          quantity,
+          product_title: swap.product.title,
+          variant_title: swap.title,
+          description: swap.product.description,
+          thumbnail: swap.thumbnail || swap.product.thumbnail,
+          unit_price: swap.price,
+          tax_rate: swap.product.tax_rate,
+          discount_price: swap.discount_price,
+          currency_unit: swap.product.store?.currency_unit,
+        };
       },
     }));
     return (

@@ -39,7 +39,7 @@ export const POST: ApiHandler = async (req, res) => {
     user_id: user.id,
     point,
   });
-
+  const total = await pointService.getTotalPoint(user.id);
   const repo = container.resolve(LogRepository);
   await repo.create({
     type: "point",
@@ -47,6 +47,7 @@ export const POST: ApiHandler = async (req, res) => {
     data: {
       point: point,
       user_id: user.id,
+      total,
     },
   });
   return res.json({ point });
