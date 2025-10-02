@@ -85,8 +85,16 @@ function ChatToggle() {
     return false;
   }, [pathname]);
 
+  const customPositionPages = [
+    '/orders/cart',
+  ];
+  const isCustomPosition = customPositionPages.includes(pathname);
+
   return (
-    <nav id={styles.sideNavi}>
+    <nav 
+    id={styles.sideNavi} 
+    className={clsx(styles.sideNavi, {[styles.customPosition]: isCustomPosition})}
+    >
       <FlexChild
         className={clsx(styles.Btn_frame, scrolled ? styles.scroll : "")}
       >
