@@ -60,17 +60,48 @@ export enum Target {
 // CREATE INDEX IF NOT EXISTS idx_coupon_name ON public.coupon USING GIN (fn_text_to_char_array(name));
 export class Coupon extends BaseEntity {
   @Column({ type: "character varying", nullable: false })
-  name?: string;
-
-  @Column({ type: "enum", enum: CouponType, nullable: false })
-  type!: CouponType;
-
-  @Column({ type: "character varying", nullable: false })
   store_id?: string;
 
   @ManyToOne(() => Store)
   @JoinColumn({ name: "store_id", referencedColumnName: "id" })
   store?: Store;
+
+  @Column({ type: "character varying", nullable: false })
+  name?: string;
+
+  @Column({ type: "enum", enum: CouponType, nullable: false })
+  type!: CouponType;
+
+  @Column({ type: "real", default: 0.0 })
+  value!: number;
+
+  @Column({ enum: CalcType, type: "enum", default: CalcType.FIX })
+  calc!: CalcType;
+
+  @Column({
+    type: "timestamp with time zone",
+    default: () => "CURRENT_TIMESTAMP",
+    nullable: false,
+  })
+  appears_at?: Date | string;
+
+  @Column({ enum: DateType, type: "enum", default: DateType.FIXED })
+  date!: DateType;
+
+  @Column({ type: "timestamp with time zone", nullable: true })
+  starts_at?: Date | string | null;
+
+  @Column({ type: "timestamp with time zone", nullable: true })
+  ends_at?: Date | string | null;
+
+  @Column({ type: "integer", default: 0 })
+  range?: number;
+
+  @Column({ enum: DateUnit, type: "enum", nullable: true })
+  date_unit?: DateUnit;
+
+  @Column({ type: "enum", enum: Target, default: Target.ETC })
+  target?: Target;
 
   @Column({ type: "character varying", nullable: true })
   group_id?: string;
@@ -79,6 +110,52 @@ export class Coupon extends BaseEntity {
   @JoinColumn({ name: "group_id", referencedColumnName: "id" })
   group?: Group;
 
+  @Column({
+    type: "timestamp with time zone",
+    nullable: true,
+  })
+  check_date?: Date | string | null;
+
+  @Column({ type: "boolean", default: false })
+  check_lunar?: boolean;
+
+  @Column({ type: "integer", default: 0 })
+  review_min?: number;
+
+  @Column({ type: "boolean", default: false })
+  review_photo?: boolean;
+
+  @Column({ type: "integer", default: -1 })
+  max_quantity?: number;
+
+  @Column({ type: "integer", default: 0 })
+  quantity?: number;
+
+  @Column({ type: "boolean", default: false })
+  duplicate?: boolean;
+
+  @Column({
+    type: "timestamp with time zone",
+    nullable: true,
+  })
+  order_starts_at?: Date | string | null;
+
+  @Column({
+    type: "timestamp with time zone",
+    nullable: true,
+  })
+  order_ends_at?: Date | string | null;
+
+  @Column({ type: "boolean", default: false })
+  buy_type?: boolean;
+
+  @Column({ type: "integer", default: -1 })
+  buy_min?: number;
+
+  @Column({ type: "character varying", nullable: true })
+  code?: string;
+
+  // 발급된 경우 데이터
   @Column({ type: "character varying", nullable: true })
   user_id?: string;
 
@@ -86,6 +163,14 @@ export class Coupon extends BaseEntity {
   @JoinColumn({ name: "user_id", referencedColumnName: "id" })
   user?: User;
 
+  @Column({ type: "character varying", nullable: true })
+  origin_id?: string;
+
+  @ManyToOne(() => Coupon)
+  @JoinColumn({ name: "origin_id", referencedColumnName: "id" })
+  origin?: Coupon;
+
+  // 사용 관련
   @Column({ type: "character varying", nullable: true })
   item_id?: string;
 
@@ -106,30 +191,6 @@ export class Coupon extends BaseEntity {
   @ManyToOne(() => ShippingMethod, (shipping_method) => shipping_method.coupons)
   @JoinColumn({ name: "shipping_method_id", referencedColumnName: "id" })
   shipping_method?: ShippingMethod;
-
-  @Column({ type: "real", default: 0.0 })
-  value!: number;
-
-  @Column({ enum: CalcType, type: "enum", default: CalcType.FIX })
-  calc!: CalcType;
-
-  @Column({ enum: DateType, type: "enum", default: DateType.FIXED })
-  date!: DateType;
-
-  @Column({ enum: DateUnit, type: "enum", nullable: true })
-  date_unit?: DateUnit;
-
-  @Column({ type: "integer", default: 0 })
-  range?: number;
-
-  @Column({ type: "timestamp with time zone", nullable: true })
-  starts_at?: Date | string | null;
-
-  @Column({ type: "timestamp with time zone", nullable: true })
-  ends_at?: Date | string | null;
-
-  @Column({ type: "enum", enum: Target, default: Target.ETC })
-  target?: Target;
 
   get used(): boolean {
     return !!(this.item_id || this.order_id || this.shipping_method_id);
