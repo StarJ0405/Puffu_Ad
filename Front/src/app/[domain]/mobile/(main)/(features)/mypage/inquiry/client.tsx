@@ -69,6 +69,7 @@ export function InquiryClient() {
     page,
     maxPage,
     changePage,
+    setPage,
   } = usePageData(
     "qas",
     (pageNumber) => ({
@@ -247,7 +248,7 @@ export function InquiryClient() {
           {inquiries?.length > 0 ? null : <NoContent type="문의" />}
         </FlexChild>
         <FlexChild className={styles.list_bottom_box}>
-          <ListPagination page={page} maxPage={maxPage} onChange={changePage} />
+          <ListPagination page={page} maxPage={maxPage} onChange={setPage} />
         </FlexChild>
       </VerticalFlex>
     </>
