@@ -260,6 +260,7 @@ interface LineItemData extends BaseEntity {
   metadata?: Record<string, unknown> | null;
   confirmation: boolean;
   refunds?: RefundItemData[];
+  exchanges?: ExchangeItemData[];
   review?: any;
 }
 
@@ -326,6 +327,7 @@ interface OrderData extends BaseEntity {
   items: LineItemData[];
   point: number;
   refunds?: RefundData[];
+  exchanges?: ExchangeData[];
 }
 
 interface AccountLinkData extends BaseEntity {
@@ -493,7 +495,47 @@ interface RefundItemData extends BaseEntity {
   memo?: string;
   metadata?: Record<string, unknown> | null;
 }
-
+interface ExchangeData extends BaseEntity {
+  order_id: string;
+  order?: OrderData;
+  tracking_number: string | null;
+  pickup_at?: Data | string | null;
+  completed_at?: Data | string | null;
+  items?: ExchangeItemData[];
+  metadata?: Record<string, unknown> | null;
+}
+interface ExchangeItemData extends BaseEntity {
+  exchange_id: string;
+  exchange?: ExchangeData;
+  item_id: string;
+  item?: LineItemData;
+  swaps?: SwapItemData[];
+  quantity: number;
+  memo?: string;
+  metadata?: Record<string, unknown> | null;
+}
+interface SwapItemData extends BaseEntity {
+  exchange_item_id?: string;
+  exchange_item?: ExchangeItemData;
+  variant_id: string;
+  variant: VariantData;
+  brand_id?: string;
+  brand?: BrandData;
+  quantity: number;
+  title?: string;
+  product_title?: string;
+  variant_title?: string;
+  description?: string;
+  thumbnail?: string;
+  unit_price?: number;
+  tax_rate?: number;
+  discount_price?: number;
+  total?: number;
+  total_discount?: number;
+  total_tax?: number;
+  currency_unit?: string;
+  metadata?: Record<string, unknown> | null;
+}
 type CouponType = "item" | "order" | "shipping";
 type CalcType = "percent" | "fix";
 type DateType = "fixed" | "range" | "day" | "week" | "month" | "year";

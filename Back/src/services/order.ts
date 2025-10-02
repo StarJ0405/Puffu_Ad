@@ -315,6 +315,7 @@ export class OrderService extends BaseService<Order, OrderRepository> {
           user_id: order.user_id,
           point: order.point,
         });
+        const total = this.pointService.getTotalPoint(order.user_id || "");
         const repo = container.resolve(LogRepository);
         await repo.create({
           type: "point",
@@ -322,6 +323,7 @@ export class OrderService extends BaseService<Order, OrderRepository> {
           data: {
             point: order.point,
             user_id: order.user_id,
+            total,
           },
         });
 

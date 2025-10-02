@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { RefundService } from "services/refund";
+import { ExchangeService } from "services/exchange";
 import { container } from "tsyringe";
 import { IsNull, Not } from "typeorm";
 
@@ -25,8 +25,7 @@ export const GET: ApiHandler = async (req, res) => {
   if (where.deleted_at) {
     where.deleted_at = Not(IsNull());
   }
-
-  const service: RefundService = container.resolve(RefundService);
+  const service: ExchangeService = container.resolve(ExchangeService);
   if (pageSize) {
     const page = await service.getPageable(
       {

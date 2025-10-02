@@ -85,12 +85,23 @@ export class LineItemService extends BaseService<LineItem, LineItemRepository> {
           user_id: point?.[0].id,
           point: point?.[0].round,
         });
+        const total =
+          (
+            await this.pointRepository
+              .builder("pt")
+              .select("sum(pt.point - pt.used_point)", "sum")
+              .where(`pt.user_id = :user_id`, { user_id: point?.[0]?.id })
+              .andWhere(`(pt.ends_at IS NULL OR pt.ends_at > NOW())`)
+              .groupBy("pt.user_id")
+              .getRawOne()
+          )?.sum || 0;
         await this.logRepository.create({
           type: "point",
           name: "멤버쉽 적립",
           data: {
             user_id: point?.[0].id,
             point: point?.[0].round,
+            total,
           },
         });
       }
@@ -174,12 +185,23 @@ export class LineItemService extends BaseService<LineItem, LineItemRepository> {
             user_id: point.id,
             point: point.round,
           });
+          const total =
+            (
+              await this.pointRepository
+                .builder("pt")
+                .select("sum(pt.point - pt.used_point)", "sum")
+                .where(`pt.user_id = :user_id`, { user_id: point?.id })
+                .andWhere(`(pt.ends_at IS NULL OR pt.ends_at > NOW())`)
+                .groupBy("pt.user_id")
+                .getRawOne()
+            )?.sum || 0;
           await this.logRepository.create({
             type: "point",
             name: "멤버쉽 적립",
             data: {
               point: point.round,
               user_id: point.id,
+              total,
             },
           });
         }

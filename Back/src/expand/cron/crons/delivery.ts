@@ -6,6 +6,7 @@ import { ShippingMethodService } from "services/shipping_method";
 import { container } from "tsyringe";
 import { IsNull, Not } from "typeorm";
 import { schedule } from "../module";
+import { ExchangeService } from "services/exchange";
 interface Progress {
   time: string;
   status: {
@@ -19,10 +20,9 @@ interface Progress {
 }
 
 async function ProgressModule(
-  order: Order,
+  tracking_number: string | undefined,
   callback: (progresses: Progress[]) => Promise<void>
 ) {
-  let tracking_number = order.shipping_method?.tracking_number;
   if (!tracking_number) return;
   tracking_number = String(tracking_number).replace(/-/g, "");
   const response = await axios.get(
@@ -42,6 +42,7 @@ export function regist(DEV: boolean) {
     async () => {
       const service = container.resolve(OrderService);
       const shippingService = container.resolve(ShippingMethodService);
+      const exchangeService = container.resolve(ExchangeService);
       // 배송대기
       {
         const orders = await service.getList({
@@ -55,16 +56,44 @@ export function regist(DEV: boolean) {
           relations: ["shipping_method"],
         });
         for (const order of orders) {
-          await ProgressModule(order, async (progresses) => {
-            if (
-              progresses.some(
-                (progress) => progress?.status?.id === "at_pickup"
-              )
-            ) {
-              await service.update(
-                { id: order.id },
+          await ProgressModule(
+            order.shipping_method?.tracking_number,
+            async (progresses) => {
+              if (
+                progresses.some(
+                  (progress) => progress?.status?.id === "at_pickup"
+                )
+              ) {
+                await service.update(
+                  { id: order.id },
+                  {
+                    status: OrderStatus.SHIPPING,
+                  }
+                );
+              }
+            }
+          );
+        }
+      }
+      // 교환 배송대기
+      {
+        const exchanges = await exchangeService.getList({
+          where: {
+            completed_at: IsNull(),
+            pickup_at: IsNull(),
+            tracking_number: Not(IsNull()),
+          },
+        });
+        for (const exchange of exchanges) {
+          await ProgressModule(exchange.tracking_number, async (progresses) => {
+            const find = progresses.find(
+              (progress) => progress?.status?.id === "at_pickup"
+            );
+            if (find) {
+              await exchangeService.update(
+                { id: exchange.id },
                 {
-                  status: OrderStatus.SHIPPING,
+                  pickup_at: new Date(find.time),
                 }
               );
             }
@@ -83,24 +112,51 @@ export function regist(DEV: boolean) {
           relations: ["shipping_method"],
         });
         for (const order of orders) {
-          await ProgressModule(order, async (progresses) => {
+          await ProgressModule(
+            order.shipping_method?.tracking_number,
+            async (progresses) => {
+              const find = progresses.find(
+                (progress) => progress?.status?.id === "delivered"
+              );
+              if (find) {
+                await service.update(
+                  { id: order.id },
+                  {
+                    status: OrderStatus.COMPLETE,
+                  }
+                );
+                await shippingService.update(
+                  {
+                    order_id: order.id,
+                    type: ShippingType.DEFAULT,
+                  },
+                  {
+                    shipped_at: new Date(find.time),
+                  }
+                );
+              }
+            }
+          );
+        }
+      }
+      {
+        const exchanges = await exchangeService.getList({
+          where: {
+            pickup_at: Not(IsNull()),
+            completed_at: IsNull(),
+            tracking_number: Not(IsNull()),
+          },
+        });
+        for (const exchange of exchanges) {
+          await ProgressModule(exchange.tracking_number, async (progresses) => {
             const find = progresses.find(
               (progress) => progress?.status?.id === "delivered"
             );
             if (find) {
-              await service.update(
-                { id: order.id },
+              await exchangeService.update(
+                { id: exchange.id },
                 {
-                  status: OrderStatus.COMPLETE,
-                }
-              );
-              await shippingService.update(
-                {
-                  order_id: order.id,
-                  type: ShippingType.DEFAULT,
-                },
-                {
-                  shipped_at: new Date(find.time),
+                  completed_at: new Date(find.time),
                 }
               );
             }

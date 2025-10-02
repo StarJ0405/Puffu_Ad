@@ -12,6 +12,7 @@ import CouponModal from "./admin/coupon/CouponModal";
 import GroupModal from "./admin/group/GroupModal";
 import LoadingModal from "./admin/LoadingModal";
 import NoticeModal from "./admin/notice/NtoiceModal";
+import ExchangeDetailModal from "./admin/order/ExchangeDetailModal";
 import OrderDetailModal from "./admin/order/OrderDetailModal";
 import OrderExchangeModal from "./admin/order/OrderExchangeModal";
 import OrderRefundModal from "./admin/order/OrderRefundModal";
@@ -71,6 +72,7 @@ function ModalHandler() {
   NiceModal.register("orderRefund", OrderRefundModal);
   NiceModal.register("orderExchange", OrderExchangeModal);
   NiceModal.register("refundDetail", RefundDetailModal);
+  NiceModal.register("exchangeDetail", ExchangeDetailModal);
   NiceModal.register("orderList", OrderListModal);
   NiceModal.register("userDetail", UserModal);
   NiceModal.register("couponDetail", CouponModal);

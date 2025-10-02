@@ -10,21 +10,21 @@ import Select from "@/components/select/Select";
 import Span from "@/components/span/Span";
 import ModalBase from "@/modals/ModalBase";
 import { adminRequester } from "@/shared/AdminRequester";
-import { copy, toast } from "@/shared/utils/Functions";
+import { copy, openTrackingNumber, toast } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import { Swiper as SwiperType } from "swiper";
 import { Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import styles from "./RefundDetailModal.module.css";
+import styles from "./ExchangeDetailModal.module.css";
 
-const RefundDetailModal = NiceModal.create(
+const ExchangeDetailModal = NiceModal.create(
   ({
-    refund,
+    exchange,
     edit = false,
     onSuccess,
   }: {
-    refund: RefundData;
+    exchange: ExchangeData;
     edit?: boolean;
     onSuccess?: () => void;
   }) => {
@@ -33,13 +33,15 @@ const RefundDetailModal = NiceModal.create(
     const [width, height] = ["730px", "75vh"];
     const withCloseButton = true;
     const clickOutsideToClose = true;
-    const title = "환불 " + (edit ? "편집" : "상세");
+    const title = "교환 " + (edit ? "편집" : "상세");
     const inputs = useRef<any[]>([]);
-    const [selects, setSelects] = useState<RefundItemData[]>(
-      refund?.items || []
+    const [selects, setSelects] = useState<ExchangeItemData[]>(
+      exchange?.items || []
     );
     const swiperRef = useRef<SwiperType | null>(null);
-
+    const [tracking, setTracking] = useState<string>(
+      exchange.tracking_number || ""
+    );
     const paintBullets = (swiper: SwiperType) => {
       // 페이지네이션 스타일 설정
       const bullets = swiper.pagination?.el?.querySelectorAll(
@@ -118,12 +120,12 @@ const RefundDetailModal = NiceModal.create(
                     textHover
                     onClick={() =>
                       copy({
-                        text: refund?.order?.display || "",
+                        text: exchange?.order?.display || "",
                         message: "주문번호를 복사했습니다",
                       })
                     }
                   >
-                    {refund?.order?.display}
+                    {exchange?.order?.display}
                   </P>
                 </FlexChild>
               </HorizontalFlex>
@@ -140,16 +142,15 @@ const RefundDetailModal = NiceModal.create(
                     </P>
                   </FlexChild>
                   <FlexChild width="max-content" padding={"15px 15px 15px 0"}>
-                    <P>{refund?.order?.user?.name}</P>
+                    <P>{exchange?.order?.user?.name}</P>
                   </FlexChild>
                 </FlexChild>
               </HorizontalFlex>
               <HorizontalFlex justifyContent="flex-start">
                 <FlexChild
-                  alignItems="stretch"
                   gap={20}
-                  borderTop={"1px solid #EFEFEF"}
                   borderBottom={"1px solid #EFEFEF"}
+                  alignItems="stretch"
                 >
                   <FlexChild
                     width={120}
@@ -158,93 +159,30 @@ const RefundDetailModal = NiceModal.create(
                     justifyContent={"center"}
                   >
                     <P size={16} weight={600}>
-                      환불가능 금액
+                      운송장번호
                     </P>
                   </FlexChild>
                   <FlexChild width="max-content" padding={"15px 15px 15px 0"}>
-                    <P
-                      hidden={
-                        (refund.order?.total_discounted || 0) +
-                          (refund.order?.shipping_method?.amount || 0) ===
-                        refund.order?.point
-                      }
-                    >
-                      <Span color="green">
-                        {selects?.reduce(
-                          (acc, item) =>
-                            acc +
-                            ((item.item?.discount_price || 0) +
-                              (item?.item?.shared_price || 0)) *
-                              item.quantity,
-                          0
-                        ) || 0}
-                      </Span>
-                      <Span>원</Span>
-                      <Span fontSize={14}>(상품 </Span>
-                      <Span fontSize={14}>
-                        {(selects?.reduce(
-                          (acc, item) =>
-                            acc +
-                            ((item.item?.discount_price || 0) +
-                              (item?.item?.shared_price || 0)) *
-                              item.quantity,
-                          0
-                        ) || 0) -
-                          ((refund.order?.shipping_method?.amount || 0) /
-                            (refund?.order?.total_discounted || 0)) *
-                            (selects?.reduce(
-                              (acc, now) =>
-                                acc +
-                                (now.item?.discount_price || 0) * now.quantity,
-                              0
-                            ) || 0)}
-                      </Span>
-                      <Span fontSize={14}>원 + 배송비</Span>
-                      <Span fontSize={14}>
-                        {((refund.order?.shipping_method?.amount || 0) /
-                          (refund?.order?.total_discounted || 0)) *
-                          (selects?.reduce(
-                            (acc, now) =>
-                              acc +
-                              (now.item?.discount_price || 0) * now.quantity,
-                            0
-                          ) || 0)}
-                      </Span>
-                      <Span fontSize={14}>원)</Span>
-                    </P>
-                    <P
-                      padding={"0 0.5em"}
-                      hidden={
-                        (refund.order?.total_discounted || 0) +
-                          (refund.order?.shipping_method?.amount || 0) ===
-                          refund.order?.point || refund.order?.point === 0
-                      }
-                    >
-                      <Span> | </Span>
-                    </P>
-                    <P hidden={refund.order?.point === 0}>
-                      <Span color="green">
-                        {selects?.reduce(
-                          (acc, item) =>
-                            acc +
-                            ((refund?.order?.point || 0) /
-                              (refund?.order?.total_discounted || 0)) *
-                              (item?.item?.discount_price || 0) *
-                              item.quantity,
-                          0
-                        ) || 0}
-                      </Span>
-                      <Span>P</Span>
-                      {/* <Span> / (</Span>
-                      <Span>
-                        {(refund?.order?.shipping_method?.amount || 0) +
-                          (refund?.order?.total_discounted || 0) -
-                          (refund?.order?.point || 0)}
-                      </Span>
-                      <Span>원 | </Span>
-                      <Span>{refund?.order?.point}</Span>
-                      <Span>P)</Span> */}
-                    </P>
+                    {edit ? (
+                      <Input
+                        style={{
+                          width: 300,
+                          fontWeight: 600,
+                          fontSize: 20,
+                          padding: "1px 4px",
+                        }}
+                        placeHolder="운송장번호"
+                        value={tracking}
+                        onChange={(value) => setTracking(value as string)}
+                      />
+                    ) : (
+                      <P
+                        cursor={tracking ? "pointer" : undefined}
+                        onClick={() => tracking && openTrackingNumber(tracking)}
+                      >
+                        {tracking || "없음"}
+                      </P>
+                    )}
                   </FlexChild>
                 </FlexChild>
               </HorizontalFlex>
@@ -269,19 +207,19 @@ const RefundDetailModal = NiceModal.create(
                   }}
                   value={selects.map((rl) => rl.item_id)}
                   onChange={(value) => {
-                    const items: RefundItemData[] = (value as string[]).map(
+                    const items: ExchangeItemData[] = (value as string[]).map(
                       (v) => {
-                        let item: any = refund.items?.find(
+                        let item: any = exchange.items?.find(
                           (f) => f.item_id === v
                         );
                         if (item) return item;
-                        item = refund.order?.items.find((i) => i.id === v);
+                        item = exchange.order?.items.find((i) => i.id === v);
 
                         return {
                           item_id: item.id,
                           item,
                           quantity: item.total_quantity,
-                        } as RefundItemData;
+                        } as ExchangeItemData;
                       }
                     );
                     if (items) {
@@ -291,14 +229,14 @@ const RefundDetailModal = NiceModal.create(
                   }}
                   width={"100%"}
                   options={
-                    refund?.order?.items.map((item) => ({
+                    exchange?.order?.items.map((item) => ({
                       disabled:
                         item.quantity -
-                          (item.refunds
-                            ?.filter((f) => f.refund_id !== refund.id)
+                          (item.exchanges
+                            ?.filter((f) => f.exchange_id !== exchange.id)
                             ?.reduce((acc, now) => acc + now.quantity, 0) ||
                             0) -
-                          (item.exchanges?.reduce(
+                          (item.refunds?.reduce(
                             (acc, now) => acc + now.quantity,
                             0
                           ) || 0) <=
@@ -309,11 +247,11 @@ const RefundDetailModal = NiceModal.create(
                           color="#111"
                           textDecorationLine={
                             item.quantity -
-                              (item.refunds
-                                ?.filter((f) => f.refund_id !== refund.id)
+                              (item.exchanges
+                                ?.filter((f) => f.exchange_id !== exchange.id)
                                 ?.reduce((acc, now) => acc + now.quantity, 0) ||
                                 0) -
-                              (item.exchanges?.reduce(
+                              (item.refunds?.reduce(
                                 (acc, now) => acc + now.quantity,
                                 0
                               ) || 0) <=
@@ -331,13 +269,15 @@ const RefundDetailModal = NiceModal.create(
                               <Span>X </Span>
                               <Span>
                                 {item.quantity -
-                                  (item.refunds
-                                    ?.filter((f) => f.refund_id !== refund.id)
+                                  (item.exchanges
+                                    ?.filter(
+                                      (f) => f.exchange_id !== exchange.id
+                                    )
                                     ?.reduce(
                                       (acc, now) => acc + now.quantity,
                                       0
                                     ) || 0) -
-                                  (item.exchanges?.reduce(
+                                  (item.refunds?.reduce(
                                     (acc, now) => acc + now.quantity,
                                     0
                                   ) || 0)}
@@ -389,7 +329,7 @@ const RefundDetailModal = NiceModal.create(
                       inputs.current[index] = el;
                     }}
                     item={item}
-                    refund={refund}
+                    exchange={exchange}
                     edit={edit}
                   />
                 </SwiperSlide>
@@ -406,20 +346,31 @@ const RefundDetailModal = NiceModal.create(
                 </Button>
                 <Button
                   className={styles.confirm_button}
-                  onClick={() =>
-                    adminRequester.updateRefund(
-                      refund.id,
+                  onClick={() => {
+                    const items = inputs.current
+                      .filter(Boolean)
+                      .map((input) => input.getValue());
+                    if (items.length === 0)
+                      return toast({
+                        message: "최소 1개이상의 상품을 교환해야합니다.",
+                      });
+                    if (items.some((item) => item.swaps?.length === 0))
+                      return toast({
+                        message: "교환할 상품이 선택되지 않았습니다.",
+                      });
+                    console.log(tracking);
+                    adminRequester.updateExchange(
+                      exchange.id,
                       {
-                        items: inputs.current
-                          .filter(Boolean)
-                          .map((input) => input.getValue()),
+                        items,
+                        tracking_number: tracking,
                       },
                       () => {
                         onSuccess?.();
                         modal.current.close();
                       }
-                    )
-                  }
+                    );
+                  }}
                 >
                   편집
                 </Button>
@@ -427,13 +378,13 @@ const RefundDetailModal = NiceModal.create(
             ) : (
               <FlexChild gap={20} position="sticky" bottom={0} padding={20}>
                 <Button
-                  hidden={!!refund.deleted_at || !!refund.completed_at}
+                  hidden={!!exchange.deleted_at || !!exchange.completed_at}
                   className={styles.confirm_button}
                   onClick={() =>
                     NiceModal.show("confirm", {
                       message: (
                         <VerticalFlex>
-                          <P>환불 신청을 철회하시겠습니까?</P>
+                          <P>교환 신청을 철회하시겠습니까?</P>
                           <P>
                             수정이 필요한 경우 반드시 [편집 기능]을 이용해주세요
                           </P>
@@ -442,7 +393,7 @@ const RefundDetailModal = NiceModal.create(
                       confirmText: "철회",
                       cancelText: "그만두기",
                       onConfirm: () =>
-                        adminRequester.cancelRefund(refund.id, {}, () => {
+                        adminRequester.cancelExchange(exchange.id, {}, () => {
                           onSuccess?.();
                           modal.current.close();
                         }),
@@ -452,95 +403,30 @@ const RefundDetailModal = NiceModal.create(
                   철회
                 </Button>
                 <Button
-                  hidden={refund.completed_at}
+                  hidden={exchange.completed_at}
                   className={styles.cancel_button}
-                  onClick={() => {
-                    const value =
-                      refund.items?.reduce(
-                        (acc, item) =>
-                          acc +
-                          Math.round(
-                            (item.item?.discount_price || 0) +
-                              (item?.item?.shared_price || 0)
-                          ) *
-                            item.quantity,
-                        0
-                      ) || 0;
-                    const point =
-                      refund.items?.reduce(
-                        (acc, item) =>
-                          acc +
-                          Math.round(
-                            ((refund?.order?.point || 0) /
-                              (refund?.order?.total_discounted || 0)) *
-                              (item?.item?.discount_price || 0)
-                          ) *
-                            item.quantity,
-                        0
-                      ) || 0;
-                    // 무통장 여부
-                    const isBank = !!refund?.order?.payment_data?.bank;
-                    NiceModal.show("input", {
-                      message: isBank ? (
-                        <VerticalFlex>
-                          <P size={18} weight={600} color="#111">
-                            환불 정보
-                          </P>
-                          <P size={14} weight={500} color="red">
-                            무통장 입금은 환불을 직접하고 진행할 것!
-                          </P>
-                        </VerticalFlex>
-                      ) : (
-                        "환불 정보"
-                      ),
-                      input: [
-                        {
-                          label: isBank
-                            ? "환불 해준 금액(기록용)"
-                            : "환불 금액",
-                          type: "number",
-                          max: value,
-                          value: value,
-                        },
-                        {
-                          label: "환불 포인트",
-                          type: "number",
-                          max: point,
-                          value: point,
-                        },
-                      ],
-                      confirmText: "환불하기",
+                  onClick={() =>
+                    NiceModal.show("confirm", {
+                      message: "강제로 완료처리하시겠습니까?",
                       cancelText: "취소",
-                      preventable: true,
-                      onConfirm: async (values: number[]) => {
-                        if (values.every((value) => value === 0)) {
-                          setTimeout(
-                            () =>
-                              toast({
-                                message:
-                                  "환불액이나 환불포인트이 모두 0이 될 수는 없습니다.",
-                              }),
-                            1
-                          );
-                          return false;
-                        }
-                        const response = await adminRequester.completeRefund(
-                          refund.id,
+                      confirmText: "완료 처리",
+                      onConfirm: () =>
+                        adminRequester.updateExchange(
+                          exchange.id,
                           {
-                            value: values[0],
-                            point: values[1],
+                            completed_at: new Date(),
+                          },
+                          (response: any) => {
+                            if (response.message) {
+                              onSuccess?.();
+                              modal.current.close();
+                            }
                           }
-                        );
-                        if (response.message) {
-                          onSuccess?.();
-                          modal.current.close();
-                          return true;
-                        }
-                      },
-                    });
-                  }}
+                        ),
+                    })
+                  }
                 >
-                  환불 청구
+                  수동 교환 완료
                 </Button>
               </FlexChild>
             )}
@@ -555,20 +441,28 @@ const Item = forwardRef(
   (
     {
       item,
-      refund,
+      exchange,
       edit,
-    }: { item: RefundItemData; refund: RefundData; edit: boolean },
+    }: { item: ExchangeItemData; exchange: ExchangeData; edit: boolean },
     ref
   ) => {
     const max =
       (item.item?.quantity || 0) -
-      (item.item?.refunds?.reduce((acc, now) => acc + now.quantity, 0) || 0);
+      (item.item?.exchanges?.reduce((acc, now) => acc + now.quantity, 0) || 0);
     const [quantity, setQuantity] = useState<number>(item.quantity);
     const [memo, setMemo] = useState<string>(item.memo || "");
+    const swapRef = useRef<any[]>([]);
+    const [swaps, setSwaps] = useState<SwapItemData[]>(item.swaps || []);
     useImperativeHandle(ref, () => ({
       getValue() {
-        const _item = { ...item, quantity, memo };
+        const _item = {
+          ...item,
+          quantity,
+          memo,
+          swaps: swapRef.current.filter(Boolean).map((swap) => swap.getValue()),
+        };
         delete _item.item;
+
         return _item;
       },
     }));
@@ -614,104 +508,138 @@ const Item = forwardRef(
           )}
         </FlexChild>
         <FlexChild className={styles.row}>
-          <FlexChild className={styles.header}>
-            <P>
-              <Span display="inline-block">판매된 가격</Span>
-              <Span display="inline-block" fontSize={12} fontWeight={500}>
-                (프로모션 적용)
-              </Span>
-            </P>
+          <FlexChild className={styles.header} gap={5}>
+            <P>교환상품</P>
+            <Button
+              hidden={!edit}
+              className={styles.plus_button}
+              onClick={() =>
+                NiceModal.show("table", {
+                  overflow: "auto",
+                  name: "variant",
+                  indexing: false,
+                  slideUp: false,
+                  width: "730px",
+                  height: "75vh",
+                  scrollbarWidth: "none",
+                  initCondition: {
+                    relations: [
+                      "product.store",
+                      "product.discounts.discount",
+                      "discounts.discount",
+                    ],
+                  },
+                  columns: [
+                    {
+                      label: " ",
+                      code: "thumbnail",
+                      Cell: ({ cell, row }: any) => (
+                        <Image src={cell || row.product.thumbnail} size={100} />
+                      ),
+                      styling: {
+                        common: {
+                          style: {
+                            width: 100,
+                            minWidth: 100,
+                          },
+                        },
+                      },
+                    },
+                    {
+                      label: "상품명",
+                      code: "title",
+                      Cell: ({ row, cell }: any) => (
+                        <P whiteSpace="wrap">
+                          {row.product.title + (cell ? ` (${cell})` : "")}
+                        </P>
+                      ),
+                    },
+                    {
+                      label: "판매가",
+                      code: "discount_price",
+                      styling: {
+                        common: {
+                          style: {
+                            width: 100,
+                            minWidth: 100,
+                          },
+                        },
+                      },
+                    },
+                    {
+                      label: "재고",
+                      code: "stack",
+                      styling: {
+                        common: {
+                          style: {
+                            width: 80,
+                            minWidth: 80,
+                          },
+                        },
+                      },
+                    },
+                  ],
+                  limit: 6,
+                  selectable: true,
+                  search: true,
+                  onMaxPage: (data: Pageable) => data?.totalPages || 0,
+                  onReprocessing: (data: any) => data?.content || [],
+                  onSelect: (data: any) =>
+                    setSwaps([
+                      ...swaps,
+                      ...data
+                        .filter(
+                          (f: VariantData) =>
+                            f.stack > 0 &&
+                            !swaps.some((swap) => swap.variant_id === f.id)
+                        )
+                        .map((v: VariantData) => ({
+                          id: new Date().getTime() + "_" + v.id,
+                          variant_id: v.id,
+                          variant: v,
+                          brand_id: v.product.brand_id,
+                          product_title: v.product.title,
+                          variant_title: v.title,
+                          title: `${v.product.title}${
+                            v.title ? ` ${v.title}` : ""
+                          }`,
+                          description: v.product.description,
+                          thumbnail: v.thumbnail || v.product.thumbnail,
+                          unit_price: v.price,
+                          tax_rate: v.product.tax_rate,
+                          discount_price: v.discount_price,
+                          currency_unit: v.product.store?.currency_unit,
+                        })),
+                    ]),
+                  onSearch: (condition: any) =>
+                    adminRequester.getVariants(condition),
+                })
+              }
+            >
+              +
+            </Button>
           </FlexChild>
-          <FlexChild className={styles.value}>
-            <P>
-              <Span>{(item?.item?.discount_price || 0) * item.quantity}</Span>
-              <Span>원</Span>
-            </P>
-            <P hidden={quantity === 1} fontSize={15} fontWeight={400}>
-              <Span>(</Span>
-              <Span>{item.item?.discount_price}</Span>
-              <Span> * </Span>
-              <Span>{item.quantity}</Span>
-              <Span>)</Span>
-            </P>
+          <FlexChild>
+            {swaps.length === 0 ? (
+              <P className={styles.value}>없음</P>
+            ) : (
+              <VerticalFlex>
+                {swaps.map((swap, index) => (
+                  <SwapItem
+                    edit={edit}
+                    key={swap.id}
+                    swap={swap}
+                    ref={(el) => {
+                      swapRef.current[index] = el;
+                    }}
+                    handleDelete={() =>
+                      setSwaps(swaps.filter((f) => f.id !== swap.id))
+                    }
+                  />
+                ))}
+              </VerticalFlex>
+            )}
           </FlexChild>
-        </FlexChild>
-        <FlexChild className={styles.row}>
-          <P className={styles.header}>배송비</P>
-          <P className={styles.value}>
-            <Span>
-              {((refund?.order?.shipping_method?.amount || 0) /
-                (refund?.order?.total_discounted || 0)) *
-                (item.item?.discount_price || 0) *
-                quantity}
-            </Span>
-            <Span>원</Span>
-          </P>
-        </FlexChild>
-        <FlexChild className={styles.row}>
-          <P className={styles.header}>기타 할인</P>
-          <P className={styles.value}>
-            <Span>
-              {((item?.item?.shared_price || 0) +
-                (((refund?.order?.point || 0) -
-                  (refund?.order?.shipping_method?.amount || 0)) /
-                  (refund?.order?.total_discounted || 0)) *
-                  (item?.item?.discount_price || 0)) *
-                item.quantity}
-            </Span>
-
-            <Span>원</Span>
-          </P>
-        </FlexChild>
-        <FlexChild className={styles.row}>
-          <P className={styles.header}>환불가능 금액</P>
-          <P className={styles.value}>
-            <Span>
-              {((item.item?.discount_price || 0) +
-                (item?.item?.shared_price || 0)) *
-                quantity}
-            </Span>
-            <Span>원</Span>
-            <Span fontSize={16} fontWeight={500}>
-              (상품{" "}
-            </Span>
-            <Span fontSize={16} fontWeight={500}>
-              {((item.item?.discount_price || 0) +
-                (item?.item?.shared_price || 0)) *
-                quantity -
-                ((refund?.order?.shipping_method?.amount || 0) /
-                  (refund?.order?.total_discounted || 0)) *
-                  (item?.item?.discount_price || 0) *
-                  quantity}
-            </Span>
-            <Span fontSize={16} fontWeight={500}>
-              원 + 배송비{" "}
-            </Span>
-            <Span fontSize={16} fontWeight={500}>
-              {((refund?.order?.shipping_method?.amount || 0) /
-                (refund?.order?.total_discounted || 0)) *
-                (item?.item?.discount_price || 0) *
-                quantity}
-            </Span>
-            <Span fontSize={16} fontWeight={500}>
-              원
-            </Span>
-            <Span fontSize={16} fontWeight={500}>
-              )
-            </Span>
-          </P>
-        </FlexChild>
-        <FlexChild className={styles.row}>
-          <P className={styles.header}>환불가능 포인트</P>
-          <P className={styles.value}>
-            <Span>
-              {((refund?.order?.point || 0) /
-                (refund?.order?.total_discounted || 0)) *
-                (item?.item?.discount_price || 0) *
-                quantity}
-            </Span>
-            <Span>P</Span>
-          </P>
         </FlexChild>
         <FlexChild className={styles.row}>
           <FlexChild className={styles.header}>
@@ -741,4 +669,65 @@ const Item = forwardRef(
     );
   }
 );
-export default RefundDetailModal;
+
+const SwapItem = forwardRef(
+  (
+    {
+      swap,
+      handleDelete,
+      edit,
+    }: { swap: SwapItemData; handleDelete: () => void; edit: boolean },
+    ref
+  ) => {
+    const [quantity, setQuantity] = useState<number>(swap.quantity);
+    useImperativeHandle(ref, () => ({
+      getValue() {
+        const data: any = {
+          variant_id: swap.variant_id,
+          brand_id: swap.brand_id,
+          quantity,
+          product_title: swap.product_title,
+          variant_title: swap.variant_title,
+          description: swap.description,
+          thumbnail: swap.thumbnail,
+          unit_price: swap.unit_price,
+          tax_rate: swap.tax_rate,
+          discount_price: swap.discount_price,
+          currency_unit: swap.currency_unit,
+        };
+        if (swap.id && !swap.id.includes(`_${swap.variant_id}`))
+          data.id = swap.id;
+        return data;
+      },
+    }));
+    return (
+      <FlexChild key={swap.id} className={styles.item}>
+        <HorizontalFlex gap={5}>
+          <FlexChild gap={5}>
+            <Image src={swap.thumbnail} size={50} />
+            <P>{swap.title}</P>
+          </FlexChild>
+          <FlexChild width={"max-content"}>
+            {edit ? (
+              <InputNumber
+                hideArrow
+                min={1}
+                max={swap.variant.stack}
+                value={quantity}
+                onChange={(value) => setQuantity(value)}
+              />
+            ) : (
+              <P padding={10}>{quantity}개</P>
+            )}
+          </FlexChild>
+          <FlexChild width={"max-content"} hidden={!edit}>
+            <Button className={styles.button} onClick={handleDelete}>
+              삭제
+            </Button>
+          </FlexChild>
+        </HorizontalFlex>
+      </FlexChild>
+    );
+  }
+);
+export default ExchangeDetailModal;

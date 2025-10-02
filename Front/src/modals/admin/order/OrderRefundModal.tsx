@@ -321,6 +321,10 @@ const OrderRefundModal = NiceModal.create(
                       (item.refunds?.reduce(
                         (acc, now) => acc + now.quantity,
                         0
+                      ) || 0) -
+                      (item.exchanges?.reduce(
+                        (acc, now) => acc + now.quantity,
+                        0
                       ) || 0) <=
                     0,
                   display: (
@@ -330,6 +334,10 @@ const OrderRefundModal = NiceModal.create(
                       textDecorationLine={
                         item.quantity -
                           (item.refunds?.reduce(
+                            (acc, now) => acc + now.quantity,
+                            0
+                          ) || 0) -
+                          (item.exchanges?.reduce(
                             (acc, now) => acc + now.quantity,
                             0
                           ) || 0) <=
@@ -348,6 +356,10 @@ const OrderRefundModal = NiceModal.create(
                           <Span>
                             {item.quantity -
                               (item.refunds?.reduce(
+                                (acc, now) => acc + now.quantity,
+                                0
+                              ) || 0) -
+                              (item.exchanges?.reduce(
                                 (acc, now) => acc + now.quantity,
                                 0
                               ) || 0)}
@@ -470,7 +482,8 @@ const Item = forwardRef(
   ) => {
     const max =
       select.quantity -
-      (select.refunds?.reduce((acc, now) => acc + now.quantity, 0) || 0);
+      (select.refunds?.reduce((acc, now) => acc + now.quantity, 0) || 0) -
+      (select.exchanges?.reduce((acc, now) => acc + now.quantity, 0) || 0);
     const [quantity, setQuantity] = useState<number>(max);
     const [memo, setMemo] = useState<string>("");
     useImperativeHandle(ref, () => ({

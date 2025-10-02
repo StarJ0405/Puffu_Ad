@@ -456,7 +456,7 @@ class _AdminRequester {
     else return await this.post(`/orders/${order_id}/exchange`, data);
   }
   // 주문서 환불
-  async getReufnds(data?: any, callback?: Function): Promise<any> {
+  async getRefunds(data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.get(`/refunds`, data));
     else return await this.get(`/refunds`, data);
   }
@@ -483,6 +483,28 @@ class _AdminRequester {
   ): Promise<any> {
     if (callback) callback(await this.delete(`/refunds/${refund_id}`, data));
     else return await this.delete(`/refunds/${refund_id}`, data);
+  }
+  // 주문서 교환
+  async getExchanges(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/exchanges`, data));
+    else return await this.get(`/exchanges`, data);
+  }
+  async updateExchange(
+    exchange_id?: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.post(`/exchanges/${exchange_id}`, data));
+    else return await this.post(`/exchanges/${exchange_id}`, data);
+  }
+  async cancelExchange(
+    exchange_id?: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback)
+      callback(await this.delete(`/exchanges/${exchange_id}`, data));
+    else return await this.delete(`/exchanges/${exchange_id}`, data);
   }
   // 공지사항
   async createNotices(data?: any, callback?: Function): Promise<any> {

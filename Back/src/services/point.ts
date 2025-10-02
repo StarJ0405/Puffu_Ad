@@ -29,7 +29,7 @@ export class PointService extends BaseService<Point, PointRepository> {
       )?.sum || 0
     );
   }
-  async usePoint(user_id: string, point: number) {
+  async usePoint(user_id: string, point: number, data?: any) {
     const points = await this.repository
       .builder("pt")
       .where(`pt.user_id = :user_id`, { user_id })
@@ -59,15 +59,19 @@ export class PointService extends BaseService<Point, PointRepository> {
       }
       if (used <= 0) break;
     }
-    if (point > 0)
+    if (point > 0) {
+      const total = this.getTotalPoint(user_id);
       await this.logRepository.create({
         type: "point",
         name: `상품 구매`,
         data: {
           point: -point,
           user_id,
+          total,
+          ...data,
         },
       });
+    }
   }
   async getPointDates(user_id: string, name?: string) {
     let builder = this.logRepository

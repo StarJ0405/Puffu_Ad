@@ -3,7 +3,6 @@
 import Button from "@/components/buttons/Button";
 import Center from "@/components/center/Center";
 import DatePicker from "@/components/date-picker/DatePicker";
-import Div from "@/components/div/Div";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
@@ -295,17 +294,16 @@ export default function ({
               )
             )
             ?.map((item: LineItemData) => {
-              const total =
-                item.quantity -
-                (item.refunds
-                  ?.filter((f) => f.refund?.completed_at)
-                  ?.reduce((acc, now) => acc + now.quantity, 0) || 0);
               return (
                 <FlexChild
-                  key={item.id}
                   flexGrow={0}
                   flexShrink={0}
                   flexBasis={"auto"}
+                  textDecorationLine={
+                    !!item.refunds?.length || !!item.exchanges?.length
+                      ? "line-through"
+                      : undefined
+                  }
                 >
                   <Tooltip
                     position="right"
@@ -317,26 +315,14 @@ export default function ({
                   </Tooltip>
                   <P>({item?.brand?.name})</P>
                   <P>{item.title}</P>
-                  <Div>
-                    <VerticalFlex>
-                      <P
-                        textDecorationLine={
-                          !!item.refunds?.length ? "line-through" : undefined
-                        }
-                      >
-                        <Span>X </Span>
-                        <Span>
-                          {item.total_quantity}
-                          {item.extra_quantity > 0 &&
-                            `(${item.quantity} + ${item.extra_quantity})`}
-                        </Span>
-                      </P>
-                      <P hidden={!item.refunds?.length}>
-                        <Span>X </Span>
-                        <Span color="red">{total}</Span>
-                      </P>
-                    </VerticalFlex>
-                  </Div>
+                  <P>
+                    <Span>X </Span>
+                    <Span>
+                      {item.total_quantity}
+                      {item.extra_quantity > 0 &&
+                        `(${item.quantity} + ${item.extra_quantity})`}
+                    </Span>
+                  </P>
                 </FlexChild>
               );
             })}

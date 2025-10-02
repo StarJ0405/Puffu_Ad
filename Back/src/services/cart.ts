@@ -269,7 +269,9 @@ export class CartService extends BaseService<Cart, CartRepository> {
       relations: ["shipping_method", "address", "items.brand"],
     });
     if (point > 0) {
-      await this.pointService.usePoint(user_id, point);
+      await this.pointService.usePoint(user_id, point, {
+        display: order?.display,
+      });
     }
     return order;
   }

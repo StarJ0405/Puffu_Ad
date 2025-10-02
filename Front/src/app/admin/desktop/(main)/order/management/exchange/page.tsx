@@ -9,18 +9,20 @@ export default async function ({ params }: { params: Promise<Params> }) {
     order: JSON.stringify({ order: { display: "asc" } }),
     relations: [
       "order.user",
-      "order.items.refunds",
+      "order.items.exchanges",
       "order.shipping_method",
       "order.store",
       "items.item.brand",
-      "items.item.refunds",
+      "items.item.exchanges",
+      "items.swaps.brand",
+      "items.swaps.variant",
     ],
     // withDeleted: true,
     completed_at: null,
     deleted_at: null,
   };
 
-  const initData: Pageable = (await adminRequester.getRefunds(
+  const initData: Pageable = (await adminRequester.getExchanges(
     initCondition
   )) as Pageable;
 
