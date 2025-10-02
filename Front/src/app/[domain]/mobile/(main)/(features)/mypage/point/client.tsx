@@ -7,11 +7,28 @@ import DatePicker from "@/components/date-picker/DatePicker";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import Span from "@/components/span/Span";
 import Div from "@/components/div/Div";
-import { useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import useNavigate from "@/shared/hooks/useNavigate";
 import clsx from "clsx";
 import styles from "./page.module.css";
+import { requester } from "@/shared/Requester";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 
+type LogRow = {
+  id: string;
+  name?: string;
+  created_at: string;
+  data?: { user_id?: string; point?: number | string; total?: number | string };
+};
+
+const fmtYmd = (d: Date) =>
+  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(
+    d.getDate()
+  ).padStart(2, "0")}`;
+const startOfDay = (d: Date) =>
+  new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
+const endOfDay = (d: Date) =>
+  new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999);
 
 export function PointHistory({
   initEndDate,
@@ -20,77 +37,92 @@ export function PointHistory({
   initStartDate: Date;
   initEndDate: Date;
 }) {
-  const [q, setQ] = useState("");
-  const [condition, setCondition] = useState<any>({});
+  const { userData } = useAuth();
+  const navigate = useNavigate();
+
+  const [rows, setRows] = useState<LogRow[]>([]);
   const [startDate, setStartDate] = useState(initStartDate);
   const [endDate, setEndDate] = useState(initEndDate);
-  const [activePeriod, setActivePeriod] = useState("1week");
-  const handlePeriodChange = (period: string) => {
-    const newStartDate = new Date();
-    const newEndDate = new Date();
-    setActivePeriod(period);
-    setQ("");
-    setCondition({});
+  const [activePeriod, setActivePeriod] = useState<
+    "1week" | "1month" | "3months" | "6months" | "custom"
+  >("1week");
 
-    switch (period) {
-      case "1week":
-        newStartDate.setDate(newEndDate.getDate() - 7);
-        break;
-      case "1month":
-        newStartDate.setMonth(newEndDate.getMonth() - 1);
-        break;
-      case "3months":
-        newStartDate.setMonth(newEndDate.getMonth() - 3);
-        break;
-      case "6months":
-        newStartDate.setMonth(newEndDate.getMonth() - 6);
-        break;
-      default:
-        break;
-    }
-    setStartDate(newStartDate);
-    setEndDate(newEndDate);
-  };
+  const fetchPointsByRange = useCallback(async (from: Date, to: Date) => {
+    const params: any = {
+      order: { created_at: "DESC" },
+      starts_at: startOfDay(from).toISOString(),
+      ends_at: endOfDay(to).toISOString(),
+    };
+    const res = await requester.getPoints(params);
+    const list = res?.content ?? res?.data?.content ?? [];
+    setRows(Array.isArray(list) ? list : []);
+  }, []);
 
-  const handleDateChange = (
-    dates: Date | [Date | null, Date | null] | null
+  useEffect(() => {
+    fetchPointsByRange(startOfDay(initStartDate), endOfDay(initEndDate));
+  }, [fetchPointsByRange, initStartDate, initEndDate]);
+
+  const handlePeriodChange = (
+    period: "1week" | "1month" | "3months" | "6months"
   ) => {
-    if (Array.isArray(dates)) {
-      const [start, end] = dates;
-      if (start && end) {
-        setStartDate(start);
-        setEndDate(end);
-        setActivePeriod("");
-      }
-    }
+    const now = new Date();
+    const from = new Date(now);
+    if (period === "1week") from.setDate(now.getDate() - 7);
+    if (period === "1month") from.setMonth(now.getMonth() - 1);
+    if (period === "3months") from.setMonth(now.getMonth() - 3);
+    if (period === "6months") from.setMonth(now.getMonth() - 6);
+
+    const s = startOfDay(from);
+    const e = endOfDay(now);
+    setActivePeriod(period);
+    setStartDate(s);
+    setEndDate(e);
+    fetchPointsByRange(s, e);
   };
 
-  const test = [
-    {
-      date: "2025년 9월 1일",
-      title: "[손가락 콘돔] 핑돔 1box 24pcs (Findom 1box) - FD24 (ALC)외 3개",
-      point: "1,000",
-      used: false,
-      balance: "9,860",
-      id: "test1",
-    },
-    {
-      date: "2025년 9월 1일",
-      title: "[주간할인] 백탁 실리콘 애널 로션",
-      point: "1,000",
-      used: false,
-      balance: "11,860",
-      id: "test2",
-    },
-    {
-      date: "2025년 9월 1일",
-      title: "초보자 등급 적립금",
-      point: "200",
-      used: true,
-      balance: "12,060",
-      id: "test3",
-    },
-  ];
+  const handleDateChange = (v: Date | [Date | null, Date | null] | null) => {
+    if (!Array.isArray(v)) return;
+    const [s0, e0] = v;
+    if (!s0 || !e0) return;
+    const s = startOfDay(new Date(s0));
+    const e = endOfDay(new Date(e0));
+    setStartDate(s);
+    setEndDate(e);
+    setActivePeriod("custom");
+    fetchPointsByRange(s, e);
+  };
+
+  const list = useMemo(() => {
+    return (rows ?? []).map((row) => {
+      const d = new Date(row.created_at);
+      const hh = String(d.getHours()).padStart(2, "0");
+      const mm = String(d.getMinutes()).padStart(2, "0");
+      const amt = Number(row?.data?.point ?? 0); // 금액/부호 = log.data.point
+      const total = row?.data?.total; // 잔액 = log.data.total
+
+      return {
+        id: row.id,
+        date: fmtYmd(d),
+        title: row.name ?? "-",
+        used: amt > 0, // true=적립(+), false=사용(-)
+        point: Math.abs(amt).toLocaleString(),
+        balance: total != null ? Number(total).toLocaleString() : "-", // per-row 잔액
+        time: `${hh} : ${mm}`,
+      };
+    });
+  }, [rows]);
+
+  // 날짜별 그룹핑
+  const grouped = useMemo(() => {
+    const m = new Map<string, typeof list>();
+    for (const item of list) {
+      if (!m.has(item.date)) m.set(item.date, []);
+      m.get(item.date)!.push(item);
+    }
+    return Array.from(m.entries()).sort(([a], [b]) => (a > b ? -1 : 1));
+  }, [list]);
+
+  const userTotalPoint = userData?.point;
 
   return (
     <>
@@ -98,12 +130,10 @@ export function PointHistory({
         {/* 현 적립 포인트 */}
         <VerticalFlex className={styles.my_point_box}>
           <FlexChild className={styles.title}>
-            <P>
-              현재 적립 포인트
-            </P>
+            <P>현재 적립 포인트</P>
           </FlexChild>
           <FlexChild className={styles.my_point}>
-            <P>10,000,000</P>
+            <P>{userTotalPoint?.toLocaleString()}</P>
             <P>P</P>
           </FlexChild>
         </VerticalFlex>
@@ -159,47 +189,58 @@ export function PointHistory({
         </VerticalFlex>
 
         {/* 포인트 내역(최신순으로 정렬해야함) */}
-        <VerticalFlex className={styles.point_history} alignItems="flex-start" gap={20}>
-          <P className={styles.date}>2025.09.01</P>
-          {test.map((point, index) => {
-            const isUsed = point.used;
-            const navigate = useNavigate();
-            return (
-              <FlexChild
-                key={index}
-                borderBottom={"1px solid #797979"}
-                paddingBottom={15}
-                onClick={() => navigate(`/mypage/point/${point.id}`)}
-              >
-                <HorizontalFlex>
-                  <VerticalFlex alignItems="flex-start" gap={10}>
-                    <P className={styles.title}>{point.title}</P>
-                    <P className={styles.time}>13{":"}30</P>
-                  </VerticalFlex>
-                  <VerticalFlex alignItems="flex-end" gap={5}>
-                    <P className={styles.point}>
-                      <Span>{isUsed ? '+' : '-'}</Span>
-                      <Span>{point.point}</Span>
-                      <Span>P</Span>
-                    </P>
-                    <P className={clsx(styles.status,{
-                        [styles.used] : !isUsed,
-                      })}>
-                      {isUsed ? '적립' : '사용'}
-                    </P>
-                    <P className={styles.points_balance}>
-                      <Span>잔액 </Span>
-                      <Span>{point.balance}</Span>
-                      <Span>P</Span>
-                    </P>
-                  </VerticalFlex>
-                </HorizontalFlex>
-              </FlexChild>
-            )
-          })}
-          <Div className={styles.space_line} />
-        </VerticalFlex>
+        {grouped.map(([date, items]) => (
+          <VerticalFlex
+            className={styles.point_history}
+            alignItems="flex-start"
+            gap={20}
+          >
+            <P className={styles.date}>{date}</P>
+            {items.map((point, index) => {
+              const isUsed = point.used;
+              return (
+                <FlexChild
+                  key={index}
+                  borderBottom={
+                    index === items.length - 1 ? "none" : "1px solid #444"
+                  }
+                  paddingBottom={index === items.length - 1 ? 0 : 15}
+                  onClick={() => navigate(`/mypage/point/${point.id}`)}
+                >
+                  <HorizontalFlex>
+                    <VerticalFlex alignItems="flex-start" gap={10}>
+                      <P className={styles.title}>{point.title}</P>
+                      <P className={styles.time}>{point.time}</P>
+                    </VerticalFlex>
+                    <VerticalFlex alignItems="flex-end" gap={5}>
+                      <P className={styles.point}>
+                        <Span>{isUsed ? "+" : "-"}</Span>
+                        <Span>{point.point}</Span>
+                        <Span>P</Span>
+                      </P>
+                      <P
+                        className={clsx(styles.status, {
+                          [styles.used]: !isUsed,
+                        })}
+                      >
+                        {isUsed ? "적립" : "사용"}
+                      </P>
+                      {point.balance !== "-" && (
+                        <P className={styles.points_balance}>
+                          <Span>잔액 </Span>
+                          <Span>{point.balance}</Span>
+                          <Span>P</Span>
+                        </P>
+                      )}
+                    </VerticalFlex>
+                  </HorizontalFlex>
+                </FlexChild>
+              );
+            })}
+            <Div className={styles.space_line} />
+          </VerticalFlex>
+        ))}
       </VerticalFlex>
     </>
-  )
+  );
 }
