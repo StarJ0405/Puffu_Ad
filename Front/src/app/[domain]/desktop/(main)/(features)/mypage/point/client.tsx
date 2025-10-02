@@ -83,7 +83,6 @@ export function PointHistory({
     fetchPointsByRange(s, e);
   };
 
-  // 리스트 변환
   const list = useMemo(() => {
     return (rows ?? []).map((row) => {
       const d = new Date(row.created_at);
@@ -179,7 +178,6 @@ export function PointHistory({
 
             {items.map((point, index) => {
               const isUsed = point.used;
-              console.log(point)
               return (
                 <FlexChild
                   key={point.id ?? index}
