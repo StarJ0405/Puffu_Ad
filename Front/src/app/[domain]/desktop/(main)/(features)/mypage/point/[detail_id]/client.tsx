@@ -14,7 +14,7 @@ export function PointDetail({
 }: {
   initDetail: any;
   initOrder?: any | null;
-  }) {
+}) {
   const fmtNumber = (n: number | string | undefined) =>
     new Intl.NumberFormat("ko-KR").format(Number(n ?? 0));
   const fmtKST = (iso?: string) =>
@@ -39,16 +39,17 @@ export function PointDetail({
   const items: any[] = Array.isArray(order?.items) ? order.items : [];
 
   const titleFromItem = (it: any) =>
-    it?.title ??
-    (it?.variant?.product?.title
-      ? it.variant.product.title
-      : "");
+    it?.title ?? (it?.variant?.product?.title ? it.variant.product.title : "");
 
   const imgFromItem = (it: any) =>
     it?.variant?.product?.thumbnail ?? "/resources/images/no_img.png";
 
   return (
-    <VerticalFlex className={styles.point_detail} alignItems="flex-start" gap={20}>
+    <VerticalFlex
+      className={styles.point_detail}
+      alignItems="flex-start"
+      gap={20}
+    >
       <P className={styles.date}>{fmtKST(initDetail?.created_at)}</P>
 
       {isUsed && items.length > 0 ? (
@@ -70,7 +71,9 @@ export function PointDetail({
                     <Span>{fmtNumber(it?.quantity ?? it?.count ?? 0)}</Span>
                     <Span>개</Span>
                     <Span> / </Span>
-                    <Span color="var(--main-color1)">{fmtNumber(it?.price ?? 0)}</Span>
+                    <Span color="var(--main-color1)">
+                      {fmtNumber(it?.price ?? 0)}
+                    </Span>
                     <Span color="var(--main-color1)">원</Span>
                   </P>
                 </VerticalFlex>
@@ -87,7 +90,9 @@ export function PointDetail({
       <FlexChild>
         <VerticalFlex>
           <HorizontalFlex className={styles.point_box}>
-            <P className={styles.point_txt}>{isUsed ? "사용포인트" : "적립포인트"}</P>
+            <P className={styles.point_txt}>
+              {isUsed ? "사용포인트" : "적립포인트"}
+            </P>
             <P className={clsx(styles.point, { [styles.used]: isUsed })}>
               <Span>{isUsed ? "-" : "+"}</Span>
               <Span>{fmtNumber(absPoint)}</Span>
