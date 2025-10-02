@@ -4,10 +4,18 @@ import { ExchangeRepository } from "repositories/exchange";
 import { ExchangeItemRepository } from "repositories/exchange_item";
 import { LogRepository } from "repositories/log";
 import { SwapItemRepository } from "repositories/swap_item";
+import { VariantRepository } from "repositories/variant";
 import { inject, injectable } from "tsyringe";
-import { FindManyOptions, FindOneOptions, FindOptionsWhere, In } from "typeorm";
+import {
+  DeepPartial,
+  FindManyOptions,
+  FindOneOptions,
+  FindOptionsWhere,
+  In,
+} from "typeorm";
 import { GroupService } from "./group";
 import { PointService } from "./point";
+import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 
 @injectable()
 export class ExchangeService extends BaseService<Exchange, ExchangeRepository> {
@@ -15,6 +23,8 @@ export class ExchangeService extends BaseService<Exchange, ExchangeRepository> {
     @inject(ExchangeRepository) exchangeRepository: ExchangeRepository,
     @inject(ExchangeItemRepository)
     protected exchangeItemRepository: ExchangeItemRepository,
+    @inject(VariantRepository)
+    protected variantRepository: VariantRepository,
     @inject(SwapItemRepository)
     protected swapItemRepository: SwapItemRepository,
     @inject(LogRepository)
@@ -26,6 +36,27 @@ export class ExchangeService extends BaseService<Exchange, ExchangeRepository> {
   ) {
     super(exchangeRepository);
   }
+  async create(data: DeepPartial<Exchange>): Promise<Exchange> {
+    if (data.items) {
+      await Promise.all(
+        data.items.map(async (item) =>
+          item.swaps?.map(
+            async (swap) =>
+              await this.variantRepository.update(
+                {
+                  id: swap.variant_id,
+                },
+                {
+                  stack: () => `stack - ${swap.quantity}`,
+                }
+              )
+          )
+        )
+      );
+    }
+    return super.create(data);
+  }
+
   async getPageable(
     pageData: PageData,
     options: FindOneOptions<Exchange>
@@ -208,6 +239,35 @@ export class ExchangeService extends BaseService<Exchange, ExchangeRepository> {
     }
     return super.getList(options);
   }
+  async update(
+    where: FindOptionsWhere<Exchange> | FindOptionsWhere<Exchange>[],
+    data: QueryDeepPartialEntity<Exchange>,
+    returnEnttiy?: boolean
+  ): Promise<UpdateResult<Exchange>> {
+    if (data.completed_at) {
+      const finds = await this.repository.findAll({
+        where,
+        relations: ["items.item"],
+      });
+      await Promise.all(
+        finds.map(
+          async (exchange) =>
+            await Promise.all(
+              (exchange.items || [])?.map(
+                async (item) =>
+                  await this.variantRepository.update(
+                    {
+                      id: item.item?.variant_id,
+                    },
+                    { stack: () => `stack - ${item.quantity}` }
+                  )
+              )
+            )
+        )
+      );
+    }
+    return super.update(where, data, returnEnttiy);
+  }
 
   async delete(
     where: FindOptionsWhere<Exchange> | FindOptionsWhere<Exchange>[],
@@ -215,17 +275,29 @@ export class ExchangeService extends BaseService<Exchange, ExchangeRepository> {
   ): Promise<number> {
     const exchanges = await this.repository.findAll({
       where,
-      relations: ["items"],
+      relations: ["items.swaps"],
     });
     await Promise.all(
       exchanges.map(async (exchange) => {
         await Promise.all(
-          (exchange?.items || [])?.map(
-            async (item) =>
-              await this.swapItemRepository.delete({
-                exchange_item_id: item.id,
-              })
-          )
+          (exchange?.items || [])?.map(async (item) => {
+            await Promise.all(
+              (item.swaps || [])?.map(
+                async (swap) =>
+                  await this.variantRepository.update(
+                    {
+                      id: swap.variant_id,
+                    },
+                    {
+                      stack: () => `stack + ${swap.quantity}`,
+                    }
+                  )
+              )
+            );
+            await this.swapItemRepository.delete({
+              exchange_item_id: item.id,
+            });
+          })
         );
         await this.exchangeItemRepository.delete({
           exchange_id: exchange.id,

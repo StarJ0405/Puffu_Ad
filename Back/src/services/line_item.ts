@@ -48,8 +48,8 @@ export class LineItemService extends BaseService<LineItem, LineItemRepository> {
           u.id, 
           ROUND(
             (
-              l.discount_price + COALESCE(l.shared_price,0)
-            ) * l.quantity * COALESCE(g.percent,0) / 100.0
+              l.discount_price + COALESCE(l.shared_price, 0)
+            ) * l.quantity * COALESCE(g.percent, 0) / 100.0
           ) 
         FROM 
           public.line_item l 
@@ -66,10 +66,21 @@ export class LineItemService extends BaseService<LineItem, LineItemRepository> {
               f.completed_at IS NULL -- 환불 완료된 경우 진행
               ) ri ON ri.item_id = l.id 
           AND ri.deleted_at IS NULL 
+          LEFT JOIN (
+            SELECT 
+              ei.* 
+            FROM 
+              public.exchange_item ei 
+              JOIN public.exchange e ON e.id = ei.exchange_id 
+            WHERE 
+              e.completed_at IS NULL
+          ) ei ON ei.item_id = l.id 
+          AND ei.deleted_at IS NULL 
         WHERE 
           l.id = '${item_id}' 
           AND l.confirmation IS FALSE -- 중복 실행시 포인트 안주기 위함,
           AND ri.id is null -- 환불 처리중 혹시라도 실행되면 막기 위함
+          AND ei.id is null
       `);
     if (point?.length === 1) {
       await this.update(
@@ -112,41 +123,54 @@ export class LineItemService extends BaseService<LineItem, LineItemRepository> {
   async confirmations() {
     const points: { id: string; round: number }[] = await this.repository
       .query(`
-      SELECT 
-        u.id, 
-        ROUND(uc.sum * COALESCE(g.percent,0) / 100.0) 
-      FROM 
-        public.user u 
-        JOIN (
-          SELECT 
-            o.user_id, 
-            SUM(
-              (
-                l.discount_price + COALESCE(l.shared_price,0)
-              ) * l.quantity
-            ) 
-          FROM 
-            public.line_item l 
-            JOIN public.order o ON o.id = l.order_id 
-            JOIN public.shipping_method sm ON sm.order_id = o.id 
-            LEFT JOIN (
-              SELECT 
-                ri.* 
-              FROM 
-                public.refund_item ri 
-                JOIN public.refund f ON f.id = ri.refund_id 
-              WHERE 
-                f.completed_at IS NULL -- 환불 완료된 경우 진행
-                ) ri ON ri.item_id = l.id 
-            AND ri.deleted_at IS NULL 
-          WHERE 
-            l.confirmation IS FALSE 
-            AND ri.id is null 
-            AND sm.shipped_at <= NOW() - INTERVAL '7 days' 
-          GROUP BY 
-            o.user_id
-        ) uc ON uc.user_id = u.id 
-        LEFT JOIN public.group g ON g.id = u.group_id;
+        SELECT 
+          u.id, 
+          ROUND(
+            uc.sum * COALESCE(g.percent, 0) / 100.0
+          ) 
+        FROM 
+          public.user u 
+          JOIN (
+            SELECT 
+              o.user_id, 
+              SUM(
+                (
+                  l.discount_price + COALESCE(l.shared_price, 0)
+                ) * l.quantity
+              ) 
+            FROM 
+              public.line_item l 
+              JOIN public.order o ON o.id = l.order_id 
+              JOIN public.shipping_method sm ON sm.order_id = o.id 
+              LEFT JOIN (
+                SELECT 
+                  ri.* 
+                FROM 
+                  public.refund_item ri 
+                  JOIN public.refund f ON f.id = ri.refund_id 
+                WHERE 
+                  f.completed_at IS NULL -- 환불 완료된 경우 진행
+                  ) ri ON ri.item_id = l.id 
+              AND ri.deleted_at IS NULL 
+              LEFT JOIN (
+                SELECT 
+                  ei.* 
+                FROM 
+                  public.exchange_item ei 
+                  JOIN public.exchange e ON e.id = ei.exchange_id 
+                WHERE 
+                  e.completed_at IS NULL
+              ) ei ON ei.item_id = l.id 
+              AND ei.deleted_at IS NULL 
+            WHERE 
+              l.confirmation IS FALSE 
+              AND ri.id is null 
+              AND ei.id is null 
+              AND sm.shipped_at <= NOW() - INTERVAL '7 days' 
+            GROUP BY 
+              o.user_id
+          ) uc ON uc.user_id = u.id 
+          LEFT JOIN public.group g ON g.id = u.group_id;
       `);
     if (points.length === 0) return;
     await this.repository.query(`
@@ -172,9 +196,20 @@ export class LineItemService extends BaseService<LineItem, LineItemRepository> {
                   f.completed_at IS NULL -- 환불 완료된 경우 진행
                   ) ri ON ri.item_id = l.id 
               AND ri.deleted_at IS NULL 
+              LEFT JOIN (
+                SELECT 
+                  ei.* 
+                FROM 
+                  public.exchange_item ei 
+                  JOIN public.exchange e ON e.id = ei.exchange_id 
+                WHERE 
+                  e.completed_at IS NULL
+              ) ei ON ei.item_id = l.id 
+              AND ei.deleted_at IS NULL 
             WHERE 
               l.confirmation IS FALSE 
-              AND ri.id is null 
+              AND ri.id IS NULl 
+              AND ei.id IS NULL 
               AND sm.shipped_at <= NOW() - INTERVAL '7 days'
           );
         `);
