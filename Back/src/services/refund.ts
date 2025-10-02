@@ -8,6 +8,7 @@ import { inject, injectable } from "tsyringe";
 import { FindManyOptions, FindOneOptions, FindOptionsWhere, In } from "typeorm";
 import { GroupService } from "./group";
 import { PointService } from "./point";
+import { VariantRepository } from "repositories/variant";
 
 @injectable()
 export class RefundService extends BaseService<Refund, RefundRepository> {
@@ -15,6 +16,8 @@ export class RefundService extends BaseService<Refund, RefundRepository> {
     @inject(RefundRepository) refundRepository: RefundRepository,
     @inject(RefundItemRepository)
     protected refundItemRepository: RefundItemRepository,
+    @inject(VariantRepository)
+    protected variantRepository: VariantRepository,
     @inject(LogRepository)
     protected logRepository: LogRepository,
     @inject(PointService)
@@ -196,7 +199,7 @@ export class RefundService extends BaseService<Refund, RefundRepository> {
   ) {
     const refund = await this.repository.findOne({
       where: { id: refund_id },
-      relations: ["order"],
+      relations: ["order", "items.item"],
     });
     if (!refund) throw new Error("환불 정보가 없습니다.");
     const { value = 0, point = 0, reason = "구매자가 취소를 원함" } = data;
@@ -292,8 +295,23 @@ export class RefundService extends BaseService<Refund, RefundRepository> {
           { completed_at: new Date(), point }
         );
     }
+    // 등급 재조정
     if (refund.order?.user_id)
       await this.groupService.updateUserGroup(refund.order?.user_id);
+    // 재고 복구 (증정은 복구 안됨 로직상 어려움)
+    await Promise.all(
+      (refund?.items || [])?.map(
+        async (item) =>
+          await this.variantRepository.update(
+            {
+              id: item.item?.variant_id,
+            },
+            {
+              stack: () => `stack + ${item.quantity}`,
+            }
+          )
+      )
+    );
   }
   async delete(
     where: FindOptionsWhere<Refund> | FindOptionsWhere<Refund>[],

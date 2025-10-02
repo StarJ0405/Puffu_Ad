@@ -377,7 +377,8 @@ export function MyOrdersTable({
                                   hidden={
                                     item.confirmation ||
                                     !order.shipping_method?.shipped_at ||
-                                    !!item.refunds?.length
+                                    !!item.refunds?.length ||
+                                    !!item.exchanges?.length
                                   }
                                 >
                                   <Button
