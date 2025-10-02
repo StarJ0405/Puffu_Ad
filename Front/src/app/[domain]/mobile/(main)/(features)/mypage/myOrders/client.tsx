@@ -58,6 +58,8 @@ export function MyOrdersTable({
       relations: [
         "refunds.items",
         "items.refunds.refund",
+        "items.exchanges.exchange",
+        "items.exchanges.swaps",
         "items.brand",
         "items.review",
         "shipping_method",
@@ -285,12 +287,18 @@ export function MyOrdersTable({
                         >
                           <FlexChild gap={5}>
                             <Span
-                              hidden
+                              hidden={!item.exchanges?.length}
                               size={15}
                               widows={500}
                               color="var(--main-color1)"
                             >
-                              [교환 처리중]
+                              [
+                              {item.refunds?.filter(
+                                (f) => !f.refund?.completed_at
+                              ).length
+                                ? "교환 처리중"
+                                : "교환 완료"}
+                              ]
                             </Span>
                             <Span
                               hidden={!item.refunds?.length}
@@ -411,6 +419,10 @@ export function MyOrdersTable({
                               !item.confirmation ||
                               item.quantity -
                                 (item.refunds?.reduce(
+                                  (acc, now) => acc + now.quantity,
+                                  0
+                                ) || 0) -
+                                (item.exchanges?.reduce(
                                   (acc, now) => acc + now.quantity,
                                   0
                                 ) || 0) ===

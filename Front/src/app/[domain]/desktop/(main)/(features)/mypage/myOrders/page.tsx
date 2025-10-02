@@ -15,6 +15,8 @@ export default async function () {
     relations: [
       "refunds.items",
       "items.refunds.refund",
+      "items.exchanges.exchange",
+      "items.exchanges.swaps",
       "items.brand",
       "items.review",
       "shipping_method",
