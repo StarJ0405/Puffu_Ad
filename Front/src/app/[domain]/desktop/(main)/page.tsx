@@ -115,7 +115,7 @@ export default async function () {
               </div>
             </HorizontalFlex>
 
-            <ProductSlider id={"new"} />
+            <ProductSlider id={"review"} />
 
             <FlexChild marginTop={35} justifyContent="center">
               <Link

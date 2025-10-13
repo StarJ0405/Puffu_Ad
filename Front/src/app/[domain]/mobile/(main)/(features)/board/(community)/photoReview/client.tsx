@@ -21,6 +21,7 @@ import { requester } from "@/shared/Requester";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay, Navigation } from "swiper/modules";
 import { Swiper as SwiperType } from "swiper";
+import LoadingCard from "@/components/card/LoadingCard";
 
 // 게시판 리스트 -----------------------------------------------
 export function BoardTitleBox() {
@@ -326,37 +327,43 @@ export function GalleryTable() {
   return (
     <VerticalFlex>
       <FlexChild>
-        {items.length > 0 ? (
+        {(items.length > 0 || loading) ? (
           <MasonryGrid
             gap={20}
-            breakpoints={{ 768: 3, 650: 2, 550: 1 }}
+            breakpoints={{default: 3, 768: 3, 650: 2, 550: 1 }}
             width={"100%"}
           >
-            {items.map((item, i) => {
-              return (
-                <ReviewImgCard
-                  key={item.id ?? i}
-                  review={item}
-                  width={"100%"}
-                  height={"auto"}
-                  borderRadius={10}
-                />
-              );
-            })}
+            {
+              loading
+              ? Array.from({length : 4}).map((_, i) => (
+                <LoadingCard key={i} />
+              )) :
+              items.map((item, i) => {
+                return (
+                  <ReviewImgCard
+                    key={item.id ?? i}
+                    review={item}
+                    width={"100%"}
+                    height={"auto"}
+                    borderRadius={10}
+                  />
+                );
+              })
+            }
           </MasonryGrid>
         ) : (
-          !loading && <NoContent type="리뷰" />
+          <NoContent type="리뷰" />
         )}
       </FlexChild>
 
-      {hasMore && (
+      {(!loading && hasMore) && (
         <FlexChild justifyContent="center" marginTop={30}>
           <Button
             className={styles.more_btn}
             disabled={loading}
             onClick={() => !loading && fetchPage(pageNumber + 1)}
           >
-            {loading ? "로딩중" : "더보기"}
+            리뷰 더보기
           </Button>
         </FlexChild>
       )}
