@@ -180,6 +180,10 @@ a {
   /* 탭 하이라이트 제거 */
   * {-webkit-tap-highlight-color: transparent;}
 
+  :root {
+    --mob-active-filter: brightness(0.8);
+  }
+
   /* html {
     max-width: 768px;
   } */
@@ -200,7 +204,7 @@ a {
 .mob_root {
   padding-top: 95px;
   min-height: 70dvh;
-  padding-bottom: 20px;
+  padding-bottom: 80px;
   color: var(--default-color);
 }
 

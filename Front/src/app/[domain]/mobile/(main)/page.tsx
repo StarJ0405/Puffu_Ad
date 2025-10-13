@@ -10,7 +10,7 @@ import {
   MainBanner,
   MainCategory,
   MiniBanner,
-  NewProducts,
+  BestProducts,
   // ProductList,
   ProductSlider,
   SubBanner1,
@@ -25,11 +25,11 @@ export default async function () {
     order: "discount",
   };
   const hotProducts = await requester.getProducts(hotCondition);
+
   const bestCondition: any = {
     pageSize: 30,
     order: "best",
   };
-
   const bestProducts = await requester.getProducts(bestCondition);
   return (
     <section className="mob_root">
@@ -37,7 +37,6 @@ export default async function () {
 
       <VerticalFlex
         marginTop={"25px"}
-        marginBottom={"30px"}
         gap={30}
         className="mob_page_container"
       >
@@ -50,7 +49,7 @@ export default async function () {
           initCondition={hotCondition}
         />
         <SubBanner2 />
-        <NewProducts initProducts={bestProducts} /> {/* 메인, 상세 리스트 */}
+        <BestProducts initProducts={bestProducts} initCondition={bestCondition} /> {/* 메인, 상세 리스트 */}
         <SubBanner1 />
 
         {/* 포토 사용 후기 */}

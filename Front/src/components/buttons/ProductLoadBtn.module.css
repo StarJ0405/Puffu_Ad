@@ -1,0 +1,33 @@
+.list_more_btn {
+   background: var(--main-color2);
+   color: #fff;
+   font-size: 16px;
+   font-weight: 600;
+   border-radius: 5px;
+   padding: 6px 10px;
+   transition: all 0.1s;
+}
+
+.list_more_btn:hover {
+   background-color: #050505;
+   color: var(--main-color1);
+}
+
+
+
+
+/* 모바일 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+.mob_list_more_btn {
+   background: var(--main-color2);
+   color: #fff;
+   font-size: 13px;
+   font-weight: 600;
+   border-radius: 5px;
+   padding: 6px 10px;
+   transition: all 0.1s;
+}
+
+.mob_list_more_btn:active {
+   filter: var(--mob-active-filter);
+}

@@ -208,3 +208,7 @@
    max-width: 200px;
    transition: all 0.1s;
 }
+
+.link_more_btn:active {
+   filter: var(--mob-active-filter);
+}

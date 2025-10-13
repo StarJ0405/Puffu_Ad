@@ -132,6 +132,9 @@
    transition: all 0.1s;
 }
 
+.list_more_btn:active {
+   filter: var(--mob-active-filter);
+}
 
 
 /* 베스트, 신상품용 카테고리 필터 */
