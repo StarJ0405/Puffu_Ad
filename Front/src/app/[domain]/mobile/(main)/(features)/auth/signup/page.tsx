@@ -75,7 +75,7 @@ export default function () {
     }
   }, [step]);
   return (
-    <section className="root page_container">
+    <section className="mob_root mob_page_container">
       <VerticalFlex className={styles.signup_frame}>
         <FlexChild className={styles.page_title}>
           <h3>회원가입</h3>

@@ -14,7 +14,7 @@ export default async function () {
   }
   return (
     <>
-      <section className={clsx("root ", "page_container", styles.container)}>
+      <section className={clsx("mob_root mob_page_container", styles.container)}>
         <VerticalFlex className={styles.findBox}>
           <FlexChild className={styles.title_box}>
             <P>아이디 찾기</P>

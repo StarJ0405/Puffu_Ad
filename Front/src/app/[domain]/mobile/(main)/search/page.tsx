@@ -21,7 +21,7 @@ export default async function ({
   return (
     <section className="root">
       <VerticalFlex
-        className="page_container"
+        className="mob_page_container"
         marginTop={80}
         paddingBottom={40}
       >

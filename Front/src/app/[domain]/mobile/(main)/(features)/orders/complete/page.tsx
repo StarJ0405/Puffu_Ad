@@ -37,7 +37,7 @@ export default function () {
     true
   );
   return (
-    <section className="root page_container">
+    <section className="mob_root mob_page_container">
       <VerticalFlex>
         <FlexChild>
           <CompleteForm order={order} />

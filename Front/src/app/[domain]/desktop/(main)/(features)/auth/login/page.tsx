@@ -25,7 +25,7 @@ export default async function ({
   
   return (
     <>
-      <section className={clsx("root ", "page_container", styles.container)}>
+      <section className={clsx("root page_container", styles.container)}>
         <VerticalFlex className={styles.loginBox}>
           <FlexChild className={styles.logo}>
             <Link href={"/"}>

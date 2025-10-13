@@ -11,7 +11,7 @@ export default async function Footer() {
     <>
       <footer className={styles.footer}>
         <VerticalFlex
-          className={clsx(styles.info_box, "page_container")}
+          className={clsx(styles.info_box, "mob_page_container")}
           alignItems="start"
         >
           <FlexChild className={styles.policy_item}>

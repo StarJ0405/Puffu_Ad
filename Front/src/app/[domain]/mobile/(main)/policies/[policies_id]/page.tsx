@@ -7,7 +7,7 @@ interface PageProps {
 
 export default async function Policies({ params }: PageProps) {
   return (
-    <section className="root page_container">
+    <section className="mob_root mob_page_container">
       <Route />
       {/* <FlexChild paddingTop={60}>
         {

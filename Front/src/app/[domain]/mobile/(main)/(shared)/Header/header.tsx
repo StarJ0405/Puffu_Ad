@@ -40,7 +40,7 @@ export default function MobileHeader() {
             !shouldHideHeader ? (
                <>
                   <header className={styles.header}>
-                     <HorizontalFlex className={clsx('page_container',styles.headerTop)}>
+                     <HorizontalFlex className={clsx('mob_page_container',styles.headerTop)}>
                         <FlexChild gap={20}>
                            
                            <SideMenuBtn/>

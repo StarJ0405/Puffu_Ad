@@ -20,7 +20,7 @@ export default async function ({
   const hotProducts = await requester.getProducts(hotCondition);
 
   return (
-    <section className="root page_container">
+    <section className="mob_root mob_page_container">
       <Container marginTop={35}>
         <VerticalFlex className={styles.titleBox}>
           <VerticalFlex className={styles.title}>
