@@ -23,6 +23,8 @@ import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import ReviewImgCard from "@/components/card/reviewImgCard";
+import LoadingSpinner from "@/components/loading/LoadingSpinner";
+import LoadingCard from "@/components/card/LoadingCard";
 
 export function MainBanner({ initBanners }: { initBanners: Pageable }) {
   const { userData } = useAuth();
@@ -456,6 +458,7 @@ type ReviewEntity = {
   };
 };
 
+
 // 리뷰 슬라이더
 export function ProductSlider({
   id,
@@ -473,7 +476,7 @@ export function ProductSlider({
   const [hasMore, setHasMore] = useState(true);
 
   const fetchPage = useCallback(async (pn: number) => {
-    setLoading(true);
+    setLoading(true)
     try {
       const params: any = {
         pageSize: PAGE_SIZE,
@@ -506,7 +509,7 @@ export function ProductSlider({
 
   return (
     <>
-      {items.length > 0 ? (
+      {(items.length > 0 || loading) ? (
         <FlexChild id={id} className={styles.ProductSlider}>
           <Swiper
             loop={false}
@@ -520,22 +523,25 @@ export function ProductSlider({
               nextEl: `#${id} .${styles.nextBtn}`,
             }}
           >
-            {[...items]
-            .sort(()=> Math.random() -0.5)
-            .map((item, i) => {
-              return (
-                <SwiperSlide key={item.id ?? i}>
-                  <ReviewImgCard 
-                    review={item} 
-                    lineClamp={lineClamp ?? 2}
-                    width={'100%'}
-                    height={'auto'}
-                  />
-                </SwiperSlide>
-              );
-            })}
+            {loading
+              ? Array.from({ length: 5 }).map((_, i) => (
+                  <SwiperSlide key={`skeleton-${i}`}>
+                    <LoadingCard />
+                  </SwiperSlide>
+                ))
+              : [...items]
+                  .sort(() => Math.random() - 0.5)
+                  .map((item, i) => (
+                    <SwiperSlide key={item.id ?? i}>
+                      <ReviewImgCard
+                        review={item}
+                        lineClamp={lineClamp ?? 2}
+                        width="100%"
+                        height="auto"
+                      />
+                    </SwiperSlide>
+            ))}
           </Swiper>
-
           <div className={clsx(styles.naviBtn, styles.prevBtn)}>
             <Image
               src={"/resources/icons/arrow/slide_arrow.png"}

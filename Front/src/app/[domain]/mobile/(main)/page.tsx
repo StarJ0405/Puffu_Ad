@@ -67,7 +67,7 @@ export default async function () {
               </div>
             </HorizontalFlex>
 
-            <ProductSlider id={"new"} />
+            <ProductSlider id={"review"} />
 
             <FlexChild justifyContent="center">
               <Link href={"board/photoReview"} className={styles.link_more_btn}>

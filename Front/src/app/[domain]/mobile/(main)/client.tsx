@@ -23,6 +23,7 @@ import { requester } from "@/shared/Requester";
 import { Swiper as SwiperType } from "swiper";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import LoadingCard from "@/components/card/LoadingCard";
 
 export function MainBanner({ initBanners }: { initBanners: Pageable }) {
   const { userData } = useAuth();
@@ -550,7 +551,7 @@ export function ProductSlider({
   
   return (
     <>
-      {items.length > 0 ? (
+      {(items.length > 0 || loading) ? (
         <FlexChild id={id} className={styles.ProductSlider}>
           <Swiper
             loop={false}
@@ -560,20 +561,24 @@ export function ProductSlider({
             modules={[Autoplay, Navigation]}
             autoplay={{ delay: 4000 }}
           >
-            {[...items]
-            .sort(()=> Math.random() -0.5)
-            .map((item, i) => {
-              return (
-                <SwiperSlide key={item.id}>
-                  <ReviewImgCard 
-                    width={'auto'} 
-                    height={'auto'}
-                    review={item} 
-                    lineClamp={lineClamp ?? 2} 
-                  />
-                </SwiperSlide>
-              );
-            })}
+            {loading
+              ? Array.from({ length: 5 }).map((_, i) => (
+                  <SwiperSlide key={`skeleton-${i}`}>
+                    <LoadingCard />
+                  </SwiperSlide>
+                ))
+              : [...items]
+                  .sort(() => Math.random() - 0.5)
+                  .map((item, i) => (
+                    <SwiperSlide key={item.id ?? i}>
+                      <ReviewImgCard
+                        review={item}
+                        lineClamp={lineClamp ?? 2}
+                        width="100%"
+                        height="auto"
+                      />
+                    </SwiperSlide>
+            ))}
           </Swiper>
         </FlexChild>
       ) : (
