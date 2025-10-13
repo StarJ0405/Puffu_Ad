@@ -206,7 +206,6 @@ export function ProductWrapper({
     <section className="root">
       <Container
         className={clsx("page_container", styles.detail_container)}
-        marginTop={100}
       >
         <DetailFrame
           product={product}
@@ -399,7 +398,7 @@ export function MiniInfoBox({
 }) {
   return (
     <FlexChild width={"auto"} className={styles.mini_infoBox}>
-      <VerticalFlex>
+      <VerticalFlex gap={50}>
         <OptionItem
           product={product}
           setSelected={setSelected}
@@ -442,7 +441,7 @@ export function OptionItem({
   setSelected: Dispatch<SetStateAction<Variant[]>>;
 }) {
   return (
-    <VerticalFlex gap={20} marginBottom={30}>
+    <VerticalFlex gap={20}>
       {/* 기본 상품 수량 */}
       {product.variants.map((v: VariantData) => {
         const index = selected.findIndex((f) => f.variant_id === v.id);

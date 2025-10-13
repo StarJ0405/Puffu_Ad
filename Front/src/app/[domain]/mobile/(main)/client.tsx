@@ -558,6 +558,21 @@ export function ProductSlider({
             spaceBetween={15}
             modules={[Autoplay, Navigation]}
             autoplay={{ delay: 4000 }}
+            breakpoints={{
+              580: {
+                slidesPerView: 2.5,
+              },
+              680: {
+                slidesPerView: 3.5,
+              },
+              768: {
+                slidesPerView: 3.5,
+              },
+
+              1080: {
+                slidesPerView: 3.5,
+              },
+            }}
           >
             {loading
               ? Array.from({ length: 5 }).map((_, i) => (

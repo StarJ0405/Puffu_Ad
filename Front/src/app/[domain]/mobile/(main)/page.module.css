@@ -2,6 +2,7 @@
 .main_banner {
    width: 100%;
    height: auto;
+   padding: 0;
 }
 
 .main_banner .slideItem {
