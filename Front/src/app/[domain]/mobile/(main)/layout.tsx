@@ -10,7 +10,7 @@ export default async function ({
   children: React.ReactNode;
 }>) {
   return (
-    <>
+    <section className='mob_wrap'>
       {/*  */}
       <Header />
       {children}
@@ -18,6 +18,6 @@ export default async function ({
       <BottomNavi />
       <SideToggle />
       {/*  */}
-    </>
+    </section>
   );
 }

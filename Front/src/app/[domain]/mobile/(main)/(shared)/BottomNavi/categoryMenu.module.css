@@ -1,8 +1,13 @@
-.category_container {
+.category_wrap {
    position: fixed;
    top: 0; left: 0;
    width: 100%;
    height: 100dvh;
+}
+
+.category_container {
+   width: 100%;
+   height: 100%;
    background: #222222;
 }
 

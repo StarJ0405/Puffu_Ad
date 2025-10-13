@@ -414,7 +414,7 @@ export function CartWrap() {
           <Button
             isLoading={isLoading}
             disabled={agrees.length < 2 || !payment || selected?.length === 0}
-            className={styles.payment_btn}
+            className={clsx('mob_page_container', styles.payment_btn)}
             onClick={async () => {
               if (point > 0) {
                 setIsLoading(true);

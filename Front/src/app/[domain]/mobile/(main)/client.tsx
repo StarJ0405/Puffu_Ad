@@ -68,7 +68,7 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
   };
 
   return (
-    <FlexChild className={clsx(styles.main_banner)}>
+    <FlexChild className={clsx('mob_page_container', styles.main_banner)}>
       <Swiper
         loop={true}
         slidesPerView={1}

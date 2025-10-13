@@ -62,46 +62,48 @@ export default function BottomNavi() {
 
          {
             shouldHideHeader? ( // detail 페이지일때는 숨겨짐.
-               <HorizontalFlex className={styles.bottom_navi}>
-                  <VerticalFlex className={styles.item} onClick={() => setActive(prev => !prev)}>
-                     <Image src={`/resources/images/bottomNavi/navi_category${active ? '_active' : ''}.png`} width={20} />
-                     <FlexChild className={clsx(styles.txt, {[styles.active] : active})}>
-                        <P>카테고리</P>
-                     </FlexChild>
-                  </VerticalFlex>
-         
-                  <VerticalFlex className={styles.item} onClick={()=> {navigate('/mypage/wishList'); setActive(false);}}>
-                     <Image src={`/resources/images/bottomNavi/navi_wish${linkTypeHandler('/mypage/wishList') ? '_active' : ''}.png`} width={22} />
-                     <FlexChild className={clsx(styles.txt, {[styles.active] : linkTypeHandler('/mypage/wishList')})}>
-                        <P>관심 리스트</P>
-                     </FlexChild>
-                  </VerticalFlex>
-         
-                  <VerticalFlex className={styles.item} onClick={()=> {navigate('/'); setActive(false);}}>
-                     <Image src={`/resources/images/bottomNavi/navi_home${linkTypeHandler('/') ? '_active' : ''}.png`} width={22} />
-                     <FlexChild className={clsx(styles.txt, {[styles.active] : linkTypeHandler('/')})}>
-                        <P>홈</P>
-                     </FlexChild>
-                  </VerticalFlex>
-         
-                  <VerticalFlex className={styles.item} onClick={()=> {navigate('/orders/cart'); setActive(false);}}>
-                     <Image src={`/resources/images/bottomNavi/navi_cart${linkTypeHandler('/orders/cart') ? '_active' : ''}.png`} width={21} />
-                     <FlexChild className={clsx(styles.txt, {[styles.active] : linkTypeHandler('/orders/cart')})}>
-                        <P>장바구니</P>
-                        <CountBadge top={'-20px'} right={'0px'} />
-                     </FlexChild>
-                  </VerticalFlex>
-         
-                  <VerticalFlex className={styles.item} onClick={()=> {navigate( !userData?.id ? '/auth/login' : '/mypage'); setActive(false);}}>
-                     <Image src={`/resources/images/bottomNavi/navi_login${(pathname.includes('/mypage') && !pathname.includes('/mypage/wishList') && active === false) || linkTypeHandler('/auth/login') ? '_active' : ''}.png`} 
-                        width={22} 
-                     />
-                     <FlexChild className={clsx(styles.txt, {[styles.active] : (pathname.includes('/mypage') && !pathname.includes('/mypage/wishList') && active === false) || linkTypeHandler('/auth/login')})}>
-                        <P hidden={!!userData?.id}>로그인</P>
-                        <P hidden={!userData?.id}>마이페이지</P>
-                     </FlexChild>
-                  </VerticalFlex>
-               </HorizontalFlex>
+               <FlexChild justifyContent="center" className={styles.bottom_navi}>
+                  <HorizontalFlex className={styles.navi_wrap}>
+                     <VerticalFlex className={styles.item} onClick={() => setActive(prev => !prev)}>
+                        <Image src={`/resources/images/bottomNavi/navi_category${active ? '_active' : ''}.png`} width={20} />
+                        <FlexChild className={clsx(styles.txt, {[styles.active] : active})}>
+                           <P>카테고리</P>
+                        </FlexChild>
+                     </VerticalFlex>
+            
+                     <VerticalFlex className={styles.item} onClick={()=> {navigate('/mypage/wishList'); setActive(false);}}>
+                        <Image src={`/resources/images/bottomNavi/navi_wish${linkTypeHandler('/mypage/wishList') ? '_active' : ''}.png`} width={22} />
+                        <FlexChild className={clsx(styles.txt, {[styles.active] : linkTypeHandler('/mypage/wishList')})}>
+                           <P>관심 리스트</P>
+                        </FlexChild>
+                     </VerticalFlex>
+            
+                     <VerticalFlex className={styles.item} onClick={()=> {navigate('/'); setActive(false);}}>
+                        <Image src={`/resources/images/bottomNavi/navi_home${linkTypeHandler('/') ? '_active' : ''}.png`} width={22} />
+                        <FlexChild className={clsx(styles.txt, {[styles.active] : linkTypeHandler('/')})}>
+                           <P>홈</P>
+                        </FlexChild>
+                     </VerticalFlex>
+            
+                     <VerticalFlex className={styles.item} onClick={()=> {navigate('/orders/cart'); setActive(false);}}>
+                        <Image src={`/resources/images/bottomNavi/navi_cart${linkTypeHandler('/orders/cart') ? '_active' : ''}.png`} width={21} />
+                        <FlexChild className={clsx(styles.txt, {[styles.active] : linkTypeHandler('/orders/cart')})}>
+                           <P>장바구니</P>
+                           <CountBadge top={'-20px'} right={'0px'} />
+                        </FlexChild>
+                     </VerticalFlex>
+            
+                     <VerticalFlex className={styles.item} onClick={()=> {navigate( !userData?.id ? '/auth/login' : '/mypage'); setActive(false);}}>
+                        <Image src={`/resources/images/bottomNavi/navi_login${(pathname.includes('/mypage') && !pathname.includes('/mypage/wishList') && active === false) || linkTypeHandler('/auth/login') ? '_active' : ''}.png`} 
+                           width={22} 
+                        />
+                        <FlexChild className={clsx(styles.txt, {[styles.active] : (pathname.includes('/mypage') && !pathname.includes('/mypage/wishList') && active === false) || linkTypeHandler('/auth/login')})}>
+                           <P hidden={!!userData?.id}>로그인</P>
+                           <P hidden={!userData?.id}>마이페이지</P>
+                        </FlexChild>
+                     </VerticalFlex>
+                  </HorizontalFlex>
+               </FlexChild>
             ) : (
                <div style={{display: "none"}}></div>
             )
