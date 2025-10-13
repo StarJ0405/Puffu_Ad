@@ -19,7 +19,7 @@ export default async function ({
   const newProducts = await requester.getProducts(newCondition);
 
   return (
-    <section className="root page_container">
+    <section className="mob_root mob_page_container">
       <Container marginTop={35}>
         <VerticalFlex className={Pstyles.title_box}>
           <h3>랜덤박스</h3>

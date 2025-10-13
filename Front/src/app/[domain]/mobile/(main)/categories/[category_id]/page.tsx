@@ -17,7 +17,7 @@ export default async function ({ params }: { params: Promise<Params> }) {
   const initProducts = await requester.getProducts(initCondition);
 
   return (
-    <section className="root page_container">
+    <section className="mob_root mob_page_container">
       <Container marginTop={35}>
         <TitleBox category_id={category_id} />
 

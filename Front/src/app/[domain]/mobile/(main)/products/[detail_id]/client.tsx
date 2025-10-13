@@ -15,6 +15,7 @@ import ProductCard from "@/components/card/ProductCard";
 import NoContent from "@/components/noContent/noContent";
 import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
 
 import Container from "@/components/container/Container";
 import ModalBase from "@/modals/ModalBase";
@@ -206,8 +207,10 @@ export function ProductWrapper({
     setTotalReviewCount(Number(product?.reviews?.count ?? 0));
   }, [product?.reviews?.count]);
 
+  const { isMobile } = useBrowserEvent();
+
   return (
-    <section className="root detail_root">
+    <section className={clsx('root', (isMobile && 'detail_root'))}>
       <Container className={clsx(styles.detail_container)}>
         <DetailFrame
           product={product}

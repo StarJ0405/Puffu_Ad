@@ -69,7 +69,7 @@ export function HeaderBottom({ menu1 }: HeaderBottomProps) {
       <div ref={bottomRef}></div>{/* 헤더 높이계산용 더미 */}
       <div className={`${fixed ? styles.fixed : ''}`}>
         <HorizontalFlex
-          className={clsx('page_container', styles.Menu_box)}
+          className={clsx('mob_page_container', styles.Menu_box)}
         >
           <nav>
             <ul className={clsx(styles.outerMenu, styles.shop_outer)}>

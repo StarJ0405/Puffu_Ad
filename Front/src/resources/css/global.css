@@ -167,7 +167,7 @@ a {
 }
 
 
-/* 모바일 컨테이너 ------------------ */
+/* 모바일 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 /* @media (max-width: 1280px) {
   .page_container {
@@ -175,38 +175,39 @@ a {
   }
 } */
 
-
 @media (max-width: 768px) {
 
   /* 탭 하이라이트 제거 */
   * {-webkit-tap-highlight-color: transparent;}
 
-  html {
+  /* html {
     max-width: 768px;
-  }
+  } */
 
-  .page_container {
-    width: 100%;
-    max-width: 992px;
-    margin: 0 auto;
-    color: var(--default-color);
-    padding: 0 13px;
-  }
+  
+}
 
-  .root {
-    padding-top: 95px;
-    min-height: 70dvh;
-    padding-bottom: 20px;
-    color: var(--default-color);
-  }
+.mob_page_container {
+  width: 100%;
+  max-width: 992px;
+  margin: 0 auto;
+  color: var(--default-color);
+  padding: 0 13px;
+}
 
-  /* 디테일 페이지용 */
-  .detail_root {
-    padding-top: 50px;
-  }
+.mob_root {
+  padding-top: 95px;
+  min-height: 70dvh;
+  padding-bottom: 20px;
+  color: var(--default-color);
+}
 
-  .swiper .swiper-wrapper {
-    align-items: center;
-  }
+/* 디테일 페이지용 */
+.mob_root .detail_root {
+  padding-top: 50px;
+}
+
+.mob_root .swiper .swiper-wrapper {
+  align-items: center;
 }
 

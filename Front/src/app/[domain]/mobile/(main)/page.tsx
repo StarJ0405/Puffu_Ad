@@ -32,14 +32,14 @@ export default async function () {
 
   const bestProducts = await requester.getProducts(bestCondition);
   return (
-    <section className="root">
+    <section className="mob_root">
       <MainBanner initBanners={banners} />
 
       <VerticalFlex
         marginTop={"25px"}
         marginBottom={"30px"}
         gap={30}
-        className="page_container"
+        className="mob_page_container"
       >
         <MainCategory /> {/* 카테고리 */}
         <LinkBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
