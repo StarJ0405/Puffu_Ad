@@ -3,6 +3,8 @@ import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import Image from "@/components/Image/Image";
 
+
+// 지금 안쓰고 있음 (임시로 만든 더미 데이터임)
 export function HotDealCategory() {
   const hotdeals = [
     {

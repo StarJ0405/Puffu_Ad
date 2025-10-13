@@ -25,6 +25,7 @@ import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import ReviewImgCard from "@/components/card/reviewImgCard";
 import LoadingSpinner from "@/components/loading/LoadingSpinner";
 import LoadingCard from "@/components/card/LoadingCard";
+import ProductLoadBtn from "@/components/buttons/ProductLoadBtn";
 
 export function MainBanner({ initBanners }: { initBanners: Pageable }) {
   const { userData } = useAuth();
@@ -260,7 +261,7 @@ export function MainCategory() {
 }
 
 // 이 달의 핫딜
-export function HotDealWrapper({
+export function HotDealList({
   id,
   lineClamp,
   initProducts,
@@ -291,9 +292,23 @@ export function HotDealWrapper({
       fallbackData: [initProducts],
     }
   );
-  const showMore = () => {
-    Load(); // 서버에서도 다음 페이지 로드
-  };
+
+  const [loading, setLoading] = useState(false);
+
+  const showMore = async () => {
+    if (loading) return;
+      setLoading(true);
+    try {
+      await Load(); // 데이터 로드
+      
+    } finally {
+      setLoading(false); // 끝나면 로딩 해제
+    }
+  }
+
+  // const showMore = () => {
+  //   Load(); // 서버에서도 다음 페이지 로드
+  // };
 
   return (
     <FlexChild hidden={!products || products?.length === 0}>
@@ -338,19 +353,8 @@ export function HotDealWrapper({
                   );
                 })}
               </MasonryGrid>
-              <Button
-                className={styles.list_more_btn}
-                hidden={maxPage < 1 || page >= maxPage}
-                onClick={showMore}
-              >
-                <FlexChild gap={10}>
-                  <Span>상품 더보기</Span>
-                  <Image
-                    src={"/resources/icons/arrow/arrow_bottom_icon.png"}
-                    width={10}
-                  />
-                </FlexChild>
-              </Button>
+              {loading && <LoadingSpinner />}
+              <ProductLoadBtn maxPage={maxPage} page={page} loading={loading} showMore={showMore} />
             </VerticalFlex>
           ) : (
             <NoContent type="상품" />
@@ -362,7 +366,7 @@ export function HotDealWrapper({
 }
 
 // 신상품, 등등
-export function ProductList({
+export function BestList({
   id,
   lineClamp,
   initProducts,
@@ -392,9 +396,23 @@ export function ProductList({
       fallbackData: [initProducts],
     }
   );
-  const showMore = () => {
-    Load(); // 서버에서도 다음 페이지 로드
-  };
+
+  const [loading, setLoading] = useState(false);
+
+  const showMore = async () => {
+    if (loading) return;
+      setLoading(true);
+    try {
+      await Load(); // 데이터 로드
+      
+    } finally {
+      setLoading(false); // 끝나면 로딩 해제
+    }
+  }
+
+  // const showMore = () => {
+  //   Load(); // 서버에서도 다음 페이지 로드
+  // };
 
   return (
     <>
@@ -412,19 +430,8 @@ export function ProductList({
               );
             })}
           </MasonryGrid>
-          <Button
-            className={styles.list_more_btn}
-            hidden={maxPage < 1 || page >= maxPage}
-            onClick={showMore}
-          >
-            <FlexChild gap={10}>
-              <Span>상품 더보기</Span>
-              <Image
-                src={"/resources/icons/arrow/arrow_bottom_icon.png"}
-                width={10}
-              />
-            </FlexChild>
-          </Button>
+          {loading && <LoadingSpinner />}
+          <ProductLoadBtn maxPage={maxPage} page={page} loading={loading} showMore={showMore} />
         </VerticalFlex>
       ) : (
         <NoContent type="상품" />

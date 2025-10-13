@@ -15,7 +15,7 @@ export default async function ({
   searchParams: Promise<SearchParams>;
 }) {
   const { category_id } = await searchParams;
-  const hotCondition: any = { pageSize: 12, pageNumber: 0, order: "hot" };
+  const hotCondition: any = { pageSize: 12, pageNumber: 0, order: "discount" };
   if (category_id) hotCondition.category_id = category_id;
   const hotProducts = await requester.getProducts(hotCondition);
 

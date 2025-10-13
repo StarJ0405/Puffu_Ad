@@ -24,6 +24,8 @@ import { Swiper as SwiperType } from "swiper";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import LoadingCard from "@/components/card/LoadingCard";
+import LoadingSpinner from "@/components/loading/LoadingSpinner";
+import ProductLoadBtn from "@/components/buttons/ProductLoadBtn";
 
 export function MainBanner({ initBanners }: { initBanners: Pageable }) {
   const { userData } = useAuth();
@@ -289,9 +291,11 @@ export function HotDealWrapper({
     }
   );
 
-  const showMore = () => {
-    Load(); // 서버에서도 다음 페이지 로드
-  };
+  const [loading, setLoading] = useState(false);
+
+  // const showMore = () => {
+  //   Load(); // 서버에서도 다음 페이지 로드
+  // };
 
   return (
     <FlexChild hidden={!products || products?.length === 0} marginBottom={20}>
@@ -319,49 +323,50 @@ export function HotDealWrapper({
           </FlexChild>
         </HorizontalFlex>
         {/* 메인, 상세 리스트 */}
-        <>
+        <ProductList
+          id="discount"
+          products={products}
+          Load={Load}
+          hidden={maxPage < 1 || page >= maxPage}
+          maxPage={maxPage}
+          page={page}
+          // loading={loading}
+        />
+        {/* <>
           {products.length > 0 ? (
-            <VerticalFlex gap={10}>
-              <MasonryGrid gap={20} width={"100%"}>
-                {products.map((product: ProductData, i: number) => {
-                  return (
-                    <ProductCard
-                      key={i}
-                      product={product}
-                      lineClamp={2}
-                      width={200}
-                    />
-                  );
-                })}
-              </MasonryGrid>
-              <Button
-                className={styles.list_more_btn}
-                hidden={maxPage < 1 || page >= maxPage}
-                onClick={showMore}
-              >
-                <FlexChild gap={10}>
-                  <Span>상품 더보기</Span>
-                  <Image
-                    src={"/resources/icons/arrow/arrow_bottom_icon.png"}
-                    width={10}
-                  />
-                </FlexChild>
-              </Button>
-            </VerticalFlex>
+            <>
+              <VerticalFlex gap={10}>
+                <MasonryGrid gap={20} width={"100%"}>
+                  {products.map((product: ProductData, i: number) => {
+                    return (
+                      <ProductCard
+                        key={i}
+                        product={product}
+                        lineClamp={2}
+                        width={200}
+                      />
+                    );
+                  })}
+                </MasonryGrid>
+                {loading && <LoadingSpinner />}
+                <ProductLoadBtn maxPage={maxPage} page={page} loading={loading} showMore={showMore} />
+              </VerticalFlex>
+            </>
           ) : (
             <NoContent type="상품" />
           )}
-        </>
+        </> */}
       </VerticalFlex>
     </FlexChild>
   );
 }
 
 // 베스트 상품
-export function NewProducts({ initProducts }: { initProducts: Pageable }) {
-  const { newProducts, Load, maxPage, page } = useInfiniteData(
-    "newProducts",
+export function BestProducts({ initProducts, initCondition }: { initProducts: Pageable, initCondition: any; }) {
+  const { bestProducts, Load, maxPage, page } = useInfiniteData(
+    "bestProducts",
     (pageNumber) => ({
+      ...initCondition,
       pageSize: 30,
       pageNumber,
     }),
@@ -373,30 +378,11 @@ export function NewProducts({ initProducts }: { initProducts: Pageable }) {
     }
   );
 
+  const [loading, setLoading] = useState(false);
+
   return (
     <FlexChild marginBottom={20}>
       <VerticalFlex>
-        {/* <HorizontalFlex
-          className={styles.titleBox}
-          alignItems="end"
-          gap={20}
-        >
-          <div className={styles.title}>
-            <Image
-              src="/resources/images/header/Logo.png"
-              width={50}
-              height={"auto"}
-            />
-            <h2 className="SacheonFont">
-              <Span>PICK!</Span> 추천 상품
-            </h2>
-          </div>
-          <FlexChild width={"auto"}>
-            <Link className={styles.linkBtn} href={"/products/best"}>
-              더보기
-            </Link>
-          </FlexChild>
-        </HorizontalFlex> */}
         <HorizontalFlex className={styles.titleBox} alignItems="end" gap={20}>
           <div className={styles.title}>
             <Image src={'/resources/images/header/logo.png'} width={50} />
@@ -412,15 +398,19 @@ export function NewProducts({ initProducts }: { initProducts: Pageable }) {
           </FlexChild>
         </HorizontalFlex>
         <ProductList
-          id="new"
-          products={newProducts}
+          id="best"
+          products={bestProducts}
           Load={Load}
           hidden={maxPage < 1 || page >= maxPage}
+          maxPage={maxPage}
+          page={page}
+          // loading={loading}
         />
       </VerticalFlex>
     </FlexChild>
   );
 }
+
 
 export function ProductList({
   id,
@@ -428,14 +418,33 @@ export function ProductList({
   products,
   Load,
   hidden,
+  maxPage,
+  page,
+  // loading,
 }: {
   id: string;
   lineClamp?: number;
   products: ProductData[];
   Load: () => void;
   hidden?: boolean;
+  maxPage: number;
+  page: number;
+  // loading: boolean;
 }) {
   const [visibleCount, setVisibleCount] = useState(6);
+
+  const [loading, setLoading] = useState(false);
+
+  // const showMore = async () => {
+  //   if (loading) return;
+  //   setLoading(true);
+  //   try {
+  //     await showMore2(); // 데이터 로드
+      
+  //   } finally {
+  //     setLoading(false); // 끝나면 로딩 해제
+  //   }
+  // }
 
   const showMore = () => {
     setVisibleCount((prev) => prev + 6); // 12개씩 늘려서 보여주기
@@ -458,19 +467,8 @@ export function ProductList({
               );
             })}
           </MasonryGrid>
-          <Button
-            className={styles.list_more_btn}
-            onClick={showMore}
-            hidden={hidden}
-          >
-            <FlexChild gap={10}>
-              <Span>상품 더보기</Span>
-              <Image
-                src={"/resources/icons/arrow/arrow_bottom_icon.png"}
-                width={10}
-              />
-            </FlexChild>
-          </Button>
+          {loading && <LoadingSpinner />}
+          <ProductLoadBtn maxPage={maxPage} page={page} loading={loading} showMore={showMore} />
         </VerticalFlex>
       ) : (
         <NoContent type="상품" />

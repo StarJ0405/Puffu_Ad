@@ -7,12 +7,12 @@ import Span from "@/components/span/Span";
 import { requester } from "@/shared/Requester";
 import Link from "next/link";
 import {
-  HotDealWrapper,
+  HotDealList,
   LinkBanner,
   MainBanner,
   MainCategory,
   MiniBanner,
-  ProductList,
+  BestList,
   SubBanner1,
   SubBanner2,
   ProductSlider,
@@ -54,7 +54,7 @@ export default async function () {
         </VerticalFlex>
         <LinkBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
         {/* 이 달의 핫딜 */}
-        <HotDealWrapper
+        <HotDealList
           id={"hot"}
           lineClamp={1}
           initProducts={hotProducts}
@@ -92,7 +92,7 @@ export default async function () {
               </FlexChild>
             </HorizontalFlex>
             {/* 메인, 상세 리스트 */}
-            <ProductList
+            <BestList
               id={"best"}
               lineClamp={1}
               initProducts={bestProducts}

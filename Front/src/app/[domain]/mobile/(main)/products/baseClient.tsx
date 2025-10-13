@@ -17,6 +17,9 @@ import clsx from "clsx";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import Pstyles from "./products.module.css";
+import { useState } from "react";
+import LoadingSpinner from "@/components/loading/LoadingSpinner";
+import ProductLoadBtn from "@/components/buttons/ProductLoadBtn";
 
 export function ProdcutCategoryFilter({
   ConditionOrder,
@@ -159,6 +162,19 @@ export function BaseProductList({
     }
   );
 
+  const [loading, setLoading] = useState(false);
+
+  const showMore = async () => {
+    if (loading) return;
+    setLoading(true);
+    try {
+      await Load(); // 데이터 로드
+      
+    } finally {
+      setLoading(false); // 끝나면 로딩 해제
+    }
+  }
+
   const pathname = usePathname();
 
   return (
@@ -211,18 +227,8 @@ export function BaseProductList({
               })}
             </MasonryGrid>
           </VerticalFlex>
-          <Button
-            className={Pstyles.list_more_btn}
-            hidden={maxPage < 1 || page >= maxPage}
-          >
-            <FlexChild gap={10} onClick={Load}>
-              <Span>상품 더보기</Span>
-              <Image
-                src={"/resources/icons/arrow/arrow_bottom_icon.png"}
-                width={10}
-              />
-            </FlexChild>
-          </Button>
+          {loading && <LoadingSpinner />}
+          <ProductLoadBtn maxPage={maxPage} page={page} loading={loading} showMore={showMore} />
         </>
       ) : (
         <NoContent type={"상품"} />
