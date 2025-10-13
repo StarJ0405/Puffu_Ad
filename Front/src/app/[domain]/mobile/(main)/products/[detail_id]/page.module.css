@@ -123,13 +123,17 @@
 
 
 /* 하단 고정 구매버튼 그룹 */
-.bottom_pay_box {
+.bottom_pay_wrap {
    position: fixed;
    bottom: 0;
    left: 0;
    width: 100%;
    z-index: 1000;
-   padding: 7px 10px;
+}
+
+.bottom_pay_wrap .bottom_pay_box {
+   margin: 0 auto;
+   padding: 7px 10px !important;
    background: linear-gradient(180deg, #313131, #1E1E20);
 }
 

@@ -210,7 +210,7 @@ export function ProductWrapper({
   const { isMobile } = useBrowserEvent();
 
   return (
-    <section className={clsx('root', (isMobile && 'detail_root'))}>
+    <section className={clsx('detail_root')}>
       <Container className={clsx(styles.detail_container)}>
         <DetailFrame
           product={product}
@@ -480,46 +480,48 @@ export function BottomPayBox({
   onWishClick: () => void;
 }) {
   return (
-    <FlexChild className={styles.bottom_pay_box}>
-      <HorizontalFlex className={styles.buyButton_box}>
-        <FlexChild width={"auto"}>
-          <Button className={styles.heart_btn} onClick={onWishClick}>
-            <Image
-              src={
-                product.wish
-                  ? "/resources/icons/main/product_heart_icon_active.png"
-                  : "/resources/icons/main/product_heart_icon.png"
+    <div className={clsx(styles.bottom_pay_wrap)}>
+      <FlexChild className={clsx('mob_page_container', styles.bottom_pay_box)}>
+        <HorizontalFlex className={styles.buyButton_box}>
+          <FlexChild width={"auto"}>
+            <Button className={styles.heart_btn} onClick={onWishClick}>
+              <Image
+                src={
+                  product.wish
+                    ? "/resources/icons/main/product_heart_icon_active.png"
+                    : "/resources/icons/main/product_heart_icon.png"
+                }
+                width={35}
+              />
+            </Button>
+          </FlexChild>
+  
+          <FlexChild className={styles.buy_box}>
+            <Button
+              disabled={
+                !product.buyable || !product.variants.some((v) => v.stack > 0)
               }
-              width={35}
-            />
-          </Button>
-        </FlexChild>
-
-        <FlexChild className={styles.buy_box}>
-          <Button
-            disabled={
-              !product.buyable || !product.variants.some((v) => v.stack > 0)
-            }
-            className={styles.buy_btn}
-            onClick={() =>
-              NiceModal.show(buyCartModal, {
-                product,
-                onCartClick,
-                onPurchaseClick,
-              })
-            }
-          >
-            <P>
-              {product.buyable
-                ? !product.variants.some((v) => v.stack > 0)
-                  ? "재고부족"
-                  : "구매하기"
-                : "판매중단"}
-            </P>
-          </Button>
-        </FlexChild>
-      </HorizontalFlex>
-    </FlexChild>
+              className={styles.buy_btn}
+              onClick={() =>
+                NiceModal.show(buyCartModal, {
+                  product,
+                  onCartClick,
+                  onPurchaseClick,
+                })
+              }
+            >
+              <P>
+                {product.buyable
+                  ? !product.variants.some((v) => v.stack > 0)
+                    ? "재고부족"
+                    : "구매하기"
+                  : "판매중단"}
+              </P>
+            </Button>
+          </FlexChild>
+        </HorizontalFlex>
+      </FlexChild>
+    </div>
   );
 }
 
@@ -633,7 +635,7 @@ export function OptionItem({
 
               <FlexChild width={"auto"} gap={5}>
                 <Span>{select.quantity}개</Span>
-                <Span>+ {select.quantity * product?.discount_price}원</Span>
+                <Span>+ {(select.quantity * (product?.discount_price ?? 0)).toLocaleString('ko-KR')}원</Span>
               </FlexChild>
             </HorizontalFlex>
           </VerticalFlex>

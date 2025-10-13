@@ -187,9 +187,11 @@ a {
   
 }
 
+.mob_wrap {max-width: 768px; margin: 0 auto;}
+
 .mob_page_container {
   width: 100%;
-  max-width: 992px;
+  max-width: 768px;
   margin: 0 auto;
   color: var(--default-color);
   padding: 0 13px;

@@ -9,7 +9,7 @@ import styles from "./footer.module.css";
 export default async function Footer() {
   return (
     <>
-      <footer className={styles.footer}>
+      <footer className={clsx('mob_page_container', styles.footer)}>
         <VerticalFlex
           className={clsx(styles.info_box, "mob_page_container")}
           alignItems="start"

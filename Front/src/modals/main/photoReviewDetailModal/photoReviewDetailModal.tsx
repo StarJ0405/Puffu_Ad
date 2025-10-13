@@ -194,7 +194,7 @@ const PhotoReviewDetailModal = NiceModal.create(
         }}
         borderRadius={!isMobile ? 10 : 0}
         closeBtnWhite
-        width={!isMobile ? "100%" : "100%"}
+        width={'100%'}
         maxWidth={!isMobile ? 700 : "auto"}
         height={!isMobile ? height : "100dvh"}
         maxHeight={"auto"}

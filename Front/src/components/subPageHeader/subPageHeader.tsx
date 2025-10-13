@@ -8,6 +8,7 @@ import { useParams, usePathname } from "next/navigation";
 import { useState } from "react";
 import styles from "./subPageHeader.module.css";
 import CountBadge from "../countBadge/countBadge";
+import clsx from "clsx";
 
 export default function SubPageHeader() {
   const [active, setActive] = useState(true);
@@ -18,7 +19,7 @@ export default function SubPageHeader() {
   const mypageCheck = pathname.includes('/mypage');
 
   return (
-    <HorizontalFlex className={styles.subHeader}>
+    <HorizontalFlex className={clsx('mob_page_container',styles.subHeader)}>
       <FlexChild gap={20}>
         <FlexChild width={"auto"} onClick={() => navigate(-1)}>
           <Image src={"/resources/icons/arrow/slide_arrow.png"} width={12} />
