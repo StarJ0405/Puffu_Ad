@@ -19,7 +19,7 @@ export default async function ({
   const initProducts = await requester.getProducts(initCondition);
 
   return (
-    <section className="root">
+    <section className="mob_root">
       <VerticalFlex
         className="mob_page_container"
         marginTop={80}

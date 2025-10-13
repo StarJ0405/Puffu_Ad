@@ -4,7 +4,7 @@
    padding: 12px 15px;
    height: auto;
    background: #272727;
-   height: 50px !important;
+   height: var(--subpageHeader-H) !important;
 }
 
 .subHeader > * {

@@ -580,7 +580,7 @@ export function OptionItem({
   setSelected: Dispatch<SetStateAction<Variant[]>>;
 }) {
   return (
-    <VerticalFlex gap={20}>
+    <VerticalFlex gap={20} padding={'0 5px'}>
       {/* 기본 상품 수량 */}
       {product.variants.map((v: VariantData) => {
         const index = selected.findIndex((f) => f.variant_id === v.id);
@@ -591,20 +591,19 @@ export function OptionItem({
             key={v.id}
             alignItems="start"
           >
-            <FlexChild gap={10} fontSize={10}>
-              <InputNumber
-                disabled={!product.buyable || !v.buyable || v.stack === 0}
-                value={select?.quantity}
-                min={0}
-                max={v.stack}
-                step={1}
-                onChange={(val) => {
-                  select.quantity = val;
-                  selected[index] = select;
-                  setSelected([...selected]);
-                }}
-                width={40}
-              />
+            <VerticalFlex alignItems="start" gap={10}>
+              <HorizontalFlex
+                className={clsx(
+                  styles.txt_item,
+                  (v.stack === 0 || !v.buyable) && styles.disable
+                )}
+                gap={10}
+                width={"auto"}
+              >
+                <FlexChild className={styles.op_name}>
+                  <P>{v?.title}</P>
+                </FlexChild>
+              </HorizontalFlex>
               {v.stack === 0 ? (
                 <FlexChild width={"max-content"}>
                   <P size={14} color="#fff">
@@ -620,24 +619,32 @@ export function OptionItem({
               ) : (
                 <></>
               )}
-            </FlexChild>
-            <HorizontalFlex
-              className={clsx(
-                styles.txt_item,
-                (v.stack === 0 || !v.buyable) && styles.disable
-              )}
-              gap={10}
-              width={"auto"}
-            >
-              <FlexChild className={styles.op_name}>
-                <P>{v?.title}</P>
-              </FlexChild>
+            </VerticalFlex>
 
-              <FlexChild width={"auto"} gap={5}>
-                <Span>{select.quantity}개</Span>
-                <Span>+ {(select.quantity * (product?.discount_price ?? 0)).toLocaleString('ko-KR')}원</Span>
-              </FlexChild>
-            </HorizontalFlex>
+            {
+              (v.stack > 0 && v.buyable) && ( // 재고부족, 판매중단이면 hidden 처리
+                <FlexChild gap={20} fontSize={10} className={styles.input_box}>
+                  <FlexChild width={"auto"} gap={5} className={styles.quantity_txt}>
+                    <Span>{select.quantity}개</Span>
+                    <Span>+ {(select.quantity * (product?.discount_price ?? 0)).toLocaleString('ko-KR')}원</Span>
+                  </FlexChild>
+
+                  <InputNumber
+                    disabled={!product.buyable || !v.buyable || v.stack === 0}
+                    value={select?.quantity}
+                    min={0}
+                    max={v.stack}
+                    step={1}
+                    onChange={(val) => {
+                      select.quantity = val;
+                      selected[index] = select;
+                      setSelected([...selected]);
+                    }}
+                    width={40}
+                  />
+                </FlexChild>
+              )
+            }
           </VerticalFlex>
         );
       })}
@@ -661,7 +668,7 @@ export function ProductSlider({
         <FlexChild id={id} className={styles.ProductSlider}>
           <Swiper
             loop={false}
-            slidesPerView={2.2}
+            slidesPerView={2.4}
             speed={600}
             spaceBetween={20}
             modules={[Autoplay, Navigation]}
@@ -669,6 +676,21 @@ export function ProductSlider({
             navigation={{
               prevEl: `#${id} .${styles.prevBtn}`,
               nextEl: `#${id} .${styles.nextBtn}`,
+            }}
+            breakpoints={{
+              580: {
+                slidesPerView: 3.2,
+              },
+              680: {
+                slidesPerView: 3.2,
+              },
+              768: {
+                slidesPerView: 4.2,
+              },
+
+              1080: {
+                slidesPerView: 4.2,
+              },
             }}
           >
             {listArray?.map((product: ProductData, i: number) => {
@@ -680,7 +702,7 @@ export function ProductSlider({
             })}
           </Swiper>
 
-          <div className={clsx(styles.naviBtn, styles.prevBtn)}>
+          {/* <div className={clsx(styles.naviBtn, styles.prevBtn)}>
             <Image
               src={"/resources/icons/arrow/slide_arrow.png"}
               width={10}
@@ -691,7 +713,7 @@ export function ProductSlider({
               src={"/resources/icons/arrow/slide_arrow.png"}
               width={10}
             ></Image>
-          </div>
+          </div> */}
         </FlexChild>
       ) : (
         <NoContent type="상품" />
