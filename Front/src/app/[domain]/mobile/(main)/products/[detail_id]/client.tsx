@@ -623,7 +623,7 @@ export function OptionItem({
 
             {
               (v.stack > 0 && v.buyable) && ( // 재고부족, 판매중단이면 hidden 처리
-                <FlexChild gap={20} fontSize={10} className={styles.input_box}>
+                <HorizontalFlex gap={20} fontSize={10} className={styles.input_box}>
                   <FlexChild width={"auto"} gap={5} className={styles.quantity_txt}>
                     <Span>{select.quantity}개</Span>
                     <Span>+ {(select.quantity * (product?.discount_price ?? 0)).toLocaleString('ko-KR')}원</Span>
@@ -642,7 +642,7 @@ export function OptionItem({
                     }}
                     width={40}
                   />
-                </FlexChild>
+                </HorizontalFlex>
               )
             }
           </VerticalFlex>
