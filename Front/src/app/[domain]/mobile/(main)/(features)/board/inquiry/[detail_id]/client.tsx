@@ -125,7 +125,8 @@ export function DetailFrame() {
         </HorizontalFlex>
         <HorizontalFlex className={styles.title_box}>
           <FlexChild className={styles.name}>
-            <P>{userData?.name || "비회원"}</P>
+            {/* <P>{userData?.name || "비회원"}</P> */}
+            <P>{qaData.user?.name || "비회원"}</P>
           </FlexChild>
         </HorizontalFlex>
       </VerticalFlex>
