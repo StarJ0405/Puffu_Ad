@@ -2,12 +2,66 @@ import { BaseService } from "data-source";
 import { Coupon } from "models/coupon";
 import { CouponRepository } from "repositories/coupon";
 import { inject, injectable } from "tsyringe";
-import { Brackets, FindManyOptions, FindOneOptions } from "typeorm";
+import {
+  Brackets,
+  DeepPartial,
+  FindManyOptions,
+  FindOneOptions,
+  FindOptionsWhere,
+  In,
+} from "typeorm";
+import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
+import { generateShortId } from "utils/functions";
 
 @injectable()
 export class CouponService extends BaseService<Coupon, CouponRepository> {
   constructor(@inject(CouponRepository) couponRepository: CouponRepository) {
     super(couponRepository);
+  }
+  async create(data: DeepPartial<Coupon>): Promise<Coupon> {
+    if (data.code) {
+      let isUnique = false;
+      let code = generateShortId(6, 18);
+      do {
+        const exist = await this.repository.exists({
+          where: {
+            code,
+          },
+        });
+        if (!exist) isUnique = true;
+        else code = generateShortId(6, 18);
+      } while (!isUnique);
+
+      return await this.repository.create({ ...data, code });
+    }
+    return await this.repository.create(data);
+  }
+
+  async creates(data: DeepPartial<Coupon>, amount: number): Promise<Coupon[]> {
+    if (amount <= 0) throw Error("amount must be more than 0");
+    if (data.code) {
+      let array = Array.from({ length: amount }).map(() => ({
+        ...data,
+        code: generateShortId(6, 18),
+      }));
+      let isUnique = false;
+      do {
+        const entities = await this.repository.findAll({
+          where: {
+            code: In(array.map((coupon) => coupon.code)),
+          },
+        });
+        if (entities.length === 0) isUnique = true;
+        else
+          array = array.map((link) => {
+            if (entities.some((s) => s.code === link.code))
+              link.code = generateShortId(24);
+            return link;
+          });
+      } while (!isUnique);
+      return await this.repository.creates(array);
+    }
+    return super.creates(data, amount);
   }
   async getPageable(
     pageData: PageData,
@@ -224,5 +278,22 @@ export class CouponService extends BaseService<Coupon, CouponRepository> {
         return await this.repository.save(_coupon);
       })
     );
+  }
+
+  async update(
+    where: FindOptionsWhere<Coupon> | FindOptionsWhere<Coupon>[],
+    data: QueryDeepPartialEntity<Coupon>,
+    returnEnttiy?: boolean
+  ): Promise<UpdateResult<Coupon>> {
+    delete data.code;
+    const affected = await this.repository.update(where, data);
+    let result: Coupon[] = [];
+    if (returnEnttiy) {
+      result = await this.repository.findAll({ where });
+    }
+    return {
+      affected: affected,
+      result,
+    };
   }
 }

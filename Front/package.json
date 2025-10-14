@@ -35,6 +35,7 @@
     "json-stable-stringify": "^1.3.0",
     "katex": "^0.16.22",
     "lodash": "^4.17.21",
+    "lunisolar": "^2.6.0",
     "next": "^15.5.2",
     "qrcode.react": "^4.2.0",
     "quill": "^2.0.3",

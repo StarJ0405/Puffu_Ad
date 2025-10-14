@@ -542,23 +542,57 @@ type CouponType = "item" | "order" | "shipping";
 type CalcType = "percent" | "fix";
 type DateType = "fixed" | "range" | "day" | "week" | "month" | "year";
 type DateUnit = "year" | "month" | "date" | "hours";
-type Target = "sign_up" | "group" | "link" | "etc" | "birthday";
+type Target = "manual" | "condition" | "interval" | "link";
+type Condition =
+  | "signup"
+  | "birthday"
+  | "date"
+  | "review"
+  | "delivery"
+  | "order"
+  | "first"
+  | "purchase";
+
 interface CouponDataFrame {
   name: string;
   type: CouponType;
+  condition?: Condition;
   store_id?: string;
   value: number;
   calc: CalcType;
+  appears_at?: Date | null | string;
+  date: DateType;
   starts_at?: Date | null | string;
   ends_at?: Date | null | string;
-  date: DateType;
-  date_unit?: DateUnit | null;
   range?: number;
-  group_id?: string | null;
+  date_unit?: DateUnit | null;
+  min?: number;
   target: Target;
+  metadata?: Record<string, unknown> | null;
+  group_id?: string | null;
+  issue_date?: Date | null | string;
+  issue_lunar?: boolean;
+  review_min?: number;
+  review_photo?: boolean;
+  max_quantity?: number;
+  quantiy?: number;
+  duplicate?: number;
+  order_starts_at?: Date | null | string;
+  order_ends_at?: Date | null | string;
+  buy_type?: string;
+  buy_min?: number;
+  code?: string;
+  interval?: number;
+  total_min?: number;
+  total_max?: number;
+  products?: ProductData[];
+  categories?: CategoryData[];
 }
 
 interface CouponData extends BaseEntity, CouponDataFrame {
+  user_id?: string;
+  user?: UserData;
+  origin_id: string;
   item_id?: string;
   item?: LineItemData;
   order_id?: string;

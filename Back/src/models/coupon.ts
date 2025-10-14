@@ -5,12 +5,16 @@ import {
   Entity,
   Index,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
 } from "typeorm";
 import { generateEntityId } from "utils/functions";
+import { Category } from "./category";
 import { Group } from "./group";
 import { LineItem } from "./line_item";
 import { Order } from "./order";
+import { Product } from "./product";
 import { ShippingMethod } from "./shipping_method";
 import { Store } from "./store";
 import { User } from "./user";
@@ -48,11 +52,20 @@ export enum DateUnit {
   HOURS = "hours",
 }
 export enum Target {
-  SIGNUP = "sign_up",
-  GROUP = "group",
+  MANUAL = "manual",
+  CONDTION = "condition",
+  INTERVAL = "interval",
   LINK = "link",
+}
+export enum Condition {
+  SIGNUP = "signup",
   BIRTHDAY = "birthday",
-  ETC = "etc",
+  DATE = "date",
+  REVIEW = "review",
+  DELIVERY = "delivery",
+  ORDER = "order",
+  FIRST = "first",
+  PURCHASE = "purchase",
 }
 @Entity({ name: "coupon" })
 @Index(["created_at"])
@@ -68,6 +81,9 @@ export class Coupon extends BaseEntity {
 
   @Column({ type: "character varying", nullable: false })
   name?: string;
+
+  @Column({ type: "enum", enum: Condition, nullable: true })
+  condition?: Condition;
 
   @Column({ type: "enum", enum: CouponType, nullable: false })
   type!: CouponType;
@@ -100,7 +116,7 @@ export class Coupon extends BaseEntity {
   @Column({ enum: DateUnit, type: "enum", nullable: true })
   date_unit?: DateUnit;
 
-  @Column({ type: "enum", enum: Target, default: Target.ETC })
+  @Column({ type: "enum", enum: Target, default: Target.MANUAL })
   target?: Target;
 
   @Column({ type: "character varying", nullable: true })
@@ -114,10 +130,9 @@ export class Coupon extends BaseEntity {
     type: "timestamp with time zone",
     nullable: true,
   })
-  check_date?: Date | string | null;
-
+  issue_date?: Date | string | null;
   @Column({ type: "boolean", default: false })
-  check_lunar?: boolean;
+  issue_lunar?: boolean;
 
   @Column({ type: "integer", default: 0 })
   review_min?: number;
@@ -131,8 +146,13 @@ export class Coupon extends BaseEntity {
   @Column({ type: "integer", default: 0 })
   quantity?: number;
 
-  @Column({ type: "boolean", default: false })
-  duplicate?: boolean;
+  @Column({ type: "integer", default: 0 })
+  duplicate?: number;
+
+  @Column({ type: "integer", default: -1 })
+  total_min?: number;
+  @Column({ type: "integer", default: -1 })
+  total_max?: number;
 
   @Column({
     type: "timestamp with time zone",
@@ -146,14 +166,17 @@ export class Coupon extends BaseEntity {
   })
   order_ends_at?: Date | string | null;
 
-  @Column({ type: "boolean", default: false })
-  buy_type?: boolean;
+  @Column({ type: "character varying", nullable: true })
+  buy_type?: string;
 
   @Column({ type: "integer", default: -1 })
   buy_min?: number;
 
   @Column({ type: "character varying", nullable: true })
   code?: string;
+
+  @Column({ type: "integer", nullable: true })
+  interval?: number;
 
   // 발급된 경우 데이터
   @Column({ type: "character varying", nullable: true })
@@ -191,6 +214,34 @@ export class Coupon extends BaseEntity {
   @ManyToOne(() => ShippingMethod, (shipping_method) => shipping_method.coupons)
   @JoinColumn({ name: "shipping_method_id", referencedColumnName: "id" })
   shipping_method?: ShippingMethod;
+
+  @ManyToMany(() => Product)
+  @JoinTable({
+    name: "coupon_product",
+    joinColumn: {
+      name: "coupon_id",
+      referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "product_id",
+      referencedColumnName: "id",
+    },
+  })
+  products?: Product[];
+
+  @ManyToMany(() => Category)
+  @JoinTable({
+    name: "coupon_category",
+    joinColumn: {
+      name: "coupon_id",
+      referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "category_id",
+      referencedColumnName: "id",
+    },
+  })
+  categories?: Category[];
 
   get used(): boolean {
     return !!(this.item_id || this.order_id || this.shipping_method_id);

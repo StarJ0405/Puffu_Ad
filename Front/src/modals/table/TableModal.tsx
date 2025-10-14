@@ -127,7 +127,7 @@ const TableModal = NiceModal.create(
           selectable={selectable}
           onSearch={onSearch}
         />
-        {search && (
+        {selectable && (
           <FlexChild padding={5}>
             <HorizontalFlex>
               <FlexChild></FlexChild>
@@ -148,39 +148,43 @@ const TableModal = NiceModal.create(
                   등록
                 </Button>
               </FlexChild>
-              <FlexChild justifyContent="flex-end" position="relative">
-                <Input
-                  id={`${uuid}_table_input`}
-                  width={300}
-                  className={styles.input}
-                  placeHolder="검색어를 입력하세요"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      const q = e.currentTarget.value;
-                      const data: any = onInput(q);
+              {search ? (
+                <FlexChild justifyContent="flex-end" position="relative">
+                  <Input
+                    id={`${uuid}_table_input`}
+                    width={300}
+                    className={styles.input}
+                    placeHolder="검색어를 입력하세요"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        const q = e.currentTarget.value;
+                        const data: any = onInput(q);
 
+                        tableRef.current.setCondition(data, true);
+                      }
+                    }}
+                  />
+                  <Image
+                    src="/resources/icons/search_gray.png"
+                    size={17}
+                    position="absolute"
+                    right={8}
+                    top={8}
+                    cursor="pointer"
+                    onClick={() => {
+                      const q = (
+                        document.getElementById(
+                          `${uuid}_table_input`
+                        ) as HTMLInputElement
+                      ).value;
+                      const data: any = onInput(q);
                       tableRef.current.setCondition(data, true);
-                    }
-                  }}
-                />
-                <Image
-                  src="/resources/icons/search_gray.png"
-                  size={17}
-                  position="absolute"
-                  right={8}
-                  top={8}
-                  cursor="pointer"
-                  onClick={() => {
-                    const q = (
-                      document.getElementById(
-                        `${uuid}_table_input`
-                      ) as HTMLInputElement
-                    ).value;
-                    const data: any = onInput(q);
-                    tableRef.current.setCondition(data, true);
-                  }}
-                />
-              </FlexChild>
+                    }}
+                  />
+                </FlexChild>
+              ) : (
+                <FlexChild />
+              )}
             </HorizontalFlex>
           </FlexChild>
         )}
