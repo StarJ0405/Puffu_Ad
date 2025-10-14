@@ -1,3 +1,9 @@
+.not_txt {
+   color: #fff;
+   font-size: 25px;
+   font-weight: 500;
+}
+
 .btn {
    width: 200px;
    padding: 13px 10px;
@@ -23,4 +29,15 @@
 
 .home_btn:hover {
    background: var(--main-color2);
+}
+
+@media (max-width: 768px) {
+
+   .not_txt {
+      font-size: 20px;
+   }
+
+   .naviBtn {
+      flex-direction: column;
+   }
 }
