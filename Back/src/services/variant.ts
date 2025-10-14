@@ -31,7 +31,7 @@ export class VariantService extends BaseService<Variant, VariantRepository> {
   async update(
     where: FindOptionsWhere<Variant> | FindOptionsWhere<Variant>[],
     data: QueryDeepPartialEntity<Variant>,
-    returnEnttiy?: boolean
+    returnEntity?: boolean
   ): Promise<UpdateResult<Variant>> {
     if (data.values) {
       const values: any[] = Array.isArray(data.values)
@@ -50,10 +50,11 @@ export class VariantService extends BaseService<Variant, VariantRepository> {
         )
       );
     }
-    const result = super.update(where, data, returnEnttiy);
+    const result = super.update(where, data, returnEntity);
     if (
       ("visible" in data && !data.visible) ||
-      ("buyable" in data && !data.buyable)
+      ("buyable" in data && !data.buyable) ||
+      ("warehousing" in data && data.warehousing)
     ) {
       const variants = await this.repository.findAll({ where });
       if (variants && variants?.length > 0) {

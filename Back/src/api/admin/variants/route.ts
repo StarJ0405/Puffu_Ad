@@ -13,6 +13,7 @@ export const POST: ApiHandler = async (req, res) => {
     stack,
     visible,
     buyable,
+    warehousing,
     metadata,
     values,
     _amount = 1,
@@ -31,6 +32,7 @@ export const POST: ApiHandler = async (req, res) => {
       stack,
       visible,
       buyable,
+      warehousing,
       metadata,
       values,
     };
@@ -61,7 +63,8 @@ export const GET: ApiHandler = async (req, res) => {
   if (_type) {
     try {
       const result = await getEtc({ _type, pageSize, pageNumber, order });
-      if (result) return res.json({ content: result });
+      // if (result) return res.json({ content: result });
+      if (result) return res.json(result);
     } catch (err) {
       return res.status(404).json({ error: err, status: 404 });
     }
