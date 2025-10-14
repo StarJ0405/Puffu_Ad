@@ -39,64 +39,63 @@ export class VariantService extends BaseService<Variant, VariantRepository> {
         : [data.values];
       delete data.values;
       await Promise.all(
-        values.map(
-          async (value: OptionValue) =>
-            await this.optionValueRepository.update(
-              { id: value.id },
-              {
-                value: value.value,
-              }
-            )
+        values.map((value: OptionValue) =>
+          this.optionValueRepository.update(
+            { id: value.id },
+            { value: value.value }
+          )
         )
       );
     }
-    const result = super.update(where, data, returnEntity);
-    if (
-      ("visible" in data && !data.visible) ||
-      ("buyable" in data && !data.buyable) ||
-      ("warehousing" in data && data.warehousing)
-    ) {
-      const variants = await this.repository.findAll({ where });
-      if (variants && variants?.length > 0) {
+
+    const prevs = await this.repository.findAll({
+      where,
+      select: ["id", "product_id", "visible", "buyable", "warehousing"],
+    });
+
+    const result = await super.update(where, data, returnEntity);
+
+    const needClear = prevs.filter((pv) => {
+      const v2f =
+        "visible" in data && data.visible === false && pv.visible === true;
+      const b2f =
+        "buyable" in data && data.buyable === false && pv.buyable === true;
+      const w2f =
+        "warehousing" in data &&
+        data.warehousing === false &&
+        pv.warehousing === true;
+      return v2f || b2f || w2f;
+    });
+
+    if (needClear.length > 0) {
+      await Promise.all(
+        needClear.map((pv) =>
+          this.lineItemRepository.delete({
+            variant_id: pv.id,
+            order_id: IsNull(),
+          })
+        )
+      );
+      if ("visible" in data && data.visible === false) {
         await Promise.all(
-          variants.map(
-            async (variant) =>
-              await this.lineItemRepository.delete({
-                variant_id: variant.id,
-                order_id: IsNull(),
-              })
-          )
-        );
-        if ("visible" in data && !data.visible) {
-          await Promise.all(
-            Array.from(
-              new Set(variants.map((variant) => variant.product_id))
-            ).map(async (id) => {
+          Array.from(new Set(needClear.map((pv) => pv.product_id))).map(
+            async (id) => {
               const product = await this.productRepository.findOne({
-                where: {
-                  id,
-                  visible: true,
-                },
+                where: { id, visible: true },
                 relations: ["variants"],
               });
               if (
                 product?.variants &&
                 product.variants.filter((v) => v.visible).length === 0
               ) {
-                await this.productRepository.update(
-                  {
-                    id,
-                  },
-                  {
-                    visible: false,
-                  }
-                );
+                await this.productRepository.update({ id }, { visible: false });
               }
-            })
-          );
-        }
+            }
+          )
+        );
       }
     }
+
     return result;
   }
   async getPageable(
