@@ -127,36 +127,36 @@ export default function ({
       label: "재고수량",
       code: "stack",
     },
-    {
-      label: "입고처리",
-      Cell: ({ row }) => (
-        <input
-          type="checkbox"
-          checked={!!row.warehousing}
-          onClick={(e) => e.stopPropagation()}
-          onChange={async (e) => {
-            const warehousing = e.target.checked;
-            await adminRequester.updateVaraint(
-              row.id,
-              {
-                warehousing,
-              },
-              () => {
-                table.current.research();
-                toast({
-                  message: warehousing ? "입고예정으로 전환" : "입고 해제",
-                });
-              }
-            );
-          }}
-        />
-      ),
-      styling: {
-        common: {
-          style: { width: 110, minWidth: 110 },
-        },
-      },
-    },
+    // {
+    //   label: "입고처리",
+    //   Cell: ({ row }) => (
+    //     <input
+    //       type="checkbox"
+    //       checked={!!row.warehousing}
+    //       onClick={(e) => e.stopPropagation()}
+    //       onChange={async (e) => {
+    //         const warehousing = e.target.checked;
+    //         await adminRequester.updateVaraint(
+    //           row.id,
+    //           {
+    //             warehousing,
+    //           },
+    //           () => {
+    //             table.current.research();
+    //             toast({
+    //               message: warehousing ? "입고예정으로 전환" : "입고 해제",
+    //             });
+    //           }
+    //         );
+    //       }}
+    //     />
+    //   ),
+    //   styling: {
+    //     common: {
+    //       style: { width: 110, minWidth: 110 },
+    //     },
+    //   },
+    // },
   ];
   const { stores } = useData(
     "stores",
