@@ -156,6 +156,7 @@ interface ProductDataFrame {
   tax_rate?: number;
   visible?: boolean;
   buyable?: boolean;
+  warehousing?: boolean;
   adult?: boolean;
   tags?: string[];
   metadata?: Record<string, unknown> | null;
