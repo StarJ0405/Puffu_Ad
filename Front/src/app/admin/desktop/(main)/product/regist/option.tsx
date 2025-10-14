@@ -1,5 +1,4 @@
 "use client";
-"use client";
 import Button from "@/components/buttons/Button";
 import RadioChild from "@/components/choice/radio/RadioChild";
 import RadioGroup from "@/components/choice/radio/RadioGroup";
@@ -59,6 +58,7 @@ const SingleOption = forwardRef(({}: {}, ref) => {
         // buyable: radio[1],
         visible: true,
         buyable: true,
+        warehousing: false,
       };
       return { variants: [data] };
     },
@@ -264,6 +264,7 @@ const SimpleOptionSlot = forwardRef(
           stack,
           visible: radio[0],
           buyable: radio[1],
+          warehousing: false,
           thumbnail,
         };
         if (code) data.code = code;
@@ -665,6 +666,7 @@ const MultipleOptionSlot = forwardRef(
     const [name, setName] = useState("");
     const [radio, setRadio] = useState([true, true]);
     const [empty, setEmpty] = useState(true);
+    const [warehousing, setWarehousing] = useState(false);
     const nameRef = useRef<any>(null);
     const inputs = useRef<any[]>([]);
     const image = useRef<any>(null);
@@ -688,6 +690,7 @@ const MultipleOptionSlot = forwardRef(
           stack,
           visible: radio[0],
           buyable: radio[1],
+          warehousing,
           thumbnail,
         };
         if (code) variant.code = code;
@@ -920,6 +923,26 @@ const MultipleOptionSlot = forwardRef(
                     inputs.current[1] = el;
                   }}
                 />
+              </FlexChild>
+            </HorizontalFlex>
+          </FlexChild>
+          <FlexChild>
+            <HorizontalFlex gap={10}>
+              <FlexChild
+                width={"15%"}
+                justifyContent="center"
+                backgroundColor={"#3C4B64"}
+                padding={15}
+              >
+                <P color="#fff">입고처리</P>
+              </FlexChild>
+              <FlexChild>
+                <input
+                  type="checkbox"
+                  checked={warehousing}
+                  onChange={(e) => setWarehousing(e.target.checked)}
+                />{" "}
+                <P>입고예정</P>
               </FlexChild>
             </HorizontalFlex>
           </FlexChild>

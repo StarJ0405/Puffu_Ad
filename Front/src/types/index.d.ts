@@ -191,6 +191,7 @@ interface VariantDataFrame {
   stack: number;
   visible: boolean;
   buyable: boolean;
+  warehousing: boolean;
   metadata?: Record<string, unknown> | null;
   values?: OptionValueDataFrame[];
 }
