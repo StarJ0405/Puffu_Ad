@@ -204,9 +204,7 @@ export function ProductWrapper({
 
   return (
     <section className="root">
-      <Container
-        className={clsx("page_container", styles.detail_container)}
-      >
+      <Container className={clsx("page_container", styles.detail_container)}>
         <DetailFrame
           product={product}
           freeShipping={freeShipping}
@@ -440,16 +438,31 @@ export function OptionItem({
   selected: Variant[];
   setSelected: Dispatch<SetStateAction<Variant[]>>;
 }) {
+  useEffect(() => {
+    // 재고 부족 또는 판매 중단된 옵션 자동 초기화
+    const updated = selected.map((s) => {
+      const variant = product.variants.find((v) => v.id === s.variant_id);
+      if (!variant) return s;
+      if (!variant.buyable || variant.stack <= 0) {
+        return { ...s, quantity: 0 };
+      }
+      return s;
+    });
+    setSelected(updated);
+  }, [product.variants]);
+
   return (
     <VerticalFlex gap={20}>
       {/* 기본 상품 수량 */}
       {product.variants.map((v: VariantData) => {
         const index = selected.findIndex((f) => f.variant_id === v.id);
         const select = selected[index];
+        // 재고 부족 또는 판매 중단 표시
+        const disabled = !product.buyable || !v.buyable || v.stack <= 0;
         return (
           <HorizontalFlex className={styles.option_item} key={v.id}>
             <InputNumber
-              disabled={!product.buyable || !v.buyable || v.stack === 0}
+              disabled={disabled}
               value={select?.quantity}
               min={0}
               max={100}
@@ -461,7 +474,7 @@ export function OptionItem({
               }}
             />
             <HorizontalFlex className={styles.txt_item} gap={10} width={"auto"}>
-              {v.stack === 0 ? (
+              {v.stack <= 0 ? (
                 <FlexChild width={"max-content"}>
                   <P>(재고 부족)</P>
                 </FlexChild>
