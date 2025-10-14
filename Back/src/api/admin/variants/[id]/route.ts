@@ -13,6 +13,7 @@ export const POST: ApiHandler = async (req, res) => {
     stack,
     visible,
     buyable,
+    warehousing,
     metadata,
     values,
     return_data = false,
@@ -29,6 +30,7 @@ export const POST: ApiHandler = async (req, res) => {
       stack,
       visible,
       buyable,
+      warehousing,
       metadata,
       values,
     };
