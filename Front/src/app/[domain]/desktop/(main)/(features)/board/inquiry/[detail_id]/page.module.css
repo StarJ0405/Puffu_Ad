@@ -66,14 +66,14 @@
 .qa_btn {
    width: 100px;
    padding: 5px 5px;
-   font-size: 20px;
+   font-size: 18px;
    font-weight: 600;
    color: #e4e4e4;
-   background: var(--main-color2);
+   background: var(--main-color1);
    transition: all 0.2s;
 }
 
-.qa_btn:hover {background: #050505;}
+.qa_btn:hover {background: var(--main-color2);}
 
 
 /* 댓글창 */

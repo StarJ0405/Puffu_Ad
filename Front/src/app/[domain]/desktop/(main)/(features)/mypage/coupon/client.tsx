@@ -53,7 +53,7 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
             ))}
           </HorizontalFlex>
         ) : (
-          <NoContent type="상품" />
+          <NoContent type="쿠폰" />
         )}
       </FlexChild>
       <FlexChild>

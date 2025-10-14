@@ -28,8 +28,8 @@ export default async function ({
         <FlexChild className={boardStyle.title_box}>
           <h3 className={boardStyle.title}>공지사항</h3>
         </FlexChild>
-        <BoardTable initCondition={initCondition} initNotices={initNotices} />
         <SearchBox />
+        <BoardTable initCondition={initCondition} initNotices={initNotices} />
       </VerticalFlex>
     </>
   );

@@ -13,6 +13,7 @@ import clsx from "clsx";
 import styles from "./page.module.css";
 import { requester } from "@/shared/Requester";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
+import NoContent from "@/components/noContent/noContent";
 
 type LogRow = {
   id: string;
@@ -189,57 +190,63 @@ export function PointHistory({
         </VerticalFlex>
 
         {/* 포인트 내역(최신순으로 정렬해야함) */}
-        {grouped.map(([date, items]) => (
-          <VerticalFlex
-            className={styles.point_history}
-            alignItems="flex-start"
-            gap={20}
-          >
-            <P className={styles.date}>{date}</P>
-            {items.map((point, index) => {
-              const isUsed = point.used;
-              return (
-                <FlexChild
-                  key={index}
-                  borderBottom={
-                    index === items.length - 1 ? "none" : "1px solid #444"
-                  }
-                  paddingBottom={index === items.length - 1 ? 0 : 15}
-                  onClick={() => navigate(`/mypage/point/${point.id}`)}
-                >
-                  <HorizontalFlex>
-                    <VerticalFlex alignItems="flex-start" gap={10}>
-                      <P className={styles.title}>{point.title}</P>
-                      <P className={styles.time}>{point.time}</P>
-                    </VerticalFlex>
-                    <VerticalFlex alignItems="flex-end" gap={5}>
-                      <P className={styles.point}>
-                        <Span>{isUsed ? "+" : "-"}</Span>
-                        <Span>{point.point}</Span>
-                        <Span>P</Span>
-                      </P>
-                      <P
-                        className={clsx(styles.status, {
-                          [styles.used]: !isUsed,
-                        })}
-                      >
-                        {isUsed ? "적립" : "사용"}
-                      </P>
-                      {point.balance !== "-" && (
-                        <P className={styles.points_balance}>
-                          <Span>잔액 </Span>
-                          <Span>{point.balance}</Span>
+        {
+          grouped.length > 0 ?
+          grouped.map(([date, items]) => (
+            <VerticalFlex
+              className={styles.point_history}
+              alignItems="flex-start"
+              gap={20}
+            >
+              <P className={styles.date}>{date}</P>
+              {items.map((point, index) => {
+                const isUsed = point.used;
+                return (
+                  <FlexChild
+                    key={index}
+                    borderBottom={
+                      index === items.length - 1 ? "none" : "1px solid #444"
+                    }
+                    paddingBottom={index === items.length - 1 ? 0 : 15}
+                    onClick={() => navigate(`/mypage/point/${point.id}`)}
+                  >
+                    <HorizontalFlex>
+                      <VerticalFlex alignItems="flex-start" gap={10}>
+                        <P className={styles.title}>{point.title}</P>
+                        <P className={styles.time}>{point.time}</P>
+                      </VerticalFlex>
+                      <VerticalFlex alignItems="flex-end" gap={5}>
+                        <P className={styles.point}>
+                          <Span>{isUsed ? "+" : "-"}</Span>
+                          <Span>{point.point}</Span>
                           <Span>P</Span>
                         </P>
-                      )}
-                    </VerticalFlex>
-                  </HorizontalFlex>
-                </FlexChild>
-              );
-            })}
-            <Div className={styles.space_line} />
-          </VerticalFlex>
-        ))}
+                        <P
+                          className={clsx(styles.status, {
+                            [styles.used]: !isUsed,
+                          })}
+                        >
+                          {isUsed ? "적립" : "사용"}
+                        </P>
+                        {point.balance !== "-" && (
+                          <P className={styles.points_balance}>
+                            <Span>잔액 </Span>
+                            <Span>{point.balance}</Span>
+                            <Span>P</Span>
+                          </P>
+                        )}
+                      </VerticalFlex>
+                    </HorizontalFlex>
+                  </FlexChild>
+                );
+              })}
+              <Div className={styles.space_line} />
+            </VerticalFlex>
+          ))
+          : (
+            <NoContent type={'포인트'} />
+          )
+        }
       </VerticalFlex>
     </>
   );

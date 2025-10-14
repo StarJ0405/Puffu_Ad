@@ -93,6 +93,17 @@ export function BoardTable({
       "0"
     )}.${String(date.getMonth()).padStart(2, "0")}`;
   };
+
+  const hours24 = (createdAt: string | Date) => {
+    const created = new Date(createdAt);
+    const now = new Date();
+
+    const diff = now.getTime() - created.getTime();
+    const hours = diff / (1000 * 60 * 60);
+
+    return hours <= 24;
+  }
+
   return (
     <VerticalFlex>
       <FlexChild>
@@ -122,12 +133,15 @@ export function BoardTable({
                         >
                           {notice.title}
                         </P>
-                        {/* <Image
-
-                        src={"/resources/icons/board/new_icon.png"}
-                        width={16}
-                      /> */}
-                        {/* 12시간 내 등록된 게시물만 나타나기 */}
+                        
+                        {
+                          hours24(notice.created_at) && (
+                            <Image
+                              src={"/resources/icons/board/new_icon.png"}
+                              width={16}
+                            />
+                          )
+                        }
                         {/* <Span
                         size={13}
                         color=""
