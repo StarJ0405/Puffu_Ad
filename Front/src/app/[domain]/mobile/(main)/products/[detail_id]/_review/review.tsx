@@ -26,7 +26,8 @@ import InputNumber from "@/components/inputs/InputNumber";
 import ListPagination from "@/components/listPagination/ListPagination";
 import styles from "./review.module.css";
 import InputTextArea from "@/components/inputs/InputTextArea";
-import usePageData from "@/shared/hooks/data/usePageData";
+// import usePageData from "@/shared/hooks/data/usePageData";
+import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
 import { toast, maskEmail, maskTwoThirds } from "@/shared/utils/Functions";
 import StarRate from "@/components/star/StarRate";
 import NoContent from "@/components/noContent/noContent";
@@ -40,54 +41,44 @@ export default function Review({ product }: { product: ProductData }) {
   const count = Number(product?.reviews?.count ?? 0);
 
   const [tab, setTab] = useState<"all" | "photo">("all");
-  const PAGE_SIZE = 10;
+  const PAGE_SIZE = 5;
   const ready = !!product?.id;
 
   const key = useMemo(() => `reviews:${product.id}:${tab}`, [product.id, tab]);
 
   const {
-    [key]: reviewsPage,
-    page,
-    setPage,
-    maxPage,
-  } = usePageData(
+    [key]: reviewsFlat, // 평탄화된 리뷰 배열
+    page, // 현재 마지막 페이지 index
+    maxPage, // 마지막 페이지 index(0-base)
+    Load, // 다음 페이지 로드
+    isLoading,
+  } = useInfiniteData(
     key,
-    (pageNumber) => ({
+    (index) => ({
       pageSize: PAGE_SIZE,
-      pageNumber, // 0-based
+      pageNumber: index, // 0-based
       relations: "item,item.brand,item.variant.product,user",
       order: { created_at: "DESC" },
     }),
     (cond) => requester.getProductReviews(product.id, cond),
-    (data: Pageable) => data?.totalPages || 0,
+    // 전체 페이지 수 계산
+    (res: Pageable) => Number(res?.totalPages ?? 0),
     {
-      onReprocessing: (res: any) => {
-        const reviews = Array.isArray(res) ? res : res?.content ?? [];
-        const total =
-          (!Array.isArray(res) &&
-            (res?.totalElements ?? res?.total ?? res?.meta?.total)) ??
-          reviews.length;
-        return { reviews, total };
-      },
-      fallbackData: { reviews: [], total: 0, totalPages: 0 },
-      revalidateOnMount: true,
       pause: !ready,
+      revalidateOnMount: true,
+      onReprocessing: (res: Pageable) => res?.content ?? [], // 각 페이지를 배열로 변환
+      fallbackData: [], // 초기 빈 배열
     }
   );
 
-  const listAll = reviewsPage?.reviews ?? [];
   const list =
     tab === "photo"
-      ? listAll.filter(
+      ? (reviewsFlat ?? []).filter(
           (r: any) => Array.isArray(r?.images) && r.images.length > 0
         )
-      : listAll;
+      : reviewsFlat ?? [];
 
-  const totalPages = Math.max(1, (maxPage ?? 0) + 1);
-
-  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
-  const toggleExpand = (id: string) =>
-    setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
+  const hasMore = page < (maxPage ?? 0);
 
   const formatDateDots = (iso?: string) => {
     if (!iso) return "-";
@@ -150,137 +141,133 @@ export default function Review({ product }: { product: ProductData }) {
       <VerticalFlex className={styles.review_board}>
         {/* 리스트 */}
         <VerticalFlex className={styles.review_list} gap={35}>
-          
-          {
-            list?.length > 0 ? (
-              list.map((r: any) => (
-                <VerticalFlex key={r.id} gap={25} className={styles.item}>
-                  <VerticalFlex gap={15}>
-                    <HorizontalFlex className={styles.item_header} gap={15}>
-                      <FlexChild>
-                        <StarRate
-                          width={110}
-                          starWidth={20}
-                          starHeight={20}
-                          score={r.star_rate}
-                          readOnly
-                        />
-                      </FlexChild>
-  
-                      <FlexChild gap={10}>
-                        <FlexChild justifyContent="center">
-                          <P color="#d7d7d7" size={18}>
-                            {maskTwoThirds(r.user.name)}
-                          </P>{" "}
-                          {/* 닉네임 뒷글자 *** 표시 */}
-                        </FlexChild>
-  
-                        <FlexChild justifyContent="center">
-                          <P color="#797979" size={13}>
-                            {formatDateDots(r?.created_at)}
-                          </P>
-                        </FlexChild>
-                      </FlexChild>
-                    </HorizontalFlex>
+          {list?.length > 0 ? (
+            list.map((r: any) => (
+              <VerticalFlex key={r.id} gap={25} className={styles.item}>
+                <VerticalFlex gap={15}>
+                  <HorizontalFlex className={styles.item_header} gap={15}>
+                    <FlexChild>
+                      <StarRate
+                        width={110}
+                        starWidth={20}
+                        starHeight={20}
+                        score={r.star_rate}
+                        readOnly
+                      />
+                    </FlexChild>
 
-                    <FlexChild hidden>
-                      {/* 리뷰 추천 표시 */}
-                      <P size={12} color="#797979">{3}명에게 도움이 되었어요.</P>
+                    <FlexChild gap={10}>
+                      <FlexChild justifyContent="center">
+                        <P color="#d7d7d7" size={18}>
+                          {maskTwoThirds(r.user.name)}
+                        </P>{" "}
+                        {/* 닉네임 뒷글자 *** 표시 */}
+                      </FlexChild>
+
+                      <FlexChild justifyContent="center">
+                        <P color="#797979" size={13}>
+                          {formatDateDots(r?.created_at)}
+                        </P>
+                      </FlexChild>
+                    </FlexChild>
+                  </HorizontalFlex>
+
+                  <FlexChild hidden>
+                    {/* 리뷰 추천 표시 */}
+                    <P size={12} color="#797979">
+                      {3}명에게 도움이 되었어요.
+                    </P>
+                  </FlexChild>
+                </VerticalFlex>
+
+                <VerticalFlex gap={25}>
+                  <VerticalFlex className={styles.feedback} alignItems="start">
+                    <FlexChild className={styles.feed_item}>
+                      <FlexChild className={styles.feed_title}>
+                        <P>외형/디자인</P>
+                      </FlexChild>
+
+                      <FlexChild className={styles.feed_content}>
+                        <P>{toDisplayDesign(r?.metadata?.aspects?.design)}</P>
+                      </FlexChild>
+                    </FlexChild>
+
+                    <FlexChild className={styles.feed_item}>
+                      <FlexChild className={styles.feed_title}>
+                        <P>마감/내구성</P>
+                      </FlexChild>
+
+                      <FlexChild className={styles.feed_content}>
+                        <P>{toDisplayFinish(r?.metadata?.aspects?.finish)}</P>
+                      </FlexChild>
+                    </FlexChild>
+
+                    <FlexChild className={styles.feed_item}>
+                      <FlexChild className={styles.feed_title}>
+                        <P>유지관리</P>
+                      </FlexChild>
+
+                      <FlexChild className={styles.feed_content}>
+                        <P>
+                          {toDisplayMaintenance(
+                            r?.metadata?.aspects?.maintenance
+                          )}
+                        </P>
+                      </FlexChild>
                     </FlexChild>
                   </VerticalFlex>
 
-                  <VerticalFlex gap={25}>
-                    <VerticalFlex className={styles.feedback} alignItems="start">
-                      <FlexChild className={styles.feed_item}>
-                        <FlexChild className={styles.feed_title}>
-                          <P>외형/디자인</P>
-                        </FlexChild>
+                  <VerticalFlex className={styles.content}>
+                    <P size={14} color="#fff" lineHeight={1.4}>
+                      {r.content}
+                    </P>
 
-                        <FlexChild className={styles.feed_content}>
-                          <P>{toDisplayDesign(r?.metadata?.aspects?.design)}</P>
-                        </FlexChild>
-                      </FlexChild>
-
-                      <FlexChild className={styles.feed_item}>
-                        <FlexChild className={styles.feed_title}>
-                          <P>마감/내구성</P>
-                        </FlexChild>
-
-                        <FlexChild className={styles.feed_content}>
-                          <P>{toDisplayFinish(r?.metadata?.aspects?.finish)}</P>
-                        </FlexChild>
-                      </FlexChild>
-
-                      <FlexChild className={styles.feed_item}>
-                        <FlexChild className={styles.feed_title}>
-                          <P>유지관리</P>
-                        </FlexChild>
-
-                        <FlexChild className={styles.feed_content}>
-                          <P>{toDisplayMaintenance(r?.metadata?.aspects?.maintenance)}</P>
-                        </FlexChild>
-                      </FlexChild>
-                    </VerticalFlex>
-
-                    <VerticalFlex className={styles.content}>
-                      <P size={14} color="#fff" lineHeight={1.4}>
-                        {r.content}
-                      </P>
-
-                      {
-                        r.images.length > 0 && (
-                        <FlexChild
-                          width={100}
-                          height={100}
-                          overflow="hidden"
-                          className={styles.img_box}
-                          cursor="pointer"
-                          onClick={()=> 
-                            NiceModal.show('ImgViewSliderModal', {
-                              images: r.images,
-                            })
-                          }
-                          backgroundImage={`url(${r.images[0]})`}
-                        >
-                          {/* <Image
+                    {r.images.length > 0 && (
+                      <FlexChild
+                        width={100}
+                        height={100}
+                        overflow="hidden"
+                        className={styles.img_box}
+                        cursor="pointer"
+                        onClick={() =>
+                          NiceModal.show("ImgViewSliderModal", {
+                            images: r.images,
+                          })
+                        }
+                        backgroundImage={`url(${r.images[0]})`}
+                      >
+                        {/* <Image
                             src={r.images[0]}
                             width={"100%"}
                             height={"auto"}
                           /> */}
-                          <Div className={styles.img_length}>
-                            {r.images.length}
-                          </Div>
-                        </FlexChild>
-                      )
-                      }
-                    </VerticalFlex>
+                        <Div className={styles.img_length}>
+                          {r.images.length}
+                        </Div>
+                      </FlexChild>
+                    )}
                   </VerticalFlex>
-
-                  <RecommendButton reviewId={r.id} />
                 </VerticalFlex>
-              ))
-            ) : (
-              <NoContent type={'리뷰'} />
-            )
-          }
+
+                <RecommendButton reviewId={r.id} />
+              </VerticalFlex>
+            ))
+          ) : (
+            <NoContent type={"리뷰"} />
+          )}
         </VerticalFlex>
 
-        {
-          // 리뷰 갯수 5개 이하면 버튼 안 나오기
-          list?.length >= 5 && (
-            <FlexChild>
-              <Button 
-                className={styles.review_more_btn}
-              
-                // onClick={
-                //   ()=> 
-                // }
-              >
-                리뷰 더보기
-              </Button>
-            </FlexChild>
-          )
-        }
+        {hasMore && (
+          <FlexChild>
+            <Button
+              className={styles.review_more_btn}
+              disabled={isLoading}
+              onClick={() => Load()}
+            >
+              리뷰 더보기
+            </Button>
+          </FlexChild>
+        )}
 
         {/* <ListPagination
           page={page}
