@@ -112,7 +112,7 @@ export function DetailFrame() {
     return <NoContent type="문의" />;
   }
 
-  console.log(qaData);
+  
 
   return (
     <VerticalFlex className={styles.detail_container}>

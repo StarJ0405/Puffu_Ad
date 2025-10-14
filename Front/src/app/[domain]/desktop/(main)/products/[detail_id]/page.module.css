@@ -122,12 +122,17 @@
    justify-content: space-between;
 }
 
-.option_box .txt_item .op_name {
+.option_item .txt_item .op_name {
    max-width: 200px;
    text-align: left !important;
 }
 
-.total_box {width: 100%;}
+.option_item .txt_item .op_name.disabled {
+   text-decoration: line-through;
+   color: #797979;
+}
+
+.total_box {width: 100%; margin-bottom: 25px;}
 
 .total_box .price {
    color: #fff;
@@ -232,6 +237,7 @@
 .mini_infoBox {
    width: 100%;
    max-width: 410px;
+   min-width: 290px;
    background: var(--infoBox-bg);
    border: 1px solid var(--infoBox-border);
    padding: 25px 15px;
@@ -240,9 +246,7 @@
    top: 130px;
 }
 
-.mini_infoBox .option_item {
-   gap: 20px; align-items: start !important;
-}
+.mini_infoBox .option_item {gap: 20px;}
 
 .mini_infoBox .option_item .txt_item {
    flex-direction: column;
@@ -251,6 +255,7 @@
    max-width: 185px;
    text-align: right;
    line-height: 1.2;
+   flex: unset;
 }
 
 .mini_infoBox .total_box {

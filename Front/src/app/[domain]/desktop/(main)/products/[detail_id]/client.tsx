@@ -460,38 +460,49 @@ export function OptionItem({
         // 재고 부족 또는 판매 중단 표시
         const disabled = !product.buyable || !v.buyable || v.stack <= 0;
         return (
-          <HorizontalFlex className={styles.option_item} key={v.id}>
-            <InputNumber
-              disabled={disabled}
-              value={select?.quantity}
-              min={0}
-              max={100}
-              step={1}
-              onChange={(val) => {
-                select.quantity = val;
-                selected[index] = select;
-                setSelected([...selected]);
-              }}
-            />
+          <HorizontalFlex className={styles.option_item} key={v.id} alignItems={!disabled ? "start" : 'center'}>
+            {
+              !disabled &&(
+                <InputNumber
+                  disabled={disabled}
+                  value={select?.quantity}
+                  min={0}
+                  max={100}
+                  step={1}
+                  onChange={(val) => {
+                    select.quantity = val;
+                    selected[index] = select;
+                    setSelected([...selected]);
+                  }}
+                />
+              )
+            }
+            {v.stack <= 0 ? (
+              <FlexChild width={"max-content"} minWidth={142} padding={'10px 0'}>
+                <P>(재고 부족)</P>
+              </FlexChild>
+            ) : !v.buyable ? (
+              <FlexChild width={"max-content"} minWidth={142} padding={'10px 0'}>
+                <P>(판매 중단)</P>
+              </FlexChild>
+            ) : (
+              <></>
+            )}
             <HorizontalFlex className={styles.txt_item} gap={10} width={"auto"}>
-              {v.stack <= 0 ? (
-                <FlexChild width={"max-content"}>
-                  <P>(재고 부족)</P>
-                </FlexChild>
-              ) : !v.buyable ? (
-                <FlexChild width={"max-content"}>
-                  <P>(판매 중단)</P>
-                </FlexChild>
-              ) : (
-                <></>
-              )}
-              <FlexChild className={styles.op_name}>
+              <FlexChild className={clsx(styles.op_name, {[styles.disabled]: disabled})}>
                 <P>{v?.title}</P>
               </FlexChild>
+              
 
               <FlexChild width={"auto"} gap={5}>
-                <Span>{select.quantity}개</Span>
-                <Span>+ {select.quantity * product?.discount_price}원</Span>
+                {
+                !disabled && (
+                    <>
+                      <Span>{select.quantity}개</Span>
+                      <Span>+ {select.quantity * product?.discount_price}원</Span>
+                    </>
+                  )
+                }
               </FlexChild>
             </HorizontalFlex>
           </HorizontalFlex>
