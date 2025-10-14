@@ -125,7 +125,8 @@ export function DetailFrame() {
         </HorizontalFlex>
         <HorizontalFlex className={styles.title_box}>
           <FlexChild className={styles.name}>
-            <P>{userData?.name || "비회원"}</P>
+            {/* <P>{userData?.name || "비회원"}</P> */}
+            <P>{qaData.user?.name || "비회원"}</P>
           </FlexChild>
         </HorizontalFlex>
       </VerticalFlex>
@@ -385,7 +386,7 @@ export function BoardTable() {
             ))}
           </tbody>
         </table>
-        {boardData.length > 0 ? null : <NoContent type={"상품"} />}
+        {boardData.length > 0 ? null : <NoContent type={"문의"} />}
       </FlexChild>
       <FlexChild className={boardStyle.list_bottom_box}>
         {/* <ListPagination /> */}

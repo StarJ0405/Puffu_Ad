@@ -112,6 +112,8 @@ export function DetailFrame() {
     return <NoContent type="문의" />;
   }
 
+  console.log(qaData);
+
   return (
     <VerticalFlex className={styles.detail_container}>
       <VerticalFlex className={styles.board_header}>
@@ -125,7 +127,8 @@ export function DetailFrame() {
         </HorizontalFlex>
         <HorizontalFlex className={styles.title_box}>
           <FlexChild className={styles.name}>
-            <P>{userData?.name || "비회원"}</P>
+            {/* <P>{userData?.name || "비회원"}</P> */}
+            <P>{qaData.user?.name || "비회원"}</P>
           </FlexChild>
         </HorizontalFlex>
       </VerticalFlex>
@@ -216,7 +219,7 @@ export function DetailFrame() {
   );
 }
 
-// 아래는 무시하세요
+// 아래는 무시하세요 (나중에 상세에서도 리스트 보여달라 할때 용도)
 export function BoardTable() {
   // 조회수는 세자리마다 , 처리.
   // date는 어차피 뽑으면 년월일시분초 다 나뉠테니 그때 조정하면 됨.
@@ -385,7 +388,7 @@ export function BoardTable() {
             ))}
           </tbody>
         </table>
-        {boardData.length > 0 ? null : <NoContent type={"상품"} />}
+        {boardData.length > 0 ? null : <NoContent type={"문의"} />}
       </FlexChild>
       <FlexChild className={boardStyle.list_bottom_box}>
         <ListPagination page={1} maxPage={1} onChange={() => {}} />

@@ -9,12 +9,14 @@ import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import { requester } from "@/shared/Requester";
 import clsx from "clsx";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import usePageData from "@/shared/hooks/data/usePageData";
 import boardStyle from "../boardGrobal.module.css";
 import { toast } from "@/shared/utils/Functions";
 import { useRouter } from "next/navigation";
 import { SelectBox } from "../client";
 import NoContent from "@/components/noContent/noContent";
+import ListPagination from "@/components/listPagination/ListPagination";
 interface QADataWithUser extends QAData {
   user?: UserData;
 }
@@ -37,6 +39,39 @@ export function BoardTable() {
   const { userData } = useAuth();
   const router = useRouter();
 
+  const PAGE_SIZE = 10;
+  const key = useMemo(() => "qa:list", []);
+
+  const {
+    [key]: pageData,
+    page: page0,
+    setPage: setPage0,
+    maxPage: maxPage0,
+  } = usePageData(
+    key,
+    (pageNumber) => ({
+      pageSize: PAGE_SIZE,
+      pageNumber, // 0-based
+      relations: "user",
+      order: { created_at: "DESC" },
+    }),
+    (cond) => requester.getTotalQAs(cond),
+    (d: Pageable) => Math.max(0, Number(d?.totalPages ?? 0) + 1 ),
+    {
+      onReprocessing: (d: any) => {
+        const content: QADataWithUser[] = Array.isArray(d) ? d : d?.content ?? [];
+        const total = Number(
+          (!Array.isArray(d) && d?.NumberOfTotalElements) ??
+            (!Array.isArray(d) && d?.totalElements) ??
+            content.length
+        );
+        return { content, total };
+      },
+      fallbackData: { content: [], total: 0, totalPages: 0 },
+      revalidateOnMount: true,
+    }
+  );
+
   useEffect(() => {
     const fetchQAs = async () => {
       const res = await requester.getTotalQAs({
@@ -48,6 +83,10 @@ export function BoardTable() {
     };
     fetchQAs();
   }, []);
+
+  const page = page0;
+  const maxPage = Math.max(1, (maxPage0 ?? 0));
+  const setPage = (n: number) => setPage0(n);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -181,7 +220,7 @@ export function BoardTable() {
         )}
       </FlexChild>
       <FlexChild className={boardStyle.list_bottom_box}>
-        {/* <ListPagination /> */}
+        {/* <ListPagination page={page} maxPage={maxPage} onChange={setPage} /> */}
       </FlexChild>
     </VerticalFlex>
   );

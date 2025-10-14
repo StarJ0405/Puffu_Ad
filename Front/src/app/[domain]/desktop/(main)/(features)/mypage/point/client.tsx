@@ -12,6 +12,7 @@ import clsx from "clsx";
 import styles from "./page.module.css";
 import { requester } from "@/shared/Requester";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
+import NoContent from "@/components/noContent/noContent";
 
 type LogRow = {
   id: string;
@@ -190,60 +191,66 @@ export function PointHistory({
 
       {/* 포인트 내역 */}
       <VerticalFlex className={styles.history_wrapper} gap={25}>
-        {grouped.map(([date, items]) => (
-          <VerticalFlex
-            key={date}
-            className={styles.point_history}
-            alignItems="flex-start"
-            gap={20}
-          >
-            <FlexChild className={styles.history_title}>
-              <P className={styles.date}>{date}</P>
-            </FlexChild>
+        {
+          grouped.length > 0 ?
+          grouped.map(([date, items]) => (
+            <VerticalFlex
+              key={date}
+              className={styles.point_history}
+              alignItems="flex-start"
+              gap={20}
+            >
+              <FlexChild className={styles.history_title}>
+                <P className={styles.date}>{date}</P>
+              </FlexChild>
 
-            {items.map((point, index) => {
-              const isUsed = point.used;
-              return (
-                <FlexChild
-                  key={point.id ?? index}
-                  borderBottom={
-                    index === items.length - 1 ? "none" : "1px solid #444"
-                  }
-                  paddingBottom={index === items.length - 1 ? 0 : 15}
-                  onClick={() => navigate(`/mypage/point/${point.id}`)}
-                >
-                  <HorizontalFlex>
-                    <VerticalFlex alignItems="flex-start" gap={20}>
-                      <P className={styles.title}>{point.title}</P>
-                      <P className={styles.time}>{point.time}</P>
-                    </VerticalFlex>
-                    <VerticalFlex alignItems="flex-end" gap={10}>
-                      <P className={styles.point}>
-                        <Span>{isUsed ? "+" : "-"}</Span>
-                        <Span>{point.point}</Span>
-                        <Span>P</Span>
-                      </P>
-                      <P
-                        className={clsx(styles.status, {
-                          [styles.used]: !isUsed,
-                        })}
-                      >
-                        {isUsed ? "적립" : "사용"}
-                      </P>
-                      {point.balance !== "-" && (
-                        <P className={styles.points_balance}>
-                          <Span>잔액 </Span>
-                          <Span>{point.balance}</Span>
+              {items.map((point, index) => {
+                const isUsed = point.used;
+                return (
+                  <FlexChild
+                    key={point.id ?? index}
+                    borderBottom={
+                      index === items.length - 1 ? "none" : "1px solid #444"
+                    }
+                    paddingBottom={index === items.length - 1 ? 0 : 15}
+                    onClick={() => navigate(`/mypage/point/${point.id}`)}
+                  >
+                    <HorizontalFlex>
+                      <VerticalFlex alignItems="flex-start" gap={20}>
+                        <P className={styles.title}>{point.title}</P>
+                        <P className={styles.time}>{point.time}</P>
+                      </VerticalFlex>
+                      <VerticalFlex alignItems="flex-end" gap={10}>
+                        <P className={styles.point}>
+                          <Span>{isUsed ? "+" : "-"}</Span>
+                          <Span>{point.point}</Span>
                           <Span>P</Span>
                         </P>
-                      )}
-                    </VerticalFlex>
-                  </HorizontalFlex>
-                </FlexChild>
-              );
-            })}
-          </VerticalFlex>
-        ))}
+                        <P
+                          className={clsx(styles.status, {
+                            [styles.used]: !isUsed,
+                          })}
+                        >
+                          {isUsed ? "적립" : "사용"}
+                        </P>
+                        {point.balance !== "-" && (
+                          <P className={styles.points_balance}>
+                            <Span>잔액 </Span>
+                            <Span>{point.balance}</Span>
+                            <Span>P</Span>
+                          </P>
+                        )}
+                      </VerticalFlex>
+                    </HorizontalFlex>
+                  </FlexChild>
+                );
+              })}
+            </VerticalFlex>
+          )) 
+          : (
+            <NoContent type={'포인트'} />
+          )
+        }
       </VerticalFlex>
     </VerticalFlex>
   );

@@ -1,0 +1,9 @@
+.banner_wrapper {
+   display: grid;
+   grid-template-columns: repeat(var(--count), 1fr);
+   gap: 20px;
+}
+
+.banner_wrapper .item {
+   width: 100%; height: auto;
+}

@@ -47,7 +47,7 @@
 .edit_button_group button.delete_btn:active {
    border-color: var(--main-color2);
 }
-.edit_button_group button:active {background: var(--main-color2);}
+.edit_button_group button:active {filter: var(--mob-active-filter);}
 
 .list_btn {
    width: 100%;
@@ -58,7 +58,7 @@
    background: #050505;
    transition: all 0.2s;
 }
-.list_btn:active {background: var(--main-color2);}
+.list_btn:active {filter: var(--mob-active-filter);}
 .qa_btn {
    width: 70px;
    padding: 5px 5px;
@@ -68,7 +68,7 @@
    background: var(--main-color2);
    transition: all 0.2s;
 }
-.qa_btn:active {background: #050505;}
+.qa_btn:active {filter: var(--mob-active-filter);}
 /* 댓글창 */
 
 .answer_container {
@@ -96,9 +96,10 @@
 
 .answer_write {
   background-color: #2c2c2c;
-  padding: 20px;
+  padding: 10px;
   border-radius: 5px;
   color: #fff;
   white-space: pre-wrap;
   line-height: 1.6;
+  min-height: 150px;
 }

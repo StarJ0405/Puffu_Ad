@@ -98,17 +98,28 @@ export function BoardTable({
       "0"
     )}.${String(date.getMonth()).padStart(2, "0")}`;
   };
+
+  const hours24 = (createdAt: string | Date) => {
+    const created = new Date(createdAt);
+    const now = new Date();
+
+    const diff = now.getTime() - created.getTime();
+    const hours = diff / (1000 * 60 * 60);
+
+    return hours <= 24;
+  }
+
   return (
     <VerticalFlex>
       <FlexChild>
         <table className={boardStyle.list_table}>
             {/* 게시판 셀 너비 조정 */}
             <colgroup>
-              <col style={{ width: "10%", maxWidth: "130px" }} />
-              <col style={{ width: "55%" }} />
-              <col style={{ width: "10%", maxWidth: "130px" }} />
+              <col style={{ width: "10%",}} />
+              <col style={{ width: "60%" }} />
+              <col style={{ width: "15%",}} />
               {/* <col style={{ width: "15%" }} /> */}
-              <col style={{ width: "10%", maxWidth: "130px" }} />
+              <col style={{ width: "15%",}} />
             </colgroup>
 
             {/* 게시판리스트 헤더 */}
@@ -150,11 +161,14 @@ export function BoardTable({
                         >
                           {notice.title}
                         </P>
-                        <Image
-                          src={"/resources/icons/board/new_icon.png"}
-                          width={16}
-                        />
-                        {/* 12시간 내 등록된 게시물만 나타나기 */}
+                        {
+                          hours24(notice.created_at) && (
+                            <Image
+                              src={"/resources/icons/board/new_icon.png"}
+                              width={16}
+                            />
+                          )
+                        }
                         {/* <Span
                         size={13}
                         color=""
