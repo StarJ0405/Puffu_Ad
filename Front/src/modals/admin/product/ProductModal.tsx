@@ -150,8 +150,6 @@ const ProductModal = NiceModal.create(
         toast({ message: error });
       }
     }, [error]);
-    console.log(product)
-    console.log(product.product.code)
     return (
       <ModalBase
         borderRadius={10}
