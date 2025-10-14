@@ -139,7 +139,7 @@ export default function ({
             await adminRequester.updateVaraint(
               row.id,
               {
-                warehousing /* 필요시: , buyable: warehousing ? false : row.buyable */,
+                warehousing,
               },
               () => {
                 table.current.research();
