@@ -539,6 +539,26 @@ export function BuyButtonGroup({
   onPurchaseClick: () => Promise<any>;
   onWishClick: () => void;
 }) {
+  const variants: VariantData[] = Array.isArray(product?.variants)
+    ? product.variants
+    : [];
+
+  const anyPurchasable = variants.some(
+    (v) => (v?.stack ?? 0) > 0 && !!v?.buyable && !v?.warehousing
+  );
+
+  const disabledReason = product?.warehousing
+    ? "입고예정"
+    : !product?.buyable
+    ? "판매중단"
+    : !anyPurchasable
+    ? variants.some((v) => v?.warehousing)
+      ? "입고예정"
+      : "재고부족"
+    : null;
+
+  const disabled = !!disabledReason;
+
   return (
     <HorizontalFlex className={styles.buyButton_box}>
       <FlexChild width={"auto"}>
@@ -559,9 +579,9 @@ export function BuyButtonGroup({
         <Button
           className={styles.cart_btn}
           onClick={onCartClick}
-          disabled={!product.buyable || product.warehousing}
+          disabled={disabled}
         >
-          <P>{product.buyable ? `장바구니` : "판매 중단"}</P>
+          <P>{disabledReason ?? "장바구니"}</P>
         </Button>
       </FlexChild>
 
@@ -569,9 +589,9 @@ export function BuyButtonGroup({
         <Button
           className={styles.buy_btn}
           onClick={onPurchaseClick}
-          disabled={!product.buyable || product.warehousing}
+          disabled={disabled}
         >
-          <P>{product.buyable ? `바로 구매` : "판매 중단"}</P>
+          <P>{disabledReason ?? "바로 구매"}</P>
         </Button>
       </FlexChild>
     </HorizontalFlex>
