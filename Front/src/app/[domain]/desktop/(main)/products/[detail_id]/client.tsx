@@ -439,17 +439,22 @@ export function OptionItem({
   setSelected: Dispatch<SetStateAction<Variant[]>>;
 }) {
   useEffect(() => {
-    // 재고 부족 또는 판매 중단된 옵션 자동 초기화
     const updated = selected.map((s) => {
-      const variant = product.variants.find((v) => v.id === s.variant_id);
-      if (!variant) return s;
-      if (!variant.buyable || variant.stack <= 0) {
+      const v = product.variants.find((vv) => vv.id === s.variant_id);
+      if (!v) return s;
+      if (
+        !product.buyable ||
+        product.warehousing ||
+        !v.buyable ||
+        v.warehousing ||
+        v.stack <= 0
+      ) {
         return { ...s, quantity: 0 };
       }
       return s;
     });
     setSelected(updated);
-  }, [product.variants]);
+  }, [product.variants, product.buyable, product.warehousing]);
 
   return (
     <VerticalFlex gap={20}>
@@ -457,52 +462,62 @@ export function OptionItem({
       {product.variants.map((v: VariantData) => {
         const index = selected.findIndex((f) => f.variant_id === v.id);
         const select = selected[index];
-        // 재고 부족 또는 판매 중단 표시
-        const disabled = !product.buyable || !v.buyable || v.stack <= 0;
+        // 재고 부족, 판매 중단, 입고 예정 표시
+        const disabled =
+          !product.buyable ||
+          product.warehousing ||
+          !v.buyable ||
+          v.warehousing ||
+          v.stack <= 0;
         return (
-          <HorizontalFlex className={styles.option_item} key={v.id} alignItems={!disabled ? "start" : 'center'}>
-            {
-              !disabled &&(
-                <InputNumber
-                  disabled={disabled}
-                  value={select?.quantity}
-                  min={0}
-                  max={100}
-                  step={1}
-                  onChange={(val) => {
-                    select.quantity = val;
-                    selected[index] = select;
-                    setSelected([...selected]);
-                  }}
-                />
-              )
-            }
-            {v.stack <= 0 ? (
-              <FlexChild width={"max-content"} minWidth={142} padding={'10px 0'}>
+          <HorizontalFlex
+            className={styles.option_item}
+            key={v.id}
+            alignItems={!disabled ? "start" : "center"}
+          >
+            {!disabled && (
+              <InputNumber
+                disabled={disabled}
+                value={select?.quantity}
+                min={0}
+                max={100}
+                step={1}
+                onChange={(val) => {
+                  select.quantity = val;
+                  selected[index] = select;
+                  setSelected([...selected]);
+                }}
+              />
+            )}
+            {v.warehousing || product.warehousing ? (
+              <FlexChild width="max-content" minWidth={142} padding="10px 0">
+                <P>(입고 예정)</P>
+              </FlexChild>
+            ) : v.stack <= 0 ? (
+              <FlexChild width="max-content" minWidth={142} padding="10px 0">
                 <P>(재고 부족)</P>
               </FlexChild>
             ) : !v.buyable ? (
-              <FlexChild width={"max-content"} minWidth={142} padding={'10px 0'}>
+              <FlexChild width="max-content" minWidth={142} padding="10px 0">
                 <P>(판매 중단)</P>
               </FlexChild>
-            ) : (
-              <></>
-            )}
+            ) : null}
             <HorizontalFlex className={styles.txt_item} gap={10} width={"auto"}>
-              <FlexChild className={clsx(styles.op_name, {[styles.disabled]: disabled})}>
+              <FlexChild
+                className={clsx(styles.op_name, {
+                  [styles.disabled]: disabled,
+                })}
+              >
                 <P>{v?.title}</P>
               </FlexChild>
-              
 
               <FlexChild width={"auto"} gap={5}>
-                {
-                !disabled && (
-                    <>
-                      <Span>{select.quantity}개</Span>
-                      <Span>+ {select.quantity * product?.discount_price}원</Span>
-                    </>
-                  )
-                }
+                {!disabled && (
+                  <>
+                    <Span>{select.quantity}개</Span>
+                    <Span>+ {select.quantity * product?.discount_price}원</Span>
+                  </>
+                )}
               </FlexChild>
             </HorizontalFlex>
           </HorizontalFlex>
@@ -544,7 +559,7 @@ export function BuyButtonGroup({
         <Button
           className={styles.cart_btn}
           onClick={onCartClick}
-          disabled={!product.buyable}
+          disabled={!product.buyable || product.warehousing}
         >
           <P>{product.buyable ? `장바구니` : "판매 중단"}</P>
         </Button>
@@ -554,7 +569,7 @@ export function BuyButtonGroup({
         <Button
           className={styles.buy_btn}
           onClick={onPurchaseClick}
-          disabled={!product.buyable}
+          disabled={!product.buyable || product.warehousing}
         >
           <P>{product.buyable ? `바로 구매` : "판매 중단"}</P>
         </Button>
