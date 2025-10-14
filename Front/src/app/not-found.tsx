@@ -14,7 +14,7 @@ export default async function () {
   return (
     <VerticalFlex width={'100%'} height={'100dvh'} display="flex" justifyContent="center" gap={30}>
       <FlexChild justifyContent="center">
-        <P color="#fff" size={25} weight={500}>페이지를 찾을 수 없습니다.</P>
+        <P className={styles.not_txt}>페이지를 찾을 수 없습니다.</P>
       </FlexChild>
 
       <NaviBtn />

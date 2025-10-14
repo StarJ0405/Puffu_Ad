@@ -10,7 +10,7 @@ export function NaviBtn() {
    const navigate = useNavigate();
 
    return (
-      <FlexChild width={'auto'} gap={10}>
+      <FlexChild width={'auto'} gap={10} className={styles.naviBtn}>
          <FlexChild className={clsx(styles.Back_btn, styles.btn)} onClick={() => navigate(-1)}>
             <P>이전 페이지</P>
          </FlexChild>
