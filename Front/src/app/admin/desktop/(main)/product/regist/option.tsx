@@ -926,7 +926,7 @@ const MultipleOptionSlot = forwardRef(
               </FlexChild>
             </HorizontalFlex>
           </FlexChild>
-          <FlexChild>
+          <FlexChild hidden> {/* 입고처리 부분 */}
             <HorizontalFlex gap={10}>
               <FlexChild
                 width={"15%"}
