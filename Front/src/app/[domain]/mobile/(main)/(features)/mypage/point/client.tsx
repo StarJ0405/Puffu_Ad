@@ -192,11 +192,12 @@ export function PointHistory({
         {/* 포인트 내역(최신순으로 정렬해야함) */}
         {
           grouped.length > 0 ?
-          grouped.map(([date, items]) => (
+          grouped.map(([date, items], i) => (
             <VerticalFlex
               className={styles.point_history}
               alignItems="flex-start"
               gap={20}
+              key={i}
             >
               <P className={styles.date}>{date}</P>
               {items.map((point, index) => {

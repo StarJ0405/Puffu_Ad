@@ -261,7 +261,7 @@ input[type='search']:focus-visible {
   transition: all 0.1s;
 }
 
-.post_btn:active {
+.post_btn:hover {
   background: var(--main-color2) !important;
 }
 
@@ -304,7 +304,7 @@ input[type='search']:focus-visible {
   }
 
   .post_btn:active {
-    background: #b84474 !important;
+    filter: var(--mob-active-filter);
   }
 
 }

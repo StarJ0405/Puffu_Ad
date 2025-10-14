@@ -103,6 +103,12 @@ export function BoardTable() {
     router.push(`/board/inquiry/${item.id}`);
   };
 
+  const nameFilter = (name:string | undefined) => {
+    if(!name) return "";
+    if(name.length === 1) return "*";
+    return name.slice(0, -1) + "*";
+  }
+
   return (
     <VerticalFlex>
       <FlexChild>
@@ -153,7 +159,7 @@ export function BoardTable() {
                     </td>
                     <td>
                       <P lineClamp={2} overflow="hidden" display="--webkit-box" weight={500}>
-                        {row.user?.name || "비회원"}
+                        {nameFilter(row.user?.name) || "비회원"}
                       </P>
                     </td>
                     <td>

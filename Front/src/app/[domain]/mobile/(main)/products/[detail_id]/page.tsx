@@ -42,7 +42,8 @@ export default async function ({ params }: { params: Promise<Params> }) {
   });
 
   return (
-    <div style={{ overflow: "hidden" }}>
+    <div>
+      {/* style={{ overflow: "hidden" }} */}
       <AnimationWapper>
         <SubPageHeader />
         <ProductWrapper initCondition={initCondition} initProduct={initProduct}>

@@ -631,7 +631,7 @@ export function OptionItem({
               <HorizontalFlex
                 className={clsx(
                   styles.txt_item,
-                  variantDisabled && styles.disable
+                  {[styles.disable] : variantDisabled}
                 )}
                 gap={10}
                 width={"auto"}
@@ -662,43 +662,45 @@ export function OptionItem({
               ) : null}
             </VerticalFlex>
 
-            {product.buyable && v.buyable && (v.stack ?? 0) > 0 && (
-              <HorizontalFlex
-                gap={20}
-                fontSize={10}
-                className={styles.input_box}
-              >
-                <FlexChild
-                  width={"auto"}
-                  gap={5}
-                  className={styles.quantity_txt}
+            {
+              !variantDisabled && (
+                <HorizontalFlex
+                  gap={20}
+                  fontSize={10}
+                  className={styles.input_box}
                 >
-                  <Span>{qty}개</Span>
-                  <Span>+ {addPrice.toLocaleString("ko-KR")}원</Span>
-                </FlexChild>
+                  <FlexChild
+                    width={"auto"}
+                    gap={5}
+                    className={styles.quantity_txt}
+                  >
+                    <Span>{qty}개</Span>
+                    <Span>+ {addPrice.toLocaleString("ko-KR")}원</Span>
+                  </FlexChild>
 
-                <InputNumber
-                  disabled={variantDisabled}
-                  value={qty}
-                  min={0}
-                  max={Number(v.stack)}
-                  step={1}
-                  onChange={(val) => {
-                    const stack = Number(v.stack ?? 0);
-                    const next = Math.max(0, Math.min(Number(val ?? 0), stack));
+                  <InputNumber
+                    disabled={variantDisabled}
+                    value={qty}
+                    min={0}
+                    max={Number(v.stack)}
+                    step={1}
+                    onChange={(val) => {
+                      const stack = Number(v.stack ?? 0);
+                      const next = Math.max(0, Math.min(Number(val ?? 0), stack));
 
-                    const copy = [...selected];
-                    const cur = copy[index] || {
-                      variant_id: v.id,
-                      quantity: 0,
-                    };
-                    copy[index] = { ...cur, quantity: next };
-                    setSelected(copy);
-                  }}
-                  width={40}
-                />
-              </HorizontalFlex>
-            )}
+                      const copy = [...selected];
+                      const cur = copy[index] || {
+                        variant_id: v.id,
+                        quantity: 0,
+                      };
+                      copy[index] = { ...cur, quantity: next };
+                      setSelected(copy);
+                    }}
+                    width={40}
+                  />
+                </HorizontalFlex>
+              )
+            }
           </VerticalFlex>
         );
       })}

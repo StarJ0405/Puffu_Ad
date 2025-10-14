@@ -125,6 +125,12 @@ export function BoardTable() {
     router.push(`/board/inquiry/${item.id}`);
   };
 
+  const nameFilter = (name:string | undefined) => {
+    if(!name) return "";
+    if(name.length === 1) return "*";
+    return name.slice(0, -1) + "*";
+  }
+
   return (
     <VerticalFlex>
       <FlexChild marginBottom={30} justifyContent="center">
@@ -189,7 +195,7 @@ export function BoardTable() {
                     </FlexChild>
 
                     <FlexChild className={boardStyle.sub_data}>
-                      <FlexChild>{list.user?.name || "비회원"}</FlexChild>
+                      <FlexChild>{nameFilter(list.user?.name) || "비회원"}</FlexChild>
                       <FlexChild>
                         <Span weight={400}>
                           {formatDate(list.created_at as string)}

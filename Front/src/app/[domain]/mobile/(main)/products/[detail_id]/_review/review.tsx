@@ -267,7 +267,7 @@ export default function Review({ product }: { product: ProductData }) {
 
         {
           // 리뷰 갯수 5개 이하면 버튼 안 나오기
-          1 < 2 && (
+          list?.length >= 5 && (
             <FlexChild>
               <Button 
                 className={styles.review_more_btn}
@@ -282,7 +282,11 @@ export default function Review({ product }: { product: ProductData }) {
           )
         }
 
-        {/* <ListPagination /> */}
+        {/* <ListPagination
+          page={page}
+          maxPage={totalPages}
+          onChange={handlePageChange}
+        /> */}
       </VerticalFlex>
     </VerticalFlex>
   );
