@@ -32,7 +32,7 @@ const ProductModal = NiceModal.create(
     onSuccess?: () => void;
   }) => {
     const [categoryIds, setCategoryIds] = useState(
-      product.categories.map((cat: CategoryData) => cat.id)
+      (product.categories ?? []).map((cat: CategoryData) => cat.id)
     );
     const { selectedCategories } = useData(
       "selectedCategories",
@@ -150,6 +150,8 @@ const ProductModal = NiceModal.create(
         toast({ message: error });
       }
     }, [error]);
+    console.log(product)
+    console.log(product.product.code)
     return (
       <ModalBase
         borderRadius={10}
@@ -184,7 +186,7 @@ const ProductModal = NiceModal.create(
             ) : (
               <Image
                 className={styles.image}
-                src={product?.thumbnail || "/resources/images/no-img.png"}
+                src={product?.product?.thumbnail || "/resources/images/no-img.png"}
                 size={200}
               />
             )}
@@ -195,7 +197,7 @@ const ProductModal = NiceModal.create(
                 <P>스토어</P>
               </FlexChild>
               <FlexChild className={styles.content}>
-                <P>{product?.store?.name}</P>
+                <P>{product?.product?.store?.name}</P>
               </FlexChild>
             </HorizontalFlex>
           </FlexChild>
@@ -205,7 +207,7 @@ const ProductModal = NiceModal.create(
                 <P>입점사</P>
               </FlexChild>
               <FlexChild className={styles.content}>
-                <P>{product?.brand?.name}</P>
+                <P>{product?.product?.brand?.name}</P>
               </FlexChild>
             </HorizontalFlex>
           </FlexChild>
@@ -271,7 +273,7 @@ const ProductModal = NiceModal.create(
                     }}
                   />
                 ) : (
-                  <P>{product.title}</P>
+                  <P>{product.product.title}</P>
                 )}
               </FlexChild>
             </HorizontalFlex>
@@ -284,14 +286,14 @@ const ProductModal = NiceModal.create(
               <FlexChild className={styles.content}>
                 {edit ? (
                   <Input
-                    value={product.code}
+                    value={product?.product?.code}
                     width={"100%"}
                     ref={(el) => {
                       inputs.current[4] = el;
                     }}
                   />
                 ) : (
-                  <P>{product.code}</P>
+                  <P>{product?.product?.code}</P>
                 )}
               </FlexChild>
             </HorizontalFlex>
@@ -516,12 +518,12 @@ const ProductModal = NiceModal.create(
               <FlexChild className={styles.content}>
                 {edit ? (
                   <Editor
-                    defaultValue={product.detail}
+                    defaultValue={product?.product?.detail}
                     onChange={(detail) => setDetail(detail)}
                     path="/product"
                   />
                 ) : (
-                  <Div dangerouslySetInnerHTML={{ __html: product.detail }} />
+                  <Div dangerouslySetInnerHTML={{ __html: product?.product?.detail }} />
                 )}
               </FlexChild>
             </HorizontalFlex>
