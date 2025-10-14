@@ -162,3 +162,15 @@
 .select div {
   color: #111 !important;
 }
+
+.cancel {
+  background-color: #fff;
+  color: #111;
+  border: 1px solid #d0d0d0;
+  padding: 6px 12px;
+}
+.add {
+  background-color: #111;
+  color: #fff;
+  padding: 6px 12px;
+}
