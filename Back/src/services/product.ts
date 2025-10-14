@@ -465,11 +465,12 @@ export class ProductService extends BaseService<Product, ProductRepository> {
   async update(
     where: FindOptionsWhere<Product> | FindOptionsWhere<Product>[],
     data: QueryDeepPartialEntity<Product>,
-    returnEnttiy?: boolean
+    returnEntity?: boolean
   ): Promise<UpdateResult<Product>> {
     if (
       ("visible" in data && !data.visible) ||
-      ("buyable" in data && !data.buyable)
+      ("buyable" in data && !data.buyable) ||
+      ("warehousing" in data && data.warehousing)
     ) {
       const products = await this.repository.findAll({
         where,
@@ -508,7 +509,7 @@ export class ProductService extends BaseService<Product, ProductRepository> {
         })
       );
     }
-    return super.update(where, data, returnEnttiy);
+    return super.update(where, data, returnEntity);
   }
   async delete(
     where: FindOptionsWhere<Product> | FindOptionsWhere<Product>[],

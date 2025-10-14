@@ -65,6 +65,9 @@ export class Variant extends BaseEntity {
   @Column({ type: "boolean", default: true })
   buyable?: boolean;
 
+  @Column({ type: "boolean", default: false })
+  warehousing?: boolean;
+
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;
 

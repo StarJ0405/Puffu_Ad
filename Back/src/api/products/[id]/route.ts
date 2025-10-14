@@ -36,10 +36,22 @@ export const GET: ApiHandler = async (req, res) => {
     }
   }
 
+  // if (select) {
+  //   if (Array.isArray(select)) {
+  //     if (!select.includes("visible")) select.push("visible");
+  //   } else if (select !== "visible") select = [select, "visible"];
+  // }
   if (select) {
-    if (Array.isArray(select)) {
-      if (!select.includes("visible")) select.push("visible");
-    } else if (select !== "visible") select = [select, "visible"];
+    const arr = Array.isArray(select) ? select : [select];
+    const need = [
+      "visible",
+      "buyable",
+      "warehousing",
+      "variants.visible",
+      "variants.buyable",
+      "variants.warehousing",
+    ];
+    select = Array.from(new Set([...arr, ...need]));
   }
 
   const content: any = await service.get({
