@@ -96,6 +96,9 @@ export class Product extends BaseEntity {
   @Column({ type: "boolean", default: true })
   buyable?: boolean;
 
+  @Column({ type: "boolean", default: false })
+  warehousing?: boolean;
+
   @Column({ type: "character varying", array: true, default: [] })
   tags?: string[];
 

@@ -26,6 +26,7 @@ export class ProductRepository extends BaseRepository<Product> {
       product.tax_rate = data.tax_rate;
       product.visible = data.visible;
       product.buyable = data.buyable;
+      product.warehousing = data.warehousing;
       product.tags = data.tags;
       product.adult = data.adult;
       product.metadata = data.metadata;
@@ -48,6 +49,7 @@ export class ProductRepository extends BaseRepository<Product> {
         _variant.stack = variant.stack;
         _variant.visible = variant.visible;
         _variant.buyable = variant.buyable;
+        _variant.warehousing = variant.warehousing;
         _variant.metadata = variant.metadata;
         const values = variant.values?.map((value) => {
           const _value = new OptionValue();
