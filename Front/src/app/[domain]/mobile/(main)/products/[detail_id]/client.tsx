@@ -210,7 +210,7 @@ export function ProductWrapper({
   const { isMobile } = useBrowserEvent();
 
   return (
-    <section className={clsx('detail_root')}>
+    <section className={clsx("detail_root")}>
       <Container className={clsx(styles.detail_container)}>
         <DetailFrame
           product={product}
@@ -481,7 +481,7 @@ export function BottomPayBox({
 }) {
   return (
     <div className={clsx(styles.bottom_pay_wrap)}>
-      <FlexChild className={clsx('mob_page_container', styles.bottom_pay_box)}>
+      <FlexChild className={clsx("mob_page_container", styles.bottom_pay_box)}>
         <HorizontalFlex className={styles.buyButton_box}>
           <FlexChild width={"auto"}>
             <Button className={styles.heart_btn} onClick={onWishClick}>
@@ -495,7 +495,7 @@ export function BottomPayBox({
               />
             </Button>
           </FlexChild>
-  
+
           <FlexChild className={styles.buy_box}>
             <Button
               disabled={
@@ -579,12 +579,48 @@ export function OptionItem({
   selected: Variant[];
   setSelected: Dispatch<SetStateAction<Variant[]>>;
 }) {
+  useEffect(() => {
+    const updated = selected.map((s) => {
+      const v = product?.variants?.find(
+        (x: VariantData) => x.id === s.variant_id
+      );
+      if (!v) return s;
+
+      // 비가용(전체 또는 변종) 또는 재고 0 이하면 0으로 강제
+      if (!product?.buyable || !v.buyable || (v.stack ?? 0) <= 0) {
+        return { ...s, quantity: 0 };
+      }
+
+      // 초과 선택 보정
+      const stack = Number(v.stack ?? 0);
+      if (s.quantity > stack) return { ...s, quantity: stack };
+
+      // 음수 보정
+      if (s.quantity < 0) return { ...s, quantity: 0 };
+
+      return s;
+    });
+    setSelected(updated);
+    // product.buyable 또는 variants 변경 시 재검사
+  }, [product?.buyable, product?.variants]);
+
   return (
-    <VerticalFlex gap={20} padding={'0 5px'}>
+    <VerticalFlex gap={20} padding={"0 5px"}>
       {/* 기본 상품 수량 */}
       {product.variants.map((v: VariantData) => {
         const index = selected.findIndex((f) => f.variant_id === v.id);
         const select = selected[index];
+
+        const variantDisabled =
+          !product.buyable || !v.buyable || (v.stack ?? 0) <= 0;
+
+        // 표시용 금액은 변종 단가 기준
+        const unitPrice = Number(
+          v?.discount_price ?? product?.discount_price ?? 0
+        );
+        const qty = Number(select.quantity ?? 0);
+        const addPrice = qty * unitPrice;
+
         return (
           <VerticalFlex
             className={styles.option_item}
@@ -595,7 +631,7 @@ export function OptionItem({
               <HorizontalFlex
                 className={clsx(
                   styles.txt_item,
-                  (v.stack === 0 || !v.buyable) && styles.disable
+                  variantDisabled && styles.disable
                 )}
                 gap={10}
                 width={"auto"}
@@ -604,7 +640,8 @@ export function OptionItem({
                   <P>{v?.title}</P>
                 </FlexChild>
               </HorizontalFlex>
-              {v.stack === 0 ? (
+
+              {(v.stack ?? 0) <= 0 ? (
                 <FlexChild width={"max-content"}>
                   <P size={14} color="#fff">
                     (재고 부족)
@@ -616,35 +653,52 @@ export function OptionItem({
                     (판매 중단)
                   </P>
                 </FlexChild>
-              ) : (
-                <></>
-              )}
+              ) : !product.buyable ? (
+                <FlexChild width={"max-content"}>
+                  <P size={14} color="#fff">
+                    (상품 판매 중단)
+                  </P>
+                </FlexChild>
+              ) : null}
             </VerticalFlex>
 
-            {
-              (v.stack > 0 && v.buyable) && ( // 재고부족, 판매중단이면 hidden 처리
-                <HorizontalFlex gap={20} fontSize={10} className={styles.input_box}>
-                  <FlexChild width={"auto"} gap={5} className={styles.quantity_txt}>
-                    <Span>{select.quantity}개</Span>
-                    <Span>+ {(select.quantity * (product?.discount_price ?? 0)).toLocaleString('ko-KR')}원</Span>
-                  </FlexChild>
+            {product.buyable && v.buyable && (v.stack ?? 0) > 0 && (
+              <HorizontalFlex
+                gap={20}
+                fontSize={10}
+                className={styles.input_box}
+              >
+                <FlexChild
+                  width={"auto"}
+                  gap={5}
+                  className={styles.quantity_txt}
+                >
+                  <Span>{qty}개</Span>
+                  <Span>+ {addPrice.toLocaleString("ko-KR")}원</Span>
+                </FlexChild>
 
-                  <InputNumber
-                    disabled={!product.buyable || !v.buyable || v.stack === 0}
-                    value={select?.quantity}
-                    min={0}
-                    max={v.stack}
-                    step={1}
-                    onChange={(val) => {
-                      select.quantity = val;
-                      selected[index] = select;
-                      setSelected([...selected]);
-                    }}
-                    width={40}
-                  />
-                </HorizontalFlex>
-              )
-            }
+                <InputNumber
+                  disabled={variantDisabled}
+                  value={qty}
+                  min={0}
+                  max={Number(v.stack)}
+                  step={1}
+                  onChange={(val) => {
+                    const stack = Number(v.stack ?? 0);
+                    const next = Math.max(0, Math.min(Number(val ?? 0), stack));
+
+                    const copy = [...selected];
+                    const cur = copy[index] || {
+                      variant_id: v.id,
+                      quantity: 0,
+                    };
+                    copy[index] = { ...cur, quantity: next };
+                    setSelected(copy);
+                  }}
+                  width={40}
+                />
+              </HorizontalFlex>
+            )}
           </VerticalFlex>
         );
       })}
