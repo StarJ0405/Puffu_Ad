@@ -34,6 +34,7 @@ export default function ({
         common: {
           style: {
             width: 120,
+            minWidth: 120,
           },
         },
       },
@@ -65,6 +66,7 @@ export default function ({
         common: {
           style: {
             width: 60,
+            minWidth: 60,
           },
         },
       },
@@ -311,7 +313,7 @@ export default function ({
           onMaxPage={(data) => {
             return Number(data?.totalPages);
           }}
-          onReprocessing={(data) => data.content}
+          onReprocessing={(data) => data?.content || []}
           onChange={({ origin }) => setTotal(origin.NumberOfTotalElements)}
           ContextMenu={ContextMenu}
         />
