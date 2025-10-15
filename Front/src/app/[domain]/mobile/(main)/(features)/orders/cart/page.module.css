@@ -82,15 +82,29 @@
   margin-bottom: 12px;
 }
 
-.unit .unit_content > .unit_price p {
+.unit .unit_content .unit_price {
+  width: auto;
+  flex: unset;
+  gap: 3px;
+  margin-top: 10px;
   font-size: 18px !important;
   font-weight: 600 !important;
   line-height: 1;
-  color: var(--main-color1) !important;
+  color: #fff !important;
 }
 
-.unit .unit_content > .unit_price p span {
+.unit .unit_content > .unit_price p {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  line-height: 1;
   color: #fff;
+}
+
+.unit .unit_content .unit_price .normal_price {
+  font-weight: 400 !important;
+  color: #797979 !important;
+  text-decoration: line-through;
+  font-size: 13px !important;
 }
 
 /* 상품 옵션 */
@@ -115,7 +129,7 @@
 }
 
 .product_list .cart_item .totalPrice > p {
-  font-size: 18px !important;
+  font-size: 20px !important;
   font-weight: 700 !important;
   line-height: 1;
   color: var(--main-color1) !important;
@@ -124,6 +138,22 @@
 .product_list .cart_item .totalPrice > p > span {
   color: #fff;
 }
+
+/* 상품 쿠폰 버튼 */
+.cart_item .coupon_btn {
+  padding: 10px 10px;
+  width: 100%;
+  background: transparent;
+  border: 1px solid #fff;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.cart_item .coupon_btn:active {
+  filter: var(--mob-active-filter);
+}
+
+
 
 /* 담은 상품 내용 end ----------------------------------------- */
 
@@ -157,6 +187,40 @@
   background: none !important;
   cursor: pointer;
 }
+
+
+
+/* 쿠폰 적용 */
+.coupon_info {
+
+}
+
+.coupon_select {
+  width: 100%;
+  max-width: 400px;
+  min-width: 250px;
+  gap: 20px;
+  cursor: pointer;
+  background: none;
+  padding: 0;
+}
+
+.coupon_choice {
+  width: 100%;
+  border: 1px solid #fff;
+  padding: 10px 15px;
+  border-radius: 3px;
+  gap: 20px;
+}
+
+.coupon_choice .coupon_title {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+/* 비활성화 */
+/* .coupon_select.disabled {cursor: not-allowed;}
+.coupon_select.disabled .coupon_choice {filter: opacity(0.5);} */
 
 
 
@@ -290,10 +354,10 @@
 
 .payment_btn {
   background: #050505;
-  color: var(--main-color1);
+  color: #fff;
   border-radius: 3px;
   width: 90%;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   padding: 12px 5px;
   transition: all 0.2s;
@@ -305,9 +369,8 @@
   z-index: 1000;
 }
 
-.payment_btn:hover {
-  background: #050505;
-  color: var(--main-color1);
+.payment_btn:active {
+  filter: var(--mob-active-filter);
 }
 
 .payment_btn:disabled {
@@ -317,7 +380,7 @@
 
 .point_box {
   align-items: start !important;
-  padding: 10px 15px;
+  padding: 15px 15px 20px;
   border-radius: 10px;
   /* background: var(--main-color1); */
   gap: 20px;
@@ -326,7 +389,9 @@
 
 .point_box .info_item > span {color: #fff;}
 
-.point_box .info_item .my_point {font-size: 15px;}
+.point_box .info_item.point_txt {align-self: end;}
+
+.point_box .info_item .my_point {font-size: 18px;}
 
 .point_box .point_input_box {justify-content: end !important;}
 
