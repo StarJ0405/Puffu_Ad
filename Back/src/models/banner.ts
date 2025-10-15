@@ -43,7 +43,7 @@ export class Banner extends BaseEntity {
   @Column({ type: "boolean", default: true })
   visible?: boolean;
 
-  @Column({ type: "integer", nullable: false })
+  @Column({ type: "integer", nullable: false, default: 0 })
   importance!: number;
 
   @Column({ type: "jsonb", default: {} })
