@@ -57,6 +57,7 @@ const StoreModal = NiceModal.create(
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string>("");
     const [domain, setDomain] = useState<string>(store.subdomain || "");
+    const couponRef = useRef<any[]>([]);
     const handleSave = async () => {
       setIsLoading(true);
       try {
@@ -117,6 +118,9 @@ const StoreModal = NiceModal.create(
                   css,
                 };
               }),
+              order: couponRef.current[0].getValue() || 0,
+              shipping: couponRef.current[1].getValue() || 0,
+              product: couponRef.current[2].getValue() || 0,
             };
             adminRequester.updateStore(
               store.id,
@@ -163,7 +167,12 @@ const StoreModal = NiceModal.create(
         title={title}
         buttonText={buttonText}
       >
-        <VerticalFlex padding={"10px 20px"}>
+        <VerticalFlex
+          padding={"10px 20px"}
+          maxHeight={"80vh"}
+          overflow="auto"
+          overflowY="auto"
+        >
           <FlexChild>
             {edit ? (
               <HorizontalFlex justifyContent="center" gap={10}>
@@ -326,6 +335,101 @@ const StoreModal = NiceModal.create(
             </HorizontalFlex>
           </FlexChild>
           <FlexChild>
+            <HorizontalFlex>
+              <FlexChild className={styles.head}>
+                <P>쿠폰설정</P>
+              </FlexChild>
+              <FlexChild className={styles.content}>
+                <VerticalFlex gap={10}>
+                  <FlexChild>
+                    <HorizontalFlex gap={10}>
+                      <FlexChild width={100}>
+                        <P fontWeight={700}>주문서 쿠폰</P>
+                      </FlexChild>
+                      <FlexChild>
+                        {edit ? (
+                          <FlexChild gap={10}>
+                            <P>주문서당 </P>
+                            <InputNumber
+                              ref={(el) => {
+                                couponRef.current[0] = el;
+                              }}
+                              value={Number(store?.metadata?.order || 0)}
+                              hideArrow
+                            />
+                            <P>개 적용(0개시 비활성화)</P>
+                          </FlexChild>
+                        ) : (
+                          <P>
+                            {store?.metadata?.order
+                              ? `주문서 ${store.metadata.order}개 적용 가능`
+                              : "적용 불가"}
+                          </P>
+                        )}
+                      </FlexChild>
+                    </HorizontalFlex>
+                  </FlexChild>
+                  <FlexChild>
+                    <HorizontalFlex gap={10}>
+                      <FlexChild width={100}>
+                        <P fontWeight={700}>배송비 쿠폰</P>
+                      </FlexChild>
+                      <FlexChild>
+                        {edit ? (
+                          <FlexChild gap={10}>
+                            <P>주문서당 </P>
+                            <InputNumber
+                              ref={(el) => {
+                                couponRef.current[1] = el;
+                              }}
+                              value={Number(store?.metadata?.shipping || 0)}
+                              hideArrow
+                            />
+                            <P>개 적용(0개시 비활성화)</P>
+                          </FlexChild>
+                        ) : (
+                          <P>
+                            {store?.metadata?.shipping
+                              ? `주문서당 ${store.metadata.shipping}개 적용 가능`
+                              : "적용 불가"}
+                          </P>
+                        )}
+                      </FlexChild>
+                    </HorizontalFlex>
+                  </FlexChild>
+                  <FlexChild>
+                    <HorizontalFlex gap={10}>
+                      <FlexChild width={100}>
+                        <P fontWeight={700}>상품 쿠폰</P>
+                      </FlexChild>
+                      <FlexChild>
+                        {edit ? (
+                          <FlexChild gap={10}>
+                            <P>상품당 </P>
+                            <InputNumber
+                              ref={(el) => {
+                                couponRef.current[2] = el;
+                              }}
+                              value={Number(store?.metadata?.product || 0)}
+                              hideArrow
+                            />
+                            <P>개 적용(0개시 비활성화)</P>
+                          </FlexChild>
+                        ) : (
+                          <P>
+                            {store?.metadata?.product
+                              ? `상품당 ${store.metadata.product}개 적용 가능`
+                              : "적용 불가"}
+                          </P>
+                        )}
+                      </FlexChild>
+                    </HorizontalFlex>
+                  </FlexChild>
+                </VerticalFlex>
+              </FlexChild>
+            </HorizontalFlex>
+          </FlexChild>
+          <FlexChild hidden>
             <HorizontalFlex>
               <FlexChild className={styles.head}>
                 <P>성인설정</P>
