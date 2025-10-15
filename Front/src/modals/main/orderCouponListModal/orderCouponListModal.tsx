@@ -1,32 +1,24 @@
 "use client";
 import Button from "@/components/buttons/Button";
+import CheckboxChild from "@/components/choice/checkbox/CheckboxChild";
+import CheckboxGroup from "@/components/choice/checkbox/CheckboxGroup";
+import Div from "@/components/div/Div";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import Div from "@/components/div/Div";
 import Image from "@/components/Image/Image";
+import NoContent from "@/components/noContent/noContent";
 import P from "@/components/P/P";
-import Span from "@/components/span/Span";
-import StarRate from "@/components/star/StarRate";
 import ModalBase from "@/modals/ModalBase";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
-import { toast, maskTwoThirds } from "@/shared/utils/Functions";
-import NiceModal, { useModal } from "@ebay/nice-modal-react";
-import clsx from "clsx";
-import { useRef, useEffect, useState } from "react";
-import { Swiper as SwiperType } from "swiper";
-import { Autoplay, Navigation, Pagination } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
-import styles from "./orderCouponListModal.module.css";
-import RecommendButton from "@/components/buttons/RecommendButton";
 import usePageData from "@/shared/hooks/data/usePageData";
 import { requester } from "@/shared/Requester";
-import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
-import NoContent from "@/components/noContent/noContent";
-import CheckboxGroup from "@/components/choice/checkbox/CheckboxGroup";
-import CheckboxAll from "@/components/choice/checkbox/CheckboxAll";
-import CheckboxChild from "@/components/choice/checkbox/CheckboxChild";
-
+import NiceModal, { useModal } from "@ebay/nice-modal-react";
+import clsx from "clsx";
+import { useState } from "react";
+import styles from "./orderCouponListModal.module.css";
+import { toast } from "@/shared/utils/Functions";
 
 const OrderCouponListModal = NiceModal.create(
   ({
@@ -44,7 +36,6 @@ const OrderCouponListModal = NiceModal.create(
     // initCoupons: Pageable;
     copType: String;
   }) => {
-    
     const modal = useModal();
     const { isMobile } = useBrowserEvent();
 
@@ -65,38 +56,45 @@ const OrderCouponListModal = NiceModal.create(
 
     const couponsTest = [
       {
-        id: '0',
-        name: '멤버쉽 브론즈 4000원 할인 쿠폰',
-        ends_at: '2025-11-20',
+        id: "0",
+        name: "멤버쉽 브론즈 4000원 할인 쿠폰",
+        ends_at: "2025-11-20",
       },
       {
-        id: '1',
-        name: '생일 할인 쿠폰',
-        ends_at: '2025-12-30',
+        id: "1",
+        name: "생일 할인 쿠폰",
+        ends_at: "2025-12-30",
       },
       {
-        id: '2',
-        name: '생일 할인 쿠폰',
-        ends_at: '2025-12-30',
+        id: "2",
+        name: "생일 할인 쿠폰",
+        ends_at: "2025-12-30",
       },
       {
-        id: '3',
-        name: '생일 할인 쿠폰',
-        ends_at: '2025-12-30',
+        id: "3",
+        name: "생일 할인 쿠폰",
+        ends_at: "2025-12-30",
       },
       {
-        id: '4',
-        name: '생일 할인 쿠폰',
-        ends_at: '2025-12-30',
+        id: "4",
+        name: "생일 할인 쿠폰",
+        ends_at: "2025-12-30",
       },
       {
-        id: '5',
-        name: '생일 할인 쿠폰',
-        ends_at: '2025-12-30',
-      }
-    ]
+        id: "5",
+        name: "생일 할인 쿠폰",
+        ends_at: "2025-12-30",
+      },
+    ];
 
     const [selected, setSelected] = useState<string[]>([]);
+
+    const couponSumbit = () => {
+      if (selected.length === 0) {
+        toast({ message: "적용할 쿠폰을 1개 이상 선택해 주세요." });
+        return false;
+      }
+    };
 
     return (
       <ModalBase
@@ -108,7 +106,7 @@ const OrderCouponListModal = NiceModal.create(
         }}
         borderRadius={!isMobile ? 10 : 0}
         closeBtnWhite
-        width={'100%'}
+        width={"100%"}
         maxWidth={!isMobile ? 470 : "auto"}
         height={!isMobile ? height : "100dvh"}
         maxHeight={800}
@@ -127,7 +125,7 @@ const OrderCouponListModal = NiceModal.create(
             <P>일부 쿠폰 중복 적용 가능</P>
           </FlexChild>
 
-          <CheckboxGroup 
+          <CheckboxGroup
             name="coupons"
             initialValues={selected}
             onChange={setSelected}
@@ -147,7 +145,7 @@ const OrderCouponListModal = NiceModal.create(
           </CheckboxGroup>
 
           <FlexChild className={styles.button_box}>
-            <Button className={styles.submit_btn}>
+            <Button className={styles.submit_btn} onClick={couponSumbit}>
               쿠폰 적용
             </Button>
           </FlexChild>
@@ -161,9 +159,15 @@ type CouponData = {
   id: string;
   name: string;
   ends_at: string;
-}
+};
 
-function CouponCard({ coupon, selected }: { coupon: CouponData, selected: string[], }) {
+function CouponCard({
+  coupon,
+  selected,
+}: {
+  coupon: CouponData;
+  selected: string[];
+}) {
   // const isExpired =
   //   new Date(coupon.ends_at || 0).getTime() < new Date().getTime();
   // const isUsed = coupon.used;
@@ -202,17 +206,18 @@ function CouponCard({ coupon, selected }: { coupon: CouponData, selected: string
                 // [styles.used]: isUsed,
               })}
             >
-              사용기간 {new Date(coupon?.ends_at || 0).toLocaleDateString()} 까지
+              사용기간 {new Date(coupon?.ends_at || 0).toLocaleDateString()}{" "}
+              까지
             </P>
           </VerticalFlex>
-  
+
           <FlexChild className={styles.cutout_wrap}>
             <Div className={styles.cutout_left} />
             <Div className={styles.cutout_right} />
             <Div className={styles.dashed_line} />
             <Div className={styles.spacer} />
           </FlexChild>
-  
+
           <FlexChild className={styles.icon_wrap} width={"fit-content"}>
             <Image
               src="/resources/icons/mypage/coupon_pink_icon.png"
@@ -225,6 +230,5 @@ function CouponCard({ coupon, selected }: { coupon: CouponData, selected: string
     </FlexChild>
   );
 }
-
 
 export default OrderCouponListModal;

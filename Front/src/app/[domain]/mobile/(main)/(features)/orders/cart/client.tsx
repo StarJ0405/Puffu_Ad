@@ -142,6 +142,15 @@ export function CartWrap() {
   useEffect(() => {
     reload();
   }, []);
+
+  // 쿠폰 모달
+  const openCouponModal = (copType:string) => {
+    NiceModal.show("orderCouponListModal", { copType });
+
+    // copType, 모달 여는 경로가 상품, 주문, 배송 쿠폰인지 구분한 값
+  };
+
+
   return (
     <VerticalFlex className={styles.cart_wrap}>
       <VerticalFlex className={styles.cart_data}>
@@ -168,7 +177,7 @@ export function CartWrap() {
                   )
                 )
                 ?.map((item: LineItemData) => (
-                  <Item item={item} key={item.id} />
+                  <Item item={item} key={item.id} openCouponModal={openCouponModal} />
                 ))
               //   ) : (
               //    <NoContent type={'장바구니'} />
@@ -193,6 +202,79 @@ export function CartWrap() {
               </HorizontalFlex>
             </VerticalFlex>
         </FlexChild> */}
+
+        <FlexChild className={clsx(styles.point_info, styles.itemBox)}>
+          <VerticalFlex className={clsx(styles.point_box)}>
+            <article>
+              <P className={styles.list_title}>포인트 사용</P>
+            </article>
+            
+            <HorizontalFlex className={clsx(styles.info_item, styles.point_txt)} width={'auto'}>
+              <FlexChild width={"auto"} gap={10}>
+                <Span color="#797979" fontSize={13}>
+                  내 포인트
+                </Span>
+                <FlexChild width={"auto"} gap={3} className={styles.my_point}>
+                  <FlexChild width={"auto"} gap={2}>
+                    <Span>{(userData?.point || 0) - point}</Span>
+                    <Span>P</Span>
+                  </FlexChild>
+                  <Span>/</Span>
+                  <FlexChild width={"auto"} color="#797979" gap={2}>
+                    <Span>{userData?.point || 0}</Span>
+                    <Span> P</Span>
+                  </FlexChild>
+                </FlexChild>
+              </FlexChild>
+            </HorizontalFlex>
+
+            <HorizontalFlex className={clsx(styles.info_item, styles.point_input_box)}>
+              <InputNumber
+                width={"100%"}
+                hideArrow
+                value={point}
+                onChange={(value) => setPoint(value as number)}
+                max={Math.min(
+                  userData?.point || 0,
+                  totalDiscounted + (shipping?.amount || 0)
+                )}
+                min={0}
+              />
+              <Button className={styles.cancel_btn} onClick={() => setPoint(0)}>사용 취소</Button>
+            </HorizontalFlex>
+          </VerticalFlex>
+        </FlexChild>
+
+        <FlexChild className={clsx(styles.coupon_info, styles.itemBox)}>
+          <VerticalFlex alignItems="start">
+            <article>
+              <P className={styles.list_title}>장바구니 쿠폰</P>
+              <P className={styles.list_txt}>
+                상품 외 주문서 전체 적용 쿠폰입니다.
+              </P>
+            </article>
+
+            <VerticalFlex className={styles.info_list}>
+              <VerticalFlex className={clsx(styles.info_item, styles.info_select_box)}>
+                <Span>주문 할인</Span>
+
+                <CouponSelect
+                  openCouponModal={openCouponModal}
+                  type={"order"}
+                />
+              </VerticalFlex>
+
+              <VerticalFlex className={clsx(styles.info_item, styles.info_select_box)}>
+                <Span>배송 할인</Span>
+
+                <CouponSelect
+                  openCouponModal={openCouponModal}
+                  type={"delivery"}
+                />
+              </VerticalFlex>
+            </VerticalFlex>
+          </VerticalFlex>
+        </FlexChild>
 
         <FlexChild className={clsx(styles.delivery_info, styles.itemBox)}>
           <VerticalFlex alignItems="start">
@@ -351,8 +433,27 @@ export function CartWrap() {
               <HorizontalFlex className={styles.info_item}>
                 <Span>배송비</Span>
 
-                <P>
-                  <Span> {(shipping?.amount || 0).toLocaleString()}</Span>
+                <FlexChild width={'auto'} gap={10}>
+                  {/* 배송비 할인 쿠폰 적용되면 나타나기 */}
+                  {/* <P fontSize={12}>
+                    (배송비 할인 적용)
+                  </P> */}
+
+                  <P>
+                    <Span> {(shipping?.amount || 0).toLocaleString()}</Span>
+                    <Span> ₩</Span>
+                  </P>
+                </FlexChild>
+              </HorizontalFlex>
+
+              {/* 포인트 자리 */}
+
+              <HorizontalFlex className={styles.info_item}>
+                <Span>할인가</Span>
+
+                <P color="#fff">
+                  <Span>- </Span>
+                  <Span>{point}</Span>
                   <Span> ₩</Span>
                 </P>
               </HorizontalFlex>
@@ -363,40 +464,6 @@ export function CartWrap() {
                 <P color={"var(--main-color1)"}>
                   <Span>{(shipping?.amount || 0) + totalDiscounted}</Span>
                   <Span color="#fff"> ₩</Span>
-                </P>
-              </HorizontalFlex>
-            </VerticalFlex>
-
-            <VerticalFlex className={clsx(styles.info_list, styles.point_box)}>
-              <HorizontalFlex className={styles.info_item}>
-                <Span>보유 포인트</Span>
-
-                <P className={styles.my_point}>
-                  <Span>{userData?.point || 0}</Span>
-                  <Span> P</Span>
-                </P>
-              </HorizontalFlex>
-
-              <HorizontalFlex className={clsx(styles.info_item, styles.point_input_box)}>
-                <InputNumber
-                  width={"100%"}
-                  hideArrow
-                  value={point}
-                  onChange={(value) => setPoint(value as number)}
-                  max={Math.min(
-                    userData?.point || 0,
-                    totalDiscounted + (shipping?.amount || 0)
-                  )}
-                  min={0}
-                />
-                <Button className={styles.cancel_btn} onClick={() => setPoint(0)}>사용 취소</Button>
-              </HorizontalFlex>
-
-              <HorizontalFlex className={clsx(styles.info_item, styles.point_total)}>
-                <P><Span>사용 후 남은 포인트 </Span></P>
-                <P className={styles.my_point}>
-                  <Span>{(userData?.point || 0) - point}</Span>
-                  <Span> P</Span>
                 </P>
               </HorizontalFlex>
             </VerticalFlex>
@@ -679,7 +746,16 @@ export function CartWrap() {
                 }
             }}
           >
-            <Span>결제하기</Span>
+            <FlexChild justifyContent="center" gap={5}>
+              <FlexChild width={'auto'}>
+                <Span>{(shipping?.amount || 0) + totalDiscounted - point}</Span>
+                <Span>원</Span>
+              </FlexChild>
+              <FlexChild width={'auto'} gap={3}>
+                <Span>결제하기</Span>
+                <Span>({selected.length}개)</Span>
+              </FlexChild>
+            </FlexChild>
           </Button>
         </VerticalFlex>
       </FlexChild>
@@ -687,7 +763,7 @@ export function CartWrap() {
   );
 }
 
-export function Item({ item }: { item: LineItemData }) {
+export function Item({ item, openCouponModal }: { item: LineItemData, openCouponModal: (copType: string)=> void }) {
   const { storeData } = useStore();
   const { cartData, reload } = useCart();
   const [quantity, setQuantity] = useState(item.quantity);
@@ -728,6 +804,14 @@ export function Item({ item }: { item: LineItemData }) {
             >
               {item.variant.title}
             </P>
+            <VerticalFlex className={styles.unit_price} alignItems="start">
+              <P className={styles.normal_price}>
+                {item?.variant?.price} <Span>₩</Span>
+              </P>
+              <P>
+                {item?.variant?.discount_price || 0} <Span>₩</Span>
+              </P>
+            </VerticalFlex>
             {/* <FlexChild className={styles.unit_price}>
               <Image
                 src={"/resources/icons/cart/cj_icon.png"}
@@ -797,9 +881,60 @@ export function Item({ item }: { item: LineItemData }) {
           <Span>₩</Span>
         </P>
       </HorizontalFlex>
+
+      <Button
+        className={styles.coupon_btn}
+        onClick={() => openCouponModal("procut")}
+      >
+        쿠폰 사용
+        {/* 쿠폰 체크 되면 쿠폰 변경으로 바뀜 {'쿠폰 사용' : '쿠폰 변경'} */}
+      </Button>
     </VerticalFlex>
   );
 }
+
+
+export function CouponSelect({
+  openCouponModal,
+  type,
+}: {
+  openCouponModal: (copType: string) => void;
+  type: string;
+}) {
+  // const disabled = 1 > 2;
+  const couponTitle = [
+    "멤버쉽 Lv.2 브론즈 4000원 할인 쿠폰",
+    "생일 2000원 할인 쿠폰",
+  ];
+
+  return (
+    <Button
+      className={clsx(styles.coupon_select)}
+      // disabled={disabled}
+      onClick={() => openCouponModal(type)}
+    >
+      {/* { [styles.disabled]: disabled } */}
+      <HorizontalFlex className={styles.coupon_choice}>
+        <FlexChild className={styles.coupon_title}>
+          <VerticalFlex alignItems="start" gap={5}>
+            {couponTitle.map((item, i) => {
+              return <P key={i}>{item}</P>;
+            })}
+          </VerticalFlex>
+        </FlexChild>
+
+        <FlexChild className={styles.arrow} width={"auto"}>
+          <Image
+            src={"/resources/icons/arrow/arrow_bottom_icon.png"}
+            width={10}
+          />
+        </FlexChild>
+      </HorizontalFlex>
+    </Button>
+  );
+}
+
+
 
 export function AgreeInfo({
   agrees,
