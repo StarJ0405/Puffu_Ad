@@ -139,6 +139,13 @@ export function CartWrap() {
     setTotal(total);
   }, [cartData, storeData, selected]);
 
+  // 쿠폰 모달
+  const openCouponModal = (copType:string) => {
+    NiceModal.show("orderCouponListModal", { copType });
+    
+    // copType, 모달 여는 경로가 상품, 주문, 배송 쿠폰인지 구분한 값
+  };
+
   return (
     <HorizontalFlex className={styles.cart_wrap}>
       <VerticalFlex className={styles.cart_data}>
@@ -147,7 +154,7 @@ export function CartWrap() {
           initialValues={selected}
           onChange={setSelected}
         >
-          <VerticalFlex className={styles.product_list}>
+          <VerticalFlex className={styles.product_wrapper}>
             <article>
               <P className={styles.list_title}>담은 상품</P>
               <FlexChild alignItems="center" gap={10} paddingBottom={40}>
@@ -155,24 +162,26 @@ export function CartWrap() {
                 <Span>전체선택</Span>
               </FlexChild>
             </article>
-            {
-              // 담은 상품 목록
-              cartData?.items
-                .sort((i1, i2) =>
-                  String(`${i1.created_at} ${i1.id}`).localeCompare(
-                    String(`${i2.created_at} ${i2.id}`)
+            <VerticalFlex className={styles.item_list}>
+              {
+                // 담은 상품 목록
+                cartData?.items
+                  .sort((i1, i2) =>
+                    String(`${i1.created_at} ${i1.id}`).localeCompare(
+                      String(`${i2.created_at} ${i2.id}`)
+                    )
                   )
-                )
-                ?.map((item: LineItemData) => (
-                  <Item item={item} key={item.id} />
-                ))
-            }
+                  ?.map((item: LineItemData) => (
+                    <Item item={item} key={item.id} openCouponModal={openCouponModal} />
+                  ))
+              }
+            </VerticalFlex>
 
             {cartData?.items?.length ? null : <NoContent type={"장바구니"} />}
           </VerticalFlex>
         </CheckboxGroup>
 
-        {/* <FlexChild className={style.delivery_root}>
+        {/* 추후에 픽업 기능 넣는다 하면 살리기 <FlexChild className={style.delivery_root}>
             <VerticalFlex alignItems="start">
               <article>
                   <P className={style.list_title}>배송방법</P>
@@ -186,6 +195,28 @@ export function CartWrap() {
               </HorizontalFlex>
             </VerticalFlex>
         </FlexChild> */}
+
+        <FlexChild className={styles.coupon_info}>
+          <VerticalFlex alignItems="start">
+            <article>
+              <P className={styles.list_title}>쿠폰 적용</P>
+            </article>
+
+            <VerticalFlex className={styles.info_list}>
+              <HorizontalFlex className={clsx(styles.info_item)}>
+                <Span>주문 할인</Span>
+
+                <CouponSelect openCouponModal={openCouponModal} type={'order'} />
+              </HorizontalFlex>
+
+              <HorizontalFlex className={clsx(styles.info_item)}>
+                <Span>배송 할인</Span>
+
+                <CouponSelect openCouponModal={openCouponModal} type={'delivery'} />
+              </HorizontalFlex>
+            </VerticalFlex>
+          </VerticalFlex>
+        </FlexChild>
 
         <FlexChild className={styles.delivery_info}>
           <VerticalFlex alignItems="start">
@@ -259,7 +290,9 @@ export function CartWrap() {
                     <RadioChild id={"credit_card"} />
                   </FlexChild>
                   <Span
-                    onClick={() => document.getElementById("credit_card")?.click()}
+                    onClick={() =>
+                      document.getElementById("credit_card")?.click()
+                    }
                   >
                     신용카드 결제
                   </Span>
@@ -304,8 +337,82 @@ export function CartWrap() {
               <HorizontalFlex className={styles.info_item}>
                 <Span>배송비</Span>
 
-                <P>
-                  <Span>{shipping?.amount || 0}</Span>
+                <FlexChild width={"auto"} gap={10}>
+                  {/* 배송비 할인 쿠폰 적용되면 나타나기 */}
+                  {/* <P fontSize={13}>
+                    (배송비 할인 적용)
+                  </P> */}
+
+                  <P>
+                    <Span>{shipping?.amount || 0}</Span>
+                    <Span> ₩</Span>
+                  </P>
+                </FlexChild>
+              </HorizontalFlex>
+
+              <VerticalFlex className={clsx(styles.point_box)}>
+                <HorizontalFlex className={styles.info_item}>
+                  <Span>포인트 사용</Span>
+
+                  {/* <P className={styles.my_point}>
+                    <Span>{userData?.point || 0}</Span>
+                    <Span> P</Span>
+                  </P> */}
+                  <FlexChild width={"auto"} gap={10}>
+                    <Span color="#797979" fontSize={13}>
+                      내 포인트
+                    </Span>
+                    <FlexChild width={"auto"} gap={3}>
+                      <FlexChild width={"auto"} gap={2}>
+                        <Span>{(userData?.point || 0) - point}</Span>
+                        <Span>P</Span>
+                      </FlexChild>
+                      <Span>/</Span>
+                      <FlexChild width={"auto"} color="#797979" gap={2}>
+                        <Span>{userData?.point || 0}</Span>
+                        <Span> P</Span>
+                      </FlexChild>
+                    </FlexChild>
+                  </FlexChild>
+                </HorizontalFlex>
+
+                <HorizontalFlex
+                  className={clsx(styles.info_item, styles.point_input_box)}
+                >
+                  <InputNumber
+                    width={"100%"}
+                    hideArrow
+                    value={point}
+                    onChange={(value) => setPoint(value as number)}
+                    max={Math.min(
+                      userData?.point || 0,
+                      totalDiscounted + (shipping?.amount || 0)
+                    )}
+                    min={0}
+                  />
+                  <Button
+                    className={styles.cancel_btn}
+                    onClick={() => setPoint(0)}
+                  >
+                    사용 취소
+                  </Button>
+                </HorizontalFlex>
+
+                {/* <HorizontalFlex className={clsx(styles.info_item, styles.point_total)}>
+                  <P><Span>사용 후 남은 포인트 </Span></P>
+                  <P className={styles.my_point}>
+                    <Span>{(userData?.point || 0) - point}</Span>
+                    <Span> P</Span>
+                  </P>
+                </HorizontalFlex> */}
+              </VerticalFlex>
+
+              <HorizontalFlex className={styles.info_item}>
+                <Span>할인가</Span>
+
+                <P color="#fff">
+                  <Span>- </Span>
+                  <Span>{point}</Span>
                   <Span> ₩</Span>
                 </P>
               </HorizontalFlex>
@@ -314,41 +421,10 @@ export function CartWrap() {
                 <Span>합계</Span>
 
                 <P color={"var(--main-color1)"}>
-                  <Span>{(shipping?.amount || 0) + totalDiscounted}</Span>
+                  <Span>
+                    {(shipping?.amount || 0) + totalDiscounted - point}
+                  </Span>
                   <Span color="#fff"> ₩</Span>
-                </P>
-              </HorizontalFlex>
-            </VerticalFlex>
-            <VerticalFlex className={clsx(styles.info_list, styles.point_box)}>
-              <HorizontalFlex className={styles.info_item}>
-                <Span>보유 포인트</Span>
-
-                <P className={styles.my_point}>
-                  <Span>{userData?.point || 0}</Span>
-                  <Span> P</Span>
-                </P>
-              </HorizontalFlex>
-
-              <HorizontalFlex className={clsx(styles.info_item, styles.point_input_box)}>
-                <InputNumber
-                  width={"100%"}
-                  hideArrow
-                  value={point}
-                  onChange={(value) => setPoint(value as number)}
-                  max={Math.min(
-                    userData?.point || 0,
-                    totalDiscounted + (shipping?.amount || 0)
-                  )}
-                  min={0}
-                />
-                <Button className={styles.cancel_btn} onClick={() => setPoint(0)}>사용 취소</Button>
-              </HorizontalFlex>
-
-              <HorizontalFlex className={clsx(styles.info_item, styles.point_total)}>
-                <P><Span>사용 후 남은 포인트 </Span></P>
-                <P className={styles.my_point}>
-                  <Span>{(userData?.point || 0) - point}</Span>
-                  <Span> P</Span>
                 </P>
               </HorizontalFlex>
             </VerticalFlex>
@@ -437,7 +513,7 @@ export function CartWrap() {
                           const tax = Math.round(
                             (discount_price *
                               (item?.variant?.product?.tax_rate || 0)) /
-                            100
+                              100
                           );
                           total +=
                             discount_price * item.quantity +
@@ -528,7 +604,7 @@ export function CartWrap() {
                                           navigate("/orders/cart"),
                                       });
                                     }
-                                  } catch (error) { }
+                                  } catch (error) {}
                                 } else if (response.resultCd !== "CB49") {
                                   NiceModal.show("confirm", {
                                     clickOutsideToClose: false,
@@ -620,7 +696,7 @@ export function CartWrap() {
                                       onConfirm: () => navigate("/orders/cart"),
                                     });
                                   }
-                                } catch (error) { }
+                                } catch (error) {}
                               } else if (response.resultCd !== "CB49") {
                                 NiceModal.show("confirm", {
                                   clickOutsideToClose: false,
@@ -649,7 +725,7 @@ export function CartWrap() {
   );
 }
 
-export function Item({ item }: { item: LineItemData }) {
+export function Item({ item, openCouponModal }: { item: LineItemData, openCouponModal: (copType: string)=> void }) {
   const { storeData } = useStore();
   const { cartData, reload } = useCart();
   const [quantity, setQuantity] = useState(item.quantity);
@@ -666,10 +742,14 @@ export function Item({ item }: { item: LineItemData }) {
         </FlexChild>
 
         <FlexChild className={styles.unit}>
-          <Image
-            src={item?.variant?.thumbnail || item?.variant?.product?.thumbnail}
-            width={150}
-          />
+          <FlexChild className={styles.item_thumb}>
+            <Image
+              src={
+                item?.variant?.thumbnail || item?.variant?.product?.thumbnail
+              }
+              width={150}
+            />
+          </FlexChild>
           <VerticalFlex className={styles.unit_content} alignItems="start">
             <Span className={styles.unit_brand}>
               {item?.variant?.product?.brand?.name}
@@ -682,30 +762,39 @@ export function Item({ item }: { item: LineItemData }) {
             >
               {item.variant.product.title}
             </P>
-            <P
-              className={styles.unit_title}
-              lineClamp={2}
-              overflow="hidden"
-              display="--webkit-box"
-            >
-              {item.variant.title}
-            </P>
-            {/* <FlexChild className={style.unit_price}>
-          <Image
-            src={"/resources/icons/cart/cj_icon.png"}
-            width={22}
-          />
-          <P>
-            {item?.variant?.discount_price || 0} <Span>₩</Span>
-          </P>
-        </FlexChild> */}
+            {item.variant.title && (
+              <P
+                className={styles.unit_title}
+                lineClamp={2}
+                overflow="hidden"
+                display="--webkit-box"
+                marginTop={10}
+              >
+                {item.variant.title}
+              </P>
+            )}
+            <VerticalFlex gap={20} alignItems="start" width={"auto"}>
+              <VerticalFlex className={styles.unit_price} alignItems="start">
+                <P className={styles.normal_price}>
+                  {item?.variant?.price} <Span>₩</Span>
+                </P>
+                <P>
+                  {item?.variant?.discount_price || 0} <Span>₩</Span>
+                </P>
+              </VerticalFlex>
+
+              <Button className={styles.coupon_btn} onClick={()=> openCouponModal('procut')}>
+                쿠폰 사용
+                {/* 쿠폰 체크 되면 쿠폰 변경으로 바뀜 {'쿠폰 사용' : '쿠폰 변경'} */}
+              </Button>
+            </VerticalFlex>
           </VerticalFlex>
         </FlexChild>
 
         {/* 삭제 버튼 */}
         <FlexChild
           className={styles.delete_box}
-        // onClick={()=> }
+          // onClick={()=> }
         >
           <Button
             onClick={() =>
@@ -754,14 +843,61 @@ export function Item({ item }: { item: LineItemData }) {
             }}
           />
         </FlexChild>
-        <P>
-          {Number(item.variant.discount_price * quantity).toLocaleString(
-            "ko-KR"
-          )}{" "}
-          <Span>₩</Span>
-        </P>
+        <VerticalFlex className={styles.data} alignItems="end" gap={5} width={'auto'}>
+          
+          {/* 쿠폰가 적용되면 나타나기 */}
+          {/* <P color="#ccc" fontSize={15}>쿠폰 적용가</P> */}
+
+          <P className={styles.total_txt}>
+            {Number(item.variant.discount_price * quantity).toLocaleString(
+              "ko-KR"
+            )}{" "}
+            <Span>₩</Span>
+          </P>
+        </VerticalFlex>
+       
       </HorizontalFlex>
     </VerticalFlex>
+  );
+}
+
+export function CouponSelect({ openCouponModal, type }: { openCouponModal: (copType: string)=> void; type: string; }) {
+
+  const disabled = 1 > 2;
+  const couponTitle = [
+    "멤버쉽 Lv.2 브론즈 4000원 할인 쿠폰",
+    "생일 2000원 할인 쿠폰",
+  ];
+
+  return (
+    <Button
+      className={clsx(styles.coupon_select, { [styles.disabled]: disabled })}
+      disabled={disabled}
+      onClick={()=> openCouponModal(type)}
+    >
+      <HorizontalFlex className={styles.coupon_choice}>
+        <FlexChild className={styles.coupon_title}>
+          {couponTitle.length > 0 ? (
+            <VerticalFlex alignItems="start" gap={5}>
+              {couponTitle.map((item, i) => {
+                return <P key={i}>{item}</P>;
+              })}
+            </VerticalFlex>
+          ) : (
+            <P>
+              {!disabled ? "쿠폰 선택하기" : "적용할 수 있는 쿠폰이 없습니다."}
+            </P>
+          )}
+        </FlexChild>
+
+        <FlexChild className={styles.arrow} width={"auto"}>
+          <Image
+            src={"/resources/icons/arrow/arrow_bottom_icon.png"}
+            width={10}
+          />
+        </FlexChild>
+      </HorizontalFlex>
+    </Button>
   );
 }
 
@@ -794,7 +930,7 @@ export function SelectBox({
             display: "배송 전 미리 연락해 주세요",
           },
         ]}
-        width={'100%'}
+        width={"100%"}
         placeholder={"선택 안함"}
         value={selectedMessageOption}
         onChange={(value) => {

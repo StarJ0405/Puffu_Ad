@@ -79,6 +79,7 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
         .find((f: GroupData) => f.min > (userData?.stored || 0))
     );
   }, [groups, userData]);
+
   return (
     <VerticalFlex className={clsx(styles.profile, styles.box_frame)}>
       <HorizontalFlex padding={"25px 45px"} gap={45}>

@@ -48,28 +48,37 @@
 
 /* 왼쪽 주문 정보 */
 
-.cart_wrap .cart_data .product_list {
+.cart_wrap .cart_data .product_wrapper {
   align-items: start !important;
 }
 
+.cart_wrap .cart_data .product_wrapper .item_list {
+  gap: 20px;
+}
+
 /* 담은 상품 내용 ----------------------------------------- */
-.cart_wrap .cart_data .product_list .cart_item {
-  padding: 20px 0;
+.cart_wrap .cart_data .product_wrapper .cart_item {
+  padding: 0 0 20px;
   align-items: end !important;
 }
 
-.cart_wrap .cart_data .product_list .cart_item:not(:last-child) {
+.cart_wrap .cart_data .product_wrapper .cart_item:not(:last-child) {
   border-bottom: 1px solid #6b6b6b;
 }
 
-.cart_wrap .cart_data .product_list .cart_item .unit {
+.cart_wrap .cart_data .product_wrapper .cart_item .unit {
   gap: 20px;
   align-items: start !important;
   flex: 1;
 }
 
-.cart_wrap .cart_data .product_list .cart_item .unit .unit_content {
-  padding-top: 5px;
+.cart_wrap .cart_data .product_wrapper .cart_item .unit .item_thumb {
+  width: auto; overflow: hidden; flex: unset;
+  border-radius: 5px;
+}
+
+.cart_wrap .cart_data .product_wrapper .cart_item .unit .unit_content {
+  padding-top: 10px;
   width: 100%;
   padding-right: 25px;
 }
@@ -86,38 +95,33 @@
   line-height: 1.2;
   color: #fff;
   font-weight: 400;
-  margin-bottom: 5px !important;
 }
 
-.unit .unit_content > .unit_price {
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-.unit .unit_content > .unit_price p {
+.unit .unit_content .unit_price {
+  width: auto;
+  flex: unset;
+  gap: 3px;
+  margin-top: 10px;
   font-size: 18px !important;
   font-weight: 600 !important;
   line-height: 1;
-  color: var(--main-color1) !important;
+  color: #fff !important;
 }
 
-.unit .unit_content > .unit_price p span {
-  color: #fff;
+.unit .unit_content .unit_price .normal_price {
+  font-weight: 400;
+  color: #797979;
+  text-decoration: line-through;
+  font-size: 14px;
 }
 
-/* 상품 옵션 */
-.unit .unit_content .optionList {
-  gap: 5px;
-}
-
-.unit .unit_content .optionList > div p {
-  font-size: 14px !important;
-  color: #797979 !important;
-  line-height: 1, 2;
-}
-
-.unit .unit_content .optionList > div p > span {
-  color: #fff;
+/* 상품 쿠폰 버튼 */
+.unit .unit_content .coupon_btn {
+  padding: 8px 20px;
+  background: #222;
+  border: 1px solid #fff;
+  font-size: 16px;
+  line-height: 1;
 }
 
 
@@ -135,19 +139,21 @@
 
 
 /* 갯수 추가, 총 금액 표시 */
-.product_list .cart_item .totalPrice {
+.product_wrapper .cart_item .totalPrice {
   gap: 15px;
   height: auto;
 }
 
-.product_list .cart_item .totalPrice > p {
+.totalPrice .data {flex: unset;}
+
+.product_wrapper .cart_item .totalPrice .total_txt {
   font-size: 25px !important;
   font-weight: 700 !important;
   line-height: 1;
   color: var(--main-color1) !important;
 }
 
-.product_list .cart_item .totalPrice > p > span {
+.product_wrapper .cart_item .totalPrice .total_txt > span {
   color: #fff;
 }
 
@@ -171,18 +177,6 @@
 
 /* 배송방법 end -------------------------------------------------- */
 
-/* 배송정보 */
-
-.delivery_info {
-}
-.delivery_info .delivery_list_btn {
-  background: var(--main-color1);
-  border-radius: 5px;
-  padding: 9px 13px;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 600;
-}
 
 .info_list {
   margin-top: 25px;
@@ -196,6 +190,9 @@
   color: #9a9a9a;
   font-weight: 600 !important;
   line-height: 1;
+  display: inline-block;
+  min-width: 120px;
+  width: auto;
 }
 
 .info_list .info_item > p {
@@ -203,6 +200,52 @@
   color: #fff;
   line-height: 1.4;
   font-weight: 600 !important;
+}
+
+
+/* 쿠폰 적용 */
+.coupon_info {
+
+}
+
+.coupon_select {
+  width: 100%;
+  max-width: 400px;
+  min-width: 250px;
+  gap: 20px;
+  cursor: pointer;
+  background: none;
+  padding: 0;
+}
+
+.coupon_choice {
+  width: 100%;
+  border: 1px solid #fff;
+  padding: 10px 15px;
+  border-radius: 3px;
+  gap: 20px;
+}
+
+.coupon_choice .coupon_title {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+/* 비활성화 */
+.coupon_select.disabled {cursor: not-allowed;}
+.coupon_select.disabled .coupon_choice {filter: opacity(0.5);}
+
+
+
+/* 배송정보 */
+
+.delivery_info .delivery_list_btn {
+  background: var(--main-color1);
+  border-radius: 5px;
+  padding: 9px 13px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .info_list .info_item.info_select_box {
@@ -277,7 +320,7 @@
 }
 
 .payment_block .total_pay_txt {
-  margin-top: 63px;
+  margin-top: 40px;
   justify-content: flex-end;
   align-items: center;
   gap: 15px;
