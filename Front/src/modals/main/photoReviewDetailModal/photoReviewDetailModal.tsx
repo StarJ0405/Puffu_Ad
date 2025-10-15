@@ -198,7 +198,7 @@ const PhotoReviewDetailModal = NiceModal.create(
         maxWidth={!isMobile ? 700 : "auto"}
         height={!isMobile ? height : "100dvh"}
         maxHeight={"auto"}
-        title={!isMobile ? "" : "사용 후기"}
+        title={!isMobile ? "사용 후기" : "사용 후기"}
         onClose={() => {
           onCancel?.();
           modal.remove();

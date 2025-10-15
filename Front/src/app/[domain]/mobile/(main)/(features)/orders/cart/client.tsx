@@ -728,15 +728,15 @@ export function Item({ item }: { item: LineItemData }) {
             >
               {item.variant.title}
             </P>
-            {/* <FlexChild className={style.unit_price}>
-          <Image
-            src={"/resources/icons/cart/cj_icon.png"}
-            width={22}
-          />
-          <P>
-            {item?.variant?.discount_price || 0} <Span>₩</Span>
-          </P>
-        </FlexChild> */}
+            {/* <FlexChild className={styles.unit_price}>
+              <Image
+                src={"/resources/icons/cart/cj_icon.png"}
+                width={22}
+              />
+              <P>
+                {item?.variant?.discount_price || 0} <Span>₩</Span>
+              </P>
+            </FlexChild> */}
           </VerticalFlex>
         </FlexChild>
 
