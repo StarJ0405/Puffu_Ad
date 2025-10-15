@@ -65,6 +65,7 @@ export default function ({
   );
   // const [adult, setAdult] = useState(false);
   const [radio, setRadio] = useState<boolean[]>([true, true, true]);
+  const [warehousing, setWarehousing] = useState<boolean>(false);
   const [optionType, setOptionType] = useState<string>("single");
   const [detail, setDetail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -115,6 +116,7 @@ export default function ({
           code,
           visible: radio[0],
           buyable: radio[1],
+          warehousing,
           title: title,
           description: inputs.current[1].getValue(),
           price: inputs.current[2].getValue(),
@@ -557,6 +559,48 @@ export default function ({
                                   <RadioChild id="unsale" />
                                   <P size={16} color={"#333"} weight={500}>
                                     미판매
+                                  </P>
+                                </FlexChild>
+                              </HorizontalFlex>
+                            </RadioGroup>
+                          </FlexChild>
+                          <FlexChild gap={20}>
+                            <FlexChild
+                              width={"40%"}
+                              padding={15}
+                              backgroundColor={"#F5F6FB"}
+                              justifyContent={"center"}
+                            >
+                              <VerticalFlex gap={0} alignItems="center">
+                                <P size={16} weight={600}>
+                                  입고예정
+                                </P>
+                                <P size={14} color={"#666"}>
+                                  (출시예정)
+                                </P>
+                              </VerticalFlex>
+                            </FlexChild>
+                            <RadioGroup
+                              name="warehousing"
+                              value={warehousing ? "processed" : "unprocessed"}
+                              onValueChange={(value) =>
+                                setWarehousing(value === "processed")
+                              }
+                            >
+                              <HorizontalFlex
+                                gap={15}
+                                justifyContent="flex-start"
+                              >
+                                <FlexChild gap={6} width={"max-content"}>
+                                  <RadioChild id="processed" />
+                                  <P size={16} color={"#333"} weight={500}>
+                                    처리
+                                  </P>
+                                </FlexChild>
+                                <FlexChild gap={6} width={"max-content"}>
+                                  <RadioChild id="unprocessed" />
+                                  <P size={16} color={"#333"} weight={500}>
+                                    미처리
                                   </P>
                                 </FlexChild>
                               </HorizontalFlex>
