@@ -3,8 +3,10 @@
 }
 
 .head {
-  width: 140px;
+  width: 240px;
   padding: 15px;
+  font-weight: 600;
+  border-right: 1px solid #d0d0d0;
 }
 .content {
   padding: 15px;
@@ -22,4 +24,18 @@
 }
 .select div {
   color: #111 !important;
+}
+
+.title {
+  padding-top: 8px;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.category {
+  padding: 6px 12px;
+  background-color: red;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 4px;
 }

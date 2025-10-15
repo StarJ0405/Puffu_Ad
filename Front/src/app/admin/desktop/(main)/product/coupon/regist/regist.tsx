@@ -510,7 +510,7 @@ export default function ({
                                     결제금액을 기준)
                                   </P>
                                   <P>
-                                    주문 완료 : 상품이 배송중로 넘어가면 자동
+                                    주문 완료 : 상품이 배송중으로 넘어가면 자동
                                     지급(최종 결제금액을 기준)
                                   </P>
                                   <P>
@@ -519,7 +519,7 @@ export default function ({
                                   </P>
                                   <P>
                                     구매 수량 충족시 : 조건을 만족하는 주문이
-                                    배송완료시 자동 발급
+                                    배송중으로 넘어가면 자동 발급
                                   </P>
                                 </VerticalFlex>
                               }
@@ -1186,12 +1186,43 @@ export default function ({
                                 </HorizontalFlex>
                               </RadioGroup>
                             </FlexChild>
-                            <FlexChild width={500}>
-                              <DatePicker
-                                defaultSelectedDate={issueDate || new Date()}
-                                selectionMode="single"
-                                values={issueDate}
-                                onChange={(date) => setIssueDate(date as Date)}
+                            <FlexChild width={500} gap={10}>
+                              <Select
+                                classNames={{ header: styles.select }}
+                                value={issueDate.getMonth()}
+                                options={Array.from({ length: 12 }).map(
+                                  (_, index) => ({
+                                    display: `${index + 1}월`,
+                                    value: index,
+                                  })
+                                )}
+                                onChange={(value) => {
+                                  const date = new Date(issueDate);
+                                  date.setMonth(Number(value));
+                                  date.setDate(1);
+                                  setIssueDate(date);
+                                }}
+                              />
+                              <Select
+                                classNames={{ header: styles.select }}
+                                key={issueDate.getTime()}
+                                value={issueDate.getDate()}
+                                options={Array.from({ length: 31 })
+                                  .filter((_, index) => {
+                                    const date = new Date(issueDate);
+                                    date.setMonth(date.getMonth() + 1);
+                                    date.setDate(0);
+                                    return date.getDate() > index;
+                                  })
+                                  .map((_, index) => ({
+                                    display: `${index + 1}일`,
+                                    value: index + 1,
+                                  }))}
+                                onChange={(value) => {
+                                  const date = new Date(issueDate);
+                                  date.setDate(Number(value));
+                                  setIssueDate(date);
+                                }}
                               />
                             </FlexChild>
                           </VerticalFlex>

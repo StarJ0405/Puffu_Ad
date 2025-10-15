@@ -47,18 +47,46 @@ export const getCouponDate = (coupon: CouponData): string => {
 };
 export const getCouponTarget = (target: Target, coupon: CouponData) => {
   switch (target) {
-    case "etc":
-      return "기본";
-    case "group":
-      return `멤버쉽${coupon.group?.name ? `[${coupon.group.name}]` : ""} 매월`;
-    case "sign_up":
-      return "신규회원 가입시";
-    case "birthday":
-      return "생일";
+    case "manual":
+      return "수동발급";
+    case "condition":
+      switch (coupon.condition) {
+        case "signup":
+          return "조건부 발급[회원가입]";
+        case "birthday":
+          return "조건부 발급[생일]";
+        case "date":
+          return "조건부 발급[특정기념일]";
+        case "review":
+          return "조건부 발급[리뷰 작성]";
+        case "delivery":
+          return "조건부 발급[배송 완료]";
+        case "order":
+          return "조건부 발급[주문 완료]";
+        case "first":
+          return "조건부 발급[회원가입 후 첫 구매]";
+        case "purchase":
+          return "조건부 발급[구매 수량 충족시]";
+
+        default:
+          return "조건부 발급";
+      }
+    case "interval":
+      return "정규자동발급";
     case "link":
-      return "링크";
+      return "고객 다운로드 발급";
   }
   return "알 수 없음";
+};
+export const getCouponType = (type: CouponType) => {
+  switch (type) {
+    case "order":
+      return "주문서 할인";
+    case "shipping":
+      return "배송비 할인";
+    case "item":
+      return "상품 할인";
+  }
 };
 export default function ({
   initCondition,
@@ -71,7 +99,7 @@ export default function ({
 }) {
   const columns: Column[] = [
     {
-      label: "대상",
+      label: "발급구분",
       code: "target",
       Cell: ({ cell, row }) => getCouponTarget(cell, row),
       styling: {
@@ -108,13 +136,50 @@ export default function ({
       },
     },
     {
-      label: "적용기간",
+      label: "사용기간",
       Cell: ({ row }) => getCouponDate(row),
       styling: {
         common: {
           style: {
             width: 300,
             minWidth: 300,
+          },
+        },
+      },
+    },
+    {
+      label: "발급수",
+      code: "quantity",
+      styling: {
+        common: {
+          style: {
+            width: 100,
+            minWidth: 100,
+          },
+        },
+      },
+    },
+    {
+      label: "상태",
+      Cell: ({ row }) => (row.deleted_at ? "삭제(발급 불가)" : "발급중"),
+      styling: {
+        common: {
+          style: {
+            width: 100,
+            minWidth: 100,
+          },
+        },
+      },
+    },
+    {
+      label: "적용 범위",
+      code: "type",
+      Cell: ({ cell }) => getCouponType(cell),
+      styling: {
+        common: {
+          style: {
+            width: 100,
+            minWidth: 100,
           },
         },
       },
@@ -139,6 +204,10 @@ export default function ({
   );
   const [store, setStore] = useState<string>("");
   const [total, setTotal] = useState(initData.NumberOfTotalElements);
+  const [target, setTarget] = useState<string>("all");
+  const [condition, setCondition] = useState<string>("all");
+  const [scope, setScope] = useState<string>("all");
+  const [deleted, setDeleted] = useState<string>("not_deleted");
   const table = useRef<any>(null);
   const input = useRef<any>(null);
   const onSearchClick = () => {
@@ -146,12 +215,22 @@ export default function ({
     const q = input.current.getValue();
     if (q) data.q = q;
     if (store) data.store_id = store;
+    if (target !== "all") data.target = target;
+    if (target === "condition" && condition !== "all")
+      data.condition = condition;
+    if (deleted === "deleted") data.deleted_at = true;
+    else if (deleted === "not_deleted") data.deleted_at = false;
+    if (scope !== "all") data.type = scope;
     table.current.setCondition(data);
   };
   const onResetClick = () => {
     input.current.empty();
     table.current.reset();
     setStore("");
+    setTarget("all");
+    setCondition("all");
+    setScope("all");
+    setDeleted("all");
   };
   const ContextMenu = ({ x, y, row }: { x: number; y: number; row?: any }) => {
     const rows: RowInterface[] = [
@@ -175,17 +254,6 @@ export default function ({
           },
         },
         {
-          label: "편집",
-          hotKey: "e",
-          onClick: () => {
-            NiceModal.show("couponDetail", {
-              coupon: row,
-              edit: true,
-              onSuccess: () => table.current.research(),
-            });
-          },
-        },
-        {
           label: "규칙 수정",
           hotKey: "v",
           onClick: () => {
@@ -202,7 +270,7 @@ export default function ({
             NiceModal.show("confirm", {
               confirmText: "삭제",
               cancelText: "취소",
-              message: `${row.name} 을 삭제하시겠습니까?`,
+              message: `[${row.name}] 을 삭제하시겠습니까?`,
               onConfirm: async () => {
                 await adminRequester.deleteCoupon(row.id);
                 table.current.research();
@@ -212,6 +280,41 @@ export default function ({
           },
         }
       );
+      if (row.target === "manual")
+        rows.push({
+          label: "발급하기",
+          hotKey: "g",
+          onClick: () =>
+            NiceModal.show("couponIssue", {
+              message: `[${row.name}] 발급할 회원/조건 선택`,
+              confirmText: "발급하기",
+              cancelText: "취소",
+              onConfirm: async (data: any) => {
+                const limit = 3;
+                if (data.users) {
+                  const users = data.users;
+                  if (users.length > limit) {
+                    const max = Math.ceil(users.length / limit);
+                    await Promise.all(
+                      Array.from({ length: max }).map(
+                        async (_, page) =>
+                          await adminRequester.giveCoupon(row.id, {
+                            ...data,
+                            users: users.slice(
+                              page * 100,
+                              Math.min((page + 1) * 100, users.length)
+                            ),
+                          })
+                      )
+                    );
+                    return table.current.research();
+                  }
+                }
+                await adminRequester.giveCoupon(row.id, data);
+                return table.current.research();
+              },
+            }),
+        });
     }
     return { x, y, rows };
   };
@@ -227,7 +330,10 @@ export default function ({
           <VerticalFlex>
             <FlexChild>
               <VerticalFlex>
-                <FlexChild borderBottom={"1px solid #e9e9e9"}>
+                <FlexChild
+                  borderBottom={"1px solid #e9e9e9"}
+                  hidden={stores.length === 1}
+                >
                   <HorizontalFlex gap={20} justifyContent={"flex-start"}>
                     <FlexChild
                       width={"10%"}
@@ -243,6 +349,7 @@ export default function ({
                     </FlexChild>
                     <FlexChild>
                       <Select
+                        classNames={{ header: styles.selection }}
                         value={store}
                         options={[
                           { display: "전체", value: "" },
@@ -272,7 +379,7 @@ export default function ({
                     </FlexChild>
                     <FlexChild>
                       <Input
-                        width={300}
+                        width={600}
                         style={{ padding: "6px 12px" }}
                         ref={input}
                         onKeyDown={(e) => {
@@ -280,6 +387,194 @@ export default function ({
                         }}
                       />
                     </FlexChild>
+                  </HorizontalFlex>
+                </FlexChild>
+                <FlexChild borderBottom={"1px solid #e9e9e9"}>
+                  <HorizontalFlex>
+                    <HorizontalFlex gap={20} justifyContent={"flex-start"}>
+                      <FlexChild
+                        width={"20%"}
+                        backgroundColor={"var(--admin-table-bg-color)"}
+                      >
+                        <div className={styles.titleWrap}>
+                          <Center>
+                            <P size={16} weight={"bold"}>
+                              발급구분
+                            </P>
+                          </Center>
+                        </div>
+                      </FlexChild>
+                      <FlexChild>
+                        <Select
+                          value={target}
+                          onChange={(value) => {
+                            setTarget(value as string);
+                            setCondition("all");
+                          }}
+                          classNames={{ header: styles.selection }}
+                          options={[
+                            {
+                              display: "전체",
+                              value: "all",
+                            },
+                            {
+                              display: "수동발급",
+                              value: "manual",
+                            },
+                            {
+                              display: "조건부 발급",
+                              value: "condition",
+                            },
+                            {
+                              display: "고객 다운로드 발급",
+                              value: "link",
+                            },
+                            {
+                              display: "정규자동발급",
+                              value: "interval",
+                            },
+                          ]}
+                        />
+                      </FlexChild>
+                    </HorizontalFlex>
+                    <HorizontalFlex gap={20} justifyContent={"flex-start"}>
+                      <FlexChild
+                        hidden={target !== "condition"}
+                        width={"20%"}
+                        backgroundColor={"var(--admin-table-bg-color)"}
+                      >
+                        <div className={styles.titleWrap}>
+                          <Center>
+                            <P size={16} weight={"bold"}>
+                              조건
+                            </P>
+                          </Center>
+                        </div>
+                      </FlexChild>
+                      <FlexChild hidden={target !== "condition"}>
+                        <Select
+                          value={condition}
+                          onChange={(value) => setCondition(value as string)}
+                          classNames={{ header: styles.selection }}
+                          options={[
+                            {
+                              display: "전체",
+                              value: "all",
+                            },
+                            {
+                              display: "회원 가입",
+                              value: "signup",
+                            },
+                            {
+                              display: "생일",
+                              value: "birthday",
+                            },
+                            {
+                              display: "특정 기념일",
+                              value: "date",
+                            },
+                            {
+                              display: "리뷰 작성",
+                              value: "review",
+                            },
+                            {
+                              display: "배송 완료",
+                              value: "delivery",
+                            },
+                            {
+                              display: "주문 완료",
+                              value: "order",
+                            },
+                            {
+                              display: "회원가입 후 첫 구매",
+                              value: "first",
+                            },
+                            {
+                              display: "구매 수량 충족시",
+                              value: "purchase",
+                            },
+                          ]}
+                        />
+                      </FlexChild>
+                    </HorizontalFlex>
+                  </HorizontalFlex>
+                </FlexChild>
+                <FlexChild borderBottom={"1px solid #e9e9e9"}>
+                  <HorizontalFlex>
+                    <HorizontalFlex gap={20} justifyContent={"flex-start"}>
+                      <FlexChild
+                        width={"20%"}
+                        backgroundColor={"var(--admin-table-bg-color)"}
+                      >
+                        <div className={styles.titleWrap}>
+                          <Center>
+                            <P size={16} weight={"bold"}>
+                              적용범위
+                            </P>
+                          </Center>
+                        </div>
+                      </FlexChild>
+                      <FlexChild>
+                        <Select
+                          value={scope}
+                          onChange={(value) => setScope(value as string)}
+                          classNames={{ header: styles.selection }}
+                          options={[
+                            {
+                              display: "전체",
+                              value: "all",
+                            },
+                            {
+                              display: "주문서",
+                              value: "order",
+                            },
+                            {
+                              display: "배송비",
+                              value: "shipping",
+                            },
+                            {
+                              display: "상품",
+                              value: "item",
+                            },
+                          ]}
+                        />
+                      </FlexChild>
+                    </HorizontalFlex>
+                    <HorizontalFlex gap={20} justifyContent={"flex-start"}>
+                      <FlexChild
+                        width={"20%"}
+                        backgroundColor={"var(--admin-table-bg-color)"}
+                      >
+                        <div className={styles.titleWrap}>
+                          <Center>
+                            <P size={16} weight={"bold"}>
+                              삭제여부
+                            </P>
+                          </Center>
+                        </div>
+                      </FlexChild>
+                      <FlexChild>
+                        <Select
+                          value={deleted}
+                          onChange={(value) => setDeleted(value as string)}
+                          classNames={{ header: styles.selection }}
+                          options={[
+                            {
+                              display: "전체",
+                              value: "all",
+                            },
+                            {
+                              display: "삭제",
+                              value: "deleted",
+                            },
+                            {
+                              display: "미삭제",
+                              value: "not_deleted",
+                            },
+                          ]}
+                        />
+                      </FlexChild>
+                    </HorizontalFlex>
                   </HorizontalFlex>
                 </FlexChild>
               </VerticalFlex>

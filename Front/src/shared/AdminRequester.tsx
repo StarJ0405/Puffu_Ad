@@ -723,6 +723,10 @@ class _AdminRequester {
     if (callback) callback(await this.delete(`/coupons/${id}`, data));
     else return await this.delete(`/coupons/${id}`, data);
   }
+  async giveCoupon(id: string, data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.put(`/coupons/${id}`, data));
+    else return await this.put(`/coupons/${id}`, data);
+  }
 }
 
 export default _AdminRequester;

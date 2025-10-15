@@ -81,7 +81,7 @@ export class UserService extends BaseService<User, UserRepository> {
   async getList(options?: FindManyOptions<User>): Promise<User[]> {
     if (options) {
       let where: any = options.where;
-      if (where.birthday) {
+      if (where?.birthday) {
         where.birthday = Raw(
           (birthday) =>
             `DATE_PART('month', ${birthday}) = DATE_PART('month', CURRENT_DATE) AND DATE_PART('day', ${birthday}) = DATE_PART('day', CURRENT_DATE)`
@@ -157,7 +157,7 @@ export class UserService extends BaseService<User, UserRepository> {
         `(pt IS NULL OR ((pt.ends_at IS NULL OR pt.ends_at > NOW()) AND pt.point - pt.used_point > 0))`
       )
       .andWhere(
-        `(cu IS NULL OR (cu.item_id IS NULL AND cu.order_id IS NULL AND cu.shipping_method_id IS NULL AND cu.ends_at > NOW()))`
+        `(cu IS NULL OR (cu.item_id IS NULL AND cu.order_id IS NULL AND cu.shipping_method_id IS NULL AND (cu.ends_at IS NULL OR cu.ends_at > NOW()) AND (cu.appears_at IS NULL OR cu.appears_at <= NOW())))`
       )
       .getOne();
   }

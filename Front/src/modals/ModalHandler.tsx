@@ -8,6 +8,7 @@ import CategoriesModal from "./admin/category/CategoriesModal";
 import CategoryListModal from "./admin/category/CategoryListModal";
 import CategoryModal from "./admin/category/CategoryModal";
 import CategorySelectModal from "./admin/category/CategorySelectModal";
+import CouponIssueModal from "./admin/coupon/CouponIssueModal";
 import CouponModal from "./admin/coupon/CouponModal";
 import GroupModal from "./admin/group/GroupModal";
 import LoadingModal from "./admin/LoadingModal";
@@ -78,6 +79,7 @@ function ModalHandler() {
   NiceModal.register("orderList", OrderListModal);
   NiceModal.register("userDetail", UserModal);
   NiceModal.register("couponDetail", CouponModal);
+  NiceModal.register("couponIssue", CouponIssueModal);
   NiceModal.register("productDetail", ProductModal);
   NiceModal.register("promotionDetail", PromotionModal);
   NiceModal.register("promotionOptionList", PromotionOptionListModal);

@@ -7,6 +7,7 @@ import { container } from "tsyringe";
 import { IsNull, Not } from "typeorm";
 import { schedule } from "../module";
 import { ExchangeService } from "services/exchange";
+import { CouponService } from "services/coupon";
 interface Progress {
   time: string;
   status: {
@@ -42,6 +43,7 @@ export function regist(DEV: boolean) {
     async () => {
       const service = container.resolve(OrderService);
       const shippingService = container.resolve(ShippingMethodService);
+      const couponService = container.resolve(CouponService);
       const exchangeService = container.resolve(ExchangeService);
       // 배송대기
       {
@@ -53,7 +55,7 @@ export function regist(DEV: boolean) {
               tracking_number: Not(IsNull()),
             },
           },
-          relations: ["shipping_method"],
+          relations: ["shipping_method", "items.variant", "user.group"],
         });
         for (const order of orders) {
           await ProgressModule(
@@ -70,6 +72,8 @@ export function regist(DEV: boolean) {
                     status: OrderStatus.SHIPPING,
                   }
                 );
+                await couponService.giveOrderCoupon(order);
+                await couponService.givePurchaseCoupon(order);
               }
             }
           );
@@ -134,6 +138,8 @@ export function regist(DEV: boolean) {
                     shipped_at: new Date(find.time),
                   }
                 );
+                await couponService.giveShippingCoupon(order);
+                await couponService.giveFirstCoupon(order);
               }
             }
           );

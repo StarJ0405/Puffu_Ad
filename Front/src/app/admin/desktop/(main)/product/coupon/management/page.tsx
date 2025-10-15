@@ -5,8 +5,9 @@ export default async function () {
   const initCondition: any = {
     pageSize: 20,
     pageNumber: 0,
-    relations: ["store", "group"],
+    relations: ["store", "group", "products", "categories.parent.parent"],
     user_id: null,
+    withDeleted: true,
   };
   const initData: Pageable = (await adminRequester.getCoupons(
     initCondition
