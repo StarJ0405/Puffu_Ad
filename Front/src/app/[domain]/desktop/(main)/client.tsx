@@ -105,8 +105,7 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
           paintBullets(swiper);
         }}
       >
-        {[...banners]?.reverse().map((item: BannerDataFrame, i: number) => (
-          // reverse는 임시
+        {[...banners]?.map((item: BannerDataFrame, i: number) => (
           item.thumbnail.pc && (
             <SwiperSlide key={i} className={`swiper_0${i}`}>
               {item.to ? (
