@@ -12,6 +12,7 @@ import { Store } from "./store";
 
 @Entity({ name: "banner" })
 @Index(["created_at"])
+@Index(["store_id", "importance"])
 // CREATE INDEX IF NOT EXISTS idx_banner_name ON public.banner USING GIN (fn_text_to_char_array(name));
 export class Banner extends BaseEntity {
   @Column({ type: "character varying", nullable: false })
@@ -41,6 +42,9 @@ export class Banner extends BaseEntity {
 
   @Column({ type: "boolean", default: true })
   visible?: boolean;
+
+  @Column({ type: "integer", nullable: false })
+  importance!: number;
 
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;
