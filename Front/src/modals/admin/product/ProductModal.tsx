@@ -78,6 +78,9 @@ const ProductModal = NiceModal.create(
       // product.tax_rate === 0,
       true,
     ]);
+    const [warehousing, setWarehousing] = useState<boolean>(
+      !!product?.warehousing
+    );
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string>("");
 
@@ -108,6 +111,7 @@ const ProductModal = NiceModal.create(
               // adult,
               visible: radio[0],
               buyable: radio[1],
+              warehousing,
               title: title,
               code,
               description: inputs.current[1].getValue(),
@@ -184,7 +188,9 @@ const ProductModal = NiceModal.create(
             ) : (
               <Image
                 className={styles.image}
-                src={product?.product?.thumbnail || "/resources/images/no-img.png"}
+                src={
+                  product?.product?.thumbnail || "/resources/images/no-img.png"
+                }
                 size={200}
               />
             )}
@@ -271,7 +277,7 @@ const ProductModal = NiceModal.create(
                     }}
                   />
                 ) : (
-                  <P>{product.product.title}</P>
+                  <P>{product?.product?.title}</P>
                 )}
               </FlexChild>
             </HorizontalFlex>
@@ -406,6 +412,35 @@ const ProductModal = NiceModal.create(
               </FlexChild>
             </HorizontalFlex>
           </FlexChild>
+          <FlexChild>
+            <HorizontalFlex>
+              <FlexChild className={styles.head}>
+                <P>입고예정</P>
+              </FlexChild>
+              <FlexChild className={styles.content}>
+                {edit ? (
+                  <RadioGroup
+                    name="warehousing"
+                    value={warehousing ? "planned" : "none"}
+                    onValueChange={(v) => setWarehousing(v === "planned")}
+                  >
+                    <HorizontalFlex gap={20} justifyContent="flex-start">
+                      <FlexChild gap={6} width={"max-content"}>
+                        <RadioChild id="planned" />
+                        <P>처리</P>
+                      </FlexChild>
+                      <FlexChild gap={6} width={"max-content"}>
+                        <RadioChild id="none" />
+                        <P>미처리</P>
+                      </FlexChild>
+                    </HorizontalFlex>
+                  </RadioGroup>
+                ) : (
+                  <P>{product.warehousing ? "입고예정" : "미처리"}</P>
+                )}
+              </FlexChild>
+            </HorizontalFlex>
+          </FlexChild>
           {/* <FlexChild hidden={product?.store?.currency_unit === "P"}>
             <HorizontalFlex>
               <FlexChild className={styles.head}>
@@ -521,7 +556,11 @@ const ProductModal = NiceModal.create(
                     path="/product"
                   />
                 ) : (
-                  <Div dangerouslySetInnerHTML={{ __html: product?.product?.detail }} />
+                  <Div
+                    dangerouslySetInnerHTML={{
+                      __html: product?.product?.detail,
+                    }}
+                  />
                 )}
               </FlexChild>
             </HorizontalFlex>
