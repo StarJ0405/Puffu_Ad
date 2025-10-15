@@ -99,7 +99,7 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
           paintBullets(swiper);
         }}
       >
-        {[...banners]?.reverse().map((item: BannerData, i: number) => (
+        {[...banners]?.map((item: BannerData, i: number) => (
             item.thumbnail.mobile && (
               <SwiperSlide key={i} className={`swiper_0${i}`}>
                 {item.to ? (
