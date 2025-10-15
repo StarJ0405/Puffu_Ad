@@ -1,3 +1,4 @@
+import { CouponService } from "services/coupon";
 import { ReviewService } from "services/review";
 import { container } from "tsyringe";
 
@@ -24,7 +25,8 @@ export const POST: ApiHandler = async (req, res) => {
     };
 
     const result = await service.create(_data);
-
+    const couponService = container.resolve(CouponService);
+    couponService.checkReview(user.id);
     return res.json(return_data ? { content: result } : { message: "success" });
   } catch (err: any) {
     return res.status(500).json({ error: err?.message, status: 500 });
