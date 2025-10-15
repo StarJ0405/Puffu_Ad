@@ -151,3 +151,6 @@
   border-radius: 25px;
   width: 120px;
 }
+.selection div {
+  color: #111 !important;
+}

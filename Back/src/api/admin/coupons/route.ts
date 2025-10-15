@@ -1,6 +1,7 @@
 import { Coupon } from "models/coupon";
 import { CouponService } from "services/coupon";
 import { container } from "tsyringe";
+import { IsNull, Not } from "typeorm";
 
 export const POST: ApiHandler = async (req, res) => {
   const {
@@ -10,6 +11,7 @@ export const POST: ApiHandler = async (req, res) => {
     type,
     value,
     calc,
+    min,
     appears_at,
     date,
     starts_at,
@@ -55,6 +57,7 @@ export const POST: ApiHandler = async (req, res) => {
       type,
       value,
       calc,
+      min,
       appears_at,
       date,
       starts_at,
@@ -107,9 +110,13 @@ export const GET: ApiHandler = async (req, res) => {
     relations,
     order,
     select,
+    withDeleted,
     ...where
   } = req.parsedQuery;
-
+  if ("deleted_at" in where) {
+    if (where.deleted_at) where.deleted_at = Not(IsNull());
+    else where.deleted_at = IsNull();
+  }
   const service: CouponService = container.resolve(CouponService);
   if (pageSize) {
     const page = await service.getPageable(
@@ -117,7 +124,7 @@ export const GET: ApiHandler = async (req, res) => {
         pageSize: Number(pageSize),
         pageNumber: Number(pageNumber),
       },
-      { select, order, relations, where }
+      { select, order, relations, where, withDeleted }
     );
     return res.json(page);
   } else {

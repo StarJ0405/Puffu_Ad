@@ -94,6 +94,9 @@ export class Coupon extends BaseEntity {
   @Column({ enum: CalcType, type: "enum", default: CalcType.FIX })
   calc!: CalcType;
 
+  @Column({ type: "integer", default: 0 })
+  min?: number;
+
   @Column({
     type: "timestamp with time zone",
     default: () => "CURRENT_TIMESTAMP",
@@ -140,7 +143,7 @@ export class Coupon extends BaseEntity {
   @Column({ type: "boolean", default: false })
   review_photo?: boolean;
 
-  @Column({ type: "integer", default: -1 })
+  @Column({ type: "integer", default: 0 })
   max_quantity?: number;
 
   @Column({ type: "integer", default: 0 })
@@ -149,9 +152,9 @@ export class Coupon extends BaseEntity {
   @Column({ type: "integer", default: 0 })
   duplicate?: number;
 
-  @Column({ type: "integer", default: -1 })
+  @Column({ type: "integer", default: 0 })
   total_min?: number;
-  @Column({ type: "integer", default: -1 })
+  @Column({ type: "integer", default: 0 })
   total_max?: number;
 
   @Column({

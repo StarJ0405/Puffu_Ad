@@ -61,7 +61,7 @@ export class User extends BaseEntity {
   nickname?: string;
 
   @Column({ type: "timestamp with time zone", nullable: true })
-  birthday?: Date;
+  birthday?: Date | string | null;
 
   get adult(): boolean {
     if (this.birthday) {
@@ -115,7 +115,9 @@ export class User extends BaseEntity {
       const now_time = new Date().getTime();
       return this.coupons.filter(
         (coupon) =>
-          coupon.ends_at && new Date(coupon?.ends_at).getTime() > now_time
+          (!coupon.ends_at || new Date(coupon?.ends_at).getTime() > now_time) &&
+          (!coupon.appears_at ||
+            new Date(coupon.appears_at).getTime() <= now_time)
       ).length;
     }
     return 0;
