@@ -158,10 +158,11 @@ export class CouponService extends BaseService<Coupon, CouponRepository> {
     if (!options.order) {
       builder = builder
         .addSelect(
-          `CASE WHEN cu.item_id IS NULL AND cu.order_id IS NULL AND cu.shipping_method_id IS NULL AND cu.ends_at > NOW() THEN 0 ELSE 1 END, cu.ends_at`,
+          `CASE WHEN cu.item_id IS NULL AND cu.order_id IS NULL AND cu.shipping_method_id IS NULL AND cu.ends_at > NOW() THEN 0 ELSE 1 END`,
           "ord"
         )
-        .orderBy("ord", "DESC")
+        .orderBy("ord", "ASC")
+        .addOrderBy("cu.ends_at", "ASC")
         .addOrderBy("cu.created_at", "DESC");
     }
     if (pageData) {
