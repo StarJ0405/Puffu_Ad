@@ -232,8 +232,8 @@
 }
 
 /* 비활성화 */
-.coupon_select.disabled {cursor: not-allowed;}
-.coupon_select.disabled .coupon_choice {filter: opacity(0.5);}
+/* .coupon_select.disabled {cursor: not-allowed;}
+.coupon_select.disabled .coupon_choice {filter: opacity(0.5);} */
 
 
 

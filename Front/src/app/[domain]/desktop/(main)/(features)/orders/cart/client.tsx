@@ -142,7 +142,7 @@ export function CartWrap() {
   // 쿠폰 모달
   const openCouponModal = (copType:string) => {
     NiceModal.show("orderCouponListModal", { copType });
-    
+
     // copType, 모달 여는 경로가 상품, 주문, 배송 쿠폰인지 구분한 값
   };
 
@@ -199,7 +199,8 @@ export function CartWrap() {
         <FlexChild className={styles.coupon_info}>
           <VerticalFlex alignItems="start">
             <article>
-              <P className={styles.list_title}>쿠폰 적용</P>
+              <P className={styles.list_title}>장바구니 쿠폰</P>
+              <P className={styles.list_txt}>상품 외 주문서 전체 적용 쿠폰입니다.</P>
             </article>
 
             <VerticalFlex className={styles.info_list}>
@@ -730,6 +731,8 @@ export function Item({ item, openCouponModal }: { item: LineItemData, openCoupon
   const { cartData, reload } = useCart();
   const [quantity, setQuantity] = useState(item.quantity);
 
+  const disabled = 1 < 2;
+
   useEffect(() => {
     setQuantity(item.quantity);
   }, [item]);
@@ -782,11 +785,16 @@ export function Item({ item, openCouponModal }: { item: LineItemData, openCoupon
                   {item?.variant?.discount_price || 0} <Span>₩</Span>
                 </P>
               </VerticalFlex>
-
-              <Button className={styles.coupon_btn} onClick={()=> openCouponModal('procut')}>
-                쿠폰 사용
-                {/* 쿠폰 체크 되면 쿠폰 변경으로 바뀜 {'쿠폰 사용' : '쿠폰 변경'} */}
-              </Button>
+              {
+                disabled ? (
+                  <Button className={styles.coupon_btn} onClick={()=> openCouponModal('procut')}>
+                    쿠폰 사용
+                    {/* 쿠폰 체크 되면 쿠폰 변경으로 바뀜 {'쿠폰 사용' : '쿠폰 변경'} */}
+                  </Button>
+                ) : (
+                  <P color="#797979" fontSize={14}>적용 되는 상품 쿠폰이 없습니다.</P>
+                )
+              }
             </VerticalFlex>
           </VerticalFlex>
         </FlexChild>
@@ -863,7 +871,7 @@ export function Item({ item, openCouponModal }: { item: LineItemData, openCoupon
 
 export function CouponSelect({ openCouponModal, type }: { openCouponModal: (copType: string)=> void; type: string; }) {
 
-  const disabled = 1 > 2;
+  // const disabled = 1 > 2;
   const couponTitle = [
     "멤버쉽 Lv.2 브론즈 4000원 할인 쿠폰",
     "생일 2000원 할인 쿠폰",
@@ -871,23 +879,18 @@ export function CouponSelect({ openCouponModal, type }: { openCouponModal: (copT
 
   return (
     <Button
-      className={clsx(styles.coupon_select, { [styles.disabled]: disabled })}
-      disabled={disabled}
+      className={clsx(styles.coupon_select)}
+      // disabled={disabled}
       onClick={()=> openCouponModal(type)}
     >
+      {/* { [styles.disabled]: disabled } */}
       <HorizontalFlex className={styles.coupon_choice}>
         <FlexChild className={styles.coupon_title}>
-          {couponTitle.length > 0 ? (
-            <VerticalFlex alignItems="start" gap={5}>
-              {couponTitle.map((item, i) => {
-                return <P key={i}>{item}</P>;
-              })}
-            </VerticalFlex>
-          ) : (
-            <P>
-              {!disabled ? "쿠폰 선택하기" : "적용할 수 있는 쿠폰이 없습니다."}
-            </P>
-          )}
+          <VerticalFlex alignItems="start" gap={5}>
+            {couponTitle.map((item, i) => {
+              return <P key={i}>{item}</P>;
+            })}
+          </VerticalFlex>
         </FlexChild>
 
         <FlexChild className={styles.arrow} width={"auto"}>
