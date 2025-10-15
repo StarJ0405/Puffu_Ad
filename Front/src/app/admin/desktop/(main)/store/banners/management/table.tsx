@@ -152,6 +152,69 @@ export default function ({
         },
       },
     },
+    {
+      label: "우선순위 설정",
+      code: "importance",
+      Cell: ({ row }) => {
+        const imp = Number(row.importance ?? 0);
+        const up = async (e: React.MouseEvent) => {
+          e.stopPropagation();
+          const next = Math.max(0, imp - 1); // 음수 방지
+          if (next === imp) return; // 이미 0이면 종료
+          await adminRequester.updateBanner(row.id, {
+            store_id: row.store_id,
+            importance: next,
+          });
+          table.current.research();
+        };
+        const down = async (e: React.MouseEvent) => {
+          e.stopPropagation();
+          await adminRequester.updateBanner(row.id, {
+            store_id: row.store_id,
+            importance: imp + 1,
+          });
+          table.current.research();
+        };
+        const upDisabled = imp <= 0;
+
+        return (
+          <HorizontalFlex gap={40} alignItems="center">
+            <P width={28} textAlign="right">
+              {imp}
+            </P>
+            <VerticalFlex gap={20} justifyContent="center" alignItems="center">
+              <FlexChild flexGrow={0} width="auto">
+                <Image
+                  src="/resources/images/arrow_left.png"
+                  width={10}
+                  height={20}
+                  role="button"
+                  transform="rotate(90deg)"
+                  onClick={up}
+                  cursor={"pointer"}
+                  style={{
+                    cursor: upDisabled ? "default" : "pointer",
+                    opacity: upDisabled ? 0.35 : 1,
+                  }}
+                />
+              </FlexChild>
+              <FlexChild flexGrow={0} width="auto">
+                <Image
+                  src="/resources/images/arrow_left.png"
+                  width={10}
+                  height={20}
+                  role="button"
+                  transform="rotate(270deg)"
+                  onClick={down}
+                  cursor="pointer"
+                />
+              </FlexChild>
+            </VerticalFlex>
+          </HorizontalFlex>
+        );
+      },
+      styling: { common: { style: { width: 150, minWidth: 100 } } },
+    },
   ];
   const { stores } = useData(
     "stores",

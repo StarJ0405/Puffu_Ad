@@ -12,6 +12,7 @@ export const POST: ApiHandler = async (req, res) => {
     ends_at,
     adult,
     visible,
+    importance,
     metadata,
     _amount = 1,
     _return_data = false,
@@ -29,6 +30,7 @@ export const POST: ApiHandler = async (req, res) => {
       ends_at,
       adult,
       visible,
+      importance,
       metadata,
     };
     if (_amount === 1) {
