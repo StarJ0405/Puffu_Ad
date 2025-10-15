@@ -189,7 +189,7 @@ const ProductModal = NiceModal.create(
               <Image
                 className={styles.image}
                 src={
-                  product?.product?.thumbnail || "/resources/images/no-img.png"
+                  product?.thumbnail || "/resources/images/no-img.png"
                 }
                 size={200}
               />
@@ -201,7 +201,7 @@ const ProductModal = NiceModal.create(
                 <P>스토어</P>
               </FlexChild>
               <FlexChild className={styles.content}>
-                <P>{product?.product?.store?.name}</P>
+                <P>{product?.store?.name}</P>
               </FlexChild>
             </HorizontalFlex>
           </FlexChild>
@@ -211,7 +211,7 @@ const ProductModal = NiceModal.create(
                 <P>입점사</P>
               </FlexChild>
               <FlexChild className={styles.content}>
-                <P>{product?.product?.brand?.name}</P>
+                <P>{product?.brand?.name}</P>
               </FlexChild>
             </HorizontalFlex>
           </FlexChild>
@@ -277,7 +277,7 @@ const ProductModal = NiceModal.create(
                     }}
                   />
                 ) : (
-                  <P>{product?.product?.title}</P>
+                  <P>{product?.title}</P>
                 )}
               </FlexChild>
             </HorizontalFlex>
@@ -297,7 +297,7 @@ const ProductModal = NiceModal.create(
                     }}
                   />
                 ) : (
-                  <P>{product?.product?.code}</P>
+                  <P>{product?.code}</P>
                 )}
               </FlexChild>
             </HorizontalFlex>
@@ -551,14 +551,14 @@ const ProductModal = NiceModal.create(
               <FlexChild className={styles.content}>
                 {edit ? (
                   <Editor
-                    defaultValue={product?.product?.detail}
+                    defaultValue={product?.detail}
                     onChange={(detail) => setDetail(detail)}
                     path="/product"
                   />
                 ) : (
                   <Div
                     dangerouslySetInnerHTML={{
-                      __html: product?.product?.detail,
+                      __html: product?.detail,
                     }}
                   />
                 )}

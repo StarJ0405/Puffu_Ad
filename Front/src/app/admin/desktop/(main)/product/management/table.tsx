@@ -18,8 +18,9 @@ import { adminRequester } from "@/shared/AdminRequester";
 import useData from "@/shared/hooks/data/useData";
 import { toast } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import styles from "./page.module.css";
+
 export default function ({
   initCondition,
   initData,
@@ -38,14 +39,7 @@ export default function ({
         else if (row?.variants?.length > 1) return "단순옵션";
         return "오류";
       },
-      styling: {
-        common: {
-          style: {
-            width: 100,
-            minWidth: 100,
-          },
-        },
-      },
+      styling: { common: { style: { width: 100, minWidth: 100 } } },
     },
     {
       label: "썸네일",
@@ -62,13 +56,7 @@ export default function ({
           <Image src={cell} size={60} />
         </Tooltip>
       ),
-      styling: {
-        common: {
-          style: {
-            width: 60,
-          },
-        },
-      },
+      styling: { common: { style: { width: 60 } } },
     },
     {
       label: "상품명",
@@ -85,14 +73,7 @@ export default function ({
           </P>
         </FlexChild>
       ),
-      styling: {
-        common: {
-          style: {
-            width: 300,
-            minWidth: 300,
-          },
-        },
-      },
+      styling: { common: { style: { width: 300, minWidth: 300 } } },
     },
     {
       label: "판매가",
@@ -121,14 +102,7 @@ export default function ({
         `${row.buyable ? "판매중" : "구매불가"} / ${
           row.visible ? "전시중" : "비전시중"
         }`,
-      styling: {
-        common: {
-          style: {
-            width: 120,
-            minWidth: 120,
-          },
-        },
-      },
+      styling: { common: { style: { width: 120, minWidth: 120 } } },
     },
     {
       label: "옵션명",
@@ -140,16 +114,6 @@ export default function ({
               {cell?.map((variant: VariantData) => (
                 <FlexChild key={variant.id}>
                   <P>
-                    {/* <Span paddingRight={2}>
-                      [
-                      {variant.values
-                        .sort((v1, v2) =>
-                          v1.option_id.localeCompare(v2.option_id)
-                        )
-                        .map((value) => value.value)
-                        .join(", ")}
-                      ]
-                    </Span> */}
                     <Span>{variant.title}</Span>
                   </P>
                 </FlexChild>
@@ -170,17 +134,9 @@ export default function ({
         } else if (cell.length === 1) {
           return "단일 옵션";
         }
-
         return "오류";
       },
-      styling: {
-        common: {
-          style: {
-            width: 120,
-            minWidth: 120,
-          },
-        },
-      },
+      styling: { common: { style: { width: 120, minWidth: 120 } } },
     },
     {
       label: "옵션가",
@@ -194,7 +150,6 @@ export default function ({
                   <P>
                     <Span>{variant.discount_price}</Span>
                     <Span>{row?.store?.currency_unit}</Span>
-
                     {variant.price !== variant.discount_price && (
                       <>
                         <Span> </Span>
@@ -239,36 +194,48 @@ export default function ({
         } else if (cell.length === 1) {
           return "단일 옵션";
         }
-
         return "오류";
       },
     },
   ];
+
   const { stores } = useData(
     "stores",
     {},
     (condition) => adminRequester.getStores(condition),
-    {
-      onReprocessing: (data) => data?.content || [],
-      fallbackData: initStores,
-    }
+    { onReprocessing: (data) => data?.content || [], fallbackData: initStores }
   );
+
   const [store, setStore] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
+
+  const { categories = [] } = useData(
+    "categories",
+    { select: ["id", "name"], order: { name: "ASC" } },
+    (cond) => adminRequester.getCategories(cond),
+    { onReprocessing: (d) => d?.content || [] }
+  );
+
   const [total, setTotal] = useState(initData.NumberOfTotalElements);
   const table = useRef<any>(null);
   const input = useRef<any>(null);
+
   const onSearchClick = () => {
     const data: any = {};
     const q = input.current.getValue();
     if (q) data.q = q;
     if (store) data.store_id = store;
+    if (category) data.category_id = category;
     table.current.setCondition(data);
   };
+
   const onResetClick = () => {
     input.current.empty();
     table.current.reset();
     setStore("");
+    setCategory("");
   };
+
   const ContextMenu = ({ x, y, row }: { x: number; y: number; row?: any }) => {
     const rows: RowInterface[] = [
       {
@@ -330,11 +297,13 @@ export default function ({
     }
     return { x, y, rows };
   };
+
   const onDetailClick = (e: React.MouseEvent, row: any) => {
     e.preventDefault();
     e.stopPropagation();
     NiceModal.show("productDetail", { product: row });
   };
+
   return (
     <VerticalFlex>
       <FlexChild>
@@ -361,9 +330,9 @@ export default function ({
                         value={store}
                         options={[
                           { display: "전체", value: "" },
-                          ...stores?.map((store: StoreData) => ({
-                            display: store.name,
-                            value: store.id,
+                          ...(stores ?? []).map((s: StoreData) => ({
+                            display: s.name,
+                            value: s.id,
                           })),
                         ]}
                         onChange={(selected) => setStore(selected as string)}
@@ -371,6 +340,37 @@ export default function ({
                     </FlexChild>
                   </HorizontalFlex>
                 </FlexChild>
+
+                <FlexChild borderBottom={"1px solid #e9e9e9"}>
+                  <HorizontalFlex gap={20} justifyContent={"flex-start"}>
+                    <FlexChild
+                      width={"10%"}
+                      backgroundColor={"var(--admin-table-bg-color)"}
+                    >
+                      <div className={styles.titleWrap}>
+                        <Center>
+                          <P size={16} weight={"bold"}>
+                            카테고리
+                          </P>
+                        </Center>
+                      </div>
+                    </FlexChild>
+                    <FlexChild>
+                      <Select
+                        value={category}
+                        options={[
+                          { display: "전체", value: "" },
+                          ...categories.map((c: any) => ({
+                            display: c.name,
+                            value: c.id,
+                          })),
+                        ]}
+                        onChange={(selected) => setCategory(selected as string)}
+                      />
+                    </FlexChild>
+                  </HorizontalFlex>
+                </FlexChild>
+
                 <FlexChild borderBottom={"1px solid #e9e9e9"}>
                   <HorizontalFlex gap={20} justifyContent={"flex-start"}>
                     <FlexChild
@@ -399,6 +399,7 @@ export default function ({
                 </FlexChild>
               </VerticalFlex>
             </FlexChild>
+
             <FlexChild backgroundColor={"#f5f6fb"} padding={"20px 0"}>
               <HorizontalFlex gap={20}>
                 <FlexChild justifyContent={"flex-end"}>
@@ -424,6 +425,7 @@ export default function ({
           </VerticalFlex>
         </div>
       </FlexChild>
+
       <FlexChild padding={"15px 5px"}>
         <HorizontalFlex>
           <FlexChild>
@@ -434,6 +436,7 @@ export default function ({
           <FlexChild></FlexChild>
         </HorizontalFlex>
       </FlexChild>
+
       <FlexChild>
         <Table
           indexing={false}
@@ -444,12 +447,8 @@ export default function ({
           initCondition={initCondition}
           initLimit={20}
           initData={initData}
-          onSearch={(condition) => {
-            return adminRequester.getProducts(condition);
-          }}
-          onMaxPage={(data) => {
-            return Number(data?.totalPages);
-          }}
+          onSearch={(condition) => adminRequester.getProducts(condition)}
+          onMaxPage={(data) => Number(data?.totalPages)}
           onReprocessing={(data) => data?.content || []}
           onChange={({ origin }) => setTotal(origin.NumberOfTotalElements)}
           ContextMenu={ContextMenu}
