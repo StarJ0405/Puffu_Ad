@@ -123,7 +123,9 @@ export class CouponService extends BaseService<Coupon, CouponRepository> {
     let builder = this.repository
       .builder("cu")
       .leftJoinAndSelect("cu.categories", "ct")
-      .leftJoinAndSelect("cu.products", "pr");
+      .leftJoinAndSelect("cu.products", "pr")
+      .leftJoinAndSelect("pr.discounts", "dis")
+      .leftJoinAndSelect("dis.discount", "dd");
     if (where.user_id)
       builder = builder.andWhere(`user_id = :user_id`, {
         user_id: where.user_id,
