@@ -20,7 +20,7 @@ function ModalBaseHeader({
         <FlexChild>
           <VerticalFlex>
             {typeof title === "string" ? (
-              <P size={25} color={color} weight={700}>
+              <P size={20} color={color} weight={700}>
                 {title}
               </P>
             ) : (

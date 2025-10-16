@@ -33,12 +33,11 @@ export function ProductCard({
   onClick?: () => void;
 }) {
   const { userData } = useAuth();
-
   const { isMobile } = useBrowserEvent();
-
   const product_link = `/products/${product.id}`;
-
   const navigate = useNavigate();
+  const minHeightCheck = lineClamp === 1;
+
   return (
     <VerticalFlex
       width={width ?? isMobile ? "auto" : 200}
@@ -115,7 +114,7 @@ export function ProductCard({
           <FlexChild
             className={styles.product_title}
             onClick={() => (onClick ? onClick() : navigate(product_link))}
-            minHeight={!isMobile ? 40 : 30}
+            minHeight={!isMobile ? (minHeightCheck ? 20 : 40) : (minHeightCheck ? 16 : 30)}
             alignItems="flex-start"
           >
             <P

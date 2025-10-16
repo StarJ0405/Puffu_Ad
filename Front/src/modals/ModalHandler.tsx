@@ -38,6 +38,7 @@ import PostalCodeModal from "./main/address/PostaCodelModal";
 import ImgViewSliderModal from "./main/imgViewerSlider/imgViewSliderModal";
 import PhotoReviewDetailModal from "./main/photoReviewDetailModal/photoReviewDetailModal";
 import OrderCouponListModal from "./main/orderCouponListModal/orderCouponListModal";
+import CouponProductsModal from "./main/couponProductsModal/couponProductsModal";
 import AgreeContentModal from "./main/policies/AgreeContentModal";
 import OptionChangeModal from "./main/product/OptionChangeModal";
 import PurchaseModal from "./main/product/PurchaseModal";
@@ -67,6 +68,7 @@ function ModalHandler() {
   NiceModal.register("ImgViewSliderModal", ImgViewSliderModal);
   NiceModal.register("photoReviewDetailModal", PhotoReviewDetailModal);
   NiceModal.register("orderCouponListModal", OrderCouponListModal);
+  NiceModal.register("couponProductsModal", CouponProductsModal);
   // admin
   NiceModal.register("bannerDetail", BannerModal);
   NiceModal.register("groupDetail", GroupModal);
