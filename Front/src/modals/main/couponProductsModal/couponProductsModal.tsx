@@ -1,29 +1,16 @@
 "use client";
 import Button from "@/components/buttons/Button";
-import CheckboxChild from "@/components/choice/checkbox/CheckboxChild";
-import CheckboxGroup from "@/components/choice/checkbox/CheckboxGroup";
-import Div from "@/components/div/Div";
+import ProductCard from "@/components/card/ProductCard";
 import FlexChild from "@/components/flex/FlexChild";
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import Image from "@/components/Image/Image";
-import NoContent from "@/components/noContent/noContent";
+import MasonryGrid from "@/components/masonry/MasonryGrid";
 import P from "@/components/P/P";
 import ModalBase from "@/modals/ModalBase";
-import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
-import usePageData from "@/shared/hooks/data/usePageData";
-import { requester } from "@/shared/Requester";
+import useNavigate from "@/shared/hooks/useNavigate";
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import clsx from "clsx";
-import { useState } from "react";
 import styles from "./couponProductsModal.module.css";
-import { toast } from "@/shared/utils/Functions";
-import CouponItem from "@/components/coupon/couponItem";
-import ProductCard from "@/components/card/ProductCard";
-import MasonryGrid from "@/components/masonry/MasonryGrid";
-import useNavigate from "@/shared/hooks/useNavigate";
-import Span from "@/components/span/Span";
 
 const CouponProductsModal = NiceModal.create(
   ({
@@ -125,7 +112,6 @@ const CouponProductsModal = NiceModal.create(
               categories.length !== 0 && (
                 <FlexChild className={styles.ca_box}>
                   {categories.map((item) => {
-
                     const caLink = () => {
                       onCancel?.();
                       modal.remove();
