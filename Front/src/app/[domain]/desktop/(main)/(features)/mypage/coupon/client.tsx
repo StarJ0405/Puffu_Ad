@@ -18,7 +18,7 @@ import CouponItem from "@/components/coupon/couponItem";
 
 export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
   const { userData } = useAuth();
-  const { coupons, page, maxPage, setPage } = usePageData(
+  const { coupons, page, maxPage, setPage, origin } = usePageData(
     "coupons",
     (pageNumber) => ({
       pageNumber,
@@ -33,10 +33,7 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
   );
 
   return (
-    <VerticalFlex
-      
-      className={clsx(mypage.box_frame, styles.coupon_box)}
-    >
+    <VerticalFlex className={clsx(mypage.box_frame, styles.coupon_box)}>
       <HorizontalFlex className={mypage.box_header}>
         <P>쿠폰함</P>
         <FlexChild className={mypage.header_subTitle}>
@@ -58,7 +55,12 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
         )}
       </FlexChild>
       <FlexChild>
-        <ListPagination page={page} maxPage={maxPage} onChange={setPage} size={5}/>
+        <ListPagination
+          page={page}
+          maxPage={maxPage}
+          onChange={setPage}
+          size={5}
+        />
       </FlexChild>
     </VerticalFlex>
   );

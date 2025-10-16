@@ -801,13 +801,13 @@ export function Item({
                   {item?.variant?.discount_price || 0} <Span>₩</Span>
                 </P>
               </VerticalFlex>
-                <Button
-                  className={styles.coupon_btn}
-                  onClick={() => openCouponModal("procut")}
-                >
-                  쿠폰 사용
-                  {/* 쿠폰 체크 되면 쿠폰 변경으로 바뀜 {'쿠폰 사용' : '쿠폰 변경'} */}
-                </Button>
+              <Button
+                className={styles.coupon_btn}
+                onClick={() => openCouponModal("item")}
+              >
+                쿠폰 사용
+                {/* 쿠폰 체크 되면 쿠폰 변경으로 바뀜 {'쿠폰 사용' : '쿠폰 변경'} */}
+              </Button>
             </VerticalFlex>
           </VerticalFlex>
         </FlexChild>

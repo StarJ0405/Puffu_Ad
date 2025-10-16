@@ -46,6 +46,8 @@ const OrderCouponListModal = NiceModal.create(
       (pageNumber) => ({
         pageNumber,
         pageSize: 12,
+        type: copType,
+        used: false,
       }),
       (condition) => requester.getCoupons(condition),
       (data: Pageable) => data?.totalPages || 0,
@@ -54,7 +56,6 @@ const OrderCouponListModal = NiceModal.create(
         onReprocessing: (data) => data?.content || [],
       }
     );
-
     const couponsTest = [
       {
         id: "0",
@@ -93,7 +94,6 @@ const OrderCouponListModal = NiceModal.create(
       name: string;
       ends_at: string;
     };
-
     const [selected, setSelected] = useState<string[]>([]);
 
     const couponSumbit = () => {
@@ -139,7 +139,7 @@ const OrderCouponListModal = NiceModal.create(
             className={styles.list_wrap}
           >
             <VerticalFlex className={styles.item_list}>
-              {couponsTest?.length > 0 ? (
+              {coupons?.length > 0 ? (
                 <>
                   {couponsTest?.map((coupon: CouponData, i) => (
                     <CouponItem key={i} coupon={coupon} selected={selected} />
