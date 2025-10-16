@@ -66,8 +66,8 @@ export default function Review({ product }: { product: ProductData }) {
     {
       pause: !ready,
       revalidateOnMount: true,
-      onReprocessing: (res: Pageable) => res?.content ?? [], // 각 페이지를 배열로 변환
-      fallbackData: [], // 초기 빈 배열
+      onReprocessing: (res: Pageable) => res?.content ?? [],
+      fallbackData: [],
     }
   );
 
