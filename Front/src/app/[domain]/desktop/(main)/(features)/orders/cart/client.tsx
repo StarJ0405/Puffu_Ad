@@ -215,7 +215,7 @@ export function CartWrap() {
 
                 <CouponSelect
                   openCouponModal={openCouponModal}
-                  type={"order"}
+                  copType={"order"}
                 />
               </HorizontalFlex>
 
@@ -224,7 +224,7 @@ export function CartWrap() {
 
                 <CouponSelect
                   openCouponModal={openCouponModal}
-                  type={"delivery"}
+                  copType={"delivery"}
                 />
               </HorizontalFlex>
             </VerticalFlex>
@@ -887,10 +887,10 @@ export function Item({
 
 export function CouponSelect({
   openCouponModal,
-  type,
+  copType,
 }: {
   openCouponModal: (copType: string) => void;
-  type: string;
+  copType: string;
 }) {
   // const disabled = 1 > 2;
   const couponTitle = [
@@ -902,7 +902,7 @@ export function CouponSelect({
     <Button
       className={clsx(styles.coupon_select)}
       // disabled={disabled}
-      onClick={() => openCouponModal(type)}
+      onClick={() => openCouponModal(copType)}
     >
       {/* { [styles.disabled]: disabled } */}
       <HorizontalFlex className={styles.coupon_choice}>

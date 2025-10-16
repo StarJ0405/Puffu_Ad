@@ -19,6 +19,7 @@ import clsx from "clsx";
 import { useState } from "react";
 import styles from "./orderCouponListModal.module.css";
 import { toast } from "@/shared/utils/Functions";
+import CouponItem from "@/components/coupon/couponItem";
 
 const OrderCouponListModal = NiceModal.create(
   ({
@@ -87,6 +88,12 @@ const OrderCouponListModal = NiceModal.create(
       },
     ];
 
+    type CouponData = {
+      id: string;
+      name: string;
+      ends_at: string;
+    };
+
     const [selected, setSelected] = useState<string[]>([]);
 
     const couponSumbit = () => {
@@ -135,7 +142,7 @@ const OrderCouponListModal = NiceModal.create(
               {couponsTest?.length > 0 ? (
                 <>
                   {couponsTest?.map((coupon: CouponData, i) => (
-                    <CouponCard key={i} coupon={coupon} selected={selected} />
+                    <CouponItem key={i} coupon={coupon} selected={selected} />
                   ))}
                 </>
               ) : (
@@ -154,81 +161,5 @@ const OrderCouponListModal = NiceModal.create(
     );
   }
 );
-
-type CouponData = {
-  id: string;
-  name: string;
-  ends_at: string;
-};
-
-function CouponCard({
-  coupon,
-  selected,
-}: {
-  coupon: CouponData;
-  selected: string[];
-}) {
-  // const isExpired =
-  //   new Date(coupon.ends_at || 0).getTime() < new Date().getTime();
-  // const isUsed = coupon.used;
-
-  const isSelected = selected.includes(coupon.id);
-
-  return (
-    <FlexChild
-      className={clsx(styles.item, {
-        [styles.checked]: isSelected,
-        // [styles.expired]: isExpired,
-        // [styles.used]: isUsed,
-      })}
-    >
-      <label>
-        <HorizontalFlex>
-          <FlexChild className={styles.checkBox}>
-            <CheckboxChild id={coupon.id} />
-          </FlexChild>
-          <VerticalFlex
-            gap={10}
-            padding={"20px 0 20px 15px"}
-            alignItems="flex-start"
-          >
-            <P
-              className={clsx(styles.name, {
-                // [styles.expired]: isExpired,
-                // [styles.used]: isUsed,
-              })}
-            >
-              {coupon.name}
-            </P>
-            <P
-              className={clsx(styles.date, {
-                // [styles.expired]: isExpired,
-                // [styles.used]: isUsed,
-              })}
-            >
-              사용기간 {new Date(coupon?.ends_at || 0).toLocaleDateString()}{" "}
-              까지
-            </P>
-          </VerticalFlex>
-
-          <FlexChild className={styles.cutout_wrap}>
-            <Div className={styles.cutout_left} />
-            <Div className={styles.cutout_right} />
-            <Div className={styles.dashed_line} />
-            <Div className={styles.spacer} />
-          </FlexChild>
-
-          <FlexChild className={styles.icon_wrap} width={"fit-content"}>
-            <Image
-              src="/resources/icons/mypage/coupon_pink_icon.png"
-              width={30}
-              alt="쿠폰 아이콘"
-            />
-          </FlexChild>
-        </HorizontalFlex>
-      </label>
-    </FlexChild>
-  );
-}
 
 export default OrderCouponListModal;
