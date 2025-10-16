@@ -1,18 +1,14 @@
 "use client";
+import Button from "@/components/buttons/Button";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
-import Span from "@/components/span/Span";
-import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
-import useNavigate from "@/shared/hooks/useNavigate";
-import { requester } from "@/shared/Requester";
-import styles from "./couponItemMobile.module.css";
-import { useEffect } from "react";
-import Div from "@/components/div/Div";
+import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
+import styles from "./couponItemMobile.module.css";
 
 
 
@@ -42,11 +38,11 @@ export function CouponItemMobile({
 
   const typeCheck = () => {
     if (coupon?.type === "order") {
-      return "주문 할인";
+      return "주문";
     } else if (coupon?.type === "item") {
-      return "상품 할인";
+      return "상품";
     } else if (coupon?.type === "shipping") {
-      return "배송 할인";
+      return "배송";
     }
   };
 
@@ -54,84 +50,125 @@ export function CouponItemMobile({
     if (coupon?.min === 0) {
       return "최소 금액 제한 없음";
     } else {
-      return `${(coupon?.min || 0).toLocaleString()}원부터`;
+      return `${(coupon?.min || 0).toLocaleString()}원부터 사용 가능`;
     }
   };
+
+  
+  const products = coupon?.products;
+  const categories = coupon?.categories;
+
+  const isAllProductsApplied = ((coupon?.products?.length ?? 0) === 0) && ((coupon?.categories?.length ?? 0) === 0);
 
   return (
     <FlexChild
       className={clsx(styles.item, {
-        [styles.expired]: isExpired,
-        [styles.used]: isUsed,
+        [styles.expired]: isExpired || isUsed,
       })}
     >
       <HorizontalFlex>
         <VerticalFlex
-          gap={10}
-          padding={"20px 0 20px 15px"}
+          className={styles.data_card}
           alignItems="flex-start"
         >
-          <P
-            className={clsx(styles.name, {
-              [styles.expired]: isExpired,
-              [styles.used]: isUsed,
-            })}
-          >
+          <P className={clsx(styles.name)}>
             {coupon?.name}
           </P>
 
-          <P>
+          <P className={clsx('SacheonFont', styles.value)}>
             {calcCheck()}
           </P>
 
-          <P>
-            {minCheck()}
-          </P>
-
-          <P
-            className={clsx(
-              styles.date,
-              isExpired && styles.expired,
-              isUsed && styles.used
-            )}
-          >
-            {new Date(coupon?.starts_at || 0).toLocaleDateString()}부터 <br />
-            {new Date(coupon?.ends_at || 0).toLocaleDateString()}까지
-          </P>
+          <HorizontalFlex alignItems="end" gap={10}>
+            <VerticalFlex alignItems="start" className={styles.txt1} gap={3}>
+              <P fontSize={14}>
+                {minCheck()}
+              </P>
+    
+              <P
+                className={clsx(
+                  styles.date,
+                  isExpired && styles.expired,
+                  isUsed && styles.used
+                )}
+              >
+                {new Date(coupon?.starts_at || 0).toLocaleDateString()}~ 
+                {new Date(coupon?.ends_at || 0).toLocaleDateString()}까지
+              </P>
+            </VerticalFlex>
+            {
+              coupon?.type === "item" && !isUsed && !isExpired && (
+                <FlexChild width={'auto'}>
+                  {!isAllProductsApplied ? (
+                    <Button onClick={()=> NiceModal.show("couponProductsModal", { products, categories })} className={clsx(styles.more_btn, styles.btn_txt)}>
+                      {
+                        products?.length !==0 ? (
+                          '적용 상품'
+                        ) : categories?.length !==0 ? (
+                          '적용 분류'
+                        ) : (
+                          '적용'
+                        )
+                      }
+                    </Button>
+                  ) : (
+                    <P className={styles.btn_txt}>전체 상품</P>
+                  )}
+                </FlexChild>
+              )
+            }
+          </HorizontalFlex>
         </VerticalFlex>
 
-        <FlexChild className={styles.cutout_wrap}>
-          <Div className={styles.cutout_left} />
-          <Div className={styles.cutout_right} />
-          <Div className={styles.dashed_line} />
-          <Div className={styles.spacer} />
-        </FlexChild>
-
-        <FlexChild className={styles.icon_wrap} width={"fit-content"}>
-          {typeCheck()}
-          {isUsed ? (
-            <P className={styles.txt}>
-              사용
-              <br />
-              완료
-            </P>
-          ) : isExpired ? (
-            <P className={styles.txt}>
-              기간
-              <br />
-              만료
-            </P>
-          ) : (
+        <FlexChild className={styles.cutout_wrap} width={"auto"} height={'100%'}>
+          <VerticalFlex gap={10}>
             <Image
-              src="/resources/icons/mypage/coupon_pink_icon.png"
+              src={`/resources/icons/mypage/coupon_${coupon?.type}_icon.png`}
               width={30}
               alt="쿠폰 아이콘"
             />
-          )}
+            <P fontSize={12}>{typeCheck()}</P>
+          </VerticalFlex>
         </FlexChild>
       </HorizontalFlex>
+      {
+        (isExpired || isUsed) && (
+          <FlexChild className={styles.expired_card} justifyContent="center">
+            {
+              isExpired ? (
+                <P>사용 만료</P>
+              ) : isUsed ? (
+                <P>기간 만료</P>
+              ) : (
+                <></>
+              )
+            }
+          </FlexChild>
+        )
+      }
     </FlexChild>
   );
 }
+
+
+// {isUsed ? (
+//               <P className={styles.txt}>
+//                 사용
+//                 <br />
+//                 완료
+//               </P>
+//             ) : isExpired ? (
+//               <P className={styles.txt}>
+//                 기간
+//                 <br />
+//                 만료
+//               </P>
+//             ) : (
+//               <Image
+//                 src="/resources/icons/mypage/coupon_pink_icon.png"
+//                 width={30}
+//                 alt="쿠폰 아이콘"
+//               />
+//             )}
 
 export default CouponItemMobile;

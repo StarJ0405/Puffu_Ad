@@ -73,7 +73,6 @@ export function SearchBox() {
 export function HeaderBottom() {
 
   const menu1 = [
-    // 임시 데이터
     { name: "BEST 상품", link: "/products/best" },
     { name: "입고예정", link: "/products/commingSoon" },
     { name: "신상품", link: "/products/new" },
@@ -82,12 +81,12 @@ export function HeaderBottom() {
       link: "/products/hot",
       icon: "/resources/images/header/HotDeal_icon.png",
     },
+    { name: "입고예정", link: "/products/commingSoon" },
     // { name: "세트메뉴", link: "/products/set" },
     // { name: "랜덤박스", link: "/products/randomBox" },
   ];
 
   const menu2 = [
-    // 임시 데이터
     { name: "포토 사용후기", link: "/board/photoReview" },
     { name: "공지사항", link: "/board/notice" },
     { name: "1:1문의", link: "/board/inquiry" },
