@@ -198,21 +198,21 @@ export class Coupon extends BaseEntity {
 
   // 사용 관련
   @Column({ type: "character varying", nullable: true })
-  item_id?: string;
+  item_id?: string | null;
 
   @ManyToOne(() => LineItem, (item) => item.coupons)
   @JoinColumn({ name: "item_id", referencedColumnName: "id" })
   item?: LineItem;
 
   @Column({ type: "character varying", nullable: true })
-  order_id?: string;
+  order_id?: string | null;
 
   @ManyToOne(() => Order, (order) => order.coupons)
   @JoinColumn({ name: "order_id", referencedColumnName: "id" })
   order?: Order;
 
   @Column({ type: "character varying", nullable: true })
-  shipping_method_id?: string;
+  shipping_method_id?: string | null;
 
   @ManyToOne(() => ShippingMethod, (shipping_method) => shipping_method.coupons)
   @JoinColumn({ name: "shipping_method_id", referencedColumnName: "id" })
