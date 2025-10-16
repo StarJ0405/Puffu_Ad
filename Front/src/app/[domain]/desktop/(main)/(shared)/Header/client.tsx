@@ -75,7 +75,7 @@ export function HeaderBottom() {
   const menu1 = [
     // 임시 데이터
     { name: "BEST 상품", link: "/products/best" },
-    // { name: "입고예정", link: "/products/commingSoon" },
+    { name: "입고예정", link: "/products/commingSoon" },
     { name: "신상품", link: "/products/new" },
     {
       name: "이달의 핫딜",

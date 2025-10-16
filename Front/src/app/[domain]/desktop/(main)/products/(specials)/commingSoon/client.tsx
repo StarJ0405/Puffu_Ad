@@ -10,8 +10,8 @@ export function CommingSoonList({
   initProducts: Pageable;
   initConiditon: any;
 }) {
-  const { best, maxPage, page, setPage, mutate, origin } = usePageData(
-    "best",
+  const { commingSoon, maxPage, page, setPage, mutate, origin } = usePageData(
+    "commingSoon",
     (pageNumber) => ({
       ...initConiditon,
       pageSize: 24,
@@ -29,7 +29,7 @@ export function CommingSoonList({
       <BaseProductList
         mutate={mutate}
         total={origin.NumberOfTotalElements || 0}
-        listArray={best}
+        listArray={commingSoon}
         commingSoon={true}
         pagination={{ page, maxPage, setPage }}
       />
