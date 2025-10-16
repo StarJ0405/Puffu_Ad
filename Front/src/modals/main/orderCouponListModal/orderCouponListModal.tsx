@@ -131,6 +131,32 @@ function CouponCard({
   //   new Date(coupon.ends_at || 0).getTime() < new Date().getTime();
   // const isUsed = coupon.used;
 
+  const calcCheck = () => {
+    if (coupon?.calc === "percent") {
+      return `${coupon?.value}%`;
+    } else if (coupon?.calc === "fix") {
+      return `${(coupon?.value || 0).toLocaleString()}원`;
+    }
+  };
+
+  const typeCheck = () => {
+    if (coupon?.type === "order") {
+      return "주문";
+    } else if (coupon?.type === "item") {
+      return "상품";
+    } else if (coupon?.type === "shipping") {
+      return "배송";
+    }
+  };
+
+  const minCheck = () => {
+    if (coupon?.min === 0) {
+      return "최소 금액 제한 없음";
+    } else {
+      return `${(coupon?.min || 0).toLocaleString()}원부터 사용 가능`;
+    }
+  };
+
   const isSelected = selected.includes(coupon.id);
 
   return (
@@ -152,45 +178,44 @@ function CouponCard({
               id={coupon.id}
             />
           </FlexChild>
-          <VerticalFlex
-            gap={10}
-            padding={"20px 0 20px 15px"}
-            alignItems="flex-start"
-          >
-            <P
-              className={clsx(styles.name, {
-                // [styles.expired]: isExpired,
-                // [styles.used]: isUsed,
+
+          <VerticalFlex className={styles.data_card} alignItems="flex-start">
+            <P className={clsx(styles.name, {
                 [styles.used]: used,
               })}
             >
               {coupon.name}
             </P>
-            <P
-              className={clsx(styles.date, {
-                // [styles.expired]: isExpired,
-                // [styles.used]: isUsed,
-                [styles.used]: used,
-              })}
-            >
-              사용기간 {new Date(coupon?.ends_at || 0).toLocaleDateString()}{" "}
-              까지
+            
+            <P className={clsx('SacheonFont', styles.value)} color="#fff">
+              {calcCheck()}
             </P>
+
+            <VerticalFlex alignItems="start" className={styles.txt1} gap={3}>
+              <P fontSize={14}>
+                {minCheck()}
+              </P>
+
+              <P
+                className={clsx(styles.date, {
+                  [styles.used]: used,
+                })}
+              >
+                {new Date(coupon?.starts_at || 0).toLocaleDateString()}~ 
+                {new Date(coupon?.ends_at || 0).toLocaleDateString()}까지
+              </P>
+            </VerticalFlex>
           </VerticalFlex>
 
-          <FlexChild className={styles.cutout_wrap}>
-            <Div className={styles.cutout_left} />
-            <Div className={styles.cutout_right} />
-            <Div className={styles.dashed_line} />
-            <Div className={styles.spacer} />
-          </FlexChild>
-
-          <FlexChild className={styles.icon_wrap} width={"fit-content"}>
-            <Image
-              src="/resources/icons/mypage/coupon_pink_icon.png"
-              width={30}
-              alt="쿠폰 아이콘"
-            />
+          <FlexChild className={styles.cutout_wrap} width={"auto"} height={'100%'}>
+            <VerticalFlex gap={10}>
+              <Image
+                src={`/resources/icons/mypage/coupon_${coupon?.type}_icon.png`}
+                width={30}
+                alt="쿠폰 아이콘"
+              />
+              <P fontSize={12}>{typeCheck()}</P>
+            </VerticalFlex>
           </FlexChild>
         </HorizontalFlex>
       </label>

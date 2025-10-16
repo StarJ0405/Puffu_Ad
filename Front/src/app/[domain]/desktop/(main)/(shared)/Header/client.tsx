@@ -81,7 +81,6 @@ export function HeaderBottom() {
       link: "/products/hot",
       icon: "/resources/images/header/HotDeal_icon.png",
     },
-    { name: "입고예정", link: "/products/commingSoon" },
     // { name: "세트메뉴", link: "/products/set" },
     // { name: "랜덤박스", link: "/products/randomBox" },
   ];
