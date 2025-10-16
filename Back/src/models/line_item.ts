@@ -12,7 +12,7 @@ import {
 import { generateEntityId } from "utils/functions";
 import { Brand } from "./brand";
 import { Cart } from "./cart";
-import { Coupon } from "./coupon";
+import { CalcType, Coupon } from "./coupon";
 import { ExchangeItem } from "./exchange_item";
 import { Order } from "./order";
 import { RefundItem } from "./refund_item";
@@ -115,6 +115,21 @@ export class LineItem extends BaseEntity {
       return this.quantity * this.discount_price;
     return undefined;
   }
+  get total_final(): number {
+    const amount = this.total_discount || 0;
+    if (this.coupons?.length) {
+      const [percents, fix] = this.coupons.reduce(
+        (acc, now) => {
+          if (now.calc === CalcType.FIX) acc[1] += now.value;
+          else if (now.calc === CalcType.PERCENT) acc[0] += now.value;
+          return acc;
+        },
+        [0, 0]
+      ) || [0, 0];
+      return Math.max(0, Math.round((amount * (100 - percents)) / 100.0 - fix));
+    }
+    return amount;
+  }
 
   @Column({ type: "character varying", nullable: true })
   currency_unit?: string;
@@ -148,6 +163,7 @@ export class LineItem extends BaseEntity {
       title: this.title,
       total: this.total,
       total_discount: this.total_discount,
+      total_final: this.total_final,
     };
   }
 }

@@ -58,13 +58,15 @@ export function MyOrdersTable({
       relations: [
         "refunds.items",
         "items.refunds.refund",
-        "items.brand",
-        "items.review",
-        "shipping_method",
-        "store",
-        "address",
         "items.exchanges.exchange",
         "items.exchanges.swaps",
+        "items.brand",
+        "items.review",
+        "shipping_method.coupons",
+        "store",
+        "address",
+        "coupons",
+        "items.coupons",
       ],
       start_date: startDate,
       end_date: endDate,
@@ -123,7 +125,7 @@ export function MyOrdersTable({
     if (q) setCondition({ q });
     else setCondition({});
   };
-
+  console.log(orders);
   return (
     <>
       <HorizontalFlex className={styles.search_box}>
@@ -532,7 +534,7 @@ export function MyOrdersTable({
                                 </P>
                               </HorizontalFlex>
 
-                              <HorizontalFlex className={styles.item}>
+                              <HorizontalFlex className={styles.item} hidden>
                                 <P>
                                   할인 금액 :{" "}
                                   <Span>
@@ -581,9 +583,8 @@ export function MyOrdersTable({
                         <FlexChild justifyContent={"center"}>
                           <P>
                             <Span>
-                              {((item.discount_price || 0) -
-                                (item.unit_price || 0)) *
-                                item.quantity}
+                              {(item.total_final || 0) -
+                                (item.unit_price || 0) * item.quantity}
                             </Span>
                             <Span>원</Span>
                           </P>
@@ -595,9 +596,7 @@ export function MyOrdersTable({
                             weight={600}
                             fontSize={18}
                           >
-                            <Span>
-                              {(item.discount_price || 0) * item.quantity}
-                            </Span>
+                            <Span>{item.total_final || 0}</Span>
                             <Span>원</Span>
                           </P>
                         </FlexChild>
@@ -610,12 +609,12 @@ export function MyOrdersTable({
               <VerticalFlex className={styles.order_summary}>
                 <HorizontalFlex className={styles.summary_row}>
                   <P>배송비</P>
-                  {order.shipping_method?.amount === 0 ? (
+                  {order.delivery_fee === 0 ? (
                     <P>무료</P>
                   ) : (
                     <P>
                       <Span>+</Span>
-                      <Span>{order.shipping_method?.amount}</Span>
+                      <Span>{order.delivery_fee}</Span>
                       <Span>원</Span>
                     </P>
                   )}
@@ -630,7 +629,7 @@ export function MyOrdersTable({
                 <HorizontalFlex className={styles.summary_row}>
                   <P>총 할인금액</P>
                   <P>
-                    <Span>{order.total_discounted - order.total}</Span>
+                    <Span>{(order.total_final || 0) - order.total}</Span>
                     <Span>원</Span>
                   </P>
                 </HorizontalFlex>
@@ -647,11 +646,7 @@ export function MyOrdersTable({
                 <HorizontalFlex className={styles.summary_row}>
                   <P>총 결제금액</P>
                   <P color="var(--main-color1)" weight={600} fontSize={20}>
-                    <Span>
-                      {order.total_discounted +
-                        (order.shipping_method?.amount || 0) -
-                        order.point}
-                    </Span>
+                    <Span>{order.total_final}</Span>
                     <Span>원</Span>
                   </P>
                 </HorizontalFlex>
