@@ -84,7 +84,7 @@ const CouponProductsModal = NiceModal.create(
                 <MasonryGrid
                   width={"100%"}
                   gap={15}
-                  breakpoints={!isMobile ? 3 : 2}
+                  breakpoints={!isMobile ? 3 : 3}
                 >
                   {products.map((product) => {
                     const procutLink = () => {
@@ -96,7 +96,7 @@ const CouponProductsModal = NiceModal.create(
                     return (
                       <ProductCard
                         onClick={procutLink}
-                        lineClamp={1}
+                        lineClamp={2}
                         width={"auto"}
                         product={product}
                         key={product.id}

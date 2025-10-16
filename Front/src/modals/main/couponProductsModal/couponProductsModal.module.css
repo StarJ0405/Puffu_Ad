@@ -94,18 +94,16 @@
 
 .mob_container {padding: 0;}
 
-.mob_container .list_header {
-  padding: 15px 10px 0;
+.mob_container .title_header {
+  padding: 15px 13px 10px;
 }
 
-.mob_container .list_wrap {
-  padding: 0 5px 50px;
+.mob_container .item_list {
+  border-radius: 0;
+  background: #282828;
 }
 
-.mob_container .item .name {font-size: 15px;}
-.item .date {font-size: 13px;}
-
-.mob_container .button_box {padding: 0 13px 20px;}
+.mob_container .button_box {padding: 0 13px 20px; background: transparent;}
 
 .mob_container .submit_btn {
   background: var(--main-color2);

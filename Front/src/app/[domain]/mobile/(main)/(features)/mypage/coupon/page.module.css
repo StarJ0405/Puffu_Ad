@@ -14,8 +14,7 @@
   background-color: var(--main-color2);
 }
 
-.item {
-  /* padding: 20px 10px; */
+/* .item {
   max-height: 100px;
   border-radius: 10px;
   background: linear-gradient(90deg, #2f2f2f 0%, #404040 50%, #3a3a3a 100%);
@@ -93,7 +92,7 @@
 .icon_wrap .txt {
   font-size: 13px;
   font-weight: 600;
-}
+} */
 
 .list_more_btn {
   background: var(--main-color2);
