@@ -7,6 +7,7 @@ import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventPr
 import clsx from "clsx";
 import styles from "./couponItemDesktop.module.css";
 import NiceModal from "@ebay/nice-modal-react";
+import Span from "@/components/span/Span";
 
 export function CouponItemDesktop({
   coupon,
@@ -17,8 +18,6 @@ export function CouponItemDesktop({
   const isExpired =
     new Date(coupon.ends_at || 0).getTime() < new Date().getTime();
   const isUsed = coupon.used;
-
-  console.log(coupon);
 
   const calcCheck = () => {
     if (coupon?.calc === "percent") {
@@ -40,7 +39,7 @@ export function CouponItemDesktop({
 
   const minCheck = () => {
     if (coupon?.min === 0) {
-      return "제한 없음";
+      return "최소 금액 제한 없음";
     } else {
       return `${(coupon?.min || 0).toLocaleString()}원부터`;
     }
@@ -77,7 +76,17 @@ export function CouponItemDesktop({
         {
           coupon?.type === "item" && !isUsed && !isExpired && (
             !isAllProductsApplied ? (
-              <Button onClick={()=> NiceModal.show("couponProductsModal", { products, categories })} className={styles.more_btn}>적용 상품</Button>
+              <Button onClick={()=> NiceModal.show("couponProductsModal", { products, categories })} className={styles.more_btn}>
+                {
+                  products?.length !==0 ? (
+                    '적용 상품'
+                  ) : categories?.length !==0 ? (
+                    '적용 카테고리'
+                  ) : (
+                    '적용'
+                  )
+                }
+              </Button>
             ) : (
               <P>전체 적용</P>
             )

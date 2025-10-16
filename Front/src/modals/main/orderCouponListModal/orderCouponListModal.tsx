@@ -19,7 +19,7 @@ import clsx from "clsx";
 import { useState } from "react";
 import styles from "./orderCouponListModal.module.css";
 import { toast } from "@/shared/utils/Functions";
-import CouponItem from "@/components/coupon/couponItem";
+import CouponItemMobile from "@/components/coupon/couponItemMobile";
 
 const OrderCouponListModal = NiceModal.create(
   ({
@@ -56,44 +56,7 @@ const OrderCouponListModal = NiceModal.create(
         onReprocessing: (data) => data?.content || [],
       }
     );
-    const couponsTest = [
-      {
-        id: "0",
-        name: "멤버쉽 브론즈 4000원 할인 쿠폰",
-        ends_at: "2025-11-20",
-      },
-      {
-        id: "1",
-        name: "생일 할인 쿠폰",
-        ends_at: "2025-12-30",
-      },
-      {
-        id: "2",
-        name: "생일 할인 쿠폰",
-        ends_at: "2025-12-30",
-      },
-      {
-        id: "3",
-        name: "생일 할인 쿠폰",
-        ends_at: "2025-12-30",
-      },
-      {
-        id: "4",
-        name: "생일 할인 쿠폰",
-        ends_at: "2025-12-30",
-      },
-      {
-        id: "5",
-        name: "생일 할인 쿠폰",
-        ends_at: "2025-12-30",
-      },
-    ];
-
-    type CouponData = {
-      id: string;
-      name: string;
-      ends_at: string;
-    };
+    
     const [selected, setSelected] = useState<string[]>([]);
 
     const couponSumbit = () => {
@@ -141,8 +104,8 @@ const OrderCouponListModal = NiceModal.create(
             <VerticalFlex className={styles.item_list}>
               {coupons?.length > 0 ? (
                 <>
-                  {couponsTest?.map((coupon: CouponData, i) => (
-                    <CouponItem key={i} coupon={coupon} selected={selected} />
+                  {coupons?.map((coupon: CouponData) => (
+                    <CouponItemMobile key={coupon.id} coupon={coupon} selected={selected} />
                   ))}
                 </>
               ) : (
