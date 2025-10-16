@@ -25,6 +25,7 @@ const OrderCouponListModal = NiceModal.create(
     selected: initSelect = [],
     max = 1,
     used = [],
+    price = 0,
   }: {
     onConfirm: (data: any) => void;
     onCancel?: () => void;
@@ -33,6 +34,7 @@ const OrderCouponListModal = NiceModal.create(
     selected: string[];
     max: number;
     used?: string[];
+    price?: number;
   }) => {
     const modal = useModal();
     const { isMobile } = useBrowserEvent();
@@ -91,6 +93,7 @@ const OrderCouponListModal = NiceModal.create(
                       selected={selected}
                       disabled={selected.length >= max}
                       used={used.includes(coupon.id)}
+                      price={price}
                     />
                   ))}
                 </>
@@ -111,22 +114,18 @@ const OrderCouponListModal = NiceModal.create(
   }
 );
 
-type CouponData = {
-  id: string;
-  name: string;
-  ends_at: string;
-};
-
 function CouponCard({
   coupon,
   selected,
   disabled,
   used = false,
+  price = 0,
 }: {
   coupon: CouponData;
   selected: string[];
   disabled: boolean;
   used?: boolean;
+  price?: number;
 }) {
   // const isExpired =
   //   new Date(coupon.ends_at || 0).getTime() < new Date().getTime();
@@ -146,7 +145,10 @@ function CouponCard({
         <HorizontalFlex>
           <FlexChild className={styles.checkBox}>
             <CheckboxChild
-              disabled={(used || disabled) && !isSelected}
+              disabled={
+                price < (coupon?.min || 0) ||
+                ((used || disabled) && !isSelected)
+              }
               id={coupon.id}
             />
           </FlexChild>

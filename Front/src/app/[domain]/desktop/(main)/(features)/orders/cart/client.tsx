@@ -253,6 +253,38 @@ export function CartWrap() {
         )
       );
   }, [cartData?.items]);
+  useEffect(() => {
+    const total = getProductSum();
+    setOrderCupons(
+      coupons
+        .filter(
+          (f: CouponData) =>
+            orderCoupons.includes(f.id) && total >= (f.min || 0)
+        )
+        .map((f: CouponData) => f.id)
+    );
+    setShippingCupons(
+      coupons
+        .filter(
+          (f: CouponData) =>
+            shippingCoupons.includes(f.id) && total >= (f.min || 0)
+        )
+        .map((f: CouponData) => f.id)
+    );
+    setItemCupons(
+      itemCoupons
+        .map((item) => {
+          item.coupons = coupons
+            .filter(
+              (f: CouponData) =>
+                item.coupons.includes(f.id) && total >= (f.min || 0)
+            )
+            .map((f: CouponData) => f.id);
+          return item;
+        })
+        .filter((f) => f.coupons.length)
+    );
+  }, [selected, cartData?.items]);
   // 쿠폰 모달
   const openCouponModal = (
     coupons: CouponData[],
@@ -268,6 +300,7 @@ export function CartWrap() {
         selected,
         max,
         used,
+        price: getProductSum(),
       });
 
     // copType, 모달 여는 경로가 상품, 주문, 배송 쿠폰인지 구분한 값
