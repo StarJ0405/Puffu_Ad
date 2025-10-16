@@ -15,32 +15,38 @@ type Props = {
   scrollTargetRef?: React.RefObject<HTMLElement>;
 };
 
-function ListPagination({ page, maxPage, onChange, size = 10, scrollTargetRef }: Props) {
+function ListPagination({
+  page,
+  maxPage,
+  onChange,
+  size = 10,
+  scrollTargetRef,
+}: Props) {
   const { isMobile } = useBrowserEvent();
 
   const clampIndex = (p: number) =>
     Math.max(
       0,
-      Math.min(Number.isFinite(p) ? Math.trunc(p) : 0, Math.max(0, maxPage - 1))
+      Math.min(Number.isFinite(p) ? Math.trunc(p) : 0, Math.max(0, maxPage))
     );
 
   const go = (p: number) => {
     onChange(clampIndex(p));
     if (scrollTargetRef?.current) {
-      scrollTargetRef.current.scrollIntoView({ behavior: 'smooth' });
+      scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
     } else {
-      window.scrollTo({ top: 0, behavior: 'smooth'});
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
   const safePage = clampIndex(page);
   const first = safePage === 0;
-  const last = safePage >= Math.max(0, maxPage - 1);
+  const last = safePage >= Math.max(0, maxPage);
 
   // 페이지 블록 계산 (size당 묶음)
   const start = Math.floor(safePage / size) * size;
   const len = Math.min(size, Math.max(0, maxPage - start)); // 음수 방지
-  const pages = Array.from({ length: len }, (_, i) => start + i);
+  const pages = Array.from({ length: len + 1 }, (_, i) => start + i);
 
   return (
     <>
