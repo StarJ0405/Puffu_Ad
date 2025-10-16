@@ -29,13 +29,15 @@ import {
   useCart,
   useStore,
 } from "@/providers/StoreProvider/StorePorivderClient";
+import useData from "@/shared/hooks/data/useData";
 import useAddress from "@/shared/hooks/main/useAddress";
 import useNavigate from "@/shared/hooks/useNavigate";
 import { requester } from "@/shared/Requester";
 import { Sessions } from "@/shared/utils/Data";
-import { toast } from "@/shared/utils/Functions";
+import { getBankData, toast } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
+import _ from "lodash";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
 
@@ -56,12 +58,94 @@ export function CartWrap() {
   const [isLoading, setIsLoading] = useState(false);
   const [agrees, setAgrees] = useState<string[]>([]);
   const [payment, setPayment] = useState<string>("");
-  const [total, setTotal] = useState<number>(0);
   const [point, setPoint] = useState<number>(0);
   const [message, setMessage] = useState<string>("");
-  const [totalDiscounted, setTotalDiscounted] = useState<number>(0);
   const [shipping, setShipping] = useState<ShippingMethodData>();
   const navigate = useNavigate();
+  const [orderCoupons, setOrderCupons] = useState<string[]>([]);
+  const [shippingCoupons, setShippingCupons] = useState<string[]>([]);
+  const [itemCoupons, setItemCupons] = useState<
+    { item_id: string; coupons: string[] }[]
+  >([]);
+  const { coupons } = useData(
+    "coupons",
+    {
+      used: false,
+      relations: ["products", "categories"],
+    },
+    (condition) => requester.getCoupons(condition),
+    { onReprocessing: (data) => data?.content || [] }
+  );
+  const getShippingAmount = () => {
+    const amount = shipping?.amount || 0;
+    if (shippingCoupons.length > 0) {
+      const shippings: CouponData[] = coupons.filter((f: CouponData) =>
+        shippingCoupons.includes(f.id)
+      );
+      const percents = shippings.reduce((acc, now) => {
+        if (now.calc === "percent") return acc + now.value;
+        return acc;
+      }, 0);
+      const fix = shippings.reduce((acc, now) => {
+        if (now.calc === "fix") return acc + now.value;
+        return acc;
+      }, 0);
+      return Math.max(0, Math.round((amount * (100 - percents)) / 100.0 - fix));
+    }
+    return amount;
+  };
+  const getProductSum = () => {
+    const items: CouponData[] = coupons.filter(
+      (f: CouponData) => f.type === "item"
+    );
+    return (
+      cartData?.items
+        .filter((f) => selected.includes(f.id))
+        .reduce((acc, now) => {
+          const amount = (now.variant.discount_price || 0) * now.quantity;
+          const coupons: string[] =
+            itemCoupons.find((f) => f.item_id === now.id)?.coupons || [];
+          if (coupons.length > 0) {
+            const products = items.filter((f) => coupons.includes(f.id));
+            const percents = products.reduce((acc, now) => {
+              if (now.calc === "percent") return acc + now.value;
+              return acc;
+            }, 0);
+            const fix = products.reduce((acc, now) => {
+              if (now.calc === "fix") return acc + now.value;
+              return acc;
+            }, 0);
+            return (
+              acc +
+              Math.max(0, Math.round((amount * (100 - percents)) / 100.0 - fix))
+            );
+          }
+
+          return acc + amount;
+        }, 0) || 0
+    );
+  };
+  const getSum = () => {
+    const amount = getShippingAmount() + getProductSum();
+    if (orderCoupons.length > 0) {
+      const orders: CouponData[] = coupons.filter((f: CouponData) =>
+        orderCoupons.includes(f.id)
+      );
+      const percents = orders.reduce((acc, now) => {
+        if (now.calc === "percent") return acc + now.value;
+        return acc;
+      }, 0);
+      const fix = orders.reduce((acc, now) => {
+        if (now.calc === "fix") return acc + now.value;
+        return acc;
+      }, 0);
+      return Math.round((amount * (100 - percents)) / 100.0 - fix);
+    }
+    return amount;
+  };
+  const getTotal = () => {
+    return Math.max(0, getSum() - point);
+  };
   const deliveryAddModal = () => {
     NiceModal.show(ConfirmModal, {
       message: <DeliveryAddEdit ref={formRef} />,
@@ -123,25 +207,68 @@ export function CartWrap() {
     setAddress(_default);
   }, [addresses]);
   useEffect(() => {
-    let total = 0;
-    let totalDiscounted = 0;
-    cartData?.items
-      .filter((item) => selected.includes(item.id))
-      .forEach((item) => {
-        total += item?.variant?.price * item.quantity;
-        totalDiscounted += (item?.variant?.discount_price || 0) * item.quantity;
-      });
+    const totalDiscounted =
+      cartData?.items
+        .filter((item) => selected.includes(item.id))
+        .reduce((acc, item) => {
+          return acc + (item?.variant?.discount_price || 0) * item.quantity;
+        }, 0) || 0;
     const shippingMethod = storeData?.methods
-      ?.filter((f) => f.min <= total && (f.max === -1 || f.max > total))
+      ?.filter(
+        (f) =>
+          f.min <= totalDiscounted && (f.max === -1 || f.max > totalDiscounted)
+      )
       .sort((m1, m2) => m1.amount - m2.amount)?.[0];
     setShipping(shippingMethod);
-    setTotalDiscounted(totalDiscounted);
-    setTotal(total);
+    if (!shippingMethod?.amount) setShippingCupons([]);
   }, [cartData, storeData, selected]);
-
+  useEffect(() => {
+    if (orderCoupons.length > 0)
+      setOrderCupons(
+        orderCoupons.filter((f) =>
+          coupons.some((coupon: CouponData) => coupon.id === f)
+        )
+      );
+    if (shippingCoupons.length > 0)
+      setShippingCupons(
+        shippingCoupons.filter((f) =>
+          coupons.some((coupon: CouponData) => coupon.id === f)
+        )
+      );
+    if (itemCoupons.length > 0)
+      setItemCupons(
+        itemCoupons.map((item) => {
+          item.coupons = item.coupons.filter((f) =>
+            coupons.some((coupon: CouponData) => coupon.id === f)
+          );
+          return item;
+        })
+      );
+  }, [coupons]);
+  useEffect(() => {
+    if (itemCoupons.length > 0)
+      setItemCupons(
+        itemCoupons.filter((f) =>
+          cartData?.items.some((item) => item.id === f.item_id)
+        )
+      );
+  }, [cartData?.items]);
   // 쿠폰 모달
-  const openCouponModal = (copType: string) => {
-    NiceModal.show("orderCouponListModal", { copType });
+  const openCouponModal = (
+    coupons: CouponData[],
+    max: number,
+    selected: string[],
+    onConfirm = (data: string[]) => console.log(data),
+    used?: string[]
+  ) => {
+    if (max > 0)
+      NiceModal.show("orderCouponListModal", {
+        coupons,
+        onConfirm,
+        selected,
+        max,
+        used,
+      });
 
     // copType, 모달 여는 경로가 상품, 주문, 배송 쿠폰인지 구분한 값
   };
@@ -176,6 +303,52 @@ export function CartWrap() {
                       item={item}
                       key={item.id}
                       openCouponModal={openCouponModal}
+                      selected={
+                        itemCoupons.find((f) => f.item_id === item.id)
+                          ?.coupons || []
+                      }
+                      coupons={coupons.filter((f: CouponData) => {
+                        if (f.type === "item") {
+                          if (
+                            f.products?.length === 0 &&
+                            f.categories?.length === 0
+                          ) {
+                            return true;
+                          } else {
+                            if (f.products?.length) {
+                              return f.products.some(
+                                (p) => p.id === item.variant.product_id
+                              );
+                            }
+                            if (f.categories?.length) {
+                              return f.categories.some((ct) =>
+                                item.variant.product.categories.some(
+                                  (pct) =>
+                                    ct.id === pct.id ||
+                                    ct.id === pct?.parent_id ||
+                                    ct.id === pct?.parent?.parent_id
+                                )
+                              );
+                            }
+                          }
+                        }
+                        return false;
+                      })}
+                      used={itemCoupons
+                        .filter((f) => f.item_id !== item.id)
+                        .map((item) => item.coupons)
+                        .flat()}
+                      onConfirm={(data) =>
+                        setItemCupons(
+                          _.uniqBy(
+                            [
+                              { item_id: item.id, coupons: data },
+                              ...itemCoupons,
+                            ],
+                            (item) => item.item_id
+                          )
+                        )
+                      }
                     />
                   ))
               }
@@ -200,7 +373,10 @@ export function CartWrap() {
             </VerticalFlex>
         </FlexChild> */}
 
-        <FlexChild className={styles.coupon_info}>
+        <FlexChild
+          className={styles.coupon_info}
+          hidden={!storeData?.metadata?.shipping && !storeData?.metadata?.order}
+        >
           <VerticalFlex alignItems="start">
             <article>
               <P className={styles.list_title}>장바구니 쿠폰</P>
@@ -210,21 +386,39 @@ export function CartWrap() {
             </article>
 
             <VerticalFlex className={styles.info_list}>
-              <HorizontalFlex className={clsx(styles.info_item)}>
+              <HorizontalFlex
+                className={clsx(styles.info_item)}
+                hidden={!storeData?.metadata?.order}
+              >
                 <Span>주문 할인</Span>
 
                 <CouponSelect
                   openCouponModal={openCouponModal}
-                  copType={"order"}
+                  onConfirm={(data) => setOrderCupons(data)}
+                  selected={orderCoupons}
+                  max={Number(storeData?.metadata?.order || 0)}
+                  coupons={coupons.filter(
+                    (f: CouponData) => f.type === "order"
+                  )}
                 />
               </HorizontalFlex>
 
-              <HorizontalFlex className={clsx(styles.info_item)}>
+              <HorizontalFlex
+                className={clsx(styles.info_item)}
+                hidden={
+                  !storeData?.metadata?.shipping || shipping?.amount === 0
+                }
+              >
                 <Span>배송 할인</Span>
 
                 <CouponSelect
                   openCouponModal={openCouponModal}
-                  copType={"delivery"}
+                  onConfirm={(data) => setShippingCupons(data)}
+                  selected={shippingCoupons}
+                  max={Number(storeData?.metadata?.shipping || 0)}
+                  coupons={coupons.filter(
+                    (f: CouponData) => f.type === "shipping"
+                  )}
                 />
               </HorizontalFlex>
             </VerticalFlex>
@@ -298,25 +492,33 @@ export function CartWrap() {
               onValueChange={(value) => setPayment(value)}
             >
               <VerticalFlex className={styles.payment_deak}>
-                <FlexChild className={clsx(styles.payment_card)}>
+                <FlexChild
+                  className={clsx(styles.payment_card)}
+                  onClick={() =>
+                    document.getElementById("credit_card")?.click()
+                  }
+                >
                   <FlexChild width={"auto"}>
                     <RadioChild id={"credit_card"} />
                   </FlexChild>
-                  <Span
-                    onClick={() =>
-                      document.getElementById("credit_card")?.click()
-                    }
-                  >
-                    신용카드 결제
-                  </Span>
+                  <Span>신용카드 결제</Span>
                 </FlexChild>
-                {/* <FlexChild className={clsx(styles.payment_card)}>
+                <FlexChild
+                  className={clsx(styles.payment_card)}
+                  onClick={() =>
+                    document.getElementById("direct_bank")?.click()
+                  }
+                >
+                  <FlexChild width={"auto"}>
+                    <RadioChild id={"direct_bank"} />
+                  </FlexChild>
+                  <Span>무통장 입금</Span>
+                </FlexChild>
+                {/* <FlexChild className={clsx(styles.payment_card)} onClick={() => document.getElementById("toss")?.click()}>
                   <FlexChild width={"auto"}>
                     <RadioChild id={"toss"} />
                   </FlexChild>
-                  <Span
-                    onClick={() => document.getElementById("toss")?.click()}
-                  >
+                  <Span>
                     토스 결제
                   </Span>
                 </FlexChild> */}
@@ -342,7 +544,7 @@ export function CartWrap() {
                 <Span>상품 금액</Span>
 
                 <P>
-                  <Span>{totalDiscounted}</Span>
+                  <Span>{getProductSum()}</Span>
                   <Span> ₩</Span>
                 </P>
               </HorizontalFlex>
@@ -352,12 +554,12 @@ export function CartWrap() {
 
                 <FlexChild width={"auto"} gap={10}>
                   {/* 배송비 할인 쿠폰 적용되면 나타나기 */}
-                  {/* <P fontSize={13}>
+                  <P fontSize={13} hidden={shippingCoupons.length === 0}>
                     (배송비 할인 적용)
-                  </P> */}
+                  </P>
 
                   <P>
-                    <Span>{shipping?.amount || 0}</Span>
+                    <Span>{getShippingAmount()}</Span>
                     <Span> ₩</Span>
                   </P>
                 </FlexChild>
@@ -397,10 +599,7 @@ export function CartWrap() {
                     hideArrow
                     value={point}
                     onChange={(value) => setPoint(value as number)}
-                    max={Math.min(
-                      userData?.point || 0,
-                      totalDiscounted + (shipping?.amount || 0)
-                    )}
+                    max={Math.min(userData?.point || 0, getSum())}
                     min={0}
                   />
                   <Button
@@ -424,8 +623,7 @@ export function CartWrap() {
                 <Span>할인가</Span>
 
                 <P color="#fff">
-                  <Span>- </Span>
-                  <Span>{point}</Span>
+                  <Span>{-point}</Span>
                   <Span> ₩</Span>
                 </P>
               </HorizontalFlex>
@@ -434,9 +632,7 @@ export function CartWrap() {
                 <Span>합계</Span>
 
                 <P color={"var(--main-color1)"}>
-                  <Span>
-                    {(shipping?.amount || 0) + totalDiscounted - point}
-                  </Span>
+                  <Span>{getTotal()}</Span>
                   <Span color="#fff"> ₩</Span>
                 </P>
               </HorizontalFlex>
@@ -446,7 +642,7 @@ export function CartWrap() {
           <FlexChild className={styles.total_pay_txt}>
             <Span>총 결제 금액</Span>
             <P color={"var(--main-color1)"}>
-              <Span>{(shipping?.amount || 0) + totalDiscounted - point}</Span>
+              <Span>{getTotal()}</Span>
               <Span color="#fff"> ₩</Span>
             </P>
           </FlexChild>
@@ -475,8 +671,13 @@ export function CartWrap() {
                   message: message,
                   cart_id: cartData?.id,
                   point,
+                  coupons: {
+                    orders: orderCoupons,
+                    shippings: shippingCoupons,
+                    items: itemCoupons,
+                  },
                 };
-                if (totalDiscounted + (shipping?.amount || 0) - point === 0) {
+                if (getTotal() === 0) {
                   setIsLoading(true);
                   requester.createOrder(
                     data,
@@ -511,32 +712,42 @@ export function CartWrap() {
                     //   navigate(`/orders/cart/toss`);
                     //   break;
                     // }
+                    case "direct_bank": {
+                      requester.createOrder(
+                        { ...data, payment: getBankData() },
+                        ({
+                          content,
+                          error,
+                        }: {
+                          content: OrderData;
+                          error: any;
+                        }) => {
+                          if (error) {
+                            toast({ message: error });
+                            setIsLoading(false);
+                            return;
+                          }
+                          sessionStorage.setItem(
+                            Sessions.ORDER,
+                            JSON.stringify(content)
+                          );
+                          navigate("/orders/complete", {
+                            type: "replace",
+                          });
+                        }
+                      );
+                      break;
+                    }
                     case "credit_card": {
                       const trackId = data.cart_id + "_" + new Date().getTime();
                       const items = cartData?.items?.filter((f) =>
                         selected.includes(f.id)
                       );
-                      let total = 0;
-
-                      items
-                        ?.filter((item) => selected.includes(item.id))
-                        .forEach((item) => {
-                          const discount_price =
-                            item?.variant?.discount_price || 0;
-                          const tax = Math.round(
-                            (discount_price *
-                              (item?.variant?.product?.tax_rate || 0)) /
-                              100
-                          );
-                          total +=
-                            discount_price * item.quantity +
-                            tax * item.quantity;
-                        });
                       const params = {
                         paytype: "nestpay",
                         trackId: trackId,
                         payMethod: "card",
-                        amount: total + (shipping?.amount || 0) - point,
+                        amount: getTotal(),
                         payerId: userData?.id,
                         payerName: userData?.name,
                         payerEmail: userData?.username,
@@ -738,12 +949,26 @@ export function CartWrap() {
   );
 }
 
-export function Item({
+function Item({
   item,
+  coupons,
   openCouponModal,
+  selected,
+  onConfirm,
+  used,
 }: {
   item: LineItemData;
-  openCouponModal: (copType: string) => void;
+  openCouponModal: (
+    coupons: CouponData[],
+    max: number,
+    selected: string[],
+    onConfirm: (data: string[]) => void,
+    used?: string[]
+  ) => void;
+  coupons: CouponData[];
+  selected: string[];
+  used: string[];
+  onConfirm: (data: string[]) => void;
 }) {
   const { storeData } = useStore();
   const { cartData, reload } = useCart();
@@ -752,7 +977,22 @@ export function Item({
   useEffect(() => {
     setQuantity(item.quantity);
   }, [item]);
-
+  const getPrice = () => {
+    const amount = Number(item.variant.discount_price * quantity);
+    if (selected.length > 0) {
+      const products = coupons.filter((f) => selected.includes(f.id));
+      const percents = products.reduce((acc, now) => {
+        if (now.calc === "percent") return acc + now.value;
+        return acc;
+      }, 0);
+      const fix = products.reduce((acc, now) => {
+        if (now.calc === "fix") return acc + now.value;
+        return acc;
+      }, 0);
+      return Math.max(0, Math.round((amount * (100 - percents)) / 100.0 - fix));
+    }
+    return amount;
+  };
   return (
     <VerticalFlex className={styles.cart_item} gap={20}>
       <HorizontalFlex justifyContent="start" position="relative">
@@ -795,15 +1035,28 @@ export function Item({
             <VerticalFlex gap={20} alignItems="start" width={"auto"}>
               <VerticalFlex className={styles.unit_price} alignItems="start">
                 <P className={styles.normal_price}>
-                  {item?.variant?.price} <Span>₩</Span>
+                  {Number(item?.variant?.price || 0).toLocaleString("ko")}{" "}
+                  <Span>₩</Span>
                 </P>
                 <P>
-                  {item?.variant?.discount_price || 0} <Span>₩</Span>
+                  {Number(item?.variant?.discount_price || 0).toLocaleString(
+                    "ko"
+                  )}{" "}
+                  <Span>₩</Span>
                 </P>
               </VerticalFlex>
               <Button
                 className={styles.coupon_btn}
-                onClick={() => openCouponModal("item")}
+                onClick={() =>
+                  openCouponModal(
+                    coupons,
+                    Number(storeData?.metadata?.product || 0),
+                    selected,
+                    onConfirm,
+                    used
+                  )
+                }
+                hidden={!storeData?.metadata?.product}
               >
                 쿠폰 사용
                 {/* 쿠폰 체크 되면 쿠폰 변경으로 바뀜 {'쿠폰 사용' : '쿠폰 변경'} */}
@@ -871,13 +1124,12 @@ export function Item({
           width={"auto"}
         >
           {/* 쿠폰가 적용되면 나타나기 */}
-          {/* <P color="#ccc" fontSize={15}>쿠폰 적용가</P> */}
+          <P color="#ccc" fontSize={15} hidden={!selected.length}>
+            쿠폰 적용가
+          </P>
 
           <P className={styles.total_txt}>
-            {Number(item.variant.discount_price * quantity).toLocaleString(
-              "ko-KR"
-            )}{" "}
-            <Span>₩</Span>
+            {getPrice().toLocaleString("ko-KR")} <Span>₩</Span>
           </P>
         </VerticalFlex>
       </HorizontalFlex>
@@ -887,30 +1139,49 @@ export function Item({
 
 export function CouponSelect({
   openCouponModal,
-  copType,
+  coupons,
+  max,
+  selected,
+  onConfirm,
 }: {
-  openCouponModal: (copType: string) => void;
-  copType: string;
+  openCouponModal: (
+    coupons: CouponData[],
+    max: number,
+    selected: string[],
+    onConfirm?: (data: string[]) => void
+  ) => void;
+  coupons: CouponData[];
+  max: number;
+  selected: string[];
+  onConfirm?: (data: string[]) => void;
 }) {
   // const disabled = 1 > 2;
-  const couponTitle = [
-    "멤버쉽 Lv.2 브론즈 4000원 할인 쿠폰",
-    "생일 2000원 할인 쿠폰",
-  ];
 
   return (
     <Button
       className={clsx(styles.coupon_select)}
       // disabled={disabled}
-      onClick={() => openCouponModal(copType)}
+      onClick={() => openCouponModal(coupons, max, selected, onConfirm)}
     >
       {/* { [styles.disabled]: disabled } */}
       <HorizontalFlex className={styles.coupon_choice}>
         <FlexChild className={styles.coupon_title}>
           <VerticalFlex alignItems="start" gap={5}>
-            {couponTitle.map((item, i) => {
-              return <P key={i}>{item}</P>;
-            })}
+            {coupons
+              .filter((f: CouponData) => selected.includes(f.id))
+              .map((coupon) => {
+                return (
+                  <FlexChild key={coupon.id}>
+                    <HorizontalFlex>
+                      <P>{coupon.name}</P>
+                      <P>
+                        {(-coupon.value).toLocaleString("ko")}
+                        {coupon.calc === "fix" ? "원" : "%"}
+                      </P>
+                    </HorizontalFlex>
+                  </FlexChild>
+                );
+              })}
           </VerticalFlex>
         </FlexChild>
 

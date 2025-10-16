@@ -11,13 +11,13 @@ import {
 } from "typeorm";
 import { generateEntityId } from "utils/functions";
 import { Address } from "./address";
+import { CalcType, Coupon } from "./coupon";
+import { Exchange } from "./exchange";
 import { LineItem } from "./line_item";
+import { Refund } from "./refund";
 import { ShippingMethod } from "./shipping_method";
 import { Store } from "./store";
 import { User } from "./user";
-import { Refund } from "./refund";
-import { Coupon } from "./coupon";
-import { Exchange } from "./exchange";
 
 export enum OrderStatus {
   AWAITING = "awaiting",
@@ -94,11 +94,59 @@ export class Order extends BaseEntity {
   get total_discounted(): number {
     return (
       this.items?.reduce((acc, now) => {
-        return acc + (now.discount_price || 0) * now.quantity;
+        const amount = (now.discount_price || 0) * now.quantity;
+        if (now.coupons?.length) {
+          const [percents, fix] = now.coupons.reduce(
+            (acc, now) => {
+              if (now.calc === CalcType.FIX) acc[1] += now.value;
+              else if (now.calc === CalcType.PERCENT) acc[0] += now.value;
+              return acc;
+            },
+            [0, 0]
+          ) || [0, 0];
+          return (
+            acc +
+            Math.max(0, Math.round((amount * (100 - percents)) / 100.0 - fix))
+          );
+        }
+        return acc + amount;
       }, 0.0) || 0.0
     );
   }
-
+  get delivery_fee(): number {
+    const amount = this.shipping_method?.amount || 0;
+    if (this.shipping_method?.coupons?.length) {
+      const [percents, fix] = this.shipping_method.coupons.reduce(
+        (acc, now) => {
+          if (now.calc === CalcType.FIX) acc[1] += now.value;
+          else if (now.calc === CalcType.PERCENT) acc[0] += now.value;
+          return acc;
+        },
+        [0, 0]
+      ) || [0, 0];
+      return Math.max(0, Math.round((amount * (100 - percents)) / 100.0 - fix));
+    }
+    return amount;
+  }
+  get total_final(): number {
+    const amount = this.total_discounted + this.delivery_fee;
+    if (this.coupons?.length) {
+      const [percents, fix] = this.coupons.reduce(
+        (acc, now) => {
+          if (now.calc === CalcType.FIX) acc[1] += now.value;
+          else if (now.calc === CalcType.PERCENT) acc[0] += now.value;
+          return acc;
+        },
+        [0, 0]
+      ) || [0, 0];
+      return Math.max(
+        0,
+        Math.round((amount * (100 - percents)) / 100.0 - fix) -
+          (this.point || 0)
+      );
+    }
+    return amount - (this.point || 0);
+  }
   @Column({
     type: "timestamp with time zone",
     default: () => "CURRENT_TIMESTAMP",
@@ -142,6 +190,8 @@ export class Order extends BaseEntity {
       total: this.total,
       total_discounted: this.total_discounted,
       total_tax: this.total_tax,
+      delivery_fee: this.delivery_fee,
+      total_final: this.total_final,
     };
   }
 }

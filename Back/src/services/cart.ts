@@ -1,5 +1,6 @@
 import { BaseService } from "data-source";
 import { Cart } from "models/cart";
+import { CalcType } from "models/coupon";
 import { Order, OrderStatus } from "models/order";
 import { AddressRepository } from "repositories/address";
 import { CartRepository } from "repositories/cart";
@@ -9,7 +10,8 @@ import { ShippingMethodRepository } from "repositories/shipping_method";
 import { UserRepository } from "repositories/user";
 import { VariantRepository } from "repositories/variant";
 import { inject, injectable } from "tsyringe";
-import { FindManyOptions, FindOneOptions, ILike } from "typeorm";
+import { FindManyOptions, FindOneOptions, ILike, In } from "typeorm";
+import { CouponService } from "./coupon";
 import { PointService } from "./point";
 
 @injectable()
@@ -27,6 +29,8 @@ export class CartService extends BaseService<Cart, CartRepository> {
     protected userRepository: UserRepository,
     @inject(PointService)
     protected pointService: PointService,
+    @inject(CouponService)
+    protected couponService: CouponService,
     @inject(VariantRepository)
     protected variantRepository: VariantRepository
   ) {
@@ -133,6 +137,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
     message,
     payment,
     point = 0,
+    coupons,
   }: {
     user_id: string;
     cart_id: string;
@@ -142,6 +147,11 @@ export class CartService extends BaseService<Cart, CartRepository> {
     message: string;
     payment: any;
     point?: number;
+    coupons?: {
+      orders?: string[];
+      shippings?: string[];
+      items?: { item_id: string; coupons: string[] }[];
+    };
   }): Promise<Order | null> {
     if (
       !user_id ||
@@ -216,22 +226,88 @@ export class CartService extends BaseService<Cart, CartRepository> {
       store_id: cart.store_id,
       address: _address,
       shipping_method: _shipping_method,
-      status: OrderStatus.PENDING,
+      status: payment?.bank_number ? OrderStatus.AWAITING : OrderStatus.PENDING,
       payment_data: payment,
       point: point || 0,
     });
-
-    // line_item 총 지분 금액 계산 : 배송비 - 포인트 - 기타 할인비
-    const shared_total = (_shipping_method?.amount || 0) - (point || 0) - 0;
+    // const { orders = [], shippings = [], items=[] } = coupons || {};
+    const order_coupons = coupons?.orders?.length
+      ? await this.couponService.getList({ where: { id: In(coupons.orders) } })
+      : [];
+    const shipping_coupons = coupons?.shippings?.length
+      ? await this.couponService.getList({
+          where: { id: In(coupons.shippings) },
+        })
+      : [];
+    const item_coupons = await Promise.all(
+      (coupons?.items || [])
+        ?.filter((f) => selected.includes(f.item_id))
+        ?.map(async (item) => ({
+          id: item.item_id,
+          coupons: await this.couponService.getList({
+            where: {
+              id: In(item.coupons),
+            },
+          }),
+        }))
+    );
     const total =
-      items?.reduce(
-        (acc, item) =>
-          acc + (item.variant?.discount_price || 0) * item.quantity,
-        0
-      ) || 0;
+      items?.reduce((acc, item) => {
+        const amount = (item.variant?.discount_price || 0) * item.quantity;
+        const coupon = item_coupons.find((f) => f.id === item.id);
+        if (coupon) {
+          const [percents, fix] = coupon.coupons.reduce(
+            (acc, now) => {
+              if (now.calc === CalcType.FIX) acc[1] += now.value;
+              else if (now.calc === CalcType.PERCENT) acc[0] += now.value;
+              return acc;
+            },
+            [0, 0]
+          );
+          return (
+            acc +
+            Math.max(0, Math.round((amount * (100 - percents)) / 100.0 - fix))
+          );
+        }
+        return acc + amount;
+      }, 0) || 0;
+    const [shipping_percents, shipping_fix] = shipping_coupons.reduce(
+      (acc, now) => {
+        if (now.calc === CalcType.FIX) acc[1] += now.value;
+        else if (now.calc === CalcType.PERCENT) acc[0] += now.value;
+        return acc;
+      },
+      [0, 0]
+    );
+    const shipping =
+      ((_shipping_method?.amount || 0) * (100 - shipping_percents)) / 100.0 -
+      shipping_fix;
+    const [order_percents, order_fix] = order_coupons.reduce(
+      (acc, now) => {
+        if (now.calc === CalcType.FIX) acc[1] += now.value;
+        else if (now.calc === CalcType.PERCENT) acc[0] += now.value;
+        return acc;
+      },
+      [0, 0]
+    );
+    // line_item 총 지분 금액 계산 : 배송비 - 포인트 - 기타 할인비
+    const shared_total =
+      shipping -
+      (point || 0) -
+      order_fix -
+      Math.round(((total + shipping) * order_percents) / 100.0);
 
     await Promise.all(
       (items || []).map(async (item) => {
+        const coupon = item_coupons.find((f) => f.id === item.id);
+        const [percents, fix] = coupon?.coupons.reduce(
+          (acc, now) => {
+            if (now.calc === CalcType.FIX) acc[1] += now.value;
+            else if (now.calc === CalcType.PERCENT) acc[0] += now.value;
+            return acc;
+          },
+          [0, 0]
+        ) || [0, 0];
         await this.lineItemRepository.update(
           { id: item.id },
           {
@@ -248,7 +324,12 @@ export class CartService extends BaseService<Cart, CartRepository> {
             brand_id: item.variant?.product?.brand_id,
             tax_rate: item.variant?.product?.tax_rate,
             shared_price:
-              (shared_total / total) * (item.variant?.discount_price || 0),
+              (shared_total / total) *
+              Math.max(
+                0,
+                ((item.variant?.discount_price || 0) * (100 - percents)) / 100 -
+                  fix
+              ),
           }
         );
         await this.variantRepository.update(
@@ -261,18 +342,68 @@ export class CartService extends BaseService<Cart, CartRepository> {
         );
       })
     );
-
+    await Promise.all(
+      order_coupons.map(
+        async (coupon) =>
+          await this.couponService.update(
+            {
+              id: coupon.id,
+            },
+            {
+              order_id: order?.id,
+            }
+          )
+      )
+    );
+    await Promise.all(
+      shipping_coupons.map(
+        async (coupon) =>
+          await this.couponService.update(
+            {
+              id: coupon.id,
+            },
+            {
+              shipping_method_id: order?.shipping_method?.id,
+            }
+          )
+      )
+    );
+    await Promise.all(
+      item_coupons.map(
+        async (item) =>
+          await Promise.all(
+            item.coupons.map(
+              async (coupon) =>
+                await this.couponService.update(
+                  {
+                    id: coupon.id,
+                  },
+                  {
+                    item_id: item.id,
+                  }
+                )
+            )
+          )
+      )
+    );
     order = await this.orderRepository.findOne({
       where: {
         id: order.id,
       },
-      relations: ["shipping_method", "address", "items.brand"],
+      relations: [
+        "shipping_method.coupons",
+        "address",
+        "items.brand",
+        "coupons",
+        "items.coupons",
+      ],
     });
     if (point > 0) {
       await this.pointService.usePoint(user_id, point, {
         display: order?.display,
       });
     }
+
     return order;
   }
 }

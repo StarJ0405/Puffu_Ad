@@ -25,7 +25,7 @@ export default function () {
           setOrder(order);
           setTimeout(() => {
             reload().then(() => {
-              sessionStorage.removeItem(Sessions.ORDER);
+              // sessionStorage.removeItem(Sessions.ORDER);
             });
           }, 100);
         }

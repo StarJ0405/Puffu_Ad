@@ -287,6 +287,8 @@ export const getShippingType = (method: ShippingMethodData) => {
 };
 export const getOrderStatus = (order: OrderData) => {
   switch (order.status) {
+    case "awaiting":
+      return "입금대기중";
     case "pending":
       return "상품준비중";
     case "fulfilled":
@@ -611,18 +613,31 @@ export function getItemStatus(order: OrderData, item: LineItemData) {
   }
 }
 
-
 export function maskTwoThirds(name: string): string {
   if (!name) return "";
   const Seg = (Intl as any).Segmenter as
-    | (new (locales?: string | string[], options?: { granularity?: "grapheme" | "word" | "sentence" }) => any)
+    | (new (
+        locales?: string | string[],
+        options?: { granularity?: "grapheme" | "word" | "sentence" }
+      ) => any)
     | undefined;
 
   const units: string[] = Seg
-    ? Array.from(new Seg("ko", { granularity: "grapheme" }).segment(name), (x: any) => x.segment)
+    ? Array.from(
+        new Seg("ko", { granularity: "grapheme" }).segment(name),
+        (x: any) => x.segment
+      )
     : Array.from(name);
 
   const n = units.length;
   const visible = Math.max(1, Math.ceil(n / 3));
   return units.slice(0, visible).join("") + "*".repeat(n - visible);
+}
+
+export function getBankData() {
+  return {
+    name: "KEB하나은행",
+    owner: "주식회사 푸푸글로벌",
+    bank_number: "642-910017-99201",
+  };
 }

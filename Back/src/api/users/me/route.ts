@@ -5,7 +5,6 @@ import { comparePasswords, generateToken, verifyToken } from "utils/functions";
 
 export const GET: ApiHandler = async (req, res) => {
   const user = req.user;
-
   if (user) {
     const authorization = req.headers.authorization;
     let access_token;

@@ -16,6 +16,7 @@ export const GET: ApiHandler = async (req, res) => {
       "items.variant.product.brand",
       "items.variant.discounts.discount",
       "items.variant.product.discounts.discount",
+      "items.variant.product.categories.parent",
     ],
   });
   if (!cart) {
