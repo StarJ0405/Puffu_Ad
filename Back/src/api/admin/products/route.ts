@@ -17,6 +17,9 @@ export const POST: ApiHandler = async (req, res) => {
     tax_rate,
     visible,
     buyable,
+    warehousing,
+    is_set,
+    random_box,
     tags,
     adult,
     metadata,
@@ -43,6 +46,9 @@ export const POST: ApiHandler = async (req, res) => {
       tax_rate,
       visible,
       buyable,
+      warehousing,
+      is_set,
+      random_box,
       tags,
       adult,
       metadata,
@@ -73,6 +79,12 @@ export const GET: ApiHandler = async (req, res) => {
     select,
     ...where
   } = req.parsedQuery;
+
+  const b = (v: any) =>
+    typeof v === "string" ? v === "true" || v === "1" : !!v;
+  if ("warehousing" in where) where.warehousing = b(where.warehousing);
+  if ("is_set" in where) where.is_set = b(where.is_set);
+  if ("random_box" in where) where.random_box = b(where.random_box);
 
   if (_type) {
     try {

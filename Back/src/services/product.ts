@@ -62,6 +62,18 @@ export class ProductService extends BaseService<Product, ProductRepository> {
       builder = builder.andWhere("p.warehousing IS FALSE");
     }
 
+    // is_set / random_box: 명시된 경우만 필터, 없으면 무조건 포함
+    if (where && "is_set" in where) {
+      builder = builder.andWhere(
+        `p.is_set IS ${where.is_set ? "TRUE" : "FALSE"}`
+      );
+    }
+    if (where && "random_box" in where) {
+      builder = builder.andWhere(
+        `p.random_box IS ${where.random_box ? "TRUE" : "FALSE"}`
+      );
+    }
+
     /*     if ("warehousing" in where) {
     // 명시적 true/false 필터만 적용
       builder = builder.andWhere("p.warehousing IS :warehousing", {
@@ -485,7 +497,9 @@ export class ProductService extends BaseService<Product, ProductRepository> {
     if (
       ("visible" in data && !data.visible) ||
       ("buyable" in data && !data.buyable) ||
-      ("warehousing" in data && data.warehousing)
+      ("warehousing" in data && data.warehousing) ||
+      ("is_set" in data && data.is_set) ||
+      ("random_box" in data && data.random_box)
     ) {
       const products = await this.repository.findAll({
         where,
