@@ -10,60 +10,41 @@ import Image from "@/components/Image/Image";
 import NoContent from "@/components/noContent/noContent";
 import P from "@/components/P/P";
 import ModalBase from "@/modals/ModalBase";
-import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
-import usePageData from "@/shared/hooks/data/usePageData";
-import { requester } from "@/shared/Requester";
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import clsx from "clsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./orderCouponListModal.module.css";
-import { toast } from "@/shared/utils/Functions";
 
 const OrderCouponListModal = NiceModal.create(
   ({
     onConfirm,
     onCancel,
-    // width = "80vw",
     height = "80dvh",
-    // initCoupons,
-    copType, // 모달 여는 경로가 상품, 주문, 배송 쿠폰인지 구분한 값
+    coupons,
+    selected: initSelect = [],
+    max = 1,
+    used = [],
   }: {
-    onConfirm?: () => void;
+    onConfirm: (data: any) => void;
     onCancel?: () => void;
-    // width?: React.CSSProperties["width"];
     height?: React.CSSProperties["height"];
-    // initCoupons: Pageable;
-    copType: String;
+    coupons: CouponData[];
+    selected: string[];
+    max: number;
+    used?: string[];
   }) => {
     const modal = useModal();
     const { isMobile } = useBrowserEvent();
-
-    const { userData } = useAuth();
-    const { coupons, page, maxPage, setPage } = usePageData(
-      "coupons",
-      (pageNumber) => ({
-        pageNumber,
-        pageSize: 12,
-        type: copType,
-        used: false,
-      }),
-      (condition) => requester.getCoupons(condition),
-      (data: Pageable) => data?.totalPages || 0,
-      {
-        // fallbackData: initCoupons,
-        onReprocessing: (data) => data?.content || [],
-      }
-    );
-
     const [selected, setSelected] = useState<string[]>([]);
 
     const couponSumbit = () => {
-      if (selected.length === 0) {
-        toast({ message: "적용할 쿠폰을 1개 이상 선택해 주세요." });
-        return false;
-      }
+      onConfirm(selected);
+      modal.remove();
     };
+    useEffect(() => {
+      initSelect.map((select) => document.getElementById(select)?.click());
+    }, [initSelect]);
 
     return (
       <ModalBase
@@ -90,8 +71,8 @@ const OrderCouponListModal = NiceModal.create(
         <VerticalFlex
           className={clsx(styles.container, isMobile && styles.mob_container)}
         >
-          <FlexChild className={styles.list_header}>
-            <P>일부 쿠폰 중복 적용 가능</P>
+          <FlexChild className={styles.list_header} hidden={max <= 1}>
+            <P>최대 {max}개 쿠폰 중복 적용 가능</P>
           </FlexChild>
 
           <CheckboxGroup
@@ -108,6 +89,8 @@ const OrderCouponListModal = NiceModal.create(
                       key={coupon.id}
                       coupon={coupon}
                       selected={selected}
+                      disabled={selected.length >= max}
+                      used={used.includes(coupon.id)}
                     />
                   ))}
                 </>
@@ -137,9 +120,13 @@ type CouponData = {
 function CouponCard({
   coupon,
   selected,
+  disabled,
+  used = false,
 }: {
   coupon: CouponData;
   selected: string[];
+  disabled: boolean;
+  used?: boolean;
 }) {
   // const isExpired =
   //   new Date(coupon.ends_at || 0).getTime() < new Date().getTime();
@@ -158,7 +145,10 @@ function CouponCard({
       <label>
         <HorizontalFlex>
           <FlexChild className={styles.checkBox}>
-            <CheckboxChild id={coupon.id} />
+            <CheckboxChild
+              disabled={(used || disabled) && !isSelected}
+              id={coupon.id}
+            />
           </FlexChild>
           <VerticalFlex
             gap={10}
@@ -169,6 +159,7 @@ function CouponCard({
               className={clsx(styles.name, {
                 // [styles.expired]: isExpired,
                 // [styles.used]: isUsed,
+                [styles.used]: used,
               })}
             >
               {coupon.name}
@@ -177,6 +168,7 @@ function CouponCard({
               className={clsx(styles.date, {
                 // [styles.expired]: isExpired,
                 // [styles.used]: isUsed,
+                [styles.used]: used,
               })}
             >
               사용기간 {new Date(coupon?.ends_at || 0).toLocaleDateString()}{" "}

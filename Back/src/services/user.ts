@@ -148,17 +148,19 @@ export class UserService extends BaseService<User, UserRepository> {
   async getUser(id: string): Promise<User | null> {
     return await this.repository
       .builder("u")
-      .leftJoinAndSelect("u.points", "pt")
-      .leftJoinAndSelect("u.coupons", "cu")
+      .leftJoinAndSelect(
+        "u.points",
+        "pt",
+        "pt.user_id = u.id AND ((pt.ends_at IS NULL OR pt.ends_at > NOW()) AND pt.point - pt.used_point > 0)"
+      )
+      .leftJoinAndSelect(
+        "u.coupons",
+        "cu",
+        "cu.user_id = u.id AND (cu.item_id IS NULL AND cu.order_id IS NULL AND cu.shipping_method_id IS NULL AND (cu.ends_at IS NULL OR cu.ends_at > NOW()) AND (cu.appears_at IS NULL OR cu.appears_at <= NOW()))"
+      )
       .leftJoinAndSelect("u.group", "g")
       .leftJoinAndSelect("u.accounts", "acc")
       .where(`u.id = :id`, { id })
-      .andWhere(
-        `(pt IS NULL OR ((pt.ends_at IS NULL OR pt.ends_at > NOW()) AND pt.point - pt.used_point > 0))`
-      )
-      .andWhere(
-        `(cu IS NULL OR (cu.item_id IS NULL AND cu.order_id IS NULL AND cu.shipping_method_id IS NULL AND (cu.ends_at IS NULL OR cu.ends_at > NOW()) AND (cu.appears_at IS NULL OR cu.appears_at <= NOW())))`
-      )
       .getOne();
   }
   async getStorePayment(user_id: string) {
