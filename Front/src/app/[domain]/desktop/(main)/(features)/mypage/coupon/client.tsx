@@ -14,6 +14,7 @@ import clsx from "clsx";
 import mypage from "../mypage.module.css";
 import styles from "./page.module.css";
 import ListPagination from "@/components/listPagination/ListPagination";
+import CouponItem from "@/components/coupon/couponItem";
 
 export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
   const { userData } = useAuth();
@@ -46,7 +47,7 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
         {coupons?.length > 0 ? (
           <HorizontalFlex gap={15} flexWrap="wrap" justifyContent="flex-start">
             {coupons?.map((coupon: CouponData) => (
-              <CouponCard key={coupon.id} coupon={coupon} />
+              <CouponItem key={coupon.id} coupon={coupon} />
             ))}
           </HorizontalFlex>
         ) : (
@@ -62,73 +63,5 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
         />
       </FlexChild>
     </VerticalFlex>
-  );
-}
-
-function CouponCard({ coupon }: { coupon: CouponData }) {
-  const isExpired =
-    new Date(coupon.ends_at || 0).getTime() < new Date().getTime();
-  const isUsed = coupon.used;
-  return (
-    <FlexChild
-      className={clsx(styles.item, {
-        [styles.expired]: isExpired,
-        [styles.used]: isUsed,
-      })}
-    >
-      <HorizontalFlex>
-        <VerticalFlex
-          gap={10}
-          padding={"20px 0 20px 15px"}
-          alignItems="flex-start"
-        >
-          <P
-            className={clsx(styles.name, {
-              [styles.expired]: isExpired,
-              [styles.used]: isUsed,
-            })}
-          >
-            {coupon.name}
-          </P>
-          <P
-            className={clsx(styles.date, {
-              [styles.expired]: isExpired,
-              [styles.used]: isUsed,
-            })}
-          >
-            사용기간 {new Date(coupon?.ends_at || 0).toLocaleDateString()} 까지
-          </P>
-        </VerticalFlex>
-
-        <FlexChild className={styles.cutout_wrap}>
-          <Div className={styles.cutout_left} />
-          <Div className={styles.cutout_right} />
-          <Div className={styles.dashed_line} />
-          <Div className={styles.spacer} />
-        </FlexChild>
-
-        <FlexChild className={styles.icon_wrap} width={"fit-content"}>
-          {isUsed ? (
-            <P className={styles.txt}>
-              사용
-              <br />
-              완료
-            </P>
-          ) : isExpired ? (
-            <P className={styles.txt}>
-              기간
-              <br />
-              만료
-            </P>
-          ) : (
-            <Image
-              src="/resources/icons/mypage/coupon_pink_icon.png"
-              width={30}
-              alt="쿠폰 아이콘"
-            />
-          )}
-        </FlexChild>
-      </HorizontalFlex>
-    </FlexChild>
   );
 }
