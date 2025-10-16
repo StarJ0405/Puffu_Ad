@@ -12,7 +12,22 @@ import clsx from "clsx";
 import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import styles from "./page.module.css";
+const getItemRealPrice = (item: LineItemData) => {
+  const amount = (item.discount_price || 0) * item.quantity;
 
+  if (item.coupons?.length) {
+    const [percents, fix] = item.coupons.reduce(
+      (acc, now) => {
+        if (now.calc === "fix") acc[1] += now.value;
+        else if (now.calc === "percent") acc[0] += now.value;
+        return acc;
+      },
+      [0, 0]
+    ) || [0, 0];
+    return Math.max(0, Math.round((amount * (100 - percents)) / 100.0 - fix));
+  }
+  return amount;
+};
 export function CompleteForm({ order }: { order?: OrderData }) {
   return (
     <VerticalFlex marginTop={80}>
@@ -82,31 +97,51 @@ export function CompleteForm({ order }: { order?: OrderData }) {
               주문금액 {Number(order?.total || 0).toLocaleString("ko-KR")}원 -
               할인금액{" "}
               {(
-                (order?.total || 0) - (order?.total_discounted || 0)
+                (order?.total || 0) -
+                (order?.total_final || 0) -
+                (order?.delivery_fee || 0)
               ).toLocaleString("kr")}
               원 + 배송비{" "}
-              {Number(order?.shipping_method?.amount || 0).toLocaleString(
-                "ko-KR"
-              )}
-              원
-              {order?.point &&
-                ` - 포인트 ${Number(order.point).toLocaleString("ko-kr")}P`}
+              {Number(order?.delivery_fee || 0).toLocaleString("ko-KR")}원
+              {order?.point
+                ? ` - 포인트 ${Number(order.point).toLocaleString("ko-kr")}P`
+                : ""}
             </P>
           </FlexChild>
 
-          <FlexChild gap={7} justifyContent="center">
-            <P size={20} color="#fff" weight={500}>
-              실제 결제 금액
-            </P>
-            <P size={26} color="var(--main-color1)" weight={600}>
-              {Number(
-                (order?.total_discounted || 0) +
-                  (order?.shipping_method?.amount || 0) -
-                  (order?.point || 0)
-              ).toLocaleString("ko-KR")}
-              원
-            </P>
-          </FlexChild>
+          {order?.payment_data?.bank_number ? (
+            <FlexChild>
+              <VerticalFlex>
+                <FlexChild
+                  gap={7}
+                  justifyContent="center"
+                  hidden={!order?.payment_data?.bank_number}
+                >
+                  <P size={20} color="#fff" weight={500}>
+                    {order?.payment_data?.name as string}
+                  </P>
+                  <P size={20} color="#fff" weight={500}>
+                    {order?.payment_data?.owner as string}
+                  </P>
+                  <P size={20} color="#fff" weight={500}>
+                    {order?.payment_data?.bank_number as string}
+                  </P>
+                  <P size={26} color="var(--main-color1)" weight={600}>
+                    {Number(order?.total_final || 0).toLocaleString("ko-KR")}원
+                  </P>
+                </FlexChild>
+              </VerticalFlex>
+            </FlexChild>
+          ) : (
+            <FlexChild gap={7} justifyContent="center">
+              <P size={20} color="#fff" weight={500}>
+                실제 결제 금액
+              </P>
+              <P size={26} color="var(--main-color1)" weight={600}>
+                {Number(order?.total_final || 0).toLocaleString("ko-KR")}원
+              </P>
+            </FlexChild>
+          )}
         </VerticalFlex>
       </VerticalFlex>
     </VerticalFlex>
@@ -161,8 +196,8 @@ export function MyOrdersTable({ items }: { items?: LineItemData[] }) {
                   <td>
                     <P weight={600} color="#fff">
                       {(
-                        ((item.unit_price || 0) - (item.discount_price || 0)) *
-                        item.quantity
+                        (item.unit_price || 0) * item.quantity -
+                        getItemRealPrice(item)
                       ).toLocaleString("ko-KR")}{" "}
                       원
                     </P>
@@ -170,9 +205,7 @@ export function MyOrdersTable({ items }: { items?: LineItemData[] }) {
 
                   <td>
                     <P weight={600}>
-                      {Number(
-                        (item.discount_price || 0) * item.quantity
-                      ).toLocaleString("ko-KR")}{" "}
+                      {Number(getItemRealPrice(item)).toLocaleString("ko-KR")}{" "}
                       원
                     </P>
                   </td>

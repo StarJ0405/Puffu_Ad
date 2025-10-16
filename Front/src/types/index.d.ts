@@ -264,6 +264,7 @@ interface LineItemData extends BaseEntity {
   refunds?: RefundItemData[];
   exchanges?: ExchangeItemData[];
   review?: any;
+  coupons?: CouponData[];
 }
 
 interface CartData extends BaseEntity {
@@ -291,6 +292,7 @@ interface ShippingMethodDataFrame {
 }
 interface ShippingMethodData extends BaseEntity, ShippingMethodDataFrame {
   shipped_at?: Date | string | null;
+  coupons?: CouponData[];
 }
 
 interface AddressDataFrame {
@@ -336,6 +338,9 @@ interface OrderData extends BaseEntity {
   point: number;
   refunds?: RefundData[];
   exchanges?: ExchangeData[];
+  coupons?: CouponData[];
+  delivery_fee?: number;
+  total_final?: number;
 }
 
 interface AccountLinkData extends BaseEntity {
