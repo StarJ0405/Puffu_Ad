@@ -14,7 +14,7 @@ import clsx from "clsx";
 import mypage from "../mypage.module.css";
 import styles from "./page.module.css";
 import ListPagination from "@/components/listPagination/ListPagination";
-import CouponItem from "@/components/coupon/couponItem";
+import CouponItemDesktop from "@/components/coupon/couponItemDesktop";
 
 export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
   const { userData } = useAuth();
@@ -43,17 +43,37 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
           </P>
         </FlexChild>
       </HorizontalFlex>
-      <FlexChild minHeight={400} alignItems="flex-start">
-        {coupons?.length > 0 ? (
-          <HorizontalFlex gap={15} flexWrap="wrap" justifyContent="flex-start">
-            {coupons?.map((coupon: CouponData) => (
-              <CouponItem key={coupon.id} coupon={coupon} />
-            ))}
-          </HorizontalFlex>
-        ) : (
-          <NoContent type="쿠폰" />
-        )}
-      </FlexChild>
+      <table className={styles.coupon_list}>
+        <colgroup>
+          <col style={{ width: "15%",}} />
+          <col style={{ width: "15%",}} />
+          <col style={{ width: "35%" }} />
+          <col style={{ width: "20%",}} />
+          <col style={{ width: "15%",}} />
+        </colgroup>
+
+        {/* 게시판리스트 헤더 */}
+        <thead>
+          <tr className={styles.table_header}>
+            <th>구분</th>
+            <th>혜택</th>
+            <th>쿠폰명</th>
+            <th>사용조건</th>
+            <th>사용기간</th>
+          </tr>
+        </thead>
+        <tbody>
+          {coupons?.length > 0 ? (
+            coupons?.map((coupon: CouponData) => (
+              <CouponItemDesktop coupon={coupon} key={coupon.id} />
+            ))
+          ) : (
+            <tr>
+              <NoContent type="쿠폰" />
+            </tr>
+          )}
+        </tbody>
+      </table>
       <FlexChild>
         <ListPagination
           page={page}

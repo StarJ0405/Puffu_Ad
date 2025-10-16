@@ -1,0 +1,116 @@
+.container {
+  padding: 0 20px;
+  height: 100%;
+}
+
+.container .title_header {
+  color: #ddd;
+  padding: 15px 0 10px;
+  font-size: 13px;
+}
+
+/* 상품일 때 */
+.container .item_list {
+  overflow-y: auto;
+  height: 76%;
+  padding: 15px 10px 60px;
+  background: #121212;
+  border-radius: 5px;
+}
+
+.container .item_list::-webkit-scrollbar {
+  width: 7px;
+}
+.container .item_list::-webkit-scrollbar-track {
+  background: #555; /* 트랙 배경 */
+  border-radius: 4px;
+}
+
+.container .item_list::-webkit-scrollbar-thumb {
+  background-color: #ccc; /* 스크롤바 색 */
+  border-radius: 4px; /* 둥글게 */
+}
+
+
+.button_box {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
+  width: 100%;
+  padding: 0 20px 20px;
+}
+
+
+
+/* 카테고리일 때 */
+
+.ca_box {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px 15px;
+}
+
+.ca_box .ca_item {
+  width: auto;
+  text-align: center;
+  padding: 10px;
+  border-radius: 5px;
+  border: 2px solid var(--main-color2);
+  justify-content: center;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.ca_box .ca_item:hover {
+  background: var(--main-color2);
+}
+
+
+
+
+.submit_btn {
+  width: 100%;
+  background: var(--main-color1);
+  border-radius: 5px;
+  color: #fff;
+  padding: 14px 10px;
+  line-height: 1;
+  font-size: 20px;
+  transition: all 0.3s;
+}
+
+
+@media (min-width: 768px) {
+  .submit_btn:hover {
+    background: var(--main-color2);
+  } 
+}
+
+
+
+/* 모바일 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+.mob_container {padding: 0;}
+
+.mob_container .list_header {
+  padding: 15px 10px 0;
+}
+
+.mob_container .list_wrap {
+  padding: 0 5px 50px;
+}
+
+.mob_container .item .name {font-size: 15px;}
+.item .date {font-size: 13px;}
+
+.mob_container .button_box {padding: 0 13px 20px;}
+
+.mob_container .submit_btn {
+  background: var(--main-color2);
+}
+
+.mob_container .submit_btn:active {
+  filter: var(--mob-active-filter);
+}
