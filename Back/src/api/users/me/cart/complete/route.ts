@@ -11,6 +11,7 @@ export const POST: ApiHandler = async (req, res) => {
     message,
     payment,
     point,
+    coupons,
   } = req.body;
   const serivce = container.resolve(CartService);
 
@@ -24,6 +25,7 @@ export const POST: ApiHandler = async (req, res) => {
       message,
       payment,
       point,
+      coupons,
     });
     return res.json({
       content: order,

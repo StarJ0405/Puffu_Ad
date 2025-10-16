@@ -245,6 +245,14 @@ export function CartWrap() {
         })
       );
   }, [coupons]);
+  useEffect(() => {
+    if (itemCoupons.length > 0)
+      setItemCupons(
+        itemCoupons.filter((f) =>
+          cartData?.items.some((item) => item.id === f.item_id)
+        )
+      );
+  }, [cartData?.items]);
   // 쿠폰 모달
   const openCouponModal = (
     coupons: CouponData[],
@@ -615,8 +623,7 @@ export function CartWrap() {
                 <Span>할인가</Span>
 
                 <P color="#fff">
-                  <Span>- </Span>
-                  <Span>{point}</Span>
+                  <Span>{-point}</Span>
                   <Span> ₩</Span>
                 </P>
               </HorizontalFlex>
@@ -664,6 +671,11 @@ export function CartWrap() {
                   message: message,
                   cart_id: cartData?.id,
                   point,
+                  coupons: {
+                    orders: orderCoupons,
+                    shippings: shippingCoupons,
+                    items: itemCoupons,
+                  },
                 };
                 if (getTotal() === 0) {
                   setIsLoading(true);
