@@ -159,22 +159,19 @@ function CouponCard({
 
   const isSelected = selected.includes(coupon.id);
 
+  const disabledCheck = price < (coupon?.min || 0) || ((used || disabled) && !isSelected);
+
   return (
     <FlexChild
       className={clsx(styles.item, {
         [styles.checked]: isSelected,
-        // [styles.expired]: isExpired,
-        // [styles.used]: isUsed,
       })}
     >
       <label>
         <HorizontalFlex>
           <FlexChild className={styles.checkBox}>
             <CheckboxChild
-              disabled={
-                price < (coupon?.min || 0) ||
-                ((used || disabled) && !isSelected)
-              }
+              disabled={disabledCheck}
               id={coupon.id}
             />
           </FlexChild>
@@ -214,10 +211,15 @@ function CouponCard({
                 width={30}
                 alt="쿠폰 아이콘"
               />
-              <P fontSize={12}>{typeCheck()}</P>
+              <P fontSize={12} color="#fff">{typeCheck()}</P>
             </VerticalFlex>
           </FlexChild>
         </HorizontalFlex>
+        {
+          disabledCheck && (
+            <FlexChild className={clsx(styles.expired)}></FlexChild>
+          )
+        }
       </label>
     </FlexChild>
   );

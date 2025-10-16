@@ -1091,7 +1091,13 @@ function Item({
                 }
                 hidden={!storeData?.metadata?.product}
               >
-                쿠폰 사용
+                {
+                  !selected.length ? (
+                    '쿠폰 사용'
+                  ) : (
+                    '쿠폰 변경'
+                  )
+                }
                 {/* 쿠폰 체크 되면 쿠폰 변경으로 바뀜 {'쿠폰 사용' : '쿠폰 변경'} */}
               </Button>
             </VerticalFlex>
@@ -1200,21 +1206,27 @@ export function CouponSelect({
       <HorizontalFlex className={styles.coupon_choice}>
         <FlexChild className={styles.coupon_title}>
           <VerticalFlex alignItems="start" gap={5}>
-            {coupons
-              .filter((f: CouponData) => selected.includes(f.id))
-              .map((coupon) => {
-                return (
-                  <FlexChild key={coupon.id}>
-                    <HorizontalFlex>
-                      <P>{coupon.name}</P>
-                      <P>
-                        {(-coupon.value).toLocaleString("ko")}
-                        {coupon.calc === "fix" ? "원" : "%"}
-                      </P>
-                    </HorizontalFlex>
-                  </FlexChild>
-                );
-              })}
+
+            {
+              coupons
+                .filter((f: CouponData) => selected.includes(f.id))
+                .map((coupon) => {
+                  return (
+                    <FlexChild key={coupon.id}>
+                      <HorizontalFlex>
+                        <P>{coupon.name}</P>
+                        <P>
+                          {(-coupon.value).toLocaleString("ko")}
+                          {coupon.calc === "fix" ? "원" : "%"}
+                        </P>
+                      </HorizontalFlex>
+                    </FlexChild>
+                  );
+              })
+            }
+            {selected.length === 0 && (
+                <P>쿠폰을 선택해 주세요.</P>
+            )}
           </VerticalFlex>
         </FlexChild>
 
