@@ -232,7 +232,9 @@ export function MyOrdersTable({
                     </P>
                   </FlexChild>
                 </VerticalFlex>
-                {order.status === "pending" && (
+                {((!order.payment_data?.bank_number &&
+                  order.status === "pending") ||
+                  order.status === "awaiting") && (
                   <Button
                     // className={styles.tracking_btn}
                     className={styles.order_detail_btn}

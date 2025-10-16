@@ -125,7 +125,6 @@ export function MyOrdersTable({
     if (q) setCondition({ q });
     else setCondition({});
   };
-  console.log(orders);
   return (
     <>
       <HorizontalFlex className={styles.search_box}>
@@ -232,7 +231,9 @@ export function MyOrdersTable({
                 </VerticalFlex>
 
                 <FlexChild className={styles.order_btn_group}>
-                  {order.status === "pending" && (
+                  {((!order.payment_data?.bank_number &&
+                    order.status === "pending") ||
+                    order.status === "awaiting") && (
                     <Button
                       className={styles.order_detail_btn}
                       onClick={() =>

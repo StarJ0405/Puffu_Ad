@@ -1,6 +1,7 @@
 import axios from "axios";
 import { BaseService } from "data-source";
 import { Order, OrderStatus } from "models/order";
+import { CouponRepository } from "repositories/coupon";
 import { LogRepository } from "repositories/log";
 import { OrderRepository } from "repositories/order";
 import { ShippingMethodRepository } from "repositories/shipping_method";
@@ -29,7 +30,9 @@ export class OrderService extends BaseService<Order, OrderRepository> {
     @inject(PointService)
     protected pointService: PointService,
     @inject(VariantRepository)
-    protected variantRepository: VariantRepository
+    protected variantRepository: VariantRepository,
+    @inject(CouponRepository)
+    protected couponRepository: CouponRepository
   ) {
     super(orderRepository);
   }
@@ -228,7 +231,12 @@ export class OrderService extends BaseService<Order, OrderRepository> {
   async cancelOrder(id: string) {
     const order = await this.repository.findOne({
       where: { id },
-      relations: ["store", "items"],
+      relations: [
+        "store",
+        "items.coupons",
+        "coupons",
+        "shipping_method.coupons",
+      ],
     });
     if (order) {
       await Promise.all(
@@ -338,6 +346,54 @@ export class OrderService extends BaseService<Order, OrderRepository> {
         //   }
         // );
       }
+      if (order.coupons?.length) {
+        await Promise.all(
+          order.coupons.map(
+            async (coupon) =>
+              await this.couponRepository.update(
+                {
+                  id: coupon.id,
+                },
+                {
+                  order_id: null,
+                }
+              )
+          )
+        );
+      }
+      if (order.shipping_method?.coupons?.length) {
+        await Promise.all(
+          order.shipping_method.coupons.map(
+            async (coupon) =>
+              await this.couponRepository.update(
+                {
+                  id: coupon.id,
+                },
+                {
+                  shipping_method_id: null,
+                }
+              )
+          )
+        );
+      }
+      await Promise.all(
+        (order.items || [])?.map(
+          async (item) =>
+            await Promise.all(
+              (item?.coupons || []).map(
+                async (coupon) =>
+                  await this.couponRepository.update(
+                    {
+                      id: coupon.id,
+                    },
+                    {
+                      item_id: null,
+                    }
+                  )
+              )
+            )
+        )
+      );
 
       await this.repository.update(
         { id: order.id },
