@@ -36,7 +36,7 @@ export class ProductService extends BaseService<Product, ProductRepository> {
     options: FindOneOptions<Product>,
     pageData?: PageData
   ): Promise<Pageable<Product> | any> {
-    const where: any = options?.where;
+    const where: any = options?.where || {};
     let builder = this.repository
       .builder("p")
       .leftJoinAndSelect("p.variants", "v")
@@ -54,6 +54,21 @@ export class ProductService extends BaseService<Product, ProductRepository> {
       .leftJoin("p.categories", "ct")
       .where("p.visible IS TRUE")
       .andWhere("v.visible IS TRUE");
+
+    if (where && "warehousing" in where) {
+      const value = where.warehousing ? "TRUE" : "FALSE";
+      builder = builder.andWhere(`p.warehousing IS ${value}`);
+    } else {
+      builder = builder.andWhere("p.warehousing IS FALSE");
+    }
+
+    /*     if ("warehousing" in where) {
+    // 명시적 true/false 필터만 적용
+      builder = builder.andWhere("p.warehousing IS :warehousing", {
+        warehousing: where.warehousing,
+      });
+    }
+    // else 블록 제거 → 전달 없을 때는 모든 상품 포함 */
 
     if (where) {
       if (where.ids) {
