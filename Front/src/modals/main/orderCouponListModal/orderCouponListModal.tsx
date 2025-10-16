@@ -15,8 +15,6 @@ import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import styles from "./orderCouponListModal.module.css";
-import { toast } from "@/shared/utils/Functions";
-import CouponItem from "@/components/coupon/couponItem";
 
 const OrderCouponListModal = NiceModal.create(
   ({
