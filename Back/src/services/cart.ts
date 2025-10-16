@@ -216,7 +216,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
       store_id: cart.store_id,
       address: _address,
       shipping_method: _shipping_method,
-      status: OrderStatus.PENDING,
+      status: payment?.bank_number ? OrderStatus.AWAITING : OrderStatus.PENDING,
       payment_data: payment,
       point: point || 0,
     });

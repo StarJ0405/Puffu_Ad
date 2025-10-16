@@ -144,14 +144,14 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
                   </FlexChild>
                 </VerticalFlex>
               ) : (
-                <VerticalFlex className={clsx(styles.amount_box, styles.master_rank)}>
+                <VerticalFlex
+                  className={clsx(styles.amount_box, styles.master_rank)}
+                >
                   <Image
                     src="resources/icons/mypage/master_rank.png"
                     width={50}
                   />
-                  <P className={styles.title}>
-                    현재 멤버십 최고 등급입니다.
-                  </P>
+                  <P className={styles.title}>현재 멤버십 최고 등급입니다.</P>
                 </VerticalFlex>
               )}
             </VerticalFlex>
@@ -166,7 +166,10 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
                   />
                   <P>보유쿠폰</P>
                 </FlexChild>
-                <FlexChild className={styles.coupon} onClick={()=> navigate('/mypage/coupon')}>
+                <FlexChild
+                  className={styles.coupon}
+                  onClick={() => navigate("/mypage/coupon")}
+                >
                   <P>{userData?.coupon}</P>
                   <P>개</P>
                 </FlexChild>
@@ -176,7 +179,10 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
                   <P paddingRight={4}>나의 포인트</P>
                   <P className={styles.currency}>P</P>
                 </FlexChild>
-                <FlexChild className={styles.point} onClick={()=> navigate('/mypage/point')}>
+                <FlexChild
+                  className={styles.point}
+                  onClick={() => navigate("/mypage/point")}
+                >
                   <P paddingRight={4}>{userData?.point}</P>
                   <P className={styles.currency}>P</P>
                 </FlexChild>
@@ -354,6 +360,7 @@ export function EditINfo({
 export function DeliveryInfo() {
   const navigate = useNavigate();
   const [statusCounts, setStatusCounts] = useState({
+    awaiting: 0,
     pending: 0,
     fulfilled: 0,
     shipping: 0,
@@ -365,6 +372,7 @@ export function DeliveryInfo() {
       const res = await requester.getOrderStatus();
       if (res && res.content) {
         const counts = {
+          awaiting: 0,
           pending: 0,
           fulfilled: 0,
           shipping: 0,
@@ -391,6 +399,10 @@ export function DeliveryInfo() {
       </FlexChild>
 
       <FlexChild className={styles.deli_itemBox}>
+        <VerticalFlex className={styles.deli_item}>
+          <P>{statusCounts.awaiting}</P>
+          <Span>입금 대기중</Span>
+        </VerticalFlex>
         <VerticalFlex className={styles.deli_item}>
           <P>{statusCounts.pending}</P>
           <Span>상품 준비중</Span>

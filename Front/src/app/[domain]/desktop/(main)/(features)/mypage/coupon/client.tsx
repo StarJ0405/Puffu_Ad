@@ -18,7 +18,7 @@ import CouponItem from "@/components/coupon/couponItem";
 
 export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
   const { userData } = useAuth();
-  const { coupons, page, maxPage, setPage, origin } = usePageData(
+  const { coupons, page, maxPage, setPage } = usePageData(
     "coupons",
     (pageNumber) => ({
       pageNumber,

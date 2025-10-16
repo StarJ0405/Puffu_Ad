@@ -319,7 +319,13 @@ interface OrderData extends BaseEntity {
   address_id: string;
   address?: AddressData;
   shipping_method?: ShippingMethodData;
-  status: "pending" | "fulfilled" | "shipping" | "complete" | "cancel";
+  status:
+    | "awaiting"
+    | "pending"
+    | "fulfilled"
+    | "shipping"
+    | "complete"
+    | "cancel";
   total: number;
   total_tax: number;
   total_discounted: number;
