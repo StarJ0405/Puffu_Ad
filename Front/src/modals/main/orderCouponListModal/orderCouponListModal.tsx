@@ -45,6 +45,8 @@ const OrderCouponListModal = NiceModal.create(
       (pageNumber) => ({
         pageNumber,
         pageSize: 12,
+        type: copType,
+        used: false,
       }),
       (condition) => requester.getCoupons(condition),
       (data: Pageable) => data?.totalPages || 0,
@@ -53,39 +55,6 @@ const OrderCouponListModal = NiceModal.create(
         onReprocessing: (data) => data?.content || [],
       }
     );
-
-    const couponsTest = [
-      {
-        id: "0",
-        name: "멤버쉽 브론즈 4000원 할인 쿠폰",
-        ends_at: "2025-11-20",
-      },
-      {
-        id: "1",
-        name: "생일 할인 쿠폰",
-        ends_at: "2025-12-30",
-      },
-      {
-        id: "2",
-        name: "생일 할인 쿠폰",
-        ends_at: "2025-12-30",
-      },
-      {
-        id: "3",
-        name: "생일 할인 쿠폰",
-        ends_at: "2025-12-30",
-      },
-      {
-        id: "4",
-        name: "생일 할인 쿠폰",
-        ends_at: "2025-12-30",
-      },
-      {
-        id: "5",
-        name: "생일 할인 쿠폰",
-        ends_at: "2025-12-30",
-      },
-    ];
 
     const [selected, setSelected] = useState<string[]>([]);
 
@@ -132,10 +101,14 @@ const OrderCouponListModal = NiceModal.create(
             className={styles.list_wrap}
           >
             <VerticalFlex className={styles.item_list}>
-              {couponsTest?.length > 0 ? (
+              {coupons?.length > 0 ? (
                 <>
-                  {couponsTest?.map((coupon: CouponData, i) => (
-                    <CouponCard key={i} coupon={coupon} selected={selected} />
+                  {coupons?.map((coupon: CouponData) => (
+                    <CouponCard
+                      key={coupon.id}
+                      coupon={coupon}
+                      selected={selected}
+                    />
                   ))}
                 </>
               ) : (

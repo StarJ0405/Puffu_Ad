@@ -119,7 +119,7 @@ export class CouponService extends BaseService<Coupon, CouponRepository> {
     return super.getList(options);
   }
   async getWithOrder(options: FindOneOptions<Coupon>, pageData?: PageData) {
-    const where: any = options?.where;
+    const where: any = options?.where || {};
     let builder = this.repository
       .builder("cu")
       .leftJoinAndSelect("cu.categories", "ct")
@@ -155,6 +155,8 @@ export class CouponService extends BaseService<Coupon, CouponRepository> {
         )
       );
     }
+    if (where.type)
+      builder = builder.andWhere(`cu.type = :type`, { type: where.type });
     if (!options.order) {
       builder = builder
         .addSelect(
