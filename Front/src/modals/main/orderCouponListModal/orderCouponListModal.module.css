@@ -48,12 +48,12 @@
 
 .item_list .item > label {
   position: relative; z-index: 1;
-  width: 100%; height: 100%;
   display: block;
-  padding: 10px;
-  max-height: 100px;
-  border-radius: 10px;
-  background: linear-gradient(90deg, #2f2f2f 0%, #404040 50%, #3a3a3a 100%);
+  width: 100%;
+  height: auto;
+  background: #111;
+  border: 1px solid #fff;
+  position: relative;
 }
 
 .item_list .item .checkBox {
@@ -66,74 +66,31 @@
   background: #000;
 } */
 
-.item .name {
-  font-size: 15px;
-  font-weight: 600;
-  word-break: keep-all;
+.item .data_card {
+  padding: 10px 15px;
+  gap: 11px;
+  line-height: 1.3;
   color: #fff;
-  line-height: 1.2;
+  border-right: 2px dashed #fff;
 }
 
-.item .date {
-  font-size: 13px;
-  color: #d7d7d7;
-}
+.item .data_card .name {font-size: 14px;}
+.item .data_card .value {font-size: 25px;}
+.item .data_card .txt1 {font-size: 12px; color: #797979;}
 
-.item .name.expired,
-.item .name.used,
-.item .date.expired,
-.item .date.used {
-  opacity: 20%;
-}
-
-.cutout_wrap {
-  position: relative;
-  width: 20px;
+.item .cutout_wrap {
   height: 100%;
-  min-height: 100px;
-  margin: 0 10px;
-  display: flex;
-  align-items: stretch;
+  padding: 5px 15px;
 }
 
-.cutout_left,
-.cutout_right {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: var(--mainBg);
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2;
+.more_btn {
+  padding: 0;
+  background: transparent;
+  text-decoration: underline;
 }
 
-.cutout_left {
-  top: 0;
-  transform: translate(-50%, -50%);
-}
-
-.cutout_right {
-  bottom: 0;
-  transform: translate(-50%, 50%);
-}
-
-.dashed_line {
-  position: absolute;
-  left: 50%;
-  height: 100%;
-  min-height: 100px;
-  border-left: 1px dashed #fff;
-}
-
-/* .icon_wrap {
-  min-width: 12%;
-  padding-right: 10px;
-} */
-
-.icon_wrap .txt {
-  font-size: 13px;
-  font-weight: 600;
+.btn_txt {
+  font-size: 12px;
 }
 
 .button_box {

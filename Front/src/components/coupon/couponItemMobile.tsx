@@ -67,10 +67,7 @@ export function CouponItemMobile({
       })}
     >
       <HorizontalFlex>
-        <VerticalFlex
-          className={styles.data_card}
-          alignItems="flex-start"
-        >
+        <VerticalFlex className={styles.data_card} alignItems="flex-start">
           <P className={clsx(styles.name)}>
             {coupon?.name}
           </P>
