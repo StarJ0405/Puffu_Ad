@@ -13,7 +13,12 @@ export const GET: ApiHandler = async (req, res) => {
     ...where
   } = req.parsedQuery;
   if (typeof where.warehousing === "string")
-  where.warehousing = where.warehousing === "true" || where.warehousing === "1";
+    where.warehousing =
+      where.warehousing === "true" || where.warehousing === "1";
+  if (typeof where.is_set === "string")
+    where.is_set = where.is_set === "true" || where.is_set === "1";
+  if (typeof where.random_box === "string")
+    where.random_box = where.random_box === "true" || where.random_box === "1";
   const service: ProductService = container.resolve(ProductService);
   if (req.user) {
     where.user_id = req.user.id;
