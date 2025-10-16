@@ -7,12 +7,12 @@ import Image from "@/components/Image/Image";
 import NoContent from "@/components/noContent/noContent";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
+import useData from "@/shared/hooks/data/useData";
+import { requester } from "@/shared/Requester";
 import clsx from "clsx";
 import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import styles from "./page.module.css";
-import useData from "@/shared/hooks/data/useData";
-import { requester } from "@/shared/Requester";
 
 export function CompleteForm({ order }: { order?: OrderData }) {
   const date = new Date(order?.created_at || "");
@@ -96,7 +96,9 @@ export function CompleteForm({ order }: { order?: OrderData }) {
               <P size={16} color="#fff" weight={500}>
                 할인금액{" "}
                 {Number(
-                  (order?.total || 0) - (order?.total_discounted || 0)
+                  (order?.total || 0) -
+                    (order?.total_final || 0) -
+                    (order?.delivery_fee || 0)
                 ).toLocaleString("ko-KR")}
                 원
               </P>
@@ -105,10 +107,7 @@ export function CompleteForm({ order }: { order?: OrderData }) {
             <FlexChild justifyContent="center">
               <P size={16} color="#fff" weight={500}>
                 + 배송비{" "}
-                {Number(order?.shipping_method?.amount || 0).toLocaleString(
-                  "ko-KR"
-                )}
-                원
+                {Number(order?.delivery_fee || 0).toLocaleString("ko-KR")}원
               </P>
             </FlexChild>
             <FlexChild justifyContent="center" hidden={!order?.point}>
@@ -127,12 +126,7 @@ export function CompleteForm({ order }: { order?: OrderData }) {
 
             <FlexChild justifyContent="center">
               <P size={25} color="var(--main-color1)" weight={600}>
-                {Number(
-                  (order?.total_discounted || 0) +
-                    (order?.shipping_method?.amount || 0) -
-                    (order?.point || 0)
-                ).toLocaleString("ko-KR")}
-                원
+                {Number(order?.total_final || 0).toLocaleString("ko-KR")}원
               </P>
             </FlexChild>
           </VerticalFlex>

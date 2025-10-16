@@ -12,22 +12,7 @@ import clsx from "clsx";
 import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import styles from "./page.module.css";
-const getItemRealPrice = (item: LineItemData) => {
-  const amount = (item.discount_price || 0) * item.quantity;
 
-  if (item.coupons?.length) {
-    const [percents, fix] = item.coupons.reduce(
-      (acc, now) => {
-        if (now.calc === "fix") acc[1] += now.value;
-        else if (now.calc === "percent") acc[0] += now.value;
-        return acc;
-      },
-      [0, 0]
-    ) || [0, 0];
-    return Math.max(0, Math.round((amount * (100 - percents)) / 100.0 - fix));
-  }
-  return amount;
-};
 export function CompleteForm({ order }: { order?: OrderData }) {
   return (
     <VerticalFlex marginTop={80}>
@@ -197,7 +182,7 @@ export function MyOrdersTable({ items }: { items?: LineItemData[] }) {
                     <P weight={600} color="#fff">
                       {(
                         (item.unit_price || 0) * item.quantity -
-                        getItemRealPrice(item)
+                        (item.total_final || 0)
                       ).toLocaleString("ko-KR")}{" "}
                       원
                     </P>
@@ -205,8 +190,7 @@ export function MyOrdersTable({ items }: { items?: LineItemData[] }) {
 
                   <td>
                     <P weight={600}>
-                      {Number(getItemRealPrice(item)).toLocaleString("ko-KR")}{" "}
-                      원
+                      {Number(item.total_final || 0).toLocaleString("ko-KR")} 원
                     </P>
                   </td>
                 </tr>

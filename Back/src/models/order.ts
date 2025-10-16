@@ -93,24 +93,7 @@ export class Order extends BaseEntity {
 
   get total_discounted(): number {
     return (
-      this.items?.reduce((acc, now) => {
-        const amount = (now.discount_price || 0) * now.quantity;
-        if (now.coupons?.length) {
-          const [percents, fix] = now.coupons.reduce(
-            (acc, now) => {
-              if (now.calc === CalcType.FIX) acc[1] += now.value;
-              else if (now.calc === CalcType.PERCENT) acc[0] += now.value;
-              return acc;
-            },
-            [0, 0]
-          ) || [0, 0];
-          return (
-            acc +
-            Math.max(0, Math.round((amount * (100 - percents)) / 100.0 - fix))
-          );
-        }
-        return acc + amount;
-      }, 0.0) || 0.0
+      this.items?.reduce((acc, now) => acc + (now.total_final || 0), 0.0) || 0.0
     );
   }
   get delivery_fee(): number {

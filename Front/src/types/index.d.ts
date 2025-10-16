@@ -257,6 +257,7 @@ interface LineItemData extends BaseEntity {
   shared_price?: number;
   total?: number;
   total_discount?: number;
+  total_final?: number;
   total_tax?: number;
   currency_unit?: string;
   metadata?: Record<string, unknown> | null;
