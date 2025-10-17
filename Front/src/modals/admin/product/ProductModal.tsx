@@ -81,6 +81,9 @@ const ProductModal = NiceModal.create(
     const [warehousing, setWarehousing] = useState<boolean>(
       !!product?.warehousing
     );
+    const [productType, setProductType] = useState<string>(
+      product?.product_type ?? "null" // "null" | "is_set" | "random_box"
+    );
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string>("");
 
@@ -112,6 +115,10 @@ const ProductModal = NiceModal.create(
               visible: radio[0],
               buyable: radio[1],
               warehousing,
+              product_type:
+                productType === "null"
+                  ? null
+                  : (productType as "is_set" | "random_box"),
               title: title,
               code,
               description: inputs.current[1].getValue(),
@@ -188,9 +195,7 @@ const ProductModal = NiceModal.create(
             ) : (
               <Image
                 className={styles.image}
-                src={
-                  product?.thumbnail || "/resources/images/no-img.png"
-                }
+                src={product?.thumbnail || "/resources/images/no-img.png"}
                 size={200}
               />
             )}
@@ -437,6 +442,45 @@ const ProductModal = NiceModal.create(
                   </RadioGroup>
                 ) : (
                   <P>{product.warehousing ? "입고예정" : "미처리"}</P>
+                )}
+              </FlexChild>
+            </HorizontalFlex>
+          </FlexChild>
+          <FlexChild>
+            <HorizontalFlex>
+              <FlexChild className={styles.head}>
+                <P>상품타입</P>
+              </FlexChild>
+              <FlexChild className={styles.content}>
+                {edit ? (
+                  <RadioGroup
+                    name="product_type"
+                    value={productType}
+                    onValueChange={(v) => setProductType(v)}
+                  >
+                    <HorizontalFlex gap={20} justifyContent="flex-start">
+                      <FlexChild gap={6} width={"max-content"}>
+                        <RadioChild id="null" />
+                        <P>기본상품</P>
+                      </FlexChild>
+                      <FlexChild gap={6} width={"max-content"}>
+                        <RadioChild id="is_set" />
+                        <P>세트상품</P>
+                      </FlexChild>
+                      <FlexChild gap={6} width={"max-content"}>
+                        <RadioChild id="random_box" />
+                        <P>랜덤박스</P>
+                      </FlexChild>
+                    </HorizontalFlex>
+                  </RadioGroup>
+                ) : (
+                  <P>
+                    {product?.product_type === "is_set"
+                      ? "세트상품"
+                      : product?.product_type === "random_box"
+                      ? "랜덤박스"
+                      : "기본상품"}
+                  </P>
                 )}
               </FlexChild>
             </HorizontalFlex>
