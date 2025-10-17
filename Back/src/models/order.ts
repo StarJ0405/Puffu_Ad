@@ -130,6 +130,12 @@ export class Order extends BaseEntity {
             fix
         ) - (this.point || 0)
       );
+    } else if (this.subscribe?.percent) {
+      return Math.max(
+        0,
+        Math.round((amount * (100 - (this.subscribe?.percent || 0))) / 100.0) -
+          (this.point || 0)
+      );
     }
     return amount - (this.point || 0);
   }
