@@ -103,6 +103,7 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
             justifyContent="flex-start"
             className={styles.subTabs}
           >
+            <P className={styles.subTab}>|</P>
             {expiredTabs.map((st) => (
               <P
                 key={st.key}
