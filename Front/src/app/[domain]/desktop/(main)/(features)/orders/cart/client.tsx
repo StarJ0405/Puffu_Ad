@@ -1011,6 +1011,7 @@ export function CartWrap() {
                         Sessions.ORDER,
                         JSON.stringify(content)
                       );
+                      reload();
                       navigate("/orders/complete", {
                         type: "replace",
                       });
@@ -1045,6 +1046,7 @@ export function CartWrap() {
                             Sessions.ORDER,
                             JSON.stringify(content)
                           );
+                          reload();
                           navigate("/orders/complete", {
                             type: "replace",
                           });
@@ -1125,6 +1127,7 @@ export function CartWrap() {
                                             Sessions.ORDER,
                                             JSON.stringify(content)
                                           );
+                                          reload();
                                           navigate("/orders/complete", {
                                             type: "replace",
                                           });
@@ -1218,6 +1221,7 @@ export function CartWrap() {
                                           Sessions.ORDER,
                                           JSON.stringify(content)
                                         );
+                                        reload();
                                         navigate("/orders/complete", {
                                           type: "replace",
                                         });
