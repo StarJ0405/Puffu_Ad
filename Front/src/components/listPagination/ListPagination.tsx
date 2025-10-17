@@ -5,7 +5,6 @@ import FlexChild from "../flex/FlexChild";
 import HorizontalFlex from "../flex/HorizontalFlex";
 import Image from "../Image/Image";
 import styles from "./ListPagination.module.css";
-import { useEffect, useState, RefObject } from "react";
 
 type Props = {
   page: number;
@@ -121,7 +120,7 @@ function ListPagination({
               styles.paging,
               last && styles.disabled
             )}
-            onClick={() => !last && go(maxPage - 1)}
+            onClick={() => !last && go(maxPage)}
           >
             <Image
               src={"/resources/icons/arrow/list_paging_last.png"}
@@ -200,7 +199,7 @@ function ListPagination({
               styles.paging,
               last && styles.disabled
             )}
-            onClick={() => !last && go(maxPage - 1)}
+            onClick={() => !last && go(maxPage)}
           >
             <Image
               src={"/resources/icons/arrow/list_paging_last.png"}
