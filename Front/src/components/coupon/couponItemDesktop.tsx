@@ -9,14 +9,11 @@ import styles from "./couponItemDesktop.module.css";
 import NiceModal from "@ebay/nice-modal-react";
 import Span from "@/components/span/Span";
 
-export function CouponItemDesktop({
-  coupon,
-}: {
-  coupon: CouponData;
-}) {
+export function CouponItemDesktop({ coupon }: { coupon: CouponData }) {
   const { isMobile } = useBrowserEvent();
-  const isExpired =
-    new Date(coupon.ends_at || 0).getTime() < new Date().getTime();
+  const isExpired = coupon.ends_at
+    ? new Date(coupon.ends_at as any).getTime() < Date.now()
+    : false;
   const isUsed = coupon.used;
 
   const calcCheck = () => {
@@ -48,7 +45,9 @@ export function CouponItemDesktop({
   const products = coupon?.products;
   const categories = coupon?.categories;
 
-  const isAllProductsApplied = ((coupon?.products?.length ?? 0) === 0) && ((coupon?.categories?.length ?? 0) === 0);
+  const isAllProductsApplied =
+    (coupon?.products?.length ?? 0) === 0 &&
+    (coupon?.categories?.length ?? 0) === 0;
 
   return (
     <tr
@@ -73,25 +72,25 @@ export function CouponItemDesktop({
       </td>
       <td className={styles.txt2}>
         <P>{minCheck()}</P>
-        {
-          coupon?.type === "item" && !isUsed && !isExpired && (
-            !isAllProductsApplied ? (
-              <Button onClick={()=> NiceModal.show("couponProductsModal", { products, categories })} className={styles.more_btn}>
-                {
-                  products?.length !==0 ? (
-                    '적용 상품'
-                  ) : categories?.length !==0 ? (
-                    '적용 카테고리'
-                  ) : (
-                    '적용'
-                  )
-                }
-              </Button>
-            ) : (
-              <P>전체 적용</P>
-            )
-          )
-        }
+        {coupon?.type === "item" &&
+          !isUsed &&
+          !isExpired &&
+          (!isAllProductsApplied ? (
+            <Button
+              onClick={() =>
+                NiceModal.show("couponProductsModal", { products, categories })
+              }
+              className={styles.more_btn}
+            >
+              {products?.length !== 0
+                ? "적용 상품"
+                : categories?.length !== 0
+                ? "적용 카테고리"
+                : "적용"}
+            </Button>
+          ) : (
+            <P>전체 적용</P>
+          ))}
       </td>
       <td className={styles.txt2}>
         <P>

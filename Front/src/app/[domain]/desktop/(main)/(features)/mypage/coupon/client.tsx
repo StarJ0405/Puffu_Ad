@@ -15,23 +15,52 @@ import mypage from "../mypage.module.css";
 import styles from "./page.module.css";
 import ListPagination from "@/components/listPagination/ListPagination";
 import CouponItemDesktop from "@/components/coupon/couponItemDesktop";
+import { useState, useMemo } from "react";
+
+type FilterKey = "all" | "item" | "order" | "shipping" | "expired";
 
 export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
   const { userData } = useAuth();
+  const [filter, setFilter] = useState<FilterKey>("all");
+
+  const where = useMemo(() => {
+    switch (filter) {
+      case "item":
+        return { type: "item" };
+      case "order":
+        return { type: "order" };
+      case "shipping":
+        return { type: "shipping" };
+      case "expired":
+        return { status: "expired" }; // status 종류:
+      // - "expired"      → 기간만료 + 사용만료 전체
+      // - "expired_date" → 기간만료만 (미사용)
+      // - "expired_used" → 사용된 쿠폰만 (기간무관)
+      default:
+        return {};
+    }
+  }, [filter]);
+
   const { coupons, page, maxPage, setPage } = usePageData(
     "coupons",
-    (pageNumber) => ({
-      pageNumber,
-      pageSize: 12,
-    }),
-    (condition) => requester.getCoupons(condition),
-    (data: Pageable) => data?.totalPages || 0,
-    {
-      fallbackData: initCoupons,
-      onReprocessing: (data) => data?.content || [],
-    }
+    (pageNumber) => ({ pageNumber, pageSize: 12, ...where }),
+    (cond) => requester.getCoupons(cond),
+    (d: Pageable) => d?.totalPages || 0,
+    { fallbackData: initCoupons, onReprocessing: (d) => d?.content || [] }
   );
 
+  const tabs: { key: FilterKey; label: string }[] = [
+    { key: "all", label: "전체" },
+    { key: "item", label: "상품 할인" },
+    { key: "order", label: "주문 할인" },
+    { key: "shipping", label: "배송 할인" },
+    { key: "expired", label: "만료" },
+  ];
+
+  const onTabClick = (k: FilterKey) => {
+    if (k !== filter) setPage(0);
+    setFilter(k);
+  };
   return (
     <VerticalFlex className={clsx(mypage.box_frame, styles.coupon_box)}>
       <HorizontalFlex className={mypage.box_header}>
@@ -43,16 +72,30 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
           </P>
         </FlexChild>
       </HorizontalFlex>
+
+      <HorizontalFlex gap={15} justifyContent="flex-start">
+        {tabs.map((t) => (
+          <P
+            key={t.key}
+            cursor="pointer"
+            className={clsx(styles.tab, {
+              [styles.activeTab]: filter === t.key,
+            })}
+            onClick={() => onTabClick(t.key)}
+          >
+            {t.label}
+            {t.key === "all" && <>({userData?.coupon ?? 0})</>}
+          </P>
+        ))}
+      </HorizontalFlex>
       <table className={styles.coupon_list}>
         <colgroup>
-          <col style={{ width: "15%",}} />
-          <col style={{ width: "15%",}} />
+          <col style={{ width: "15%" }} />
+          <col style={{ width: "15%" }} />
           <col style={{ width: "35%" }} />
-          <col style={{ width: "20%",}} />
-          <col style={{ width: "15%",}} />
+          <col style={{ width: "20%" }} />
+          <col style={{ width: "15%" }} />
         </colgroup>
-
-        {/* 게시판리스트 헤더 */}
         <thead>
           <tr className={styles.table_header}>
             <th>구분</th>
@@ -64,12 +107,14 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
         </thead>
         <tbody>
           {coupons?.length > 0 ? (
-            coupons?.map((coupon: CouponData) => (
-              <CouponItemDesktop coupon={coupon} key={coupon.id} />
+            coupons.map((c: CouponData) => (
+              <CouponItemDesktop coupon={c} key={c.id} />
             ))
           ) : (
             <tr>
-              <NoContent type="쿠폰" />
+              <td colSpan={5}>
+                <NoContent type="쿠폰" />
+              </td>
             </tr>
           )}
         </tbody>

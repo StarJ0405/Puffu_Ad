@@ -126,20 +126,12 @@ export class CouponService extends BaseService<Coupon, CouponRepository> {
       .leftJoinAndSelect("cu.products", "pr")
       .leftJoinAndSelect("pr.discounts", "dis")
       .leftJoinAndSelect("dis.discount", "dd");
-    if (where.user_id)
-      builder = builder.andWhere(`user_id = :user_id`, {
+    if (where.user_id) {
+      builder = builder.andWhere(`cu.user_id = :user_id`, {
         user_id: where.user_id,
       });
-    if ("used" in where) {
-      if (where.used)
-        builder = builder.andWhere(
-          `(cu.item_id IS NOT NULL OR cu.order_id IS NOT NULL OR cu.shipping_method_id IS NOT NULL OR cu.ends_at <= NOW())`
-        );
-      else
-        builder = builder.andWhere(
-          `(cu.item_id IS NULL AND cu.order_id IS NULL AND cu.shipping_method_id IS NULL AND cu.ends_at > NOW())`
-        );
     }
+
     if (where.q) {
       const q = where.q;
       builder = builder.andWhere(
@@ -159,10 +151,42 @@ export class CouponService extends BaseService<Coupon, CouponRepository> {
     }
     if (where.type)
       builder = builder.andWhere(`cu.type = :type`, { type: where.type });
+    // 사용됨 OR 기간만료
+    if (where.used === true) {
+      builder = builder.andWhere(
+        `(cu.item_id IS NOT NULL OR cu.order_id IS NOT NULL OR cu.shipping_method_id IS NOT NULL OR (cu.ends_at IS NOT NULL AND cu.ends_at <= NOW()))`
+      );
+    }
+    // 사용만
+    if (where._usedOnly === true) {
+      builder = builder.andWhere(
+        `(cu.item_id IS NOT NULL OR cu.order_id IS NOT NULL OR cu.shipping_method_id IS NOT NULL)`
+      );
+    }
+    // 기간만료만
+    // if (where._expired) { // 이거는 사용만료이면서 기간만료인 것도 나옴
+    //   builder = builder.andWhere(
+    //     "cu.ends_at IS NOT NULL AND cu.ends_at <= NOW()"
+    //   );
+    // }
+    if (where._expired) {
+      builder = builder.andWhere(`
+        cu.ends_at IS NOT NULL 
+        AND cu.ends_at <= NOW()
+        AND cu.item_id IS NULL 
+        AND cu.order_id IS NULL 
+        AND cu.shipping_method_id IS NULL
+      `);
+    }
     if (!options.order) {
       builder = builder
         .addSelect(
-          `CASE WHEN cu.item_id IS NULL AND cu.order_id IS NULL AND cu.shipping_method_id IS NULL AND cu.ends_at > NOW() THEN 0 ELSE 1 END`,
+          `CASE
+         WHEN cu.item_id IS NULL
+          AND cu.order_id IS NULL
+          AND cu.shipping_method_id IS NULL
+          AND (cu.ends_at IS NULL OR cu.ends_at > NOW())
+       THEN 0 ELSE 1 END`,
           "ord"
         )
         .orderBy("ord", "ASC")
@@ -171,7 +195,10 @@ export class CouponService extends BaseService<Coupon, CouponRepository> {
     }
     if (pageData) {
       const { pageSize, pageNumber = 0 } = pageData;
-      const NumberOfTotalElements = await builder.getCount();
+
+      const countBuilder = builder.clone().select("cu.id").distinct(true);
+
+      const NumberOfTotalElements = await countBuilder.getCount();
       const content = await builder
         .take(pageSize)
         .skip(pageNumber * pageSize)
