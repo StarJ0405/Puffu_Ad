@@ -25,6 +25,7 @@ export default async function ({ params }: { params: Promise<Params> }) {
       "exchanges.items.item",
       "exchanges.items.swaps.brand",
       "coupons",
+      "subscribe",
     ],
     start_date,
   };

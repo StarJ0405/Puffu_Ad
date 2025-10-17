@@ -2,6 +2,8 @@
 
 import Button from "@/components/buttons/Button";
 import Center from "@/components/center/Center";
+import RadioChild from "@/components/choice/radio/RadioChild";
+import RadioGroup from "@/components/choice/radio/RadioGroup";
 import Div from "@/components/div/Div";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
@@ -32,6 +34,7 @@ export default function ({
         common: {
           style: {
             width: 120,
+            minWidth: 120,
           },
         },
       },
@@ -69,6 +72,7 @@ export default function ({
         common: {
           style: {
             width: 60,
+            minWidth: 60,
           },
         },
       },
@@ -104,17 +108,20 @@ export default function ({
     },
   ];
   const [total, setTotal] = useState(initData.NumberOfTotalElements);
+  const [status, setStatus] = useState<string>("all");
   const table = useRef<any>(null);
   const input = useRef<any>(null);
   const onSearchClick = () => {
     const data: any = {};
     const q = input.current.getValue();
     if (q) data.q = q;
+    if (status !== "all") data.deleted_at = status === "active" ? null : true;
     table.current.setCondition(data);
   };
   const onResetClick = () => {
     input.current.empty();
     table.current.reset();
+    setStatus("all");
   };
   const ContextMenu = ({ x, y, row }: { x: number; y: number; row?: any }) => {
     const rows: RowInterface[] = [
@@ -192,6 +199,69 @@ export default function ({
       <FlexChild>
         <div className={styles.search_ontainer}>
           <VerticalFlex>
+            <FlexChild>
+              <VerticalFlex>
+                <FlexChild borderBottom={"1px solid #e9e9e9"}>
+                  <HorizontalFlex gap={20} justifyContent={"flex-start"}>
+                    <FlexChild
+                      width={"10%"}
+                      backgroundColor={"var(--admin-table-bg-color)"}
+                    >
+                      <div className={styles.titleWrap}>
+                        <Center>
+                          <P size={16} weight={"bold"}>
+                            상태
+                          </P>
+                        </Center>
+                      </div>
+                    </FlexChild>
+                    <FlexChild>
+                      <RadioGroup
+                        name="status"
+                        value={status}
+                        onValueChange={setStatus}
+                      >
+                        <HorizontalFlex gap={12} justifyContent="flex-start">
+                          <FlexChild
+                            width={"max-content"}
+                            gap={6}
+                            cursor="pointer"
+                            onClick={() =>
+                              document.getElementById("all")?.click()
+                            }
+                          >
+                            <RadioChild id="all" />
+                            <P>전체</P>
+                          </FlexChild>
+                          <FlexChild
+                            width={"max-content"}
+                            gap={6}
+                            cursor="pointer"
+                            onClick={() =>
+                              document.getElementById("active")?.click()
+                            }
+                          >
+                            <RadioChild id="active" />
+                            <P>활성</P>
+                          </FlexChild>
+                          <FlexChild
+                            width={"max-content"}
+                            gap={6}
+                            cursor="pointer"
+                            onClick={() =>
+                              document.getElementById("inactive")?.click()
+                            }
+                          >
+                            <RadioChild id="inactive" />
+                            <P>탈퇴</P>
+                          </FlexChild>
+                        </HorizontalFlex>
+                      </RadioGroup>
+                    </FlexChild>
+                  </HorizontalFlex>
+                </FlexChild>
+              </VerticalFlex>
+            </FlexChild>
             <FlexChild>
               <VerticalFlex>
                 <FlexChild borderBottom={"1px solid #e9e9e9"}>

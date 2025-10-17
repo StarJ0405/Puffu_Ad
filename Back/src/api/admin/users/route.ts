@@ -1,6 +1,7 @@
 import { User, UserRole } from "models/user";
 import { UserService } from "services/user";
 import { container } from "tsyringe";
+import { IsNull, Not } from "typeorm";
 
 export const POST: ApiHandler = async (req, res) => {
   const {
@@ -66,7 +67,10 @@ export const GET: ApiHandler = async (req, res) => {
     withDeleted,
     ...where
   } = req.parsedQuery;
-
+  if ("deleted_at" in where) {
+    if (where?.deleted_at) where.deleted_at = Not(IsNull());
+    else where.deleted_at = IsNull();
+  }
   const service: UserService = container.resolve(UserService);
   if (pageSize) {
     const page = await service.getPageable(

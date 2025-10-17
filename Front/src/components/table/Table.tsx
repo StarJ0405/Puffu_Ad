@@ -853,6 +853,7 @@ const PageableTable = forwardRef(
                         );
                       }
                     }}
+                    onClick={(e) => onRowClick?.(e, row)}
                   >
                     <HorizontalFlex
                       className={clsx(

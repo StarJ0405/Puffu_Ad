@@ -17,6 +17,7 @@ export default async function ({ params }: { params: Promise<Params> }) {
       "items.item.refunds",
       "items.item.coupons",
       "order.coupons",
+      "subscribe",
     ],
     // withDeleted: true,
     completed_at: null,

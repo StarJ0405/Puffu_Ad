@@ -102,6 +102,7 @@ interface UserData extends BaseEntity, UserDataFrame {
   group?: GroupData;
   coupons?: CouponData[];
   stored: number;
+  subscribe?: SubscribeData;
 }
 interface StoreDataFrame {
   name: string;
