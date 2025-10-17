@@ -1,6 +1,8 @@
 import { User } from "models/user";
+import { SubscribeService } from "services/subscribe";
 import { UserService } from "services/user";
 import { container } from "tsyringe";
+import { LessThanOrEqual, MoreThan } from "typeorm";
 import { comparePasswords, generateToken, verifyToken } from "utils/functions";
 
 export const GET: ApiHandler = async (req, res) => {
@@ -18,7 +20,16 @@ export const GET: ApiHandler = async (req, res) => {
       }
     }
     const service = container.resolve(UserService);
+    const subscribeService = container.resolve(SubscribeService);
     user.stored = await service.getStorePayment(user.id);
+    user.subscribe =
+      (await subscribeService.get({
+        where: {
+          user_id: user.id,
+          starts_at: LessThanOrEqual(new Date()),
+          ends_at: MoreThan(new Date()),
+        },
+      })) || null;
     return res.json({
       user,
       access_token,

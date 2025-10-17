@@ -727,6 +727,34 @@ class _AdminRequester {
     if (callback) callback(await this.put(`/coupons/${id}`, data));
     else return await this.put(`/coupons/${id}`, data);
   }
+  // 구독
+  async createSubscribe(
+    data?: SubscribeDataFrame,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.post(`/subscribes`, data));
+    else return await this.post(`/subscribes`, data);
+  }
+  async getSubscribe(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/subscribes`, data));
+    else return await this.get(`/subscribes`, data);
+  }
+  async updateSubscribe(
+    id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.post(`/subscribes/${id}`, data));
+    else return await this.post(`/subscribes/${id}`, data);
+  }
+  async deleteSubscribe(
+    id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.delete(`/subscribes/${id}`, data));
+    else return await this.delete(`/subscribes/${id}`, data);
+  }
 }
 
 export default _AdminRequester;

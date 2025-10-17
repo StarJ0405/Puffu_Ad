@@ -557,6 +557,31 @@ export default function ({
             }),
         });
       }
+      if (status === "fulfilled" || status === "ready") {
+        rows.push({
+          label: `송장번호 ${
+            row?.shipping_method?.tracking_number ? "수정" : "입력"
+          }`,
+          hotKey: "s",
+          onClick: () =>
+            NiceModal.show("input", {
+              message: "송장번호를 입력하세요",
+              cancelText: "취소",
+              confirmText: "입력",
+              input: {
+                value: row?.shipping_method?.tracking_number || "",
+              },
+              onConfirm: (value: string) =>
+                adminRequester.updateOrder(
+                  row.id,
+                  {
+                    tracking_number: String(value).trim(),
+                  },
+                  () => table.current.research()
+                ),
+            }),
+        });
+      }
       if (status === "awaiting") {
         rows.push({
           label: "입금확인 처리",

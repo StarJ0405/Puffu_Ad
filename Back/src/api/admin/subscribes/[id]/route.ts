@@ -1,23 +1,30 @@
-import { Order } from "models/order";
-import { OrderService } from "services/order";
-import { ShippingMethodService } from "services/shipping_method";
+import { Subscribe } from "models/subscribe";
+import { SubscribeService } from "services/subscribe";
 import { container } from "tsyringe";
 
 export const POST: ApiHandler = async (req, res) => {
   const { id } = req.params;
-  const { metadata, tracking_number, return_data = false, status } = req.body;
+  const {
+    store_id,
+    name,
+    price,
+    percent,
+    value,
+    metadata,
+    return_data = false,
+  } = req.body;
 
-  const service: OrderService = container.resolve(OrderService);
-  const shippingService = container.resolve(ShippingMethodService);
+  const service: SubscribeService = container.resolve(SubscribeService);
   try {
     const _data = {
+      store_id,
+      name,
+      price,
+      percent,
+      value,
       metadata,
-      status,
     };
-    if ("tracking_number" in req.body) {
-      shippingService.update({ order_id: id }, { tracking_number });
-    }
-    const result: UpdateResult<Order> = await service.update(
+    const result: UpdateResult<Subscribe> = await service.update(
       { id: id },
       _data,
       true
@@ -27,11 +34,10 @@ export const POST: ApiHandler = async (req, res) => {
     return res.status(500).json({ error: err?.message, status: 500 });
   }
 };
-
 export const GET: ApiHandler = async (req, res) => {
   const { id } = req.params;
   const { select, relations, withDeleted } = req.parsedQuery;
-  const service: OrderService = container.resolve(OrderService);
+  const service: SubscribeService = container.resolve(SubscribeService);
 
   const content = await service.getById(id, { select, relations, withDeleted });
   return res.json({ content });
@@ -40,7 +46,7 @@ export const GET: ApiHandler = async (req, res) => {
 export const DELETE: ApiHandler = async (req, res) => {
   const { id } = req.params;
   const { soft } = req.parsedQuery;
-  const service: OrderService = container.resolve(OrderService);
+  const service: SubscribeService = container.resolve(SubscribeService);
   const result = await service.delete(
     {
       id,

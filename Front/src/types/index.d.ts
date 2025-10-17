@@ -615,3 +615,21 @@ interface CouponData extends BaseEntity, CouponDataFrame {
   group?: GroupData;
   used: boolean;
 }
+
+interface SubscribeDataFrame {
+  store_id?: string;
+  name: string;
+  price: number;
+  percent: number;
+  value: number;
+}
+
+interface SubscribeData extends BaseEntity, SubscribeDataFrame {
+  store?: StoreData;
+  user?: UserData;
+  starts_at?: Date | string | null;
+  ends_at?: Date | string | null;
+  payment_data?: Record<string, unknown> | null;
+  repeat?: boolean;
+  metadata?: Record<string, unknown> | null;
+}
