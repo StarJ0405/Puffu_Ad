@@ -770,35 +770,37 @@ export function CartWrap() {
             </article>
 
             <VerticalFlex className={styles.info_list}>
-              <HorizontalFlex className={styles.info_item}>
-                <Span>상품 금액</Span>
-
-                <P>
-                  <Span>{getProductSum()}</Span>
-                  <Span> ₩</Span>
-                </P>
-              </HorizontalFlex>
-
               <VerticalFlex gap={10}>
                 <HorizontalFlex className={styles.info_item}>
-                  <Span>배송비</Span>
-  
-                  <P>
-                    <Span>{getShippingAmount()}</Span>
-                    <Span> ₩</Span>
-                  </P>
+                  <Span>원가</Span>
                 </HorizontalFlex>
 
-                <FlexChild gap={10} paddingLeft={20} hidden={shippingCoupons.length === 0}>
+                <FlexChild gap={10} paddingLeft={20}>
                   <Image src={"/resources/icons/cart/cart_reply_icon.png"} width={15} />
 
-                  <HorizontalFlex className={clsx(styles.info_item, styles.info_unit)}>
-                    <Span>(배송비 할인 쿠폰 적용)</Span>
+                  <HorizontalFlex className={styles.info_item}>
+                    <Span>상품 금액</Span>
+
+                    <P>
+                      <Span>{getProductSum()}</Span>
+                      <Span> ₩</Span>
+                    </P>
+                  </HorizontalFlex>
+                </FlexChild>
+
+                <FlexChild gap={10} paddingLeft={20}>
+                  <Image src={"/resources/icons/cart/cart_reply_icon.png"} width={15} />
+
+                  <HorizontalFlex className={styles.info_item}>
+                    <Span>배송비</Span>
+    
+                    <P>
+                      <Span>{getShippingAmount()}</Span>
+                      <Span> ₩</Span>
+                    </P>
                   </HorizontalFlex>
                 </FlexChild>
               </VerticalFlex>
-
-              {/* 포인트 자리 */}
 
               <VerticalFlex gap={10}>
                 <HorizontalFlex className={styles.info_item}>

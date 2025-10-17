@@ -723,25 +723,50 @@ export function CartWrap() {
             </article>
 
             <VerticalFlex className={styles.info_list}>
-              <HorizontalFlex className={styles.info_item}>
-                <Span>상품 금액</Span>
-
-                <P>
-                  {/* <Span>{getProductSum()}</Span> */}
-                  <Span>{ProductPriceSum()}</Span>
-                  <Span> ₩</Span>
-                </P>
-              </HorizontalFlex>
-
               <VerticalFlex gap={10}>
                 <HorizontalFlex className={styles.info_item}>
-                  <Span>배송비</Span>
-
-                  <P>
-                    <Span>{shipping?.amount || 0}</Span>
-                    <Span> ₩</Span>
-                  </P>
+                  <Span>원가</Span>
                 </HorizontalFlex>
+                
+                <FlexChild
+                  gap={10}
+                  paddingLeft={20}
+                >
+                  <Image
+                    src={"/resources/icons/cart/cart_reply_icon.png"}
+                    width={15}
+                  />
+
+                  <HorizontalFlex className={styles.info_item}>
+                    <Span>상품 금액</Span>
+
+                    <P>
+                      {/* <Span>{getProductSum()}</Span> */}
+                      <Span>{ProductPriceSum()}</Span>
+                      <Span> ₩</Span>
+                    </P>
+                  </HorizontalFlex>
+                </FlexChild>
+
+                <FlexChild
+                  gap={10}
+                  paddingLeft={20}
+                >
+                  <Image
+                    src={"/resources/icons/cart/cart_reply_icon.png"}
+                    width={15}
+                  />
+
+                  <HorizontalFlex className={styles.info_item}>
+                    <Span>배송비</Span>
+
+                    <P>
+                      <Span>{shipping?.amount || 0}</Span>
+                      <Span> ₩</Span>
+                    </P>
+                  </HorizontalFlex>
+                </FlexChild>
+
               </VerticalFlex>
 
               <VerticalFlex className={clsx(styles.point_box)}>
