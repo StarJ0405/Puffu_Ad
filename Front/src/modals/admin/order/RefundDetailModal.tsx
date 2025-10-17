@@ -162,62 +162,24 @@ const RefundDetailModal = NiceModal.create(
                     </P>
                   </FlexChild>
                   <FlexChild width="max-content" padding={"15px 15px 15px 0"}>
-                    <P
-                      hidden={
-                        (refund.order?.total_discounted || 0) +
-                          (refund.order?.shipping_method?.amount || 0) ===
-                        refund.order?.point
-                      }
-                    >
+                    <P hidden={!refund.order?.total_final}>
                       <Span color="green">
                         {selects?.reduce(
                           (acc, item) =>
                             acc +
-                            ((item.item?.discount_price || 0) +
+                            ((item.item?.total_final || 0) +
                               (item?.item?.shared_price || 0)) *
                               item.quantity,
                           0
                         ) || 0}
                       </Span>
                       <Span>원</Span>
-                      <Span fontSize={14}>(상품 </Span>
-                      <Span fontSize={14}>
-                        {(selects?.reduce(
-                          (acc, item) =>
-                            acc +
-                            ((item.item?.discount_price || 0) +
-                              (item?.item?.shared_price || 0)) *
-                              item.quantity,
-                          0
-                        ) || 0) -
-                          ((refund.order?.shipping_method?.amount || 0) /
-                            (refund?.order?.total_discounted || 0)) *
-                            (selects?.reduce(
-                              (acc, now) =>
-                                acc +
-                                (now.item?.discount_price || 0) * now.quantity,
-                              0
-                            ) || 0)}
-                      </Span>
-                      <Span fontSize={14}>원 + 배송비</Span>
-                      <Span fontSize={14}>
-                        {((refund.order?.shipping_method?.amount || 0) /
-                          (refund?.order?.total_discounted || 0)) *
-                          (selects?.reduce(
-                            (acc, now) =>
-                              acc +
-                              (now.item?.discount_price || 0) * now.quantity,
-                            0
-                          ) || 0)}
-                      </Span>
-                      <Span fontSize={14}>원)</Span>
                     </P>
                     <P
                       padding={"0 0.5em"}
                       hidden={
-                        (refund.order?.total_discounted || 0) +
-                          (refund.order?.shipping_method?.amount || 0) ===
-                          refund.order?.point || refund.order?.point === 0
+                        refund.order?.total_final === 0 ||
+                        refund.order?.point === 0
                       }
                     >
                       <Span> | </Span>
@@ -229,7 +191,7 @@ const RefundDetailModal = NiceModal.create(
                             acc +
                             ((refund?.order?.point || 0) /
                               (refund?.order?.total_discounted || 0)) *
-                              (item?.item?.discount_price || 0) *
+                              (item?.item?.total_final || 0) *
                               item.quantity,
                           0
                         ) || 0}
@@ -460,7 +422,7 @@ const RefundDetailModal = NiceModal.create(
                         (acc, item) =>
                           acc +
                           Math.round(
-                            (item.item?.discount_price || 0) +
+                            (item.item?.total_final || 0) +
                               (item?.item?.shared_price || 0)
                           ) *
                             item.quantity,
@@ -473,7 +435,7 @@ const RefundDetailModal = NiceModal.create(
                           Math.round(
                             ((refund?.order?.point || 0) /
                               (refund?.order?.total_discounted || 0)) *
-                              (item?.item?.discount_price || 0)
+                              (item?.item?.total_final || 0)
                           ) *
                             item.quantity,
                         0
@@ -624,15 +586,8 @@ const Item = forwardRef(
           </FlexChild>
           <FlexChild className={styles.value}>
             <P>
-              <Span>{(item?.item?.discount_price || 0) * item.quantity}</Span>
+              <Span>{item?.item?.total_final || 0}</Span>
               <Span>원</Span>
-            </P>
-            <P hidden={quantity === 1} fontSize={15} fontWeight={400}>
-              <Span>(</Span>
-              <Span>{item.item?.discount_price}</Span>
-              <Span> * </Span>
-              <Span>{item.quantity}</Span>
-              <Span>)</Span>
             </P>
           </FlexChild>
         </FlexChild>
@@ -640,9 +595,9 @@ const Item = forwardRef(
           <P className={styles.header}>배송비</P>
           <P className={styles.value}>
             <Span>
-              {((refund?.order?.shipping_method?.amount || 0) /
+              {((refund?.order?.delivery_fee || 0) /
                 (refund?.order?.total_discounted || 0)) *
-                (item.item?.discount_price || 0) *
+                (item.item?.total_final || 0) *
                 quantity}
             </Span>
             <Span>원</Span>
@@ -654,9 +609,9 @@ const Item = forwardRef(
             <Span>
               {((item?.item?.shared_price || 0) +
                 (((refund?.order?.point || 0) -
-                  (refund?.order?.shipping_method?.amount || 0)) /
+                  (refund?.order?.delivery_fee || 0)) /
                   (refund?.order?.total_discounted || 0)) *
-                  (item?.item?.discount_price || 0)) *
+                  (item?.item?.total_final || 0)) *
                 item.quantity}
             </Span>
 
@@ -667,38 +622,11 @@ const Item = forwardRef(
           <P className={styles.header}>환불가능 금액</P>
           <P className={styles.value}>
             <Span>
-              {((item.item?.discount_price || 0) +
+              {((item.item?.total_final || 0) +
                 (item?.item?.shared_price || 0)) *
                 quantity}
             </Span>
             <Span>원</Span>
-            <Span fontSize={16} fontWeight={500}>
-              (상품{" "}
-            </Span>
-            <Span fontSize={16} fontWeight={500}>
-              {((item.item?.discount_price || 0) +
-                (item?.item?.shared_price || 0)) *
-                quantity -
-                ((refund?.order?.shipping_method?.amount || 0) /
-                  (refund?.order?.total_discounted || 0)) *
-                  (item?.item?.discount_price || 0) *
-                  quantity}
-            </Span>
-            <Span fontSize={16} fontWeight={500}>
-              원 + 배송비{" "}
-            </Span>
-            <Span fontSize={16} fontWeight={500}>
-              {((refund?.order?.shipping_method?.amount || 0) /
-                (refund?.order?.total_discounted || 0)) *
-                (item?.item?.discount_price || 0) *
-                quantity}
-            </Span>
-            <Span fontSize={16} fontWeight={500}>
-              원
-            </Span>
-            <Span fontSize={16} fontWeight={500}>
-              )
-            </Span>
           </P>
         </FlexChild>
         <FlexChild className={styles.row}>
@@ -707,9 +635,23 @@ const Item = forwardRef(
             <Span>
               {((refund?.order?.point || 0) /
                 (refund?.order?.total_discounted || 0)) *
-                (item?.item?.discount_price || 0) *
+                (item?.item?.total_final || 0) *
                 quantity}
             </Span>
+            <Span>P</Span>
+          </P>
+        </FlexChild>
+        <FlexChild className={styles.row} hidden={!refund.completed_at}>
+          <P className={styles.header}>환불된 금액</P>
+          <P className={styles.value}>
+            <Span>{refund.value}</Span>
+            <Span>원</Span>
+          </P>
+        </FlexChild>
+        <FlexChild className={styles.row} hidden={!refund.completed_at}>
+          <P className={styles.header}>환불된 포인트</P>
+          <P className={styles.value}>
+            <Span>{refund.point}</Span>
             <Span>P</Span>
           </P>
         </FlexChild>

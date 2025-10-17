@@ -12,22 +12,27 @@ export default async function ({ params }: { params: Promise<Params> }) {
     pageNumber: 0,
     order: { display: "asc" },
     relations: [
+      "items.coupons",
       "items.brand",
       "items.refunds.refund",
       "items.exchanges.exchange",
       "items.exchanges.swaps.brand",
       "address",
-      "shipping_method",
+      "shipping_method.coupons",
       "user",
       "store",
       "refunds.items.item",
       "exchanges.items.item",
       "exchanges.items.swaps.brand",
+      "coupons",
     ],
     start_date,
   };
 
   switch (status?.[0]) {
+    case "awaiting":
+      initCondition.status = "awaiting";
+      break;
     case "product":
       initCondition.status = "pending";
       break;

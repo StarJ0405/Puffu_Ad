@@ -224,7 +224,8 @@ const OrderDetailModal = NiceModal.create(({ order }: { order: OrderData }) => {
                                   <VerticalFlex>
                                     <P className={styles.total}>
                                       <Span>
-                                        {((item.total || 0) / item.quantity) *
+                                        {((item.total_final || 0) /
+                                          item.quantity) *
                                           (item.quantity - refund)}
                                       </Span>
                                       <Span>{item.currency_unit}</Span>
@@ -487,6 +488,8 @@ const OrderDetailModal = NiceModal.create(({ order }: { order: OrderData }) => {
                         ? "NESTPAY(신용카드)"
                         : order?.payment_data?.type === "BRANDPAY"
                         ? "토스"
+                        : order?.payment_data?.bank_number
+                        ? "무통장 입금"
                         : "알 수 없음"}
                     </P>
                   </FlexChild>
@@ -514,9 +517,7 @@ const OrderDetailModal = NiceModal.create(({ order }: { order: OrderData }) => {
                     <FlexChild width="max-content" padding={"15px 15px 15px 0"}>
                       <P>
                         <Span>
-                          {order?.total_discounted +
-                            (order?.shipping_method?.amount || 0) -
-                            order.point -
+                          {(order?.total_final || 0) -
                             (order.refunds?.reduce(
                               (acc, now) => acc + now.value,
                               0
@@ -532,11 +533,7 @@ const OrderDetailModal = NiceModal.create(({ order }: { order: OrderData }) => {
                         }
                       >
                         <Span>(</Span>
-                        <Span>
-                          {order?.total_discounted +
-                            (order?.shipping_method?.amount || 0) -
-                            order.point}
-                        </Span>
+                        <Span>{order.total_final}</Span>
                         <Span>{order?.store?.currency_unit}</Span>
                         <Span>)</Span>
                       </P>
@@ -584,31 +581,17 @@ const OrderDetailModal = NiceModal.create(({ order }: { order: OrderData }) => {
                   justifyContent={"center"}
                 >
                   <P size={16} weight={600}>
-                    사용포인트
+                    주문서 할인
                   </P>
                 </FlexChild>
                 <FlexChild width="max-content" padding={"15px 15px 15px 0"}>
                   <P>
                     <Span>
-                      {(order.point || 0) -
-                        (order.refunds?.reduce(
-                          (acc, now) => acc + now.point,
-                          0
-                        ) || 0)}
+                      {(order.total_final || 0) -
+                        order.total_discounted -
+                        (order.delivery_fee || 0)}
                     </Span>
-                    <Span>P</Span>
-                  </P>
-                  <P
-                    paddingLeft={"0.5em"}
-                    hidden={
-                      order.refunds?.filter((f) => f.point > 0)?.length === 0
-                    }
-                    textDecorationLine="line-through"
-                  >
-                    <Span>(</Span>
-                    <Span>{order.point || 0}</Span>
-                    <Span>P</Span>
-                    <Span>)</Span>
+                    <Span>원</Span>
                   </P>
                 </FlexChild>
               </HorizontalFlex>
@@ -630,11 +613,52 @@ const OrderDetailModal = NiceModal.create(({ order }: { order: OrderData }) => {
                 </FlexChild>
                 <FlexChild width="max-content" padding={"15px 15px 15px 0"}>
                   <HorizontalFlex>
-                    <P>{order?.shipping_method?.amount || 0}</P>
+                    <P>{order?.delivery_fee || 0}</P>
                     <P>{order?.store?.currency_unit}</P>
                   </HorizontalFlex>
                 </FlexChild>
               </HorizontalFlex>
+            </HorizontalFlex>
+            <HorizontalFlex
+              justifyContent="flex-start"
+              gap={20}
+              alignItems="stretch"
+              borderBottom={"1px solid #EFEFEF"}
+            >
+              <FlexChild
+                width={120}
+                padding={"18px 15px"}
+                backgroundColor={"#F5F6FB"}
+                justifyContent={"center"}
+              >
+                <P size={16} weight={600}>
+                  사용포인트
+                </P>
+              </FlexChild>
+              <FlexChild width="max-content" padding={"15px 15px 15px 0"}>
+                <P>
+                  <Span>
+                    {(order.point || 0) -
+                      (order.refunds?.reduce(
+                        (acc, now) => acc + now.point,
+                        0
+                      ) || 0)}
+                  </Span>
+                  <Span>P</Span>
+                </P>
+                <P
+                  paddingLeft={"0.5em"}
+                  hidden={
+                    order.refunds?.filter((f) => f.point > 0)?.length === 0
+                  }
+                  textDecorationLine="line-through"
+                >
+                  <Span>(</Span>
+                  <Span>{order.point || 0}</Span>
+                  <Span>P</Span>
+                  <Span>)</Span>
+                </P>
+              </FlexChild>
             </HorizontalFlex>
             <HorizontalFlex
               justifyContent="flex-start"
@@ -658,7 +682,161 @@ const OrderDetailModal = NiceModal.create(({ order }: { order: OrderData }) => {
                 </P>
               </FlexChild>
             </HorizontalFlex>
-
+            <FlexChild
+              hidden={
+                order.coupons?.length === 0 &&
+                order.shipping_method?.coupons?.length === 0 &&
+                !order.items.some((item) => item.coupons?.length != 0)
+              }
+            >
+              <VerticalFlex>
+                <FlexChild marginTop={20}>
+                  <P fontWeight={700} fontSize={20}>
+                    쿠폰 사용내역
+                  </P>
+                </FlexChild>
+                <FlexChild marginTop={10}>
+                  <VerticalFlex>
+                    <HorizontalFlex
+                      hidden={!order.coupons?.length}
+                      justifyContent="flex-start"
+                      gap={20}
+                      alignItems="stretch"
+                      borderBottom={"1px solid #EFEFEF"}
+                    >
+                      <FlexChild
+                        width={120}
+                        padding={"18px 15px"}
+                        backgroundColor={"#F5F6FB"}
+                        justifyContent={"center"}
+                      >
+                        <P size={16} weight={600}>
+                          주문서 쿠폰
+                        </P>
+                      </FlexChild>
+                      <FlexChild padding={"15px 15px 15px 0"} flex={1}>
+                        <VerticalFlex gap={5}>
+                          {order.coupons?.map((coupon) => (
+                            <FlexChild
+                              key={coupon.id}
+                              padding={10}
+                              border={"1px solid #d0d0d0"}
+                            >
+                              <HorizontalFlex>
+                                <P>{coupon.name}</P>
+                                <P>
+                                  <Span>{coupon.value}</Span>
+                                  <Span>
+                                    {coupon.calc === "fix" ? "원" : "%"}
+                                  </Span>
+                                </P>
+                              </HorizontalFlex>
+                            </FlexChild>
+                          ))}
+                        </VerticalFlex>
+                      </FlexChild>
+                    </HorizontalFlex>
+                    <HorizontalFlex
+                      hidden={!order.shipping_method?.coupons?.length}
+                      justifyContent="flex-start"
+                      gap={20}
+                      alignItems="stretch"
+                      borderBottom={"1px solid #EFEFEF"}
+                    >
+                      <FlexChild
+                        width={120}
+                        padding={"18px 15px"}
+                        backgroundColor={"#F5F6FB"}
+                        justifyContent={"center"}
+                      >
+                        <P size={16} weight={600}>
+                          배송비 쿠폰
+                        </P>
+                      </FlexChild>
+                      <FlexChild padding={"15px 15px 15px 0"} flex={1}>
+                        <VerticalFlex gap={5}>
+                          {order.shipping_method?.coupons?.map((coupon) => (
+                            <FlexChild
+                              key={coupon.id}
+                              padding={10}
+                              border={"1px solid #d0d0d0"}
+                            >
+                              <HorizontalFlex>
+                                <P>{coupon.name}</P>
+                                <P>
+                                  <Span>{coupon.value}</Span>
+                                  <Span>
+                                    {coupon.calc === "fix" ? "원" : "%"}
+                                  </Span>
+                                </P>
+                              </HorizontalFlex>
+                            </FlexChild>
+                          ))}
+                        </VerticalFlex>
+                      </FlexChild>
+                    </HorizontalFlex>
+                    <HorizontalFlex
+                      hidden={!order.items.some((f) => f.coupons?.length)}
+                      justifyContent="flex-start"
+                      gap={20}
+                      alignItems="stretch"
+                      borderBottom={"1px solid #EFEFEF"}
+                    >
+                      <FlexChild
+                        width={120}
+                        padding={"18px 15px"}
+                        backgroundColor={"#F5F6FB"}
+                        justifyContent={"center"}
+                      >
+                        <P size={16} weight={600}>
+                          상품 쿠폰
+                        </P>
+                      </FlexChild>
+                      <FlexChild padding={"15px 15px 15px 0"} flex={1}>
+                        <VerticalFlex gap={10}>
+                          {order.items
+                            .filter((f) => f.coupons?.length)
+                            .map((item) => (
+                              <FlexChild key={item.id}>
+                                <VerticalFlex gap={5}>
+                                  <FlexChild>
+                                    <P fontSize={18} fontWeight={700}>
+                                      - {item.title}
+                                    </P>
+                                  </FlexChild>
+                                  <FlexChild>
+                                    <VerticalFlex>
+                                      {item.coupons?.map((coupon) => (
+                                        <FlexChild
+                                          key={coupon.id}
+                                          padding={10}
+                                          border={"1px solid #d0d0d0"}
+                                        >
+                                          <HorizontalFlex>
+                                            <P>{coupon.name}</P>
+                                            <P>
+                                              <Span>{coupon.value}</Span>
+                                              <Span>
+                                                {coupon.calc === "fix"
+                                                  ? "원"
+                                                  : "%"}
+                                              </Span>
+                                            </P>
+                                          </HorizontalFlex>
+                                        </FlexChild>
+                                      ))}
+                                    </VerticalFlex>
+                                  </FlexChild>
+                                </VerticalFlex>
+                              </FlexChild>
+                            ))}
+                        </VerticalFlex>
+                      </FlexChild>
+                    </HorizontalFlex>
+                  </VerticalFlex>
+                </FlexChild>
+              </VerticalFlex>
+            </FlexChild>
             <FlexChild hidden={order.refunds?.length === 0}>
               <VerticalFlex>
                 <FlexChild marginTop={20}>

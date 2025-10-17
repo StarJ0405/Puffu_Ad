@@ -67,6 +67,11 @@ const SidebarNav: NavParent[] = [
         icon: "/resources/images/sideNav_order_search.png",
       },
       {
+        name: "입금 대기중",
+        to: "/management/awaiting",
+        icon: "/resources/images/sideNav_order_payment_awaiting.png",
+      },
+      {
         name: "상품 준비중",
         to: "/management/product",
         icon: "/resources/images/sideNav_order_ready.png",

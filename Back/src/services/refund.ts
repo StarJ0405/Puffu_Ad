@@ -268,6 +268,15 @@ export class RefundService extends BaseService<Refund, RefundRepository> {
               point,
             }
           );
+        } else {
+          await this.repository.update(
+            { id: refund.id },
+            {
+              completed_at: new Date(),
+              value,
+              point,
+            }
+          );
         }
       }
     }

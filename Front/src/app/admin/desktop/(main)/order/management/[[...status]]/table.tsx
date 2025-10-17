@@ -95,17 +95,13 @@ export default function ({
     },
     {
       label: "결제금액",
-      code: "total_discounted",
+      code: "total_final",
       Cell: ({ cell, row }) => {
-        const value =
-          cell +
-          (row?.total_tax || 0) +
-          (row?.shipping_method?.amount || 0) -
-          (row?.point || 0);
+        if (row.status === "cancel") return "주문 취소";
         const type =
-          value <= 0
+          cell <= 0
             ? "포인트 결제"
-            : row?.payment_data?.bank
+            : row?.payment_data?.bank_number
             ? "무통장"
             : row?.payment_data?.trackId
             ? "NESTPAY(신용카드)"
@@ -133,13 +129,13 @@ export default function ({
                 padding={10}
                 minWidth={200}
               >
-                <FlexChild hidden={value <= 0} paddingBottom={"0.5em"}>
+                <FlexChild hidden={cell <= 0} paddingBottom={"0.5em"}>
                   <HorizontalFlex>
                     <P fontWeight={700} fontSize={18}>
                       결제
                     </P>
                     <P color="green">
-                      <Span>{value - refundValue}</Span>
+                      <Span>{cell - refundValue}</Span>
                       <Span>원</Span>
                     </P>
                   </HorizontalFlex>
@@ -156,7 +152,7 @@ export default function ({
                     </FlexChild>
                     <FlexChild justifyContent="flex-end">
                       <P>
-                        <Span>{value}</Span>
+                        <Span>{cell}</Span>
                         <Span>원</Span>
                       </P>
                     </FlexChild>
@@ -226,20 +222,20 @@ export default function ({
               </P>
               <P
                 width={150}
-                hidden={value <= 0}
+                hidden={cell <= 0}
                 textDecorationLine={
                   refundValue > 0 ? "line-through" : undefined
                 }
               >
-                <Span>{value}</Span>
+                <Span>{cell}</Span>
                 <Span>원</Span>
               </P>
               <P
                 color="green"
                 width={150}
-                hidden={value <= 0 || refundValue === 0}
+                hidden={cell <= 0 || refundValue === 0}
               >
-                <Span>{value - refundValue}</Span>
+                <Span>{cell - refundValue}</Span>
                 <Span>원</Span>
               </P>
 
@@ -296,6 +292,7 @@ export default function ({
             ?.map((item: LineItemData) => {
               return (
                 <FlexChild
+                  key={item.id}
                   flexGrow={0}
                   flexShrink={0}
                   flexBasis={"auto"}
@@ -530,7 +527,7 @@ export default function ({
           },
         }
       );
-      if (status === "product" || status === "ready") {
+      if (status === "product" || status === "ready" || status === "awaiting") {
         rows.push({
           label: "주문 취소",
           hotKey: "d",
@@ -551,6 +548,68 @@ export default function ({
                 adminRequester.cancelOrders(
                   {
                     id: row.id,
+                  },
+                  () => {
+                    table.current.research();
+                  }
+                );
+              },
+            }),
+        });
+      }
+      if (status === "awaiting") {
+        rows.push({
+          label: "입금확인 처리",
+          hotKey: "c",
+          onClick: () =>
+            NiceModal.show("confirm", {
+              message: (
+                <VerticalFlex gap={15}>
+                  <P
+                    fontSize={20}
+                    fontWeight={700}
+                  >{`주문 번호 ${row.display}`}</P>
+                  <P>해당 주문의 입금을 확인했습니까?</P>
+                </VerticalFlex>
+              ),
+              cancelText: "닫기",
+              confirmText: "확인 처리",
+              onConfirm: () => {
+                adminRequester.updateOrder(
+                  row.id,
+                  {
+                    status: "pending",
+                  },
+                  () => {
+                    table.current.research();
+                  }
+                );
+              },
+            }),
+        });
+      }
+      if (status === "product" && row.payment_data?.bank_number) {
+        rows.push({
+          label: "입금확인 취소",
+          hotKey: "c",
+          onClick: () =>
+            NiceModal.show("confirm", {
+              message: (
+                <VerticalFlex gap={15}>
+                  <P
+                    fontSize={20}
+                    fontWeight={700}
+                  >{`주문 번호 ${row.display}`}</P>
+                  <P>해당 주문의 입금을 대기로 전환하시겠습니까?</P>
+                </VerticalFlex>
+              ),
+              cancelText: "닫기",
+              confirmText: "대기 처리",
+              onConfirm: () => {
+                adminRequester.updateOrder(
+                  row.id,
+                  {
+                    status: "awaiting",
                   },
                   () => {
                     table.current.research();

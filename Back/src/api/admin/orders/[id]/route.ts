@@ -4,12 +4,13 @@ import { container } from "tsyringe";
 
 export const POST: ApiHandler = async (req, res) => {
   const { id } = req.params;
-  const { metadata, return_data = false } = req.body;
+  const { metadata, return_data = false, status } = req.body;
 
   const service: OrderService = container.resolve(OrderService);
   try {
     const _data = {
       metadata,
+      status,
     };
     const result: UpdateResult<Order> = await service.update(
       { id: id },
