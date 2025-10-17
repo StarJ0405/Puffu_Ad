@@ -97,6 +97,18 @@ export function CartWrap() {
     }
     return amount;
   };
+
+  const ProductPriceSum = () => { // 상품 원가 총합 표시
+    return (
+      cartData?.items
+        .filter((f) => selected.includes(f.id))
+        .reduce((acc, now) => {
+          const amount = (now.variant.price || 0) * now.quantity;
+          return acc + amount;
+        }, 0) || 0
+    )
+  }
+
   const getProductSum = () => {
     const items: CouponData[] = coupons.filter(
       (f: CouponData) => f.type === "item"
@@ -129,16 +141,25 @@ export function CartWrap() {
     );
   };
 
-  const saleTotal = () => {
-    // 쿠폰 적용 안된 상품값
-    const productPrice =
+  function saleTotal () { // 할인율 합 (프로모션 세일 포함)
+
+    // 프로모션 세일가
+    const promotions = 
+      cartData?.items
+        .filter((f) => selected.includes(f.id))
+        .reduce((acc, now) => {
+          const amount = ((now.variant.price || 0) - (now.variant.discount_price || 0)) * now.quantity;
+          return acc + amount;
+        }, 0) || 0;
+
+    const productPrice = 
       cartData?.items
         .filter((f) => selected.includes(f.id))
         .reduce((acc, now) => {
           const variant = (now.variant.discount_price || 0) * now.quantity;
           return acc + variant;
         }, 0) || 0;
-
+    
     // 배송비만 합친 상품 값
     const amount = getShippingAmount() + productPrice;
 
@@ -147,7 +168,7 @@ export function CartWrap() {
     );
 
     //상품별 쿠폰 할인 총합
-    const productCoupons =
+    const productCoupons = 
       cartData?.items
         .filter((f) => selected.includes(f.id))
         .reduce((acc, now) => {
@@ -157,14 +178,12 @@ export function CartWrap() {
           if (coupons.length > 0) {
             const products = items.filter((f) => coupons.includes(f.id));
 
-            const percents = products.reduce(
-              (acc, now) => (now.calc === "percent" ? acc + now.value : acc),
-              0
+            const percents = products.reduce((acc, now) => 
+              now.calc === "percent" ? acc + now.value : acc, 0
             );
 
-            const fix = products.reduce(
-              (acc, now) => (now.calc === "fix" ? acc + now.value : acc),
-              0
+            const fix = products.reduce((acc, now) => 
+              now.calc === "fix" ? acc + now.value : acc, 0
             );
 
             // 상품별 금액 기준으로 할인
@@ -187,28 +206,32 @@ export function CartWrap() {
           orderCoupons.includes(f.id)
         );
 
-        const percents = orders.reduce(
-          (acc, now) => (now.calc === "percent" ? acc + now.value : acc),
-          0
+        const percents = orders.reduce((acc, now) => 
+          now.calc === "percent" ? acc + now.value : acc, 0
         );
 
-        const fix = orders.reduce(
-          (acc, now) => (now.calc === "fix" ? acc + now.value : acc),
-          0
+        const fix = orders.reduce((acc, now) => 
+          now.calc === "fix" ? acc + now.value : acc, 0
         );
 
         const discountedAmount = Math.round(
           ((amount - productCoupons) * (100 - percents)) / 100.0 - fix
         );
 
-        return amount - productCoupons - discountedAmount;
+        return (amount - productCoupons) - discountedAmount;
       }
       return 0;
     };
 
+    const orders = orderCouponsTotal();
+
+    const total = productCoupons + orders + (point || 0) + promotions;
+
     //총 할인 금액 반환
-    return productCoupons + orderCouponsTotal() + (point || 0);
+    return {total, promotions, productCoupons, orders};
   };
+
+  const saleTotals = saleTotal();
 
   const getSum = () => {
     const amount = getShippingAmount() + getProductSum();
@@ -756,33 +779,94 @@ export function CartWrap() {
                 </P>
               </HorizontalFlex>
 
-              <HorizontalFlex className={styles.info_item}>
-                <Span>배송비</Span>
-
-                <FlexChild width={"auto"} gap={10}>
-                  {/* 배송비 할인 쿠폰 적용되면 나타나기 */}
-                  <P fontSize={13} hidden={shippingCoupons.length === 0}>
-                    (배송비 할인 적용)
-                  </P>
-
+              <VerticalFlex gap={10}>
+                <HorizontalFlex className={styles.info_item}>
+                  <Span>배송비</Span>
+  
                   <P>
                     <Span>{getShippingAmount()}</Span>
                     <Span> ₩</Span>
                   </P>
+                </HorizontalFlex>
+
+                <FlexChild gap={10} paddingLeft={20} hidden={shippingCoupons.length === 0}>
+                  <Image src={"/resources/icons/cart/cart_reply_icon.png"} width={15} />
+
+                  <HorizontalFlex className={clsx(styles.info_item, styles.info_unit)}>
+                    <Span>(배송비 할인 쿠폰 적용)</Span>
+                  </HorizontalFlex>
                 </FlexChild>
-              </HorizontalFlex>
+              </VerticalFlex>
 
               {/* 포인트 자리 */}
 
-              <HorizontalFlex className={styles.info_item}>
-                <Span>할인가</Span>
+              <VerticalFlex gap={10}>
+                <HorizontalFlex className={styles.info_item}>
+                  <Span>할인가</Span>
+  
+                  <P color="#fff">
+                    <Span>- </Span>
+                    <Span>{saleTotals.total + (point || 0)}</Span>
+                    <Span> ₩</Span>
+                  </P>
+                </HorizontalFlex>
 
-                <P color="#fff">
-                  <Span>- </Span>
-                  <Span>{saleTotal()}</Span>
-                  <Span> ₩</Span>
-                </P>
-              </HorizontalFlex>
+                <FlexChild gap={10} paddingLeft={20} hidden={saleTotals.promotions === 0}>
+                  <Image src={"/resources/icons/cart/cart_reply_icon.png"} width={15} />
+
+                  <HorizontalFlex className={clsx(styles.info_item, styles.info_unit)}>
+                    <Span>(프로모션 할인가)</Span>
+    
+                    <P>
+                      <Span>+ </Span>
+                      <Span>{saleTotals.promotions}</Span>
+                      <Span> ₩</Span>
+                    </P>
+                  </HorizontalFlex>
+                </FlexChild>
+
+                <FlexChild gap={10} paddingLeft={20} hidden={point === 0}>
+                  <Image src={"/resources/icons/cart/cart_reply_icon.png"} width={15} />
+
+                  <HorizontalFlex className={clsx(styles.info_item, styles.info_unit)}>
+                    <Span>(포인트 사용)</Span>
+    
+                    <P>
+                      <Span>+ </Span>
+                      <Span>{point || 0}</Span>
+                      <Span> ₩</Span>
+                    </P>
+                  </HorizontalFlex>
+                </FlexChild>
+
+                <FlexChild gap={10} paddingLeft={20} hidden={saleTotals.productCoupons === 0}>
+                  <Image src={"/resources/icons/cart/cart_reply_icon.png"} width={15} />
+
+                  <HorizontalFlex className={clsx(styles.info_item, styles.info_unit)}>
+                    <Span>(상품 쿠폰 할인가)</Span>
+    
+                    <P>
+                      <Span>+ </Span>
+                      <Span>{saleTotals.productCoupons}</Span>
+                      <Span> ₩</Span>
+                    </P>
+                  </HorizontalFlex>
+                </FlexChild>
+
+                <FlexChild gap={10} paddingLeft={20} hidden={saleTotals.orders === 0}>
+                  <Image src={"/resources/icons/cart/cart_reply_icon.png"} width={15} />
+
+                  <HorizontalFlex className={clsx(styles.info_item, styles.info_unit)}>
+                    <Span>(주문 쿠폰 할인가)</Span>
+    
+                    <P>
+                      <Span>+ </Span>
+                      <Span>{saleTotals.orders}</Span>
+                      <Span> ₩</Span>
+                    </P>
+                  </HorizontalFlex>
+                </FlexChild>
+              </VerticalFlex>
 
               <HorizontalFlex className={styles.info_item}>
                 <Span>합계</Span>
