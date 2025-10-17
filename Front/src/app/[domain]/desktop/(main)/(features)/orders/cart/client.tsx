@@ -720,6 +720,10 @@ export function CartWrap() {
           <VerticalFlex alignItems="start">
             <article>
               <P className={styles.list_title}>결제 금액</P>
+
+              <P fontSize={13} color="#797979" lineHeight={1.3}>
+                상품 금액(세일 할인가 포함) 50,000원 이상 구매 시 배송비 무료
+              </P>
             </article>
 
             <VerticalFlex className={styles.info_list}>
@@ -766,7 +770,6 @@ export function CartWrap() {
                     </P>
                   </HorizontalFlex>
                 </FlexChild>
-
               </VerticalFlex>
 
               <VerticalFlex className={clsx(styles.point_box)}>
