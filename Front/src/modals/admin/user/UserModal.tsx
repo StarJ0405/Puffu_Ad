@@ -44,7 +44,7 @@ const UserModal = NiceModal.create(({ user }: { user: UserData }) => {
             size={200}
           />
         </FlexChild>
-        <FlexChild>
+        <FlexChild hidden>
           <HorizontalFlex>
             <FlexChild className={styles.head}>
               <P>uuid</P>
@@ -147,7 +147,7 @@ const UserModal = NiceModal.create(({ user }: { user: UserData }) => {
             </HorizontalFlex>
           </FlexChild>
         )}
-        <FlexChild>
+        <FlexChild hidden>
           <HorizontalFlex>
             <FlexChild className={styles.head}>
               <P>연동확인</P>

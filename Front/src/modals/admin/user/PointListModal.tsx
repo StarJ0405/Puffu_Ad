@@ -9,7 +9,7 @@ import NiceModal from "@ebay/nice-modal-react";
 import { useEffect, useRef } from "react";
 import ModalBase from "../../ModalBase";
 
-const OrderListModal = NiceModal.create(({ user }: { user: UserData }) => {
+const PointListModal = NiceModal.create(({ user }: { user: UserData }) => {
   const [withHeader, withFooter] = [true, false];
   const [width, height] = ["min(95%, 1100px)", "auto"];
   const withCloseButton = true;
@@ -129,4 +129,4 @@ const OrderListModal = NiceModal.create(({ user }: { user: UserData }) => {
   );
 });
 
-export default OrderListModal;
+export default PointListModal;

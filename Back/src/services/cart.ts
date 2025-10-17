@@ -13,6 +13,7 @@ import { inject, injectable } from "tsyringe";
 import { FindManyOptions, FindOneOptions, ILike, In } from "typeorm";
 import { CouponService } from "./coupon";
 import { PointService } from "./point";
+import { SubscribeService } from "./subscribe";
 
 @injectable()
 export class CartService extends BaseService<Cart, CartRepository> {
@@ -31,6 +32,8 @@ export class CartService extends BaseService<Cart, CartRepository> {
     protected pointService: PointService,
     @inject(CouponService)
     protected couponService: CouponService,
+    @inject(SubscribeService)
+    protected subscribeService: SubscribeService,
     @inject(VariantRepository)
     protected variantRepository: VariantRepository
   ) {
@@ -138,6 +141,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
     payment,
     point = 0,
     coupons,
+    subscribe_id,
   }: {
     user_id: string;
     cart_id: string;
@@ -152,6 +156,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
       shippings?: string[];
       items?: { item_id: string; coupons: string[] }[];
     };
+    subscribe_id?: string;
   }): Promise<Order | null> {
     if (
       !user_id ||
@@ -229,7 +234,11 @@ export class CartService extends BaseService<Cart, CartRepository> {
       status: payment?.bank_number ? OrderStatus.AWAITING : OrderStatus.PENDING,
       payment_data: payment,
       point: point || 0,
+      subscribe_id,
     });
+    const subscribe = subscribe_id
+      ? await this.subscribeService.get({ where: { id: subscribe_id } })
+      : null;
     // const { orders = [], shippings = [], items=[] } = coupons || {};
     const order_coupons = coupons?.orders?.length
       ? await this.couponService.getList({ where: { id: In(coupons.orders) } })
@@ -295,7 +304,10 @@ export class CartService extends BaseService<Cart, CartRepository> {
       shipping -
       (point || 0) -
       order_fix -
-      Math.round(((total + shipping) * order_percents) / 100.0);
+      Math.round(
+        ((total + shipping) * (order_percents + (subscribe?.percent || 0))) /
+          100.0
+      );
 
     await Promise.all(
       (items || []).map(async (item) => {
@@ -396,6 +408,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
         "items.brand",
         "coupons",
         "items.coupons",
+        "subscribe",
       ],
     });
     if (point > 0) {

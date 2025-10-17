@@ -125,8 +125,10 @@ export class Order extends BaseEntity {
       ) || [0, 0];
       return Math.max(
         0,
-        Math.round((amount * (100 - percents)) / 100.0 - fix) -
-          (this.point || 0)
+        Math.round(
+          (amount * (100 - percents - (this.subscribe?.percent || 0))) / 100.0 -
+            fix
+        ) - (this.point || 0)
       );
     }
     return amount - (this.point || 0);
