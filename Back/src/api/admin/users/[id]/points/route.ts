@@ -33,3 +33,9 @@ export const GET: ApiHandler = async (req, res) => {
     return res.json({ content });
   }
 };
+
+export const POST: ApiHandler = async (req, res) => {
+  const { id } = req.params;
+  const { point, memo } = req.body;
+  const service = container.resolve(PointService);
+};

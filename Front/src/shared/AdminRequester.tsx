@@ -764,6 +764,10 @@ class _AdminRequester {
     if (callback) callback(await this.get(`/users/${id}/points`, data));
     else return await this.get(`/users/${id}/points`, data);
   }
+  async givePoint(id: string, data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.post(`/users/${id}/points`, data));
+    else return await this.post(`/users/${id}/points`, data);
+  }
 }
 
 export default _AdminRequester;

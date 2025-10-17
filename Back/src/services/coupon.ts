@@ -263,7 +263,7 @@ export class CouponService extends BaseService<Coupon, CouponRepository> {
         _coupon.code = coupon.code;
         _coupon.interval = coupon.interval;
         _coupon.metadata = coupon.metadata;
-        _coupon.user_id = coupon.id;
+        _coupon.user_id = coupon.user_id;
         _coupon.origin_id = coupon.id;
         _coupon.products = coupon.products;
         _coupon.categories = coupon.categories;

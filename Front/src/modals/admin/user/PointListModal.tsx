@@ -4,7 +4,6 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import P from "@/components/P/P";
 import Table, { Column } from "@/components/table/Table";
 import { adminRequester } from "@/shared/AdminRequester";
-import { toast } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import { useEffect, useRef } from "react";
 import ModalBase from "../../ModalBase";
@@ -131,15 +130,12 @@ const PointListModal = NiceModal.create(({ user }: { user: UserData }) => {
                     placeHolder: "관리자용 메모",
                   },
                 ],
-                preventable: true,
                 onConfirm: (values: any[]) => {
                   const point = Number(values[0] || 0);
                   const memo = values[1] || "";
-                  if (point <= 0) {
-                    toast({ message: "포인트는 최소 0보다 커야합니다" });
-                    return false;
+                  if (point !== 0) {
+                    adminRequester.givePoint(user.id, { point, memo });
                   }
-                  return true;
                 },
               })
             }
