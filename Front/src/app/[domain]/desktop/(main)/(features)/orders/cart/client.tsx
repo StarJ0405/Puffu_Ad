@@ -125,6 +125,85 @@ export function CartWrap() {
         }, 0) || 0
     );
   };
+
+  const saleTotal = () => {
+
+    // 쿠폰 적용 안된 상품값
+    const productPrice = 
+      cartData?.items
+        .filter((f) => selected.includes(f.id))
+        .reduce((acc, now) => {
+          const variant = (now.variant.discount_price || 0) * now.quantity;
+          return acc + variant;
+        }, 0) || 0;
+    
+    // 배송비만 합친 상품 값
+    const amount = getShippingAmount() + productPrice;
+
+    const items: CouponData[] = coupons.filter(
+      (f: CouponData) => f.type === "item"
+    );
+
+    //상품별 쿠폰 할인 총합
+    const productCoupons = 
+      cartData?.items
+        .filter((f) => selected.includes(f.id))
+        .reduce((acc, now) => {
+          const coupons: string[] =
+            itemCoupons.find((f) => f.item_id === now.id)?.coupons || [];
+
+          if (coupons.length > 0) {
+            const products = items.filter((f) => coupons.includes(f.id));
+
+            const percents = products.reduce((acc, now) => 
+              now.calc === "percent" ? acc + now.value : acc, 0
+            );
+
+            const fix = products.reduce((acc, now) => 
+              now.calc === "fix" ? acc + now.value : acc, 0
+            );
+
+            // 상품별 금액 기준으로 할인
+            const itemAmount = (now.variant.discount_price || 0) * now.quantity;
+            const discounted = Math.max(
+              0,
+              Math.round((itemAmount * (100 - percents)) / 100.0 - fix)
+            );
+
+            const discountAmount = itemAmount - discounted;
+            return acc + discountAmount;
+          }
+          return acc;
+        }, 0) || 0;
+
+    //주문 전체 쿠폰 할인
+    const orderCouponsTotal = () => {
+      if (orderCoupons.length > 0) {
+        const orders: CouponData[] = coupons.filter((f: CouponData) =>
+          orderCoupons.includes(f.id)
+        );
+
+        const percents = orders.reduce((acc, now) => 
+          now.calc === "percent" ? acc + now.value : acc, 0
+        );
+
+        const fix = orders.reduce((acc, now) => 
+          now.calc === "fix" ? acc + now.value : acc, 0
+        );
+
+        const discountedAmount = Math.round(
+          ((amount - productCoupons) * (100 - percents)) / 100.0 - fix
+        );
+
+        return (amount - productCoupons) - discountedAmount;
+      }
+      return 0;
+    };
+
+    //총 할인 금액 반환
+    return productCoupons + orderCouponsTotal() + (point || 0);
+  };
+
   const getSum = () => {
     const amount = getShippingAmount() + getProductSum();
     if (orderCoupons.length > 0) {
@@ -656,7 +735,7 @@ export function CartWrap() {
                 <Span>할인가</Span>
 
                 <P color="#fff">
-                  <Span>{-point}</Span>
+                  <Span>{-saleTotal()}</Span>
                   <Span> ₩</Span>
                 </P>
               </HorizontalFlex>
@@ -1067,10 +1146,12 @@ function Item({
             )}
             <VerticalFlex gap={20} alignItems="start" width={"auto"}>
               <VerticalFlex className={styles.unit_price} alignItems="start">
-                <P className={styles.normal_price}>
-                  {Number(item?.variant?.price || 0).toLocaleString("ko")}{" "}
-                  <Span>₩</Span>
-                </P>
+                {item?.variant?.discount_rate > 0 && ( // 원가랑 할인가 차이 없으면 표시 안하기
+                  <P className={styles.normal_price}>
+                    {Number(item?.variant?.price || 0).toLocaleString("ko")}{" "}
+                    <Span>₩</Span>
+                  </P>
+                )}
                 <P>
                   {Number(item?.variant?.discount_price || 0).toLocaleString(
                     "ko"
@@ -1098,7 +1179,6 @@ function Item({
                     '쿠폰 변경'
                   )
                 }
-                {/* 쿠폰 체크 되면 쿠폰 변경으로 바뀜 {'쿠폰 사용' : '쿠폰 변경'} */}
               </Button>
             </VerticalFlex>
           </VerticalFlex>
