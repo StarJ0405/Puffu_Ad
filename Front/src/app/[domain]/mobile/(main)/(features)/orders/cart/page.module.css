@@ -123,20 +123,21 @@
 }
 
 /* 갯수 추가, 총 금액 표시 */
-.product_list .cart_item .totalPrice {
+.product_list .cart_item .calc_box {
   gap: 15px;
   height: auto;
 }
 
-.product_list .cart_item .totalPrice > p {
+.product_list .cart_item .calc_box .totalPrice {
   font-size: 20px !important;
   font-weight: 700 !important;
   line-height: 1;
   color: var(--main-color1) !important;
 }
 
-.product_list .cart_item .totalPrice > p > span {
-  color: #fff;
+.product_list .cart_item .calc_box .totalPrice > span {
+  color: #fff; position: relative;
+  bottom: 2px;
 }
 
 /* 상품 쿠폰 버튼 */
