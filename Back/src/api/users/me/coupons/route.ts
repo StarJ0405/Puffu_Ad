@@ -26,11 +26,11 @@ export const GET: ApiHandler = async (req, res) => {
   if ("status" in req.parsedQuery) {
     const status = String(req.parsedQuery.status);
     if (status === "expired") {
-      where.used = true;  // 기간만료 or 사용만료 전체
+      where.used = true; // 기간만료 or 사용만료 전체
     } else if (status === "expired_date") {
       where._expired = true; // 기간만료만
     } else if (status === "expired_used") {
-      where.used = true; // 사용된 것만
+      where._usedOnly = true; // 사용된 것만
     }
   }
   if (pageSize) {

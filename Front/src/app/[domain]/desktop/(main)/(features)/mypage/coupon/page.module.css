@@ -14,8 +14,9 @@
   background-color: var(--main-color2);
 }
 
-
-.coupon_list {width: 100%;}
+.coupon_list {
+  width: 100%;
+}
 
 .coupon_list .table_header {
   background: #323232;
@@ -46,4 +47,19 @@
 .activeTab {
   color: #ffffff;
   transform: scale(1.125);
+}
+
+.subTabs {
+  margin-top: 5px;
+}
+.subTab {
+  font-size: 14px;
+  color: #777;
+}
+.subTab:hover {
+  transform: scale(1.02);
+}
+.activeSubTab {
+  color: #acacac;
+  font-weight: 600;
 }
