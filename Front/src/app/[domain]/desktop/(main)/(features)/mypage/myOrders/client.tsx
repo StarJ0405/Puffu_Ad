@@ -609,7 +609,7 @@ export function MyOrdersTable({
               </VerticalFlex>
 
               <VerticalFlex className={styles.order_summary}>
-                <HorizontalFlex className={styles.summary_row}>
+                {/* <HorizontalFlex className={styles.summary_row}>
                   <P>배송비</P>
                   {order.shipping_method?.amount === 0 ? (
                     <P>무료</P>
@@ -619,9 +619,9 @@ export function MyOrdersTable({
                       <Span>원</Span>
                     </P>
                   )}
-                </HorizontalFlex>
+                </HorizontalFlex> */}
                 <HorizontalFlex className={styles.summary_row}>
-                  <P>총 상품금액</P>
+                  <P>총 상품금액 (배송비 포함)</P>
                   <P>
                     <Span>{order.total}</Span>
                     <Span>원</Span>
