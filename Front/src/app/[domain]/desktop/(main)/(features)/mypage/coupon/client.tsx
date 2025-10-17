@@ -1,9 +1,9 @@
 "use client";
-import Div from "@/components/div/Div";
+import CouponItemDesktop from "@/components/coupon/couponItemDesktop";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import Image from "@/components/Image/Image";
+import ListPagination from "@/components/listPagination/ListPagination";
 import NoContent from "@/components/noContent/noContent";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
@@ -11,17 +11,21 @@ import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import usePageData from "@/shared/hooks/data/usePageData";
 import { requester } from "@/shared/Requester";
 import clsx from "clsx";
+import { useMemo, useState } from "react";
 import mypage from "../mypage.module.css";
 import styles from "./page.module.css";
-import ListPagination from "@/components/listPagination/ListPagination";
-import CouponItemDesktop from "@/components/coupon/couponItemDesktop";
-import { useState, useMemo } from "react";
 
 type FilterKey = "all" | "item" | "order" | "shipping" | "expired";
+type ExpiredSub = "expired" | "expired_date" | "expired_used";
+// status 종류:
+// - "expired"      → 기간만료 + 사용만료 전체
+// - "expired_date" → 기간만료만 (미사용)
+// - "expired_used" → 사용된 쿠폰만 (기간무관)
 
 export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
   const { userData } = useAuth();
   const [filter, setFilter] = useState<FilterKey>("all");
+  const [expiredSub, setExpiredSub] = useState<ExpiredSub>("expired");
 
   const where = useMemo(() => {
     switch (filter) {
@@ -32,14 +36,11 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
       case "shipping":
         return { type: "shipping" };
       case "expired":
-        return { status: "expired" }; // status 종류:
-      // - "expired"      → 기간만료 + 사용만료 전체
-      // - "expired_date" → 기간만료만 (미사용)
-      // - "expired_used" → 사용된 쿠폰만 (기간무관)
+        return { status: expiredSub };
       default:
         return {};
     }
-  }, [filter]);
+  }, [filter, expiredSub]);
 
   const { coupons, page, maxPage, setPage } = usePageData(
     "coupons",
@@ -57,8 +58,17 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
     { key: "expired", label: "만료" },
   ];
 
+  const expiredTabs: { key: ExpiredSub; label: string }[] = [
+    { key: "expired", label: "전체" },
+    { key: "expired_date", label: "기간만료" },
+    { key: "expired_used", label: "사용만료" },
+  ];
+
   const onTabClick = (k: FilterKey) => {
-    if (k !== filter) setPage(0);
+    if (k !== filter) {
+      setPage(0);
+      if (k !== "expired") setExpiredSub("expired");
+    }
     setFilter(k);
   };
   return (
@@ -84,9 +94,32 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
             onClick={() => onTabClick(t.key)}
           >
             {t.label}
-            {t.key === "all" && <>({userData?.coupon ?? 0})</>}
           </P>
         ))}
+
+        {filter === "expired" && (
+          <HorizontalFlex
+            gap={12}
+            justifyContent="flex-start"
+            className={styles.subTabs}
+          >
+            {expiredTabs.map((st) => (
+              <P
+                key={st.key}
+                cursor="pointer"
+                className={clsx(styles.subTab, {
+                  [styles.activeSubTab]: expiredSub === st.key,
+                })}
+                onClick={() => {
+                  setPage(0);
+                  setExpiredSub(st.key);
+                }}
+              >
+                {st.label}
+              </P>
+            ))}
+          </HorizontalFlex>
+        )}
       </HorizontalFlex>
       <table className={styles.coupon_list}>
         <colgroup>

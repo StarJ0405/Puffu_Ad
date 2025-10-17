@@ -106,3 +106,38 @@
 .list_more_btn:active {
   background-color: #000;
 }
+
+.tab {
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 400;
+  font-family: "Pretendard Variable";
+  line-height: 100%;
+  color: #595959;
+  transition: transform 120ms ease, color 120ms ease;
+  transform-origin: center bottom;
+}
+
+.tab:hover {
+  transform: scale(1.125);
+}
+
+.activeTab {
+  color: #ffffff;
+  transform: scale(1.125);
+}
+
+.subTabs {
+  margin-top: 0px;
+}
+.subTab {
+  font-size: 12px;
+  color: #777;
+}
+.subTab:hover {
+  transform: scale(1.02);
+}
+.activeSubTab {
+  color: #acacac;
+  font-weight: 600;
+}

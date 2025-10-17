@@ -98,7 +98,8 @@ export function CartWrap() {
     return amount;
   };
 
-  const ProductPriceSum = () => { // 상품 원가 총합 표시
+  const ProductPriceSum = () => {
+    // 상품 원가 총합 표시
     return (
       cartData?.items
         .filter((f) => selected.includes(f.id))
@@ -106,8 +107,8 @@ export function CartWrap() {
           const amount = (now.variant.price || 0) * now.quantity;
           return acc + amount;
         }, 0) || 0
-    )
-  }
+    );
+  };
 
   const getProductSum = () => {
     const items: CouponData[] = coupons.filter(
@@ -141,25 +142,28 @@ export function CartWrap() {
     );
   };
 
-  function saleTotal () { // 할인율 합 (프로모션 세일 포함)
+  function saleTotal() {
+    // 할인율 합 (프로모션 세일 포함)
 
     // 프로모션 세일가
-    const promotions = 
+    const promotions =
       cartData?.items
         .filter((f) => selected.includes(f.id))
         .reduce((acc, now) => {
-          const amount = ((now.variant.price || 0) - (now.variant.discount_price || 0)) * now.quantity;
+          const amount =
+            ((now.variant.price || 0) - (now.variant.discount_price || 0)) *
+            now.quantity;
           return acc + amount;
         }, 0) || 0;
 
-    const productPrice = 
+    const productPrice =
       cartData?.items
         .filter((f) => selected.includes(f.id))
         .reduce((acc, now) => {
           const variant = (now.variant.discount_price || 0) * now.quantity;
           return acc + variant;
         }, 0) || 0;
-    
+
     // 배송비만 합친 상품 값
     const amount = getShippingAmount() + productPrice;
 
@@ -168,7 +172,7 @@ export function CartWrap() {
     );
 
     //상품별 쿠폰 할인 총합
-    const productCoupons = 
+    const productCoupons =
       cartData?.items
         .filter((f) => selected.includes(f.id))
         .reduce((acc, now) => {
@@ -178,12 +182,14 @@ export function CartWrap() {
           if (coupons.length > 0) {
             const products = items.filter((f) => coupons.includes(f.id));
 
-            const percents = products.reduce((acc, now) => 
-              now.calc === "percent" ? acc + now.value : acc, 0
+            const percents = products.reduce(
+              (acc, now) => (now.calc === "percent" ? acc + now.value : acc),
+              0
             );
 
-            const fix = products.reduce((acc, now) => 
-              now.calc === "fix" ? acc + now.value : acc, 0
+            const fix = products.reduce(
+              (acc, now) => (now.calc === "fix" ? acc + now.value : acc),
+              0
             );
 
             // 상품별 금액 기준으로 할인
@@ -206,19 +212,21 @@ export function CartWrap() {
           orderCoupons.includes(f.id)
         );
 
-        const percents = orders.reduce((acc, now) => 
-          now.calc === "percent" ? acc + now.value : acc, 0
+        const percents = orders.reduce(
+          (acc, now) => (now.calc === "percent" ? acc + now.value : acc),
+          0
         );
 
-        const fix = orders.reduce((acc, now) => 
-          now.calc === "fix" ? acc + now.value : acc, 0
+        const fix = orders.reduce(
+          (acc, now) => (now.calc === "fix" ? acc + now.value : acc),
+          0
         );
 
         const discountedAmount = Math.round(
           ((amount - productCoupons) * (100 - percents)) / 100.0 - fix
         );
 
-        return (amount - productCoupons) - discountedAmount;
+        return amount - productCoupons - discountedAmount;
       }
       return 0;
     };
@@ -228,8 +236,8 @@ export function CartWrap() {
     const total = productCoupons + orders + (point || 0) + promotions;
 
     //총 할인 금액 반환
-    return {total, promotions, productCoupons, orders};
-  };
+    return { total, promotions, productCoupons, orders };
+  }
 
   const saleTotals = saleTotal();
 
@@ -805,7 +813,7 @@ export function CartWrap() {
               <VerticalFlex gap={10}>
                 <HorizontalFlex className={styles.info_item}>
                   <Span>할인가</Span>
-  
+
                   <P color="#fff">
                     <Span>- </Span>
                     <Span>{saleTotals.total + (point || 0)}</Span>
@@ -813,12 +821,21 @@ export function CartWrap() {
                   </P>
                 </HorizontalFlex>
 
-                <FlexChild gap={10} paddingLeft={20} hidden={saleTotals.promotions === 0}>
-                  <Image src={"/resources/icons/cart/cart_reply_icon.png"} width={15} />
+                <FlexChild
+                  gap={10}
+                  paddingLeft={20}
+                  hidden={saleTotals.promotions === 0}
+                >
+                  <Image
+                    src={"/resources/icons/cart/cart_reply_icon.png"}
+                    width={15}
+                  />
 
-                  <HorizontalFlex className={clsx(styles.info_item, styles.info_unit)}>
+                  <HorizontalFlex
+                    className={clsx(styles.info_item, styles.info_unit)}
+                  >
                     <Span>(프로모션 할인가)</Span>
-    
+
                     <P>
                       <Span>+ </Span>
                       <Span>{saleTotals.promotions}</Span>
@@ -828,11 +845,16 @@ export function CartWrap() {
                 </FlexChild>
 
                 <FlexChild gap={10} paddingLeft={20} hidden={point === 0}>
-                  <Image src={"/resources/icons/cart/cart_reply_icon.png"} width={15} />
+                  <Image
+                    src={"/resources/icons/cart/cart_reply_icon.png"}
+                    width={15}
+                  />
 
-                  <HorizontalFlex className={clsx(styles.info_item, styles.info_unit)}>
+                  <HorizontalFlex
+                    className={clsx(styles.info_item, styles.info_unit)}
+                  >
                     <Span>(포인트 사용)</Span>
-    
+
                     <P>
                       <Span>+ </Span>
                       <Span>{point || 0}</Span>
@@ -841,12 +863,21 @@ export function CartWrap() {
                   </HorizontalFlex>
                 </FlexChild>
 
-                <FlexChild gap={10} paddingLeft={20} hidden={saleTotals.productCoupons === 0}>
-                  <Image src={"/resources/icons/cart/cart_reply_icon.png"} width={15} />
+                <FlexChild
+                  gap={10}
+                  paddingLeft={20}
+                  hidden={saleTotals.productCoupons === 0}
+                >
+                  <Image
+                    src={"/resources/icons/cart/cart_reply_icon.png"}
+                    width={15}
+                  />
 
-                  <HorizontalFlex className={clsx(styles.info_item, styles.info_unit)}>
+                  <HorizontalFlex
+                    className={clsx(styles.info_item, styles.info_unit)}
+                  >
                     <Span>(상품 쿠폰 할인가)</Span>
-    
+
                     <P>
                       <Span>+ </Span>
                       <Span>{saleTotals.productCoupons}</Span>
@@ -855,12 +886,21 @@ export function CartWrap() {
                   </HorizontalFlex>
                 </FlexChild>
 
-                <FlexChild gap={10} paddingLeft={20} hidden={saleTotals.orders === 0}>
-                  <Image src={"/resources/icons/cart/cart_reply_icon.png"} width={15} />
+                <FlexChild
+                  gap={10}
+                  paddingLeft={20}
+                  hidden={saleTotals.orders === 0}
+                >
+                  <Image
+                    src={"/resources/icons/cart/cart_reply_icon.png"}
+                    width={15}
+                  />
 
-                  <HorizontalFlex className={clsx(styles.info_item, styles.info_unit)}>
+                  <HorizontalFlex
+                    className={clsx(styles.info_item, styles.info_unit)}
+                  >
                     <Span>(주문 쿠폰 할인가)</Span>
-    
+
                     <P>
                       <Span>+ </Span>
                       <Span>{saleTotals.orders}</Span>
@@ -932,6 +972,7 @@ export function CartWrap() {
                       Sessions.ORDER,
                       JSON.stringify(content)
                     );
+                    reload();
                     navigate("/orders/complete", {
                       type: "replace",
                     });
@@ -966,6 +1007,7 @@ export function CartWrap() {
                           Sessions.ORDER,
                           JSON.stringify(content)
                         );
+                        reload();
                         navigate("/orders/complete", {
                           type: "replace",
                         });
@@ -1046,6 +1088,7 @@ export function CartWrap() {
                                           Sessions.ORDER,
                                           JSON.stringify(content)
                                         );
+                                        reload();
                                         navigate("/orders/complete", {
                                           type: "replace",
                                         });
@@ -1138,6 +1181,7 @@ export function CartWrap() {
                                         Sessions.ORDER,
                                         JSON.stringify(content)
                                       );
+                                      reload();
                                       navigate("/orders/complete", {
                                         type: "replace",
                                       });
@@ -1275,12 +1319,13 @@ export function Item({
             </P>
             <VerticalFlex className={styles.unit_price} alignItems="start">
               {item?.variant?.discount_rate > 0 && ( // 원가랑 할인가 차이 없으면 표시 안하기
-                  <P className={styles.normal_price}>
+                <P className={styles.normal_price}>
                   {(item?.variant?.price || 0).toLocaleString()} <Span>₩</Span>
                 </P>
               )}
               <P>
-                {(item?.variant?.discount_price || 0).toLocaleString()} <Span>₩</Span>
+                {(item?.variant?.discount_price || 0).toLocaleString()}{" "}
+                <Span>₩</Span>
               </P>
             </VerticalFlex>
             {/* <FlexChild className={styles.unit_price}>
@@ -1345,7 +1390,7 @@ export function Item({
             }}
           />
         </FlexChild>
-        <VerticalFlex gap={5} width={'auto'} alignItems="end">
+        <VerticalFlex gap={5} width={"auto"} alignItems="end">
           <P color="#ccc" fontSize={13} hidden={!selected.length}>
             쿠폰 적용가
           </P>
@@ -1372,13 +1417,7 @@ export function Item({
         }
         hidden={!storeData?.metadata?.product}
       >
-        {
-          !selected.length ? (
-            '쿠폰 사용'
-          ) : (
-            '쿠폰 변경'
-          )
-        }
+        {!selected.length ? "쿠폰 사용" : "쿠폰 변경"}
       </Button>
     </VerticalFlex>
   );
@@ -1418,26 +1457,22 @@ export function CouponSelect({
       <HorizontalFlex className={styles.coupon_choice}>
         <FlexChild className={styles.coupon_title}>
           <VerticalFlex alignItems="start" gap={5}>
-            {
-              coupons
-                .filter((f: CouponData) => selected.includes(f.id))
-                .map((coupon) => {
-                  return (
-                    <FlexChild key={coupon.id}>
-                      <HorizontalFlex>
-                        <P>{coupon.name}</P>
-                        <P>
-                          {(-coupon.value).toLocaleString("ko")}
-                          {coupon.calc === "fix" ? "원" : "%"}
-                        </P>
-                      </HorizontalFlex>
-                    </FlexChild>
-                  );
-              })
-            }
-            {selected.length === 0 && (
-                <P>쿠폰을 선택해 주세요.</P>
-            )}
+            {coupons
+              .filter((f: CouponData) => selected.includes(f.id))
+              .map((coupon) => {
+                return (
+                  <FlexChild key={coupon.id}>
+                    <HorizontalFlex>
+                      <P>{coupon.name}</P>
+                      <P>
+                        {(-coupon.value).toLocaleString("ko")}
+                        {coupon.calc === "fix" ? "원" : "%"}
+                      </P>
+                    </HorizontalFlex>
+                  </FlexChild>
+                );
+              })}
+            {selected.length === 0 && <P>쿠폰을 선택해 주세요.</P>}
           </VerticalFlex>
         </FlexChild>
 
