@@ -38,7 +38,6 @@ import clsx from "clsx";
 import _ from "lodash";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
-import { title } from "process";
 
 export function CartWrap() {
   const { userData } = useAuth();
@@ -230,13 +229,41 @@ export function CartWrap() {
       }
       return 0;
     };
+    // 구독
+    const subscribeTotal = () => {
+      if (
+        new Date(userData?.subscribe?.ends_at || 0).getTime() >
+        new Date().getTime()
+      ) {
+        return (
+          amount -
+          productCoupons -
+          Math.round(
+            ((amount - productCoupons) *
+              (100 - (userData?.subscribe?.percent || 0))) /
+              100.0
+          )
+        );
+      }
+      return 0;
+    };
 
+    // 배송비
+    const delivery_fee = (shipping?.amount || 0) - getShippingAmount();
     const orders = orderCouponsTotal();
-
-    const total = productCoupons + orders + (point || 0) + promotions;
+    const subscribes = subscribeTotal();
+    const total =
+      productCoupons + orders + promotions + subscribes + delivery_fee;
 
     //총 할인 금액 반환
-    return { total, promotions, productCoupons, orders };
+    return {
+      total,
+      promotions,
+      productCoupons,
+      orders,
+      subscribes,
+      delivery_fee,
+    };
   }
 
   const saleTotals = saleTotal();
@@ -557,10 +584,7 @@ export function CartWrap() {
                 hideArrow
                 value={point}
                 onChange={(value) => setPoint(value as number)}
-                max={Math.min(
-                  userData?.point || 0,
-                  totalDiscounted + (shipping?.amount || 0)
-                )}
+                max={Math.min(userData?.point || 0, getSum())}
                 min={0}
               />
               <Button className={styles.cancel_btn} onClick={() => setPoint(0)}>
@@ -788,26 +812,32 @@ export function CartWrap() {
                 </HorizontalFlex>
 
                 <FlexChild gap={10} paddingLeft={20}>
-                  <Image src={"/resources/icons/cart/cart_reply_icon.png"} width={15} />
+                  <Image
+                    src={"/resources/icons/cart/cart_reply_icon.png"}
+                    width={15}
+                  />
 
                   <HorizontalFlex className={styles.info_item}>
                     <Span>상품 금액</Span>
 
                     <P>
-                      <Span>{getProductSum()}</Span>
+                      <Span>{ProductPriceSum()}</Span>
                       <Span> ₩</Span>
                     </P>
                   </HorizontalFlex>
                 </FlexChild>
 
                 <FlexChild gap={10} paddingLeft={20}>
-                  <Image src={"/resources/icons/cart/cart_reply_icon.png"} width={15} />
+                  <Image
+                    src={"/resources/icons/cart/cart_reply_icon.png"}
+                    width={15}
+                  />
 
                   <HorizontalFlex className={styles.info_item}>
                     <Span>배송비</Span>
-    
+
                     <P>
-                      <Span>{getShippingAmount()}</Span>
+                      <Span>{shipping?.amount || 0}</Span>
                       <Span> ₩</Span>
                     </P>
                   </HorizontalFlex>
@@ -912,6 +942,52 @@ export function CartWrap() {
                     </P>
                   </HorizontalFlex>
                 </FlexChild>
+
+                <FlexChild
+                  gap={10}
+                  paddingLeft={20}
+                  hidden={saleTotals.subscribes === 0}
+                >
+                  <Image
+                    src={"/resources/icons/cart/cart_reply_icon.png"}
+                    width={15}
+                  />
+
+                  <HorizontalFlex
+                    className={clsx(styles.info_item, styles.info_unit)}
+                  >
+                    <Span>(구독 할인가)</Span>
+
+                    <P>
+                      <Span>+ </Span>
+                      <Span>{saleTotals.subscribes}</Span>
+                      <Span> ₩</Span>
+                    </P>
+                  </HorizontalFlex>
+                </FlexChild>
+
+                <FlexChild
+                  gap={10}
+                  paddingLeft={20}
+                  hidden={saleTotals.delivery_fee === 0}
+                >
+                  <Image
+                    src={"/resources/icons/cart/cart_reply_icon.png"}
+                    width={15}
+                  />
+
+                  <HorizontalFlex
+                    className={clsx(styles.info_item, styles.info_unit)}
+                  >
+                    <Span>(배송비 할인가)</Span>
+
+                    <P>
+                      <Span>+ </Span>
+                      <Span>{saleTotals.delivery_fee}</Span>
+                      <Span> ₩</Span>
+                    </P>
+                  </HorizontalFlex>
+                </FlexChild>
               </VerticalFlex>
 
               <HorizontalFlex className={styles.info_item}>
@@ -961,12 +1037,13 @@ export function CartWrap() {
                   shippings: shippingCoupons,
                   items: itemCoupons,
                 },
+                subscribe_id: userData?.subscribe?.id,
               };
               if (getTotal() === 0) {
                 setIsLoading(true);
                 requester.createOrder(
                   data,
-                  ({ content, error }: { content: OrderData; error: any }) => {
+                  ({ content, error }: { content: OrderData; error: any; }) => {
                     if (error) {
                       toast({ message: error });
                       setIsLoading(false);
@@ -1028,7 +1105,7 @@ export function CartWrap() {
                       paytype: "nestpay",
                       trackId: trackId,
                       payMethod: "card",
-                      amount: total + (shipping?.amount || 0) - point,
+                      amount: getTotal(),
                       payerId: userData?.id,
                       payerName: userData?.name,
                       payerEmail: userData?.username,

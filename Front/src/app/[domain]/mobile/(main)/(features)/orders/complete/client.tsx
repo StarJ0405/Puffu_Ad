@@ -88,32 +88,38 @@ export function CompleteForm({ order }: { order?: OrderData }) {
           <VerticalFlex justifyContent="center" gap={15}>
             <FlexChild justifyContent="center">
               <P size={16} color="#fff" weight={500}>
-                주문금액 {Number(order?.total).toLocaleString("kr")}원
+                {/* 세일가격 제외한 상품금액 총합 + 배송비(배송 할인 적용되기 전 가격 2500원, 5만원 이상 주문시에는 배송비 여기서 빠짐.) */}
+                주문금액(배송비 포함) {Number((order?.total || 0)+(order?.shipping_method?.amount||0)).toLocaleString("ko-KR")}원
               </P>
             </FlexChild>
 
             <FlexChild justifyContent="center">
+              {/* (상품할인 + 프로모션 세일 할인) 합친 가격 + 주문할인 + 배송할인 */}
               <P size={16} color="#fff" weight={500}>
-                할인금액{" "}
-                {Number(
+                - 할인금액{" "}
+                {(
                   (order?.total || 0) -
-                    (order?.total_final || 0) -
-                    (order?.delivery_fee || 0)
-                ).toLocaleString("ko-KR")}
+                  (order?.total_final || 0) +
+                  (order?.shipping_method?.amount || 0) -
+                  (order?.point || 0)
+                ).toLocaleString("kr")}
                 원
               </P>
             </FlexChild>
 
-            <FlexChild justifyContent="center">
+            {/* <FlexChild justifyContent="center">
               <P size={16} color="#fff" weight={500}>
                 + 배송비{" "}
                 {Number(order?.delivery_fee || 0).toLocaleString("ko-KR")}원
               </P>
-            </FlexChild>
+            </FlexChild> */}
             <FlexChild justifyContent="center" hidden={!order?.point}>
-              <P size={16} color="#fff" weight={500}>
+              {order?.point
+              ? ` - 포인트 ${Number(order.point).toLocaleString("ko-kr")}P`
+              : ""}
+              {/* <P size={16} color="#fff" weight={500}>
                 - 포인트 {Number(order?.point || 0).toLocaleString("ko-KR")}P
-              </P>
+              </P> */}
             </FlexChild>
           </VerticalFlex>
 
@@ -202,8 +208,8 @@ export function CompleteOrdersTable({ items }: { items: LineItemData[] }) {
                     <P>할인금액 : </P>
                     <Span>
                       {(
-                        ((item.unit_price || 0) - (item.discount_price || 0)) *
-                        item.quantity
+                        (item.unit_price || 0) * item.quantity -
+                        (item.total_final || 0)
                       ).toLocaleString("ko-KR")}{" "}
                       원
                     </Span>
@@ -212,10 +218,7 @@ export function CompleteOrdersTable({ items }: { items: LineItemData[] }) {
                   <FlexChild>
                     <P>결제 금액 : </P>
                     <Span color="var(--main-color1)" weight={600} fontSize={20}>
-                      {Number(
-                        (item.discount_price || 0) * item.quantity
-                      ).toLocaleString("ko-KR")}{" "}
-                      원
+                      {Number(item.total_final || 0).toLocaleString("ko-KR")} 원
                     </Span>
                   </FlexChild>
                 </HorizontalFlex>

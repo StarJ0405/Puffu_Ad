@@ -831,7 +831,7 @@ export function CartWrap() {
                   <Span>할인가</Span>
 
                   <P color="#fff">
-                    <Span>{-saleTotals.total + (point || 0)}</Span>
+                    <Span>{-saleTotals.total - (point || 0)}</Span>
                     <Span> ₩</Span>
                   </P>
                 </HorizontalFlex>
