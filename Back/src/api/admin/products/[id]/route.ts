@@ -18,8 +18,7 @@ export const POST: ApiHandler = async (req, res) => {
     visible,
     buyable,
     warehousing,
-    is_set,
-    random_box,
+    product_type,
     tags,
     adult,
     metadata,
@@ -28,7 +27,7 @@ export const POST: ApiHandler = async (req, res) => {
     brand_mode,
     return_data = false,
   } = req.body;
-
+  const pt = product_type === "null" ? null : product_type;
   const service: ProductService = container.resolve(ProductService);
   try {
     const _data = {
@@ -45,8 +44,7 @@ export const POST: ApiHandler = async (req, res) => {
       visible,
       buyable,
       warehousing,
-      is_set,
-      random_box,
+      product_type: pt,
       tags,
       adult,
       metadata,

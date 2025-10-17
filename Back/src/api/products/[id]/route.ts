@@ -47,6 +47,7 @@ export const GET: ApiHandler = async (req, res) => {
       "visible",
       "buyable",
       "warehousing",
+      "product_type",
       "variants.visible",
       "variants.buyable",
       "variants.warehousing",
