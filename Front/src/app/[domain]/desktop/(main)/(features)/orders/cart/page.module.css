@@ -202,6 +202,17 @@
   font-weight: 600 !important;
 }
 
+.info_list .info_unit > span {
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+
+.info_list .info_unit > p {
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  color: #797979 !important;
+}
+
 
 /* 쿠폰 적용 */
 .coupon_info {

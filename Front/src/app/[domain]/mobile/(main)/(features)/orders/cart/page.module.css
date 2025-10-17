@@ -265,6 +265,18 @@
   align-items: start !important;
 }
 
+.info_list .info_unit > span {
+  font-size: 13px !important;
+  font-weight: 400 !important;
+}
+
+.info_list .info_unit > p {
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  color: #797979 !important;
+}
+
+
 .direct_input {
   background: #333;
   border-color: #707070;
