@@ -12,13 +12,21 @@ export const GET: ApiHandler = async (req, res) => {
     select,
     ...where
   } = req.parsedQuery;
+  
   if (typeof where.warehousing === "string")
     where.warehousing =
       where.warehousing === "true" || where.warehousing === "1";
-  if (typeof where.is_set === "string")
-    where.is_set = where.is_set === "true" || where.is_set === "1";
-  if (typeof where.random_box === "string")
-    where.random_box = where.random_box === "true" || where.random_box === "1";
+
+  if ("product_type" in where) {
+    if (where.product_type === "null") where.product_type = null;
+    else if (
+      where.product_type === "is_set" ||
+      where.product_type === "random_box"
+    )
+      where.product_type = String(where.product_type);
+    else delete where.product_type;
+  }
+
   const service: ProductService = container.resolve(ProductService);
   if (req.user) {
     where.user_id = req.user.id;

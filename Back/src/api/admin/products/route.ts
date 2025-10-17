@@ -18,8 +18,7 @@ export const POST: ApiHandler = async (req, res) => {
     visible,
     buyable,
     warehousing,
-    is_set,
-    random_box,
+    product_type,
     tags,
     adult,
     metadata,
@@ -29,7 +28,7 @@ export const POST: ApiHandler = async (req, res) => {
     _amount = 1,
     _return_data = false,
   } = req.body;
-
+  const pt = product_type === "null" ? null : product_type;
   const service: ProductService = container.resolve(ProductService);
   try {
     let result: Product[] = [];
@@ -47,8 +46,7 @@ export const POST: ApiHandler = async (req, res) => {
       visible,
       buyable,
       warehousing,
-      is_set,
-      random_box,
+      product_type: pt,
       tags,
       adult,
       metadata,
@@ -83,8 +81,13 @@ export const GET: ApiHandler = async (req, res) => {
   const b = (v: any) =>
     typeof v === "string" ? v === "true" || v === "1" : !!v;
   if ("warehousing" in where) where.warehousing = b(where.warehousing);
-  if ("is_set" in where) where.is_set = b(where.is_set);
-  if ("random_box" in where) where.random_box = b(where.random_box);
+
+  if ("product_type" in where) {
+  if (where.product_type === "null") where.product_type = null;
+  else if (where.product_type === "is_set" || where.product_type === "random_box")
+    where.product_type = String(where.product_type);
+  else delete where.product_type;
+}
 
   if (_type) {
     try {

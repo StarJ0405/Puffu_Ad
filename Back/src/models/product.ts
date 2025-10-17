@@ -99,11 +99,8 @@ export class Product extends BaseEntity {
   @Column({ type: "boolean", default: false })
   warehousing?: boolean;
 
-  @Column({ type: "boolean", default: false })
-  is_set?: boolean;
-
-  @Column({ type: "boolean", default: false })
-  random_box?: boolean;
+  @Column({ type: "character varying", nullable: true})
+  product_type?: "is_set" | "random_box" | null;
 
   @Column({ type: "character varying", array: true, default: [] })
   tags?: string[];
