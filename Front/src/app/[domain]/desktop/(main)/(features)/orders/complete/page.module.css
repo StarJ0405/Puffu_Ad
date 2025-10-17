@@ -126,9 +126,22 @@
    font-size: 14px !important;
 }
 
-.order_item .option_list span {
+.order_item .price_box {
+   /* background: #ccc; */
+   gap: 3px !important;
+}
+
+.order_item .price_box p {
    color: #fff !important;
-   font-size: 14px !important;
+   font-size: 16px !important;
+   font-weight: 600 !important;
+}
+
+.order_item .price_box p.unit_price {
+   color: #797979 !important;
+   font-size: 13px !important;
+   text-decoration: line-through;
+   font-weight: 400 !important;
 }
 
 
