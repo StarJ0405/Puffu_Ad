@@ -135,6 +135,9 @@ export function CompleteForm({ order }: { order?: OrderData }) {
 
 // 주문 리스트
 export function MyOrdersTable({ items }: { items?: LineItemData[] }) {
+
+  console.log(items);
+
   return (
     <>
       {/* 테이블 안에 tbody 안에 map은 그 날짜에 시킨 주문내역 전부 불러오게 바꾸기 */}
@@ -170,10 +173,18 @@ export function MyOrdersTable({ items }: { items?: LineItemData[] }) {
                         <VerticalFlex className={styles.option_list}>
                           <P>{item.variant_title}</P>
                           <P>{item.total_quantity}개</P>
+                        </VerticalFlex>
 
-                          <Span>
-                            {Number(item.unit_price).toLocaleString("ko-KR")}원
-                          </Span>
+                        <VerticalFlex gap={5} className={styles.price_box} alignItems="start">
+                          <P className={styles.unit_price} hidden={((item.unit_price || 0) - (item.discount_price || 0)) === 0}>
+                            {(item.unit_price || 0).toLocaleString('ko-KR')}원
+                            {/* {Number(item.unit_price).toLocaleString("ko-KR")}원 */}
+                          </P>
+
+                          <P>
+                            {(item.discount_price || 0).toLocaleString('ko-KR')}원
+                            {/* {Number(item.unit_price).toLocaleString("ko-KR")}원 */}
+                          </P>
                         </VerticalFlex>
                       </VerticalFlex>
                     </FlexChild>

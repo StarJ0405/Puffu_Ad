@@ -205,8 +205,10 @@
 .delivery_box {gap: 25px; padding-bottom: 15px;}
 
 .delivery_box .deli_itemBox {
-   gap: 30px; align-items: end !important;
+   gap: 30px;
    width: fit-content;
+   display: grid;
+   grid-template-columns: repeat(3, 1fr);
 }
 .delivery_box .deli_itemBox .deli_item {
    gap: 10px; width: auto;

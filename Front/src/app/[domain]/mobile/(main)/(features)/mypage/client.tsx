@@ -253,7 +253,7 @@ export function DeliveryInfo() {
       <FlexChild className={styles.deli_itemBox}>
         <VerticalFlex className={styles.deli_item}>
           <P>{statusCounts.awaiting}</P>
-          <Span>입금 대기중모ㅁ</Span>
+          <Span>입금 대기중</Span>
         </VerticalFlex>
         <VerticalFlex className={styles.deli_item}>
           <P>{statusCounts.pending}</P>
