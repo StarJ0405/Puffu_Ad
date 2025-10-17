@@ -67,6 +67,7 @@ export function MyOrdersTable({
         "address",
         "coupons",
         "items.coupons",
+        "subscribe",
       ],
       start_date: startDate,
       end_date: endDate,
@@ -626,10 +627,14 @@ export function MyOrdersTable({
               <VerticalFlex className={styles.order_summary}>
                 <HorizontalFlex className={styles.summary_row}>
                   <P>배송비</P>
-                  <P>
-                    <Span>{order.delivery_fee || 0}</Span>
-                    <Span> 원</Span>
-                  </P>
+                  {order.shipping_method?.amount === 0 ? (
+                    <P>무료</P>
+                  ) : (
+                    <P>
+                      <Span>{order.shipping_method?.amount}</Span>
+                      <Span>원</Span>
+                    </P>
+                  )}
                 </HorizontalFlex>
                 <HorizontalFlex className={styles.summary_row}>
                   <P>총 상품금액</P>
@@ -641,18 +646,13 @@ export function MyOrdersTable({
                 <HorizontalFlex className={styles.summary_row}>
                   <P>총 할인금액</P>
                   <P>
-                    <Span>{(order.total_final || 0) - order.total}</Span>
+                    <Span>
+                      {(order.total_final || 0) -
+                        order.total -
+                        (order.shipping_method?.amount || 0) -
+                        order.point}
+                    </Span>
                     <Span> 원</Span>
-                  </P>
-                </HorizontalFlex>
-                <HorizontalFlex
-                  className={styles.summary_row}
-                  hidden={!order.point}
-                >
-                  <P>사용포인트</P>
-                  <P>
-                    <Span>{-order.point}</Span>
-                    <Span> P</Span>
                   </P>
                 </HorizontalFlex>
                 <HorizontalFlex className={styles.summary_row}>

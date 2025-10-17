@@ -286,6 +286,10 @@ export function CartWrap() {
           100.0 -
           fix
       );
+    } else if (userData?.subscribe?.percent) {
+      return Math.round(
+        (amount * (100 - (userData?.subscribe?.percent || 0))) / 100.0
+      );
     }
     return amount;
   };

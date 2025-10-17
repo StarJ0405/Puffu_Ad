@@ -1,6 +1,4 @@
-import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import P from "@/components/P/P";
 import { requester } from "@/shared/Requester";
 import clsx from "clsx";
 import mypage from "../mypage.module.css";
@@ -24,6 +22,7 @@ export default async function () {
       "address",
       "coupons",
       "items.coupons",
+      "subscribe",
     ],
     start_date: startDate,
     end_date: endDate,
