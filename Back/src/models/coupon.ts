@@ -134,6 +134,7 @@ export class Coupon extends BaseEntity {
     nullable: true,
   })
   issue_date?: Date | string | null;
+
   @Column({ type: "boolean", default: false })
   issue_lunar?: boolean;
 
@@ -249,6 +250,10 @@ export class Coupon extends BaseEntity {
   get used(): boolean {
     return !!(this.item_id || this.order_id || this.shipping_method_id);
   }
+
+  @Column({ type: "boolean", default: false })
+  refunded?: boolean;
+
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;
 

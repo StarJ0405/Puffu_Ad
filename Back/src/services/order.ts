@@ -1,7 +1,6 @@
 import axios from "axios";
 import { BaseService } from "data-source";
 import { Order, OrderStatus } from "models/order";
-import { CouponRepository } from "repositories/coupon";
 import { LogRepository } from "repositories/log";
 import { OrderRepository } from "repositories/order";
 import { ShippingMethodRepository } from "repositories/shipping_method";
@@ -18,6 +17,7 @@ import {
   MoreThanOrEqual,
 } from "typeorm";
 import { PointService } from "./point";
+import { CouponService } from "./coupon";
 
 @injectable()
 export class OrderService extends BaseService<Order, OrderRepository> {
@@ -30,9 +30,7 @@ export class OrderService extends BaseService<Order, OrderRepository> {
     @inject(PointService)
     protected pointService: PointService,
     @inject(VariantRepository)
-    protected variantRepository: VariantRepository,
-    @inject(CouponRepository)
-    protected couponRepository: CouponRepository
+    protected variantRepository: VariantRepository
   ) {
     super(orderRepository);
   }
@@ -346,52 +344,62 @@ export class OrderService extends BaseService<Order, OrderRepository> {
         //   }
         // );
       }
+      const couponService = container.resolve(CouponService);
       if (order.coupons?.length) {
-        await Promise.all(
-          order.coupons.map(
-            async (coupon) =>
-              await this.couponRepository.update(
-                {
-                  id: coupon.id,
-                },
-                {
-                  order_id: null,
-                }
-              )
-          )
+        await couponService.refundCoupon(
+          order.coupons.map((coupon) => coupon.id)
         );
+        // await Promise.all(
+        //   order.coupons.map(
+        //     async (coupon) =>
+        //       await this.couponRepository.update(
+        //         {
+        //           id: coupon.id,
+        //         },
+        //         {
+        //           order_id: null,
+        //         }
+        //       )
+        //   )
+        // );
       }
       if (order.shipping_method?.coupons?.length) {
-        await Promise.all(
-          order.shipping_method.coupons.map(
-            async (coupon) =>
-              await this.couponRepository.update(
-                {
-                  id: coupon.id,
-                },
-                {
-                  shipping_method_id: null,
-                }
-              )
-          )
+        await couponService.refundCoupon(
+          order.shipping_method.coupons.map((coupon) => coupon.id)
         );
+        // await Promise.all(
+        //   order.shipping_method.coupons.map(
+        //     async (coupon) =>
+        //       await this.couponRepository.update(
+        //         {
+        //           id: coupon.id,
+        //         },
+        //         {
+        //           shipping_method_id: null,
+        //         }
+        //       )
+        //   )
+        // );
       }
       await Promise.all(
         (order.items || [])?.map(
           async (item) =>
-            await Promise.all(
-              (item?.coupons || []).map(
-                async (coupon) =>
-                  await this.couponRepository.update(
-                    {
-                      id: coupon.id,
-                    },
-                    {
-                      item_id: null,
-                    }
-                  )
-              )
+            await couponService.refundCoupon(
+              (item.coupons || [])?.map((coupon) => coupon.id)
             )
+          // await Promise.all(
+          //   (item?.coupons || []).map(
+          //     async (coupon) =>
+          //       await this.couponRepository.update(
+          //         {
+          //           id: coupon.id,
+          //         },
+          //         {
+          //           item_id: null,
+          //         }
+          //       )
+          //   )
+          // )
         )
       );
 

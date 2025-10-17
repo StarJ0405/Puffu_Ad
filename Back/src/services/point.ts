@@ -107,6 +107,12 @@ export class PointService extends BaseService<Point, PointRepository> {
         name: `%${where.name}%`,
       });
     }
+    if (options?.order?.created_at) {
+      builder = builder.orderBy(
+        "created_at",
+        String(options.order.created_at || "asc").toUpperCase() as any
+      );
+    }
 
     return await builder.getMany();
   }
@@ -126,7 +132,12 @@ export class PointService extends BaseService<Point, PointRepository> {
         name: `%${where.name}%`,
       });
     }
-
+    if (options?.order?.created_at) {
+      builder = builder.orderBy(
+        "created_at",
+        String(options.order.created_at || "asc").toUpperCase() as any
+      );
+    }
     const { pageSize, pageNumber = 0 } = pageData;
     const content = await builder
       .clone()

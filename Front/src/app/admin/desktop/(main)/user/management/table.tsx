@@ -184,6 +184,14 @@ export default function ({
             NiceModal.show("orderList", {
               user: row,
             }),
+        },
+        {
+          label: "포인트기록",
+          hotKey: "p",
+          onClick: () =>
+            NiceModal.show("pointList", {
+              user: row,
+            }),
         }
       );
     }

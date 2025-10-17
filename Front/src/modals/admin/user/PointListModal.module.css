@@ -9,3 +9,9 @@
 .content {
   padding: 15px;
 }
+
+.button {
+  padding: 8px 12px;
+  color: #111;
+  border: 1px solid #111;
+}
