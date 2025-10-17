@@ -28,17 +28,19 @@ import QAModal from "./admin/qa/QAModal";
 import ShippingMethodDetailModal from "./admin/shipping_method/ShippingMethodDetailModal";
 import ShippingMethodListModal from "./admin/shipping_method/ShippingMethodListModal";
 import StoreModal from "./admin/store/StoreModal";
+import SubscribeModal from "./admin/subscribe/SubscribeModal";
 import OrderListModal from "./admin/user/OrderListModal";
+import PointListModal from "./admin/user/PointListModal";
 import UserModal from "./admin/user/UserModal";
 import InputModal from "./input/InputModal";
 import ListModal from "./list/ListModal";
 import AddressListModal from "./main/address/AddressListModal";
 import AddressModal from "./main/address/AddressModal";
 import PostalCodeModal from "./main/address/PostaCodelModal";
-import ImgViewSliderModal from "./main/imgViewerSlider/imgViewSliderModal";
-import PhotoReviewDetailModal from "./main/photoReviewDetailModal/photoReviewDetailModal";
-import OrderCouponListModal from "./main/orderCouponListModal/orderCouponListModal";
 import CouponProductsModal from "./main/couponProductsModal/couponProductsModal";
+import ImgViewSliderModal from "./main/imgViewerSlider/imgViewSliderModal";
+import OrderCouponListModal from "./main/orderCouponListModal/orderCouponListModal";
+import PhotoReviewDetailModal from "./main/photoReviewDetailModal/photoReviewDetailModal";
 import AgreeContentModal from "./main/policies/AgreeContentModal";
 import OptionChangeModal from "./main/product/OptionChangeModal";
 import PurchaseModal from "./main/product/PurchaseModal";
@@ -46,7 +48,6 @@ import ReviewWriteModal from "./main/review/ReviewWriteModal";
 import SearchModal from "./main/search/SearchModal";
 import SelectModal from "./main/select/SelectModal";
 import TableModal from "./table/TableModal";
-import SubscribeModal from "./admin/subscribe/SubscribeModal";
 
 function ModalHandler() {
   NiceModal.register("toast", ToastModal);
@@ -80,6 +81,7 @@ function ModalHandler() {
   NiceModal.register("refundDetail", RefundDetailModal);
   NiceModal.register("exchangeDetail", ExchangeDetailModal);
   NiceModal.register("orderList", OrderListModal);
+  NiceModal.register("pointList", PointListModal);
   NiceModal.register("userDetail", UserModal);
   NiceModal.register("couponDetail", CouponModal);
   NiceModal.register("couponIssue", CouponIssueModal);

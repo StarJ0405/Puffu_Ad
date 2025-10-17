@@ -1,25 +1,23 @@
+import Button from "@/components/buttons/Button";
 import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import P from "@/components/P/P";
-import Span from "@/components/span/Span";
 import Table, { Column } from "@/components/table/Table";
 import { adminRequester } from "@/shared/AdminRequester";
-import { getOrderStatus } from "@/shared/utils/Functions";
+import { toast } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import { useEffect, useRef } from "react";
 import ModalBase from "../../ModalBase";
-
+import styles from "./PointListModal.module.css";
 const PointListModal = NiceModal.create(({ user }: { user: UserData }) => {
   const [withHeader, withFooter] = [true, false];
   const [width, height] = ["min(95%, 1100px)", "auto"];
   const withCloseButton = true;
   const clickOutsideToClose = true;
-  const title = `${user.name}님의 주문기록`;
+  const title = `${user.name}님의 포인트기록`;
   const buttonText = "close";
   const modal = useRef<any>(null);
-  const onRowClick = (row: OrderData) => {
-    NiceModal.show("orderDetail", { order: row });
-  };
+
   useEffect(() => {
     if (!user) {
       modal.current.close();
@@ -27,12 +25,7 @@ const PointListModal = NiceModal.create(({ user }: { user: UserData }) => {
   }, [user]);
   const columns: Column[] = [
     {
-      label: "스토어",
-      code: "store",
-      Cell: ({ cell }) => cell.name,
-    },
-    {
-      label: "주문일",
+      label: "일자",
       code: "created_at",
       Cell: ({ cell }) => {
         const date = new Date(cell);
@@ -54,27 +47,26 @@ const PointListModal = NiceModal.create(({ user }: { user: UserData }) => {
       },
     },
     {
-      label: "주문번호",
-      code: "display",
+      label: "타입",
+      code: "name",
     },
     {
-      label: "구매내역",
-      Cell: ({ row }) => (
-        <VerticalFlex>
-          <P hidden={row.total_final === 0}>
-            <Span>{row?.total_final || 0}</Span>
-            <Span>원</Span>
-          </P>
-          <P hidden={row.point === 0}>
-            <Span>{row?.point || 0}</Span>
-            <Span>P</Span>
-          </P>
-        </VerticalFlex>
-      ),
+      label: "포인트",
+      code: "data",
+      Cell: ({ cell }) =>
+        cell?.point > 0
+          ? `${Number(cell?.point || 0).toLocaleString("ko")}P 획득`
+          : `${Number(-cell?.point || 0).toLocaleString("ko")}P 사용`,
     },
     {
-      label: "주문상태",
-      Cell: ({ row }) => getOrderStatus(row),
+      label: "누적포인트",
+      code: "data",
+      Cell: ({ cell }) => `${Number(cell?.total || 0).toLocaleString("ko")}P`,
+    },
+    {
+      label: "메모",
+      code: "metadata",
+      Cell: ({ cell }) => cell?.memo || "없음",
     },
   ];
   return (
@@ -96,33 +88,64 @@ const PointListModal = NiceModal.create(({ user }: { user: UserData }) => {
         overflow="scroll"
         overflowY="scroll"
         hideScrollbar
-        paddingBottom={40}
       >
         <FlexChild>
           <Table
-            onRowClick={(e, row) => onRowClick?.(row)}
-            name={`${user?.id}_order`}
+            name={`${user?.id}_point`}
             columns={columns}
-            initCondition={{
-              user_id: user.id,
-              order: { display: "asc" },
-              relations: [
-                "items.coupons",
-                "address",
-                "shipping_method.coupons",
-                "store",
-                "coupons",
-                "refunds",
-                "exchanges",
-              ],
-            }}
             initLimit={10}
-            onSearch={(condition) => adminRequester.getOrders(condition)}
+            initCondition={{ order: { created_at: "desc" } }}
+            onSearch={(condition) =>
+              adminRequester.getPointList(user.id, condition)
+            }
             onMaxPage={(data) => Number(data?.totalPages)}
             onReprocessing={(data) => data?.content || []}
             selectable={false}
             indexing={false}
           />
+        </FlexChild>
+        <FlexChild
+          position="sticky"
+          bottom={0}
+          marginTop={10}
+          justifyContent="flex-end"
+        >
+          <Button
+            className={styles.button}
+            onClick={() =>
+              NiceModal.show("input", {
+                message: `${user.name}님에게 포인트를 지급합니다.`,
+                cancelText: "취소",
+                confirmText: "지급",
+                input: [
+                  {
+                    label: "포인트",
+                    type: "number",
+                    min: 0,
+                    max: 99999999999,
+                    value: 0,
+                  },
+                  {
+                    label: "메모",
+                    type: "textarea",
+                    placeHolder: "관리자용 메모",
+                  },
+                ],
+                preventable: true,
+                onConfirm: (values: any[]) => {
+                  const point = Number(values[0] || 0);
+                  const memo = values[1] || "";
+                  if (point <= 0) {
+                    toast({ message: "포인트는 최소 0보다 커야합니다" });
+                    return false;
+                  }
+                  return true;
+                },
+              })
+            }
+          >
+            포인트 지급
+          </Button>
         </FlexChild>
       </VerticalFlex>
     </ModalBase>

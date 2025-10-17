@@ -755,6 +755,15 @@ class _AdminRequester {
     if (callback) callback(await this.delete(`/subscribes/${id}`, data));
     else return await this.delete(`/subscribes/${id}`, data);
   }
+  // 포인트 기록
+  async getPointList(
+    id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.get(`/users/${id}/points`, data));
+    else return await this.get(`/users/${id}/points`, data);
+  }
 }
 
 export default _AdminRequester;

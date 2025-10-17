@@ -220,9 +220,58 @@ export class CouponService extends BaseService<Coupon, CouponRepository> {
       return await builder.getMany();
     }
   }
-  async updateQuantity(id: string) {
+  async updateQuantity(id?: string) {
     await this.repository.query(
-      `UPDATE public.coupon cuu set quantity = COALESCE((SELECT COUNT(*) FROM public.coupon cu WHERE cu.origin_id = cuu.id AND cu.user_id IS NOT NULL),0);`
+      `UPDATE public.coupon cuu set quantity = COALESCE((SELECT COUNT(*) FROM public.coupon cu WHERE cu.origin_id = cuu.id AND cu.refunded IS FALSE AND cu.user_id IS NOT NULL),0) WHERE id= '${id}'`
+    );
+  }
+  async refundCoupon(coupon_id: string | string[]) {
+    coupon_id = Array.isArray(coupon_id) ? coupon_id : [coupon_id];
+    if (coupon_id.length <= 0) return;
+    const coupons = await this.repository.findAll({
+      where: { id: In(coupon_id) },
+      relations: ["products", "categories"],
+    });
+    await Promise.all(
+      coupons.map(async (coupon) => {
+        const _coupon = new Coupon();
+        _coupon.store_id = coupon.store_id;
+        _coupon.name = coupon.name;
+        _coupon.condition = coupon.condition;
+        _coupon.type = coupon.type;
+        _coupon.value = coupon.value;
+        _coupon.calc = coupon.calc;
+        _coupon.min = coupon.min;
+        _coupon.appears_at = coupon.appears_at;
+        _coupon.date = coupon.date;
+        _coupon.range = coupon.range;
+        _coupon.date_unit = coupon.date_unit;
+        _coupon.target = coupon.target;
+        _coupon.group_id = coupon.group_id;
+        _coupon.issue_date = coupon.issue_date;
+        _coupon.issue_lunar = coupon.issue_lunar;
+        _coupon.review_min = coupon.review_min;
+        _coupon.review_photo = coupon.review_photo;
+        _coupon.max_quantity = coupon.max_quantity;
+        _coupon.duplicate = coupon.duplicate;
+        _coupon.total_min = coupon.total_min;
+        _coupon.total_max = coupon.total_max;
+        _coupon.order_starts_at = coupon.order_starts_at;
+        _coupon.order_ends_at = coupon.order_ends_at;
+        _coupon.buy_type = coupon.buy_type;
+        _coupon.buy_min = coupon.buy_min;
+        _coupon.code = coupon.code;
+        _coupon.interval = coupon.interval;
+        _coupon.metadata = coupon.metadata;
+        _coupon.user_id = coupon.id;
+        _coupon.origin_id = coupon.id;
+        _coupon.products = coupon.products;
+        _coupon.categories = coupon.categories;
+        _coupon.starts_at = coupon.starts_at;
+        _coupon.ends_at = coupon.ends_at;
+        _coupon.refunded = true;
+        return await this.repository.save(_coupon);
+      })
     );
   }
   async giveCoupon(
