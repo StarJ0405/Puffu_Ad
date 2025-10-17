@@ -157,6 +157,7 @@ interface ProductDataFrame {
   visible?: boolean;
   buyable?: boolean;
   warehousing?: boolean;
+  product_type?: "is_set" | "random_box" | null;
   adult?: boolean;
   tags?: string[];
   metadata?: Record<string, unknown> | null;
