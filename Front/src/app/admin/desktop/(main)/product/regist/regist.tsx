@@ -31,6 +31,18 @@ export default function ({
   initStores: StoreData[];
   initBrands: BrandData[];
 }) {
+  // const [adult, setAdult] = useState(false);
+  const [radio, setRadio] = useState<boolean[]>([true, true, true]);
+  const [warehousing, setWarehousing] = useState<boolean>(false);
+  const [optionType, setOptionType] = useState<string>("single");
+  const [detail, setDetail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const [store, setStore] = useState<string>("");
+  const [brand, setBrand] = useState<string>("");
+  const [productType, setProductType] = useState<
+    "null" | "is_set" | "random_box"
+  >("null"); // 기본상품
   const { stores } = useData(
     "stores",
     { select: ["id", "name", "currency_unit"] },
@@ -49,8 +61,6 @@ export default function ({
       fallbackData: initBrands,
     }
   );
-  const [store, setStore] = useState<string>("");
-  const [brand, setBrand] = useState<string>("");
   const { categories } = useData(
     "categories",
     { parent_id: null, store_id: store, tree: "descendants" },
@@ -63,13 +73,6 @@ export default function ({
   const [selectedCategories, setSelectedCategories] = useState<CategoryData[]>(
     []
   );
-  // const [adult, setAdult] = useState(false);
-  const [radio, setRadio] = useState<boolean[]>([true, true, true]);
-  const [warehousing, setWarehousing] = useState<boolean>(false);
-  const [optionType, setOptionType] = useState<string>("single");
-  const [detail, setDetail] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
   const getCategoryName = (
     category: CategoryData | null
   ): string | undefined => {
@@ -117,6 +120,7 @@ export default function ({
           visible: radio[0],
           buyable: radio[1],
           warehousing,
+          product_type: productType === 'null' ? null : productType,
           title: title,
           description: inputs.current[1].getValue(),
           price: inputs.current[2].getValue(),
@@ -609,6 +613,69 @@ export default function ({
                         </HorizontalFlex>
                       </FlexChild>
                     </VerticalFlex>
+                    <VerticalFlex
+                      marginTop={20}
+                      borderBottom={"1px solid #EFEFEF"}
+                    >
+                      <FlexChild
+                        padding={15}
+                        justifyContent={"center"}
+                        backgroundColor={"#3C4B64"}
+                      >
+                        <P size={18} weight={600} color={"#ffffff"}>
+                          상품타입
+                        </P>
+                      </FlexChild>
+                      <FlexChild padding={"8px 0px"}>
+                        <HorizontalFlex>
+                          <FlexChild gap={20}>
+                            <FlexChild
+                              width={"40%"}
+                              padding={15}
+                              backgroundColor={"#F5F6FB"}
+                              justifyContent={"center"}
+                            >
+                              <P size={16} weight={600}>
+                                상품타입 선택
+                              </P>
+                            </FlexChild>
+                            <RadioGroup
+                              name="product_type"
+                              value={productType}
+                              onValueChange={(v) =>
+                                setProductType(
+                                  v as "null" | "is_set" | "random_box"
+                                )
+                              }
+                            >
+                              <HorizontalFlex gap={50} justifyContent="flex-start">
+                                <FlexChild gap={6} width={"max-content"}>
+                                  <RadioChild id="null" /> {/* 기본상품 */}
+                                  <P size={16} color={"#333"} weight={500}>
+                                    기본상품
+                                  </P>
+                                </FlexChild>
+                                <FlexChild gap={6} width={"max-content"}>
+                                  <RadioChild id="is_set" />
+                                  {/* 세트상품 */}
+                                  <P size={16} color={"#333"} weight={500}>
+                                    세트상품
+                                  </P>
+                                </FlexChild>
+                                <FlexChild gap={6} width={"max-content"}>
+                                  <RadioChild id="random_box" />
+                                  {/* 랜덤박스 */}
+                                  <P size={16} color={"#333"} weight={500}>
+                                    랜덤박스
+                                  </P>
+                                </FlexChild>
+                              </HorizontalFlex>
+                            </RadioGroup>
+                          </FlexChild>
+                        </HorizontalFlex>
+                      </FlexChild>
+                    </VerticalFlex>
+
                     {/* <FlexChild
                       marginTop={20}
                       hidden={
