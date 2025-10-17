@@ -6,10 +6,13 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
+  OneToOne,
 } from "typeorm";
 import { generateEntityId } from "utils/functions";
 import { Store } from "./store";
 import { User } from "./user";
+import { Order } from "./order";
 
 @Entity({ name: "subscribe" })
 @Index(["created_at"])
@@ -37,7 +40,7 @@ export class Subscribe extends BaseEntity {
   @Column({ type: "character varying", nullable: true })
   user_id?: string | null;
 
-  @ManyToOne(() => User, (user) => user.subsribes)
+  @OneToOne(() => User, (user) => user.subsribe)
   @JoinColumn({ name: "user_id", referencedColumnName: "id" })
   user?: User;
 
@@ -55,6 +58,9 @@ export class Subscribe extends BaseEntity {
 
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;
+
+  @OneToMany(() => Order, (order) => order.subscribe)
+  orders?: Order[];
 
   @BeforeInsert()
   protected async BeforeInsert(): Promise<void> {

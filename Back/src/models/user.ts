@@ -7,6 +7,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
 } from "typeorm";
 import { generateEntityId } from "utils/functions";
 import { AccountLink } from "./account_link";
@@ -100,8 +101,8 @@ export class User extends BaseEntity {
   @OneToMany(() => Coupon, (coupon) => coupon.user)
   coupons?: Coupon[];
 
-  @OneToMany(() => Subscribe, (subscribe) => subscribe.user)
-  subsribes?: Subscribe[];
+  @OneToOne(() => Subscribe, (subscribe) => subscribe.user)
+  subsribe?: Subscribe;
 
   get point(): number {
     if (this.points && this.points?.length > 0) {

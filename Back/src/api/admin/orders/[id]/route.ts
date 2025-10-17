@@ -1,17 +1,22 @@
 import { Order } from "models/order";
 import { OrderService } from "services/order";
+import { ShippingMethodService } from "services/shipping_method";
 import { container } from "tsyringe";
 
 export const POST: ApiHandler = async (req, res) => {
   const { id } = req.params;
-  const { metadata, return_data = false, status } = req.body;
+  const { metadata, tracking_number, return_data = false, status } = req.body;
 
   const service: OrderService = container.resolve(OrderService);
+  const shippingService = container.resolve(ShippingMethodService);
   try {
     const _data = {
       metadata,
       status,
     };
+    if ("tracking_number" in req.body) {
+      shippingService.update({ order_id: id }, { tracking_number });
+    }
     const result: UpdateResult<Order> = await service.update(
       { id: id },
       _data,

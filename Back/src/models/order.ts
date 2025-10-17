@@ -18,6 +18,7 @@ import { Refund } from "./refund";
 import { ShippingMethod } from "./shipping_method";
 import { Store } from "./store";
 import { User } from "./user";
+import { Subscribe } from "./subscribe";
 
 export enum OrderStatus {
   AWAITING = "awaiting",
@@ -162,6 +163,13 @@ export class Order extends BaseEntity {
 
   @OneToMany(() => Coupon, (coupon) => coupon.order)
   coupons?: Coupon[];
+
+  @Column({ type: "character varying", nullable: true })
+  subscribe_id?: string;
+
+  @ManyToOne(() => Subscribe)
+  @JoinColumn({ name: "subscribe_id", referencedColumnName: "id" })
+  subscribe?: Subscribe;
 
   @BeforeInsert()
   protected async BeforeInsert(): Promise<void> {
