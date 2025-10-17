@@ -152,6 +152,16 @@ const SidebarNav: NavParent[] = [
         to: "/coupon/management",
         icon: "/resources/images/sideNav_coupon_search.png",
       },
+      {
+        name: "구독 등록",
+        to: "/subscribe/regist",
+        icon: "/resources/images/sideNav_subscribe_add.png",
+      },
+      {
+        name: "구독 조회 및 관리",
+        to: "/subscribe/management",
+        icon: "/resources/images/sideNav_subscribe_search.png",
+      },
     ],
   },
   {

@@ -15,6 +15,7 @@ import { Coupon } from "./coupon";
 import { Group } from "./group";
 import { Order } from "./order";
 import { Point } from "./point";
+import { Subscribe } from "./subscribe";
 
 export enum UserRole {
   ADMIN = "admin",
@@ -98,6 +99,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Coupon, (coupon) => coupon.user)
   coupons?: Coupon[];
+
+  @OneToMany(() => Subscribe, (subscribe) => subscribe.user)
+  subsribes?: Subscribe[];
 
   get point(): number {
     if (this.points && this.points?.length > 0) {

@@ -46,6 +46,7 @@ import ReviewWriteModal from "./main/review/ReviewWriteModal";
 import SearchModal from "./main/search/SearchModal";
 import SelectModal from "./main/select/SelectModal";
 import TableModal from "./table/TableModal";
+import SubscribeModal from "./admin/subscribe/SubscribeModal";
 
 function ModalHandler() {
   NiceModal.register("toast", ToastModal);
@@ -83,6 +84,7 @@ function ModalHandler() {
   NiceModal.register("couponDetail", CouponModal);
   NiceModal.register("couponIssue", CouponIssueModal);
   NiceModal.register("productDetail", ProductModal);
+  NiceModal.register("subscribeDetail", SubscribeModal);
   NiceModal.register("promotionDetail", PromotionModal);
   NiceModal.register("promotionOptionList", PromotionOptionListModal);
   NiceModal.register("promotionOption", PromotionOptionModal);
