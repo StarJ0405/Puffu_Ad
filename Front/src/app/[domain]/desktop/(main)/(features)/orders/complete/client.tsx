@@ -83,8 +83,9 @@ export function CompleteForm({ order }: { order?: OrderData }) {
               할인금액{" "}
               {(
                 (order?.total || 0) -
-                (order?.total_final || 0) -
-                (order?.delivery_fee || 0)
+                (order?.total_final || 0) +
+                (order?.shipping_method?.amount || 0) +
+                (order?.point || 0)
               ).toLocaleString("kr")}
               원 + 배송비{" "}
               {Number(order?.delivery_fee || 0).toLocaleString("ko-KR")}원
@@ -135,7 +136,6 @@ export function CompleteForm({ order }: { order?: OrderData }) {
 
 // 주문 리스트
 export function MyOrdersTable({ items }: { items?: LineItemData[] }) {
-
   console.log(items);
 
   return (
@@ -175,14 +175,26 @@ export function MyOrdersTable({ items }: { items?: LineItemData[] }) {
                           <P>{item.total_quantity}개</P>
                         </VerticalFlex>
 
-                        <VerticalFlex gap={5} className={styles.price_box} alignItems="start">
-                          <P className={styles.unit_price} hidden={((item.unit_price || 0) - (item.discount_price || 0)) === 0}>
-                            {(item.unit_price || 0).toLocaleString('ko-KR')}원
+                        <VerticalFlex
+                          gap={5}
+                          className={styles.price_box}
+                          alignItems="start"
+                        >
+                          <P
+                            className={styles.unit_price}
+                            hidden={
+                              (item.unit_price || 0) -
+                                (item.discount_price || 0) ===
+                              0
+                            }
+                          >
+                            {(item.unit_price || 0).toLocaleString("ko-KR")}원
                             {/* {Number(item.unit_price).toLocaleString("ko-KR")}원 */}
                           </P>
 
                           <P>
-                            {(item.discount_price || 0).toLocaleString('ko-KR')}원
+                            {(item.discount_price || 0).toLocaleString("ko-KR")}
+                            원
                             {/* {Number(item.unit_price).toLocaleString("ko-KR")}원 */}
                           </P>
                         </VerticalFlex>
