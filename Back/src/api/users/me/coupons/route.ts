@@ -18,9 +18,10 @@ export const GET: ApiHandler = async (req, res) => {
     ...where,
     user_id: user.id,
     appears_at: LessThanOrEqual(new Date()),
+    used: false,
   };
   const valid = new Set(["order", "item", "shipping"]);
-  if (typeof type === "string" && valid.has(type)) {
+  if (typeof type === "string" && valid.has(type)) { 
     where.type = type;
   }
   if ("status" in req.parsedQuery) {
