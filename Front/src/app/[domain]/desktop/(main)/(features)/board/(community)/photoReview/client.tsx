@@ -243,7 +243,7 @@ export function BestReviewSlider({
       <FlexChild className={styles.slide_body}>
         <FlexChild id={id} className={styles.ProductSlider}>
           <Swiper
-            loop={true}
+            // loop={true}
             slidesPerView={slideMax}
             speed={600}
             spaceBetween={20}

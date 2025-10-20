@@ -194,7 +194,7 @@ export function BestReviewSlider({
         {ranked.length > 0 && (
           <FlexChild id={id} className={styles.BestSlider}>
             <Swiper
-              loop={true}
+              // loop={true}
               slidesPerView={1.6}
               speed={600}
               spaceBetween={20}
