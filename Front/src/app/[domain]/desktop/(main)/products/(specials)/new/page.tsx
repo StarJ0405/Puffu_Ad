@@ -17,6 +17,8 @@ export default async function ({
   const newCondition: any = {
     pageSize: 24,
     order: "new",
+    product_type: "exclude_set",
+    warehousing: false,
   };
   if (category_id) newCondition.category_id = category_id;
 

@@ -8,7 +8,6 @@ import { requester } from "@/shared/Requester";
 import { BaseProductList, ProdcutCategoryFilter } from "../../baseClient";
 import { SearchParams } from "next/dist/server/request/search-params";
 
-
 function findCategoryById(categories: any[], id: string): any | undefined {
   for (const cat of categories) {
     if (cat.id === id) {
@@ -22,14 +21,19 @@ function findCategoryById(categories: any[], id: string): any | undefined {
   return undefined;
 }
 
-
 export default async function ({
   searchParams,
 }: {
   searchParams: Promise<SearchParams>;
 }) {
   const { category_id } = await searchParams;
-  const bestCondition: any = { pageSize: 12, pageNumber: 0, order: "best" };
+  const bestCondition: any = {
+    pageSize: 12,
+    pageNumber: 0,
+    order: "best",
+    product_type: "exclude_set",
+    warehousing: false,
+  };
   if (category_id) bestCondition.category_id = category_id;
   const bestProducts = await requester.getProducts(bestCondition);
   return (
@@ -42,7 +46,7 @@ export default async function ({
           </VerticalFlex>
         </VerticalFlex>
 
-        <ProdcutCategoryFilter ConditionOrder={bestCondition}  />
+        <ProdcutCategoryFilter ConditionOrder={bestCondition} />
 
         <VerticalFlex className={Pstyles.list}>
           <BaseProductList

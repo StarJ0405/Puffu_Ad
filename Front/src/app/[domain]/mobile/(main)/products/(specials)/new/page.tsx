@@ -13,7 +13,13 @@ export default async function ({
   searchParams: Promise<SearchParams>;
 }) {
   const { category_id } = await searchParams;
-  const newCondition: any = { pageSize: 12, pageNumber: 0, order: "new" };
+  const newCondition: any = {
+    pageSize: 12,
+    pageNumber: 0,
+    order: "new",
+    product_type: "exclude_set",
+    warehousing: false,
+  };
   if (category_id) newCondition.category_id = category_id;
   const newProducts = await requester.getProducts(newCondition);
 

@@ -20,6 +20,8 @@ export default async function ({
   const hotCondition: any = {
     pageSize: 24,
     order: "discount",
+    product_type: "exclude_set",
+    warehousing: false,
   };
   if (category_id) hotCondition.category_id = category_id;
   const hotProducts = await requester.getProducts(hotCondition);

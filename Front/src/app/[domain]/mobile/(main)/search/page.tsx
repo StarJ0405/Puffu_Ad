@@ -28,13 +28,11 @@ export default async function ({
       >
         <VerticalFlex className={styles.title_box}>
           <h3>"{q}" 검색결과</h3>
-
           <P>
             {initProducts?.NumberOfTotalElements || 0}개의 상품이
             검색되었습니다.
           </P>
         </VerticalFlex>
-
         <VerticalFlex className={styles.list}>
           <BaseProductList
             id="search"
