@@ -30,7 +30,6 @@ export function CommingSoonList({
         mutate={mutate}
         total={origin.NumberOfTotalElements || 0}
         listArray={commingSoon}
-        commingSoon={true}
         pagination={{ page, maxPage, setPage }}
       />
     </>

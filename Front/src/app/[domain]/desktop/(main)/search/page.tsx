@@ -16,7 +16,7 @@ export default async function ({
   const initCondition = {
     q,
     pageSize: 24,
-    warehousing: false, /* "all" -> 전체 검색 가능(입고예정 포함) */
+    warehousing: "all", /* "all" -> 전체 검색 가능(입고예정 포함) */
   };
   const initProducts = await requester.getProducts(initCondition);
 

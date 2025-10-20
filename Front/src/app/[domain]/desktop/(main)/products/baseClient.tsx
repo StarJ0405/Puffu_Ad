@@ -127,7 +127,6 @@ export function BaseProductList({
   listArray,
   // sortOptions,
   sortConfig,
-  commingSoon, // 입고예정 임시용
   pagination,
 }: {
   mutate?: () => void;
@@ -139,7 +138,6 @@ export function BaseProductList({
     setSort: (opt: { id: string; display: string }) => void;
     sortOptions: { id: string; display: string }[];
   };
-  commingSoon?: boolean;
   pagination?: { page: number; maxPage: number; setPage: (p: number) => void };
 }) {
   // const [sort, setSort] = useState(sortOptions?.[0]); // 정렬 상태 관리
@@ -178,7 +176,6 @@ export function BaseProductList({
                     }
                     <ProductCard
                       product={product}
-                      commingSoon={commingSoon}
                       lineClamp={2}
                       width={"100%"}
                       mutate={mutate}

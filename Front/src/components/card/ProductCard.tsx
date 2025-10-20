@@ -20,13 +20,11 @@ export function ProductCard({
   lineClamp,
   width,
   autoPlay,
-  commingSoon,
   mutate,
   onClick,
 }: {
   product: ProductData;
   lineClamp?: number;
-  commingSoon?: boolean;
   width?: number | string;
   autoPlay?: number;
   mutate?: () => void;
@@ -37,7 +35,7 @@ export function ProductCard({
   const product_link = `/products/${product.id}`;
   const navigate = useNavigate();
   const minHeightCheck = lineClamp === 1;
-
+  const isComingSoon = Boolean((product as any)?.warehousing);
   return (
     <VerticalFlex
       width={width ?? isMobile ? "auto" : 200}
@@ -65,7 +63,7 @@ export function ProductCard({
             />
           )}
 
-          {commingSoon && ( // 입고예정일때만 나오기
+          {isComingSoon && ( // 입고예정일때만 나오기
             <Image
               className={styles.specialTypeImg}
               src={"/resources/images/commingSoon_img.png"}
