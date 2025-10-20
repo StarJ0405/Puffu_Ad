@@ -363,6 +363,7 @@ export function MyOrdersTable({
                             lineClamp={2}
                             overflow="hidden"
                             display="--webkit-box"
+                            onClick={() => navigate(`/products/${productId}`)}
                           >
                             {item.product_title}
                           </P>

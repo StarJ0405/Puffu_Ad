@@ -321,6 +321,7 @@ export function MyOrdersTable({
                           width={80}
                           borderRadius={5}
                           onClick={() => navigate(`/products/${productId}`)}
+                          cursor="pointer"
                         />
                         <VerticalFlex
                           className={styles.unit_content}
@@ -371,6 +372,7 @@ export function MyOrdersTable({
                             lineClamp={2}
                             overflow="hidden"
                             display="--webkit-box"
+                            onClick={() => navigate(`/products/${productId}`)}
                           >
                             {item.product_title}
                           </P>

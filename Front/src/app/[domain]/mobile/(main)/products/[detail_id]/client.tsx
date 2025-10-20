@@ -699,7 +699,7 @@ export function OptionItem({
                   <InputNumber
                     disabled={variantDisabled}
                     value={qty}
-                    min={0}
+                    min={1}
                     max={Number(v.stack)}
                     step={1}
                     onChange={(val) => {
