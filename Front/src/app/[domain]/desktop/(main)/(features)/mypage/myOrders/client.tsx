@@ -281,8 +281,6 @@ export function MyOrdersTable({
                 </HorizontalFlex>
 
                 {order.items.map((item: LineItemData) => {
-                  console.log(item);
-
                   return (
                     <HorizontalFlex
                       key={item.id}
