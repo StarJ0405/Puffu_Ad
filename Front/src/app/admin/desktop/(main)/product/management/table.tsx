@@ -207,11 +207,16 @@ export default function ({
   );
 
   const [store, setStore] = useState<string>("");
-  const [category, setCategory] = useState<string>("");
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   const { categories = [] } = useData(
     "categories",
-    { select: ["id", "name"], order: { name: "ASC" } },
+    {
+      select: ["id", "name", "parent_id"],
+      parent_id: null,
+      order: { name: "ASC" },
+      tree: "descendants",
+    },
     (cond) => adminRequester.getCategories(cond),
     { onReprocessing: (d) => d?.content || [] }
   );
@@ -225,7 +230,8 @@ export default function ({
     const q = input.current.getValue();
     if (q) data.q = q;
     if (store) data.store_id = store;
-    if (category) data.category_id = category;
+    if (selectedCategories.length)
+      data.category_id = selectedCategories[selectedCategories.length - 1];
     table.current.setCondition(data);
   };
 
@@ -233,7 +239,7 @@ export default function ({
     input.current.empty();
     table.current.reset();
     setStore("");
-    setCategory("");
+    setSelectedCategories([]);
   };
 
   const ContextMenu = ({ x, y, row }: { x: number; y: number; row?: any }) => {
@@ -356,17 +362,76 @@ export default function ({
                       </div>
                     </FlexChild>
                     <FlexChild>
-                      <Select
-                        value={category}
-                        options={[
-                          { display: "전체", value: "" },
-                          ...categories.map((c: any) => ({
-                            display: c.name,
-                            value: c.id,
-                          })),
-                        ]}
-                        onChange={(selected) => setCategory(selected as string)}
-                      />
+                      <HorizontalFlex justifyContent="flex-start" gap={10}>
+                        <FlexChild width={250}>
+                          <Select
+                            value={selectedCategories?.[0] || ""}
+                            options={[
+                              { display: "대분류 전체", value: "" },
+                              ...categories.map((c: any) => ({
+                                display: c.name,
+                                value: c.id,
+                              })),
+                            ]}
+                            onChange={(selected) =>
+                              setSelectedCategories([selected as string])
+                            }
+                          />
+                        </FlexChild>
+                        <FlexChild width={250}>
+                          <Select
+                            value={selectedCategories?.[1] || ""}
+                            options={[
+                              { display: "중분류 전체", value: "" },
+                              ...(
+                                categories?.find(
+                                  (f: CategoryData) =>
+                                    f.id === selectedCategories?.[0]
+                                )?.children || []
+                              ).map((c: any) => ({
+                                display: c.name,
+                                value: c.id,
+                              })),
+                            ]}
+                            onChange={(selected) =>
+                              setSelectedCategories((prev) =>
+                                selected
+                                  ? [prev[0], selected as string]
+                                  : [prev[0]]
+                              )
+                            }
+                          />
+                        </FlexChild>
+                        <FlexChild width={250}>
+                          <Select
+                            value={selectedCategories?.[2] || ""}
+                            options={[
+                              { display: "소분류 전체", value: "" },
+                              ...(
+                                (
+                                  categories?.find(
+                                    (f: CategoryData) =>
+                                      f.id === selectedCategories?.[0]
+                                  )?.children || []
+                                )?.find(
+                                  (f: CategoryData) =>
+                                    f.id === selectedCategories?.[1]
+                                )?.children || []
+                              ).map((c: any) => ({
+                                display: c.name,
+                                value: c.id,
+                              })),
+                            ]}
+                            onChange={(selected) =>
+                              setSelectedCategories((prev) =>
+                                selected
+                                  ? [prev[0], prev[1], selected as string]
+                                  : [prev[0], prev[1]]
+                              )
+                            }
+                          />
+                        </FlexChild>
+                      </HorizontalFlex>
                     </FlexChild>
                   </HorizontalFlex>
                 </FlexChild>
