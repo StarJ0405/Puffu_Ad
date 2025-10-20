@@ -100,8 +100,8 @@ export function CompleteForm({ order }: { order?: OrderData }) {
                 {(
                   (order?.total || 0) -
                   (order?.total_final || 0) +
-                  (order?.shipping_method?.amount || 0) -
-                  (order?.point || 0)
+                  (order?.shipping_method?.amount || 0) 
+                  // - (order?.point || 0)
                 ).toLocaleString("kr")}
                 원
               </P>
@@ -113,14 +113,11 @@ export function CompleteForm({ order }: { order?: OrderData }) {
                 {Number(order?.delivery_fee || 0).toLocaleString("ko-KR")}원
               </P>
             </FlexChild> */}
-            <FlexChild justifyContent="center" hidden={!order?.point}>
+            {/* <FlexChild justifyContent="center" hidden={!order?.point}>
               {order?.point
               ? ` - 포인트 ${Number(order.point).toLocaleString("ko-kr")}P`
               : ""}
-              {/* <P size={16} color="#fff" weight={500}>
-                - 포인트 {Number(order?.point || 0).toLocaleString("ko-KR")}P
-              </P> */}
-            </FlexChild>
+            </FlexChild> */}
           </VerticalFlex>
 
           <VerticalFlex gap={10} justifyContent="center">

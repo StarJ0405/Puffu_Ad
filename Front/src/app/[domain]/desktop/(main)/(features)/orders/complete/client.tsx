@@ -85,13 +85,13 @@ export function CompleteForm({ order }: { order?: OrderData }) {
               {(
                 (order?.total || 0) -
                 (order?.total_final || 0) +
-                (order?.shipping_method?.amount || 0) -
-                (order?.point || 0)
+                (order?.shipping_method?.amount || 0) 
+                // - (order?.point || 0)
               ).toLocaleString("kr")}
               원
-              {order?.point
+              {/* {order?.point
                 ? ` - 포인트 ${Number(order.point).toLocaleString("ko-kr")}P`
-                : ""}
+                : ""} */}
             </P>
           </FlexChild>
 
