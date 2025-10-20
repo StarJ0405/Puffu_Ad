@@ -305,7 +305,7 @@ export function MyOrdersTable({
                 </HorizontalFlex>
 
                 {order.items.map((item: LineItemData) => {
-
+                  
                   return (
                     <HorizontalFlex
                       key={item.id}
