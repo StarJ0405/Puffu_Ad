@@ -4,10 +4,9 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
+import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import styles from "./couponItemDesktop.module.css";
-import NiceModal from "@ebay/nice-modal-react";
-import Span from "@/components/span/Span";
 
 export function CouponItemDesktop({ coupon }: { coupon: CouponData }) {
   const { isMobile } = useBrowserEvent();
@@ -41,6 +40,8 @@ export function CouponItemDesktop({ coupon }: { coupon: CouponData }) {
       return `${(coupon?.min || 0).toLocaleString()}원부터`;
     }
   };
+
+  console.log(coupon);
 
   const products = coupon?.products;
   const categories = coupon?.categories;
@@ -92,6 +93,11 @@ export function CouponItemDesktop({ coupon }: { coupon: CouponData }) {
             <P>전체 적용</P>
           ))}
       </td>
+      
+      <td>
+        <P size={14}>{new Date(coupon?.appears_at || 0).toLocaleDateString()}</P>
+      </td>
+
       <td className={styles.txt2}>
         <P>
           {new Date(coupon?.starts_at || 0).toLocaleDateString()}부터 <br />
