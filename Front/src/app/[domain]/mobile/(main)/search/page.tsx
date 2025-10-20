@@ -15,6 +15,7 @@ export default async function ({
   const initCondition = {
     q,
     pageSize: 12,
+    warehousing: "all",
   };
   const initProducts = await requester.getProducts(initCondition);
 
