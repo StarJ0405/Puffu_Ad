@@ -70,6 +70,8 @@ export function MyOrdersTable({
         "coupons",
         "items.coupons",
         "subscribe",
+        "itmes",
+        "itmes.variant"
       ],
       start_date: startDate,
       end_date: endDate,
@@ -132,7 +134,6 @@ export function MyOrdersTable({
   const [refundCheck, setRefundCheck] = useState<{ [key: string]: boolean }>(
     {}
   );
-
   return (
     <>
       <VerticalFlex className={styles.search_box}>
