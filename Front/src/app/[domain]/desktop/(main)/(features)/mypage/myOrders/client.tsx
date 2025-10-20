@@ -126,9 +126,6 @@ export function MyOrdersTable({
     if (q) setCondition({ q });
     else setCondition({});
   };
-
-  console.log(orders);
-
   
   return (
     <>
