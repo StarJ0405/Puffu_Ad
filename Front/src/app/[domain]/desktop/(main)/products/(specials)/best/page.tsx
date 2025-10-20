@@ -18,6 +18,8 @@ export default async function ({
   const bestCondition: any = {
     pageSize: 24,
     order: "best",
+    product_type: "exclude_set",
+    warehousing: false,
   };
 
   if (category_id) bestCondition.category_id = category_id;

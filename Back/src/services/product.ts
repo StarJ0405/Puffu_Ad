@@ -81,6 +81,11 @@ export class ProductService extends BaseService<Product, ProductRepository> {
         builder = builder.andWhere("p.product_type = :ptype", { ptype: value });
       }
     }
+    if (where._excludeType) {
+      builder = builder.andWhere(
+        `p.product_type IS DISTINCT FROM 'is_set' AND p.product_type IS DISTINCT FROM 'random_box'`
+      );
+    }
 
     /*     if ("warehousing" in where) {
     // 명시적 true/false 필터만 적용
