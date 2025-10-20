@@ -1,0 +1,17 @@
+.image {
+  border: 2px solid var(--admin-color);
+}
+
+.head {
+  width: 100px;
+  padding: 15px;
+}
+.content {
+  padding: 15px;
+}
+
+.button {
+  padding: 8px 12px;
+  color: #111;
+  border: 1px solid #111;
+}

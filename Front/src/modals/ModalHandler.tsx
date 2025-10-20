@@ -29,8 +29,10 @@ import ShippingMethodDetailModal from "./admin/shipping_method/ShippingMethodDet
 import ShippingMethodListModal from "./admin/shipping_method/ShippingMethodListModal";
 import StoreModal from "./admin/store/StoreModal";
 import SubscribeModal from "./admin/subscribe/SubscribeModal";
+import CouponListModal from "./admin/user/CouponListModal";
 import OrderListModal from "./admin/user/OrderListModal";
 import PointListModal from "./admin/user/PointListModal";
+import SubscribeListModal from "./admin/user/SubscribeListModal";
 import UserModal from "./admin/user/UserModal";
 import InputModal from "./input/InputModal";
 import ListModal from "./list/ListModal";
@@ -82,6 +84,8 @@ function ModalHandler() {
   NiceModal.register("exchangeDetail", ExchangeDetailModal);
   NiceModal.register("orderList", OrderListModal);
   NiceModal.register("pointList", PointListModal);
+  NiceModal.register("couponList", CouponListModal);
+  NiceModal.register("subscribeList", SubscribeListModal);
   NiceModal.register("userDetail", UserModal);
   NiceModal.register("couponDetail", CouponModal);
   NiceModal.register("couponIssue", CouponIssueModal);

@@ -7,8 +7,8 @@ import { adminRequester } from "@/shared/AdminRequester";
 import NiceModal from "@ebay/nice-modal-react";
 import { useEffect, useRef } from "react";
 import ModalBase from "../../ModalBase";
-import styles from "./PointListModal.module.css";
-const PointListModal = NiceModal.create(
+import styles from "./CouponListModal.module.css";
+const CouponListModal = NiceModal.create(
   ({ user, onSuccess }: { user: UserData; onSuccess?: () => void }) => {
     const [withHeader, withFooter] = [true, false];
     const [width, height] = ["min(95%, 1100px)", "auto"];
@@ -47,26 +47,8 @@ const PointListModal = NiceModal.create(
         },
       },
       {
-        label: "타입",
+        label: "이름",
         code: "name",
-      },
-      {
-        label: "포인트",
-        code: "data",
-        Cell: ({ cell }) =>
-          cell?.point > 0
-            ? `${Number(cell?.point || 0).toLocaleString("ko")}P 획득`
-            : `${Number(-cell?.point || 0).toLocaleString("ko")}P 사용`,
-      },
-      {
-        label: "누적포인트",
-        code: "data",
-        Cell: ({ cell }) => `${Number(cell?.total || 0).toLocaleString("ko")}P`,
-      },
-      {
-        label: "메모",
-        code: "metadata",
-        Cell: ({ cell }) => cell?.memo || "없음",
       },
     ];
     return (
@@ -92,12 +74,12 @@ const PointListModal = NiceModal.create(
           <FlexChild>
             <Table
               ref={table}
-              name={`${user?.id}_point`}
+              name={`${user?.id}_coupon`}
               columns={columns}
               initLimit={10}
               initCondition={{ order: { created_at: "desc" } }}
               onSearch={(condition) =>
-                adminRequester.getPointList(user.id, condition)
+                adminRequester.getCouponList(user.id, condition)
               }
               onMaxPage={(data) => Number(data?.totalPages)}
               onReprocessing={(data) => data?.content || []}
@@ -111,42 +93,7 @@ const PointListModal = NiceModal.create(
             marginTop={10}
             justifyContent="flex-end"
           >
-            <Button
-              className={styles.button}
-              onClick={() =>
-                NiceModal.show("input", {
-                  message: `${user.name}님에게 포인트를 지급 혹은 회수합니다.`,
-                  cancelText: "취소",
-                  confirmText: "지급",
-                  input: [
-                    {
-                      label: "포인트",
-                      type: "number",
-                      min: -99999999999,
-                      max: 99999999999,
-                      value: 0,
-                    },
-                    {
-                      label: "메모",
-                      type: "textarea",
-                      placeHolder: "관리자용 메모",
-                    },
-                  ],
-                  onConfirm: (values: any[]) => {
-                    const point = Number(values[0] || 0);
-                    const memo = values[1] || "";
-                    if (point !== 0) {
-                      adminRequester.givePoint(user.id, { point, memo }, () => {
-                        table.current.research();
-                        onSuccess?.();
-                      });
-                    }
-                  },
-                })
-              }
-            >
-              포인트 지급/회수
-            </Button>
+            <Button className={styles.button}>포인트 지급/회수</Button>
           </FlexChild>
         </VerticalFlex>
       </ModalBase>
@@ -154,4 +101,4 @@ const PointListModal = NiceModal.create(
   }
 );
 
-export default PointListModal;
+export default CouponListModal;

@@ -191,6 +191,25 @@ export default function ({
           onClick: () =>
             NiceModal.show("pointList", {
               user: row,
+              onSuccess: () => table.current.research(),
+            }),
+        },
+        {
+          label: "쿠폰기록",
+          hotKey: "l",
+          onClick: () =>
+            NiceModal.show("couponList", {
+              user: row,
+              onSuccess: () => table.current.research(),
+            }),
+        },
+        {
+          label: "구독기록",
+          hotKey: "s",
+          onClick: () =>
+            NiceModal.show("subscrbieList", {
+              user: row,
+              onSuccess: () => table.current.research(),
             }),
         }
       );
