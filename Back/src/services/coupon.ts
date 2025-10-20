@@ -151,6 +151,16 @@ export class CouponService extends BaseService<Coupon, CouponRepository> {
     }
     if (where.type)
       builder = builder.andWhere(`cu.type = :type`, { type: where.type });
+
+    if (where.used === false) {
+      // 사용되지 않은 쿠폰만, 단 기간만료 포함
+      builder = builder.andWhere(`
+        cu.item_id IS NULL
+        AND cu.order_id IS NULL
+        AND cu.shipping_method_id IS NULL
+      `);
+    }
+
     // 사용됨 OR 기간만료
     if (where.used === true) {
       builder = builder.andWhere(

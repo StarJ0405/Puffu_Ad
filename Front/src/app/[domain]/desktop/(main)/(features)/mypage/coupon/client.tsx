@@ -11,12 +11,12 @@ import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import usePageData from "@/shared/hooks/data/usePageData";
 import { requester } from "@/shared/Requester";
 import clsx from "clsx";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import mypage from "../mypage.module.css";
 import styles from "./page.module.css";
 
 type FilterKey = "all" | "item" | "order" | "shipping" | "expired";
-type ExpiredSub = "expired" | "expired_date" | "expired_used";
+// type ExpiredSub = "expired" | "expired_date" | "expired_used";
 // status 종류:
 // - "expired"      → 기간만료 + 사용만료 전체
 // - "expired_date" → 기간만료만 (미사용)
@@ -25,7 +25,7 @@ type ExpiredSub = "expired" | "expired_date" | "expired_used";
 export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
   const { userData } = useAuth();
   const [filter, setFilter] = useState<FilterKey>("all");
-  const [expiredSub, setExpiredSub] = useState<ExpiredSub>("expired");
+  // const [expiredSub, setExpiredSub] = useState<ExpiredSub>("expired");
 
   const where = useMemo(() => {
     switch (filter) {
@@ -36,13 +36,13 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
       case "shipping":
         return { type: "shipping" };
       case "expired":
-        return { status: expiredSub };
+        return { status: "expired_date" };
       default:
         return {};
     }
-  }, [filter, expiredSub]);
+  }, [filter]);
 
-  const { coupons, page, maxPage, setPage } = usePageData(
+  const { coupons, page, maxPage, setPage, origin } = usePageData(
     "coupons",
     (pageNumber) => ({ pageNumber, pageSize: 12, ...where }),
     (cond) => requester.getCoupons(cond),
@@ -55,22 +55,41 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
     { key: "item", label: "상품 할인" },
     { key: "order", label: "주문 할인" },
     { key: "shipping", label: "배송 할인" },
-    { key: "expired", label: "만료" },
+    { key: "expired", label: "기간만료" },
   ];
 
-  const expiredTabs: { key: ExpiredSub; label: string }[] = [
-    { key: "expired", label: "전체" },
-    { key: "expired_date", label: "기간만료" },
-    { key: "expired_used", label: "사용만료" },
-  ];
+  const allTotalRef = useRef<number>(
+    initCoupons?.NumberOfTotalElements ?? initCoupons?.content?.length ?? 0
+  );
+
+  useEffect(() => {
+    if (filter === "all") {
+      const n = origin?.NumberOfTotalElements;
+      if (typeof n === "number") allTotalRef.current = n;
+    }
+  }, [filter, origin]);
+
+  const allTotal = allTotalRef.current;
+
+  // const expiredTabs: { key: ExpiredSub; label: string }[] = [
+  //   { key: "expired", label: "전체" },
+  //   { key: "expired_date", label: "기간만료" },
+  //   { key: "expired_used", label: "사용만료" },
+  // ];
+
+  // const onTabClick = (k: FilterKey) => {
+  //   if (k !== filter) {
+  //     setPage(0);
+  //     if (k !== "expired") setExpiredSub("expired");
+  //   }
+  //   setFilter(k);
+  // };
 
   const onTabClick = (k: FilterKey) => {
-    if (k !== filter) {
-      setPage(0);
-      if (k !== "expired") setExpiredSub("expired");
-    }
+    if (k !== filter) setPage(0);
     setFilter(k);
   };
+
   return (
     <VerticalFlex className={clsx(mypage.box_frame, styles.coupon_box)}>
       <HorizontalFlex className={mypage.box_header}>
@@ -93,11 +112,11 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
             })}
             onClick={() => onTabClick(t.key)}
           >
-            {t.label}
+            {t.key === "all" ? `${t.label} (${allTotal})` : t.label}
           </P>
         ))}
 
-        {filter === "expired" && (
+        {/* {filter === "expired" && (
           <HorizontalFlex
             gap={12}
             justifyContent="flex-start"
@@ -120,7 +139,7 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
               </P>
             ))}
           </HorizontalFlex>
-        )}
+        )} */}
       </HorizontalFlex>
       <table className={styles.coupon_list}>
         <colgroup>
