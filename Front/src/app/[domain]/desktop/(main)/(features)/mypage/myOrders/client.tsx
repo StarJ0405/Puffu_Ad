@@ -281,6 +281,9 @@ export function MyOrdersTable({
                 </HorizontalFlex>
 
                 {order.items.map((item: LineItemData) => {
+                  
+                  console.log(item);
+
                   return (
                     <HorizontalFlex
                       key={item.id}
@@ -358,17 +361,28 @@ export function MyOrdersTable({
                           )}
 
                           <FlexChild paddingTop={10}>
-                            <P
-                              className={styles.unit_price}
-                              lineClamp={2}
-                              overflow="hidden"
-                              display="--webkit-box"
-                            >
-                              <Span>{item.total_quantity}</Span>
-                              <Span>개 / </Span>
-                              <Span>{item.unit_price}</Span>
-                              <Span>원</Span>
-                            </P>
+                            <VerticalFlex alignItems="start" width={'auto'} gap={10} flexBasis={'unset'} flexGrow={'unset'}>
+                              <FlexChild gap={5}>
+                                {/* <P textDecoration={'line-through'} fontSize={13} color="#797979">
+                                  <Span>{item.unit_price}</Span>
+                                  <Span>원</Span>
+                                </P> */}
+
+                                <P>
+                                  <Span>{item.unit_price}</Span>
+                                  <Span>원</Span>
+                                </P>
+                              </FlexChild>
+                              <P
+                                className={styles.unit_price}
+                                lineClamp={2}
+                                overflow="hidden"
+                                display="--webkit-box"
+                              >
+                                <Span>{item.total_quantity}</Span>
+                                <Span>개</Span>
+                              </P>
+                            </VerticalFlex>
 
                             {order.status === "complete" && (
                               <FlexChild
@@ -623,7 +637,7 @@ export function MyOrdersTable({
                 <HorizontalFlex className={styles.summary_row}>
                   <P>총 상품금액 (배송비 포함)</P>
                   <P>
-                    <Span>{order.total}</Span>
+                    <Span>{(order.total || 0) + (order.shipping_method?.amount || 0)}</Span>
                     <Span>원</Span>
                   </P>
                 </HorizontalFlex>
