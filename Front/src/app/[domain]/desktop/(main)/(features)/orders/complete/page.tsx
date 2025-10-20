@@ -23,11 +23,11 @@ export default function () {
         if (!order) navigate("/", { type: "replace" });
         else {
           setOrder(order);
-          setTimeout(() => {
-            reload().then(() => {
-              sessionStorage.removeItem(Sessions.ORDER);
-            });
-          }, 100);
+          // setTimeout(() => {
+          //   reload().then(() => {
+          //     sessionStorage.removeItem(Sessions.ORDER);
+          //   });
+          // }, 100);
         }
       } else {
         navigate("/", { type: "replace" });

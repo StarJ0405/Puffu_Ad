@@ -507,7 +507,8 @@ export function MyOrdersTable({
                           <P>결제 금액 : </P>
                           <P>
                             <Span color="var(--main-color1)" weight={600}>
-                              {(item.total_final || 0) * item.quantity}
+                              {/* {(item.total_final || 0) * item.quantity} */}
+                              {item.total_final || 0}
                             </Span>
                             <Span color="var(--main-color1)" weight={600}>
                               원
