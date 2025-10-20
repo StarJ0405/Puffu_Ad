@@ -10,22 +10,22 @@ import Span from "@/components/span/Span";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import usePageData from "@/shared/hooks/data/usePageData";
 import { requester } from "@/shared/Requester";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import mypage from "../mypage.module.css";
 import styles from "./page.module.css";
 import clsx from "clsx";
 
 type FilterKey = "all" | "item" | "order" | "shipping" | "expired";
-type ExpiredSub = "expired" | "expired_date" | "expired_used";
+/* type ExpiredSub = "expired" | "expired_date" | "expired_used";
 // status 종류:
 // - "expired"      → 기간만료 + 사용만료 전체
 // - "expired_date" → 기간만료만 (미사용)
 // - "expired_used" → 사용된 쿠폰만 (기간무관)
-
+ */
 export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
   const { userData } = useAuth();
   const [filter, setFilter] = useState<FilterKey>("all");
-  const [expiredSub, setExpiredSub] = useState<ExpiredSub>("expired");
+  // const [expiredSub, setExpiredSub] = useState<ExpiredSub>("expired");
   const PAGE_SIZE = 5;
   const where = useMemo(() => {
     switch (filter) {
@@ -36,13 +36,13 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
       case "shipping":
         return { type: "shipping" };
       case "expired":
-        return { status: expiredSub };
+        return { status: "expired_date" };
       default:
         return {};
     }
-  }, [filter, expiredSub]);
+  }, [filter]);
 
-  const { coupons, page, maxPage, setPage } = usePageData(
+  const { coupons, page, maxPage, setPage, origin } = usePageData(
     "coupons",
     (pageNumber) => ({ pageNumber, pageSize: PAGE_SIZE, ...where }),
     (cond) => requester.getCoupons(cond),
@@ -58,17 +58,35 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
     { key: "expired", label: "만료" },
   ];
 
-  const expiredTabs: { key: ExpiredSub; label: string }[] = [
+  const allTotalRef = useRef<number>(
+      initCoupons?.NumberOfTotalElements ?? initCoupons?.content?.length ?? 0
+    );
+  
+    useEffect(() => {
+      if (filter === "all") {
+        const n = origin?.NumberOfTotalElements;
+        if (typeof n === "number") allTotalRef.current = n;
+      }
+    }, [filter, origin]);
+  
+  const allTotal = allTotalRef.current;
+  
+  /* const expiredTabs: { key: ExpiredSub; label: string }[] = [
     { key: "expired", label: "전체" },
     { key: "expired_date", label: "기간만료" },
     { key: "expired_used", label: "사용만료" },
-  ];
+  ]; */
 
-  const onTabClick = (k: FilterKey) => {
+  /*   const onTabClick = (k: FilterKey) => {
     if (k !== filter) {
       setPage(0);
       if (k !== "expired") setExpiredSub("expired");
     }
+    setFilter(k);
+  }; */
+
+  const onTabClick = (k: FilterKey) => {
+    if (k !== filter) setPage(0);
     setFilter(k);
   };
 
@@ -90,34 +108,31 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
             })}
             onClick={() => onTabClick(t.key)}
           >
-            {t.label}
+            {t.key === "all" ? `${t.label} (${allTotal})` : t.label}
           </P>
         ))}
 
-        {filter === "expired" && (
+        {/* {filter === "expired" && (
           <HorizontalFlex
             gap={12}
             justifyContent="flex-start"
             className={styles.subTabs}
           >
             <P className={styles.subTab}>|</P>
-            {expiredTabs.map((st) => (
+            {tabs.map((st) => (
               <P
                 key={st.key}
                 cursor="pointer"
                 className={clsx(styles.subTab, {
-                  [styles.activeSubTab]: expiredSub === st.key,
+                  [styles.activeSubTab]: filter === st.key,
                 })}
-                onClick={() => {
-                  setPage(0);
-                  setExpiredSub(st.key);
-                }}
+                onClick={() => onTabClick(st.key)}
               >
-                {st.label}
+                {st.key === "all" ? `${st.label} (${allTotal})` : st.label}
               </P>
             ))}
           </HorizontalFlex>
-        )}
+        )} */}
       </HorizontalFlex>
       {coupons?.length > 0 ? (
         <VerticalFlex gap={15}>
