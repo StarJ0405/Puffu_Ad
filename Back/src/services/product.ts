@@ -56,11 +56,24 @@ export class ProductService extends BaseService<Product, ProductRepository> {
       .andWhere("v.visible IS TRUE");
 
     if (where && "warehousing" in where) {
-      const value = where.warehousing ? "TRUE" : "FALSE";
-      builder = builder.andWhere(`p.warehousing IS ${value}`);
+      if (where.warehousing === true) {
+        builder = builder.andWhere("p.warehousing IS TRUE");
+      } else if (where.warehousing === false) {
+        builder = builder.andWhere("p.warehousing IS FALSE");
+      }
     } else {
-      builder = builder.andWhere("p.warehousing IS FALSE");
+      // 파라미터 없으면 기본 FALSE. 다만 _warehousingAll 플래그면 우회
+      if (!where?._warehousingAll) {
+        builder = builder.andWhere("p.warehousing IS FALSE");
+      }
     }
+
+    // if (where && "warehousing" in where) {
+    //   const value = where.warehousing ? "TRUE" : "FALSE";
+    //   builder = builder.andWhere(`p.warehousing IS ${value}`);
+    // } else {
+    //   builder = builder.andWhere("p.warehousing IS FALSE");
+    // }
 
     if (where && "product_type" in where) {
       const value = where.product_type;
