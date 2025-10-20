@@ -1363,8 +1363,6 @@ export function Item({
     return amount;
   };
 
-  console.log(item);
-
   return (
     <VerticalFlex className={styles.cart_item} gap={20}>
       <HorizontalFlex justifyContent="start" position="relative">
