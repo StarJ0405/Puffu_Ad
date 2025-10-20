@@ -24,11 +24,15 @@ export default async function () {
   const hotCondition: any = {
     pageSize: 12,
     order: "discount",
+    product_type: "exclude_set",
+    warehousing: false,
   };
   const hotProducts = await requester.getProducts(hotCondition);
   const bestCondition: any = {
     pageSize: 12,
     order: "best",
+    product_type: "exclude_set",
+    warehousing: false,
   };
   const bestProducts = await requester.getProducts(bestCondition);
   return (
