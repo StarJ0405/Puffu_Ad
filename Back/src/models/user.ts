@@ -101,8 +101,8 @@ export class User extends BaseEntity {
   @OneToMany(() => Coupon, (coupon) => coupon.user)
   coupons?: Coupon[];
 
-  @OneToOne(() => Subscribe, (subscribe) => subscribe.user)
-  subsribe?: Subscribe;
+  @OneToMany(() => Subscribe, (subscribe) => subscribe.user)
+  subsribes?: Subscribe[];
 
   get point(): number {
     if (this.points && this.points?.length > 0) {

@@ -11,13 +11,15 @@ import {
 } from "typeorm";
 import { generateEntityId } from "utils/functions";
 import { LineItem } from "./line_item";
-import { User } from "./user";
 import { Recommend } from "./recommend";
+import { User } from "./user";
 
 @Entity({ name: "review" })
 @Index(["created_at"])
 // CREATE INDEX IF NOT EXISTS idx_review_content ON public.review USING GIN (fn_text_to_char_array(content));
 export class Review extends BaseEntity {
+  @Column({ type: "bigint", default: () => "nextval('review_sequence')" })
+  idx?: number;
   @Column({ type: "character varying", nullable: true })
   item_id?: string;
 
@@ -46,7 +48,7 @@ export class Review extends BaseEntity {
 
   @OneToMany(() => Recommend, (recommend) => recommend.review)
   recommends?: Recommend[];
-  
+
   @BeforeInsert()
   protected async BeforeInsert(): Promise<void> {
     this.id = generateEntityId(this.id, "rvw");

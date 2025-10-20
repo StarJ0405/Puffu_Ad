@@ -36,5 +36,6 @@ export default function () {
   CREATE INDEX IF NOT EXISTS idx_group_name ON public.group USING GIN (fn_text_to_char_array(name));
   CREATE INDEX IF NOT EXISTS idx_coupon_id ON public.coupon USING GIN (fn_text_to_char_array(id));
   CREATE INDEX IF NOT EXISTS idx_coupon_name ON public.coupon USING GIN (fn_text_to_char_array(name));
+  CREATE SEQUENCE review_sequence START 1;
   `;
 }

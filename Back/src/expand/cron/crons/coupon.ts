@@ -1,10 +1,11 @@
 import lunisolar from "lunisolar";
-import { Condition, Target } from "models/coupon";
+import { CalcType, Condition, CouponType, Target } from "models/coupon";
 import { User } from "models/user";
 import { CouponService } from "services/coupon";
+import { SubscribeService } from "services/subscribe";
 import { UserService } from "services/user";
 import { container } from "tsyringe";
-import { IsNull, MoreThan, Or, Raw } from "typeorm";
+import { IsNull, LessThanOrEqual, MoreThan, Not, Or, Raw } from "typeorm";
 import { schedule } from "../module";
 
 const delay = async (delay = 1000) =>
@@ -221,6 +222,40 @@ export function regist(DEV: boolean) {
             );
             return service.updateQuantity(interval.id);
           })
+        );
+      }
+      // 구독 발급
+      if (now.getDate() === 1) {
+        const subscribeService = container.resolve(SubscribeService);
+        const subscribes = await subscribeService.getList({
+          where: {
+            user_id: Not(IsNull()),
+            ends_at: MoreThan(new Date()),
+            starts_at: LessThanOrEqual(new Date()),
+            value: MoreThan(0),
+          },
+        });
+        const start_date = new Date();
+        start_date.setHours(0, 0, 0, 0);
+        start_date.setDate(1);
+        const end_date = new Date(start_date);
+        end_date.setMonth(end_date.getMonth() + 1);
+        end_date.setDate(0);
+        end_date.setHours(23, 59, 59, 999);
+        await Promise.all(
+          subscribes.map(
+            async (subscribe) =>
+              await service.create({
+                store_id: subscribe.store_id,
+                name: `${subscribe.name} ${now.getMonth() + 1}월 쿠폰`,
+                type: CouponType.ORDER,
+                calc: CalcType.FIX,
+                value: subscribe.value,
+                user_id: subscribe.user_id || undefined,
+                starts_at: start_date,
+                ends_at: end_date,
+              })
+          )
         );
       }
     },

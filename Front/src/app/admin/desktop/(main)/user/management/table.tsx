@@ -207,7 +207,7 @@ export default function ({
           label: "구독기록",
           hotKey: "s",
           onClick: () =>
-            NiceModal.show("subscrbieList", {
+            NiceModal.show("subscribeList", {
               user: row,
               onSuccess: () => table.current.research(),
             }),

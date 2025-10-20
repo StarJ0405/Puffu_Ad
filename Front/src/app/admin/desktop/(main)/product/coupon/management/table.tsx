@@ -16,12 +16,23 @@ import { dateToString, toast } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import { useRef, useState } from "react";
 import styles from "./page.module.css";
-export const getCouponDate = (coupon: CouponData): string => {
+export const getCouponDate = (
+  coupon: CouponData,
+  node: boolean = false
+): string | React.ReactNode => {
   switch (coupon.date) {
     case "fixed": {
-      return `${dateToString(coupon.starts_at || new Date())} ~ ${dateToString(
-        coupon.ends_at || new Date()
-      )}`;
+      return node ? (
+        <VerticalFlex>
+          <P>{dateToString(coupon.starts_at || new Date())}</P>
+          <P>~</P>
+          <P>{dateToString(coupon.ends_at || new Date())}</P>
+        </VerticalFlex>
+      ) : (
+        `${dateToString(coupon.starts_at || new Date())} ~ ${dateToString(
+          coupon.ends_at || new Date()
+        )}`
+      );
     }
     case "range":
       switch (coupon.date_unit) {
@@ -161,7 +172,13 @@ export default function ({
     },
     {
       label: "상태",
-      Cell: ({ row }) => (row.deleted_at ? "삭제(발급 불가)" : "발급중"),
+      Cell: ({ row }) =>
+        row.deleted_at
+          ? "삭제(발급 불가)"
+          : row.ends_at &&
+            new Date(row.ends_at).getTime() < new Date().getTime()
+          ? "만료(발급 불가)"
+          : "발급중",
       styling: {
         common: {
           style: {
@@ -280,7 +297,11 @@ export default function ({
           },
         }
       );
-      if (row.target === "manual")
+      if (
+        row.target === "manual" &&
+        row.deleted_at === null &&
+        (!row.ends_at || new Date(row.ends_at).getTime() > new Date().getTime())
+      )
         rows.push({
           label: "발급하기",
           hotKey: "g",
