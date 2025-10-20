@@ -126,6 +126,10 @@ export function MyOrdersTable({
     if (q) setCondition({ q });
     else setCondition({});
   };
+
+  console.log(orders);
+
+  
   return (
     <>
       <HorizontalFlex className={styles.search_box}>
@@ -222,6 +226,7 @@ export function MyOrdersTable({
                       [{getOrderStatus(order)}]
                     </Span>
                   </FlexChild>
+
                   {/* 주문번호 */}
                   <FlexChild className={styles.order_code}>
                     <P>
@@ -229,6 +234,25 @@ export function MyOrdersTable({
                       <Span>{order.display}</Span>
                     </P>
                   </FlexChild>
+
+                  {/* 입금계좌 안내 */}
+                  {
+                    order.status === 'awaiting' && (
+                      <FlexChild gap={10} className={styles.bank_transfer}>
+                        <P>
+                          <Span>입금계좌 : </Span>
+                          <Span>KEB하나은행 642-910017-99201 /</Span>
+                          {/* <Span>{order.payment_data.name} {order.payment_data.bank_number} /</Span> */}
+                        </P>
+
+                        <P>
+                          <Span>예금주 : </Span>
+                          <Span>주식회사 푸푸글로벌</Span>
+                          {/* {order.payment_data.owner} */}
+                        </P>
+                      </FlexChild>
+                    )
+                  }
                 </VerticalFlex>
 
                 <FlexChild className={styles.order_btn_group}>
@@ -281,6 +305,7 @@ export function MyOrdersTable({
                 </HorizontalFlex>
 
                 {order.items.map((item: LineItemData) => {
+                  
                   return (
                     <HorizontalFlex
                       key={item.id}

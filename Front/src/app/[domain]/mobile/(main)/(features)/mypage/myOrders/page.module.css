@@ -175,17 +175,24 @@
   padding-bottom: 15px;
   border-bottom: 1px solid #444;
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   align-items: center;
+  gap: 15px;
 }
 .order_header p {
   color: #fff;
+  line-height: 1.2;
 }
 
 .order_group .order_top_info {gap: 10px;}
-.order_header .order_code {
+.order_group .order_top_info .order_code {
+   font-size: 15px;
+   color: #797979;
+}
+
+.order_group .bank_transfer {
    font-size: 13px;
-   color: #c7c7c7;
+   color: var(--main-color1);
 }
 
 .item_price_box {

@@ -73,9 +73,14 @@
 .order_group .order_header > * {width: auto;}
 .order_group .order_top_info {gap: 10px;}
 
-.order_header .order_code {
+.order_group .order_top_info .order_code {
    font-size: 15px;
-   color: #c7c7c7;
+   color: #797979;
+}
+
+.order_group .order_top_info .bank_transfer {
+   font-size: 14px;
+   color: var(--main-color1);
 }
 
 
