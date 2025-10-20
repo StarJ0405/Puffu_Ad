@@ -143,10 +143,11 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
       </HorizontalFlex>
       <table className={styles.coupon_list}>
         <colgroup>
+          <col style={{ width: "10%" }} />
           <col style={{ width: "15%" }} />
-          <col style={{ width: "15%" }} />
-          <col style={{ width: "35%" }} />
+          <col style={{ width: "25%" }} />
           <col style={{ width: "20%" }} />
+          <col style={{ width: "15%" }} />
           <col style={{ width: "15%" }} />
         </colgroup>
         <thead>
@@ -155,6 +156,7 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
             <th>혜택</th>
             <th>쿠폰명</th>
             <th>사용조건</th>
+            <th>발급날짜</th>
             <th>사용기간</th>
           </tr>
         </thead>

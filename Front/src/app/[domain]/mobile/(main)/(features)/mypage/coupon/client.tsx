@@ -92,57 +92,41 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
 
   return (
     <>
-      <HorizontalFlex className={mypage.box_header} justifyContent="flex-start">
-        <P>사용 가능 쿠폰</P>
-        <P className={styles.total_count}>
-          <Span>{userData?.coupon}</Span>
-        </P>
-      </HorizontalFlex>
-      <HorizontalFlex gap={15} justifyContent="flex-start">
-        {tabs.map((t) => (
-          <P
-            key={t.key}
-            cursor="pointer"
-            className={clsx(styles.tab, {
-              [styles.activeTab]: filter === t.key,
-            })}
-            onClick={() => onTabClick(t.key)}
-          >
-            {t.key === "all" ? `${t.label} (${allTotal})` : t.label}
-          </P>
-        ))}
-
-        {/* {filter === "expired" && (
-          <HorizontalFlex
-            gap={12}
-            justifyContent="flex-start"
-            className={styles.subTabs}
-          >
-            <P className={styles.subTab}>|</P>
-            {tabs.map((st) => (
-              <P
-                key={st.key}
-                cursor="pointer"
-                className={clsx(styles.subTab, {
-                  [styles.activeSubTab]: filter === st.key,
-                })}
-                onClick={() => onTabClick(st.key)}
-              >
-                {st.key === "all" ? `${st.label} (${allTotal})` : st.label}
-              </P>
-            ))}
+      <VerticalFlex gap={20}>
+        <VerticalFlex gap={10}>
+          <HorizontalFlex className={mypage.box_header} justifyContent="flex-start">
+            <P>사용 가능 쿠폰</P>
+            <P className={styles.total_count}>
+              <Span>{userData?.coupon}</Span>
+            </P>
           </HorizontalFlex>
-        )} */}
-      </HorizontalFlex>
-      {coupons?.length > 0 ? (
-        <VerticalFlex gap={15}>
-          {coupons?.map((coupon: CouponData) => (
-            <CouponItemMobile key={coupon.id} coupon={coupon} />
-          ))}
+          <FlexChild className={styles.tab_wrapper}>
+            <HorizontalFlex gap={15} justifyContent="flex-start" className={styles.filter_tabs}>
+              {tabs.map((t) => (
+                <P
+                  key={t.key}
+                  cursor="pointer"
+                  className={clsx(styles.tab, {
+                    [styles.activeTab]: filter === t.key,
+                  })}
+                  onClick={() => onTabClick(t.key)}
+                >
+                  {t.key === "all" ? `${t.label} (${allTotal})` : t.label}
+                </P>
+              ))}
+            </HorizontalFlex>
+          </FlexChild>
         </VerticalFlex>
-      ) : (
-        <NoContent type="쿠폰" />
-      )}
+        {coupons?.length > 0 ? (
+          <VerticalFlex gap={15}>
+            {coupons?.map((coupon: CouponData) => (
+              <CouponItemMobile key={coupon.id} coupon={coupon} />
+            ))}
+          </VerticalFlex>
+        ) : (
+          <NoContent type="쿠폰" />
+        )}
+      </VerticalFlex>
       <FlexChild>
         <ListPagination
           page={page}

@@ -41,12 +41,11 @@
 }
 
 .tab:hover {
-  transform: scale(1.125);
+  color: #fff;
 }
 
 .activeTab {
   color: #ffffff;
-  transform: scale(1.125);
 }
 
 .subTabs {

@@ -6,93 +6,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 4px 8px;
-  font-size: 16px;
+  padding: 4px 5px;
+  font-size: 13px;
   font-weight: 600;
   border-radius: 100px;
   aspect-ratio: 1/1;
   background-color: var(--main-color2);
 }
 
-/* .item {
-  max-height: 100px;
-  border-radius: 10px;
-  background: linear-gradient(90deg, #2f2f2f 0%, #404040 50%, #3a3a3a 100%);
-}
-
-.item.expired,
-.item.used {
-  background: #000;
-}
-
-.item .name {
-  font-size: 15px;
-  font-weight: 600;
-  word-break: keep-all;
-  line-height: 1.2;
-}
-
-.item .name.expired,
-.item .name.used,
-.item .date.expired,
-.item .date.used {
-  opacity: 20%;
-}
-
-.item .date {
-  font-size: 13px;
-  color: #d7d7d7;
-}
-
-.cutout_wrap {
-  position: relative;
-  width: 20px;
-  height: 100%;
-  min-height: 100px;
-  margin: 0 10px;
-  display: flex;
-  align-items: stretch;
-}
-
-.cutout_left,
-.cutout_right {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: var(--mainBg);
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2;
-}
-
-.cutout_left {
-  top: 0;
-  transform: translate(-50%, -50%);
-}
-
-.cutout_right {
-  bottom: 0;
-  transform: translate(-50%, 50%);
-}
-
-.dashed_line {
-  position: absolute;
-  left: 50%;
-  height: 100%;
-  min-height: 100px;
-  border-left: 1px dashed #fff;
-}
-
-.icon_wrap {
-  min-width: 12%;
-  padding-right: 10px;
-}
-
-.icon_wrap .txt {
-  font-size: 13px;
-  font-weight: 600;
-} */
 
 .list_more_btn {
   background: var(--main-color2);
@@ -107,9 +28,20 @@
   background-color: #000;
 }
 
+.tab_wrapper {
+  overflow-x: auto;
+  padding: 0 0 10px;
+  width: 100%;
+}
+
+.filter_tabs {
+  white-space: nowrap;
+}
+
+
 .tab {
   display: inline-block;
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 400;
   font-family: "Pretendard Variable";
   line-height: 100%;
@@ -118,13 +50,8 @@
   transform-origin: center bottom;
 }
 
-.tab:hover {
-  transform: scale(1.125);
-}
-
 .activeTab {
   color: #ffffff;
-  transform: scale(1.125);
 }
 
 .subTabs {

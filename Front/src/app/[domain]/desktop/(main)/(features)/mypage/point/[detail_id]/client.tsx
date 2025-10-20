@@ -72,7 +72,7 @@ export function PointDetail({
                     <Span>개</Span>
                     <Span> / </Span>
                     <Span color="var(--main-color1)">
-                      {fmtNumber(it?.price ?? 0)}
+                      {fmtNumber(it?.total_final ?? 0)}
                     </Span>
                     <Span color="var(--main-color1)">원</Span>
                   </P>
