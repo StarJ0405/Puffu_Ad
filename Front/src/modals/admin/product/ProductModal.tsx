@@ -31,9 +31,9 @@ const ProductModal = NiceModal.create(
     edit?: boolean;
     onSuccess?: () => void;
   }) => {
-    useEffect(() => {
-      console.log(product);
-    }, []);
+    // useEffect(() => {
+    //   console.log(product);
+    // }, []);
 
     const [categoryIds, setCategoryIds] = useState(
       (product.categories ?? []).map((cat: CategoryData) => cat.id)
