@@ -16,6 +16,7 @@ import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import { useState } from "react";
 import styles from "./page.module.css";
+import useNavigate from "@/shared/hooks/useNavigate";
 
 type OrderItem = {
   id: string | number;
@@ -43,7 +44,8 @@ export function MyOrdersTable({
   initStartDate: Date;
   initEndDate: Date;
   initOrders: any;
-}) {
+  }) {
+  const navigate = useNavigate()
   // const [orders, setOrders] = useState<any[]>([]);
   const [q, setQ] = useState("");
   const [startDate, setStartDate] = useState(initStartDate);
@@ -68,6 +70,8 @@ export function MyOrdersTable({
         "coupons",
         "items.coupons",
         "subscribe",
+        "items",
+        "items.variant",
       ],
       start_date: startDate,
       end_date: endDate,
@@ -302,7 +306,7 @@ export function MyOrdersTable({
                 </HorizontalFlex>
 
                 {order.items.map((item: LineItemData) => {
-                  
+                  const productId = item?.variant?.product_id;
                   return (
                     <HorizontalFlex
                       key={item.id}
@@ -315,6 +319,8 @@ export function MyOrdersTable({
                           src={item.thumbnail}
                           width={80}
                           borderRadius={5}
+                          onClick={() => navigate(`/products/${productId}`)}
+                          cursor="pointer"
                         />
                         <VerticalFlex
                           className={styles.unit_content}

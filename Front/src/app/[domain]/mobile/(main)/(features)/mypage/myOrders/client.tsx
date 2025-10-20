@@ -17,6 +17,7 @@ import clsx from "clsx";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import styles from "./page.module.css";
+import useNavigate from "@/shared/hooks/useNavigate";
 
 type OrderItem = {
   id: string | number;
@@ -44,7 +45,8 @@ export function MyOrdersTable({
   initStartDate: Date;
   initEndDate: Date;
   initOrders: any;
-}) {
+  }) {
+  const navigate = useNavigate();
   const [q, setQ] = useState("");
   const [condition, setCondition] = useState<any>({});
   const [startDate, setStartDate] = useState(initStartDate);
@@ -217,11 +219,14 @@ export function MyOrdersTable({
                   <VerticalFlex className={styles.order_top_info}>
                     <FlexChild gap={7}>
                       <P size={15} weight={500}>
-                        {new Date(order.created_at).toLocaleDateString("ko-KR", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}{" "}
+                        {new Date(order.created_at).toLocaleDateString(
+                          "ko-KR",
+                          {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          }
+                        )}{" "}
                         <Span color="var(--main-color1)">
                           [{getOrderStatus(order)}]
                         </Span>
@@ -253,7 +258,8 @@ export function MyOrdersTable({
                       주문취소
                     </Button>
                   )}
-                  {(order.status === "shipping" || order.status === "complete") &&
+                  {(order.status === "shipping" ||
+                    order.status === "complete") &&
                     order.shipping_method?.tracking_number && (
                       <Button
                         // className={styles.tracking_btn}
@@ -269,29 +275,31 @@ export function MyOrdersTable({
                     )}
                 </FlexChild>
 
-                {
-                  order.status === 'awaiting' && (
-                    <VerticalFlex gap={5} alignItems="start" className={styles.bank_transfer}>
-                      <P>
-                        <Span>입금계좌 : </Span>
-                        <Span>KEB하나은행 642-910017-99201</Span>
-                        {/* <Span>{order.payment_data.name} {order.payment_data.bank_number} /</Span> */}
-                      </P>
+                {order.status === "awaiting" && (
+                  <VerticalFlex
+                    gap={5}
+                    alignItems="start"
+                    className={styles.bank_transfer}
+                  >
+                    <P>
+                      <Span>입금계좌 : </Span>
+                      <Span>KEB하나은행 642-910017-99201</Span>
+                      {/* <Span>{order.payment_data.name} {order.payment_data.bank_number} /</Span> */}
+                    </P>
 
-                      <P>
-                        <Span>예금주 : </Span>
-                        <Span>주식회사 푸푸글로벌</Span>
-                        {/* {order.payment_data.owner} */}
-                      </P>
-                    </VerticalFlex>
-                  )
-                }
+                    <P>
+                      <Span>예금주 : </Span>
+                      <Span>주식회사 푸푸글로벌</Span>
+                      {/* {order.payment_data.owner} */}
+                    </P>
+                  </VerticalFlex>
+                )}
               </VerticalFlex>
 
               <VerticalFlex className={styles.order_items_container}>
                 {order.items.map((item: LineItemData) => {
                   const isChecked = refundCheck[item.id] || false;
-
+                  const productId = item?.variant?.product_id;
                   return (
                     <VerticalFlex
                       key={item.id}
@@ -304,6 +312,7 @@ export function MyOrdersTable({
                           src={item.thumbnail}
                           width={66}
                           borderRadius={5}
+                          onClick={() => navigate(`/products/${productId}`)}
                         />
                         <VerticalFlex
                           className={styles.unit_content}
