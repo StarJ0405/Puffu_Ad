@@ -133,12 +133,10 @@ export function BaseProductList({
   initCondition,
   id,
   initProducts,
-  commingSoon, // 입고예정 임시용
 }: {
   initCondition?: any;
   id: string;
   initProducts?: Pageable;
-  commingSoon?: boolean;
 }) {
   const {
     [id]: products,
@@ -218,7 +216,6 @@ export function BaseProductList({
                     <ProductCard
                       mutate={mutate}
                       product={product}
-                      commingSoon={commingSoon}
                       lineClamp={2}
                       width={200}
                     />
