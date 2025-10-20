@@ -784,8 +784,24 @@ class _AdminRequester {
     data?: any,
     callback?: Function
   ): Promise<any> {
-    if (callback) callback(await this.get(`/users/${id}/subsribes`, data));
-    else return await this.get(`/users/${id}/subsribes`, data);
+    if (callback) callback(await this.get(`/users/${id}/subscribes`, data));
+    else return await this.get(`/users/${id}/subscribes`, data);
+  }
+  async refundSubscribe(
+    user_id: string,
+    subscribe_id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback)
+      callback(
+        await this.delete(`/users/${user_id}/subscribes/${subscribe_id}`, data)
+      );
+    else
+      return await this.delete(
+        `/users/${user_id}/subscribes/${subscribe_id}`,
+        data
+      );
   }
 }
 

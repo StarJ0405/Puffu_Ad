@@ -626,6 +626,8 @@ interface SubscribeDataFrame {
 }
 
 interface SubscribeData extends BaseEntity, SubscribeDataFrame {
+  canceled_at?: Date | string | null;
+  cancel_data?: Record<string, unknown> | null;
   store?: StoreData;
   user?: UserData;
   starts_at?: Date | string | null;

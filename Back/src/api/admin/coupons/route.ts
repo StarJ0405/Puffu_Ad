@@ -1,7 +1,7 @@
 import { Coupon } from "models/coupon";
 import { CouponService } from "services/coupon";
 import { container } from "tsyringe";
-import { IsNull, Not } from "typeorm";
+import { IsNull, MoreThan, Not, Or } from "typeorm";
 
 export const POST: ApiHandler = async (req, res) => {
   const {
@@ -116,6 +116,10 @@ export const GET: ApiHandler = async (req, res) => {
   if ("deleted_at" in where) {
     if (where.deleted_at) where.deleted_at = Not(IsNull());
     else where.deleted_at = IsNull();
+  }
+  if (where.useable) {
+    where.ends_at = Or(IsNull(), MoreThan(new Date()));
+    delete where.useable;
   }
   const service: CouponService = container.resolve(CouponService);
   if (pageSize) {

@@ -58,7 +58,7 @@ export interface Column {
     row: any;
     cell: any;
     index: number;
-  }) => JSX.Element | string | boolean | number;
+  }) => JSX.Element | string | boolean | number | React.ReactNode;
 }
 const Table = forwardRef(
   (

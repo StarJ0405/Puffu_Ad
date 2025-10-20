@@ -407,6 +407,7 @@ export class OrderService extends BaseService<Order, OrderRepository> {
         { id: order.id },
         {
           status: OrderStatus.CANCEL,
+          canceled_at: new Date(),
         }
       );
     }

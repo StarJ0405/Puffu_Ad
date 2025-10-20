@@ -7,12 +7,11 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
-  OneToOne,
 } from "typeorm";
 import { generateEntityId } from "utils/functions";
+import { Order } from "./order";
 import { Store } from "./store";
 import { User } from "./user";
-import { Order } from "./order";
 
 @Entity({ name: "subscribe" })
 @Index(["created_at"])
@@ -40,7 +39,7 @@ export class Subscribe extends BaseEntity {
   @Column({ type: "character varying", nullable: true })
   user_id?: string | null;
 
-  @OneToOne(() => User, (user) => user.subsribe)
+  @ManyToOne(() => User, (user) => user.subsribes)
   @JoinColumn({ name: "user_id", referencedColumnName: "id" })
   user?: User;
 
@@ -49,6 +48,12 @@ export class Subscribe extends BaseEntity {
 
   @Column({ type: "timestamp with time zone", nullable: true })
   ends_at?: Date | string | null;
+
+  @Column({ type: "jsonb", default: {} })
+  cancel_data?: Record<string, unknown> | null;
+
+  @Column({ type: "timestamp with time zone", nullable: true })
+  canceled_at?: Date | string | null;
 
   @Column({ type: "jsonb", default: {} })
   payment_data?: Record<string, unknown> | null;
@@ -65,5 +70,21 @@ export class Subscribe extends BaseEntity {
   @BeforeInsert()
   protected async BeforeInsert(): Promise<void> {
     this.id = generateEntityId(this.id, "sub");
+  }
+  toJSON() {
+    const result = {
+      ...this,
+      used:
+        ((this.orders
+          ?.filter((o) => !o.canceled_at)
+          ?.reduce(
+            (acc, now) => acc + (now.total_discounted || 0) + now.delivery_fee,
+            0
+          ) || 0) *
+          (this.percent || 0)) /
+        100.0,
+    };
+    delete result.orders;
+    return result;
   }
 }

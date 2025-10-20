@@ -1,3 +1,7 @@
+import {
+  getCouponDate,
+  getCouponType,
+} from "@/app/admin/desktop/(main)/product/coupon/management/table";
 import Button from "@/components/buttons/Button";
 import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
@@ -14,7 +18,7 @@ const CouponListModal = NiceModal.create(
     const [width, height] = ["min(95%, 1100px)", "auto"];
     const withCloseButton = true;
     const clickOutsideToClose = true;
-    const title = `${user.name}님의 포인트기록`;
+    const title = `${user.name}님의 쿠폰기록`;
     const buttonText = "close";
     const modal = useRef<any>(null);
     const table = useRef<any>(null);
@@ -25,7 +29,7 @@ const CouponListModal = NiceModal.create(
     }, [user]);
     const columns: Column[] = [
       {
-        label: "일자",
+        label: "발급시간",
         code: "created_at",
         Cell: ({ cell }) => {
           const date = new Date(cell);
@@ -45,10 +49,86 @@ const CouponListModal = NiceModal.create(
             </VerticalFlex>
           );
         },
+        styling: {
+          common: {
+            style: {
+              width: 100,
+              minWidth: 100,
+            },
+          },
+        },
       },
       {
         label: "이름",
         code: "name",
+      },
+      {
+        label: "사용기한",
+        Cell: ({ row }) => (
+          <VerticalFlex>
+            <P>{new Date(row.starts_at).toLocaleString()}</P>
+            <P>~</P>
+            <P>{new Date(row.ends_at).toLocaleString()}</P>
+          </VerticalFlex>
+        ),
+      },
+      {
+        label: "종류",
+        Cell: ({ row }) =>
+          `${getCouponType(row.type)}(${row.value}${
+            row.calc === "percent" ? "%" : "원"
+          })`,
+      },
+      {
+        label: "사용가능",
+        Cell: ({ row }) =>
+          !row.item_id &&
+          !row.order_id &&
+          !row.shipping_method_id &&
+          new Date(row.ends_at || 0).getTime() > new Date().getTime(),
+        styling: {
+          common: {
+            style: {
+              width: 100,
+              minWidth: 100,
+            },
+          },
+        },
+      },
+      {
+        label: "관리",
+        Cell: ({ row }) =>
+          !row.item_id &&
+          !row.order_id &&
+          !row.shipping_method_id &&
+          new Date(row.ends_at || 0).getTime() > new Date().getTime() ? (
+            <Button
+              className={styles.button}
+              onClick={() =>
+                NiceModal.show("confirm", {
+                  confirmText: "삭제",
+                  cancelText: "취소",
+                  message: `${row.name}을 삭제하시겠습니까?`,
+                  onConfirm: () =>
+                    adminRequester.deleteCoupon(row.id, {}, () =>
+                      table.current.research()
+                    ),
+                })
+              }
+            >
+              삭제
+            </Button>
+          ) : (
+            <></>
+          ),
+        styling: {
+          common: {
+            style: {
+              width: 80,
+              minWidth: 80,
+            },
+          },
+        },
       },
     ];
     return (
@@ -77,14 +157,13 @@ const CouponListModal = NiceModal.create(
               name={`${user?.id}_coupon`}
               columns={columns}
               initLimit={10}
-              initCondition={{ order: { created_at: "desc" } }}
+              initCondition={{}}
               onSearch={(condition) =>
                 adminRequester.getCouponList(user.id, condition)
               }
               onMaxPage={(data) => Number(data?.totalPages)}
               onReprocessing={(data) => data?.content || []}
               selectable={false}
-              indexing={false}
             />
           </FlexChild>
           <FlexChild
@@ -93,7 +172,60 @@ const CouponListModal = NiceModal.create(
             marginTop={10}
             justifyContent="flex-end"
           >
-            <Button className={styles.button}>포인트 지급/회수</Button>
+            <Button
+              className={styles.button}
+              onClick={() =>
+                NiceModal.show("table", {
+                  confirmText: "발급",
+                  name: "coupons",
+                  indexing: false,
+                  slideUp: false,
+                  width: "60vw",
+                  height: "60vh",
+                  maxHeight: "60vh",
+                  overflow: "auto",
+                  limit: 10,
+                  columns: [
+                    {
+                      label: "이름",
+                      code: "name",
+                    },
+                    {
+                      label: "사용기한",
+                      Cell: ({ row }: any) => getCouponDate(row, true),
+                    },
+                    {
+                      label: "종류",
+                      Cell: ({ row }: any) =>
+                        `${getCouponType(row.type)}(${row.value}${
+                          row.calc === "percent" ? "%" : "원"
+                        })`,
+                    },
+                  ],
+                  initCondition: {
+                    user_id: null,
+                    target: "manual",
+                    useable: true,
+                  },
+                  selectable: true,
+                  search: true,
+                  onMaxPage: (data: Pageable) => data?.totalPages || 0,
+                  onReprocessing: (data: Pageable) => data?.content || [],
+                  onSearch: (condition: any) =>
+                    adminRequester.getCoupons(condition),
+                  onSelect: (data: CouponData[]) =>
+                    Promise.all(
+                      data.map(async (coupon) =>
+                        adminRequester.giveCoupon(coupon.id, {
+                          user_id: user.id,
+                        })
+                      )
+                    ).then(() => table.current.research()),
+                })
+              }
+            >
+              쿠폰 즉석발급
+            </Button>
           </FlexChild>
         </VerticalFlex>
       </ModalBase>

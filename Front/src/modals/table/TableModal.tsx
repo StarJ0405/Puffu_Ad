@@ -16,6 +16,8 @@ import styles from "./TableModal.module.css";
 
 const TableModal = NiceModal.create(
   ({
+    cancelText = "취소",
+    confirmText = "등록",
     name = "modal",
     indexing = true,
     slideUp = true,
@@ -23,6 +25,7 @@ const TableModal = NiceModal.create(
     height = "100%",
     maxHeight,
     overflow,
+
     scrollbarWidth,
     columns = [],
     initCondition = {},
@@ -41,6 +44,8 @@ const TableModal = NiceModal.create(
       return {};
     },
   }: {
+    cancelText?: string;
+    confirmText?: string;
     name?: string;
     indexing?: boolean;
     slideUp?: boolean;
@@ -136,7 +141,7 @@ const TableModal = NiceModal.create(
                   className={styles.cancel}
                   onClick={() => modal.current.close()}
                 >
-                  취소
+                  {cancelText}
                 </Button>
                 <Button
                   className={styles.confirm}
@@ -145,7 +150,7 @@ const TableModal = NiceModal.create(
                     modal.current.close();
                   }}
                 >
-                  등록
+                  {confirmText}
                 </Button>
               </FlexChild>
               {search ? (

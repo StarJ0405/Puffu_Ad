@@ -464,7 +464,7 @@ const CouponModal = NiceModal.create(({ coupon }: { coupon: any }) => {
                   </FlexChild>
                   <FlexChild flexWrap="wrap" gap={6}>
                     {coupon.categories.map((category: CategoryData) => (
-                      <P className={styles.category}>
+                      <P key={category.id} className={styles.category}>
                         {getCategoryName(category)}
                       </P>
                     ))}

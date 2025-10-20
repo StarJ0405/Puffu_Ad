@@ -14,17 +14,18 @@ export const GET: ApiHandler = async (req, res) => {
   const service: CouponService = container.resolve(CouponService);
 
   where = { ...where, user_id: id };
+
   if (pageSize) {
-    const page = await service.getPageable(
+    const page = await service.getWithOrder(
+      { select, order, relations, where },
       {
         pageSize: Number(pageSize),
         pageNumber: Number(pageNumber),
-      },
-      { select, order, relations, where }
+      }
     );
     return res.json(page);
   } else {
-    const content = await service.getList({
+    const content = await service.getWithOrder({
       select,
       order,
       relations,
