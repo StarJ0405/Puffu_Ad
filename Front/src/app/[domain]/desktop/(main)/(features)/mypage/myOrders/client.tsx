@@ -281,7 +281,6 @@ export function MyOrdersTable({
                 </HorizontalFlex>
 
                 {order.items.map((item: LineItemData) => {
-                  
                   console.log(item);
 
                   return (
@@ -361,7 +360,13 @@ export function MyOrdersTable({
                           )}
 
                           <FlexChild paddingTop={10}>
-                            <VerticalFlex alignItems="start" width={'auto'} gap={10} flexBasis={'unset'} flexGrow={'unset'}>
+                            <VerticalFlex
+                              alignItems="start"
+                              width={"auto"}
+                              gap={10}
+                              flexBasis={"unset"}
+                              flexGrow={"unset"}
+                            >
                               <FlexChild gap={5}>
                                 {/* <P textDecoration={'line-through'} fontSize={13} color="#797979">
                                   <Span>{item.unit_price}</Span>
@@ -637,7 +642,10 @@ export function MyOrdersTable({
                 <HorizontalFlex className={styles.summary_row}>
                   <P>총 상품금액 (배송비 포함)</P>
                   <P>
-                    <Span>{(order.total || 0) + (order.shipping_method?.amount || 0)}</Span>
+                    <Span>
+                      {(order.total || 0) +
+                        (order.shipping_method?.amount || 0)}
+                    </Span>
                     <Span>원</Span>
                   </P>
                 </HorizontalFlex>
@@ -647,8 +655,7 @@ export function MyOrdersTable({
                     <Span>
                       {(order.total_final || 0) -
                         order.total -
-                        (order.shipping_method?.amount || 0) -
-                        order.point}
+                        (order.shipping_method?.amount || 0)}
                     </Span>
                     <Span>원</Span>
                   </P>

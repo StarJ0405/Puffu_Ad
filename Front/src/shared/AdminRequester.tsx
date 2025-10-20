@@ -768,6 +768,25 @@ class _AdminRequester {
     if (callback) callback(await this.post(`/users/${id}/points`, data));
     else return await this.post(`/users/${id}/points`, data);
   }
+
+  // 쿠폰 기록
+  async getCouponList(
+    id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.get(`/users/${id}/coupons`, data));
+    else return await this.get(`/users/${id}/coupons`, data);
+  }
+  // 구독 기록
+  async getSubscribeList(
+    id: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.get(`/users/${id}/subsribes`, data));
+    else return await this.get(`/users/${id}/subsribes`, data);
+  }
 }
 
 export default _AdminRequester;

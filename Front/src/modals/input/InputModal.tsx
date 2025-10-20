@@ -21,6 +21,7 @@ interface InputProps {
   placeHolder?: HTMLInputElement["placeholder"];
   regExp?: { exp: { test: (value: any) => boolean } }[];
   max?: number;
+  min?: number;
 }
 const InputModal = NiceModal.create(
   ({
@@ -158,6 +159,7 @@ const InputModal = NiceModal.create(
                         value={value.value}
                         type={value?.type}
                         max={value.max}
+                        min={value.min}
                         placeHolder={value.placeHolder}
                         regExp={value.regExp || []}
                         onKeyDown={(e) => {

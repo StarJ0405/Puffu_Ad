@@ -14,9 +14,9 @@ import { requester } from "@/shared/Requester";
 import { getOrderStatus, openTrackingNumber } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
+import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import styles from "./page.module.css";
-import { AnimatePresence, motion } from "framer-motion";
 
 type OrderItem = {
   id: string | number;
@@ -639,7 +639,10 @@ export function MyOrdersTable({
                 <HorizontalFlex className={styles.summary_row}>
                   <P>총 상품금액 (배송비 포함)</P>
                   <P>
-                    <Span>{(order.total || 0) + (order.shipping_method?.amount || 0)}</Span>
+                    <Span>
+                      {(order.total || 0) +
+                        (order.shipping_method?.amount || 0)}
+                    </Span>
                     <Span> 원</Span>
                   </P>
                 </HorizontalFlex>
@@ -649,8 +652,7 @@ export function MyOrdersTable({
                     <Span>
                       {(order.total_final || 0) -
                         order.total -
-                        (order.shipping_method?.amount || 0) -
-                        order.point}
+                        (order.shipping_method?.amount || 0)}
                     </Span>
                     <Span> 원</Span>
                   </P>
