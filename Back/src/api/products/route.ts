@@ -12,10 +12,20 @@ export const GET: ApiHandler = async (req, res) => {
     select,
     ...where
   } = req.parsedQuery;
-  
-  if (typeof where.warehousing === "string")
-    where.warehousing =
-      where.warehousing === "true" || where.warehousing === "1";
+
+  if ("warehousing" in where) {
+    const w = String(where.warehousing).toLowerCase();
+    if (w === "all") {
+      where._warehousingAll = true; // 전체 보기 플래그
+      delete where.warehousing; // 실제 필터 제거
+    } else if (w === "true" || w === "1") {
+      where.warehousing = true;
+    } else if (w === "false" || w === "0") {
+      where.warehousing = false;
+    } else {
+      delete where.warehousing; // 알 수 없는 값이면 필터 제거
+    }
+  }
 
   if ("product_type" in where) {
     if (where.product_type === "null") where.product_type = null;
