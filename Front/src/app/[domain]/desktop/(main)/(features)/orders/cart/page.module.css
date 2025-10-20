@@ -76,6 +76,7 @@
 .cart_wrap .cart_data .product_wrapper .cart_item .unit .item_thumb {
   width: auto; overflow: hidden; flex: unset;
   border-radius: 5px;
+  cursor: pointer;
 }
 
 .cart_wrap .cart_data .product_wrapper .cart_item .unit .unit_content {
@@ -96,6 +97,11 @@
   line-height: 1.2;
   color: #fff;
   font-weight: 400;
+  cursor: pointer;
+}
+
+.unit .unit_content > .unit_title:hover {
+  text-decoration: underline;
 }
 
 .unit .unit_content .unit_price {

@@ -19,6 +19,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import styles from "./photoReviewDetailModal.module.css";
 import { requester } from "@/shared/Requester";
 import RecommendButton from "@/components/buttons/RecommendButton";
+import useNavigate from "@/shared/hooks/useNavigate";
 
 type ReviewEntity = {
   id: string;
@@ -154,7 +155,7 @@ const PhotoReviewDetailModal = NiceModal.create(
       };
     }, [review.id]);
 
-    const toggleRecommend = async () => {
+    const toggleRecommend = async () => { // 리뷰 추천기능인데 지금 사용 안한다 했지만 나중에 사용할까봐 남겨 놓음
       if (likeLoading) return;
       setLikeLoading(true);
       try {
@@ -183,6 +184,14 @@ const PhotoReviewDetailModal = NiceModal.create(
         setLikeLoading(false);
       }
     };
+
+    const navigate = useNavigate();
+
+    const productLink = ()=> {
+      navigate(`/products/${product?.id}`);
+      onCancel?.();
+      modal.remove();
+    }
 
     return (
       <ModalBase
@@ -217,6 +226,7 @@ const PhotoReviewDetailModal = NiceModal.create(
                   src={productThumb}
                   width={!isMobile ? 100 : 60}
                   height={"auto"}
+                  onClick={productLink}
                 />
                 <VerticalFlex className={styles.txt_box}>
                   {brandName && (
@@ -228,6 +238,7 @@ const PhotoReviewDetailModal = NiceModal.create(
                       display="--webkit-box"
                       overflow="hidden"
                       className={styles.title}
+                      onClick={productLink}
                     >
                       {productTitle}
                     </P>

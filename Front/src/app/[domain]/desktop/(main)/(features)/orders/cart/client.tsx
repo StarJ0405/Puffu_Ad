@@ -1339,6 +1339,9 @@ function Item({
     }
     return amount;
   };
+
+  const navigate = useNavigate();
+
   return (
     <VerticalFlex className={styles.cart_item} gap={20}>
       <HorizontalFlex justifyContent="start" position="relative">
@@ -1347,7 +1350,7 @@ function Item({
         </FlexChild>
 
         <FlexChild className={styles.unit}>
-          <FlexChild className={styles.item_thumb}>
+          <FlexChild className={styles.item_thumb} onClick={()=> navigate(`/products/${item.variant.product_id}`)}>
             <Image
               src={
                 item?.variant?.thumbnail || item?.variant?.product?.thumbnail
@@ -1364,6 +1367,7 @@ function Item({
               lineClamp={2}
               overflow="hidden"
               display="--webkit-box"
+              onClick={()=> navigate(`/products/${item.variant.product_id}`)}
             >
               {item.variant.product.title}
             </P>

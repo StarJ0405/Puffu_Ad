@@ -1363,6 +1363,8 @@ export function Item({
     return amount;
   };
 
+  const navigate = useNavigate();
+
   return (
     <VerticalFlex className={styles.cart_item} gap={20}>
       <HorizontalFlex justifyContent="start" position="relative">
@@ -1375,6 +1377,8 @@ export function Item({
             src={item?.variant?.thumbnail || item?.variant?.product?.thumbnail}
             width={80}
             borderRadius={5}
+
+            onClick={()=> navigate(`/products/${item.variant.product_id}`)}
           />
           <VerticalFlex className={styles.unit_content} alignItems="start">
             <Span className={styles.unit_brand}>
@@ -1385,6 +1389,7 @@ export function Item({
               lineClamp={2}
               overflow="hidden"
               display="--webkit-box"
+              onClick={()=> navigate(`/products/${item.variant.product_id}`)}
             >
               {item.variant.product.title}
             </P>
