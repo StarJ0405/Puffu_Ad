@@ -479,7 +479,7 @@ export function OptionItem({
               <InputNumber
                 disabled={disabled}
                 value={select?.quantity}
-                min={0}
+                min={1}
                 max={100}
                 step={1}
                 onChange={(val) => {
