@@ -1,27 +1,21 @@
 "use client";
 import Button from "@/components/buttons/Button";
+import LoadingCard from "@/components/card/LoadingCard";
+import ReviewImgCard from "@/components/card/reviewImgCard";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
-import ListPagination from "@/components/listPagination/ListPagination";
-import NoContent from "@/components/noContent/noContent";
-import Select from "@/components/select/Select";
-import ReviewImgCard from "@/components/card/reviewImgCard";
 import Input from "@/components/inputs/Input";
+import MasonryGrid from "@/components/masonry/MasonryGrid";
+import NoContent from "@/components/noContent/noContent";
 import P from "@/components/P/P";
-import Span from "@/components/span/Span";
-import clsx from "clsx";
-import Link from "next/link";
+import { requester } from "@/shared/Requester";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Autoplay, Navigation } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 import boardStyle from "../../boardGrobal.module.css";
 import styles from "./photoReview.module.css";
-import MasonryGrid from "@/components/masonry/MasonryGrid";
-import { useEffect, useState, useCallback, useMemo } from "react";
-import { requester } from "@/shared/Requester";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, Autoplay, Navigation } from "swiper/modules";
-import { Swiper as SwiperType } from "swiper";
-import LoadingCard from "@/components/card/LoadingCard";
 
 // 게시판 리스트 -----------------------------------------------
 export function BoardTitleBox() {
@@ -106,8 +100,9 @@ export function BestReviewSlider({
         pageSize: PAGE_SIZE,
         pageNumber: 0,
         photo: true,
-        relations: "item,item.variant.product,user",
-        order: { created_at: "DESC" },
+        relations: "item.variant.product,user",
+        order: { index: "ASC", idx: "DESC" },
+        best: true,
       };
       const res = await requester.getPublicReviews(params);
       const data = res?.data ?? res;
@@ -189,60 +184,61 @@ export function BestReviewSlider({
     return enriched.slice(0, TOP_N);
   }, [rows]);
 
-  if (!loading && ranked.length === 0) {
-    return <NoContent type="리뷰" />;
-  }
-
   return (
-    <>
-      {ranked.length > 0 ? (
-        <FlexChild id={id} className={styles.BestSlider}>
-          <Swiper
-            loop={true}
-            slidesPerView={1.6}
-            speed={600}
-            spaceBetween={20}
-            modules={[Autoplay, Navigation]}
-            autoplay={{ delay: 40000 }}
-            navigation={{
-              prevEl: `#${id} .${styles.prevBtn}`,
-              nextEl: `#${id} .${styles.nextBtn}`,
-            }}
-            breakpoints={{
-              580: {
-                slidesPerView: 2,
-              },
-              680: {
-                slidesPerView: 3,
-              },
-              768: {
-                slidesPerView: 4,
-              },
+    <VerticalFlex className={styles.best_review_box} hidden={rows.length === 0}>
+      <FlexChild className={styles.title}>
+        <P className="SacheonFont">사용후기 베스트</P>
+      </FlexChild>
 
-              1080: {
-                slidesPerView: 4,
-              },
-            }}
-          >
-            {ranked.map((review, i) => {
-              return (
-                <SwiperSlide key={i}>
-                  <ReviewImgCard
-                    review={review}
-                    width={"100%"}
-                    height={"auto"}
-                    board="photoReviewSlide"
-                    slide={true}
-                    lineClamp={lineClamp ?? 2}
-                  />
-                </SwiperSlide>
-              );
-            })}
-          </Swiper>
-          {
-            // 슬라이드옵션들 props로 빼버리고 그 값 따라서 조건문 걸기
-          }
-          {/* <div className={clsx(styles.naviBtn, styles.prevBtn)}>
+      <FlexChild className={styles.slide_body}>
+        {ranked.length > 0 && (
+          <FlexChild id={id} className={styles.BestSlider}>
+            <Swiper
+              loop={true}
+              slidesPerView={1.6}
+              speed={600}
+              spaceBetween={20}
+              modules={[Autoplay, Navigation]}
+              autoplay={{ delay: 40000 }}
+              navigation={{
+                prevEl: `#${id} .${styles.prevBtn}`,
+                nextEl: `#${id} .${styles.nextBtn}`,
+              }}
+              breakpoints={{
+                580: {
+                  slidesPerView: 2,
+                },
+                680: {
+                  slidesPerView: 3,
+                },
+                768: {
+                  slidesPerView: 4,
+                },
+
+                1080: {
+                  slidesPerView: 4,
+                },
+              }}
+            >
+              {ranked.map((review, i) => {
+                return (
+                  <SwiperSlide key={i}>
+                    <ReviewImgCard
+                      review={review}
+                      width={"100%"}
+                      height={"auto"}
+                      board="photoReviewSlide"
+                      slide={true}
+                      lineClamp={lineClamp ?? 2}
+                    />
+                  </SwiperSlide>
+                );
+              })}
+            </Swiper>
+            {
+              // 슬라이드옵션들 props로 빼버리고 그 값 따라서 조건문 걸기
+            }
+            {/* <div className={clsx(styles.naviBtn, styles.prevBtn)}>
             <Image
               src={"/resources/icons/arrow/slide_arrow.png"}
               width={10}
@@ -254,11 +250,10 @@ export function BestReviewSlider({
               width={10}
             ></Image>
           </div> */}
-        </FlexChild>
-      ) : (
-        <NoContent type="리뷰" />
-      )}
-    </>
+          </FlexChild>
+        )}
+      </FlexChild>
+    </VerticalFlex>
   );
 }
 
@@ -327,36 +322,32 @@ export function GalleryTable() {
   return (
     <VerticalFlex>
       <FlexChild>
-        {(items.length > 0 || loading) ? (
+        {items.length > 0 || loading ? (
           <MasonryGrid
             gap={20}
-            breakpoints={{default: 3, 768: 3, 650: 2, 550: 1 }}
+            breakpoints={{ default: 3, 768: 3, 650: 2, 550: 1 }}
             width={"100%"}
           >
-            {
-              loading
-              ? Array.from({length : 4}).map((_, i) => (
-                <LoadingCard key={i} />
-              )) :
-              items.map((item, i) => {
-                return (
-                  <ReviewImgCard
-                    key={item.id ?? i}
-                    review={item}
-                    width={"100%"}
-                    height={"auto"}
-                    borderRadius={10}
-                  />
-                );
-              })
-            }
+            {loading
+              ? Array.from({ length: 4 }).map((_, i) => <LoadingCard key={i} />)
+              : items.map((item, i) => {
+                  return (
+                    <ReviewImgCard
+                      key={item.id ?? i}
+                      review={item}
+                      width={"100%"}
+                      height={"auto"}
+                      borderRadius={10}
+                    />
+                  );
+                })}
           </MasonryGrid>
         ) : (
           <NoContent type="리뷰" />
         )}
       </FlexChild>
 
-      {(!loading && hasMore) && (
+      {!loading && hasMore && (
         <FlexChild justifyContent="center" marginTop={30}>
           <Button
             className={styles.more_btn}
