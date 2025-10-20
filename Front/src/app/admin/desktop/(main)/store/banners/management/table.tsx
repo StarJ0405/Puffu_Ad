@@ -19,6 +19,7 @@ import { dateToString, toast } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import { useRef, useState } from "react";
 import styles from "./page.module.css";
+
 export default function ({
   initCondition,
   initData,
@@ -153,7 +154,7 @@ export default function ({
       },
     },
     {
-      label: "우선순위 설정",
+      label: "배너순서 설정",
       code: "importance",
       Cell: ({ row }) => {
         const imp = Number(row.importance ?? 0);
