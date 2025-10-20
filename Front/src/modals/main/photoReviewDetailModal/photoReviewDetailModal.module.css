@@ -32,7 +32,7 @@
   gap: 10px;
 }
 .container .itemBox .product_info img {
-  border-radius: 5px;
+  border-radius: 5px; cursor: pointer;
 }
 .container .itemBox .product_info .txt_box {
   color: #fff;
@@ -42,8 +42,13 @@
 }
 
 .container .itemBox .product_info .txt_box .title {
-  font-size: 14px;
+  font-size: 14px; cursor: pointer;
 }
+
+.container .itemBox .product_info .txt_box .title:hover {
+  text-decoration: underline;
+}
+
 .container .itemBox .product_info .txt_box .price {
   font-size: 13px;
   text-decoration: line-through;

@@ -12,6 +12,7 @@ import NiceModal from "@ebay/nice-modal-react";
 import { maskTwoThirds } from "@/shared/utils/Functions";
 import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
+import useNavigate from "@/shared/hooks/useNavigate";
 
 type ReviewEntity = {
   id: string;
@@ -52,6 +53,7 @@ export default function ReviewImgCard({
 }) {
   const {userData}=useAuth()
   const boardValue = board ?? "normal";
+  const navigate = useNavigate();
 
   const thumbnail = review.images?.[0] ?? "/resources/images/no_img.png";
   const date = (review.created_at ?? "").slice(0, 10);
@@ -68,6 +70,10 @@ export default function ReviewImgCard({
     NiceModal.show("photoReviewDetailModal", { review });
   };
 
+  const productLink = () => {
+    navigate(`/products/${review.item?.variant?.product?.id}`);
+  }
+
   const { isMobile } = useBrowserEvent();
 
   return (
@@ -79,15 +85,14 @@ export default function ReviewImgCard({
         boardValue !== "normal" && styles.slide_item,
         isMobile && styles.mob_review_item
       )}
-      onClick={openDetail}
     >
       <FlexChild
         className={styles.imgBox}
-        onClick={openDetail}
         // minWidth={142}
         // minHeight={142}
         // maxWidth={244}
         // maxHeight={244}
+        onClick={openDetail}
       >
         <div
           className={styles.img}
@@ -102,7 +107,7 @@ export default function ReviewImgCard({
 
       <FlexChild padding={"0 5px"} className={styles.text_box}>
         <VerticalFlex alignItems={"start"}>
-          <FlexChild className={styles.content}>
+          <FlexChild className={styles.content} onClick={openDetail}>
             <P
               lineClamp={lineClamp ?? 2}
               overflow="hidden"
@@ -126,14 +131,14 @@ export default function ReviewImgCard({
       </FlexChild>
 
       <HorizontalFlex className={styles.prodcut_data}>
-        <FlexChild className={styles.img}>
+        <FlexChild className={styles.img} onClick={productLink}>
           <Image
             src={userData?.adult ? productThumb : "/resources/images/19_only.png"}
             width={boardValue == "normal" ? 35 : 45}
           />
         </FlexChild>
         <VerticalFlex className={styles.info}>
-          <FlexChild className={styles.title}>
+          <FlexChild className={styles.title} onClick={productLink}>
             <P lineClamp={1} overflow="hidden" display="--webkit-box">
               {productTitle}
             </P>
