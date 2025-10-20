@@ -101,7 +101,7 @@ export function BestReviewSlider({
         pageNumber: 0,
         photo: true,
         relations: "item.variant.product,user",
-        order: { created_at: "DESC" },
+        order: { index: "ASC", idx: "DESC" },
         best: true,
       };
       const res = await requester.getPublicReviews(params);
