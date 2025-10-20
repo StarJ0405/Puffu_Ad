@@ -41,8 +41,6 @@ export function CouponItemDesktop({ coupon }: { coupon: CouponData }) {
     }
   };
 
-  console.log(coupon);
-
   const products = coupon?.products;
   const categories = coupon?.categories;
 
