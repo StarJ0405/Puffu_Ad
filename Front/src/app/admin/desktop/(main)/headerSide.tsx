@@ -230,6 +230,11 @@ const SidebarNav: NavParent[] = [
         to: "/management",
         icon: "/resources/images/sideNav_member_search.png",
       },
+      {
+        name: "리뷰관리",
+        to: "/reviews",
+        icon: "/resources/images/sideNav_review.png",
+      },
     ],
   },
 ];

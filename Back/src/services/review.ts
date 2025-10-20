@@ -1,15 +1,16 @@
 import { BaseService } from "data-source";
 import { Review } from "models/review";
 import { ReviewRepository } from "repositories/review";
-import { inject, injectable } from "tsyringe";
-import { FindManyOptions, FindOneOptions } from "typeorm";
 import { RecommendService } from "services/recommend";
+import { inject, injectable } from "tsyringe";
+import { FindManyOptions, FindOneOptions, FindOptionsWhere } from "typeorm";
+import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 
 function normalizeWhereKeys(w: any = {}) {
   const out: any = { ...w };
   for (const k of Object.keys(w)) {
     if (k.startsWith("where.")) {
-      const nk = k.slice("where.".length); 
+      const nk = k.slice("where.".length);
       out[nk] = w[k];
       delete out[k];
     }
@@ -341,6 +342,77 @@ export class ReviewService extends BaseService<Review, ReviewRepository> {
       .where("v.product_id = :product_id", { product_id })
       .groupBy("v.product_id")
       .getRawOne();
+    return result;
+  }
+
+  async update(
+    where: FindOptionsWhere<Review> | FindOptionsWhere<Review>[],
+    data: QueryDeepPartialEntity<Review>,
+    returnEnttiy?: boolean
+  ): Promise<UpdateResult<Review>> {
+    if (typeof data.best === "boolean") {
+      const reviews = await this.repository.findAll({ where });
+      await Promise.all(
+        reviews.map(async (review) => {
+          if (review.best === data.best) {
+            return;
+          } else {
+            if (data.best) {
+              return await this.repository
+                .builder("r")
+                .update()
+                .set({
+                  index: () =>
+                    `(SELECT COALESCE(MAX(index)+1,0) FROM public.review where best is true)`,
+                })
+                .where("id = :id", { id: review.id })
+                .execute();
+            } else {
+              data.index = 0;
+              return await this.repository
+                .builder("r")
+                .update()
+                .set({ index: () => `index -1` })
+                .where(`index > ${review.index}`)
+                .execute();
+            }
+          }
+        })
+      );
+    } else {
+      if (typeof data.index === "number" || typeof data.index === "string") {
+        const reviews = await this.repository.findAll({ where });
+        await Promise.all(
+          reviews.map(async (review) => {
+            if (review.index === data.index) {
+              return;
+            } else {
+              if (Number(data.index) < Number(review.index)) {
+                return await this.repository
+                  .builder("r")
+                  .update()
+                  .set({ index: () => `index + 1` })
+                  .where(`index < ${review.index}`)
+                  .andWhere(`index >= ${data.index}`)
+                  .andWhere("best is true")
+                  .execute();
+              } else if (Number(data.index) > Number(review.index)) {
+                return await this.repository
+                  .builder("r")
+                  .update()
+                  .set({ index: () => `index - 1` })
+                  .where(`index > ${review.index}`)
+                  .andWhere(`index <= ${data.index}`)
+                  .andWhere("best is true")
+                  .execute();
+              }
+            }
+          })
+        );
+      }
+    }
+    const result = super.update(where, data, returnEnttiy);
+
     return result;
   }
 }

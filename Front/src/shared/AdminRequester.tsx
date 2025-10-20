@@ -803,6 +803,15 @@ class _AdminRequester {
         data
       );
   }
+  // 리뷰
+  async getReviews(data?: any, callback?: Function) {
+    if (callback) callback(await this.get(`/reviews`, data));
+    else return await this.get(`/reviews`, data);
+  }
+  async updateReviews(id: string, data?: any, callback?: Function) {
+    if (callback) callback(await this.post(`/reviews/${id}`, data));
+    else return await this.post(`/reviews/${id}`, data);
+  }
 }
 
 export default _AdminRequester;

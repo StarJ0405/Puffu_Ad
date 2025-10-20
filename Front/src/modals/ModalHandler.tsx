@@ -25,6 +25,7 @@ import PromotionModal from "./admin/promotion/PromotionModal";
 import PromotionOptionListModal from "./admin/promotion/PromotionOptionListModal";
 import PromotionOptionModal from "./admin/promotion/PromotionOptionModal";
 import QAModal from "./admin/qa/QAModal";
+import ReviewModal from "./admin/review/ReviewModal";
 import ShippingMethodDetailModal from "./admin/shipping_method/ShippingMethodDetailModal";
 import ShippingMethodListModal from "./admin/shipping_method/ShippingMethodListModal";
 import StoreModal from "./admin/store/StoreModal";
@@ -98,6 +99,7 @@ function ModalHandler() {
   NiceModal.register("variantDetail", VariantModal);
   NiceModal.register("storeDetail", StoreModal);
   NiceModal.register("brandDetail", BrandModal);
+  NiceModal.register("reviewDetail", ReviewModal);
   NiceModal.register("categoryList", CategoryListModal);
   NiceModal.register("categorySelect", CategorySelectModal);
   NiceModal.register("categories", CategoriesModal);
