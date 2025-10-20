@@ -25,6 +25,8 @@ export default async function () {
       "coupons",
       "items.coupons",
       "subscribe",
+      "items",
+      "items.variant",
     ],
     start_date: startDate,
     end_date: endDate,
