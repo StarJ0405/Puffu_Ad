@@ -515,7 +515,7 @@ export function OptionItem({
                 {!disabled && (
                   <>
                     <Span>{select.quantity}개</Span>
-                    <Span>+ {select.quantity * product?.discount_price}원</Span>
+                    <Span>+ {(select.quantity * product?.discount_price || 0).toLocaleString()}원</Span>
                   </>
                 )}
               </FlexChild>
