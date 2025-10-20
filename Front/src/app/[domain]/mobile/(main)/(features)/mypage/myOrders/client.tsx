@@ -212,61 +212,81 @@ export function MyOrdersTable({
         {orders.length > 0 ? (
           orders.map((order: OrderData) => (
             <VerticalFlex key={order.id} className={styles.order_group}>
-              <FlexChild className={styles.order_header}>
-                <VerticalFlex className={styles.order_top_info}>
-                  <FlexChild gap={7}>
-                    <P size={15} weight={500}>
-                      {new Date(order.created_at).toLocaleDateString("ko-KR", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}{" "}
-                      <Span color="var(--main-color1)">
-                        [{getOrderStatus(order)}]
-                      </Span>
-                    </P>
-                  </FlexChild>
-                  <FlexChild className={styles.order_code}>
-                    <P>
-                      <Span>주문번호 : </Span>
-                      <Span>{order.display}</Span>
-                    </P>
-                  </FlexChild>
-                </VerticalFlex>
-                {((!order.payment_data?.bank_number &&
-                  order.status === "pending") ||
-                  order.status === "awaiting") && (
-                  <Button
-                    // className={styles.tracking_btn}
-                    className={styles.order_detail_btn}
-                    onClick={() =>
-                      NiceModal.show("confirm", {
-                        message: "주문을 취소하시겠습니까?",
-                        confirmText: "진행하기",
-                        cancelText: "그만두기",
-                        onConfirm: () =>
-                          requester.cancelOrder(order.id, {}, () => mutate()),
-                      })
-                    }
-                  >
-                    주문취소
-                  </Button>
-                )}
-                {(order.status === "shipping" || order.status === "complete") &&
-                  order.shipping_method?.tracking_number && (
+              <VerticalFlex className={styles.order_header}>
+                <FlexChild>
+                  <VerticalFlex className={styles.order_top_info}>
+                    <FlexChild gap={7}>
+                      <P size={15} weight={500}>
+                        {new Date(order.created_at).toLocaleDateString("ko-KR", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}{" "}
+                        <Span color="var(--main-color1)">
+                          [{getOrderStatus(order)}]
+                        </Span>
+                      </P>
+                    </FlexChild>
+                    <FlexChild className={styles.order_code}>
+                      <P>
+                        <Span>주문번호 : </Span>
+                        <Span>{order.display}</Span>
+                      </P>
+                    </FlexChild>
+                  </VerticalFlex>
+                  {((!order.payment_data?.bank_number &&
+                    order.status === "pending") ||
+                    order.status === "awaiting") && (
                     <Button
                       // className={styles.tracking_btn}
                       className={styles.order_detail_btn}
                       onClick={() =>
-                        openTrackingNumber(
-                          order.shipping_method?.tracking_number as any
-                        )
+                        NiceModal.show("confirm", {
+                          message: "주문을 취소하시겠습니까?",
+                          confirmText: "진행하기",
+                          cancelText: "그만두기",
+                          onConfirm: () =>
+                            requester.cancelOrder(order.id, {}, () => mutate()),
+                        })
                       }
                     >
-                      배송조회
+                      주문취소
                     </Button>
                   )}
-              </FlexChild>
+                  {(order.status === "shipping" || order.status === "complete") &&
+                    order.shipping_method?.tracking_number && (
+                      <Button
+                        // className={styles.tracking_btn}
+                        className={styles.order_detail_btn}
+                        onClick={() =>
+                          openTrackingNumber(
+                            order.shipping_method?.tracking_number as any
+                          )
+                        }
+                      >
+                        배송조회
+                      </Button>
+                    )}
+                </FlexChild>
+
+                {
+                  order.status === 'awaiting' && (
+                    <VerticalFlex gap={5} alignItems="start" className={styles.bank_transfer}>
+                      <P>
+                        <Span>입금계좌 : </Span>
+                        <Span>KEB하나은행 642-910017-99201</Span>
+                        {/* <Span>{order.payment_data.name} {order.payment_data.bank_number} /</Span> */}
+                      </P>
+
+                      <P>
+                        <Span>예금주 : </Span>
+                        <Span>주식회사 푸푸글로벌</Span>
+                        {/* {order.payment_data.owner} */}
+                      </P>
+                    </VerticalFlex>
+                  )
+                }
+              </VerticalFlex>
 
               <VerticalFlex className={styles.order_items_container}>
                 {order.items.map((item: LineItemData) => {
