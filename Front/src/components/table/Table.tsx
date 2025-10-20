@@ -1,5 +1,6 @@
 "use client";
 
+import { motion, AnimatePresence } from "framer-motion";
 import { RowInterface } from "@/modals/context/ContextMenuModal";
 import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
 import usePageData from "@/shared/hooks/data/usePageData";
@@ -28,6 +29,11 @@ import VerticalFlex from "../flex/VerticalFlex";
 import Image from "../Image/Image";
 import P from "../P/P";
 import styles from "./Table.module.css";
+
+const getRowId = (row: any, absoluteIndex: number) =>
+  String(row?.id ?? row?.key ?? absoluteIndex);
+const MVertical = motion(VerticalFlex);
+const MFlexChild = motion(FlexChild);
 
 interface Styling {
   className?: React.HTMLAttributes<HTMLElement>["className"];
@@ -697,83 +703,100 @@ const PageableTable = forwardRef(
                     />
                   </HorizontalFlex>
                 </FlexChild>
-                {data?.map((row: any, ridx: number) => {
-                  return (
-                    <FlexChild
-                      key={`row_${page * limit + ridx}`}
-                      zIndex={0}
-                      onContextMenu={(e) => {
-                        if (ContextMenu) {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          NiceModal.show(
-                            "contextMenu",
-                            ContextMenu({
-                              x: e.pageX,
-                              y: e.pageY,
-                              ridx: page * limit + ridx,
-                              row,
-                            })
-                          );
-                        }
-                      }}
-                      onClick={(e) => onRowClick?.(e, row)}
-                    >
-                      <HorizontalFlex
-                        className={clsx(
-                          styles.common,
-                          styles.row,
-                          styling?.common?.className,
-                          styling?.row?.className,
-                          {
-                            [styles.selected]: selected?.[page]?.some(
-                              (s) => s._index === page * limit + ridx
-                            ),
-                          },
-                          selected?.[page]?.some(
-                            (s) => s._index === page * limit + ridx
-                          )
-                            ? styling?.selected.className
-                            : undefined
-                        )}
-                        {..._.merge(
-                          {},
-                          styling?.common?.style,
-                          styling?.row?.style,
-                          false ? styling?.selected.style : {}
-                        )}
-                      >
-                        <FlexChild
-                          className={clsx(
-                            styles.cell,
-                            styles.columnCell,
-                            styles.checkbox
-                          )}
-                          onClick={(e) => e.stopPropagation()}
+                <AnimatePresence initial={false}>
+                  <MVertical layout>
+                    {data?.map((row: any, ridx: number) => {
+                      const abs = page * limit + ridx;
+                      const rid = getRowId(row, abs);
+                      return (
+                        <motion.div
+                          key={`row-${rid}`}
+                          layout
+                          layoutId={`row-${rid}`}
+                          transition={{
+                            type: "spring",
+                            stiffness: 420,
+                            damping: 32,
+                            mass: 0.28,
+                          }}
+                          style={{ willChange: "transform" }}
+                          exit={{ opacity: 0 }}
                         >
-                          <CheckboxChild id={String(page * limit + ridx)} />
-                        </FlexChild>
-                        {indexing && (
                           <FlexChild
-                            className={clsx(
-                              styles.cell,
-                              styles.columnCell,
-                              styles.index
-                            )}
+                            zIndex={0}
+                            onContextMenu={(e) => {
+                              if (ContextMenu) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                NiceModal.show(
+                                  "contextMenu",
+                                  ContextMenu({
+                                    x: e.pageX,
+                                    y: e.pageY,
+                                    ridx: abs,
+                                    row,
+                                  })
+                                );
+                              }
+                            }}
+                            onClick={(e) => onRowClick?.(e, row)}
                           >
-                            <P>{page * limit + ridx + 1}</P>
+                            <HorizontalFlex
+                              className={clsx(
+                                styles.common,
+                                styles.row,
+                                styling?.common?.className,
+                                styling?.row?.className,
+                                {
+                                  [styles.selected]: selected?.[page]?.some(
+                                    (s) => s._index === abs
+                                  ),
+                                },
+                                selected?.[page]?.some((s) => s._index === abs)
+                                  ? styling?.selected.className
+                                  : undefined
+                              )}
+                              {..._.merge(
+                                {},
+                                styling?.common?.style,
+                                styling?.row?.style,
+                                false ? styling?.selected.style : {}
+                              )}
+                            >
+                              <FlexChild
+                                className={clsx(
+                                  styles.cell,
+                                  styles.columnCell,
+                                  styles.checkbox
+                                )}
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <CheckboxChild id={String(abs)} />
+                              </FlexChild>
+                              {indexing && (
+                                <FlexChild
+                                  className={clsx(
+                                    styles.cell,
+                                    styles.columnCell,
+                                    styles.index
+                                  )}
+                                >
+                                  <P>{abs + 1}</P>
+                                </FlexChild>
+                              )}
+                              <TableRow
+                                row={row}
+                                columns={columns}
+                                ridx={abs}
+                                ContextMenu={ContextMenu}
+                              />
+                            </HorizontalFlex>
                           </FlexChild>
-                        )}
-                        <TableRow
-                          row={row}
-                          columns={columns}
-                          ridx={page * limit + ridx}
-                          ContextMenu={ContextMenu}
-                        />
-                      </HorizontalFlex>
-                    </FlexChild>
-                  );
-                })}
+                        </motion.div>
+                      );
+                    })}
+                  </MVertical>
+                </AnimatePresence>
               </VerticalFlex>
             </CheckboxGroup>
           ) : (
@@ -833,73 +856,81 @@ const PageableTable = forwardRef(
                   />
                 </HorizontalFlex>
               </FlexChild>
-              {data?.map((row: any, ridx: number) => {
-                return (
-                  <FlexChild
-                    key={`row_${page * limit + ridx}`}
-                    zIndex={0}
-                    onContextMenu={(e) => {
-                      if (ContextMenu) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        NiceModal.show(
-                          "contextMenu",
-                          ContextMenu({
-                            x: e.pageX,
-                            y: e.pageY,
-                            ridx: page * limit + ridx,
-                            row,
-                          })
-                        );
-                      }
-                    }}
-                    onClick={(e) => onRowClick?.(e, row)}
-                  >
-                    <HorizontalFlex
-                      className={clsx(
-                        styles.common,
-                        styles.row,
-                        styling?.common?.className,
-                        styling?.row?.className,
-                        {
-                          [styles.selected]: selected?.[page]?.some(
-                            (s) => s._index === page * limit + ridx
-                          ),
-                        },
-                        selected?.[page]?.some(
-                          (s) => s._index === page * limit + ridx
-                        )
-                          ? styling?.selected.className
-                          : undefined
-                      )}
-                      {..._.merge(
-                        {},
-                        styling?.common?.style,
-                        styling?.row?.style,
-                        false ? styling?.selected.style : {}
-                      )}
-                    >
-                      {indexing && (
+              <AnimatePresence initial={false}>
+                <MVertical layout>
+                  {data?.map((row: any, ridx: number) => {
+                    const abs = page * limit + ridx;
+                    const rid = getRowId(row, abs);
+                    return (
+                      <motion.div
+                        key={`row-${rid}`}
+                        layout
+                        layoutId={`row-${rid}`}
+                        transition={{
+                          type: "spring",
+                          stiffness: 420,
+                          damping: 32,
+                          mass: 0.28,
+                        }}
+                        style={{ willChange: "transform" }}
+                        exit={{ opacity: 0 }}
+                      >
                         <FlexChild
-                          className={clsx(
-                            styles.cell,
-                            styles.columnCell,
-                            styles.index
-                          )}
+                          zIndex={0}
+                          onContextMenu={(e) => {
+                            if (ContextMenu) {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              NiceModal.show(
+                                "contextMenu",
+                                ContextMenu({
+                                  x: e.pageX,
+                                  y: e.pageY,
+                                  ridx: abs,
+                                  row,
+                                })
+                              );
+                            }
+                          }}
+                          onClick={(e) => onRowClick?.(e, row)}
                         >
-                          <P>{page * limit + ridx + 1}</P>
+                          <HorizontalFlex
+                            className={clsx(
+                              styles.common,
+                              styles.row,
+                              styling?.common?.className,
+                              styling?.row?.className
+                            )}
+                            {..._.merge(
+                              {},
+                              styling?.common?.style,
+                              styling?.row?.style
+                            )}
+                          >
+                            {indexing && (
+                              <FlexChild
+                                className={clsx(
+                                  styles.cell,
+                                  styles.columnCell,
+                                  styles.index
+                                )}
+                              >
+                                <P>{abs + 1}</P>
+                              </FlexChild>
+                            )}
+                            <TableRow
+                              row={row}
+                              columns={columns}
+                              ridx={abs}
+                              ContextMenu={ContextMenu}
+                            />
+                          </HorizontalFlex>
                         </FlexChild>
-                      )}
-                      <TableRow
-                        row={row}
-                        columns={columns}
-                        ridx={page * limit + ridx}
-                        ContextMenu={ContextMenu}
-                      />
-                    </HorizontalFlex>
-                  </FlexChild>
-                );
-              })}
+                      </motion.div>
+                    );
+                  })}
+                </MVertical>
+              </AnimatePresence>
             </VerticalFlex>
           )}
 
@@ -1222,81 +1253,99 @@ const ScrollableTable = forwardRef(
                     />
                   </HorizontalFlex>
                 </FlexChild>
-                {data?.map((row: any, ridx: number) => {
-                  return (
-                    <FlexChild
-                      key={`row_${ridx}`}
-                      zIndex={0}
-                      onContextMenu={(e) => {
-                        if (ContextMenu) {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          NiceModal.show(
-                            "contextMenu",
-                            ContextMenu({
-                              x: e.pageX,
-                              y: e.pageY,
-                              ridx: ridx,
-                              row,
-                            })
-                          );
-                        }
-                      }}
-                      onClick={(e) => onRowClick?.(e, row)}
-                    >
-                      <HorizontalFlex
-                        className={clsx(
-                          styles.common,
-                          styles.row,
-                          styling?.common?.className,
-                          styling?.row?.className,
-                          {
-                            [styles.selected]: selected?.some(
-                              (s) => s._index === ridx
-                            ),
-                          },
-                          selected?.some((s) => s._index === ridx)
-                            ? styling?.selected.className
-                            : undefined
-                        )}
-                        {..._.merge(
-                          {},
-                          styling?.common?.style,
-                          styling?.row?.style,
-                          false ? styling?.selected.style : {}
-                        )}
-                      >
-                        <FlexChild
-                          className={clsx(
-                            styles.cell,
-                            styles.columnCell,
-                            styles.checkbox
-                          )}
-                          onClick={(e) => e.stopPropagation()}
+                <AnimatePresence initial={false}>
+                  <MVertical layout>
+                    {data?.map((row: any, ridx: number) => {
+                      const rid = getRowId(row, ridx);
+                      return (
+                        <motion.div
+                          key={`row-${rid}`}
+                          layout
+                          layoutId={`row-${rid}`}
+                          transition={{
+                            type: "spring",
+                            stiffness: 420,
+                            damping: 32,
+                            mass: 0.28,
+                          }}
+                          style={{ willChange: "transform" }}
+                          exit={{ opacity: 0 }}
                         >
-                          <CheckboxChild id={String(ridx)} />
-                        </FlexChild>
-                        {indexing && (
                           <FlexChild
-                            className={clsx(
-                              styles.cell,
-                              styles.columnCell,
-                              styles.index
-                            )}
+                            zIndex={0}
+                            onContextMenu={(e) => {
+                              if (ContextMenu) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                NiceModal.show(
+                                  "contextMenu",
+                                  ContextMenu({
+                                    x: e.pageX,
+                                    y: e.pageY,
+                                    ridx,
+                                    row,
+                                  })
+                                );
+                              }
+                            }}
+                            onClick={(e) => onRowClick?.(e, row)}
                           >
-                            <P>{ridx + 1}</P>
+                            <HorizontalFlex
+                              className={clsx(
+                                styles.common,
+                                styles.row,
+                                styling?.common?.className,
+                                styling?.row?.className,
+                                {
+                                  [styles.selected]: selected?.some(
+                                    (s) => s._index === ridx
+                                  ),
+                                },
+                                selected?.some((s) => s._index === ridx)
+                                  ? styling?.selected.className
+                                  : undefined
+                              )}
+                              {..._.merge(
+                                {},
+                                styling?.common?.style,
+                                styling?.row?.style,
+                                false ? styling?.selected.style : {}
+                              )}
+                            >
+                              <FlexChild
+                                className={clsx(
+                                  styles.cell,
+                                  styles.columnCell,
+                                  styles.checkbox
+                                )}
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <CheckboxChild id={String(ridx)} />
+                              </FlexChild>
+                              {indexing && (
+                                <FlexChild
+                                  className={clsx(
+                                    styles.cell,
+                                    styles.columnCell,
+                                    styles.index
+                                  )}
+                                >
+                                  <P>{ridx + 1}</P>
+                                </FlexChild>
+                              )}
+                              <TableRow
+                                row={row}
+                                columns={columns}
+                                ridx={ridx}
+                                ContextMenu={ContextMenu}
+                              />
+                            </HorizontalFlex>
                           </FlexChild>
-                        )}
-                        <TableRow
-                          row={row}
-                          columns={columns}
-                          ridx={ridx}
-                          ContextMenu={ContextMenu}
-                        />
-                      </HorizontalFlex>
-                    </FlexChild>
-                  );
-                })}
+                        </motion.div>
+                      );
+                    })}
+                  </MVertical>
+                </AnimatePresence>
               </VerticalFlex>
             </CheckboxGroup>
           ) : (
@@ -1356,70 +1405,88 @@ const ScrollableTable = forwardRef(
                   />
                 </HorizontalFlex>
               </FlexChild>
-              {data?.map((row: any, ridx: number) => {
-                return (
-                  <FlexChild
-                    key={`row_${ridx}`}
-                    zIndex={0}
-                    onContextMenu={(e) => {
-                      if (ContextMenu) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        NiceModal.show(
-                          "contextMenu",
-                          ContextMenu({
-                            x: e.pageX,
-                            y: e.pageY,
-                            ridx: ridx,
-                            row,
-                          })
-                        );
-                      }
-                    }}
-                  >
-                    <HorizontalFlex
-                      className={clsx(
-                        styles.common,
-                        styles.row,
-                        styling?.common?.className,
-                        styling?.row?.className,
-                        {
-                          [styles.selected]: selected?.some(
-                            (s) => s._index === ridx
-                          ),
-                        },
-                        selected?.some((s) => s._index === ridx)
-                          ? styling?.selected.className
-                          : undefined
-                      )}
-                      {..._.merge(
-                        {},
-                        styling?.common?.style,
-                        styling?.row?.style,
-                        false ? styling?.selected.style : {}
-                      )}
-                    >
-                      {indexing && (
+              <AnimatePresence initial={false}>
+                <motion.div layout>
+                  {data?.map((row: any, ridx: number) => {
+                    const rid = getRowId(row, ridx);
+                    return (
+                      <motion.div
+                        key={`row-${rid}`}
+                        layout
+                        layoutId={`row-${rid}`}
+                        transition={{
+                          type: "spring",
+                          stiffness: 420,
+                          damping: 32,
+                          mass: 0.28,
+                        }}
+                        style={{ willChange: "transform" }}
+                        exit={{ opacity: 0 }}
+                      >
                         <FlexChild
-                          className={clsx(
-                            styles.cell,
-                            styles.columnCell,
-                            styles.index
-                          )}
+                          zIndex={0}
+                          onContextMenu={(e) => {
+                            if (ContextMenu) {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              NiceModal.show(
+                                "contextMenu",
+                                ContextMenu({
+                                  x: e.pageX,
+                                  y: e.pageY,
+                                  ridx,
+                                  row,
+                                })
+                              );
+                            }
+                          }}
                         >
-                          <P>{ridx + 1}</P>
+                          <HorizontalFlex
+                            className={clsx(
+                              styles.common,
+                              styles.row,
+                              styling?.common?.className,
+                              styling?.row?.className,
+                              {
+                                [styles.selected]: selected?.some(
+                                  (s) => s._index === ridx
+                                ),
+                              },
+                              selected?.some((s) => s._index === ridx)
+                                ? styling?.selected.className
+                                : undefined
+                            )}
+                            {..._.merge(
+                              {},
+                              styling?.common?.style,
+                              styling?.row?.style,
+                              false ? styling?.selected.style : {}
+                            )}
+                          >
+                            {indexing && (
+                              <FlexChild
+                                className={clsx(
+                                  styles.cell,
+                                  styles.columnCell,
+                                  styles.index
+                                )}
+                              >
+                                <P>{ridx + 1}</P>
+                              </FlexChild>
+                            )}
+                            <TableRow
+                              row={row}
+                              columns={columns}
+                              ridx={ridx}
+                              ContextMenu={ContextMenu}
+                            />
+                          </HorizontalFlex>
                         </FlexChild>
-                      )}
-                      <TableRow
-                        row={row}
-                        columns={columns}
-                        ridx={ridx}
-                        ContextMenu={ContextMenu}
-                      />
-                    </HorizontalFlex>
-                  </FlexChild>
-                );
-              })}
+                      </motion.div>
+                    );
+                  })}
+                </motion.div>
+              </AnimatePresence>
             </VerticalFlex>
           )}
 
