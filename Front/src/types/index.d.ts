@@ -478,8 +478,22 @@ interface QAData extends BaseEntity, QADataFrame {
   answer?: string; // 대답(응답)
 }
 
-interface ReviewDataFrame {}
-interface ReviewData extends BaseEntity, ReviewDataFrame {}
+interface ReviewDataFrame {
+  item_id: string;
+  user_id: string;
+  content: string;
+  images?: string[];
+  star_rate: number;
+  metadata?: Record<string, unknown> | null;
+}
+interface ReviewData extends BaseEntity, ReviewDataFrame {
+  idx: number;
+  index: number;
+  recommends?: any[];
+  best?: boolean;
+  user?: UserData;
+  item?: LineItemData;
+}
 
 interface GroupDataFrame {
   name: string;

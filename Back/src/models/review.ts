@@ -20,6 +20,10 @@ import { User } from "./user";
 export class Review extends BaseEntity {
   @Column({ type: "bigint", default: () => "nextval('review_sequence')" })
   idx?: number;
+
+  @Column({ type: "bigint", default: 0 })
+  index?: number;
+
   @Column({ type: "character varying", nullable: true })
   item_id?: string;
 
@@ -42,6 +46,9 @@ export class Review extends BaseEntity {
 
   @Column({ type: "real", default: 0 })
   star_rate?: number;
+
+  @Column({ type: "boolean", default: false })
+  best?: boolean;
 
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;
