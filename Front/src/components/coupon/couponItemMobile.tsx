@@ -81,6 +81,10 @@ export function CouponItemMobile({
               <P fontSize={14}>
                 {minCheck()}
               </P>
+
+              <P className={styles.date}>
+                발급일 : {new Date(coupon?.appears_at || 0).toLocaleDateString()}
+              </P>
     
               <P
                 className={clsx(
