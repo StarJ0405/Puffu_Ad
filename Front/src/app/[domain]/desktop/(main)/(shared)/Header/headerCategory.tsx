@@ -90,7 +90,7 @@ export function HeaderCategory({ CaOpen }: { CaOpen: boolean }) {
                       <FlexChild key={child2.id ?? j} cursor="pointer" className={styles.child_item}>
                         <Link href={`/categories/${child2.id}`}>
                           <P>{child2.name}</P>
-                          <Image src={'/resources/icons/arrow/foldBtn_black.png'} width={7} />
+                          <Image src={'/resources/icons/arrow/foldBtn_black.png'} width={7} height={12} />
                         </Link>
                       </FlexChild>
                     ))}
