@@ -104,6 +104,10 @@ export function HeaderBottom() {
   const pathname = usePathname();
   const [CaOpen, SetCaOpen] = useState(false);
 
+  const test = () => {
+    alert('무야호');
+  }
+
   // 피드백 받고 이상하다 하면 돌려놓기
   // const bottomRef = useRef<HTMLDivElement | null>(null);
   // const [fixed, setFixed] = useState(false);
@@ -126,11 +130,13 @@ export function HeaderBottom() {
       {/* <div className={`${fixed ? styles.fixed : ""}`}> */}
         <HorizontalFlex className="page_container" position="relative">
           <HorizontalFlex gap={25} justifyContent="start">
-            <FlexChild
+            <FlexChild 
               width={"auto"}
+              position="relative"
+              className={styles.CategoryBox}
+              // onMouseEnter={() => test()}
               onMouseEnter={() => SetCaOpen(true)}
               onMouseLeave={() => SetCaOpen(false)}
-              className={styles.CategoryBox}
             >
               <FlexChild
                 gap={10}

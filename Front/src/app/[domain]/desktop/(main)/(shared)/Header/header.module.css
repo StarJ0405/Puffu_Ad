@@ -66,12 +66,15 @@
 /* 카테고리 버튼 */
 .CategoryBox {
    padding: 18px 0;
+   width: auto;
 }
+
 .category_btn {
    font-size: 16px;
    color: #fff;
    cursor: pointer;
 }
+
 .CategoryBox:hover > .category_btn {
    color: var(--main-color1);
 } 
