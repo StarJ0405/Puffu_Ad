@@ -26,7 +26,6 @@ export function CouponList({ initCoupons }: { initCoupons: Pageable }) {
   const { userData } = useAuth();
   const [filter, setFilter] = useState<FilterKey>("all");
   // const [expiredSub, setExpiredSub] = useState<ExpiredSub>("expired");
-  console.log(initCoupons)
   const where = useMemo(() => {
     switch (filter) {
       case "item":

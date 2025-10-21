@@ -24,7 +24,6 @@ const CouponModal = NiceModal.create(({ coupon }: { coupon: any }) => {
   const title = "쿠폰 정보";
   const buttonText = "close";
   const modal = useRef<any>(null);
-  console.log(coupon)
   useEffect(() => {
     if (!coupon) {
       modal.current.close();

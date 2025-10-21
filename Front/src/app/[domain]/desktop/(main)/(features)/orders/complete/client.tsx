@@ -136,8 +136,6 @@ export function CompleteForm({ order }: { order?: OrderData }) {
 
 // 주문 리스트
 export function MyOrdersTable({ items }: { items?: LineItemData[] }) {
-  console.log(items);
-
   return (
     <>
       {/* 테이블 안에 tbody 안에 map은 그 날짜에 시킨 주문내역 전부 불러오게 바꾸기 */}

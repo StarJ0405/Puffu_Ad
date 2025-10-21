@@ -358,7 +358,6 @@ const ExchangeDetailModal = NiceModal.create(
                       return toast({
                         message: "교환할 상품이 선택되지 않았습니다.",
                       });
-                    console.log(tracking);
                     adminRequester.updateExchange(
                       exchange.id,
                       {
