@@ -104,10 +104,6 @@ export function HeaderBottom() {
   const pathname = usePathname();
   const [CaOpen, SetCaOpen] = useState(false);
 
-  const test = () => {
-    alert('무야호');
-  }
-
   // 피드백 받고 이상하다 하면 돌려놓기
   // const bottomRef = useRef<HTMLDivElement | null>(null);
   // const [fixed, setFixed] = useState(false);
