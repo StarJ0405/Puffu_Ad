@@ -364,6 +364,7 @@ export function DetailFrame({
   );
 }
 
+
 // 구매하기 버튼 누르면 나오는 모달
 const buyCartModal = NiceModal.create(
   ({
@@ -378,7 +379,7 @@ const buyCartModal = NiceModal.create(
     const [selected, setSelected] = useState<Variant[]>(
       product.variants.map((v: VariantData) => ({
         variant_id: v.id,
-        quantity: 0,
+        quantity: 1,
       }))
     );
     const modal = useModal();
@@ -388,12 +389,13 @@ const buyCartModal = NiceModal.create(
       <ModalBase
         ref={modalRef}
         slideUp
+        // slideLeft
         cancelBack
         topRound
         width={"100%"}
         maxWidth={768}
         minWidth={220}
-        height={"fit-content"}
+        // height={"fit-content"}
         clickOutsideToClose={true}
         onClose={modal.remove}
         style={{ minHeight: "258px", maxHeight: "80dvh" }}
@@ -535,50 +537,6 @@ export function BottomPayBox({
     </div>
   );
 }
-
-// 미니 구매란
-// export function MiniInfoBox({
-//   product,
-//   selected,
-//   setSelected,
-// }: {
-//   product: ProductData;
-//   selected: Variant[];
-//   setSelected: Dispatch<SetStateAction<Variant[]>>;
-// }) {
-//   return (
-//     <FlexChild width={"auto"} className={styles.mini_infoBox}>
-//       <VerticalFlex>
-//         <OptionItem
-//           product={product}
-//           setSelected={setSelected}
-//           selected={selected}
-//         />
-
-//         <HorizontalFlex className={styles.total_box} gap={10}>
-//           <P className={styles.total_txt}>총 상품 금액</P>
-//           <FlexChild
-//             className={styles.price}
-//             width={"auto"}
-//             justifyContent="end"
-//           >
-//             <P>
-//               {product.variants.reduce((acc, now) => {
-//                 const quantity =
-//                   selected.find((f) => f.variant_id === now.id)?.quantity || 0;
-
-//                 return acc + now.discount_price * quantity;
-//               }, 0)}
-//             </P>
-//             ₩
-//           </FlexChild>
-//         </HorizontalFlex>
-
-//         {/* <BuyButtonGroup onWishClick={onWishClick} /> */}
-//       </VerticalFlex>
-//     </FlexChild>
-//   );
-// }
 
 // 옵션 개수 계산기
 export function OptionItem({

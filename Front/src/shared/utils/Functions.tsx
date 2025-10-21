@@ -637,7 +637,7 @@ export function maskTwoThirds(name: string): string {
 export function getBankData() {
   return {
     name: "KEB하나은행",
-    owner: "주식회사 푸푸글로벌",
+    owner: "푸푸글로벌 주식회사",
     bank_number: "642-910017-99201",
   };
 }

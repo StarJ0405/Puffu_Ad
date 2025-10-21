@@ -252,6 +252,7 @@
   color: #9a9a9a;
   font-weight: 600 !important;
   line-height: 1;
+  min-width: 80px;
 }
 
 .info_list .info_item > p {
