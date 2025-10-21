@@ -52,7 +52,7 @@ export function BoardTable() {
       order: { created_at: "DESC" },
     }),
     (cond) => requester.getTotalQAs(cond),
-    (d: Pageable) => Math.max(0, Number(d?.totalPages ?? 0) + 1 ),
+    (d: Pageable) => Math.max(1, Number(d?.totalPages ?? 0)),
     {
       onReprocessing: (d: any) => {
         const content: QADataWithUser[] = Array.isArray(d) ? d : d?.content ?? [];
@@ -68,9 +68,8 @@ export function BoardTable() {
     }
   );
 
-  // 1-base 어댑터
   const page = page0;
-  const maxPage = Math.max(1, (maxPage0 ?? 0));
+  const maxPage = Math.max(1, (maxPage0 ?? 1));
   const setPage = (n: number) => setPage0(n);
 
   const list: QADataWithUser[] = pageData?.content ?? [];
@@ -134,7 +133,7 @@ export function BoardTable() {
             </thead>
             <tbody>
               {list.map((row, i) => {
-                const no = total - ((page - 1) * PAGE_SIZE + i) - 10;
+                const no = total - (page * PAGE_SIZE + i);
                 return (
                   <tr key={row.id}>
                     <td>{no > 0 ? no : "-"}</td>

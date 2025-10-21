@@ -33,7 +33,6 @@ const getInquiryTypeKorean = (type: string) => {
 };
 
 const formatInquiries = (inquiriesData: any[]) => {
-  // console.log("Step 2: formatInquiries input:", inquiriesData);
   const formatted = inquiriesData.map((inquiry) => {
     const inquiryDate = new Date(inquiry.created_at).toLocaleString("ko-KR", {
       year: "numeric",
@@ -45,7 +44,6 @@ const formatInquiries = (inquiriesData: any[]) => {
 
     return {
       id: inquiry.id,
-      // Type: getInquiryTypeKorean(inquiry.type),
       Type: getInquiryTypeKorean(inquiry.category || ""),
       title: inquiry.title,
       content: inquiry.content,
@@ -58,7 +56,6 @@ const formatInquiries = (inquiriesData: any[]) => {
       user_id: inquiry.user_id,
     };
   });
-  // console.log("Step 3: formatInquiries output:", formatted);
   return formatted;
 };
 
@@ -86,13 +83,10 @@ export function InquiryTable() {
     (data: Pageable) => data?.totalPages || 0,
     {
       onReprocessing: (data) => {
-        // console.log("Step 1: Raw response from API:", data);
         return formatInquiries(data?.content || []);
       },
     }
   );
-
-  // console.log("Step 4: Final data for rendering (inquiries):", inquiries);
 
   const handleRowClick = (item: any) => {
     if (
@@ -110,7 +104,7 @@ export function InquiryTable() {
       setExpandedId(item.id);
     }
   };
-
+  
   return (
     <>
       <VerticalFlex>
