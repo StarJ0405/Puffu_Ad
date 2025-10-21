@@ -244,8 +244,8 @@ export function InquiryClient() {
                 </AnimatePresence>
               </VerticalFlex>
             ))}
-          </VerticalFlex>
           {inquiries?.length > 0 ? null : <NoContent type="문의" />}
+          </VerticalFlex>
         </FlexChild>
         <FlexChild className={styles.list_bottom_box}>
           <ListPagination page={page} maxPage={maxPage} onChange={setPage} />
