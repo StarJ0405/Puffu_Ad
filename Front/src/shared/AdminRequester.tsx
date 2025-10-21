@@ -261,6 +261,91 @@ class _AdminRequester {
     if (callback) callback(await this.delete(`/stores/${id}`, {}));
     else return await this.delete(`/stores/${id}`, {});
   }
+  
+  // 스토어 미니배너 관련
+  async getStoreMiniBanners(
+    id: string,
+    params?: any,
+    callback?: Function
+  ): Promise<any> {
+    const p = await this.get(`/admin/stores/${id}/minibanner`, params);
+    if (callback) callback(p);
+    else return p;
+  }
+
+  async addStoreMiniBanner(
+    id: string,
+    data: {
+      name: string;
+      link: string;
+      thumbnail: { pc: string; mobile: string };
+    },
+    callback?: Function
+  ): Promise<any> {
+    const p = await this.post(`/admin/stores/${id}/minibanner`, {
+      action: "add",
+      data,
+    });
+    if (callback) callback(p);
+    else return p;
+  }
+
+  async updateStoreMiniBanner(
+    id: string,
+    index: number,
+    patch: Partial<{
+      name: string;
+      link: string;
+      thumbnail: { pc: string; mobile: string };
+    }>,
+    callback?: Function
+  ): Promise<any> {
+    const p = await this.post(`/admin/stores/${id}/minibanner/${index}`, patch);
+    if (callback) callback(p);
+    else return p;
+  }
+
+  async removeStoreMiniBanner(
+    id: string,
+    index: number,
+    callback?: Function
+  ): Promise<any> {
+    const p = await this.delete(`/admin/stores/${id}/minibanner/${index}`, {});
+    if (callback) callback(p);
+    else return p;
+  }
+
+  async reorderStoreMiniBanners(
+    id: string,
+    fromIndex: number,
+    toIndex: number,
+    callback?: Function
+  ): Promise<any> {
+    const p = await this.post(`/admin/stores/${id}/minibanner`, {
+      action: "reorder",
+      data: { fromIndex, toIndex },
+    });
+    if (callback) callback(p);
+    else return p;
+  }
+
+  async replaceStoreMiniBanners(
+    id: string,
+    items: Array<{
+      name: string;
+      link: string;
+      thumbnail: { pc: string; mobile: string };
+    }>,
+    callback?: Function
+  ): Promise<any> {
+    const p = await this.post(`/admin/stores/${id}/minibanner`, {
+      action: "replace",
+      data: items,
+    });
+    if (callback) callback(p);
+    else return p;
+  }
+
   // 배송설정
   async createShippingMethod(
     data?: ShippingMethodDataFrame,
