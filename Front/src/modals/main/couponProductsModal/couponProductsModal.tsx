@@ -11,6 +11,7 @@ import useNavigate from "@/shared/hooks/useNavigate";
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import styles from "./couponProductsModal.module.css";
+import { getCategoryName } from "@/shared/utils/Functions";
 
 const CouponProductsModal = NiceModal.create(
   ({
@@ -111,7 +112,7 @@ const CouponProductsModal = NiceModal.create(
               // 카테고리일 때
               categories.length !== 0 && (
                 <FlexChild className={styles.ca_box}>
-                  {categories.map((item) => {
+                  {categories.map((item: CategoryData) => {
                     const caLink = () => {
                       onCancel?.();
                       modal.remove();
@@ -124,7 +125,7 @@ const CouponProductsModal = NiceModal.create(
                         key={item.id}
                         onClick={caLink}
                       >
-                        <P>{item.name}</P>
+                        <P>{getCategoryName(item)}</P>
                       </FlexChild>
                     );
                   })}

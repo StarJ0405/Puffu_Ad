@@ -123,6 +123,10 @@ export class CouponService extends BaseService<Coupon, CouponRepository> {
     let builder = this.repository
       .builder("cu")
       .leftJoinAndSelect("cu.categories", "ct")
+      // [ADD] 카테고리 부모 체인 조인
+      .leftJoinAndSelect("ct.parent", "ct_p")
+      .leftJoinAndSelect("ct_p.parent", "ct_pp")
+      .leftJoinAndSelect("ct_pp.parent", "ct_ppp")
       .leftJoinAndSelect("cu.products", "pr")
       .leftJoinAndSelect("pr.discounts", "dis")
       .leftJoinAndSelect("dis.discount", "dd");

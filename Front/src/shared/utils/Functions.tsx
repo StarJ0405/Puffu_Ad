@@ -641,3 +641,10 @@ export function getBankData() {
     bank_number: "642-910017-99201",
   };
 }
+
+export function getCategoryName(category?: CategoryData): string { //카테고리 "부모>자식" 이름으로 표현
+  if (!category) return "";
+  if (category.parent)
+    return getCategoryName(category.parent) + " > " + category.name;
+  return category.name;
+}
