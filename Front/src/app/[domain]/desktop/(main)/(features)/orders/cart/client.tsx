@@ -77,6 +77,7 @@ export function CartWrap() {
     { onReprocessing: (data) => data?.content || [] }
   );
   const getShippingAmount = () => {
+    if (!selected?.length) return 0;
     const amount = shipping?.amount || 0;
     if (shippingCoupons.length > 0) {
       const shippings: CouponData[] = coupons.filter((f: CouponData) =>
@@ -248,7 +249,9 @@ export function CartWrap() {
     };
 
     // 배송비
-    const delivery_fee = (shipping?.amount || 0) - getShippingAmount();
+    const delivery_fee = !selected?.length
+      ? 0
+      : Math.max(0, (shipping?.amount || 0) - getShippingAmount());
     const orders = orderCouponsTotal();
     const subscribes = subscribeTotal();
     const total =
@@ -357,6 +360,11 @@ export function CartWrap() {
     setAddress(_default);
   }, [addresses]);
   useEffect(() => {
+    if (!selected?.length) {
+      setShipping(undefined);
+      setShippingCupons([]);
+      return;
+    }
     const totalDiscounted =
       cartData?.items
         .filter((item) => selected.includes(item.id))
@@ -731,11 +739,8 @@ export function CartWrap() {
                 <HorizontalFlex className={styles.info_item}>
                   <Span>원가</Span>
                 </HorizontalFlex>
-                
-                <FlexChild
-                  gap={10}
-                  paddingLeft={20}
-                >
+
+                <FlexChild gap={10} paddingLeft={20}>
                   <Image
                     src={"/resources/icons/cart/cart_reply_icon.png"}
                     width={15}
@@ -752,10 +757,7 @@ export function CartWrap() {
                   </HorizontalFlex>
                 </FlexChild>
 
-                <FlexChild
-                  gap={10}
-                  paddingLeft={20}
-                >
+                <FlexChild gap={10} paddingLeft={20}>
                   <Image
                     src={"/resources/icons/cart/cart_reply_icon.png"}
                     width={15}
@@ -765,7 +767,7 @@ export function CartWrap() {
                     <Span>배송비</Span>
 
                     <P>
-                      <Span>{shipping?.amount || 0}</Span>
+                      <Span>{!selected?.length ? 0 : getShippingAmount()}</Span>
                       <Span> ₩</Span>
                     </P>
                   </HorizontalFlex>
@@ -1350,7 +1352,10 @@ function Item({
         </FlexChild>
 
         <FlexChild className={styles.unit}>
-          <FlexChild className={styles.item_thumb} onClick={()=> navigate(`/products/${item.variant.product_id}`)}>
+          <FlexChild
+            className={styles.item_thumb}
+            onClick={() => navigate(`/products/${item.variant.product_id}`)}
+          >
             <Image
               src={
                 item?.variant?.thumbnail || item?.variant?.product?.thumbnail
@@ -1367,7 +1372,7 @@ function Item({
               lineClamp={2}
               overflow="hidden"
               display="--webkit-box"
-              onClick={()=> navigate(`/products/${item.variant.product_id}`)}
+              onClick={() => navigate(`/products/${item.variant.product_id}`)}
             >
               {item.variant.product.title}
             </P>
