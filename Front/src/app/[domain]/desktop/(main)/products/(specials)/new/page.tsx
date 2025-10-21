@@ -24,8 +24,6 @@ export default async function ({
 
   const newProducts = await requester.getProducts(newCondition);
 
-  console.log(newCondition);
-
   return (
     <section className="root">
       <Container className="page_container" marginTop={80}>
