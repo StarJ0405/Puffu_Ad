@@ -10,7 +10,7 @@
     overflow: hidden;
     background-color: #F4F4F4;
     transition: all 0.2s;
-    height: fit-content;
+    /* height: fit-content; */
     max-height: 460px;
     top: 100%;
     width: auto;

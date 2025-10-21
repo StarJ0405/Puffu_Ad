@@ -126,11 +126,13 @@ export function HeaderBottom() {
       {/* <div className={`${fixed ? styles.fixed : ""}`}> */}
         <HorizontalFlex className="page_container" position="relative">
           <HorizontalFlex gap={25} justifyContent="start">
-            <FlexChild
+            <FlexChild 
               width={"auto"}
+              position="relative"
+              className={styles.CategoryBox}
+              // onMouseEnter={() => test()}
               onMouseEnter={() => SetCaOpen(true)}
               onMouseLeave={() => SetCaOpen(false)}
-              className={styles.CategoryBox}
             >
               <FlexChild
                 gap={10}
