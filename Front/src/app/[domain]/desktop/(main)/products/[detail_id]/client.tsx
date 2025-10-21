@@ -168,7 +168,7 @@ export function ProductWrapper({
         reload();
         toast({ message: "장바구니 물건을 담았습니다." });
         setSelected([
-          ...selected.map((s) => ({ variant_id: s.variant_id, quantity: 0 })),
+          ...selected.map((s) => ({ variant_id: s.variant_id, quantity: 1 })),
         ]);
       } else {
         toast({ message: error });
