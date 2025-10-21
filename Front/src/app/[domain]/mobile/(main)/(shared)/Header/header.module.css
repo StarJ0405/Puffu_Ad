@@ -63,6 +63,7 @@
    transition: all 0.2s;
    white-space: nowrap;
    cursor: pointer; */
+   white-space: nowrap;
 }
 
 .outerMenu > li > a {

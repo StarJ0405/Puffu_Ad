@@ -70,7 +70,7 @@ export default async function Footer() {
                   642-910017-99204
                 </P>
                 <P>
-                  <Span>예금주 : </Span>주식회사 푸푸글로벌
+                  <Span>예금주 : </Span>푸푸글로벌 주식회사
                 </P>
               </VerticalFlex>
             </FlexChild>

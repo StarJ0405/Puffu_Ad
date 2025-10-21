@@ -249,7 +249,7 @@ export function MyOrdersTable({
 
                         <P>
                           <Span>예금주 : </Span>
-                          <Span>주식회사 푸푸글로벌</Span>
+                          <Span>푸푸글로벌 주식회사</Span>
                           {/* {order.payment_data.owner} */}
                         </P>
                       </FlexChild>
