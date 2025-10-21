@@ -14,12 +14,8 @@ import NiceModal from "@ebay/nice-modal-react";
 import { useEffect, useRef } from "react";
 import ModalBase from "../../ModalBase";
 import styles from "./CouponModal.module.css";
+import { getCategoryName } from "@/shared/utils/Functions";
 
-const getCategoryName = (category: CategoryData): string => {
-  if (category.parent)
-    return getCategoryName(category.parent) + " > " + category.name;
-  return category.name;
-};
 const CouponModal = NiceModal.create(({ coupon }: { coupon: any }) => {
   const [withHeader, withFooter] = [true, false];
   const [width, height] = ["min(95%, 900px)", "auto"];
@@ -28,7 +24,7 @@ const CouponModal = NiceModal.create(({ coupon }: { coupon: any }) => {
   const title = "쿠폰 정보";
   const buttonText = "close";
   const modal = useRef<any>(null);
-
+  console.log(coupon)
   useEffect(() => {
     if (!coupon) {
       modal.current.close();
