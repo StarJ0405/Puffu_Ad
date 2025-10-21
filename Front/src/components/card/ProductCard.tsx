@@ -30,12 +30,35 @@ export function ProductCard({
   mutate?: () => void;
   onClick?: () => void;
 }) {
+  console.log(product);
   const { userData } = useAuth();
   const { isMobile } = useBrowserEvent();
   const product_link = `/products/${product.id}`;
   const navigate = useNavigate();
   const minHeightCheck = lineClamp === 1;
   const isComingSoon = Boolean((product as any)?.warehousing);
+  // variants 처리
+  const variants = Array.isArray((product as any)?.variants)
+    ? (product as any).variants
+    : [];
+  // product 자체 buyable
+  const productBuyable = Boolean((product as any)?.buyable);
+  // variant 전부 buyable=false일 때만 true
+  const allVariantsUnbuyable =
+    variants.length > 0 && variants.every((v: any) => !v?.buyable);
+  // 최종 구매 가능 여부
+  const isBuyable = productBuyable && !allVariantsUnbuyable;
+  // 전부 재고 0 이하일 때 품절
+  const isOutOfStock =
+    variants.length > 0
+      ? variants.every((v: any) => Number(v?.stack ?? 0) <= 0)
+      : Number((product as any)?.variant?.stack ?? 0) <= 0;
+  // 오버레이 분기
+  let overlay: "coming" | "unbuyable" | "outofstock" | null = null;
+  if (isComingSoon) overlay = "coming";
+  else if (!isBuyable) overlay = "unbuyable";
+  else if (isOutOfStock) overlay = "outofstock";
+
   return (
     <VerticalFlex
       width={width ?? isMobile ? "auto" : 200}
@@ -63,10 +86,28 @@ export function ProductCard({
             />
           )}
 
-          {isComingSoon && ( // 입고예정일때만 나오기
+          {overlay === "coming" && (
             <Image
               className={styles.specialTypeImg}
               src={"/resources/images/commingSoon_img.png"}
+              width={"101%"}
+              height={"auto"}
+            />
+          )}
+
+          {overlay === "unbuyable" && (
+            <Image
+              className={styles.specialTypeImg}
+              src={"/resources/images/unbuyable_img.png"} //구매불가 이미지 필요
+              width={"101%"}
+              height={"auto"}
+            />
+          )}
+
+          {overlay === "outofstock" && (
+            <Image
+              className={styles.specialTypeImg}
+              src={"/resources/images/outofstock_img.png"}  //재고부족 이미지 필요
               width={"101%"}
               height={"auto"}
             />
@@ -112,7 +153,9 @@ export function ProductCard({
           <FlexChild
             className={styles.product_title}
             onClick={() => (onClick ? onClick() : navigate(product_link))}
-            minHeight={!isMobile ? (minHeightCheck ? 20 : 40) : (minHeightCheck ? 16 : 30)}
+            minHeight={
+              !isMobile ? (minHeightCheck ? 20 : 40) : minHeightCheck ? 16 : 30
+            }
             alignItems="flex-start"
           >
             <P
