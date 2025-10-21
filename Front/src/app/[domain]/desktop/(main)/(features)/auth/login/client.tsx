@@ -112,7 +112,7 @@ export function SubmitGroup({ loginKeep }: { loginKeep: boolean }) {
           return navigate("/");
         } else {
           return NiceModal.show(ToastModal, {
-            message: "아이디, 비밀번호를 확인해주세요.",
+            message: "아이디 또는 비밀번호가 잘못 되었습니다.",
             className: "custom-toast-body",
             withCloseButton: true,
             messageBoxClassName: "custom-toast",
