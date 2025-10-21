@@ -30,7 +30,6 @@ export function ProductCard({
   mutate?: () => void;
   onClick?: () => void;
 }) {
-  console.log(product);
   const { userData } = useAuth();
   const { isMobile } = useBrowserEvent();
   const product_link = `/products/${product.id}`;
