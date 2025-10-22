@@ -11,7 +11,7 @@ export default async function ({
   return (
     <LayoutClient>
       <SubPageHeader />
-      <section className="mob_root mob_page_container">
+      <section className="mob_root" style={{paddingBottom: '0'}}>
         {/*  */}
         {children}
         {/*  */}

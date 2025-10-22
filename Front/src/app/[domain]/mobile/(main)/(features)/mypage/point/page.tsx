@@ -9,7 +9,7 @@ export default async function () {
   startDate.setDate(startDate.getDate() - 7);
   const endDate = new Date();
   return (
-    <VerticalFlex className={clsx(mypage.box_frame, styles.delivery_box)} gap={35}>
+    <VerticalFlex className={clsx(mypage.box_frame, styles.delivery_box, 'mob_page_container')} gap={35}>
       <PointHistory
         initStartDate={startDate}
         initEndDate={endDate}

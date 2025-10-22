@@ -108,6 +108,8 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
           개인정보 수정
         </FlexChild>
       </HorizontalFlex>
+      <FlexChild onClick={() => navigate("/mypage/subscription/subscribe")}>구독버튼</FlexChild>
+      <FlexChild onClick={() => navigate("/mypage/subscription/success")}>결제완료</FlexChild>
       <VerticalFlex className={styles.membership_box}>
         <HorizontalFlex className={styles.title_box}>
           <FlexChild className={styles.level}>

@@ -15,7 +15,7 @@ export default async function () {
   return (
     <>
       <VerticalFlex
-        className={clsx(mypage.box_frame, styles.delivery_box)}
+        className={clsx(mypage.box_frame, styles.delivery_box, 'mob_page_container')}
         gap={35}
       >
 

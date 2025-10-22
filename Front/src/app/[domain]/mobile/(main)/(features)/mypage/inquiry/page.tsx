@@ -1,10 +1,4 @@
-import Button from "@/components/buttons/Button";
-import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import Image from "@/components/Image/Image";
-import Input from "@/components/inputs/Input";
-import P from "@/components/P/P";
-import Span from "@/components/span/Span";
 import mypage from '../mypage.module.css';
 
 import clsx from "clsx";
@@ -20,7 +14,7 @@ export default async function () {
 
    return (
       <>
-         <VerticalFlex className={clsx(mypage.box_frame, styles.inquiry_box)} gap={35}>
+         <VerticalFlex className={clsx(mypage.box_frame, styles.inquiry_box, 'mob_page_container')} gap={35}>
             <InquiryClient />
          </VerticalFlex>
       </>

@@ -17,12 +17,11 @@
 } */
 
 @font-face {
-  font-family: "suit";
-  font-weight: 400;
+  font-family: "GmarketSansBold";
+  font-weight: 600;
   font-display: swap;
-  src: local("SUIT-Variable"),
-    url(./woff2-subset/SUIT-Variable.woff2) format("woff2"),
-    url(./woff-subset/SUIT-Variable.woff) format("woff");
+  src: local("GmarketSansBold"),
+    url(./woff/GmarketSansBold.woff) format("woff");
 }
 
 @font-face {
@@ -33,6 +32,7 @@
     url(./woff-subset/SacheonHangGong-Regular.woff) format("woff");
 }
 
+.GmarketFont {font-family: "GmarketSansBold", sans-serif !important;}
 .SacheonFont {font-family: "SacheonHangGong-Regular", sans-serif !important;}
 
 * {

@@ -6,18 +6,17 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import NoContent from "@/components/noContent/noContent";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
-import styles from "./page.module.css";
 import mypage from "../mypage.module.css";
+import styles from "./page.module.css";
 
-import useAddress from "@/shared/hooks/main/useAddress";
-import { requester } from "@/shared/Requester";
-import { log, maskPhone } from "@/shared/utils/Functions";
+import ConfirmModal from "@/modals/confirm/ConfirmModal";
 import DeliveryAddEdit, {
   DeliveryAddEditRef,
 } from "@/modals/main/DeliveryAddEdit/DeliveryAddEdit";
-import DeliveryListModal from "@/modals/main/DeliveryListModal/DeliveryListModal";
+import useAddress from "@/shared/hooks/main/useAddress";
+import { requester } from "@/shared/Requester";
+import { maskPhone } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
-import ConfirmModal from "@/modals/confirm/ConfirmModal";
 import clsx from "clsx";
 import { useRef } from "react";
 
@@ -126,7 +125,7 @@ export function DeliveryClient({ initAddresses }: { initAddresses: any }) {
 
   return (
     <VerticalFlex
-      className={clsx(mypage.box_frame, styles.delivery_box)}
+      className={clsx(mypage.box_frame, styles.delivery_box, 'mob_page_container')}
       gap={25}
     >
 
