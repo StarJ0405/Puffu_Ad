@@ -33,41 +33,67 @@ const BannerModal = NiceModal.create(
     const [width, height] = ["min(95%, 900px)", "auto"];
     const withCloseButton = true;
     const clickOutsideToClose = true;
-    const title = "배너 " + (edit ? "편집" : "상세정보");
+    const isMini = !!(banner && banner.index !== undefined && !banner.id);
+    const title =
+      (isMini ? "미니배너 " : "배너 ") + (edit ? "편집" : "상세정보");
     const buttonText = "close";
     const modal = useRef<any>(null);
     const [unlimit, setUnlimit] = useState(
-      !banner.starts_at || !banner.ends_at
+      isMini ? true : !banner.starts_at || !banner.ends_at
     );
-    const [dates, setDates] = useState<Date[]>([
-      new Date(banner.starts_at),
-      new Date(banner.ends_at),
-    ]);
+    const [dates, setDates] = useState<Date[]>(
+      isMini
+        ? [new Date(), new Date()]
+        : [new Date(banner.starts_at), new Date(banner.ends_at)]
+    );
     const inputs = useRef<any[]>([]);
     const images = useRef<any[]>([]);
-    const [adult, setAdult] = useState<boolean>(banner.adult);
-    const [visible, setVisible] = useState<boolean>(banner.visible);
+    const [adult, setAdult] = useState<boolean>(isMini ? false : banner.adult);
+    const [visible, setVisible] = useState<boolean>(
+      isMini ? true : banner.visible
+    );
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string>("");
     const handleSave = async () => {
       setIsLoading(true);
       try {
-        const name = inputs.current[0].getValue();
-        if (!name) {
-          return setError("배너명이 입력되지 않았습니다.");
+        const name = inputs.current[0]?.getValue?.();
+        if (!name) return setError("배너명이 입력되지 않았습니다.");
+
+        const to = inputs.current[1]?.getValue?.() || "";
+
+        const pc =
+          images.current[0]?.getValue?.() ?? banner?.thumbnail?.pc ?? "";
+        const mobile =
+          images.current[1]?.getValue?.() ?? banner?.thumbnail?.mobile ?? "";
+
+        if (isMini) {
+          if (!to) return setError("URL 링크가 입력되지 않았습니다.");
+
+          const patch = { name, link: to, thumbnail: { pc, mobile } };
+          adminRequester.updateStoreMiniBanner(
+            banner.store?.id,
+            banner.index,
+            patch,
+            ({ message, error }: { message?: string; error?: string }) => {
+              setIsLoading(false);
+              if (error) return setError(error);
+              onSuccess?.();
+              modal.current.close();
+            }
+          );
+          return;
         }
 
         validateInputs([...inputs.current, ...images.current])
           .then(({ isValid }: { isValid: boolean }) => {
             if (!isValid) return;
+
             const _data: BannerDataFrame = {
               name,
               store_id: banner.store_id,
-              to: inputs.current[1].getValue(),
-              thumbnail: {
-                pc: images.current[0].getValue(),
-                mobile: images.current[1].getValue(),
-              },
+              to,
+              thumbnail: { pc, mobile },
               adult,
               visible,
             };
@@ -95,7 +121,7 @@ const BannerModal = NiceModal.create(
             toast({ message: "오류가 발생했습니다." });
             setIsLoading(false);
           });
-      } catch (error) {
+      } catch {
         setIsLoading(false);
       }
     };
@@ -228,104 +254,111 @@ const BannerModal = NiceModal.create(
               </FlexChild>
             </HorizontalFlex>
           </FlexChild>
-          <FlexChild>
-            <HorizontalFlex>
-              <FlexChild className={styles.head}>
-                <P>기간 설정</P>
+
+          {!isMini && (
+            <>
+              <FlexChild>
+                <HorizontalFlex>
+                  <FlexChild className={styles.head}>
+                    <P>기간 설정</P>
+                  </FlexChild>
+                  <FlexChild className={styles.content}>
+                    {edit ? (
+                      <CheckboxGroup
+                        name="limit"
+                        initialValues={unlimit ? ["unlimit"] : []}
+                        onChange={(values) =>
+                          setUnlimit(values.includes("unlimit"))
+                        }
+                      >
+                        <HorizontalFlex justifyContent="flex-start" gap={20}>
+                          <FlexChild width={"max-content"} gap={12}>
+                            <CheckboxChild id="unlimit" />
+                            <P>무제한</P>
+                          </FlexChild>
+                          <FlexChild width={300}>
+                            <DatePicker
+                              zIndex={10080}
+                              disabled={unlimit}
+                              selectionMode="range"
+                              defaultSelectedRange={
+                                unlimit ? undefined : (dates as any)
+                              }
+                              onChange={(dates: any) => setDates(dates)}
+                            />
+                          </FlexChild>
+                        </HorizontalFlex>
+                      </CheckboxGroup>
+                    ) : (
+                      <P>
+                        {banner?.starts_at && banner?.ends_at
+                          ? `${dateToString(banner.starts_at)} ~ ${dateToString(
+                              banner.ends_at
+                            )}`
+                          : "무제한"}
+                      </P>
+                    )}
+                  </FlexChild>
+                </HorizontalFlex>
               </FlexChild>
-              <FlexChild className={styles.content}>
-                {edit ? (
-                  <CheckboxGroup
-                    name="limit"
-                    initialValues={unlimit ? ["unlimit"] : []}
-                    onChange={(values) =>
-                      setUnlimit(values.includes("unlimit"))
-                    }
-                  >
-                    <HorizontalFlex justifyContent="flex-start" gap={20}>
-                      <FlexChild width={"max-content"} gap={12}>
-                        <CheckboxChild id="unlimit" />
-                        <P>무제한</P>
-                      </FlexChild>
-                      <FlexChild width={300}>
-                        <DatePicker
-                          zIndex={10080}
-                          disabled={unlimit}
-                          selectionMode="range"
-                          defaultSelectedRange={
-                            unlimit ? undefined : (dates as any)
-                          }
-                          onChange={(dates: any) => setDates(dates)}
-                        />
-                      </FlexChild>
-                    </HorizontalFlex>
-                  </CheckboxGroup>
-                ) : (
-                  <P>
-                    {banner?.starts_at && banner?.ends_at
-                      ? `${dateToString(banner.starts_at)} ~ ${dateToString(
-                          banner.ends_at
-                        )}`
-                      : "무제한"}
-                  </P>
-                )}
+              <FlexChild>
+                <HorizontalFlex>
+                  <FlexChild className={styles.head}>
+                    <P>공개상태</P>
+                  </FlexChild>
+                  <FlexChild className={styles.content}>
+                    {edit ? (
+                      <CheckboxGroup
+                        name="visible"
+                        initialValues={visible ? ["visible"] : []}
+                        onChange={(values) =>
+                          setVisible(values.includes("visible"))
+                        }
+                      >
+                        <CheckboxChild id="visible" />
+                      </CheckboxGroup>
+                    ) : (
+                      <Image
+                        src={
+                          banner.visible
+                            ? "/resources/images/checkbox_on.png"
+                            : "/resources/images/checkbox_off.png"
+                        }
+                      />
+                    )}
+                  </FlexChild>
+                </HorizontalFlex>
               </FlexChild>
-            </HorizontalFlex>
-          </FlexChild>
-          <FlexChild>
-            <HorizontalFlex>
-              <FlexChild className={styles.head}>
-                <P>공개상태</P>
+              <FlexChild>
+                <HorizontalFlex>
+                  <FlexChild className={styles.head}>
+                    <P>성인설정</P>
+                  </FlexChild>
+                  <FlexChild className={styles.content}>
+                    {edit ? (
+                      <CheckboxGroup
+                        name="adult"
+                        initialValues={adult ? ["adult"] : []}
+                        onChange={(values) =>
+                          setAdult(values.includes("adult"))
+                        }
+                      >
+                        <CheckboxChild id="adult" />
+                      </CheckboxGroup>
+                    ) : (
+                      <Image
+                        src={
+                          banner.adult
+                            ? "/resources/images/checkbox_on.png"
+                            : "/resources/images/checkbox_off.png"
+                        }
+                      />
+                    )}
+                  </FlexChild>
+                </HorizontalFlex>
               </FlexChild>
-              <FlexChild className={styles.content}>
-                {edit ? (
-                  <CheckboxGroup
-                    name="visible"
-                    initialValues={visible ? ["visible"] : []}
-                    onChange={(values) =>
-                      setVisible(values.includes("visible"))
-                    }
-                  >
-                    <CheckboxChild id="visible" />
-                  </CheckboxGroup>
-                ) : (
-                  <Image
-                    src={
-                      banner.visible
-                        ? "/resources/images/checkbox_on.png"
-                        : "/resources/images/checkbox_off.png"
-                    }
-                  />
-                )}
-              </FlexChild>
-            </HorizontalFlex>
-          </FlexChild>
-          <FlexChild>
-            <HorizontalFlex>
-              <FlexChild className={styles.head}>
-                <P>성인설정</P>
-              </FlexChild>
-              <FlexChild className={styles.content}>
-                {edit ? (
-                  <CheckboxGroup
-                    name="adult"
-                    initialValues={adult ? ["adult"] : []}
-                    onChange={(values) => setAdult(values.includes("adult"))}
-                  >
-                    <CheckboxChild id="adult" />
-                  </CheckboxGroup>
-                ) : (
-                  <Image
-                    src={
-                      banner.adult
-                        ? "/resources/images/checkbox_on.png"
-                        : "/resources/images/checkbox_off.png"
-                    }
-                  />
-                )}
-              </FlexChild>
-            </HorizontalFlex>
-          </FlexChild>
+            </>
+          )}
           {edit ? (
             <FlexChild justifyContent="center" gap={5}>
               <Button

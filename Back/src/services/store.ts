@@ -173,126 +173,157 @@ export class StoreService extends BaseService<Store, StoreRepository> {
   /* ########################### 미니배너 CRUD ################################### */
 
   private ensureMiniBannerArray(store: Store): MiniBannerItem[] {
-  const md: any = store.metadata ?? {};
-  if (!Array.isArray(md.minibanner)) md.minibanner = [];
-  md.minibanner = md.minibanner
-    .map((it: any, i: number) => ({
-      name: String(it?.name ?? ""),
-      link: String(it?.link ?? ""),
-      thumbnail: {
-        pc: String(it?.thumbnail?.pc ?? ""),
-        mobile: String(it?.thumbnail?.mobile ?? ""),
-      },
-      index: Number(it?.index ?? i),
-      metadata: [],
-    }))
-    .sort((a: MiniBannerItem, b: MiniBannerItem) => a.index - b.index)
-    .map((it: MiniBannerItem, i: number) => ({ ...it, index: i }));
-  store.metadata = { ...(store.metadata ?? {}), minibanner: md.minibanner };
-  return md.minibanner as MiniBannerItem[];
-}
-
-private assertCreatePayload(p: MiniBannerCreate) {
-  if (!p?.name) throw new Error("name is required");
-  if (!p?.link) throw new Error("link is required");
-  if (!p?.thumbnail?.pc) throw new Error("thumbnail.pc is required");
-  if (!p?.thumbnail?.mobile) throw new Error("thumbnail.mobile is required");
-}
-
-async getMiniBanners(storeId: string): Promise<MiniBannerItem[]> {
-  const store = await this.repository.findOne({ where: { id: storeId } });
-  if (!store) throw new Error("Store not found");
-  return this.ensureMiniBannerArray(store);
-}
-
-async addMiniBanner(storeId: string, payload: MiniBannerCreate): Promise<MiniBannerItem> {
-  this.assertCreatePayload(payload);
-  const store = await this.repository.findOne({ where: { id: storeId } });
-  if (!store) throw new Error("Store not found");
-
-  const list = this.ensureMiniBannerArray(store);
-  const item: MiniBannerItem = {
-    name: payload.name,
-    link: payload.link,
-    thumbnail: { pc: payload.thumbnail.pc, mobile: payload.thumbnail.mobile },
-    index: list.length,
-    metadata: [],
-  };
-  const next = [...list, item].map((it, i) => ({ ...it, index: i }));
-  await this.repository.update({ id: storeId }, { metadata: { ...(store.metadata ?? {}), minibanner: next } });
-  return item;
-}
-
-async updateMiniBanner(
-  storeId: string,
-  index: number,
-  patch: Partial<MiniBannerItem>
-): Promise<MiniBannerItem> {
-  const store = await this.repository.findOne({ where: { id: storeId } });
-  if (!store) throw new Error("Store not found");
-
-  const list = this.ensureMiniBannerArray(store);
-  if (index < 0 || index >= list.length) throw new Error("index out of range");
-
-  const base = list[index];
-  const merged: MiniBannerItem = {
-    name: patch.name ?? base.name,
-    link: patch.link ?? base.link,
-    thumbnail: {
-      pc: patch.thumbnail?.pc ?? base.thumbnail.pc,
-      mobile: patch.thumbnail?.mobile ?? base.thumbnail.mobile,
-    },
-    index: base.index,
-    metadata: [],
-  };
-  const next = list.map((it, i) => (i === index ? merged : it));
-  await this.repository.update({ id: storeId }, { metadata: { ...(store.metadata ?? {}), minibanner: next } });
-  return merged;
-}
-
-async removeMiniBanner(storeId: string, index: number): Promise<void> {
-  const store = await this.repository.findOne({ where: { id: storeId } });
-  if (!store) throw new Error("Store not found");
-
-  const list = this.ensureMiniBannerArray(store);
-  if (index < 0 || index >= list.length) throw new Error("index out of range");
-
-  list.splice(index, 1);
-  const next = list.map((it, i) => ({ ...it, index: i }));
-  await this.repository.update({ id: storeId }, { metadata: { ...(store.metadata ?? {}), minibanner: next } });
-}
-
-async reorderMiniBanner(storeId: string, fromIndex: number, toIndex: number): Promise<MiniBannerItem[]> {
-  const store = await this.repository.findOne({ where: { id: storeId } });
-  if (!store) throw new Error("Store not found");
-
-  const list = this.ensureMiniBannerArray(store);
-  const n = list.length;
-  if (fromIndex < 0 || fromIndex >= n || toIndex < 0 || toIndex >= n) {
-    throw new Error("index out of range");
+    const md: any = store.metadata ?? {};
+    if (!Array.isArray(md.minibanner)) md.minibanner = [];
+    md.minibanner = md.minibanner
+      .map((it: any, i: number) => ({
+        name: String(it?.name ?? ""),
+        link: String(it?.link ?? ""),
+        thumbnail: {
+          pc: String(it?.thumbnail?.pc ?? ""),
+          mobile: String(it?.thumbnail?.mobile ?? ""),
+        },
+        index: Number(it?.index ?? i),
+        metadata: [],
+      }))
+      .sort((a: MiniBannerItem, b: MiniBannerItem) => a.index - b.index)
+      .map((it: MiniBannerItem, i: number) => ({ ...it, index: i }));
+    store.metadata = { ...(store.metadata ?? {}), minibanner: md.minibanner };
+    return md.minibanner as MiniBannerItem[];
   }
-  const next = list.slice();
-  const [moved] = next.splice(fromIndex, 1);
-  next.splice(toIndex, 0, moved);
-  const reindexed = next.map((it, i) => ({ ...it, index: i }));
 
-  await this.repository.update({ id: storeId }, { metadata: { ...(store.metadata ?? {}), minibanner: reindexed } });
-  return reindexed;
-}
+  private assertCreatePayload(p: MiniBannerCreate) {
+    if (!p?.name) throw new Error("name is required");
+    if (!p?.link) throw new Error("link is required");
+    const linkOk =
+      typeof p.link === "string" &&
+      (/^\/.+/.test(p.link) || /^https?:\/\//i.test(p.link));
+    if (!linkOk) throw new Error("link must start with '/' or 'http(s)://'");
+    if (!p?.thumbnail?.pc) throw new Error("thumbnail.pc is required");
+    if (!p?.thumbnail?.mobile) throw new Error("thumbnail.mobile is required");
+  }
 
-async replaceMiniBanners(storeId: string, items: MiniBannerCreate[]): Promise<MiniBannerItem[]> {
-  const store = await this.repository.findOne({ where: { id: storeId } });
-  if (!store) throw new Error("Store not found");
+  async getMiniBanners(storeId: string): Promise<MiniBannerItem[]> {
+    const store = await this.repository.findOne({ where: { id: storeId } });
+    if (!store) throw new Error("Store not found");
+    return this.ensureMiniBannerArray(store);
+  }
 
-  items.forEach(this.assertCreatePayload);
-  const next: MiniBannerItem[] = items.map((p, i) => ({
-    name: p.name,
-    link: p.link,
-    thumbnail: { pc: p.thumbnail.pc, mobile: p.thumbnail.mobile },
-    index: i,
-    metadata: [],
-  }));
-  await this.repository.update({ id: storeId }, { metadata: { ...(store.metadata ?? {}), minibanner: next } });
-  return next;
-}
+  async addMiniBanner(
+    storeId: string,
+    payload: MiniBannerCreate
+  ): Promise<MiniBannerItem> {
+    this.assertCreatePayload(payload);
+    const store = await this.repository.findOne({ where: { id: storeId } });
+    if (!store) throw new Error("Store not found");
+
+    const list = this.ensureMiniBannerArray(store);
+    const item: MiniBannerItem = {
+      name: payload.name,
+      link: payload.link,
+      thumbnail: { pc: payload.thumbnail.pc, mobile: payload.thumbnail.mobile },
+      index: list.length,
+      metadata: [],
+    };
+    const next = [...list, item].map((it, i) => ({ ...it, index: i }));
+    await this.repository.update(
+      { id: storeId },
+      { metadata: { ...(store.metadata ?? {}), minibanner: next } }
+    );
+    return item;
+  }
+
+  async updateMiniBanner(
+    storeId: string,
+    index: number,
+    patch: Partial<MiniBannerItem>
+  ): Promise<MiniBannerItem> {
+    const store = await this.repository.findOne({ where: { id: storeId } });
+    if (!store) throw new Error("Store not found");
+
+    const list = this.ensureMiniBannerArray(store);
+    if (index < 0 || index >= list.length)
+      throw new Error("index out of range");
+
+    const base = list[index];
+    const merged: MiniBannerItem = {
+      name: patch.name ?? base.name,
+      link: patch.link ?? base.link,
+      thumbnail: {
+        pc: patch.thumbnail?.pc ?? base.thumbnail.pc,
+        mobile: patch.thumbnail?.mobile ?? base.thumbnail.mobile,
+      },
+      index: base.index,
+      metadata: [],
+    };
+    const next = list.map((it, i) => (i === index ? merged : it));
+    await this.repository.update(
+      { id: storeId },
+      { metadata: { ...(store.metadata ?? {}), minibanner: next } }
+    );
+    return merged;
+  }
+
+  async removeMiniBanner(storeId: string, index: number): Promise<void> {
+    const store = await this.repository.findOne({ where: { id: storeId } });
+    if (!store) throw new Error("Store not found");
+
+    const list = this.ensureMiniBannerArray(store);
+    if (index < 0 || index >= list.length)
+      throw new Error("index out of range");
+
+    list.splice(index, 1);
+    const next = list.map((it, i) => ({ ...it, index: i }));
+    await this.repository.update(
+      { id: storeId },
+      { metadata: { ...(store.metadata ?? {}), minibanner: next } }
+    );
+  }
+
+  async reorderMiniBanner(
+    storeId: string,
+    fromIndex: number,
+    toIndex: number
+  ): Promise<MiniBannerItem[]> {
+    const store = await this.repository.findOne({ where: { id: storeId } });
+    if (!store) throw new Error("Store not found");
+
+    const list = this.ensureMiniBannerArray(store);
+    const n = list.length;
+    if (fromIndex < 0 || fromIndex >= n || toIndex < 0 || toIndex >= n) {
+      throw new Error("index out of range");
+    }
+    const next = list.slice();
+    const [moved] = next.splice(fromIndex, 1);
+    next.splice(toIndex, 0, moved);
+    const reindexed = next.map((it, i) => ({ ...it, index: i }));
+
+    await this.repository.update(
+      { id: storeId },
+      { metadata: { ...(store.metadata ?? {}), minibanner: reindexed } }
+    );
+    return reindexed;
+  }
+
+  async replaceMiniBanners(
+    storeId: string,
+    items: MiniBannerCreate[]
+  ): Promise<MiniBannerItem[]> {
+    const store = await this.repository.findOne({ where: { id: storeId } });
+    if (!store) throw new Error("Store not found");
+
+    items.forEach(this.assertCreatePayload);
+    const next: MiniBannerItem[] = items.map((p, i) => ({
+      name: p.name,
+      link: p.link,
+      thumbnail: { pc: p.thumbnail.pc, mobile: p.thumbnail.mobile },
+      index: i,
+      metadata: [],
+    }));
+    await this.repository.update(
+      { id: storeId },
+      { metadata: { ...(store.metadata ?? {}), minibanner: next } }
+    );
+    return next;
+  }
 }
