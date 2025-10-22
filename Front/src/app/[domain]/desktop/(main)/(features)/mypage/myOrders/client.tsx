@@ -9,14 +9,14 @@ import Input from "@/components/inputs/Input";
 import NoContent from "@/components/noContent/noContent";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
-import useData from "@/shared/hooks/data/useData";
 import { requester } from "@/shared/Requester";
 import { getOrderStatus, openTrackingNumber } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import styles from "./page.module.css";
 import useNavigate from "@/shared/hooks/useNavigate";
+import usePageData from "@/shared/hooks/data/usePageData";
 import ListPagination from "@/components/listPagination/ListPagination";
 
 type OrderItem = {
@@ -47,17 +47,24 @@ export function MyOrdersTable({
   initOrders: any;
 }) {
   const navigate = useNavigate();
-  // const [orders, setOrders] = useState<any[]>([]);
   const [q, setQ] = useState("");
   const [startDate, setStartDate] = useState(initStartDate);
   const [endDate, setEndDate] = useState(initEndDate);
-  const [condition, setCondition] = useState<any>({});
   const [activePeriod, setActivePeriod] = useState("1week");
   const [reviewedSet, setReviewedSet] = useState<Set<string>>(new Set());
-  const { orders, mutate } = useData(
-    "orders",
-    {
-      ...condition,
+  const pageSize = 5;
+  const KEY = "orders";
+  const {
+    [KEY]: pageData,
+    page,
+    setPage,
+    maxPage,
+    mutate, // 추가
+  } = usePageData(
+    KEY,
+    (pageNumber) => ({
+      pageSize,
+      pageNumber,
       relations: [
         "refunds.items",
         "items.refunds.refund",
@@ -76,20 +83,27 @@ export function MyOrdersTable({
       ],
       start_date: startDate,
       end_date: endDate,
-    },
-    (condition) => requester.getOrders(condition),
+      order: { created_at: "DESC" },
+      ...(q ? { q } : {}),
+    }),
+    (cond) => requester.getOrders(cond),
+    (d: Pageable) => Math.max(1, Number(d?.totalPages ?? 0)),
     {
-      onReprocessing: (data) => data?.content || [],
+      onReprocessing: (d: any) => {
+        const content = Array.isArray(d) ? d : d?.content ?? [];
+        const total = Number(
+          (!Array.isArray(d) && d?.NumberOfTotalElements) ??
+            (!Array.isArray(d) && d?.totalElements) ??
+            content.length
+        );
+        return { content, total };
+      },
       fallbackData: initOrders,
+      revalidateOnMount: true,
     }
   );
-  const [page, setPage] = useState(0);
-  const pageSize = 5;
-  const maxPage = Math.max(0, Math.ceil(orders.length / pageSize) - 1);
-  const pagedOrders = orders.slice(page * pageSize, page * pageSize + pageSize);
-  useEffect(() => {
-    setPage(0);
-  }, [q, startDate, endDate, orders]);
+
+  const orders: OrderData[] = pageData?.content ?? [];
   const isReviewed = (it: OrderItem) =>
     Boolean(it?.review != null || reviewedSet.has(String(it?.id)));
 
@@ -98,7 +112,6 @@ export function MyOrdersTable({
     const newEndDate = new Date();
     setActivePeriod(period);
     setQ("");
-    setCondition({});
 
     switch (period) {
       case "1week":
@@ -118,6 +131,7 @@ export function MyOrdersTable({
     }
     setStartDate(newStartDate);
     setEndDate(newEndDate);
+    setPage(0);
   };
 
   const handleDateChange = (
@@ -131,12 +145,10 @@ export function MyOrdersTable({
         setActivePeriod("");
       }
     }
+    setPage(0);
   };
 
-  const handleSearch = () => {
-    if (q) setCondition({ q });
-    else setCondition({});
-  };
+  const handleSearch = () => setPage(0);
 
   return (
     <>
@@ -217,9 +229,9 @@ export function MyOrdersTable({
         </VerticalFlex>
       </HorizontalFlex>
       <VerticalFlex gap={30}>
-        {pagedOrders.length > 0 ? (
+        {orders.length > 0 ? (
           <>
-            {pagedOrders.map((order: OrderData) => (
+            {orders.map((order: OrderData) => (
               <VerticalFlex key={order.id} className={styles.order_group}>
                 <HorizontalFlex className={styles.order_header}>
                   <VerticalFlex className={styles.order_top_info}>
@@ -500,14 +512,14 @@ export function MyOrdersTable({
                                       !item.confirmation ||
                                       item.quantity -
                                         (item.refunds?.reduce(
-                                          (acc, now) => acc + now.quantity,
+                                          (a, n) => a + n.quantity,
+                                          0
+                                        ) || 0) -
+                                        (item.exchanges?.reduce(
+                                          (a, n) => a + n.quantity,
                                           0
                                         ) || 0) ===
-                                        0 -
-                                          (item.exchanges?.reduce(
-                                            (acc, now) => acc + now.quantity,
-                                            0
-                                          ) || 0)
+                                        0
                                     }
                                   >
                                     {!isReviewed(item) ? (
