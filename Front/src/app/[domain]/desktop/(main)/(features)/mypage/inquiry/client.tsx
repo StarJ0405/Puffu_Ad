@@ -104,7 +104,7 @@ export function InquiryTable() {
       setExpandedId(item.id);
     }
   };
-  
+
   return (
     <>
       <VerticalFlex>
@@ -239,6 +239,8 @@ export function InquiryTable() {
               ))}
             </tbody>
           </table>
+        </FlexChild>
+        <FlexChild>
           {inquiries?.length === 0 && <NoContent type="문의" />}
         </FlexChild>
         <FlexChild className={styles.list_bottom_box}>
