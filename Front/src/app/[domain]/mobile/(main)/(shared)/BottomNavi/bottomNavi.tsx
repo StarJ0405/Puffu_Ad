@@ -23,7 +23,7 @@ export default function BottomNavi() {
    const pathname = usePathname();
    const { userData } = useAuth();
 
-   const shouldHideHeader = !pathname.includes(`/products/${params.detail_id}`);
+   const shouldHideHeader = pathname.includes(`/products/${params.detail_id}`) || pathname === (`/mypage/subscription/success`);
 
    const linkTypeHandler = (type: string) => { // 링크에 따라서 active 바뀜.
       return pathname === type && active === false
@@ -61,7 +61,7 @@ export default function BottomNavi() {
 
 
          {
-            shouldHideHeader? ( // detail 페이지일때는 숨겨짐.
+            !shouldHideHeader ? ( // detail 페이지일때는 숨겨짐.
                <FlexChild justifyContent="center" className={styles.bottom_navi}>
                   <HorizontalFlex className={styles.navi_wrap}>
                      <VerticalFlex className={styles.item} onClick={() => setActive(prev => !prev)}>

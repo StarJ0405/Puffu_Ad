@@ -50,11 +50,10 @@
   visibility: visible;
 }
 
-@media (max-width: 768px) {
-  .hidden {
-    opacity: 0;
-    visibility: hidden;
-  }
+
+
+.hidden {
+  display: none;
 }
 
 .chat_number {

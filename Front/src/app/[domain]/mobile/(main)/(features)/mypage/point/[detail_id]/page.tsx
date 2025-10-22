@@ -88,7 +88,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
 
   return (
     <VerticalFlex
-      className={clsx(mypage.box_frame, styles.delivery_box)}
+      className={clsx(mypage.box_frame, styles.delivery_box, 'mob_page_container')}
       gap={35}
     >
       <PointDetail initDetail={initDetail} initOrder={initOrder} />

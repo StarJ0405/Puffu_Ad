@@ -1,6 +1,4 @@
-import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import P from "@/components/P/P";
 import mypage from '../mypage.module.css';
 
 import clsx from "clsx";
@@ -13,7 +11,7 @@ export default async function () {
 
    return (
       <>
-         <VerticalFlex className={clsx(mypage.box_frame, styles.delivery_box)} gap={35}>
+         <VerticalFlex className={clsx(mypage.box_frame, styles.delivery_box, 'mob_page_container')} gap={35}>
 
             <RecentlyViewTable />
          </VerticalFlex>

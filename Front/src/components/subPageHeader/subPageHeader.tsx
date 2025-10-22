@@ -18,8 +18,10 @@ export default function SubPageHeader() {
 
   const mypageCheck = pathname.includes('/mypage');
 
+  const hiddenCheck = pathname === '/mypage/subscription/success';
+
   return (
-    <HorizontalFlex className={clsx('mob_page_container',styles.subHeader)}>
+    <HorizontalFlex className={clsx('mob_page_container',styles.subHeader)} hidden={hiddenCheck}>
       <FlexChild gap={20}>
         <FlexChild width={"auto"} onClick={() => navigate(-1)}>
           <Image src={"/resources/icons/arrow/slide_arrow.png"} width={12} />
@@ -32,6 +34,9 @@ export default function SubPageHeader() {
                {pathname.includes("/board/inquiry") && (<P>1:1문의</P>)}
                {pathname.includes("/board/event") && (<P>이벤트</P>)} */}
 
+
+
+          {pathname === "/board/photoReview" && <P>포토 사용후기</P>}
           {
             (pathname === "/board/notice" ||
             pathname === "/board/inquiry" ||
@@ -39,6 +44,8 @@ export default function SubPageHeader() {
             pathname === "/board/faq") && 
                <P>고객센터</P>
             }
+
+          
 
           {pathname === "/mypage" && <P>마이페이지</P>}
           {pathname === "/mypage/myOrders" && <P>내 주문내역</P>}
@@ -50,8 +57,12 @@ export default function SubPageHeader() {
           {pathname === "/mypage/deleteAccount" && <P>회원탈퇴</P>}
           {pathname === "/mypage/review" && <P>리뷰 관리</P>}
           {pathname === "/mypage/coupon" && <P>쿠폰함</P>}
-          {pathname === "/board/photoReview" && <P>포토 사용후기</P>}
           {pathname === "/mypage/point" && <P>포인트 내역</P>}
+
+          {pathname === "/mypage/subscription/subscribe" && <P>구독 서비스</P>}
+          {pathname === "/mypage/subscription/manage" && <P>구독 서비스 관리</P>}
+          {pathname === "/mypage/subscription/cancel" && <P>구독 서비스 해지</P>}
+          {pathname === "/mypage/subscription/history" && <P>구독 내역 확인</P>}
         </FlexChild>
       </FlexChild>
 

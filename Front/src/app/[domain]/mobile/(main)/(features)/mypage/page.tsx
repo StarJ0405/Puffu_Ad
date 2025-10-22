@@ -1,13 +1,9 @@
-import Button from "@/components/buttons/Button";
-import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import P from "@/components/P/P";
-import Span from "@/components/span/Span";
+import { requester } from "@/shared/Requester";
 import clsx from "clsx";
 import { Params } from "next/dist/server/request/params";
+import { DeliveryInfo, MypageNavi, Profile } from "./client";
 import mypage from "./mypage.module.css";
-import { Profile, MypageNavi, DeliveryInfo } from "./client";
-import { requester } from "@/shared/Requester";
 
 // import {RecentlyViewTable} from '../recentlyView/client'
 
@@ -19,7 +15,7 @@ export default async function ({ params }: { params: Promise<Params> }) {
   return (
     <>
       {/* 오른쪽 내용 */}
-      <VerticalFlex className={mypage.mypage_wrap}>
+      <VerticalFlex className={clsx(mypage.mypage_wrap, 'mob_page_container')}>
         {/* 프로필 */}
         <Profile initGroups={initGroups} />
 

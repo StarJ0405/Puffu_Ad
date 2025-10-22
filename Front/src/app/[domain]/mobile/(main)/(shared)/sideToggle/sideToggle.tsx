@@ -85,15 +85,18 @@ function ChatToggle() {
     return false;
   }, [pathname]);
 
-  const customPositionPages = [
-    '/orders/cart',
-  ];
+  const customPositionPages = ["/orders/cart"];
   const isCustomPosition = customPositionPages.includes(pathname);
 
+  const hiddenCheck = pathname === "/mypage/subscription/success";
+
   return (
-    <nav 
-    id={styles.sideNavi} 
-    className={clsx(styles.sideNavi, {[styles.customPosition]: isCustomPosition})}
+    <nav
+      id={styles.sideNavi}
+      className={clsx(styles.sideNavi, 
+        {[styles.customPosition]: isCustomPosition,},
+        {[styles.hidden]: hiddenCheck,}
+      )}
     >
       <FlexChild
         className={clsx(styles.Btn_frame, scrolled ? styles.scroll : "")}

@@ -1,0 +1,35 @@
+/*
+Copyright (c) 2021 Kil Hyung-jin, with Reserved Font Name Pretendard.
+https://github.com/orioncactus/pretendard
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is copied below, and is also available with a FAQ at:
+http://scripts.sil.org/OFL
+*/
+
+@font-face {
+  font-family: "GmarketSans";
+  font-weight: 600;
+  font-display: swap;
+  src: local("GmarketSansBold"),
+    url(./woff2-subset/GmarketSansBold.subset.woff2) format("woff2"),
+    url(./woff-subset/GmarketSansBold.subset.woff) format("woff");
+}
+
+@font-face {
+  font-family: "GmarketSans";
+  font-weight: 500;
+  font-display: swap;
+  src: local("GmarketSansMedium"),
+    url(./woff2-subset/GmarketSansMedium.subset.woff2) format("woff2"),
+    url(./woff-subset/GmarketSansMedium.subset.woff) format("woff");
+}
+
+@font-face {
+  font-family: "GmarketSans";
+  font-weight: 300;
+  font-display: swap;
+  src: local("GmarketSansLight"),
+    url(./woff2-subset/GmarketSansLight.subset.woff2) format("woff2"),
+    url(./woff-subset/GmarketSansLight.subset.woff) format("woff");
+}

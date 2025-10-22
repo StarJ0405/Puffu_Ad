@@ -6,6 +6,7 @@ import "swiper/css/pagination";
 import "../resources/css/global.css";
 import "../resources/css/normalize.css";
 import "../resources/css/pretendard.css";
+import "../resources/css/gmarketSans.css";
 import "../resources/css/swiperStyle.css";
 
 export const metadata: Metadata = {

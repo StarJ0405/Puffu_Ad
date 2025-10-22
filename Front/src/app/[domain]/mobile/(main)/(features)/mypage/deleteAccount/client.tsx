@@ -67,7 +67,7 @@ export default function DeleteAccountClient() {
   return (
     <>
       <VerticalFlex
-        className={clsx(mypage.box_frame, styles.delete_box)}
+        className={clsx(mypage.box_frame, styles.delete_box, 'mob_page_container')}
         gap={20}
       >
         <FlexChild justifyContent="center">

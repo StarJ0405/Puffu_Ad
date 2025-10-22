@@ -13,7 +13,7 @@ export default async function () {
   return (
     <>
       <VerticalFlex
-        className={clsx(mypage.box_frame, styles.coupon_box)}
+        className={clsx(mypage.box_frame, styles.coupon_box, 'mob_page_container')}
         gap={35}
       >
         <CouponList initCoupons={initCoupons} />
