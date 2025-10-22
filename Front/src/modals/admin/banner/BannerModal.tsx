@@ -54,18 +54,31 @@ const BannerModal = NiceModal.create(
     );
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string>("");
+    const displayTo = isMini ? banner.to ?? banner.link : banner.to;
     const handleSave = async () => {
       setIsLoading(true);
       try {
         const name = inputs.current[0]?.getValue?.();
-        if (!name) return setError("배너명이 입력되지 않았습니다.");
+        if (!name) {
+          setError("배너명이 입력되지 않았습니다.");
+          setIsLoading(false);
+          return;
+        }
 
         const to = inputs.current[1]?.getValue?.() || "";
-
+        if (isMini && !to) {
+          setError("URL 링크가 입력되지 않았습니다.");
+          setIsLoading(false);
+          return;
+        }
+        await Promise.all([
+          images.current[0]?.isValid?.(),
+          images.current[1]?.isValid?.(),
+        ]);
         const pc =
-          images.current[0]?.getValue?.() ?? banner?.thumbnail?.pc ?? "";
+          images.current[0]?.getValue?.() || banner?.thumbnail?.pc || "";
         const mobile =
-          images.current[1]?.getValue?.() ?? banner?.thumbnail?.mobile ?? "";
+          images.current[1]?.getValue?.() || banner?.thumbnail?.mobile || "";
 
         if (isMini) {
           if (!to) return setError("URL 링크가 입력되지 않았습니다.");
@@ -87,7 +100,7 @@ const BannerModal = NiceModal.create(
 
         validateInputs([...inputs.current, ...images.current])
           .then(({ isValid }: { isValid: boolean }) => {
-            if (!isValid) return;
+            if (!isValid) { setIsLoading(false); return; }
 
             const _data: BannerDataFrame = {
               name,
@@ -163,6 +176,11 @@ const BannerModal = NiceModal.create(
                           images.current[0] = el;
                         }}
                         value={banner?.thumbnail?.pc}
+                        path={
+                          isMini
+                            ? `/minibanners/${banner.store?.id}`
+                            : `/banners/${banner.store_id}`
+                        }
                       />
                     </Div>
                   </VerticalFlex>
@@ -177,6 +195,11 @@ const BannerModal = NiceModal.create(
                         }}
                         value={banner?.thumbnail?.mobile}
                         placeHolder="375X320을 권장합니다."
+                        path={
+                          isMini
+                            ? `/minibanners/${banner.store?.id}`
+                            : `/banners/${banner.store_id}`
+                        }
                       />
                     </Div>
                   </VerticalFlex>
@@ -242,14 +265,14 @@ const BannerModal = NiceModal.create(
               <FlexChild className={styles.content}>
                 {edit ? (
                   <Input
-                    value={banner.to}
+                    value={displayTo}
                     width={"100%"}
                     ref={(el) => {
                       inputs.current[1] = el;
                     }}
                   />
                 ) : (
-                  <P notranslate>{banner.to || "미설정"}</P>
+                  <P notranslate>{displayTo || "미설정"}</P>
                 )}
               </FlexChild>
             </HorizontalFlex>
