@@ -29,194 +29,172 @@ export default function ({
   initData: Pageable;
   initStores: any;
 }) {
-  const columns: Column[] = [
-    {
-      label: "스토어",
-      code: "store",
-      Cell: ({ cell }) => cell?.name || "오류",
-      styling: {
-        common: {
-          style: {
-            width: 120,
-            minWidth: 120,
-          },
-        },
+  const [tab, setTab] = useState<"main" | "mini">("main");
+  const buildColumns = (mode: "main" | "mini"): Column[] => {
+    const base: Column[] = [
+      {
+        label: "스토어",
+        code: "store",
+        Cell: ({ cell }) => cell?.name || "오류",
+        styling: { common: { style: { width: 120, minWidth: 120 } } },
       },
-    },
-    {
-      label: "썸네일",
-      code: "thumbnail",
-      Cell: ({ cell }) => (
-        <Tooltip
-          disable={!cell?.pc && !cell?.moible}
-          content={
-            <VerticalFlex
-              backgroundColor="white"
-              border={"0.5px solid #c0c0c0"}
-            >
-              <Image src={cell?.pc} size={"min(20vw,20vh)"} />
-              <Image src={cell?.mobile} size={"min(20vw,20vh)"} />
-            </VerticalFlex>
-          }
-        >
-          <Image src={cell?.pc} size={60} />
-        </Tooltip>
-      ),
-      styling: {
-        common: {
-          style: {
-            width: 60,
-          },
-        },
-      },
-    },
-    {
-      label: "배너명",
-      code: "name",
-      Cell: ({ cell }) => (
-        <FlexChild>
-          <P
-            width={200}
-            whiteSpace="break-spaces"
-            textOverflow="clip"
-            overflow="visible"
+      {
+        label: "썸네일",
+        code: "thumbnail",
+        Cell: ({ cell }) => (
+          <Tooltip
+            disable={!cell?.pc && !cell?.mobile}
+            content={
+              <VerticalFlex
+                backgroundColor="white"
+                border={"0.5px solid #c0c0c0"}
+              >
+                <Image src={cell?.pc} size={"min(20vw,20vh)"} />
+                <Image src={cell?.mobile} size={"min(20vw,20vh)"} />
+              </VerticalFlex>
+            }
           >
-            {cell}
-          </P>
-        </FlexChild>
-      ),
-      styling: {
-        common: {
-          style: {
-            width: 200,
-            minWidth: 200,
-          },
-        },
-      },
-    },
-    {
-      label: "기간설정",
-      Cell: ({ row }) =>
-        row?.starts_at && row?.ends_at
-          ? `${dateToString(row.starts_at)} ~ ${dateToString(row.ends_at)}`
-          : "무제한",
-      styling: {
-        common: {
-          style: {
-            width: 300,
-            minWidth: 300,
-          },
-        },
-      },
-    },
-    {
-      label: "URL 링크",
-      code: "to",
-      Cell: ({ cell }) =>
-        cell ? (
-          <P
-            cursor="pointer"
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-              window.open(cell);
-            }}
-            notranslate
-          >
-            {cell}
-          </P>
-        ) : (
-          "미설정"
+            <Image src={cell?.pc} size={60} />
+          </Tooltip>
         ),
-    },
-    {
-      label: "공개 상태",
-      code: "visible",
-      styling: {
-        common: {
-          style: {
-            width: 100,
-            minWidth: 100,
-          },
-        },
+        styling: { common: { style: { width: 60 } } },
       },
-    },
-    {
-      label: "성인 설정",
-      code: "adult",
-      styling: {
-        common: {
-          style: {
-            width: 100,
-            minWidth: 100,
-          },
-        },
-      },
-    },
-    {
-      label: "배너순서 설정",
-      code: "importance",
-      Cell: ({ row }) => {
-        const imp = Number(row.importance ?? 0);
-        const up = async (e: React.MouseEvent) => {
-          e.stopPropagation();
-          const next = Math.max(0, imp - 1); // 음수 방지
-          if (next === imp) return; // 이미 0이면 종료
-          await adminRequester.updateBanner(row.id, {
-            store_id: row.store_id,
-            importance: next,
-          });
-          table.current.research();
-        };
-        const down = async (e: React.MouseEvent) => {
-          e.stopPropagation();
-          await adminRequester.updateBanner(row.id, {
-            store_id: row.store_id,
-            importance: imp + 1,
-          });
-          table.current.research();
-        };
-        const upDisabled = imp <= 0;
-
-        return (
-          <HorizontalFlex gap={40} alignItems="center">
-            <P width={28} textAlign="right">
-              {imp}
+      {
+        label: "배너명",
+        code: "name",
+        Cell: ({ cell }) => (
+          <FlexChild>
+            <P
+              width={200}
+              whiteSpace="break-spaces"
+              textOverflow="clip"
+              overflow="visible"
+            >
+              {cell}
             </P>
-            <VerticalFlex gap={20} justifyContent="center" alignItems="center">
-              <FlexChild flexGrow={0} width="auto">
-                <Image
-                  src="/resources/images/arrow_left.png"
-                  width={10}
-                  height={20}
-                  role="button"
-                  transform="rotate(90deg)"
-                  onClick={up}
-                  cursor={"pointer"}
-                  style={{
-                    cursor: upDisabled ? "default" : "pointer",
-                    opacity: upDisabled ? 0.35 : 1,
-                  }}
-                />
-              </FlexChild>
-              <FlexChild flexGrow={0} width="auto">
-                <Image
-                  src="/resources/images/arrow_left.png"
-                  width={10}
-                  height={20}
-                  role="button"
-                  transform="rotate(270deg)"
-                  onClick={down}
-                  cursor="pointer"
-                />
-              </FlexChild>
-            </VerticalFlex>
-          </HorizontalFlex>
-        );
+          </FlexChild>
+        ),
+        styling: { common: { style: { width: 200, minWidth: 200 } } },
       },
-      styling: { common: { style: { width: 150, minWidth: 100 } } },
-    },
-  ];
+      {
+        label: "URL 링크",
+        code: "to",
+        Cell: ({ cell }) =>
+          cell ? (
+            <P
+              cursor="pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                window.open(cell);
+              }}
+              notranslate
+            >
+              {cell}
+            </P>
+          ) : (
+            "미설정"
+          ),
+      },
+    ];
+    if (mode === "main") {
+      return [
+        ...base,
+        {
+          label: "기간설정",
+          Cell: ({ row }) =>
+            row?.starts_at && row?.ends_at
+              ? `${dateToString(row.starts_at)} ~ ${dateToString(row.ends_at)}`
+              : "무제한",
+          styling: { common: { style: { width: 300, minWidth: 300 } } },
+        },
+        {
+          label: "공개 상태",
+          code: "visible",
+          styling: { common: { style: { width: 100, minWidth: 100 } } },
+        },
+        {
+          label: "성인 설정",
+          code: "adult",
+          styling: { common: { style: { width: 100, minWidth: 100 } } },
+        },
+        {
+          label: "배너순서 설정",
+          code: "importance",
+          Cell: ({ row }) => {
+            const imp = Number(row.importance ?? 0);
+            const up = async (e: React.MouseEvent) => {
+              e.stopPropagation();
+              const next = Math.max(0, imp - 1);
+              if (next === imp) return;
+              await adminRequester.updateBanner(row.id, {
+                store_id: row.store_id,
+                importance: next,
+              });
+              table.current.research();
+            };
+            const down = async (e: React.MouseEvent) => {
+              e.stopPropagation();
+              await adminRequester.updateBanner(row.id, {
+                store_id: row.store_id,
+                importance: imp + 1,
+              });
+              table.current.research();
+            };
+            const upDisabled = imp <= 0;
+            return (
+              <HorizontalFlex gap={40} alignItems="center">
+                <P width={28} textAlign="right">
+                  {imp}
+                </P>
+                <VerticalFlex
+                  gap={20}
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <FlexChild flexGrow={0} width="auto">
+                    <Image
+                      src="/resources/images/arrow_left.png"
+                      width={10}
+                      height={20}
+                      role="button"
+                      transform="rotate(90deg)"
+                      onClick={up}
+                      cursor={"pointer"}
+                      style={{
+                        cursor: upDisabled ? "default" : "pointer",
+                        opacity: upDisabled ? 0.35 : 1,
+                      }}
+                    />
+                  </FlexChild>
+                  <FlexChild flexGrow={0} width="auto">
+                    <Image
+                      src="/resources/images/arrow_left.png"
+                      width={10}
+                      height={20}
+                      role="button"
+                      transform="rotate(270deg)"
+                      onClick={down}
+                      cursor="pointer"
+                    />
+                  </FlexChild>
+                </VerticalFlex>
+              </HorizontalFlex>
+            );
+          },
+          styling: { common: { style: { width: 150, minWidth: 100 } } },
+        },
+      ];
+    }
+    return [
+      ...base,
+      {
+        label: "배너 번호",
+        code: "index",
+        styling: { common: { style: { width: 120, minWidth: 100 } } },
+      },
+    ];
+  };
   const { stores } = useData(
     "stores",
     {},
@@ -255,42 +233,77 @@ export default function ({
       },
     ];
     if (row) {
-      rows.push(
-        {
-          label: "상세보기",
-          hotKey: "i",
-          onClick: () => {
-            NiceModal.show("bannerDetail", { banner: row });
+      if (tab === "main") {
+        rows.push(
+          {
+            label: "상세보기",
+            hotKey: "i",
+            onClick: () => {
+              NiceModal.show("bannerDetail", { banner: row });
+            },
           },
-        },
-        {
-          label: "편집",
-          hotKey: "e",
-          onClick: () => {
-            NiceModal.show("bannerDetail", {
-              banner: row,
-              edit: true,
-              onSuccess: () => table.current.research(),
-            });
+          {
+            label: "편집",
+            hotKey: "e",
+            onClick: () => {
+              NiceModal.show("bannerDetail", {
+                banner: row,
+                edit: true,
+                onSuccess: () => table.current.research(),
+              });
+            },
           },
-        },
-        {
-          label: "삭제",
-          hotKey: "d",
-          onClick: () => {
-            NiceModal.show("confirm", {
-              confirmText: "삭제",
-              cancelText: "취소",
-              message: `${row.title} 을 삭제하시겠습니까?`,
-              onConfirm: async () => {
-                await adminRequester.deleteBanner(row.id);
-                table.current.research();
-              },
-              admin: true,
-            });
+          {
+            label: "삭제",
+            hotKey: "d",
+            onClick: () => {
+              NiceModal.show("confirm", {
+                confirmText: "삭제",
+                cancelText: "취소",
+                message: `${row.title} 을 삭제하시겠습니까?`,
+                onConfirm: async () => {
+                  await adminRequester.deleteBanner(row.id);
+                  table.current.research();
+                },
+                admin: true,
+              });
+            },
+          }
+        );
+      } else {
+        rows.push(
+          {
+            label: "편집",
+            hotKey: "e",
+            onClick: () => {
+              NiceModal.show("bannerDetail", {
+                banner: row,
+                edit: true,
+                onSuccess: () => table.current.research(),
+              });
+            },
           },
-        }
-      );
+          {
+            label: "삭제",
+            hotKey: "d",
+            onClick: () => {
+              NiceModal.show("confirm", {
+                confirmText: "삭제",
+                cancelText: "취소",
+                message: `${row.name} 미니배너를 삭제하시겠습니까?`,
+                onConfirm: async () => {
+                  await adminRequester.removeStoreMiniBanner(
+                    row.store.id,
+                    row.index
+                  );
+                  table.current.research();
+                },
+                admin: true,
+              });
+            },
+          }
+        );
+      }
     }
     return { x, y, rows };
   };
@@ -303,6 +316,30 @@ export default function ({
     <VerticalFlex>
       <FlexChild>
         <div className={styles.search_ontainer}>
+          <HorizontalFlex
+            gap={12}
+            padding={"0 0 12px 0"}
+            justifyContent="flex-start"
+          >
+            <Button
+              styleType={tab === "main" ? "admin" : "white"}
+              onClick={() => {
+                setTab("main");
+                table.current?.reset();
+              }}
+            >
+              <P size={14}>메인배너</P>
+            </Button>
+            <Button
+              styleType={tab === "mini" ? "admin" : "white"}
+              onClick={() => {
+                setTab("mini");
+                table.current?.reset();
+              }}
+            >
+              <P size={14}>미니배너</P>
+            </Button>
+          </HorizontalFlex>
           <VerticalFlex>
             <FlexChild>
               <VerticalFlex>
@@ -403,19 +440,71 @@ export default function ({
           indexing={false}
           ref={table}
           onRowClick={(e, row) => onDetailClick(e, row)}
-          name="banners"
-          columns={columns}
+          name={tab === "main" ? "banners-main" : "banners-mini"}
+          columns={buildColumns(tab)}
           initCondition={initCondition}
           initLimit={20}
-          initData={initData}
-          onSearch={(condition) => {
-            return adminRequester.getBanners(condition);
+          initData={tab === "main" ? initData : []}
+          onSearch={async (condition) => {
+            if (tab === "main") return adminRequester.getBanners(condition);
+            const storeId = condition?.store_id as string | undefined;
+            if (storeId) {
+              const r = await adminRequester.getStoreMiniBanners(storeId);
+              const storeName = (stores ?? []).find(
+                (s: any) => s.id === storeId
+              )?.name;
+              return (r?.items ?? []).map((it: any) => ({
+                ...it,
+                to: it.link,
+                store: { id: storeId, name: storeName },
+              }));
+            }
+            const storeList = await adminRequester.getStores({});
+            const list = storeList?.content ?? [];
+            const results = await Promise.all(
+              list.map((s: any) =>
+                adminRequester
+                  .getStoreMiniBanners(s.id)
+                  .catch(() => ({ items: [] }))
+              )
+            );
+            const items = results.flatMap((r: any, i: number) =>
+              (r?.items ?? []).map((it: any) => ({
+                ...it,
+                to: it.link,
+                store: { id: list[i].id, name: list[i].name },
+              }))
+            );
+            const q = condition?.q?.toLowerCase?.();
+            const filtered = q
+              ? items.filter(
+                  (it: any) =>
+                    (it?.name ?? "").toLowerCase().includes(q) ||
+                    (it?.to ?? "").toLowerCase().includes(q) ||
+                    (it?.store?.name ?? "").toLowerCase().includes(q)
+                )
+              : items;
+            return filtered;
           }}
-          onMaxPage={(data) => {
-            return Number(data?.totalPages);
-          }}
-          onReprocessing={(data) => data.content}
-          onChange={({ origin }) => setTotal(origin.NumberOfTotalElements)}
+          onMaxPage={(data) => (tab === "main" ? Number(data?.totalPages) : 1)}
+          onReprocessing={(data) =>
+            tab === "main"
+              ? Array.isArray(data?.content)
+                ? data.content
+                : data?.content ?? []
+              : Array.isArray(data)
+              ? data
+              : data?.items ?? []
+          }
+          onChange={({ origin, data }) =>
+            setTotal(
+              tab === "main"
+                ? origin.NumberOfTotalElements
+                : Array.isArray(data)
+                ? data.length
+                : 0
+            )
+          }
           ContextMenu={ContextMenu}
         />
       </FlexChild>
