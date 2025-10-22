@@ -9,7 +9,8 @@ export default async function () {
   const startDate = new Date();
   startDate.setDate(startDate.getDate() - 7);
   const endDate = new Date();
-  const initOrders = await requester.getOrders({
+  const PAGE_SIZE = 5;
+  const raw = await requester.getOrders({
     relations: [
       "refunds.items",
       "items.refunds.refund",
@@ -24,11 +25,24 @@ export default async function () {
       "items.coupons",
       "subscribe",
       "items",
-      "items.variant"
+      "items.variant",
     ],
     start_date: startDate,
     end_date: endDate,
+    pageNumber: 0,
+    pageSize: PAGE_SIZE,
+    order: { created_at: "DESC" },
   });
+
+  const initOrders = Array.isArray(raw)
+    ? {
+        content: raw,
+        totalElements: raw.length,
+        totalPages: 1,
+        pageNumber: 0,
+        pageSize: PAGE_SIZE,
+      }
+    : raw;
   return (
     <>
       <VerticalFlex
