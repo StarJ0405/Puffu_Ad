@@ -159,12 +159,11 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
             <P className={styles.currency}>P</P>
           </FlexChild>
           <HorizontalFlex
-            hidden
             className={styles.more_btn}
-            onClick={() => navigate("/mypage")}
+            onClick={() => navigate("/mypage/point")}
           >
             <P>자세히 보기</P>
-            <Image src="resources/icons/arrow/mypage_arrow.png" width={8} />
+            {/* <Image src="resources/icons/arrow/mypage_arrow.png" width={8} /> */}
           </HorizontalFlex>
         </HorizontalFlex>
         <FlexChild className={styles.point}>
@@ -174,21 +173,19 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
       </VerticalFlex>
       <VerticalFlex className={styles.coupon_box}>
         <HorizontalFlex className={styles.title_box}>
-          <FlexChild>
+          <FlexChild gap={6}>
             <Image
               src="resources/icons/mypage/coupon_icon.png"
               width={30}
-              paddingRight={6}
             />
             <P>보유쿠폰</P>
           </FlexChild>
           <HorizontalFlex
-            hidden
             className={styles.more_btn}
-            onClick={() => navigate("/mypage")}
+            onClick={() => navigate("/mypage/coupon")}
           >
             <P>자세히 보기</P>
-            <Image src="resources/icons/arrow/mypage_arrow.png" width={8} />
+            {/* <Image src="resources/icons/arrow/mypage_arrow.png" width={8} /> */}
           </HorizontalFlex>
         </HorizontalFlex>
         <FlexChild className={styles.coupon}>

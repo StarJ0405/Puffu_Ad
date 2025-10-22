@@ -84,33 +84,11 @@ export function ProductCard({
               height={"auto"}
             />
           )}
-
-          {overlay === "coming" && (
-            <Image
-              className={styles.specialTypeImg}
-              src={"/resources/images/commingSoon_img.png"}
-              width={"101%"}
-              height={"auto"}
-            />
-          )}
-
-          {overlay === "unbuyable" && (
-            <Image
-              className={styles.specialTypeImg}
-              src={"/resources/images/unbuyable_img.png"} //구매불가 이미지 필요
-              width={"101%"}
-              height={"auto"}
-            />
-          )}
-
-          {overlay === "outofstock" && (
-            <Image
-              className={styles.specialTypeImg}
-              src={"/resources/images/outofstock_img.png"}  //재고부족 이미지 필요
-              width={"101%"}
-              height={"auto"}
-            />
-          )}
+          {
+            overlay && (
+              <StockStatusMessage overlay={overlay} />
+            )
+          }
         </FlexChild>
 
         {mutate && isMobile && (
@@ -232,6 +210,26 @@ export function ProductCard({
       </FlexChild>
     </VerticalFlex>
   );
+}
+
+
+
+function StockStatusMessage({overlay} : {overlay: string | null}) {
+  const { isMobile } = useBrowserEvent();
+  const message =
+    overlay === "coming"
+      ? "입고 예정입니다."
+      : overlay === "unbuyable"
+      ? "구매 불가입니다."
+      : overlay === "outofstock"
+      ? "재고 부족입니다."
+      : null;
+
+  return (
+    <FlexChild className={styles.StatusBox} justifyContent="center">
+      <P className={'SacheonFont'} fontSize={!isMobile ? 18 : 15}>{message}</P>
+    </FlexChild>
+  )
 }
 
 export default ProductCard;
