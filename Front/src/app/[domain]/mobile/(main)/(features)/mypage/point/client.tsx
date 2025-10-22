@@ -14,6 +14,7 @@ import styles from "./page.module.css";
 import { requester } from "@/shared/Requester";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import NoContent from "@/components/noContent/noContent";
+import ListPagination from "@/components/listPagination/ListPagination";
 
 type LogRow = {
   id: string;
@@ -40,7 +41,8 @@ export function PointHistory({
 }) {
   const { userData } = useAuth();
   const navigate = useNavigate();
-
+  const GROUPS_PER_PAGE = 5;
+  const [page, setPage] = useState(0);
   const [rows, setRows] = useState<LogRow[]>([]);
   const [startDate, setStartDate] = useState(initStartDate);
   const [endDate, setEndDate] = useState(initEndDate);
@@ -78,6 +80,7 @@ export function PointHistory({
     setActivePeriod(period);
     setStartDate(s);
     setEndDate(e);
+    setPage(0);
     fetchPointsByRange(s, e);
   };
 
@@ -90,6 +93,7 @@ export function PointHistory({
     setStartDate(s);
     setEndDate(e);
     setActivePeriod("custom");
+    setPage(0);
     fetchPointsByRange(s, e);
   };
 
@@ -122,6 +126,16 @@ export function PointHistory({
     }
     return Array.from(m.entries()).sort(([a], [b]) => (a > b ? -1 : 1));
   }, [list]);
+
+  const maxPage = Math.max(0, Math.ceil(grouped.length / GROUPS_PER_PAGE) - 1);
+  const pageGroups = useMemo(
+    () =>
+      grouped.slice(
+        page * GROUPS_PER_PAGE,
+        page * GROUPS_PER_PAGE + GROUPS_PER_PAGE
+      ),
+    [grouped, page]
+  );
 
   const userTotalPoint = userData?.point;
 
@@ -190,64 +204,71 @@ export function PointHistory({
         </VerticalFlex>
 
         {/* 포인트 내역(최신순으로 정렬해야함) */}
-        {
-          grouped.length > 0 ?
-          grouped.map(([date, items], i) => (
-            <VerticalFlex
-              className={styles.point_history}
-              alignItems="flex-start"
-              gap={20}
-              key={i}
-            >
-              <P className={styles.date}>{date}</P>
-              {items.map((point, index) => {
-                const isUsed = point.used;
-                return (
-                  <FlexChild
-                    key={index}
-                    borderBottom={
-                      index === items.length - 1 ? "none" : "1px solid #444"
-                    }
-                    paddingBottom={index === items.length - 1 ? 0 : 15}
-                    onClick={() => navigate(`/mypage/point/${point.id}`)}
-                  >
-                    <HorizontalFlex>
-                      <VerticalFlex alignItems="flex-start" gap={10}>
-                        <P className={styles.title}>{point.title}</P>
-                        <P className={styles.time}>{point.time}</P>
-                      </VerticalFlex>
-                      <VerticalFlex alignItems="flex-end" gap={5}>
-                        <P className={styles.point}>
-                          <Span>{isUsed ? "+" : "-"}</Span>
-                          <Span>{point.point}</Span>
-                          <Span>P</Span>
-                        </P>
-                        <P
-                          className={clsx(styles.status, {
-                            [styles.used]: !isUsed,
-                          })}
-                        >
-                          {isUsed ? "적립" : "사용"}
-                        </P>
-                        {point.balance !== "-" && (
-                          <P className={styles.points_balance}>
-                            <Span>잔액 </Span>
-                            <Span>{point.balance}</Span>
+        {grouped.length > 0 ? (
+          <>
+            {grouped.map(([date, items], i) => (
+              <VerticalFlex
+                className={styles.point_history}
+                alignItems="flex-start"
+                gap={20}
+                key={i}
+              >
+                <P className={styles.date}>{date}</P>
+                {items.map((point, index) => {
+                  const isUsed = point.used;
+                  return (
+                    <FlexChild
+                      key={index}
+                      borderBottom={
+                        index === items.length - 1 ? "none" : "1px solid #444"
+                      }
+                      paddingBottom={index === items.length - 1 ? 0 : 15}
+                      onClick={() => navigate(`/mypage/point/${point.id}`)}
+                    >
+                      <HorizontalFlex>
+                        <VerticalFlex alignItems="flex-start" gap={10}>
+                          <P className={styles.title}>{point.title}</P>
+                          <P className={styles.time}>{point.time}</P>
+                        </VerticalFlex>
+                        <VerticalFlex alignItems="flex-end" gap={5}>
+                          <P className={styles.point}>
+                            <Span>{isUsed ? "+" : "-"}</Span>
+                            <Span>{point.point}</Span>
                             <Span>P</Span>
                           </P>
-                        )}
-                      </VerticalFlex>
-                    </HorizontalFlex>
-                  </FlexChild>
-                );
-              })}
-              <Div className={styles.space_line} />
+                          <P
+                            className={clsx(styles.status, {
+                              [styles.used]: !isUsed,
+                            })}
+                          >
+                            {isUsed ? "적립" : "사용"}
+                          </P>
+                          {point.balance !== "-" && (
+                            <P className={styles.points_balance}>
+                              <Span>잔액 </Span>
+                              <Span>{point.balance}</Span>
+                              <Span>P</Span>
+                            </P>
+                          )}
+                        </VerticalFlex>
+                      </HorizontalFlex>
+                    </FlexChild>
+                  );
+                })}
+                <Div className={styles.space_line} />
+              </VerticalFlex>
+            ))}
+            <VerticalFlex paddingTop={10}>
+              <ListPagination
+                page={page}
+                maxPage={maxPage}
+                onChange={setPage}
+              />
             </VerticalFlex>
-          ))
-          : (
-            <NoContent type={'포인트'} />
-          )
-        }
+          </>
+        ) : (
+          <NoContent type={"포인트"} />
+        )}
       </VerticalFlex>
     </>
   );
