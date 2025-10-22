@@ -31,7 +31,6 @@ export default async function ({
             initProducts={newProducts}
             initCondition={newCondition}
             id="comming"
-            commingSoon
           />
         </VerticalFlex>
       </Container>
