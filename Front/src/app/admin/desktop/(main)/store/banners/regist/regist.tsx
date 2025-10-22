@@ -20,8 +20,10 @@ import { textFormat } from "@/shared/regExp";
 import { scrollTo, toast, validateInputs } from "@/shared/utils/Functions";
 import { useRef, useState } from "react";
 import styles from "./page.module.css";
+import { unset } from "lodash";
 
 export default function ({ stores }: { stores: StoreData[] }) {
+  const [bannerType, setBannerType] = useState<"main" | "mini">("main");
   const [store, setStore] = useState<string>("");
   const inputs = useRef<any[]>([]);
   const [adult, setAdult] = useState(false);
@@ -39,6 +41,21 @@ export default function ({ stores }: { stores: StoreData[] }) {
     return category?.name;
   };
 
+  const resetMiniForm = () => {
+    // 이름, 링크
+    inputs.current[0]?.setValue?.("");
+    inputs.current[1]?.setValue?.("");
+    // 썸네일 업로더 (컴포넌트 메서드 케이스별 대비)
+    inputs.current[2]?.reset?.() ??
+      inputs.current[2]?.clear?.() ??
+      inputs.current[2]?.setValue?.("");
+    inputs.current[3]?.reset?.() ??
+      inputs.current[3]?.clear?.() ??
+      inputs.current[3]?.setValue?.("");
+    // 상태들 기본값
+    setIsLoading(false);
+  };
+
   const handleSave = async () => {
     if (!store) return scrollTo("store", "스토어를 설정해주세요.");
 
@@ -48,17 +65,36 @@ export default function ({ stores }: { stores: StoreData[] }) {
     validateInputs(inputs.current)
       .then(({ isValid }: { isValid: boolean }) => {
         if (!isValid) return setIsLoading(false);
+
+        const pc = inputs.current[2].getValue();
+        const mobile = inputs.current[3].getValue();
+        const to = inputs.current[1].getValue();
+
+        if (bannerType === "mini") {
+          adminRequester.addStoreMiniBanner(
+            store,
+            { name, link: to, thumbnail: { pc, mobile } },
+            ({ message, error }: { message?: string; error?: string }) => {
+              if (error) {
+                setIsLoading(false);
+                return toast({ message: error });
+              }
+              toast({ message: "미니배너가 등록되었습니다." });
+              resetMiniForm();
+              // navigate("/store/banners/management");
+            }
+          );
+          return;
+        }
+
+        // 메인배너 생성 (기존 로직 유지)
         const _data: BannerDataFrame = {
           store_id: store,
           name,
-          thumbnail: {
-            pc: inputs.current[2].getValue(),
-            mobile: inputs.current[3].getValue(),
-          },
+          thumbnail: { pc, mobile },
           adult,
           visible,
         };
-        const to = inputs.current[1].getValue();
         if (to) _data.to = to;
         if (!unlimit) {
           _data.starts_at = dates[0];
@@ -78,6 +114,7 @@ export default function ({ stores }: { stores: StoreData[] }) {
         setIsLoading(false);
       });
   };
+
   return (
     <Container padding={"20px 20px 60px 20px"}>
       <div className={styles.queryWrap}>
@@ -125,6 +162,54 @@ export default function ({ stores }: { stores: StoreData[] }) {
                               setStore(value as string);
                             }}
                           />
+                        </FlexChild>
+                      </HorizontalFlex>
+                    </FlexChild>
+                    <FlexChild>
+                      <HorizontalFlex
+                        gap={20}
+                        border={"1px solid #EFEFEF"}
+                        borderRight={"none"}
+                        borderLeft={"none"}
+                      >
+                        <FlexChild
+                          width={"130px"}
+                          padding={"18px 15px"}
+                          backgroundColor={"#F5F6FB"}
+                          justifyContent={"center"}
+                        >
+                          <P size={16} weight={600}>
+                            배너종류
+                          </P>
+                        </FlexChild>
+                        <FlexChild paddingRight={15}>
+                          <RadioGroup
+                            name="bannerType"
+                            value={bannerType}
+                            onValueChange={(v) => setBannerType(v as any)}
+                          >
+                            <HorizontalFlex
+                              gap={15}
+                              justifyContent="flex-start"
+                            >
+                              <FlexChild
+                                gap={12}
+                                width={"auto"}
+                                flexGrow={"unset"}
+                              >
+                                <RadioChild id="main" />
+                                <P size={16} color={"#333"} weight={500}>
+                                  메인배너
+                                </P>
+                              </FlexChild>
+                              <FlexChild gap={12} width={"max-content"}>
+                                <RadioChild id="mini" />
+                                <P size={16} color={"#333"} weight={500}>
+                                  미니배너
+                                </P>
+                              </FlexChild>
+                            </HorizontalFlex>
+                          </RadioGroup>
                         </FlexChild>
                       </HorizontalFlex>
                     </FlexChild>
@@ -181,7 +266,11 @@ export default function ({ stores }: { stores: StoreData[] }) {
                               inputs.current[2] = el;
                             }}
                             name={"배너_썸네일"}
-                            path={`/banners/${store}`}
+                            path={
+                              bannerType === "mini"
+                                ? `/minibanners/${store}`
+                                : `/banners/${store}`
+                            }
                           />
                         </FlexChild>
                       </HorizontalFlex>
@@ -208,7 +297,11 @@ export default function ({ stores }: { stores: StoreData[] }) {
                               inputs.current[3] = el;
                             }}
                             name={"배너_썸네일"}
-                            path={`/banners/${store}`}
+                            path={
+                              bannerType === "mini"
+                                ? `/minibanners/${store}`
+                                : `/banners/${store}`
+                            }
                           />
                         </FlexChild>
                       </HorizontalFlex>
@@ -244,137 +337,141 @@ export default function ({ stores }: { stores: StoreData[] }) {
                         </FlexChild>
                       </HorizontalFlex>
                     </FlexChild>
-                    <HorizontalFlex marginTop={20}>
-                      <FlexChild
-                        border={"1px solid #EFEFEF"}
-                        borderRight={"none"}
-                        borderLeft={"none"}
-                      >
-                        <CheckboxGroup
-                          name="adult"
-                          values={adult ? ["adult"] : []}
-                          onChange={(values) =>
-                            setAdult(values.includes("adult"))
-                          }
+                    {bannerType === "main" && (
+                      <HorizontalFlex marginTop={20}>
+                        <FlexChild
+                          border={"1px solid #EFEFEF"}
+                          borderRight={"none"}
+                          borderLeft={"none"}
                         >
-                          <HorizontalFlex
-                            gap={20}
-                            justifyContent={"flex-start"}
+                          <CheckboxGroup
+                            name="adult"
+                            values={adult ? ["adult"] : []}
+                            onChange={(values) =>
+                              setAdult(values.includes("adult"))
+                            }
                           >
-                            <FlexChild
-                              width={"130px"}
-                              padding={15}
-                              justifyContent={"center"}
-                              backgroundColor={"#3C4B64"}
+                            <HorizontalFlex
+                              gap={20}
+                              justifyContent={"flex-start"}
                             >
-                              <P size={16} weight={600} color={"#ffffff"}>
-                                성인설정
-                              </P>
-                            </FlexChild>
-                            <FlexChild>
-                              <CheckboxChild id="adult" />
-                            </FlexChild>
-                          </HorizontalFlex>
-                        </CheckboxGroup>
-                      </FlexChild>
-                    </HorizontalFlex>
-                    <VerticalFlex
-                      marginTop={20}
-                      borderBottom={"1px solid #EFEFEF"}
-                    >
-                      <FlexChild
-                        padding={15}
-                        justifyContent={"center"}
-                        backgroundColor={"#3C4B64"}
+                              <FlexChild
+                                width={"130px"}
+                                padding={15}
+                                justifyContent={"center"}
+                                backgroundColor={"#3C4B64"}
+                              >
+                                <P size={16} weight={600} color={"#ffffff"}>
+                                  성인설정
+                                </P>
+                              </FlexChild>
+                              <FlexChild>
+                                <CheckboxChild id="adult" />
+                              </FlexChild>
+                            </HorizontalFlex>
+                          </CheckboxGroup>
+                        </FlexChild>
+                      </HorizontalFlex>
+                    )}
+                    {bannerType === "main" && (
+                      <VerticalFlex
+                        marginTop={20}
+                        borderBottom={"1px solid #EFEFEF"}
                       >
-                        <P size={18} weight={600} color={"#ffffff"}>
-                          표시설정
-                        </P>
-                      </FlexChild>
-                      <FlexChild>
-                        <HorizontalFlex>
-                          <FlexChild gap={20}>
-                            <FlexChild
-                              width={"20%"}
-                              padding={15}
-                              backgroundColor={"#F5F6FB"}
-                              justifyContent={"center"}
-                            >
-                              <P size={16} weight={600}>
-                                공개상태
-                              </P>
-                            </FlexChild>
-                            <RadioGroup
-                              name="visible"
-                              value={visible ? "visible" : "invisible"}
-                              onValueChange={(value) =>
-                                setVisible(value === "visible")
-                              }
-                            >
-                              <HorizontalFlex gap={30}>
-                                <FlexChild gap={12} width={"max-content"}>
-                                  <RadioChild id="visible" />
-                                  <P size={16} color={"#333"} weight={500}>
-                                    공개
-                                  </P>
-                                </FlexChild>
-                                <FlexChild gap={12}>
-                                  <RadioChild id="invisible" />
-                                  <P size={16} color={"#333"} weight={500}>
-                                    비공개
-                                  </P>
-                                </FlexChild>
-                              </HorizontalFlex>
-                            </RadioGroup>
-                          </FlexChild>
-                        </HorizontalFlex>
-                      </FlexChild>
-                      <FlexChild>
-                        <HorizontalFlex>
-                          <FlexChild gap={20}>
-                            <FlexChild
-                              width={"20%"}
-                              padding={15}
-                              backgroundColor={"#F5F6FB"}
-                              justifyContent={"center"}
-                            >
-                              <P size={16} weight={600}>
-                                기간설정
-                              </P>
-                            </FlexChild>
-                            <FlexChild>
-                              <CheckboxGroup
-                                name="limit"
-                                initialValues={["unlimit"]}
-                                onChange={(values) =>
-                                  setUnlimit(values.includes("unlimit"))
+                        <FlexChild
+                          padding={15}
+                          justifyContent={"center"}
+                          backgroundColor={"#3C4B64"}
+                        >
+                          <P size={18} weight={600} color={"#ffffff"}>
+                            표시설정
+                          </P>
+                        </FlexChild>
+                        <FlexChild>
+                          <HorizontalFlex>
+                            <FlexChild gap={20}>
+                              <FlexChild
+                                width={"20%"}
+                                padding={15}
+                                backgroundColor={"#F5F6FB"}
+                                justifyContent={"center"}
+                              >
+                                <P size={16} weight={600}>
+                                  공개상태
+                                </P>
+                              </FlexChild>
+                              <RadioGroup
+                                name="visible"
+                                value={visible ? "visible" : "invisible"}
+                                onValueChange={(value) =>
+                                  setVisible(value === "visible")
                                 }
                               >
-                                <HorizontalFlex
-                                  justifyContent="flex-start"
-                                  gap={10}
-                                >
-                                  <FlexChild width={"max-content"} gap={12}>
-                                    <CheckboxChild id="unlimit" />
-                                    <P>무제한</P>
+                                <HorizontalFlex gap={30}>
+                                  <FlexChild gap={12} width={"max-content"}>
+                                    <RadioChild id="visible" />
+                                    <P size={16} color={"#333"} weight={500}>
+                                      공개
+                                    </P>
                                   </FlexChild>
-                                  <FlexChild width={300}>
-                                    <DatePicker
-                                      selectionMode="range"
-                                      disabled={unlimit}
-                                      defaultSelectedRange={dates as any}
-                                      onChange={(dates) =>
-                                        setDates(dates as Date[])
-                                      }
-                                    />
+                                  <FlexChild gap={12}>
+                                    <RadioChild id="invisible" />
+                                    <P size={16} color={"#333"} weight={500}>
+                                      비공개
+                                    </P>
                                   </FlexChild>
                                 </HorizontalFlex>
-                              </CheckboxGroup>
+                              </RadioGroup>
                             </FlexChild>
-                          </FlexChild>
-                        </HorizontalFlex>
-                      </FlexChild>
-                    </VerticalFlex>
+                          </HorizontalFlex>
+                        </FlexChild>
+                        <FlexChild>
+                          <HorizontalFlex>
+                            <FlexChild gap={20}>
+                              <FlexChild
+                                width={"20%"}
+                                padding={15}
+                                backgroundColor={"#F5F6FB"}
+                                justifyContent={"center"}
+                              >
+                                <P size={16} weight={600}>
+                                  기간설정
+                                </P>
+                              </FlexChild>
+                              <FlexChild>
+                                <CheckboxGroup
+                                  name="limit"
+                                  initialValues={["unlimit"]}
+                                  onChange={(values) =>
+                                    setUnlimit(values.includes("unlimit"))
+                                  }
+                                >
+                                  <HorizontalFlex
+                                    justifyContent="flex-start"
+                                    gap={10}
+                                  >
+                                    <FlexChild width={"max-content"} gap={12}>
+                                      <CheckboxChild id="unlimit" />
+                                      <P>무제한</P>
+                                    </FlexChild>
+                                    <FlexChild width={300}>
+                                      <DatePicker
+                                        selectionMode="range"
+                                        disabled={unlimit}
+                                        defaultSelectedRange={dates as any}
+                                        onChange={(dates) =>
+                                          setDates(dates as Date[])
+                                        }
+                                      />
+                                    </FlexChild>
+                                  </HorizontalFlex>
+                                </CheckboxGroup>
+                              </FlexChild>
+                            </FlexChild>
+                          </HorizontalFlex>
+                        </FlexChild>
+                      </VerticalFlex>
+                    )}
                   </VerticalFlex>
                 </div>
               </FlexChild>

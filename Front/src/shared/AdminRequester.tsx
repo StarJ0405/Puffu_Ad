@@ -268,7 +268,7 @@ class _AdminRequester {
     params?: any,
     callback?: Function
   ): Promise<any> {
-    const p = await this.get(`/admin/stores/${id}/minibanner`, params);
+    const p = await this.get(`/stores/${id}/minibanner`, params);
     if (callback) callback(p);
     else return p;
   }
@@ -282,7 +282,7 @@ class _AdminRequester {
     },
     callback?: Function
   ): Promise<any> {
-    const p = await this.post(`/admin/stores/${id}/minibanner`, {
+    const p = await this.post(`/stores/${id}/minibanner`, {
       action: "add",
       data,
     });
@@ -300,7 +300,7 @@ class _AdminRequester {
     }>,
     callback?: Function
   ): Promise<any> {
-    const p = await this.post(`/admin/stores/${id}/minibanner/${index}`, patch);
+    const p = await this.post(`/stores/${id}/minibanner/${index}`, patch);
     if (callback) callback(p);
     else return p;
   }
@@ -310,7 +310,7 @@ class _AdminRequester {
     index: number,
     callback?: Function
   ): Promise<any> {
-    const p = await this.delete(`/admin/stores/${id}/minibanner/${index}`, {});
+    const p = await this.delete(`/stores/${id}/minibanner/${index}`, {});
     if (callback) callback(p);
     else return p;
   }
@@ -321,7 +321,7 @@ class _AdminRequester {
     toIndex: number,
     callback?: Function
   ): Promise<any> {
-    const p = await this.post(`/admin/stores/${id}/minibanner`, {
+    const p = await this.post(`/stores/${id}/minibanner`, {
       action: "reorder",
       data: { fromIndex, toIndex },
     });
