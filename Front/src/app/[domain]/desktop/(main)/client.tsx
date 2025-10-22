@@ -10,7 +10,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
-
+import { useStore } from "@/providers/StoreProvider/StorePorivderClient";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import NoContent from "@/components/noContent/noContent";
 import P from "@/components/P/P";
@@ -26,6 +26,7 @@ import ReviewImgCard from "@/components/card/reviewImgCard";
 import LoadingSpinner from "@/components/loading/LoadingSpinner";
 import LoadingCard from "@/components/card/LoadingCard";
 import ProductLoadBtn from "@/components/buttons/ProductLoadBtn";
+import SubBanner from "@/components/subBanner/subBanner";
 
 export function MainBanner({ initBanners }: { initBanners: Pageable }) {
   const { userData } = useAuth();
@@ -105,61 +106,93 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
           paintBullets(swiper);
         }}
       >
-        {[...banners]?.map((item: BannerDataFrame, i: number) => (
-          item.thumbnail.pc && (
-            <SwiperSlide key={i} className={`swiper_0${i}`}>
-              {item.to ? (
-                <Link href={item.to}>
+        {[...banners]?.map(
+          (item: BannerDataFrame, i: number) =>
+            item.thumbnail.pc && (
+              <SwiperSlide key={i} className={`swiper_0${i}`}>
+                {item.to ? (
+                  <Link href={item.to}>
+                    <Image
+                      src={
+                        userData?.adult
+                          ? item.thumbnail.pc
+                          : "/resources/images/19_only_banner.png"
+                      }
+                      width="100%"
+                    />
+                  </Link>
+                ) : (
                   <Image
-                    src={userData?.adult ? item.thumbnail.pc : "/resources/images/19_only_banner.png"}
+                    src={
+                      userData?.adult
+                        ? item.thumbnail.pc
+                        : "/resources/images/19_only_banner.png"
+                    }
                     width="100%"
                   />
-                </Link>
-              ) : (
-                <Image
-                  src={userData?.adult ? item.thumbnail.pc : "/resources/images/19_only_banner.png"}
-                  width="100%"
-                />
-              )}
-            </SwiperSlide>
-          )
-        ))}
+                )}
+              </SwiperSlide>
+            )
+        )}
       </Swiper>
     </FlexChild>
   );
 }
 
 export function LinkBanner() {
-  const link_banner = [
-    { link: "/", src: "/resources/images/dummy_img/link_banner_01.png" },
-    { link: "/", src: "/resources/images/dummy_img/link_banner_02.png" },
-    { link: "/", src: "/resources/images/dummy_img/link_banner_03.png" },
-    { link: "/", src: "/resources/images/dummy_img/link_banner_04.png" },
-  ];
-
-  const { userData } = useAuth();
+  const { storeData } = useStore();
+  const storeId = storeData?.id;
 
   return (
     <FlexChild width={"auto"}>
       <div className={styles.link_Banner}>
-        {link_banner.map((item, i) => (
-          <Link href={item.link} key={i} className={styles.disabled}>
-            {userData?.adult ? (
-              <Image src={item.src} width={"100%"} height={"auto"} />
-            ) : (
-              // 성인인증 안될때 나오는 이미지
-              <Image
-                src={"/resources/images/19_only_sub_banner_pc.png"}
-                width={"100%"}
-                height={"auto"}
-              />
-            )}
-          </Link>
+        {[0, 1, 2, 3].map((idx) => (
+          <SubBanner
+            key={idx}
+            index={idx}
+            storeId={storeId}
+            variant="pc"
+            width={"100%"}
+            height={"auto"}
+          />
         ))}
       </div>
     </FlexChild>
   );
 }
+
+// export function LinkBanner() {
+//   const link_banner = [
+//     { link: "/", src: "/resources/images/dummy_img/link_banner_01.png" },
+//     { link: "/", src: "/resources/images/dummy_img/link_banner_02.png" },
+//     { link: "/", src: "/resources/images/dummy_img/link_banner_03.png" },
+//     { link: "/", src: "/resources/images/dummy_img/link_banner_04.png" },
+//   ];
+
+//   const { userData } = useAuth();
+//   const { storeData } = useStore();
+//   const storeId = storeData?.id;
+//   return (
+//     <FlexChild width={"auto"}>
+//       <div className={styles.link_Banner}>
+//         {link_banner.map((item, i) => (
+//           <Link href={item.link} key={i} className={styles.disabled}>
+//             {userData?.adult ? (
+//               <Image src={item.src} width={"100%"} height={"auto"} />
+//             ) : (
+//               // 성인인증 안될때 나오는 이미지
+//               <Image
+//                 src={"/resources/images/19_only_sub_banner_pc.png"}
+//                 width={"100%"}
+//                 height={"auto"}
+//               />
+//             )}
+//           </Link>
+//         ))}
+//       </div>
+//     </FlexChild>
+//   );
+// }
 
 export function SubBanner1() {
   const { userData } = useAuth();
@@ -296,14 +329,13 @@ export function HotDealList({
 
   const showMore = async () => {
     if (loading) return;
-      setLoading(true);
+    setLoading(true);
     try {
       await Load(); // 데이터 로드
-      
     } finally {
       setLoading(false); // 끝나면 로딩 해제
     }
-  }
+  };
 
   // const showMore = () => {
   //   Load(); // 서버에서도 다음 페이지 로드
@@ -353,7 +385,12 @@ export function HotDealList({
                 })}
               </MasonryGrid>
               {loading && <LoadingSpinner />}
-              <ProductLoadBtn maxPage={maxPage} page={page} loading={loading} showMore={showMore} />
+              <ProductLoadBtn
+                maxPage={maxPage}
+                page={page}
+                loading={loading}
+                showMore={showMore}
+              />
             </VerticalFlex>
           ) : (
             <NoContent type="상품" />
@@ -400,14 +437,13 @@ export function BestList({
 
   const showMore = async () => {
     if (loading) return;
-      setLoading(true);
+    setLoading(true);
     try {
       await Load(); // 데이터 로드
-      
     } finally {
       setLoading(false); // 끝나면 로딩 해제
     }
-  }
+  };
 
   // const showMore = () => {
   //   Load(); // 서버에서도 다음 페이지 로드
@@ -417,7 +453,7 @@ export function BestList({
     <>
       {products.length > 0 ? (
         <VerticalFlex gap={10}>
-          <MasonryGrid gap={20} width={'100%'} breakpoints={6}>
+          <MasonryGrid gap={20} width={"100%"} breakpoints={6}>
             {products.map((product: ProductData, i: number) => {
               return (
                 <ProductCard
@@ -430,7 +466,12 @@ export function BestList({
             })}
           </MasonryGrid>
           {loading && <LoadingSpinner />}
-          <ProductLoadBtn maxPage={maxPage} page={page} loading={loading} showMore={showMore} />
+          <ProductLoadBtn
+            maxPage={maxPage}
+            page={page}
+            loading={loading}
+            showMore={showMore}
+          />
         </VerticalFlex>
       ) : (
         <NoContent type="상품" />
@@ -438,8 +479,6 @@ export function BestList({
     </>
   );
 }
-
-
 
 type ReviewEntity = {
   id: string;
@@ -464,7 +503,6 @@ type ReviewEntity = {
   };
 };
 
-
 // 리뷰 슬라이더
 export function ProductSlider({
   id,
@@ -473,7 +511,6 @@ export function ProductSlider({
   id: string;
   lineClamp?: number;
 }) {
-  
   const PAGE_SIZE = 10;
   const [items, setItems] = useState<ReviewEntity[]>([]);
   const [pageNumber, setPageNumber] = useState(0);
@@ -482,7 +519,7 @@ export function ProductSlider({
   const [hasMore, setHasMore] = useState(true);
 
   const fetchPage = useCallback(async (pn: number) => {
-    setLoading(true)
+    setLoading(true);
     try {
       const params: any = {
         pageSize: PAGE_SIZE,
@@ -515,7 +552,7 @@ export function ProductSlider({
 
   return (
     <>
-      {(items.length > 0 || loading) ? (
+      {items.length > 0 || loading ? (
         <FlexChild id={id} className={styles.ProductSlider}>
           <Swiper
             loop={false}
@@ -546,7 +583,7 @@ export function ProductSlider({
                         height="auto"
                       />
                     </SwiperSlide>
-            ))}
+                  ))}
           </Swiper>
           <div className={clsx(styles.naviBtn, styles.prevBtn)}>
             <Image

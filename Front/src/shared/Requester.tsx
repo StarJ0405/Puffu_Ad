@@ -324,6 +324,15 @@ class _Requester {
     if (callback) callback(await this.get(`/stores`, data));
     else return await this.get(`/stores`, data);
   }
+  // 미니배너 관련
+  async getStoreMiniBanners(
+    storeId: string,
+    callback?: Function
+  ): Promise<any> {
+    if (callback) callback(await this.get(`/stores/${storeId}/minibanner`, {}));
+    return await this.get(`/stores/${storeId}/minibanner`, {});
+  }
+
   // 카테고리 관련
   async getCategories(data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.get(`/categories`, data));
