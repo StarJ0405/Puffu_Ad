@@ -92,9 +92,15 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
                 width={60}
               />
             </FlexChild>
-            <FlexChild width={"auto"} className={styles.profile_name}>
+            <VerticalFlex width={"auto"} alignItems="start" className={styles.profile_name}>
               <P>{userData?.name ?? "익명"}</P>
-            </FlexChild>
+              
+              { // 구독 가입되어 있으면 나타나기
+                1 < 2 && (
+                  <Image src="resources/images/mypage/subscription_mark.png" width={77} />
+                )
+              }
+            </VerticalFlex>
           </HorizontalFlex>
         </FlexChild>
         <FlexChild
@@ -113,6 +119,15 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
       <FlexChild onClick={() => navigate("/mypage/subscription/success")}>결제완료</FlexChild>
       <FlexChild onClick={() => navigate("/mypage/subscription/cancel")}>구독해지</FlexChild>
       <FlexChild onClick={() => navigate("/mypage/subscription/history")}>구독내역</FlexChild>
+      
+      {// 구독 가입 되어 있으면 안 보이기
+        1 < 2 && (
+          <FlexChild onClick={() => navigate("/mypage/subscription/subscribe")}>
+            <Image src="resources/images/mypage/subscription_banner.png" width={'100%'} />
+          </FlexChild>
+        )
+      }
+
       <VerticalFlex className={styles.membership_box}>
         <HorizontalFlex className={styles.title_box}>
           <FlexChild className={styles.level}>
@@ -365,6 +380,23 @@ export function MypageNavi() {
               <Image src={"/resources/icons/arrow/slide_arrow.png"} width={8} />
             </Link>
           </li>
+          
+          {// 구독 가입되어 있을때만 나오기
+            1 < 2 && (
+              <li>
+                <Link
+                  className={styles.inner_btn}
+                  href={"/mypage/subscription/manage"}
+                >
+                  <FlexChild gap={5}>
+                    <Span>구독 관리</Span>
+                    <Image src={"/resources/images/mypage/subscription_link_icon.png"} width={48} />  
+                  </FlexChild>
+                  <Image src={"/resources/icons/arrow/slide_arrow.png"} width={8} />
+                </Link>
+              </li>
+            )
+          }
 
           {myInfoMenu.map((item, i) => (
             <li key={i}>

@@ -178,7 +178,7 @@
 
 .outer_menu .inner_menu .inner_btn:active span {color: #fff;}
 
-.mypage_navi .outer_menu .inner_menu .inner_btn img {
+.mypage_navi .outer_menu .inner_menu .inner_btn > img {
    position: relative;
    transform: rotate(180deg);
    left: 0;
