@@ -24,6 +24,7 @@ import {
   PrimaryColumn,
   Raw,
   Repository,
+  SaveOptions,
   TreeRepository,
   UpdateDateColumn,
   BaseEntity as _BaseEntity,
@@ -42,7 +43,7 @@ export const AppDataSource = new DataSource({
   logging: process.env.LOGGING === "true" ? ["query", "error"] : false, // 쿼리 로그 활성화
   entities: [path.join(__dirname, "models/**/*.{js,ts}")],
   migrations: [path.join(__dirname, "migration/**/*.{js,ts}")],
-  subscribers: [path.join(__dirname, "subscriber/**/*.{js,ts}")],
+  subscribers: [path.join(__dirname, "subscribers/**/*.{js,ts}")],
   migrationsRun: true,
 });
 export const dataSourceSymbol = Symbol("dataSource");
@@ -78,6 +79,12 @@ export abstract class BaseRepository<T extends ObjectLiteral> {
   }
   async save(data: DeepPartial<T>) {
     return await this.repo.save(data);
+  }
+  async saves(
+    entities: DeepPartial<T>[],
+    options: SaveOptions & { reload?: false }
+  ): Promise<DeepPartial<T>[]> {
+    return this.repo.save(entities, options);
   }
   async create(data: DeepPartial<T>): Promise<T> {
     return await this.repo.save(this.repo.create(data));

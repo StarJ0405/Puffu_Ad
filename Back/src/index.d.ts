@@ -67,4 +67,21 @@ declare global {
   declare interface TreeOptions {
     tree?: "ancestors" | "descendants";
   }
+  declare interface InsertDocument {
+    pageContent: string | object;
+    metadata: Record<string, any>;
+    source_id: string;
+  }
+  declare interface DocumentChunk {
+    id: number;
+    content: string;
+    source_id: string;
+    embedding_vector: string;
+    intent: string;
+  }
+  declare interface Intention {
+    id: number;
+    keyword: string;
+    intent: string;
+  }
 }
