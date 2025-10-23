@@ -9,11 +9,15 @@ import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import usePageData from "@/shared/hooks/data/usePageData";
 import { requester } from "@/shared/Requester";
 import { useMemo, useState, useRef, useEffect } from "react";
-import mypage from "../mypage.module.css";
 import styles from "./page.module.css";
 import clsx from "clsx";
 import Image from "@/components/Image/Image";
-
+import CheckboxGroup from "@/components/choice/checkbox/CheckboxGroup";
+import CheckboxChild from "@/components/choice/checkbox/CheckboxChild";
+import Button from "@/components/buttons/Button";
+import { toast } from "@/shared/utils/Functions";
+import NiceModal from "@ebay/nice-modal-react";
+import useNavigate from "@/shared/hooks/useNavigate";
 
 export function ContentBox({ }: {  }) {
   
@@ -57,3 +61,60 @@ export function ContentBox({ }: {  }) {
     </VerticalFlex>
   );
 }
+
+
+export function CheckConfirm () {
+
+  const [isAgree, setIsAgree] = useState<string[]>([]);
+  const navigate = useNavigate();
+
+  const showModal = (type: "term_check" | "privacy_check") => {
+    NiceModal.show("AgreeContent", {type});
+  };
+
+
+
+  // 결제 버튼
+  const handlePaymentSubmit = async () => {
+    if (isAgree.length === 0) {
+      toast({ message: "서비스 이용약관에 동의해주세요." });
+      return;
+    }
+
+    navigate('/mypage/subscription/success')
+  }
+
+  return (
+    <>
+      <VerticalFlex className={styles.agree_box}>
+        <FlexChild gap={10} justifyContent="center">
+          <FlexChild className={styles.agree_link} width={'auto'} onClick={() => showModal("term_check")}>
+            <P>이용약관</P>
+          </FlexChild>
+  
+          <FlexChild className={styles.agree_link} width={'auto'} onClick={() => showModal("privacy_check")}>
+            <P>개인정보처리 방침</P>
+          </FlexChild>
+        </FlexChild>
+  
+        <label>
+          <CheckboxGroup name={'agree_checkbox'} values={isAgree} onChange={setIsAgree} className={styles.check_box}>
+            <CheckboxChild id={'agree_check'} />
+  
+            <P>상기된 이용약관 내용에 동의합니다.</P>
+          </CheckboxGroup>
+        </label>
+      </VerticalFlex>
+
+      <FlexChild className={styles.confirm_btn}>
+        <FlexChild className={styles.border_layer} onClick={handlePaymentSubmit}>
+          <Button>
+            연간 회원권 결제하기
+          </Button>
+        </FlexChild>
+      </FlexChild>
+    </>
+  )
+}
+
+

@@ -2,20 +2,18 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import clsx from "clsx";
 import styles from "./page.module.css";
 
-import { ContentBox } from "./client";
+import { ContentBox, CheckConfirm } from "./client";
 import { requester } from "@/shared/Requester";
 import FlexChild from "@/components/flex/FlexChild";
 import P from "@/components/P/P";
 import Image from "@/components/Image/Image";
-import CheckboxGroup from "@/components/choice/checkbox/CheckboxGroup";
-import CheckboxChild from "@/components/choice/checkbox/CheckboxChild";
-import Button from "@/components/buttons/Button";
 import Span from "@/components/span/Span";
 
 export default async function () {
   const initCoupons = await requester.getCoupons({
     pageSize: 12,
   });
+
   return (
     <>
       <VerticalFlex className={clsx(styles.wrapper, 'mob_page_container')}>
@@ -83,27 +81,7 @@ export default async function () {
         </FlexChild>
 
 
-        <VerticalFlex className={styles.agree_box}>
-          <FlexChild className={styles.agree_link} width={'auto'}>
-            <P>이용약관 및 개인정보처리 방침</P>
-          </FlexChild>
-
-          <label>
-            <CheckboxGroup name={''} className={styles.check_box}>
-              <CheckboxChild id={''} />
-  
-              <P>상기된 이용약관 내용에 동의합니다.</P>
-            </CheckboxGroup>
-          </label>
-        </VerticalFlex>
-
-        <FlexChild className={styles.confirm_btn}>
-          <FlexChild className={styles.border_layer}>
-            <Button>
-              연간 회원권 결제하기
-            </Button>
-          </FlexChild>
-        </FlexChild>
+        <CheckConfirm />
 
       </VerticalFlex>
     </>

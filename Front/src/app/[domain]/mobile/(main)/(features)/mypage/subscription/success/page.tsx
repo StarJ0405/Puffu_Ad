@@ -38,7 +38,7 @@ export default async function () {
             </Button>
           </Link>
 
-          <Link href={'/mypage/subcription/manage'}>
+          <Link href={'/mypage/subscription/manage'}>
             <Button className={styles.manage_btn}>
               구독 관리로 이동
             </Button>

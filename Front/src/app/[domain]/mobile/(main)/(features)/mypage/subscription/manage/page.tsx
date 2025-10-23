@@ -34,7 +34,7 @@ export default async function () {
   
           <FlexChild className={styles.link_btn}>
             <Link href={'/mypage/subscription/cancel'}>
-              <P>구독 서비스 해지</P>
+              <P>구독 해지</P>
 
               <Image
                 src={"/resources/icons/arrow/mypage_arrow.png"}

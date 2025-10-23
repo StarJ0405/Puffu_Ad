@@ -1,6 +1,6 @@
 "use client";
-import Button from "@/components/buttons/Button";
 import ProductCard from "@/components/card/ProductCard";
+import ReviewImgCard from "@/components/card/reviewImgCard";
 import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
@@ -10,9 +10,11 @@ import clsx from "clsx";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
-import ReviewImgCard from "@/components/card/reviewImgCard";
 
+import ProductLoadBtn from "@/components/buttons/ProductLoadBtn";
+import LoadingCard from "@/components/card/LoadingCard";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
+import LoadingSpinner from "@/components/loading/LoadingSpinner";
 import NoContent from "@/components/noContent/noContent";
 import P from "@/components/P/P";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
@@ -21,11 +23,12 @@ import useData from "@/shared/hooks/data/useData";
 import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
 import { requester } from "@/shared/Requester";
 import { Swiper as SwiperType } from "swiper";
-import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import LoadingCard from "@/components/card/LoadingCard";
-import LoadingSpinner from "@/components/loading/LoadingSpinner";
-import ProductLoadBtn from "@/components/buttons/ProductLoadBtn";
+
+
+
+
 
 export function MainBanner({ initBanners }: { initBanners: Pageable }) {
   const { userData } = useAuth();
