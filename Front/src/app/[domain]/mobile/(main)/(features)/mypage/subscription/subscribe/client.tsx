@@ -3,8 +3,6 @@ import CouponItemMobile from "@/components/coupon/couponItemMobile";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import ListPagination from "@/components/listPagination/ListPagination";
-import NoContent from "@/components/noContent/noContent";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";

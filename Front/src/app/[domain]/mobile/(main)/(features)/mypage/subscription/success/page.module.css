@@ -21,16 +21,31 @@
 
 .complete_box {text-align: center;}
 
+.complete_box img {
+  opacity: 0; transform: translateY(5%);
+  animation: fadeUP 0.7s 0.5s forwards;
+}
+
+@keyframes fadeUP {
+  to {opacity: 1; transform: translateY(0%);}
+}
+
 .complete_box .title {
   margin: 20px 0 10px !important;
   font-size: 25px !important;
   color: #fff !important;
   font-weight: 600;
+
+  opacity: 0; transform: translateY(5%);
+  animation: fadeUP 0.5s 0.8s forwards;
 }
 
 .complete_box .text1 {
   font-size: 14px !important;
   color: #ddd !important;
+
+  opacity: 0; transform: translateY(5%);
+  animation: fadeUP 0.5s 1.1s forwards;
 }
 
 .complete_box .text1 strong {

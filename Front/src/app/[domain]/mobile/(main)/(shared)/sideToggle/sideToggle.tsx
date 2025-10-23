@@ -88,7 +88,7 @@ function ChatToggle() {
   const customPositionPages = ["/orders/cart"];
   const isCustomPosition = customPositionPages.includes(pathname);
 
-  const hiddenCheck = pathname === "/mypage/subscription/success";
+  const hiddenCheck = pathname.includes('/mypage/subscription');
 
   return (
     <nav

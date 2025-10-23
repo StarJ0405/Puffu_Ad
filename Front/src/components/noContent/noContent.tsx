@@ -29,6 +29,7 @@ export function NoContent({type} : {type : string}) {
                   {type === '포인트' && ('사용 내역이 없습니다.')}
                   {type === '쿠폰' && ('등록된 쿠폰이 없습니다.')}
                   {type === '주문 내역' && ('주문 내역이 없습니다.')}
+                  {type === '결제' && ('결제 내역이 없습니다.')}
                </P>
             </FlexChild>
          </VerticalFlex>

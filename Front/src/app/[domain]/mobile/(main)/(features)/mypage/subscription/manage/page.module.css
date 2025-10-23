@@ -1,0 +1,120 @@
+
+.wrapper {
+  --subsribe-color: #3fa0ff;
+  padding-bottom: 100px;
+  position: relative;
+}
+
+.wrapper * {
+  line-height: 1.3;
+  position: relative; z-index: 2;
+}
+
+.list {gap: 15px;}
+
+.list .link_btn a {
+  padding: 16px 20px;
+  background: #131313;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  font-size: 14px;
+  color: #fff;
+}
+
+
+.box_layer {max-width: 500px;}
+
+.period_txt {font-size: 14px; gap: 10px;}
+.period_txt span {color: #fff !important;}
+.period_txt p {color: #797979 !important;}
+
+.premium_layer {
+  background: linear-gradient(180deg, var(--subsribe-color), #015BFF);
+  border-radius: 10px;
+  padding: 1px;
+}
+
+.premium_box {
+  background: linear-gradient(180deg, #262626, #131313);
+  border-radius: inherit;
+}
+
+.premium_box .itemBox {
+  padding: 15px 15px 10px;
+}
+
+.premium_box .service_Title {
+  gap: 8px; align-items: center !important;
+  justify-content: start !important;
+  margin-bottom: 15px;
+}
+
+.premium_box .service_Title .premium_mark {
+  width: auto; border-radius: 5px;
+  background: linear-gradient(90deg, var(--subsribe-color), #015BFF);
+  padding: 1px;
+}
+
+.premium_box .service_Title .premium_mark > div {
+  padding: 7px; background: #000;
+  border-radius: inherit;
+  font-size: 12px; text-transform: uppercase;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+}
+
+.premium_box .service_Title > p {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+}
+
+.item_content {gap: 30px; padding-bottom: 40px;}
+
+.item_content .cumulative {
+  background: #050505;
+  border-radius: 10px;
+  padding: 12px 10px;
+  gap: 20px;
+}
+
+.item_content .cumulative .txt {
+  width: auto;
+  align-self: start;
+  gap: 7px;
+  color: #aeaeae;
+}
+
+.item_content .cumulative .total {
+  width: auto;
+  align-self: end;
+  font-size: 30px;
+  color: var(--subsribe-color);
+  font-weight: 700;
+}
+
+.item_content .unit {gap: 15px;}
+.item_content .unit > div {width: auto; gap: 10px;}
+
+.item_content .unit > div p {font-size: 15px !important; color: #fff !important;}
+.item_content .unit > div p span {color: var(--subsribe-color); font-weight: 600 !important;}
+
+
+.premium_box .payment_txt {
+  align-self: end;
+  font-size: 13px;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.premium_box .next_payment_box {
+  border-top: 1px solid #262626;
+  padding: 12px 5px 16px;
+}
+.premium_box .next_payment_box p {
+  font-size: 13px !important;
+  color: #797979 !important;
+}

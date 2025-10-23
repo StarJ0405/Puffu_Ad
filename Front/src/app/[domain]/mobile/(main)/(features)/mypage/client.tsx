@@ -109,7 +109,10 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
         </FlexChild>
       </HorizontalFlex>
       <FlexChild onClick={() => navigate("/mypage/subscription/subscribe")}>구독버튼</FlexChild>
+      <FlexChild onClick={() => navigate("/mypage/subscription/manage")}>구독관리</FlexChild>
       <FlexChild onClick={() => navigate("/mypage/subscription/success")}>결제완료</FlexChild>
+      <FlexChild onClick={() => navigate("/mypage/subscription/cancel")}>구독해지</FlexChild>
+      <FlexChild onClick={() => navigate("/mypage/subscription/history")}>구독내역</FlexChild>
       <VerticalFlex className={styles.membership_box}>
         <HorizontalFlex className={styles.title_box}>
           <FlexChild className={styles.level}>
