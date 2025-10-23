@@ -205,3 +205,78 @@ header.scroll .info_box .info_wrap {
    gap: 15px; flex-direction: unset !important;
    align-items: center !important;
 }
+
+
+.search_dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #111;
+  border: 1px solid #2a2a2a;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  z-index: 1000;
+  padding: 6px 0 0;
+  max-height: 280px;
+  overflow: hidden;
+}
+
+.search_list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.search_item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+}
+
+.search_item:hover,
+.active {
+  background: #1c1c1c;
+}
+
+.search_item_btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background: transparent;
+  color: #ccc;
+  cursor: pointer;
+  flex: 1;
+  text-align: left;
+  padding: 0;
+  font-size: 14px;
+}
+
+.search_item_remove {
+  border: 0;
+  background: transparent;
+  color: #777;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0 6px;
+}
+
+.search_actions {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #2a2a2a;
+  padding: 8px 10px;
+  background: #0e0e0e;
+}
+
+.clear_all {
+  border: 0;
+  background: transparent;
+  color: #595959;
+  font-size: 13px;
+  cursor: pointer;
+}

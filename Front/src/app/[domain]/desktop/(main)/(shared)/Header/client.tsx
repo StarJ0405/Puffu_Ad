@@ -37,41 +37,196 @@ interface SubMenuItem {
 // }
 
 export function SearchBox() {
-
   const [value, setValue] = useState("");
+  const [open, setOpen] = useState(false);
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [showAll, setShowAll] = useState(false);
   const navigate = useNavigate();
+  const wrapRef = useRef<HTMLDivElement | null>(null);
 
-  const handleSearch = () => {
-    if (value.trim()) {
-      navigate(`/search?q=${value}`);
+  // 안전한 LS 접근
+  const getStored = () => {
+    if (typeof window === "undefined") return [];
+    try {
+      return JSON.parse(localStorage.getItem("recentSearches") || "[]");
+    } catch {
+      return [];
+    }
+  };
+  const setStored = (arr: string[]) => {
+    if (typeof window === "undefined") return;
+    localStorage.setItem("recentSearches", JSON.stringify(arr.slice(0, 5)));
+  };
+  const addTerm = (term: string) => {
+    const t = term.trim();
+    if (!t) return;
+    const stored = getStored();
+    const updated = [t, ...stored.filter((v: string) => v !== t)].slice(0, 5);
+    setStored(updated);
+    setRecentSearches(updated);
+  };
+  const removeTerm = (term: string) => {
+    const updated = getStored().filter((v: string) => v !== term);
+    setStored(updated);
+    setRecentSearches(updated);
+  };
+  const clearAll = () => {
+    if (typeof window === "undefined") return;
+    localStorage.removeItem("recentSearches");
+    setRecentSearches([]);
+  };
+
+  useEffect(() => {
+    setRecentSearches(getStored());
+  }, []);
+
+  // 외부 클릭 닫기
+  useEffect(() => {
+    const onDown = (e: MouseEvent) => {
+      if (!wrapRef.current) return;
+      if (!wrapRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, []);
+
+  const handleSearch = (term?: string) => {
+    const q = (term ?? value).trim();
+    if (!q) return;
+    addTerm(q);
+    setOpen(false);
+    setActiveIndex(null);
+    setShowAll(false);
+    navigate(`/search?q=${encodeURIComponent(q)}`);
+  };
+
+  const base = recentSearches;
+  const filtered = value
+    ? base.filter((v) => v.toLowerCase().includes(value.toLowerCase()))
+    : base;
+  const items = showAll ? base : filtered;
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!open && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+      setOpen(true);
+      return;
+    }
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (!items.length) return;
+      setActiveIndex((prev) => {
+        const idx = prev === null ? 0 : (prev + 1) % items.length;
+        return idx;
+      });
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (!items.length) return;
+      setActiveIndex((prev) => {
+        if (prev === null) return items.length - 1;
+        return (prev - 1 + items.length) % items.length;
+      });
+    } else if (e.key === "Enter") {
+      if (activeIndex !== null && items[activeIndex]) {
+        handleSearch(items[activeIndex]);
+      } else {
+        handleSearch();
+      }
+    } else if (e.key === "Escape") {
+      setOpen(false);
+      setActiveIndex(null);
     }
   };
 
   return (
-    <FlexChild gap={10} className={`searchInput_Box ${styles.search_Box}`}>
+    <FlexChild
+      gap={10}
+      className={`searchInput_Box ${styles.search_Box}`}
+      position="relative"
+      Ref={wrapRef}
+    >
       <input
         type="search"
         placeholder="2025 신제품"
         value={value}
-        onChange={(e) => setValue(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") handleSearch();
+        autoComplete="off"
+        onFocus={() => {
+          setOpen(true);
+          setShowAll(true);
         }}
+        onChange={(e) => {
+          setValue(e.target.value);
+          setOpen(true);
+          setActiveIndex(null);
+          setShowAll(false);
+        }}
+        onKeyDown={onKeyDown}
       />
-
       <Image
         src="/resources/images/header/input_search_icon.png"
         width={18}
         height="auto"
         cursor="pointer"
-        onClick={()=>handleSearch()}
+        onClick={() => handleSearch()}
       />
+
+      {open && (items.length > 0 || recentSearches.length > 0) && (
+        <div
+          className={styles.search_dropdown}
+          role="listbox"
+          aria-label="최근 검색어"
+        >
+          <ul className={styles.search_list}>
+            {(items.length ? items : recentSearches).map((word, i) => (
+              <li
+                key={`${word}-${i}`}
+                role="option"
+                aria-selected={activeIndex === i}
+                className={clsx(styles.search_item, {
+                  [styles.active]: activeIndex === i,
+                })}
+              >
+                <button
+                  type="button"
+                  className={styles.search_item_btn}
+                  onClick={() => handleSearch(word)}
+                  title={`${word} 검색`}
+                >
+                  <Image
+                    src="/resources/images/header/input_search_icon.png"
+                    width={14}
+                    height="auto"
+                  />
+                  <span>{word}</span>
+                </button>
+                <button
+                  type="button"
+                  aria-label={`${word} 삭제`}
+                  className={styles.search_item_remove}
+                  onClick={() => removeTerm(word)}
+                >
+                  ×
+                </button>
+              </li>
+            ))}
+          </ul>
+
+          <div className={styles.search_actions}>
+            <button
+              type="button"
+              onClick={clearAll}
+              className={styles.clear_all}
+            >
+              전체삭제
+            </button>
+          </div>
+        </div>
+      )}
     </FlexChild>
   );
 }
 
 export function HeaderBottom() {
-
   const menu1 = [
     { name: "BEST 상품", link: "/products/best" },
     { name: "입고예정", link: "/products/commingSoon" },
@@ -124,59 +279,59 @@ export function HeaderBottom() {
       {/* 헤더 높이계산용 더미 */}
       {/* <div ref={bottomRef}></div> */}
       {/* <div className={`${fixed ? styles.fixed : ""}`}> */}
-        <HorizontalFlex className="page_container" position="relative">
-          <HorizontalFlex gap={25} justifyContent="start">
-            <FlexChild 
-              width={"auto"}
-              position="relative"
-              className={styles.CategoryBox}
-              // onMouseEnter={() => test()}
-              onMouseEnter={() => SetCaOpen(true)}
-              onMouseLeave={() => SetCaOpen(false)}
-            >
-              <FlexChild
-                gap={10}
-                width={"auto"}
-                className={styles.category_btn}
+      <HorizontalFlex className="page_container" position="relative">
+        <HorizontalFlex gap={25} justifyContent="start">
+          <FlexChild
+            width={"auto"}
+            position="relative"
+            className={styles.CategoryBox}
+            // onMouseEnter={() => test()}
+            onMouseEnter={() => SetCaOpen(true)}
+            onMouseLeave={() => SetCaOpen(false)}
+          >
+            <FlexChild gap={10} width={"auto"} className={styles.category_btn}>
+              <Image
+                src="/resources/images/header/category_menu_icon.png"
+                width={18}
+              />
+              <span className="SacheonFont">카테고리</span>
+            </FlexChild>
+            <HeaderCategory CaOpen={CaOpen} />
+          </FlexChild>
+
+          <FlexChild width={"auto"}>
+            <nav>
+              <ul className={clsx(styles.outerMenu, styles.shop_outer)}>
+                {menu1.map((item, i) => (
+                  <li
+                    key={i}
+                    className={clsx({
+                      [styles.active]: pathname === item.link,
+                    })}
+                  >
+                    <Link href={item.link} className="SacheonFont">
+                      {item.name}
+                      {item.icon ? <Image src={item.icon} width={12} /> : null}
+                    </Link>
+                    <Span className={styles.active_line}></Span>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </FlexChild>
+        </HorizontalFlex>
+
+        <FlexChild gap={20} width={"auto"}>
+          <ul className={clsx(styles.outerMenu, styles.commu_outer)}>
+            {menu2.map((item, i) => (
+              <li
+                key={i}
+                className={clsx({ [styles.active]: pathname === item.link })}
               >
-                <Image
-                  src="/resources/images/header/category_menu_icon.png"
-                  width={18}
-                />
-                <span className="SacheonFont">카테고리</span>
-              </FlexChild>
-              <HeaderCategory CaOpen={CaOpen} />
-            </FlexChild>
-
-            <FlexChild width={"auto"}>
-              <nav>
-                <ul className={clsx(styles.outerMenu, styles.shop_outer)}>
-                  {menu1.map((item, i) => (
-                    <li key={i} className={clsx({[styles.active]: pathname === item.link})}>
-                      <Link href={item.link} className="SacheonFont">
-                        {item.name}
-                        {item.icon ? (
-                          <Image src={item.icon} width={12} />
-                        ) : null}
-                      </Link>
-                      <Span className={styles.active_line}></Span>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            </FlexChild>
-          </HorizontalFlex>
-
-          <FlexChild gap={20} width={"auto"}>
-            <ul className={clsx(styles.outerMenu, styles.commu_outer)}>
-              {menu2.map((item, i) => (
-                <li key={i} className={clsx({[styles.active]: pathname === item.link})}>
-                  <Link href={item.link}>
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-              {/* <li key={i} className={clsx({[styles.active]: pathname === item.link})}>
+                <Link href={item.link}>{item.name}</Link>
+              </li>
+            ))}
+            {/* <li key={i} className={clsx({[styles.active]: pathname === item.link})}>
                   <Link href={item.link}>
                     {item.name}
                     {item.inner ? (
@@ -198,9 +353,9 @@ export function HeaderBottom() {
                     </ul>
                   )}
                 </li> */}
-            </ul>
-          </FlexChild>
-        </HorizontalFlex>
+          </ul>
+        </FlexChild>
+      </HorizontalFlex>
       {/* </div> */}
     </>
   );
@@ -209,7 +364,7 @@ export function HeaderBottom() {
 export function Auth() {
   const [, , removeCookie] = useCookies([Cookies.JWT]);
   const { userData } = useAuth();
-   const logoutModal = () => {
+  const logoutModal = () => {
     // 로그아웃
     NiceModal.show(ConfirmModal, {
       message: (
@@ -227,7 +382,7 @@ export function Auth() {
       },
     });
   };
-  
+
   return (
     <HorizontalFlex gap={13} className={styles.info_top} width={"auto"}>
       <P
