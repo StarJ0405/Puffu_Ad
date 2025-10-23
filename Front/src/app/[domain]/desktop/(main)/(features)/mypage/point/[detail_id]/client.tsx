@@ -65,6 +65,7 @@ export function PointDetail({
               <HorizontalFlex gap={15} alignItems="flex-start">
                 <FlexChild width={"fit-content"}>
                   <Image
+                    cursor="pointer"
                     src={imgFromItem(it)}
                     width={66}
                     onClick={() => navigate(`/products/${productId(it)}`)}
