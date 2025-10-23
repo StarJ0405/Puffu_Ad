@@ -7,6 +7,7 @@ import Span from "@/components/span/Span";
 import Image from "@/components/Image/Image";
 import clsx from "clsx";
 import styles from "./page.module.css";
+import useNavigate from "@/shared/hooks/useNavigate";
 
 export function PointDetail({
   initDetail,
@@ -15,6 +16,7 @@ export function PointDetail({
   initDetail: any;
   initOrder?: any | null;
 }) {
+  const navigate = useNavigate();
   const fmtNumber = (n: number | string | undefined) =>
     new Intl.NumberFormat("ko-KR").format(Number(n ?? 0));
   const fmtKST = (iso?: string) =>
@@ -43,7 +45,7 @@ export function PointDetail({
 
   const imgFromItem = (it: any) =>
     it?.variant?.product?.thumbnail ?? "/resources/images/no_img.png";
-
+  const productId = (it: any) => it?.variant?.product_id;
   return (
     <VerticalFlex
       className={styles.point_detail}
@@ -61,11 +63,20 @@ export function PointDetail({
             >
               <HorizontalFlex gap={7} alignItems="flex-start">
                 <FlexChild width={"fit-content"}>
-                  <Image src={imgFromItem(it)} width={66} />
+                  <Image
+                    src={imgFromItem(it)}
+                    width={66}
+                    onClick={() => navigate(`/products/${productId(it)}`)}
+                  />
                 </FlexChild>
                 <VerticalFlex alignItems="flex-start" gap={10}>
                   <P className={styles.store}>{order?.store?.name ?? ""}</P>
-                  <P className={styles.title}>{titleFromItem(it)}</P>
+                  <P
+                    className={styles.title}
+                    onClick={() => navigate(`/products/${productId(it)}`)}
+                  >
+                    {titleFromItem(it)}
+                  </P>
                   <P className={styles.option}>
                     <Span>{fmtNumber(it?.quantity ?? it?.count ?? 0)}</Span>
                     <Span>개</Span>
@@ -90,7 +101,7 @@ export function PointDetail({
         <VerticalFlex>
           <HorizontalFlex className={styles.point_box}>
             <P>{isUsed ? "사용포인트" : "적립포인트"}</P>
-            <P className={clsx(styles.point, {[styles.used]: isUsed })}>
+            <P className={clsx(styles.point, { [styles.used]: isUsed })}>
               <Span>{isUsed ? "-" : "+"}</Span>
               <Span>{fmtNumber(absPoint)}</Span>
               <Span>P</Span>
