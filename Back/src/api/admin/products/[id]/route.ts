@@ -31,6 +31,7 @@ export const POST: ApiHandler = async (req, res) => {
   const service: ProductService = container.resolve(ProductService);
   try {
     const _data = {
+      id,
       store_id,
       brand_id,
       categories,

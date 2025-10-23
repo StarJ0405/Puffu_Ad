@@ -1,5 +1,22 @@
 export default function () {
   `
+  -- ALTER TABLE document_chunks ALTER COLUMN embedding_vector TYPE VECTOR(768) USING embedding_vector::VECTOR(768);
+  CREATE EXTENSION IF NOT EXISTS vector;
+  CREATE Table IF NOT EXISTS document_chunks (
+    id SERIAL PRIMARY KEY,
+    content TEXT,
+    source_id character varying,
+    embedding_vector vector(768),
+    intent character varying
+  );
+  CREATE UNIQUE INDEX IF NOT EXISTS document_chunks_soruce_id_intent_unique ON document_chunks (source_id, intent);
+  CREATE TABLE IF NOT EXISTS intention (
+    id SERIAL PRIMARY KEY,
+    keyword character varying,
+    intent character varying
+  );
+  CREATE UNIQUE INDEX IF NOT EXISTS intention_keyword_intent_unique ON intention (keyword, intent);
+  CREATE INDEX IF NOT EXISTS document_chunks_embedding_vector_idx ON document_chunks USING ivfflat (embedding_vector vector_cosine_ops) WITH (lists = 100);
   CREATE OR REPLACE FUNCTION fn_text_to_char_array(p_text TEXT)
         RETURNS TEXT[]
         LANGUAGE sql

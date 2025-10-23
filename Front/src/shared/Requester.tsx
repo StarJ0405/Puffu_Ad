@@ -667,6 +667,11 @@ class _Requester {
     if (callback) callback(await this.get(`/users/me/coupons`, data));
     else return await this.get(`/users/me/coupons`, data);
   }
+  // 챗봇
+  async queryChatbot(data: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.post(`/users/me/chatbot`, data));
+    else return await this.post(`/users/me/chatbot`, data);
+  }
 }
 
 export default _Requester;
