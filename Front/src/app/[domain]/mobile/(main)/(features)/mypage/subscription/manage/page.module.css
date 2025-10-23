@@ -112,9 +112,23 @@
 
 .premium_box .next_payment_box {
   border-top: 1px solid #262626;
-  padding: 12px 5px 16px;
+  padding: 12px 10px 16px;
 }
 .premium_box .next_payment_box p {
   font-size: 13px !important;
   color: #797979 !important;
+}
+
+.premium_box .next_payment_box .payment_btn {
+  width: 100%;
+  background: linear-gradient(90deg, var(--subsribe-color), #015BFF);
+  border-radius: 5px;
+  padding: 12px 5px;
+  margin-top: 15px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.premium_box .next_payment_box .payment_btn:active {
+  filter: var(--mob-active-filter);
 }
