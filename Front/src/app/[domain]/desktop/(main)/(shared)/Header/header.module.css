@@ -220,29 +220,39 @@ header.scroll .info_box .info_wrap {
   padding: 6px 0 0;
   max-height: 280px;
   overflow: hidden;
+  /* width: 700px; */
 }
 
-.search_list {
+.recent_search .title {
+   padding: 10px;
+   font-size: 15px;
+   color: #fff;
+}
+
+.recent_search .search_list {
   list-style: none;
   margin: 0;
   padding: 0;
   max-height: 240px;
   overflow-y: auto;
+  width: 100%;
 }
 
-.search_item {
+.recent_search .search_item {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 10px 12px;
+  justify-content: space-between;
+  width: 100%;
 }
 
-.search_item:hover,
-.active {
+.recent_search .search_item:hover,
+.recent_search .active {
   background: #1c1c1c;
 }
 
-.search_item_btn {
+.recent_search .search_item_btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -256,7 +266,7 @@ header.scroll .info_box .info_wrap {
   font-size: 14px;
 }
 
-.search_item_remove {
+.recent_search .search_item_remove {
   border: 0;
   background: transparent;
   color: #777;
@@ -265,7 +275,7 @@ header.scroll .info_box .info_wrap {
   padding: 0 6px;
 }
 
-.search_actions {
+.recent_search .search_actions {
   display: flex;
   justify-content: flex-end;
   border-top: 1px solid #2a2a2a;
@@ -273,7 +283,7 @@ header.scroll .info_box .info_wrap {
   background: #0e0e0e;
 }
 
-.clear_all {
+.recent_search .clear_all {
   border: 0;
   background: transparent;
   color: #595959;
