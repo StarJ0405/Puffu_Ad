@@ -16,6 +16,10 @@
 .point_detail .option {
   font-size: 15px;
 }
+.title:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
 
 .point_detail .points_balance_txt {
   padding-top: 15px;
