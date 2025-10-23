@@ -3,14 +3,9 @@ import clsx from "clsx";
 import styles from "./page.module.css";
 
 // import { ContentBox } from "./client";
-import { requester } from "@/shared/Requester";
-import FlexChild from "@/components/flex/FlexChild";
-import P from "@/components/P/P";
-import Image from "@/components/Image/Image";
-import CheckboxGroup from "@/components/choice/checkbox/CheckboxGroup";
-import CheckboxChild from "@/components/choice/checkbox/CheckboxChild";
 import Button from "@/components/buttons/Button";
-import Span from "@/components/span/Span";
+import Image from "@/components/Image/Image";
+import P from "@/components/P/P";
 import Link from "next/link";
 
 export default async function () {
