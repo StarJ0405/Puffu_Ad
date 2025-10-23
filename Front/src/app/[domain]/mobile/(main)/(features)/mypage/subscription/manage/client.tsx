@@ -79,7 +79,6 @@ export function ContentBox({}: {}) {
 
             <P className={styles.payment_txt}>수동 결제 / 연 49,800원</P>
           </VerticalFlex>
-
           <VerticalFlex className={styles.next_payment_box}>
             <P>다음 결제일 : 2026.09.01</P>
             <P>(결제일 한달전에 공지)</P>

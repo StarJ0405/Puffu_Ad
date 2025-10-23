@@ -13,11 +13,15 @@ import { useEffect, useRef, useState } from "react";
 import { useCookies } from "react-cookie";
 import styles from "./header.module.css";
 import { HeaderCategory } from "./headerCategory";
-import { useCart } from "@/providers/StoreProvider/StorePorivderClient";
 import useNavigate from "@/shared/hooks/useNavigate";
 import { usePathname } from "next/navigation";
 import NiceModal from "@ebay/nice-modal-react";
 import ConfirmModal from "@/modals/confirm/ConfirmModal";
+import VerticalFlex from "@/components/flex/VerticalFlex";
+import { useStore } from "@/providers/StoreProvider/StorePorivderClient";
+import { requester } from "@/shared/Requester";
+import Div from "@/components/div/Div";
+import Button from "@/components/buttons/Button";
 
 interface ShopMenuItem {
   name: string;
@@ -44,6 +48,11 @@ export function SearchBox() {
   const [showAll, setShowAll] = useState(false);
   const navigate = useNavigate();
   const wrapRef = useRef<HTMLDivElement | null>(null);
+  const { storeData } = useStore();
+  const { userData } = useAuth();
+  const [popular, setPopular] = useState<
+    Array<{ keyword: string; popular: number; created_at: string }>
+  >([]);
 
   // 안전한 LS 접근
   const getStored = () => {
@@ -94,12 +103,64 @@ export function SearchBox() {
   const handleSearch = (term?: string) => {
     const q = (term ?? value).trim();
     if (!q) return;
+    if (userData?.id && storeData?.id) {
+      requester.addKeyword({ store_id: storeData.id, keyword: q });
+    }
     addTerm(q);
     setOpen(false);
     setActiveIndex(null);
     setShowAll(false);
     navigate(`/search?q=${encodeURIComponent(q)}`);
   };
+
+  const latestSearch = () => {
+    const q = value.trim();
+    if (!q) return;
+
+    // 서버 로깅: 로그인 사용자만
+    if (userData?.id && storeData?.id) {
+      requester.addKeyword({ store_id: storeData.id, keyword: q });
+    }
+
+    // 로컬 최근검색어
+    const stored = JSON.parse(localStorage.getItem("recentSearches") || "[]");
+    const updated = [q, ...stored.filter((item: string) => item !== q)];
+    const limited = updated.slice(0, 5);
+    localStorage.setItem("recentSearches", JSON.stringify(limited));
+
+    navigate(`/search?q=${q}`);
+  };
+
+  useEffect(() => {
+    // store 준비 후 인기검색어 로딩
+    if (!storeData?.id) return;
+    requester
+      .getKeywords({ store_id: storeData.id })
+      .then((res: any) => {
+        const list =
+          res?.content?.map((it: any) => ({
+            keyword: it?.keyword,
+            popular: Number(it?.popular ?? 0),
+            created_at: it?.created_at,
+          })) ?? [];
+        setPopular(list);
+      })
+      .catch(() => {
+        setPopular([]);
+      });
+  }, [storeData?.id]);
+
+  const top10 = popular.slice(0, 10);
+  const left = top10.slice(0, 5);
+  const right = top10.slice(5, 10);
+  const rankClass = (i: number) =>
+    i === 0
+      ? styles.rank1
+      : i === 1
+      ? styles.rank2
+      : i === 2
+      ? styles.rank3
+      : styles.rank;
 
   const base = recentSearches;
   const filtered = value
@@ -147,7 +208,7 @@ export function SearchBox() {
     >
       <input
         type="search"
-        placeholder="2025 신제품"
+        placeholder="상품 검색"
         value={value}
         autoComplete="off"
         onFocus={() => {
@@ -167,60 +228,155 @@ export function SearchBox() {
         width={18}
         height="auto"
         cursor="pointer"
-        onClick={() => handleSearch()}
+        onClick={() => {
+            latestSearch();
+            handleSearch();
+          }
+        }
       />
 
       {open && (items.length > 0 || recentSearches.length > 0) && (
-        <div
-          className={styles.search_dropdown}
-          role="listbox"
-          aria-label="최근 검색어"
-        >
-          <ul className={styles.search_list}>
-            {(items.length ? items : recentSearches).map((word, i) => (
-              <li
-                key={`${word}-${i}`}
-                role="option"
-                aria-selected={activeIndex === i}
-                className={clsx(styles.search_item, {
-                  [styles.active]: activeIndex === i,
-                })}
-              >
+        <FlexChild className={styles.search_dropdown}>
+          <div
+            role="listbox"
+            aria-label="최근 검색어"
+          >
+            <VerticalFlex className={styles.recent_search} alignItems="start">
+              <FlexChild className={styles.title}>
+                <P>최근 검색어</P>
+              </FlexChild>
+              <ul className={styles.search_list}>
+                {(items.length ? items : recentSearches).map((word, i) => (
+                  <li
+                    key={`${word}-${i}`}
+                    role="option"
+                    aria-selected={activeIndex === i}
+                    className={clsx(styles.search_item, {
+                      [styles.active]: activeIndex === i,
+                    })}
+                  >
+                    <button
+                      type="button"
+                      className={styles.search_item_btn}
+                      onClick={() => handleSearch(word)}
+                      title={`${word} 검색`}
+                    >
+                      <Image
+                        src="/resources/images/header/input_search_icon.png"
+                        width={14}
+                        height="auto"
+                      />
+                      <span>{word}</span>
+                    </button>
+                    <button
+                      type="button"
+                      aria-label={`${word} 삭제`}
+                      className={styles.search_item_remove}
+                      onClick={() => removeTerm(word)}
+                    >
+                      ×
+                    </button>
+                  </li>
+                ))}
+              </ul>
+    
+              <div className={styles.search_actions}>
                 <button
                   type="button"
-                  className={styles.search_item_btn}
-                  onClick={() => handleSearch(word)}
-                  title={`${word} 검색`}
+                  onClick={clearAll}
+                  className={styles.clear_all}
                 >
-                  <Image
-                    src="/resources/images/header/input_search_icon.png"
-                    width={14}
-                    height="auto"
-                  />
-                  <span>{word}</span>
+                  전체삭제
                 </button>
-                <button
-                  type="button"
-                  aria-label={`${word} 삭제`}
-                  className={styles.search_item_remove}
-                  onClick={() => removeTerm(word)}
-                >
-                  ×
-                </button>
-              </li>
-            ))}
-          </ul>
-
-          <div className={styles.search_actions}>
-            <button
-              type="button"
-              onClick={clearAll}
-              className={styles.clear_all}
-            >
-              전체삭제
-            </button>
+              </div>
+            </VerticalFlex>
           </div>
-        </div>
+
+          <VerticalFlex gap={20} hidden>
+            <Div className={styles.divider} />
+            <VerticalFlex gap={20} padding={'0 13px'}>
+              <FlexChild>
+                <P color="#fff" size={14} marginTop={5} className={styles.popularTitle}>
+                  인기 검색어
+                </P>
+              </FlexChild>
+              {top10.length > 0 ? (
+                <HorizontalFlex className={styles.popular_grid}>
+                  {/* Left column */}
+                  <FlexChild className={styles.col}>
+                    <VerticalFlex gap={20}>
+                      {left.map((it, i) => (
+                        <HorizontalFlex
+                          key={`L-${it.keyword}-${i}`}
+                          className={styles.row}
+                          alignItems="center"
+                          justifyContent="flex-start"
+                        >
+                          <Span className={rankClass(i)}>{i + 1}</Span>
+                          <Button
+                            type="button"
+                            className={styles.term}
+                            onClick={() => {
+                              setValue(it.keyword);
+                              if (userData?.id && storeData?.id) {
+                                requester.addKeyword({
+                                  store_id: storeData.id,
+                                  keyword: it.keyword,
+                                });
+                              }
+                              navigate(`/search?q=${it.keyword}`);
+                            }}
+                            title={it.keyword}
+                          >
+                            <Span className={styles.ellipsis}>{it.keyword}</Span>
+                          </Button>
+                        </HorizontalFlex>
+                      ))}
+                    </VerticalFlex>
+                  </FlexChild>
+  
+                  {/* Right column */}
+                  <FlexChild className={styles.col}>
+                    <VerticalFlex gap={20}>
+                      {right.map((it, i) => (
+                        <HorizontalFlex
+                          key={`R-${it.keyword}-${i}`}
+                          className={styles.row}
+                          alignItems="center"
+                          justifyContent="flex-start"
+                        >
+                          <Span className={rankClass(i + 5)}>{i + 6}</Span>
+                          <Button
+                            type="button"
+                            className={styles.term}
+                            onClick={() => {
+                              setValue(it.keyword);
+                              if (userData?.id && storeData?.id) {
+                                requester.addKeyword({
+                                  store_id: storeData.id,
+                                  keyword: it.keyword,
+                                });
+                              }
+                              navigate(`/search?q=${it.keyword}`);
+                            }}
+                            title={it.keyword}
+                          >
+                            <Span className={styles.ellipsis}>{it.keyword}</Span>
+                          </Button>
+                        </HorizontalFlex>
+                      ))}
+                    </VerticalFlex>
+                  </FlexChild>
+                </HorizontalFlex>
+              ) : (
+                <P color="#595959" size={13}>
+                  인기 검색어가 없습니다.
+                </P>
+              )}
+            </VerticalFlex>
+          </VerticalFlex>
+        </FlexChild>
+
       )}
     </FlexChild>
   );
