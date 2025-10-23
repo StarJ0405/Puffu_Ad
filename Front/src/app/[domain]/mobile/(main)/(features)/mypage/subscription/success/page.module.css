@@ -26,10 +26,6 @@
   animation: fadeUP 0.7s 0.5s forwards;
 }
 
-@keyframes fadeUP {
-  to {opacity: 1; transform: translateY(0%);}
-}
-
 .complete_box .title {
   margin: 20px 0 10px !important;
   font-size: 25px !important;
@@ -82,12 +78,24 @@
 
 .confirm_btn .shop_btn {
   background: var(--main-color2);
+
+  opacity: 0; transform: translateY(5%);
+  animation: fadeUP 0.7s 1.6s forwards;
 }
 
 .confirm_btn .manage_btn {
   background: linear-gradient(-90deg, #262626 10%, #050505);
+
+  opacity: 0; transform: translateY(5%);
+  animation: fadeUP 0.7s 1.8s forwards;
 }
 
 .confirm_btn a:active {
   filter: var(--mob-active-filter);
+}
+
+
+/* 애니메이션 */
+@keyframes fadeUP {
+  to {opacity: 1; transform: translateY(0%);}
 }
