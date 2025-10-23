@@ -57,6 +57,7 @@ const editInfoModal = (userData: any, navigate: (path: string) => void) => {
 export function Profile({ initGroups }: { initGroups: Pageable }) {
   const navigate = useNavigate();
   const { userData } = useAuth(); // 유저정보 받아오기
+  console.log(userData);
   const { groups } = useData(
     "groups",
     {},
@@ -71,6 +72,7 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
       .sort((g1: GroupData, g2: GroupData) => g1.min - g2.min)
       .find((f: GroupData) => f.min > (userData?.stored || 0))
   );
+  const isSubscribe = userData?.subscribe != null;
   useEffect(() => {
     setNexGroup(
       groups
@@ -92,12 +94,19 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
                 width={60}
               />
             </FlexChild>
-            <VerticalFlex width={"auto"} alignItems="start" className={styles.profile_name}>
+            <VerticalFlex
+              width={"auto"}
+              alignItems="start"
+              className={styles.profile_name}
+            >
               <P>{userData?.name ?? "익명"}</P>
-              
-              { // 구독 가입되어 있으면 나타나기
-                1 < 2 && (
-                  <Image src="resources/images/mypage/subscription_mark.png" width={77} />
+              {
+                // 구독 가입되어 있으면 나타나기
+                isSubscribe && (
+                  <Image
+                    src="resources/images/mypage/subscription_mark.png"
+                    width={77}
+                  />
                 )
               }
             </VerticalFlex>
@@ -114,16 +123,30 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
           개인정보 수정
         </FlexChild>
       </HorizontalFlex>
-      <FlexChild onClick={() => navigate("/mypage/subscription/subscribe")}>구독버튼</FlexChild>
-      <FlexChild onClick={() => navigate("/mypage/subscription/manage")}>구독관리</FlexChild>
-      <FlexChild onClick={() => navigate("/mypage/subscription/success")}>결제완료</FlexChild>
-      <FlexChild onClick={() => navigate("/mypage/subscription/cancel")}>구독해지</FlexChild>
-      <FlexChild onClick={() => navigate("/mypage/subscription/history")}>구독내역</FlexChild>
-      
-      {// 구독 가입 되어 있으면 안 보이기
-        1 < 2 && (
+      <FlexChild onClick={() => navigate("/mypage/subscription/subscribe")}>
+        구독버튼
+      </FlexChild>
+      <FlexChild onClick={() => navigate("/mypage/subscription/manage")}>
+        구독관리
+      </FlexChild>
+      <FlexChild onClick={() => navigate("/mypage/subscription/success")}>
+        결제완료
+      </FlexChild>
+      <FlexChild onClick={() => navigate("/mypage/subscription/cancel")}>
+        구독해지
+      </FlexChild>
+      <FlexChild onClick={() => navigate("/mypage/subscription/history")}>
+        구독내역
+      </FlexChild>
+
+      {
+        // 구독 가입 되어 있으면 안 보이기
+        !isSubscribe && (
           <FlexChild onClick={() => navigate("/mypage/subscription/subscribe")}>
-            <Image src="resources/images/mypage/subscription_banner.png" width={'100%'} />
+            <Image
+              src="resources/images/mypage/subscription_banner.png"
+              width={"100%"}
+            />
           </FlexChild>
         )
       }
@@ -194,10 +217,7 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
       <VerticalFlex className={styles.coupon_box}>
         <HorizontalFlex className={styles.title_box}>
           <FlexChild gap={6}>
-            <Image
-              src="resources/icons/mypage/coupon_icon.png"
-              width={30}
-            />
+            <Image src="resources/icons/mypage/coupon_icon.png" width={30} />
             <P>보유쿠폰</P>
           </FlexChild>
           <HorizontalFlex
@@ -307,7 +327,7 @@ export function MypageNavi() {
   const [, , removeCookie] = useCookies([Cookies.JWT]);
   const { userData } = useAuth();
   const navigate = useNavigate();
-
+  const isSubscribe = userData?.subscribe != null;
   const logoutModal = () => {
     // 로그아웃
 
@@ -380,9 +400,10 @@ export function MypageNavi() {
               <Image src={"/resources/icons/arrow/slide_arrow.png"} width={8} />
             </Link>
           </li>
-          
-          {// 구독 가입되어 있을때만 나오기
-            1 < 2 && (
+
+          {
+            // 구독 가입되어 있을때만 나오기
+            isSubscribe && (
               <li>
                 <Link
                   className={styles.inner_btn}
@@ -390,9 +411,17 @@ export function MypageNavi() {
                 >
                   <FlexChild gap={5}>
                     <Span>구독 관리</Span>
-                    <Image src={"/resources/images/mypage/subscription_link_icon.png"} width={48} />  
+                    <Image
+                      src={
+                        "/resources/images/mypage/subscription_link_icon.png"
+                      }
+                      width={48}
+                    />
                   </FlexChild>
-                  <Image src={"/resources/icons/arrow/slide_arrow.png"} width={8} />
+                  <Image
+                    src={"/resources/icons/arrow/slide_arrow.png"}
+                    width={8}
+                  />
                 </Link>
               </li>
             )
