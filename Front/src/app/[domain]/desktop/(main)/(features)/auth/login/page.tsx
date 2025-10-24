@@ -1,4 +1,3 @@
-import Container from "@/components/container/Container";
 import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
@@ -6,11 +5,11 @@ import Input from "@/components/inputs/Input";
 import Span from "@/components/span/Span";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivder";
 import clsx from "clsx";
+import { SearchParams } from "next/dist/server/request/search-params";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { LoginFrame } from "./client";
 import styles from "./page.module.css";
-import { SearchParams } from "next/dist/server/request/search-params";
 
 export default async function ({
   searchParams,
@@ -18,11 +17,11 @@ export default async function ({
   searchParams: Promise<SearchParams>;
 }) {
   const { userData } = await useAuth();
+  const { id, redirect_url } = await searchParams;
   if (userData?.id) {
-    redirect("/");
+    redirect(String(redirect_url || "/"));
   }
-  const { id } = await searchParams;
-  
+
   return (
     <>
       <section className={clsx("root page_container", styles.container)}>

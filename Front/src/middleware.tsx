@@ -48,8 +48,13 @@ export async function middleware(req: NextRequest) {
 
       const user = response.data.user;
       if (!user?.id && pathname !== "/" && !pathname.startsWith("/auth"))
-        return NextResponse.redirect(new URL(`/auth/login`, req.url));
-    }
+        return NextResponse.redirect(
+          new URL(`/auth/login?redirect_url=${pathname}`, req.url)
+        );
+    } else if (pathname !== "/" && !pathname.startsWith("/auth"))
+      return NextResponse.redirect(
+        new URL(`/auth/login?redirect_url=${pathname}`, req.url)
+      );
     return NextResponse.rewrite(
       new URL(`/$main/${deviceType}${pathname}${url.search}`, req.url),
       {

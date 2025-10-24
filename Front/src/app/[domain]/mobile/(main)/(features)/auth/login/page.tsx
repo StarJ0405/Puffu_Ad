@@ -1,4 +1,3 @@
-import Container from "@/components/container/Container";
 import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
@@ -6,19 +5,27 @@ import Input from "@/components/inputs/Input";
 import Span from "@/components/span/Span";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivder";
 import clsx from "clsx";
+import { SearchParams } from "next/dist/server/request/search-params";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { LoginFrame } from "./client";
 import styles from "./page.module.css";
 
-export default async function () {
+export default async function ({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
   const { userData } = await useAuth();
+  const { id, redirect_url } = await searchParams;
   if (userData?.id) {
-    redirect("/");
+    redirect(String(redirect_url || "/"));
   }
   return (
     <>
-      <section className={clsx("mob_root mob_page_container", styles.container)}>
+      <section
+        className={clsx("mob_root mob_page_container", styles.container)}
+      >
         <VerticalFlex className={styles.loginBox}>
           <FlexChild className={styles.logo}>
             <Link href={"/"}>
@@ -31,7 +38,12 @@ export default async function () {
               <VerticalFlex gap={20} width={"100%"}>
                 <FlexChild className={styles.input_box}>
                   <Span>아이디</Span>
-                  <Input id="username" placeHolder="아이디" width={"100%"} />
+                  <Input
+                    id="username"
+                    placeHolder="아이디"
+                    width={"100%"}
+                    value={id as string}
+                  />
                 </FlexChild>
 
                 <FlexChild className={styles.input_box}>
