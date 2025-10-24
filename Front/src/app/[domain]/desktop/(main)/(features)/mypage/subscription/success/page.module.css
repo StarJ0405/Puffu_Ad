@@ -1,0 +1,93 @@
+
+.wrapper {
+  --subsribe-color: #3fa0ff;
+  /* position: relative; */
+  height: 100lvh;
+  background: url('/resources/images/mypage/subscription_success_bg_pc.png') center bottom / cover no-repeat;
+  gap: 250px;
+}
+
+.wrapper * {
+  line-height: 1.3;
+  position: relative; z-index: 2;
+}
+
+.complete_box {text-align: center; flex: unset !important;}
+
+.complete_box img {
+  opacity: 0; transform: translateY(5%);
+  animation: fadeUP 0.7s 0.5s forwards;
+}
+
+.complete_box .title {
+  margin: 40px 0 30px !important;
+  font-size: 45px !important;
+  color: #fff !important;
+  font-weight: 600;
+
+  opacity: 0; transform: translateY(5%);
+  animation: fadeUP 0.5s 0.8s forwards;
+}
+
+.complete_box .text1 {
+  font-size: 20px !important;
+  color: #fff !important;
+  font-weight: 400 !important;
+  line-height: 1.4;
+
+  opacity: 0; transform: translateY(5%);
+  animation: fadeUP 0.5s 1.1s forwards;
+}
+
+.complete_box .text1 strong {
+  color: var(--subsribe-color);
+  font-weight: 600 !important;
+}
+
+
+.confirm_btn {
+  width: 100%;
+  padding: 0 13px 20px;
+  z-index: 100;
+  max-width: 380px;
+  gap: 12px;
+  flex: unset !important;
+}
+
+.confirm_btn a {
+  width: 100%;
+  display: block;
+}
+
+.confirm_btn button {
+  width: 100%;
+  font-size: 18px;
+  padding: 15px 10px;
+  border-radius: 10px;
+  font-weight: 600;
+  border: 1px solid #eee;
+}
+
+.confirm_btn .shop_btn {
+  background: var(--main-color2);
+
+  opacity: 0; transform: translateY(5%);
+  animation: fadeUP 0.7s 1.6s forwards;
+}
+
+.confirm_btn .manage_btn {
+  background: #050505;
+
+  opacity: 0; transform: translateY(5%);
+  animation: fadeUP 0.7s 1.8s forwards;
+}
+
+.confirm_btn a:active {
+  filter: var(--mob-active-filter);
+}
+
+
+/* 애니메이션 */
+@keyframes fadeUP {
+  to {opacity: 1; transform: translateY(0%);}
+}

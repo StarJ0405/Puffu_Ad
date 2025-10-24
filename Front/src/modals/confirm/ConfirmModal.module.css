@@ -26,6 +26,12 @@
   background-color: #ffffff 1f4;
 }
 
+.close_box {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
 .closeButton {
   background-color: transparent !important;
   color: #999 !important;
