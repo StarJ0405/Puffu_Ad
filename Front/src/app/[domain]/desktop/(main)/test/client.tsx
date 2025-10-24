@@ -44,6 +44,10 @@ export default function () {
         챗봇과 테스트해보는 주소
       </P>
       <FlexChild
+        overflow="scroll"
+        hideScrollbar
+        maxHeight={"60dvh"}
+        minHeight={"60dvh"}
         height={"60dvh"}
         backgroundColor="#aaa"
         border={"1px solid #d0d0d0"}

@@ -7,7 +7,7 @@ export async function query(question: string) {
             당신은 질문 분석 전문가입니다.
             아래 사용자 질문을 분석하여, **가장 핵심적인 검색 키워드**만 추출하십시오.
             출력은 **쉼표(,)로 구분된 단어 리스트 형태**로만 출력해야 합니다.
-            목표는 저장된 데이터의 키(product_name, price, product_id)와 일치하는 키워드를 찾는 것입니다.
+            목표는 저장된 데이터의 키(product_name, product_id,categories,tags,type,brand_name)와 일치하는 키워드를 찾는 것입니다.
 
             예시)
             질문: 얼려먹고싶오의 가격을 알려줘
@@ -18,7 +18,9 @@ export async function query(question: string) {
             `,
       question
     );
-    const contextChunks = await embedContent(query || "", "PRODUCT");
+    const contextChunks = await embedContent(query || "", "PRODUCT", {
+      where: `AND metadata ->>'visible' = 'true'`,
+    });
     const context = contextChunks.join("\n---\n");
     const response = await generateContent(
       `
@@ -40,6 +42,6 @@ export async function query(question: string) {
     return response;
   } catch (error) {
     console.error("키워드 추출 실패:", error);
-    return question; // 오류 시 원본 질문 사용
+    return "알 수 없는 질문입니다.";
   }
 }

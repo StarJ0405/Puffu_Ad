@@ -5,6 +5,7 @@ import { IsNull } from "typeorm";
 export const GET: ApiHandler = async (req, res) => {
   const user = req.user;
   const { store_id, type } = req.parsedQuery;
+  if (!store_id || store_id === "undefined") return res.json(500);
   const service = container.resolve(CartService);
   let cart = await service.get({
     where: {

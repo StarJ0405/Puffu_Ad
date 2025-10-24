@@ -5,10 +5,10 @@ interface Split {
   question: string;
   value: string;
 }
-export async function query(question: string) {
+export async function query(question: string, metadata?: Record<string, any>) {
   const classification = await findIntent(question);
   if (list.find((f) => f.value === classification))
-    return await Process(question, classification);
+    return await Process(question, classification, metadata);
   else {
     // return generateDefault(question) // 기본 챗봇 질문 조회
     return "좀 더 자세한 설명을 부탁드려요!";
@@ -25,7 +25,7 @@ const list: Split[] = [
     value: "RECOMMEND",
   },
   {
-    question: "이벤트나 특가 상품, 세일(할인) 상품에 관한 내용",
+    question: "이벤트(행사)나 특가 상품, 세일(할인) 상품에 관한 내용",
     value: "EVENT",
   },
   {
@@ -41,7 +41,8 @@ const list: Split[] = [
     value: "BANK",
   },
   {
-    question: "특정 주문서의 정보(주문번호)거나 혹은 특정 상품을 주문했던 기록",
+    question:
+      "특정 주문서의 정보(주문번호)거나 혹은 특정 상품을 주문했던 기록 혹은 가장 최근 주문서 목록",
     value: "ORDER",
   },
   {
@@ -75,11 +76,6 @@ async function findIntent(question: string) {
       `SELECT * FROM public.intention WHERE keyword ilike '%${question}%' LIMIT 1`
     )
   )?.[0];
-  // .findOne({
-  //   where: {
-  //     keyword: ILike(`%${question}%`),
-  //   },
-  // });
   if (intent) return intent.intent.toUpperCase();
   const prompt = `
             당신은 질문 분류 전문가입니다.

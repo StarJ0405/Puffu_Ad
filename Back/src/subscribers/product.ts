@@ -4,12 +4,13 @@ import { ProductService } from "services/product";
 import { container } from "tsyringe";
 import {
   EntitySubscriberInterface,
-  EventSubscriber,
+  EventSubscriber as TypeormEventSubscriber,
   InsertEvent,
   UpdateEvent,
 } from "typeorm";
+import { productToDocument } from "utils/data";
 
-@EventSubscriber()
+@TypeormEventSubscriber()
 export class ProductSubscriber implements EntitySubscriberInterface<Product> {
   listenTo() {
     return Product;
@@ -17,37 +18,29 @@ export class ProductSubscriber implements EntitySubscriberInterface<Product> {
   async afterUpdate(event: UpdateEvent<Product>): Promise<void> {
     const id = event?.entity?.id;
     const service = container.resolve(ProductService);
-    const product = await service.get({ where: { id } });
-    if (id && product) {
-      const document = await this._productToDocument(product);
-      await insertDocument(document, "PRODUCT");
-      if (product.title) await insertIntention([product.title], "PRODUCT");
+    const _product = await service.get({
+      where: { id },
+      relations: ["categories.parent.parent", "brand"],
+    });
+    if (id && _product) {
+      const document = productToDocument(_product);
+      await insertDocument([document], "PRODUCT");
+      if (_product.title) await insertIntention([_product.title], "PRODUCT");
     }
   }
-  async _productToDocument(product: Product) {
-    return [
-      {
-        source_id: product.id,
-        pageContent: {
-          product_name: product.title,
-          price: `${product.price}원`,
-          product_id: product.id,
-        },
-        metadata: {
-          price: product.price,
-        },
-      },
-    ];
-  }
+
   async afterInsert(event: InsertEvent<Product>): Promise<void> {
     const id = event.entityId;
     if (id) {
       const service = container.resolve(ProductService);
-      const product = await service.get({ where: { id: String(id) } });
-      if (product) {
-        const document = await this._productToDocument(product);
-        await insertDocument(document, "PRODUCT");
-        if (product.title) await insertIntention([product.title], "PRODUCT");
+      const _product = await service.get({
+        where: { id: String(id) },
+        relations: ["categories.parent.parent", "brand"],
+      });
+      if (_product) {
+        const document = productToDocument(_product);
+        await insertDocument([document], "PRODUCT");
+        if (_product.title) await insertIntention([_product.title], "PRODUCT");
       }
     }
   }

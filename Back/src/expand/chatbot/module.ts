@@ -49,8 +49,13 @@ export async function generateContent(prompty: string, question: string) {
 export async function embedContent(
   query: string,
   intent?: string,
-  K_RESULTS: number = 100
+  options?: {
+    K_RESULTS?: number;
+    where?: string | string[];
+    sort?: string | string[];
+  }
 ) {
+  const { K_RESULTS = 100, where, sort } = options || {};
   const embeddingResult = await ai.models.embedContent({
     model: EMBEDDING_MODEL,
     contents: query,
@@ -63,16 +68,28 @@ export async function embedContent(
   const vectorString = `[${queryVector
     .map((query) => query.values)
     .join(",")}]`;
-
+  let _sort =
+    sort && sort?.length > 0
+      ? (Array.isArray(sort) ? sort : [sort]).join(", ")
+      : undefined;
   const queryText = `
         SELECT 
             content,
             source_id 
         FROM 
             document_chunks
-        ${intent ? `WHERE intent = '${intent}'` : ""}
+        WHERE 
+          content::text ~ '^\s*\{.*\}\s*$'
+          ${intent ? `AND intent = '${intent}'` : ""}
+          ${
+            where
+              ? Array.isArray(where)
+                ? where.map((whs) => ` ${whs} `).join(" ")
+                : ` ${where} `
+              : ""
+          }
         ORDER BY 
-            embedding_vector <=> $1 
+            embedding_vector <=> $1 ${_sort ? `, ${_sort}` : ""}
         LIMIT $2;
     `;
 
@@ -82,7 +99,7 @@ export async function embedContent(
   ]);
 
   const contextChunks = result.map((row) => row.content);
-  return contextChunks;
+  return _.uniq(contextChunks);
 }
 export async function dataToVector(data: string) {
   const vectors = await embeddings.embedDocuments([data]);
@@ -90,6 +107,7 @@ export async function dataToVector(data: string) {
 }
 
 export async function insertDocument(data: InsertDocument[], intent: string) {
+  if (data.length === 0) return;
   let chunksToSave = [];
   for (const datum of data) {
     const doc = new Document({
@@ -102,14 +120,16 @@ export async function insertDocument(data: InsertDocument[], intent: string) {
     const splitDocs = await splitter.splitDocuments([doc]);
     chunksToSave.push(...splitDocs);
   }
+
   const vectors = await embeddings.embedDocuments(
     chunksToSave.map((chunk) => chunk.pageContent)
   );
 
   const entitiesToSave: DocumentChunk[] = chunksToSave.map((chunk, index) => {
     const entity = {} as DocumentChunk;
-    entity.content = chunk.pageContent;
     entity.source_id = chunk.metadata.source_id.toString();
+    delete chunk.metadata.source_id;
+    entity.content = JSON.stringify(chunk.metadata, null, 2);
     entity.embedding_vector = `[${vectors[index].join(",")}]`;
     entity.intent = intent.toUpperCase();
     return entity;
@@ -118,22 +138,29 @@ export async function insertDocument(data: InsertDocument[], intent: string) {
   await queryRunner.connect();
   try {
     const table = "document_chunks";
-    const rows = entitiesToSave.map((datum) => {
+    const deleteRows = _.uniq(
+      entitiesToSave.map((datum) => `'${datum.source_id}'`)
+    ).join(",");
+    const deleteSQL = `
+      DELETE FROM "${table}"
+      WHERE
+        source_id IN (${deleteRows})
+        AND intent = '${intent}'
+    `;
+    await queryRunner.query(deleteSQL);
+
+    const insertRows = entitiesToSave.map((datum) => {
       const content = datum.content.replace(/'/g, "''");
       const source_id = datum.source_id.replace(/'/g, "''");
       const embedding_vector = datum.embedding_vector.replace(/'/g, "''");
       const intent = datum.intent.replace(/'/g, "''");
       return `('${content}', '${source_id}', '${embedding_vector}', '${intent}')`;
     });
-    const sql = `
+    const insertSQL = `
       INSERT INTO "${table}" (content, source_id, embedding_vector, intent)
-      VALUES ${rows}
-      ON CONFLICT (source_id, intent)
-      DO UPDATE SET
-        content = EXCLUDED.content,
-        embedding_vector = EXCLUDED.embedding_vector;
+      VALUES ${insertRows}
     `;
-    return await queryRunner.query(sql);
+    return await queryRunner.query(insertSQL);
   } catch (error) {
     console.error("Raw SQL 삽입/업데이트 오류:", error);
     throw error;
