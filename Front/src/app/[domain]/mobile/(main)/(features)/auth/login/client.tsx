@@ -12,6 +12,7 @@ import { Cookies } from "@/shared/utils/Data";
 import { getCookieOption } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import styles from "./page.module.css";
@@ -45,7 +46,7 @@ export function SignFeatures({
       <FlexChild
         className={clsx(styles.login_and, loginKeep && styles.active)}
         width={"auto"}
-        onClick={() => setLoginkeep(prev => !prev)}
+        onClick={() => setLoginkeep((prev) => !prev)}
       >
         {/* <CheckboxChild id={'11'} /> */}
         <Span cursor="pointer">로그인 상태 유지</Span>
@@ -69,6 +70,7 @@ export function SignFeatures({
 export function SubmitGroup({ loginKeep }: { loginKeep: boolean }) {
   const { userData } = useAuth();
   const [, setCookies] = useCookies([Cookies.JWT]);
+  const searchParams = useSearchParams();
   const navigate = useNavigate();
   const onClick = async () => {
     const _username = document.getElementById("username");
@@ -108,7 +110,7 @@ export function SubmitGroup({ loginKeep }: { loginKeep: boolean }) {
     });
   };
   useEffect(() => {
-    if (userData?.id) navigate("/");
+    if (userData?.id) navigate(searchParams.get("redirect_url") || "/");
   }, [userData]);
   return (
     <>

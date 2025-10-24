@@ -290,10 +290,15 @@ export function MyOrdersTable({
                         <Button
                           // className={styles.tracking_btn}
                           className={styles.order_detail_btn}
+                          // onClick={() =>
+                          //   openTrackingNumber(
+                          //     order.shipping_method?.tracking_number as any
+                          //   )
+                          // }
                           onClick={() =>
-                            openTrackingNumber(
-                              order.shipping_method?.tracking_number as any
-                            )
+                            NiceModal.show("deliveryDetail", {
+                              order,
+                            })
                           }
                         >
                           배송조회

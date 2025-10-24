@@ -6,7 +6,7 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 
 export default async function () {
   const { userData } = await useAuth();
-  if (userData.role !== "admin") return notFound();
+  if (userData?.role !== "admin") return notFound();
   return (
     <section className={clsx("root ", "page_container")}>
       <VerticalFlex height={"100dvh"}>

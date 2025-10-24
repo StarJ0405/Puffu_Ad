@@ -15,6 +15,7 @@ import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import styles from "./page.module.css";
+import { useSearchParams } from "next/navigation";
 
 export function LoginFrame() {
   const [loginKeep, setLoginkeep] = useState<boolean>(false);
@@ -45,7 +46,7 @@ export function SignFeatures({
       <FlexChild
         className={clsx(styles.login_and, loginKeep && styles.active)}
         width={"auto"}
-        onClick={() => setLoginkeep(prev => !prev)}
+        onClick={() => setLoginkeep((prev) => !prev)}
       >
         <Span cursor="pointer">로그인 상태 유지</Span>
       </FlexChild>
@@ -69,6 +70,7 @@ export function SubmitGroup({ loginKeep }: { loginKeep: boolean }) {
   const { userData } = useAuth();
   const [, setCookies] = useCookies([Cookies.JWT]);
   const navigate = useNavigate();
+  const searchParams = useSearchParams();
   useEffect(() => {
     const _username = document.getElementById("username");
     const _password = document.getElementById("password");
@@ -130,7 +132,7 @@ export function SubmitGroup({ loginKeep }: { loginKeep: boolean }) {
     });
   };
   useEffect(() => {
-    if (userData?.id) navigate("/");
+    if (userData?.id) navigate(searchParams.get("redirect_url") || "/");
   }, [userData]);
   return (
     <>

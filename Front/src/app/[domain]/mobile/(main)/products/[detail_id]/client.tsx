@@ -34,6 +34,7 @@ import DeliveryGuide from "./_deliveryGuide/deliveryGuide";
 import Description from "./_description/description";
 import InquiryClient from "./_inquiry/client";
 import Review from "./_review/review";
+import { usePathname } from "next/navigation";
 
 interface Variant {
   variant_id: string;
@@ -61,6 +62,7 @@ export function ProductWrapper({
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
   const pageSize = 5;
+  const pathname = usePathname();
 
   const { product, mutate } = useData(
     "product",
@@ -150,7 +152,7 @@ export function ProductWrapper({
         message: "로그인 필요합니다.",
         confirmText: "로그인하기",
         cancelText: "취소",
-        onConfirm: () => navigate("/auth/login"),
+        onConfirm: () => navigate(`/auth/login?redirect_url=${pathname}`),
       });
       return false;
     }
@@ -180,7 +182,7 @@ export function ProductWrapper({
         message: "로그인 필요합니다.",
         confirmText: "로그인하기",
         cancelText: "취소",
-        onConfirm: () => navigate("/auth/login"),
+        onConfirm: () => navigate(`/auth/login?redirect_url=${pathname}`),
       });
       return false;
     }
@@ -363,7 +365,6 @@ export function DetailFrame({
     </VerticalFlex>
   );
 }
-
 
 // 구매하기 버튼 누르면 나오는 모달
 const buyCartModal = NiceModal.create(

@@ -10,11 +10,12 @@ export default function ({ children }: { children: React.ReactNode }) {
   const { userData } = useAuth();
   useEffect(() => {
     if (!userData?.id && pathname !== "/" && !pathname.startsWith("/auth"))
-      redirect("/auth/login");
+      redirect(`/auth/login?redirect_url=${pathname}`);
   }, [userData, pathname]);
 
-  useEffect(()=> {// 일부 페이지 로딩되면 상단으로 이동 안해서 추가함
-    window.scrollTo(0,0);
+  useEffect(() => {
+    // 일부 페이지 로딩되면 상단으로 이동 안해서 추가함
+    window.scrollTo(0, 0);
   }, [pathname]);
 
   return (
