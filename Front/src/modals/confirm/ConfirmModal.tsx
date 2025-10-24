@@ -29,6 +29,7 @@ const ConfirmModal = NiceModal.create(
     slideUp = false,
     clickOutsideToClose = true,
     classNames,
+    backgroundColor,
     preventable = false, // true시 onConfirm false면 캔슬됨
   }: any) => {
     const [withHeader, withFooter] = [false, false];
@@ -79,6 +80,7 @@ const ConfirmModal = NiceModal.create(
         buttonText={buttonText}
         borderRadius={6}
         slideUp={slideUp}
+        backgroundColor={backgroundColor}
       >
         {(title || withCloseButton) && (
           <FlexChild
@@ -87,12 +89,12 @@ const ConfirmModal = NiceModal.create(
             left={15}
             width={"calc(100% - 30px)"}
           >
-            <HorizontalFlex>
-              <FlexChild className={classNames?.title}>
+            <FlexChild justifyContent="center" position="relative">
+              <FlexChild className={classNames?.title} justifyContent="center" padding={'0 15px 10px'}>
                 {typeof title === "string" ? <P>{title}</P> : <>{title}</>}
               </FlexChild>
               {withCloseButton && (
-                <FlexChild width={"max-content"}>
+                <FlexChild width={"max-content"} className={styles.close_box}>
                   <Button
                     width={"max-content"}
                     className={styles.closeButton}
@@ -102,12 +104,12 @@ const ConfirmModal = NiceModal.create(
                   </Button>
                 </FlexChild>
               )}
-            </HorizontalFlex>
+            </FlexChild>
           </FlexChild>
         )}
 
         <FlexChild
-          padding={!isMobile ? "50px 15px 24px" : "30px 10px 20px"}
+          padding={!isMobile ? "70px 15px 24px" : "40px 10px 20px"}
           height={"100%"}
           position="relative"
         >

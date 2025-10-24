@@ -22,6 +22,21 @@ import NiceModal from "@ebay/nice-modal-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
+import mypage from "./mypage.module.css";
+
+
+
+
+const pathnameHidden = () => { // 구독 가입완료, 해지화면에선 가리기
+  const pathname = usePathname();
+
+  const hidden = 
+    pathname === '/mypage/subscription/success' || 
+    pathname === '/mypage/subscription/cancel';
+
+  return hidden;
+}
+
 
 const editInfoModal = (userData: any, navigate: (path: string) => void) => {
   // 개인정보 수정
@@ -54,6 +69,19 @@ const editInfoModal = (userData: any, navigate: (path: string) => void) => {
     },
   });
 };
+
+
+
+export function MainLInkTitle() {
+
+  return (
+    <FlexChild className={mypage.title} hidden={pathnameHidden()}>
+      <Link href={"/mypage"}>
+        <h3>마이페이지</h3>
+      </Link>
+    </FlexChild>
+  )
+}
 
 export function Profile({ initGroups }: { initGroups: Pageable }) {
   const navigate = useNavigate();
@@ -242,75 +270,77 @@ export function MypageNavi() {
   };
 
   return (
-    <VerticalFlex className={clsx(styles.mypage_navi, styles.box_frame)}>
-      <VerticalFlex className={styles.outer_menu}>
-        <P>쇼핑정보</P>
-
-        <ul className={styles.inner_menu}>
-          {myshopMenu.map((item, i) => {
-            const active = pathname === item.link;
-
-            return (
-              <li key={i}>
-                <Link
-                  className={clsx(styles.inner_btn, active && styles.active)}
-                  href={item.link}
-                >
-                  <Span>{item.name}</Span>
-                  <Image
-                    src={"/resources/icons/arrow/slide_arrow.png"}
-                    width={8}
-                  />
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </VerticalFlex>
-
-      <VerticalFlex className={styles.outer_menu}>
-        <P>내 정보 관리</P>
-
-        <ul className={styles.inner_menu}>
-          <li>
-            <Link
-              className={styles.inner_btn}
-              href={"/mypage/editInfo"}
-              onClick={(e) => {
-                e.preventDefault();
-                editInfoModal(userData, navigate);
-              }}
-            >
-              <Span>개인정보 수정</Span>
-              <Image src={"/resources/icons/arrow/slide_arrow.png"} width={8} />
-            </Link>
-          </li>
-
-          {myInfoMenu.map((item, i) => {
-            const active = pathname === item.link;
-
-            return (
-              <li key={i}>
-                <Link
-                  className={clsx(styles.inner_btn, active && styles.active)}
-                  href={item.link}
-                >
-                  <Span>{item.name}</Span>
-                  <Image
-                    src={"/resources/icons/arrow/slide_arrow.png"}
-                    width={8}
-                  />
-                </Link>
-              </li>
-            );
-          })}
-          <li>
-            <Link className={styles.inner_btn} href={"/"} onClick={logoutModal}>
-              <Span>로그아웃</Span>
-              <Image src={"/resources/icons/arrow/slide_arrow.png"} width={8} />
-            </Link>
-          </li>
-        </ul>
+    <VerticalFlex gap={20} className={mypage.left_bar} hidden={pathnameHidden()}>
+      <VerticalFlex className={clsx(styles.mypage_navi, styles.box_frame)}>
+        <VerticalFlex className={styles.outer_menu}>
+          <P>쇼핑정보</P>
+  
+          <ul className={styles.inner_menu}>
+            {myshopMenu.map((item, i) => {
+              const active = pathname === item.link;
+  
+              return (
+                <li key={i}>
+                  <Link
+                    className={clsx(styles.inner_btn, active && styles.active)}
+                    href={item.link}
+                  >
+                    <Span>{item.name}</Span>
+                    <Image
+                      src={"/resources/icons/arrow/slide_arrow.png"}
+                      width={8}
+                    />
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </VerticalFlex>
+  
+        <VerticalFlex className={styles.outer_menu}>
+          <P>내 정보 관리</P>
+  
+          <ul className={styles.inner_menu}>
+            <li>
+              <Link
+                className={styles.inner_btn}
+                href={"/mypage/editInfo"}
+                onClick={(e) => {
+                  e.preventDefault();
+                  editInfoModal(userData, navigate);
+                }}
+              >
+                <Span>개인정보 수정</Span>
+                <Image src={"/resources/icons/arrow/slide_arrow.png"} width={8} />
+              </Link>
+            </li>
+  
+            {myInfoMenu.map((item, i) => {
+              const active = pathname === item.link;
+  
+              return (
+                <li key={i}>
+                  <Link
+                    className={clsx(styles.inner_btn, active && styles.active)}
+                    href={item.link}
+                  >
+                    <Span>{item.name}</Span>
+                    <Image
+                      src={"/resources/icons/arrow/slide_arrow.png"}
+                      width={8}
+                    />
+                  </Link>
+                </li>
+              );
+            })}
+            <li>
+              <Link className={styles.inner_btn} href={"/"} onClick={logoutModal}>
+                <Span>로그아웃</Span>
+                <Image src={"/resources/icons/arrow/slide_arrow.png"} width={8} />
+              </Link>
+            </li>
+          </ul>
+        </VerticalFlex>
       </VerticalFlex>
     </VerticalFlex>
   );
