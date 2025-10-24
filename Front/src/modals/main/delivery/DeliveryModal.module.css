@@ -1,0 +1,74 @@
+.step {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.3;
+  color: #d9d9d9;
+}
+
+.step.active {
+  color: #ff7c5c;
+}
+
+.subtitle {
+  padding: 8px 1px;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.3;
+  color: #474747;
+  border-bottom: 2px solid #474747;
+}
+.infoLabel {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.3;
+  color: #8b8b8b;
+  padding: 16px;
+  width: 132px;
+}
+.infoValue {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.3;
+  color: #1c1b1f;
+  padding: 16px;
+}
+
+.status {
+  padding: 16px;
+}
+.status .time {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.3;
+  color: #d9d9d9;
+}
+.status .time.active {
+  color: #1c1b1f;
+}
+
+.status .id {
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.3;
+  color: #d9d9d9;
+}
+.status .id.active {
+  color: #1c1b1f;
+}
+
+.status .location {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.3;
+  color: #d9d9d9;
+}
+.status .location.active {
+  color: #1c1b1f;
+}
+
+.status .circle {
+  color: #eaeaea;
+}
+.status .circle.active {
+  color: #ff7c5c;
+}
