@@ -10,10 +10,6 @@ import Image from "@/components/Image/Image";
 import Span from "@/components/span/Span";
 
 export default async function () {
-  const initCoupons = await requester.getCoupons({
-    pageSize: 12,
-  });
-
   return (
     <>
       <VerticalFlex className={clsx(styles.wrapper, 'mob_page_container')}>
