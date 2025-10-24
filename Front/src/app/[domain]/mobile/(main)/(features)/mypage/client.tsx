@@ -103,7 +103,7 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
                 // 구독 가입되어 있으면 나타나기
                 isSubscribe && (
                   <Image
-                    src="resources/images/mypage/subscription_mark.png"
+                    src="/resources/images/mypage/subscription_mark.png"
                     width={77}
                   />
                 )
@@ -143,7 +143,7 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
         !isSubscribe && (
           <FlexChild onClick={() => navigate("/mypage/subscription/subscribe")}>
             <Image
-              src="resources/images/mypage/subscription_banner.png"
+              src="/resources/images/mypage/subscription_banner.png"
               width={"100%"}
             />
           </FlexChild>
@@ -161,7 +161,7 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
             onClick={() => navigate("/mypage")}
           >
             <P>등급별 혜택 보기</P>
-            <Image src="resources/icons/arrow/mypage_arrow.png" width={8} />
+            <Image src="/resources/icons/arrow/mypage_arrow.png" width={8} />
           </HorizontalFlex>
         </HorizontalFlex>
         <VerticalFlex padding={"0 10px"}>
@@ -188,7 +188,7 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
             <VerticalFlex
               className={clsx(styles.amount_box, styles.master_rank)}
             >
-              <Image src="resources/icons/mypage/master_rank.png" width={50} />
+              <Image src="/resources/icons/mypage/master_rank.png" width={50} />
               <P className={styles.title}>현재 멤버십 최고 등급입니다.</P>
             </VerticalFlex>
           )}
@@ -216,7 +216,7 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
       <VerticalFlex className={styles.coupon_box}>
         <HorizontalFlex className={styles.title_box}>
           <FlexChild gap={6}>
-            <Image src="resources/icons/mypage/coupon_icon.png" width={30} />
+            <Image src="/resources/icons/mypage/coupon_icon.png" width={30} />
             <P>보유쿠폰</P>
           </FlexChild>
           <HorizontalFlex
@@ -332,12 +332,17 @@ export function MypageNavi() {
 
     NiceModal.show(ConfirmModal, {
       message: (
-        <FlexChild justifyContent="center" marginBottom={30}>
-          <P color="#333" fontSize={20} weight={600}>
+        <FlexChild justifyContent="center" padding={'30px 0 10px'}>
+          <P color="#fff" fontSize={16} weight={600}>
             로그아웃 하시겠습니까?
           </P>
         </FlexChild>
       ),
+      title: '로그아웃',
+      classNames: {
+        title: 'confirm_title',
+      },
+      backgroundColor: 'var(--confirmModal-bg)',
       confirmText: "확인",
       cancelText: "취소",
       withCloseButton: true,

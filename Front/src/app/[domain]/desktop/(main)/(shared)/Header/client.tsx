@@ -525,11 +525,16 @@ export function Auth() {
     NiceModal.show(ConfirmModal, {
       message: (
         <FlexChild justifyContent="center" marginBottom={30}>
-          <P color="#333" fontSize={20} weight={600}>
+          <P color="#fff" fontSize={20} weight={600}>
             로그아웃 하시겠습니까?
           </P>
         </FlexChild>
       ),
+      title: '로그아웃',
+      classNames: {
+        title: 'confirm_title',
+      },
+      backgroundColor: 'var(--confirmModal-bg)',
       confirmText: "확인",
       cancelText: "취소",
       withCloseButton: true,
