@@ -57,7 +57,6 @@ const editInfoModal = (userData: any, navigate: (path: string) => void) => {
 export function Profile({ initGroups }: { initGroups: Pageable }) {
   const navigate = useNavigate();
   const { userData } = useAuth(); // 유저정보 받아오기
-  console.log(userData);
   const { groups } = useData(
     "groups",
     {},
