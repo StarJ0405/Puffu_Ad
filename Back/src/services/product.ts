@@ -419,14 +419,14 @@ export class ProductService extends BaseService<Product, ProductRepository> {
   }
   async getList(options?: FindManyOptions<Product>): Promise<Product[]> {
     if (options) {
-      let where: any = options.where;
-      if (where.ids) {
+      let where: any = options.where || {};
+      if (where?.ids) {
         const ids = where.ids;
         delete where.ids;
         where.id = In(Array.isArray(ids) ? ids : [ids]);
         options.where = where;
       }
-      if (where.category_id) {
+      if (where?.category_id) {
         const categories = await this.repository.query(
           `SELECT id FROM public.category WHERE mpath like '%${where.category_id}%'`
         );
@@ -444,7 +444,7 @@ export class ProductService extends BaseService<Product, ProductRepository> {
         } else options.relations = ["categories"];
       }
       delete where.category_id;
-      if (where.q) {
+      if (where?.q) {
         const q = where.q;
         delete where.q;
         where = this.Search(where, ["title", "id"], q);

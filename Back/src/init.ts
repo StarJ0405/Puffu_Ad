@@ -9,7 +9,6 @@ export default function () {
     embedding_vector vector(768),
     intent character varying
   );
-  CREATE UNIQUE INDEX IF NOT EXISTS document_chunks_soruce_id_intent_unique ON document_chunks (source_id, intent);
   CREATE TABLE IF NOT EXISTS intention (
     id SERIAL PRIMARY KEY,
     keyword character varying,
