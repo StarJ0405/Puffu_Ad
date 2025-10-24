@@ -100,9 +100,12 @@ const ToastModal = NiceModal.create(
               // right={"-4px"}
               right={"3px"}
             >
-              <Icon size={12} name="closeBtnWhite2x" />
+              <Icon size={12} name="closeBtn2x_2" />
             </FlexChild>
           )}
+          <FlexChild justifyContent="center" padding={'3px 0 10px'} borderBottom={'1px solid #e4e4e4'}>
+            <P size={15} color="var(--main-color1)">알림</P>
+          </FlexChild>
           <HorizontalFlex alignItems="flex-start" justifyContent={"center"}>
             {icon && <FlexChild width={"max-content"}>{icon}</FlexChild>}
             <FlexChild
@@ -120,8 +123,9 @@ const ToastModal = NiceModal.create(
                   width={width}
                   size={16}
                   weight={500}
-                  color={"#fff"}
-                  padding={"24px 6px 10px 6px"}
+                  color={"var(--main-color2)"}
+                  // color={"#fff"}
+                  padding={"15px 6px 10px 6px"}
                   wordBreak={"keep-all"}
                   textAlign={"center"}
                 >

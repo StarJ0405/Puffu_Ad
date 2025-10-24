@@ -24,19 +24,16 @@ import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import mypage from "./mypage.module.css";
 
-
-
-
-const pathnameHidden = () => { // 구독 가입완료, 해지화면에선 가리기
+const pathnameHidden = () => {
+  // 구독 가입완료, 해지화면에선 가리기
   const pathname = usePathname();
 
-  const hidden = 
-    pathname === '/mypage/subscription/success' || 
-    pathname === '/mypage/subscription/cancel';
+  const hidden =
+    pathname === "/mypage/subscription/success" ||
+    pathname === "/mypage/subscription/cancel";
 
   return hidden;
-}
-
+};
 
 const editInfoModal = (userData: any, navigate: (path: string) => void) => {
   // 개인정보 수정
@@ -70,17 +67,14 @@ const editInfoModal = (userData: any, navigate: (path: string) => void) => {
   });
 };
 
-
-
 export function MainLInkTitle() {
-
   return (
     <FlexChild className={mypage.title} hidden={pathnameHidden()}>
       <Link href={"/mypage"}>
         <h3>마이페이지</h3>
       </Link>
     </FlexChild>
-  )
+  );
 }
 
 export function Profile({ initGroups }: { initGroups: Pageable }) {
@@ -107,6 +101,8 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
         .find((f: GroupData) => f.min > (userData?.stored || 0))
     );
   }, [groups, userData]);
+
+  const isSubscribe = userData?.subscribe != null;
 
   return (
     <VerticalFlex className={clsx(styles.profile, styles.box_frame)}>
@@ -138,7 +134,18 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
                 />
               </FlexChild>
             </FlexChild>
-            <P className={styles.membership_level}>{userData?.group?.name}</P>
+            <FlexChild gap={7} justifyContent="center">
+              <P className={styles.membership_level}>{userData?.group?.name}</P>
+              {
+                // 구독 가입되어 있으면 나타나기
+                isSubscribe && (
+                  <Image
+                    src="/resources/images/mypage/subscription_mark.png"
+                    width={77}
+                  />
+                )
+              }
+            </FlexChild>
             <FlexChild className={styles.link_btn}>
               <Button onClick={() => navigate("/mypage/wishList")}>
                 관심 리스트
@@ -176,7 +183,7 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
                   className={clsx(styles.amount_box, styles.master_rank)}
                 >
                   <Image
-                    src="resources/icons/mypage/master_rank.png"
+                    src="/resources/icons/mypage/master_rank.png"
                     width={50}
                   />
                   <P className={styles.title}>현재 멤버십 최고 등급입니다.</P>
@@ -188,7 +195,7 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
               <VerticalFlex className={styles.coupon_box}>
                 <FlexChild>
                   <Image
-                    src="resources/icons/mypage/coupon_icon.png"
+                    src="/resources/icons/mypage/coupon_icon.png"
                     width={28}
                     paddingRight={7}
                   />
@@ -250,16 +257,22 @@ export function MypageNavi() {
     { name: "회원탈퇴", link: "/mypage/deleteAccount" },
   ];
 
+  const isSubscribe = userData?.subscribe != null;
+
   const logoutModal = () => {
     // 로그아웃
     NiceModal.show(ConfirmModal, {
       message: (
         <FlexChild justifyContent="center" marginBottom={30}>
-          <P color="#333" fontSize={20} weight={600}>
+          <P color="#fff" fontSize={20} weight={600}>
             로그아웃 하시겠습니까?
           </P>
         </FlexChild>
       ),
+      classNames: {
+        title: "confirm_title",
+      },
+      backgroundColor: "var(--confirmModal-bg)",
       confirmText: "확인",
       cancelText: "취소",
       withCloseButton: true,
@@ -270,15 +283,30 @@ export function MypageNavi() {
   };
 
   return (
-    <VerticalFlex gap={20} className={mypage.left_bar} hidden={pathnameHidden()}>
+    <VerticalFlex
+      gap={20}
+      className={mypage.left_bar}
+      hidden={pathnameHidden()}
+    >
+      {
+        // 구독 가입 되어 있으면 안 보이기
+        !isSubscribe && (
+          <FlexChild cursor="pointer" onClick={() => navigate("/mypage/subscription/subscribe")}>
+            <Image
+              src="/resources/images/mypage/subscription_banner.png"
+              width={"100%"}
+            />
+          </FlexChild>
+        )
+      }
       <VerticalFlex className={clsx(styles.mypage_navi, styles.box_frame)}>
         <VerticalFlex className={styles.outer_menu}>
           <P>쇼핑정보</P>
-  
+
           <ul className={styles.inner_menu}>
             {myshopMenu.map((item, i) => {
               const active = pathname === item.link;
-  
+
               return (
                 <li key={i}>
                   <Link
@@ -296,14 +324,14 @@ export function MypageNavi() {
             })}
           </ul>
         </VerticalFlex>
-  
+
         <VerticalFlex className={styles.outer_menu}>
           <P>내 정보 관리</P>
-  
+
           <ul className={styles.inner_menu}>
             <li>
               <Link
-                className={styles.inner_btn}
+                className={clsx(styles.inner_btn)}
                 href={"/mypage/editInfo"}
                 onClick={(e) => {
                   e.preventDefault();
@@ -311,13 +339,46 @@ export function MypageNavi() {
                 }}
               >
                 <Span>개인정보 수정</Span>
-                <Image src={"/resources/icons/arrow/slide_arrow.png"} width={8} />
+                <Image
+                  src={"/resources/icons/arrow/slide_arrow.png"}
+                  width={8}
+                />
               </Link>
             </li>
-  
+
+            {
+              // 구독 가입되어 있을때만 나오기
+              isSubscribe && (
+                <li>
+                  <Link
+                    className={clsx(
+                      styles.inner_btn,
+                      pathname === "/mypage/subscription/manage" &&
+                        styles.active
+                    )}
+                    href={"/mypage/subscription/manage"}
+                  >
+                    <FlexChild gap={5}>
+                      <Span>구독 관리</Span>
+                      <Image
+                        src={
+                          "/resources/images/mypage/subscription_link_icon.png"
+                        }
+                        width={48}
+                      />
+                    </FlexChild>
+                    <Image
+                      src={"/resources/icons/arrow/slide_arrow.png"}
+                      width={8}
+                    />
+                  </Link>
+                </li>
+              )
+            }
+
             {myInfoMenu.map((item, i) => {
               const active = pathname === item.link;
-  
+
               return (
                 <li key={i}>
                   <Link
@@ -334,9 +395,16 @@ export function MypageNavi() {
               );
             })}
             <li>
-              <Link className={styles.inner_btn} href={"/"} onClick={logoutModal}>
+              <Link
+                className={styles.inner_btn}
+                href={"/"}
+                onClick={logoutModal}
+              >
                 <Span>로그아웃</Span>
-                <Image src={"/resources/icons/arrow/slide_arrow.png"} width={8} />
+                <Image
+                  src={"/resources/icons/arrow/slide_arrow.png"}
+                  width={8}
+                />
               </Link>
             </li>
           </ul>
