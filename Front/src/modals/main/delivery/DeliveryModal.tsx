@@ -81,7 +81,6 @@ const DeliveryDetailModal = NiceModal.create(
         )
         .then((res) => {
           setData(res.data);
-          console.log(res.data);
           const progresses: any[] = res.data?.progresses || [];
           setStatus(
             progresses.some((f) => f.status?.id === "delivered")
