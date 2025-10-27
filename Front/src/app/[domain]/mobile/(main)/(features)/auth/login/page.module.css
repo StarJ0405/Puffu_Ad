@@ -2,13 +2,14 @@
    display: flex;
    justify-content: center;
    align-items: center;
-   height: 100dvh;
+   min-height: 100lvh;
 }
 
 .loginBox {
    width: 100%;
    max-width: 460px;
    gap: 10px;
+   margin-top: 20px;
 }
 
 .loginBox .logo {
@@ -75,8 +76,6 @@
    font-weight: 600;
 }
 
-.btn a {font-weight: normal !important;}
-
 .login_btn {
    background: var(--main-color1);
 }
@@ -84,6 +83,10 @@
 .join_btn {
    background: transparent;
    border: 1px solid #c7c7c7;
+}
+
+.btn:active {
+   filter: var(--mob-active-filter);
 }
 
 

@@ -60,7 +60,7 @@ export function ProductCard({
 
   return (
     <VerticalFlex
-      width={width ?? isMobile ? "auto" : 200}
+      width={width ?? (!isMobile ? 200 : 'auto')}
       // margin={product.margin}
       className={clsx(
         styles.prodcut_item,
@@ -69,9 +69,11 @@ export function ProductCard({
     >
       <FlexChild
         className={styles.imgBox}
-        height={width ?? isMobile ? "auto" : 200}
+        height={width ?? (!isMobile ? 200 : 'auto')}
       >
         <FlexChild
+          width={'100%'}
+          height={'100%'}
           onClick={() => (onClick ? onClick() : navigate(product_link))}
         >
           {userData?.adult ? (

@@ -26,10 +26,6 @@ import { Swiper as SwiperType } from "swiper";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-
-
-
-
 export function MainBanner({ initBanners }: { initBanners: Pageable }) {
   const { userData } = useAuth();
   const { banners } = useData(
@@ -43,8 +39,6 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
   );
 
   const swiperRef = useRef<SwiperType | null>(null);
-
-  
 
   const paintBullets = (swiper: SwiperType) => {
     // 페이지네이션 스타일 설정
@@ -74,7 +68,7 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
   };
 
   return (
-    <FlexChild className={clsx('mob_page_container', styles.main_banner)}>
+    <FlexChild className={clsx("mob_page_container", styles.main_banner)}>
       <Swiper
         loop={true}
         slidesPerView={1}
@@ -102,7 +96,8 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
           paintBullets(swiper);
         }}
       >
-        {[...banners]?.map((item: BannerData, i: number) => (
+        {[...banners]?.map(
+          (item: BannerData, i: number) =>
             item.thumbnail.mobile && (
               <SwiperSlide key={i} className={`swiper_0${i}`}>
                 {item.to ? (
@@ -128,7 +123,7 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
                 )}
               </SwiperSlide>
             )
-        ))}
+        )}
       </Swiper>
     </FlexChild>
   );
@@ -251,9 +246,10 @@ export function MainCategory() {
         .map((cat, i) => (
           <VerticalFlex className={styles.ca_item} key={i}>
             <Link href={`/categories/${cat.id}`}>
-              <FlexChild className={styles.ca_thumb}>
-                <Image src={cat.thumbnail} width={"auto"} height={66} />
-              </FlexChild>
+              <div className={styles.ca_thumb} style={{'--thumb-size': '66px'} as React.CSSProperties}>
+                {/* 받아오는 이미지 1:1비율 아닐 경우 css도 가서 고쳐주기 */}
+                <Image src={cat.thumbnail} width={'100%'} height={'100%'}/>
+              </div>
             </Link>
             <Span>{cat.name}</Span>
           </VerticalFlex>
@@ -365,7 +361,13 @@ export function HotDealWrapper({
 }
 
 // 베스트 상품
-export function BestProducts({ initProducts, initCondition }: { initProducts: Pageable, initCondition: any; }) {
+export function BestProducts({
+  initProducts,
+  initCondition,
+}: {
+  initProducts: Pageable;
+  initCondition: any;
+}) {
   const { bestProducts, Load, maxPage, page } = useInfiniteData(
     "bestProducts",
     (pageNumber) => ({
@@ -388,9 +390,12 @@ export function BestProducts({ initProducts, initCondition }: { initProducts: Pa
       <VerticalFlex>
         <HorizontalFlex className={styles.titleBox} alignItems="end" gap={20}>
           <div className={styles.title}>
-            <Image src={'/resources/images/header/logo.png'} width={50} />
+            <Image src={"/resources/images/header/logo.png"} width={50} />
             <h2 className="SacheonFont">
-              <Span position="relative" top={3}>BEST</Span> 상품
+              <Span position="relative" top={3}>
+                BEST
+              </Span>{" "}
+              상품
             </h2>
           </div>
 
@@ -414,7 +419,6 @@ export function BestProducts({ initProducts, initCondition }: { initProducts: Pa
   );
 }
 
-
 export function ProductList({
   id,
   lineClamp,
@@ -423,8 +427,8 @@ export function ProductList({
   hidden,
   maxPage,
   page,
-  // loading,
-}: {
+}: // loading,
+{
   id: string;
   lineClamp?: number;
   products: ProductData[];
@@ -443,7 +447,7 @@ export function ProductList({
   //   setLoading(true);
   //   try {
   //     await showMore2(); // 데이터 로드
-      
+
   //   } finally {
   //     setLoading(false); // 끝나면 로딩 해제
   //   }
@@ -458,7 +462,17 @@ export function ProductList({
     <>
       {products.length > 0 ? (
         <VerticalFlex gap={10}>
-          <MasonryGrid gap={15} width={"100%"}>
+          <MasonryGrid
+            breakpoints={{
+              default: 4,
+              992: 4,
+              768: 4,
+              680: 3,
+              560: 2,
+            }}
+            gap={15}
+            width={"100%"}
+          >
             {products.slice(0, visibleCount).map((product: ProductData, i) => {
               return (
                 <ProductCard
@@ -471,7 +485,12 @@ export function ProductList({
             })}
           </MasonryGrid>
           {loading && <LoadingSpinner />}
-          <ProductLoadBtn maxPage={maxPage} page={page} loading={loading} showMore={showMore} />
+          <ProductLoadBtn
+            maxPage={maxPage}
+            page={page}
+            loading={loading}
+            showMore={showMore}
+          />
         </VerticalFlex>
       ) : (
         <NoContent type="상품" />
@@ -510,49 +529,48 @@ export function ProductSlider({
   id: string;
   lineClamp?: number;
 }) {
+  const PAGE_SIZE = 10;
+  const [items, setItems] = useState<ReviewEntity[]>([]);
+  const [pageNumber, setPageNumber] = useState(0);
+  const [totalPages, setTotalPages] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
-    const PAGE_SIZE = 10;
-    const [items, setItems] = useState<ReviewEntity[]>([]);
-    const [pageNumber, setPageNumber] = useState(0);
-    const [totalPages, setTotalPages] = useState<number | null>(null);
-    const [loading, setLoading] = useState(false);
-    const [hasMore, setHasMore] = useState(true);
-  
-    const fetchPage = useCallback(async (pn: number) => {
-      setLoading(true);
-      try {
-        const params: any = {
-          pageSize: PAGE_SIZE,
-          pageNumber: pn,
-          photo: true,
-          relations: "item,item.variant.product,user",
-          order: { created_at: "DESC" },
-        };
-        const res = await requester.getPublicReviews(params);
-        const data = res?.data ?? res;
-        const list: ReviewEntity[] = data?.content ?? [];
-  
-        setItems((prev) => (pn === 0 ? list : prev.concat(list)));
-        if (typeof data?.totalPages === "number") {
-          setTotalPages(data.totalPages);
-          setHasMore(pn + 1 < data.totalPages);
-        } else {
-          setTotalPages(null);
-          setHasMore(list.length === PAGE_SIZE);
-        }
-        setPageNumber(pn);
-      } finally {
-        setLoading(false);
+  const fetchPage = useCallback(async (pn: number) => {
+    setLoading(true);
+    try {
+      const params: any = {
+        pageSize: PAGE_SIZE,
+        pageNumber: pn,
+        photo: true,
+        relations: "item,item.variant.product,user",
+        order: { created_at: "DESC" },
+      };
+      const res = await requester.getPublicReviews(params);
+      const data = res?.data ?? res;
+      const list: ReviewEntity[] = data?.content ?? [];
+
+      setItems((prev) => (pn === 0 ? list : prev.concat(list)));
+      if (typeof data?.totalPages === "number") {
+        setTotalPages(data.totalPages);
+        setHasMore(pn + 1 < data.totalPages);
+      } else {
+        setTotalPages(null);
+        setHasMore(list.length === PAGE_SIZE);
       }
-    }, []);
-  
-    useEffect(() => {
-      fetchPage(0);
-    }, [fetchPage]);
-  
+      setPageNumber(pn);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchPage(0);
+  }, [fetchPage]);
+
   return (
     <>
-      {(items.length > 0 || loading) ? (
+      {items.length > 0 || loading ? (
         <FlexChild id={id} className={styles.ProductSlider}>
           <Swiper
             loop={false}
@@ -594,7 +612,7 @@ export function ProductSlider({
                         height="auto"
                       />
                     </SwiperSlide>
-            ))}
+                  ))}
           </Swiper>
         </FlexChild>
       ) : (

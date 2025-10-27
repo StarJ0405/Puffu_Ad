@@ -117,6 +117,7 @@ export function SubmitGroup({ loginKeep }: { loginKeep: boolean }) {
       <Button onClick={onClick} className={clsx(styles.login_btn, styles.btn)}>
         로그인
       </Button>
+
       <Button
         className={clsx(styles.join_btn, styles.btn)}
         onClick={() => navigate("/auth/signup")}

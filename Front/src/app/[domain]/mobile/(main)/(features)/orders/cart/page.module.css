@@ -70,8 +70,8 @@
   padding-bottom: 7px;
 }
 
-.unit .unit_content > .unit_title {
-  font-size: 13px;
+.unit .unit_content .unit_title {
+  font-size: 13px !important;
   line-height: 1.2;
   color: #fff;
   font-weight: 400;

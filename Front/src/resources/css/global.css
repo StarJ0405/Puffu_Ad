@@ -183,7 +183,7 @@ a {
   * {-webkit-tap-highlight-color: transparent;}
 
   :root {
-    --mob-active-filter: brightness(0.8);
+    --mob-active-filter: brightness(0.5);
     --subpageHeader-H : 50px;
   }
 
