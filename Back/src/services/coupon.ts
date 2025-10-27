@@ -1,6 +1,6 @@
 import { BaseService } from "data-source";
 import _ from "lodash";
-import { Condition, Coupon, Target } from "models/coupon";
+import { Condition, Coupon, Target, CouponType, CalcType } from "models/coupon";
 import { Order, OrderStatus } from "models/order";
 import { CouponRepository } from "repositories/coupon";
 import { OrderRepository } from "repositories/order";
@@ -644,5 +644,54 @@ export class CouponService extends BaseService<Coupon, CouponRepository> {
         });
       })
     );
+  }
+
+  async revokeUnusedSubscriptionCoupons(subscriptionId: string) {
+    await this.repository
+      .builder("cu")
+      .update(Coupon)
+      .set({ refunded: true, ends_at: () => "NOW()" })
+      .where("cu.is_subscription = TRUE")
+      .andWhere("cu.subscription_id = :sid", { sid: subscriptionId })
+      .andWhere("cu.item_id IS NULL")
+      .andWhere("cu.order_id IS NULL")
+      .andWhere("cu.shipping_method_id IS NULL")
+      .andWhere("cu.refunded = FALSE")
+      .execute();
+  }
+
+  async sumSubscriptionCouponUsageBySubscription(
+    subscriptionId: string,
+    userId: string,
+    from: Date,
+    to: Date
+  ) {
+    const row = await this.repository
+      .builder("cu")
+      .select("COALESCE(SUM(cu.value),0)", "sum")
+      .where("cu.user_id = :userId", { userId })
+      .andWhere("cu.is_subscription = TRUE")
+      .andWhere("cu.subscription_id = :sid", { sid: subscriptionId })
+      .andWhere(
+        "(cu.item_id IS NOT NULL OR cu.order_id IS NOT NULL OR cu.shipping_method_id IS NOT NULL)"
+      )
+      .andWhere("cu.created_at BETWEEN :from AND :to", { from, to })
+      .getRawOne<{ sum: string }>();
+
+    return Number(row?.sum || 0);
+  }
+
+  async sumSubscriptionCouponUsage(userId: string, from: Date, to: Date) {
+    const rows = await this.repository
+      .builder("cu")
+      .select("COALESCE(SUM(cu.value),0)", "sum")
+      .where("cu.user_id = :userId", { userId })
+      .andWhere(`cu.metadata->>'tag' = 'subscription'`)
+      .andWhere(
+        "(cu.item_id IS NOT NULL OR cu.order_id IS NOT NULL OR cu.shipping_method_id IS NOT NULL)"
+      )
+      .andWhere("cu.created_at BETWEEN :from AND :to", { from, to })
+      .getRawOne<{ sum: string }>();
+    return Number(rows?.sum || 0);
   }
 }

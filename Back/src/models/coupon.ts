@@ -257,6 +257,12 @@ export class Coupon extends BaseEntity {
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;
 
+  @Column({ type: "boolean", default: false })
+  is_subscription!: boolean;
+
+  @Column({ type: "character varying", nullable: true })
+  subscription_id?: string | null;
+
   @BeforeInsert()
   protected BeforeInsert(): void {
     this.id = generateEntityId(this.id, "cup");

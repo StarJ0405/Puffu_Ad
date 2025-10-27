@@ -681,6 +681,70 @@ class _Requester {
     if (callback) callback(await this.post(`/users/me/chatbot`, data));
     else return await this.post(`/users/me/chatbot`, data);
   }
+  // 구독
+  async getMySubscribes(params?: any, callback?: Function): Promise<any> {
+    const result = await this.get(`/users/me/subscribe`, params);
+    if (callback) callback(result);
+    return result;
+  }
+
+  async getSubscribe(params?: any, callback?: Function): Promise<any> {
+    const result = await this.get(`/subscribe`, params);
+    if (callback) callback(result);
+    return result;
+  }
+
+  async createSubscribe(
+    data: {
+      plan_id?: string;
+      store_id?: string;
+      name?: string;
+      starts_at?: string | Date;
+      ends_at: string | Date;
+      payment?: any;
+    },
+    callback?: Function
+  ): Promise<any> {
+    const result = await this.post(`/users/me/subscribe`, data);
+    if (callback) callback(result);
+    return result;
+  }
+
+  async cancelSubscribe(id: string, callback?: Function): Promise<any> {
+    const result = await this.post(`/users/me/subscribe/${id}`, {});
+    if (callback) callback(result);
+    return result;
+  }
+
+  // 구독 혜택 합계
+  async getSubscribeBenefit(
+    id: string,
+    params?: any,
+    callback?: Function
+  ): Promise<any> {
+    const result = await this.get(`/users/me/subscribe/${id}/benefit`, params);
+    if (callback) callback(result);
+    return result;
+  }
+
+  // 환불 견적
+  async getSubscribeRefundQuote(id: string, callback?: Function): Promise<any> {
+    const result = await this.get(`/users/me/subscribe/${id}/refund/quote`, {});
+    if (callback) callback(result);
+    return result;
+  }
+
+  // 환불 실행
+  async postSubscribeRefund(
+    id: string,
+    refund?: number,
+    callback?: Function
+  ): Promise<any> {
+    const body = refund != null ? { refund } : {};
+    const result = await this.post(`/users/me/subscribe/${id}/refund`, body);
+    if (callback) callback(result);
+    return result;
+  }
 }
 
 export default _Requester;

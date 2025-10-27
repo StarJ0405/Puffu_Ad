@@ -7,6 +7,7 @@ import { ShippingMethodRepository } from "repositories/shipping_method";
 import { UserRepository } from "repositories/user";
 import { VariantRepository } from "repositories/variant";
 import { container, inject, injectable } from "tsyringe";
+import { CalcType } from "models/coupon";
 import {
   Between,
   FindManyOptions,
@@ -411,5 +412,116 @@ export class OrderService extends BaseService<Order, OrderRepository> {
         }
       );
     }
+  }
+
+  async calcSubscriptionBenefit(orderId: string, byUserId?: string) {
+    const order = await this.repository.findOne({
+      where: { id: orderId },
+      relations: [
+        "items.coupons",
+        "items.variant",
+        "shipping_method.coupons",
+        "coupons", // 주문 쿠폰
+        "subscribe", // 구독 퍼센트
+      ],
+    });
+    if (!order) throw new Error("ORDER_NOT_FOUND");
+    if (byUserId && order.user_id !== byUserId) throw new Error("FORBIDDEN");
+
+    // 아이템 소계(아이템 쿠폰 적용)
+    const itemsNet =
+      order.items?.reduce((acc, it) => {
+        const gross = (it.discount_price || 0) * (it.quantity || 0);
+        const red = (it.coupons || []).reduce(
+          (s, c) => ({
+            pct: s.pct + (c.calc === CalcType.PERCENT ? c.value : 0),
+            fix: s.fix + (c.calc === CalcType.FIX ? c.value : 0),
+          }),
+          { pct: 0, fix: 0 }
+        );
+        const net = Math.max(
+          0,
+          Math.round((gross * (100 - red.pct)) / 100.0 - red.fix)
+        );
+        return acc + net;
+      }, 0) || 0;
+
+    // 배송 소계(배송 쿠폰 적용)
+    const shipGross = order.shipping_method?.amount || 0;
+    const shipRed = (order.shipping_method?.coupons || []).reduce(
+      (s, c) => ({
+        pct: s.pct + (c.calc === CalcType.PERCENT ? c.value : 0),
+        fix: s.fix + (c.calc === CalcType.FIX ? c.value : 0),
+      }),
+      { pct: 0, fix: 0 }
+    );
+    const shippingNet = Math.max(
+      0,
+      Math.round((shipGross * (100 - shipRed.pct)) / 100.0 - shipRed.fix)
+    );
+
+    // 주문 쿠폰(참고값)
+    const orderRed = (order.coupons || []).reduce(
+      (s, c) => ({
+        pct: s.pct + (c.calc === CalcType.PERCENT ? c.value : 0),
+        fix: s.fix + (c.calc === CalcType.FIX ? c.value : 0),
+      }),
+      { pct: 0, fix: 0 }
+    );
+
+    // 구독 퍼센트 혜택
+    const percent = order.subscribe?.percent || 0;
+    const base = itemsNet + shippingNet;
+    const amount = Math.round((base * percent) / 100.0);
+
+    return {
+      order_id: order.id,
+      subscribe_id: order.subscribe_id || null,
+      base,
+      percent,
+      amount,
+      details: {
+        itemsNet,
+        shippingNet,
+        orderCouponPercent: orderRed.pct,
+        orderCouponFix: orderRed.fix,
+      },
+    };
+  }
+
+  async getBenefitSummaryOnDemand(
+    subscriptionId: string,
+    userId: string,
+    from: Date,
+    to: Date
+  ) {
+    const orders = await this.getList({
+      where: {
+        subscribe_id: subscriptionId,
+        user_id: userId,
+        status: In([OrderStatus.COMPLETE]),
+        created_at: Between(from, to),
+      },
+      select: ["id"],
+    });
+
+    let percentSum = 0;
+    for (const o of orders) {
+      const r = await this.calcSubscriptionBenefit(o.id, userId);
+      percentSum += r.amount || 0;
+    }
+
+    const couponService = container.resolve(CouponService);
+    const couponSum = await couponService.sumSubscriptionCouponUsage(
+      userId,
+      from,
+      to
+    );
+
+    return {
+      percent_benefit: percentSum,
+      coupon_benefit: couponSum,
+      total: percentSum + couponSum,
+    };
   }
 }

@@ -7,6 +7,7 @@ import { UserService } from "services/user";
 import { container } from "tsyringe";
 import { IsNull, LessThanOrEqual, MoreThan, Not, Or, Raw } from "typeorm";
 import { schedule } from "../module";
+import { Coupon } from "models/coupon";
 
 const delay = async (delay = 1000) =>
   await new Promise((resolve) => setTimeout(resolve, delay));
@@ -254,9 +255,32 @@ export function regist(DEV: boolean) {
                 user_id: subscribe.user_id || undefined,
                 starts_at: start_date,
                 ends_at: end_date,
+                is_subscription: true,
               })
           )
         );
+      }
+      {
+        // 구독 회수
+        const subscribeService = container.resolve(SubscribeService);
+        const couponService = container.resolve(CouponService);
+
+        const expired = await subscribeService.getList({
+          where: {
+            user_id: Not(IsNull()),
+            ends_at: LessThanOrEqual(new Date()),
+            value: MoreThan(0),
+          },
+          select: ["id"],
+        });
+
+        if (expired.length) {
+          await Promise.all(
+            expired.map((s) =>
+              couponService.revokeUnusedSubscriptionCoupons(s.id)
+            )
+          );
+        }
       }
     },
     {}
