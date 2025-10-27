@@ -651,12 +651,12 @@ export class CouponService extends BaseService<Coupon, CouponRepository> {
       .builder("cu")
       .update(Coupon)
       .set({ refunded: true, ends_at: () => "NOW()" })
-      .where("cu.is_subscription = TRUE")
-      .andWhere("cu.subscription_id = :sid", { sid: subscriptionId })
-      .andWhere("cu.item_id IS NULL")
-      .andWhere("cu.order_id IS NULL")
-      .andWhere("cu.shipping_method_id IS NULL")
-      .andWhere("cu.refunded = FALSE")
+      .where("is_subscription = TRUE")
+      .andWhere("subscription_id = :sid", { sid: subscriptionId })
+      .andWhere("item_id IS NULL")
+      .andWhere("order_id IS NULL")
+      .andWhere("shipping_method_id IS NULL")
+      .andWhere("refunded = FALSE")
       .execute();
   }
 

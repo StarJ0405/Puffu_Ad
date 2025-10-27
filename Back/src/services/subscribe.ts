@@ -119,7 +119,7 @@ export class SubscribeService extends BaseService<Subscribe, SubscribeRepository
     if (!sub) throw new Error("SUBSCRIPTION_NOT_FOUND");
     // byUserId 체크 필요시 추가
 
-    await this.repository.update({ id }, { ends_at: new Date() });
+    await this.repository.update({ id }, { ends_at: new Date(), canceled_at: new Date(), repeat: false });
     await this.couponService.revokeUnusedSubscriptionCoupons(id);
     return this.repository.findOne({ where: { id } });
   }
