@@ -122,7 +122,7 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
           개인정보 수정
         </FlexChild>
       </HorizontalFlex>
-      <FlexChild onClick={() => navigate("/mypage/subscription/subscribe")}>
+      {/* <FlexChild onClick={() => navigate("/mypage/subscription/subscribe")}>
         구독버튼
       </FlexChild>
       <FlexChild onClick={() => navigate("/mypage/subscription/manage")}>
@@ -136,7 +136,7 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
       </FlexChild>
       <FlexChild onClick={() => navigate("/mypage/subscription/history")}>
         구독내역
-      </FlexChild>
+      </FlexChild> */}
 
       {
         // 구독 가입 되어 있으면 안 보이기

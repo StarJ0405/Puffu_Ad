@@ -143,7 +143,7 @@ export function ConfirmBtn({}: {}) {
               try {
                 await requester.postSubscribeRefund(subId, { refund });
                 toast({ message: "해지가 완료되었습니다." });
-                navigate("/mypage/subscription/manage", { type: "replace" });
+                navigate("/mypage/subscription/subscribe", { type: "replace" });
                 return true; // 두 번째 모달 닫기
               } catch (e: any) {
                 toast({ message: e?.error || "처리 중 오류가 발생했습니다." });

@@ -20,7 +20,7 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
     if (userData === undefined) return;
     if (isActive) {
       setAllow(false);
-      navigate("/mypage/subscription/manage", { type: "replace" });
+      navigate("/mypage", { type: "replace" });
     } else {
       setAllow(true);
     }

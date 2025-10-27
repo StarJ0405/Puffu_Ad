@@ -19,7 +19,7 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
   }, [userData]);
 
   useEffect(() => {
-    if (!isActive) navigate("/mypage/subscription/subscribe", { type: "replace" });
+    if (!isActive) navigate("/mypage", { type: "replace" });
   }, [isActive, navigate]);
 
   if (!isActive) return null;
