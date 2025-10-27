@@ -23,80 +23,89 @@
   color: #797979;
 }
 
-.box_layer {max-width: 500px;}
+.itemBox {
+  max-width: 585px; 
+  gap: 70px;
+}
+
+.box_layer {gap: 20px;}
 
 
 .premium_layer {
   background: linear-gradient(180deg, var(--subsribe-color), #015BFF);
   border-radius: 10px;
-  padding: 1px;
+  padding: 2px;
 }
 
-.premium_box {
-  background: linear-gradient(180deg, #262626, #131313);
-  border-radius: inherit;
-  padding: 25px 15px;
-}
-
-.item_content {gap: 20px;}
-
-.item_content .cumulative {
+.premium_layer .cumulative {
   background: #050505;
   border-radius: 10px;
-  padding: 12px 10px;
+  padding: 15px;
   gap: 20px;
 }
 
-.item_content .cumulative .txt {
-  width: auto;
-  align-self: start;
-  gap: 7px;
-  color: #aeaeae;
+.premium_layer .cumulative .txt {
+  gap: 10px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
 }
 
-.item_content .cumulative .total {
+.premium_layer .cumulative .total {
   width: auto;
   align-self: end;
   font-size: 30px;
-  color: var(--subsribe-color);
+  color: #fff;
   font-weight: 700;
 }
 
-.item_content .unit {gap: 15px;}
-.item_content .unit > div {width: auto; gap: 10px;}
+.box_layer .unit {gap: 25px;}
+.box_layer .unit > .unit_item {
+  gap: 25px; background: #303030;
+  padding: 25px 10px 26px;
+  border-radius: 10px;
+}
 
-.item_content .unit > div p {font-size: 15px !important; color: #fff !important;}
-.item_content .unit > div p span {color: var(--subsribe-color); font-weight: 600 !important;}
+.box_layer .unit > .unit_item p {
+  font-size: 20px !important; 
+  color: #fff !important;
+  font-weight: 500 !important;
+  text-align: center;
+}
+.box_layer .unit > .unit_item p span {
+  color: var(--subsribe-color); font-weight: 600 !important;
+  line-height: inherit !important;
+  vertical-align: baseline !important;
+}
 
 
-.cancel_giude {margin-top: 50px; text-align: center; gap: 10px;}
-.cancel_giude .text1 {font-size: 13px !important; color: #fff !important;}
+.cancel_giude {text-align: center; gap: 40px;}
+.cancel_giude .text1 {
+  font-size: 16px !important; 
+  color: #fff !important;
+
+}
 .cancel_giude .giude_unit {
   border-radius: 10px;
   background: #323232;
   color: #adadad;
-  font-size: 13px;
-  padding: 15px 26px;
+  font-size: 15px;
+  padding: 20px 10px;
+  gap: 15px;
 }
 
 
 .confirm_box {
-  margin-top: 60px;
-  /* position: fixed;
-  bottom: 60px;
-  left: 50%;
-  transform: translateX(-50%); */
+  margin-top: 65px;
   width: 100%;
-  padding: 0 0 20px;
-  z-index: 100;
-  max-width: 768px;
-  gap: 12px;
+  max-width: 380px;
+  gap: 15px;
 }
 
 .confirm_box button {
   width: 100%;
-  font-size: 18px;
-  padding: 15px 10px;
+  font-size: 20px;
+  padding: 20px 10px;
   border-radius: 10px;
   font-weight: 600;
   border: 1px solid #eee;
@@ -118,6 +127,10 @@
   border-radius: 10px;
 }
 
-.confirm_box > div:active {
-  filter: var(--mob-active-filter);
+.confirm_box > div {
+  transition: 0.2s;
+}
+
+.confirm_box > div:hover {
+  filter: brightness(0.5);
 }

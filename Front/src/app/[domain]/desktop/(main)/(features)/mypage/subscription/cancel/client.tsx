@@ -11,51 +11,52 @@ import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import styles from "./page.module.css";
 import { toast } from "@/shared/utils/Functions";
+import HorizontalFlex from "@/components/flex/HorizontalFlex";
 
 export function ContentBox({}: {}) {
   return (
-    <VerticalFlex className={clsx(styles.box_layer)} gap={10}>
+    <VerticalFlex className={clsx(styles.box_layer)}>
       <FlexChild className={styles.premium_layer}>
-        <VerticalFlex className={styles.premium_box}>
-          <VerticalFlex className={styles.item_content}>
-            <VerticalFlex className={styles.cumulative}>
-              <FlexChild justifyContent="center" className={styles.txt}>
-                <P>지금까지 혜택 받은 금액</P>
+        <VerticalFlex className={styles.cumulative}>
+          <HorizontalFlex className={styles.txt} alignItems="start">
+            <P>지금까지 혜택 받은 금액</P>
 
-                <Image
-                  src={"/resources/icons/mypage/subscription_heart.png"}
-                  width={20}
-                  height={"auto"}
-                />
-              </FlexChild>
+            <Image
+              src={"/resources/icons/mypage/subscription_heart.png"}
+              width={40}
+              height={"auto"}
+            />
+          </HorizontalFlex>
 
-              <P className={styles.total}>300,000원</P>
-            </VerticalFlex>
+          <P className={styles.total}>300,000원</P>
+        </VerticalFlex>
+      </FlexChild>
 
-            <VerticalFlex className={styles.unit} alignItems="start">
-              <FlexChild>
-                <Image
-                  src={"/resources/icons/arrow/checkBox_check.png"}
-                  width={13}
-                  height={"auto"}
-                />
-                <P>
-                  전제품 <Span>10% 상시 할인</Span>
-                </P>
-              </FlexChild>
+      <FlexChild className={styles.unit} alignItems="start">
+        <VerticalFlex className={styles.unit_item}>
+          <Image
+            src={"/resources/images/mypage/subscription_cancel_sale_pc.png"}
+            width={98}
+            height={"auto"}
+          />
 
-              <FlexChild>
-                <Image
-                  src={"/resources/icons/arrow/checkBox_check.png"}
-                  width={13}
-                  height={"auto"}
-                />
-                <P>
-                  매월 프리 머니 <Span>10,000원</Span> 쿠폰 지급
-                </P>
-              </FlexChild>
-            </VerticalFlex>
-          </VerticalFlex>
+          <P>
+            365일간 누리는 <br />
+            전제품 <Span>10% 할인</Span>
+          </P>
+        </VerticalFlex>
+
+        <VerticalFlex className={styles.unit_item}>
+          <Image
+            src={"/resources/images/mypage/subscription_cancel_coupon_pc.png"}
+            width={112}
+            height={"auto"}
+          />
+          
+          <P>
+            매월 지급되는 <br />
+            프리 머니 <Span>10,000원</Span> 쿠폰
+          </P>
         </VerticalFlex>
       </FlexChild>
     </VerticalFlex>
