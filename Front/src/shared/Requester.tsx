@@ -728,8 +728,15 @@ class _Requester {
   }
 
   // 환불 견적
-  async getSubscribeRefundQuote(id: string, callback?: Function): Promise<any> {
-    const result = await this.get(`/users/me/subscribe/${id}/refund/quote`, {});
+  async getSubscribeRefundQuote(
+    id: string,
+    params?: any,
+    callback?: Function
+  ): Promise<any> {
+    const result = await this.get(
+      `/users/me/subscribe/${id}/refund/quote`,
+      params || {}
+    );
     if (callback) callback(result);
     return result;
   }
@@ -737,11 +744,13 @@ class _Requester {
   // 환불 실행
   async postSubscribeRefund(
     id: string,
-    refund?: number,
+    data?: { refund?: number },
     callback?: Function
   ): Promise<any> {
-    const body = refund != null ? { refund } : {};
-    const result = await this.post(`/users/me/subscribe/${id}/refund`, body);
+    const result = await this.post(
+      `/users/me/subscribe/${id}/refund`,
+      data || {}
+    );
     if (callback) callback(result);
     return result;
   }

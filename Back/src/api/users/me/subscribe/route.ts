@@ -1,6 +1,6 @@
 import { SubscribeService } from "services/subscribe";
 import { container } from "tsyringe";
-import { IsNull } from "typeorm";
+import { IsNull, LessThanOrEqual, MoreThan } from "typeorm";
 
 const toDate = (v: string | number | Date | null | undefined): Date | null =>
   v == null ? null : new Date(v);
@@ -10,7 +10,8 @@ export const POST: ApiHandler = async (req, res) => {
   const user_id = req.user?.id;
   if (!user_id) return res.status(401).json({ error: "unauthorized" });
 
-  const { plan_id, store_id, name, starts_at, ends_at, payment } = req.body || {};
+  const { plan_id, store_id, name, starts_at, ends_at, payment } =
+    req.body || {};
   if (!ends_at) return res.status(400).json({ error: "ends_at required" });
 
   const service: SubscribeService = container.resolve(SubscribeService);
@@ -18,7 +19,10 @@ export const POST: ApiHandler = async (req, res) => {
   // 플랜 결정
   let plan = null as any;
   if (plan_id) {
-    const list = await service.getList({ where: { id: plan_id, user_id: IsNull() }, take: 1 });
+    const list = await service.getList({
+      where: { id: plan_id, user_id: IsNull() },
+      take: 1,
+    });
     plan = list[0] || null;
   } else {
     if (!store_id) return res.status(400).json({ error: "store_id required" });
@@ -54,7 +58,13 @@ export const POST: ApiHandler = async (req, res) => {
     return res.status(400).json({ error: "ends_at must be after starts_at" });
   }
 
-  const created = await service.createFromPlan(user_id, plan, startDate, endDate, payment);
+  const created = await service.createFromPlan(
+    user_id,
+    plan,
+    startDate,
+    endDate,
+    payment
+  );
   return res.json(created);
 };
 
@@ -64,8 +74,9 @@ export const GET: ApiHandler = async (req, res) => {
   if (!user_id) return res.status(401).json({ error: "unauthorized" });
 
   const {
-    latest,          // true 면 최신 1건
-    store_id,        // latest 검색 시 필터 권장
+    latest, // true 면 최신 1건
+    store_id, // latest 검색 시 필터 권장
+    activeOnly = true,
     pageSize,
     pageNumber = 0,
     relations,
@@ -75,6 +86,14 @@ export const GET: ApiHandler = async (req, res) => {
     ...where
   } = req.parsedQuery || {};
 
+  const now = new Date();
+  const activeWhere = activeOnly
+    ? {
+        canceled_at: IsNull(),
+        starts_at: LessThanOrEqual(now),
+        ends_at: MoreThan(now),
+      }
+    : {};
   const service: SubscribeService = container.resolve(SubscribeService);
 
   // 최신 1건
@@ -82,13 +101,16 @@ export const GET: ApiHandler = async (req, res) => {
     if (!store_id) {
       // store 미지정이면 사용자 전체에서 최신 1건
       const list = await service.getList({
-        where: { ...where, user_id },
+        where: { ...where, ...activeWhere, user_id },
         order: { ends_at: "DESC", created_at: "DESC" },
         take: 1,
       });
       return res.json({ content: list });
     }
-    const active = await service.getLatestActive(String(user_id), String(store_id));
+    const active = await service.getLatestActive(
+      String(user_id),
+      String(store_id)
+    );
     return res.json({ content: active ? [active] : [] });
   }
 
@@ -96,7 +118,13 @@ export const GET: ApiHandler = async (req, res) => {
   if (pageSize) {
     const page = await service.getPageable(
       { pageSize: Number(pageSize), pageNumber: Number(pageNumber) },
-      { select, order, relations, where: { ...where, user_id }, withDeleted }
+      {
+        select,
+        order,
+        relations,
+        where: { ...where, ...activeWhere, user_id },
+        withDeleted,
+      }
     );
     return res.json(page);
   }
@@ -106,7 +134,7 @@ export const GET: ApiHandler = async (req, res) => {
     select,
     order: order ?? { created_at: "DESC", id: "ASC" },
     relations,
-    where: { ...where, user_id },
+    where: { ...where, ...activeWhere, user_id },
     withDeleted,
   });
   return res.json({ content });
