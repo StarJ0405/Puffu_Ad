@@ -389,7 +389,9 @@ const buyCartModal = NiceModal.create(
     return (
       <ModalBase
         ref={modalRef}
-        slideUp
+        slideUp={true}
+        bottom={'0'}
+        // height={'80%'}
         // slideLeft
         cancelBack
         topRound
@@ -426,7 +428,8 @@ const buyCartModal = NiceModal.create(
 
               <FlexChild className={styles.price} width={"auto"}>
                 <P>
-                  {product.variants.reduce((acc, now) => {
+                  {product.variants
+                  .reduce((acc, now) => {
                     const quantity =
                       selected.find((f) => f.variant_id === now.id)?.quantity ||
                       0;
@@ -594,6 +597,9 @@ export function OptionItem({
         const qty = Number(select.quantity ?? 0);
         const addPrice = qty * unitPrice;
 
+        const variantsArray = product.variants;
+        const INputMInCheck = variantsArray.filter((v:VariantData) => v.stack > 0 && v.buyable).length > 1 ? 0 : 1;
+
         return (
           <VerticalFlex
             className={styles.option_item}
@@ -608,8 +614,13 @@ export function OptionItem({
                 gap={10}
                 width={"auto"}
               >
-                <FlexChild className={styles.op_name}>
+                <FlexChild className={styles.op_name} gap={5}>
                   <P>{v?.title}</P>
+                  {
+                    v.extra_price !== 0 && (
+                      <P>(+{(v?.extra_price || 0).toLocaleString()}원)</P>
+                    )
+                  }
                 </FlexChild>
               </HorizontalFlex>
 
@@ -658,21 +669,18 @@ export function OptionItem({
                   <InputNumber
                     disabled={variantDisabled}
                     value={qty}
-                    min={1}
+                    min={Number(INputMInCheck)}
                     max={Number(v.stack)}
                     step={1}
                     onChange={(val) => {
                       const stack = Number(v.stack ?? 0);
                       const next = Math.max(
-                        0,
+                        Number(INputMInCheck), // ✅ 내부에서도 같은 기준 사용
                         Math.min(Number(val ?? 0), stack)
                       );
-
+                    
                       const copy = [...selected];
-                      const cur = copy[index] || {
-                        variant_id: v.id,
-                        quantity: 0,
-                      };
+                      const cur = copy[index] || { variant_id: v.id, quantity: 0 };
                       copy[index] = { ...cur, quantity: next };
                       setSelected(copy);
                     }}

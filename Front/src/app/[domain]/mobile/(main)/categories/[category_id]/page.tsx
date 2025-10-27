@@ -5,6 +5,7 @@ import { Params } from "next/dist/server/request/params";
 import { BaseProductList } from "../../products/baseClient";
 import { TitleBox } from "./client";
 import styles from "./page.module.css";
+import clsx from "clsx";
 
 export default async function ({ params }: { params: Promise<Params> }) {
   const { category_id } = await params;
@@ -17,11 +18,11 @@ export default async function ({ params }: { params: Promise<Params> }) {
   const initProducts = await requester.getProducts(initCondition);
 
   return (
-    <section className="mob_root mob_page_container">
+    <section className="mob_root">
       <Container marginTop={35}>
         <TitleBox category_id={category_id} />
 
-        <VerticalFlex className={styles.list}>
+        <VerticalFlex className={clsx('mob_page_container', styles.list)}>
           <BaseProductList
             id="categories"
             initCondition={initCondition}

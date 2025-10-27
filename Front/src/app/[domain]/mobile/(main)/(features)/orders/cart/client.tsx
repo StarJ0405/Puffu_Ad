@@ -1401,14 +1401,23 @@ export function Item({
             >
               {item.variant.product.title}
             </P>
-            <P
-              className={styles.unit_title}
-              lineClamp={2}
-              overflow="hidden"
-              display="--webkit-box"
-            >
-              {item.variant.title}
-            </P>
+            <FlexChild gap={5}>
+              <P
+                className={styles.unit_title}
+                lineClamp={2}
+                overflow="hidden"
+                display="--webkit-box"
+              >
+                {item.variant.title}
+              </P>
+              {
+                item.variant.extra_price !==0 && (
+                  <P className={styles.unit_title} color="#797979">
+                    (+{(item.variant.extra_price || 0).toLocaleString()}원)
+                  </P>
+                )
+              }
+            </FlexChild>
             <VerticalFlex className={styles.unit_price} alignItems="start">
               {item?.variant?.discount_rate > 0 && ( // 원가랑 할인가 차이 없으면 표시 안하기
                 <P className={styles.normal_price}>

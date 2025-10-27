@@ -42,11 +42,13 @@
 }
 
 .category_wrap .ca_item .ca_thumb {
+   width: 100%;
    border-radius: 100%;
    overflow: hidden;
    transition: inherit;
    justify-content: center;
-   width: 66px;
+   width: clamp(var(--thumb-size, 66px), calc(100vw * 120 / 768), calc(var(--thumb-size, 66px) * 1.6));
+   height: clamp(var(--thumb-size, 66px), calc(100vw * 120 / 768), calc(var(--thumb-size, 66px) * 1.6));
 }
 /* 메인 카테고리 end --------------------------*/
 

@@ -79,6 +79,8 @@ export function ProductWrapper({
     }))
   );
 
+  // console.log(product);
+
   const fetchQAs = async (pageNumber: number) => {
     const res = await requester.getProductQAs(initProduct?.content?.id, {
       relations: ["user"],
@@ -156,20 +158,31 @@ export function ProductWrapper({
         cancelText: "취소",
         onConfirm: () => navigate("/auth/login"),
       });
+
+    const validSelected = selected.filter((s) => {
+      const v = product.variants.find((pv: VariantData) => pv.id === s.variant_id);
+      return v && v.stack > 0 && v.buyable;
+    });
     if (!selected.some((f) => f.quantity > 0))
       return toast({ message: "상품을 최소 1개 이상 담아주세요" });
 
     if (selected.length > 0) {
       const { message, error } = await requester.addItem({
         store_id: storeData?.id,
-        variants: selected,
+        variants: validSelected,
       });
       if (message) {
-        reload();
+        await reload();
         toast({ message: "장바구니 물건을 담았습니다." });
-        setSelected([
-          ...selected.map((s) => ({ variant_id: s.variant_id, quantity: 1 })),
-        ]);
+        // setSelected([
+        //   ...selected.map((s) => ({ variant_id: s.variant_id, quantity: 1 })),
+        // ]);
+        setSelected(
+          product.variants.map((v: VariantData) => ({
+            variant_id: v.id,
+            quantity: 0,
+          }))
+        );
       } else {
         toast({ message: error });
       }
@@ -362,7 +375,9 @@ export function DetailFrame({
 
           <FlexChild className={styles.price} width={"auto"}>
             <P>
-              {product.variants.reduce((acc, now) => {
+              {product.variants
+              // .filter((v) => v.stack > 0 && v.buyable)
+              .reduce((acc, now) => {
                 const quantity =
                   selected.find((f) => f.variant_id === now.id)?.quantity || 0;
 
@@ -468,7 +483,18 @@ export function OptionItem({
           product.warehousing ||
           !v.buyable ||
           v.warehousing ||
-          v.stack <= 0;
+          (v.stack ?? 0) <= 0;
+
+          // 표시용 금액은 변종 단가 기준
+          const unitPrice = Number(
+            v?.discount_price ?? product?.discount_price ?? 0
+          );
+          const qty = Number(select?.quantity ?? 0);
+          const addPrice = qty * unitPrice;
+          
+          const variantsArray = product.variants;
+          const INputMInCheck = variantsArray.filter((v:VariantData) => v.stack > 0 && v.buyable).length > 1 ? 0 : 1;
+
         return (
           <HorizontalFlex
             className={styles.option_item}
@@ -479,8 +505,8 @@ export function OptionItem({
               <InputNumber
                 disabled={disabled}
                 value={select?.quantity}
-                min={1}
-                max={100}
+                min={INputMInCheck}
+                max={Number(v.stack)}
                 step={1}
                 onChange={(val) => {
                   select.quantity = val;
@@ -507,15 +533,21 @@ export function OptionItem({
                 className={clsx(styles.op_name, {
                   [styles.disabled]: disabled,
                 })}
+                gap={5}
               >
                 <P>{v?.title}</P>
+                {
+                  v.extra_price !== 0 && (
+                    <P>(+{(v?.extra_price || 0).toLocaleString()}원)</P>
+                  )
+                }
               </FlexChild>
 
               <FlexChild width={"auto"} gap={5}>
                 {!disabled && (
                   <>
                     <Span>{select.quantity}개</Span>
-                    <Span>+ {(select.quantity * product?.discount_price || 0).toLocaleString()}원</Span>
+                    <Span>+ {(addPrice).toLocaleString()}원</Span>
                   </>
                 )}
               </FlexChild>

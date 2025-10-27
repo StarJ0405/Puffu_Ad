@@ -9,6 +9,7 @@
    overflow: hidden;
    width: 100%;
    border-radius: 10px;
+   aspect-ratio: 1;
 }
 
 .prodcut_item .imgBox img {

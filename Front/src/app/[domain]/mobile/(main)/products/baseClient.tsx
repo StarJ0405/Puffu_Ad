@@ -217,7 +217,7 @@ export function BaseProductList({
                       mutate={mutate}
                       product={product}
                       lineClamp={2}
-                      width={200}
+                      // width={200}
                     />
                   </FlexChild>
                 );

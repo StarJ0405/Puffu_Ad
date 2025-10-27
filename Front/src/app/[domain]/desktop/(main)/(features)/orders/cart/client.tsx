@@ -1377,15 +1377,23 @@ function Item({
               {item.variant.product.title}
             </P>
             {item.variant.title && (
-              <P
-                className={styles.unit_title}
-                lineClamp={2}
-                overflow="hidden"
-                display="--webkit-box"
-                marginTop={10}
-              >
-                {item.variant.title}
-              </P>
+              <FlexChild gap={5} marginTop={10}>
+                <P
+                  className={styles.unit_title}
+                  lineClamp={2}
+                  overflow="hidden"
+                  display="--webkit-box"
+                >
+                  {item.variant.title}
+                </P>
+                {
+                  item.variant.extra_price !==0 && (
+                    <P color="#797979">
+                      (+{(item.variant.extra_price || 0).toLocaleString()}원)
+                    </P>
+                  )
+                }
+              </FlexChild>
             )}
             <VerticalFlex gap={20} alignItems="start" width={"auto"}>
               <VerticalFlex className={styles.unit_price} alignItems="start">

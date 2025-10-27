@@ -80,14 +80,18 @@ export function CompleteForm({ order }: { order?: OrderData }) {
           <FlexChild justifyContent="center">
             {/* 할인금액: 상품할인 + 프로모션세일 + 배송비 */}
             <P size={18} color="#fff" weight={500}>
-              주문금액 (배송비포함) {Number((order?.total || 0)+(order?.shipping_method?.amount||0)).toLocaleString("ko-KR")}원 -
-              할인금액{" "}
+              주문금액 (배송비포함){" "}
+              {Number(
+                (order?.total || 0) + (order?.shipping_method?.amount || 0)
+              ).toLocaleString("ko-KR")}
+              원 - 할인금액{" "}
               {(
                 (order?.total || 0) -
                 (order?.total_final || 0) +
-                (order?.shipping_method?.amount || 0) 
+                (order?.shipping_method?.amount || 0)
+              )
                 // - (order?.point || 0)
-              ).toLocaleString("kr")}
+                .toLocaleString("kr")}
               원
               {/* {order?.point
                 ? ` - 포인트 ${Number(order.point).toLocaleString("ko-kr")}P`
@@ -157,67 +161,74 @@ export function MyOrdersTable({ items }: { items?: LineItemData[] }) {
             </thead>
 
             <tbody>
-              {items.map((item, i) => (
-                <tr key={i}>
-                  <td>
-                    <FlexChild className={styles.order_item}>
-                      <Image src={item.thumbnail} width={150} />
+              {items.map((item, i) => {
+                return (
+                  <tr key={i}>
+                    <td>
+                      <FlexChild className={styles.order_item}>
+                        <Image src={item.thumbnail} width={150} />
 
-                      <VerticalFlex className={styles.order_txt}>
-                        <span className={styles.brand}>{item.brand?.name}</span>
+                        <VerticalFlex className={styles.order_txt}>
+                          <span className={styles.brand}>
+                            {item.brand?.name}
+                          </span>
 
-                        <P className={styles.title}>{item.product_title}</P>
+                          <P className={styles.title}>{item.product_title}</P>
 
-                        <VerticalFlex className={styles.option_list}>
-                          <P>{item.variant_title}</P>
-                          <P>{item.total_quantity}개</P>
-                        </VerticalFlex>
+                          <VerticalFlex className={styles.option_list}>
+                            <P>{item.variant_title}</P>
+                            <P>{item.total_quantity}개</P>
+                          </VerticalFlex>
 
-                        <VerticalFlex
-                          gap={5}
-                          className={styles.price_box}
-                          alignItems="start"
-                        >
-                          <P
-                            className={styles.unit_price}
-                            hidden={
-                              (item.unit_price || 0) -
-                                (item.discount_price || 0) ===
-                              0
-                            }
+                          <VerticalFlex
+                            gap={5}
+                            className={styles.price_box}
+                            alignItems="start"
                           >
-                            {(item.unit_price || 0).toLocaleString("ko-KR")}원
-                            {/* {Number(item.unit_price).toLocaleString("ko-KR")}원 */}
-                          </P>
+                            <P
+                              className={styles.unit_price}
+                              hidden={
+                                (item.unit_price || 0) -
+                                  (item.discount_price || 0) ===
+                                0
+                              }
+                            >
+                              {(item.unit_price || 0).toLocaleString("ko-KR")}원
+                              {/* {Number(item.unit_price).toLocaleString("ko-KR")}원 */}
+                            </P>
 
-                          <P>
-                            {(item.discount_price || 0).toLocaleString("ko-KR")}
-                            원
-                            {/* {Number(item.unit_price).toLocaleString("ko-KR")}원 */}
-                          </P>
+                            <P>
+                              {(item.discount_price || 0).toLocaleString(
+                                "ko-KR"
+                              )}
+                              원
+                              {/* {Number(item.unit_price).toLocaleString("ko-KR")}원 */}
+                            </P>
+                          </VerticalFlex>
                         </VerticalFlex>
-                      </VerticalFlex>
-                    </FlexChild>
-                  </td>
-                  <td>
-                    {/* 상품할인 + 프로모션 세일 할인 */}
-                    <P weight={600} color="#fff">
-                      {(
-                        (item.unit_price || 0) * item.quantity -
-                        (item.total_final || 0)
-                      ).toLocaleString("ko-KR")}{" "}
-                      원
-                    </P>
-                  </td>
+                      </FlexChild>
+                    </td>
+                    <td>
+                      {/* 상품할인 + 프로모션 세일 할인 */}
+                      <P weight={600} color="#fff">
+                        {(
+                          (item.unit_price || 0) * item.quantity -
+                          (item.total_final || 0)
+                        ).toLocaleString("ko-KR")}{" "}
+                        원
+                      </P>
+                    </td>
 
-                  <td>
-                    {/* (상품할인 + 프로모션 세일) 들어간 결제 금액 */}
-                    <P weight={600}>
-                      {Number(item.total_final || 0).toLocaleString("ko-KR")} 원
-                    </P>
-                  </td>
-                </tr>
-              ))}
+                    <td>
+                      {/* (상품할인 + 프로모션 세일) 들어간 결제 금액 */}
+                      <P weight={600}>
+                        {Number(item.total_final || 0).toLocaleString("ko-KR")}{" "}
+                        원
+                      </P>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </VerticalFlex>

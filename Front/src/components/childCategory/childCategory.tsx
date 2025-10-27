@@ -23,7 +23,7 @@ export default function ChildCategory({
 
   return (
     <>
-      <ul className={styles.category_list}>
+      <ul className={clsx('mob_page_container', styles.category_list)}>
         {
           childrenData.length > 0 ? (
             <>

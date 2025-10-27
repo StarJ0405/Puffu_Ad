@@ -1,9 +1,27 @@
 /* 중분류, 소분류 카테고리 */
 .category_list {
+   width: 100%;
    display: flex;
    gap: 20px;
    align-self: start;
    /* margin-bottom: 20px; */
+   overflow-x: auto;
+   padding-bottom: 10px !important;
+}
+
+.category_list::-webkit-scrollbar {
+   height: 5px;
+}
+
+.category_list::-webkit-scrollbar-track {
+  background: #f1f1f1;   /* 트랙 배경색 */
+  border-radius: 10px;
+}
+
+/* 스크롤바 손잡이(thumb) */
+.category_list::-webkit-scrollbar-thumb {
+  background: #000;       /* 손잡이 색 */
+  border-radius: 10px;
 }
 
 .category_list > li {
@@ -14,6 +32,7 @@
    opacity: 0.5;
    cursor: pointer;
    transition: 0.2s;
+   white-space: nowrap;
 }
 
 .category_list > li.active,
