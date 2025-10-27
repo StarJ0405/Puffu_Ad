@@ -784,6 +784,57 @@ export default function TermContent({ size = 10 }: Props) {
 
       <VerticalFlex>
         <VerticalFlex gap={5}>
+          <P className={styles.sub_title}>제 31 조 (유료 서비스 상품의 변경)</P>
+          <P className={styles.txt1}>
+            1. 회원이 이미 가입한 유료 서비스 상품의 변경은 원칙적으로 허용되지 않습니다. 다만, 회사가 별도로 정한 경우(예: 상위 상품으로의 업그레이드)에 한하여 가능할 수 있습니다.
+            <br />
+            <br />
+            2. '회사'는 유료 서비스의 내용(혜택, 대상 상품, 대상 지역 등)을 변경할 수 있습니다.
+          </P>
+        </VerticalFlex>
+      </VerticalFlex>
+
+      <VerticalFlex>
+        <VerticalFlex gap={5}>
+          <P className={styles.sub_title}>제 32 조 (유료 서비스 내용의 변경 및 사전 고지)</P>
+          <P className={styles.txt1}>
+            1. '회사'는 유료 서비스 상품을 사용하는 회원의 권리나 의무에 불리하게 약관 또는 혜택 내용을 변경하는 경우, 그 적용일자 30일 이전부터 해당 사실과 변경 내용을 공지하여야 하며, 고지 방법은 회원이 확인할 수 있도록 회사의 공식 웹사이트, 온라인 쇼핑몰 등에 게시하고, 전자우편(e-mail), 전자쪽지, 앱 알림(알림톡), 로그인 시 동의창 등의 전자적 수단으로 명확히 통지할 수 있습니다.
+          </P>
+        </VerticalFlex>
+      </VerticalFlex>
+
+      <VerticalFlex>
+        <VerticalFlex gap={5}>
+          <P className={styles.sub_title}>제 33 조 (유료 서비스 상품의 결제 수단 및 결제 한도)</P>
+          <P className={styles.txt1}>
+            1. 유료 멤버십 서비스 이용료의 부과 및 납부 방식은 회사가 지정한 결제 수단에 따르며, 결제 수단별 한도는 결제대행업체나 정부 방침 등에 따라 정해질 수 있습니다.
+            <br />
+            <br />
+            2. 회원은 회사가 지정한 결제 수단(신용카드, 체크카드, 본인 명의 통장, 회사 캐시, 전자화폐, 상품권 등)을 등록하여야 하며, 등록된 결제 수단으로 이용료가 정기 결제되는 것에 동의합니다.
+            <br />
+            <br />
+            3. 회사의 정책 및 결제업체(이동통신사, 오픈마켓 스토어, 애플리케이션 스토어 등)의 정책, 정부의 방침 등에 따라 각 결제 수단별 결제 한도가 부여되거나 달라질 수 있습니다.
+            <br />
+            <br />
+            4. 결제 실패 시, 회사는 회원이 등록한 결제 수단을 통해 주기적으로 재결제를 시도할 수 있으며, 회원은 재결제기한 내에 결제 정보를 수정하여 정상 결제가 이루어지도록 필요한 조치를 취해야 합니다.
+          </P>
+        </VerticalFlex>
+      </VerticalFlex>
+
+      <VerticalFlex>
+        <VerticalFlex gap={5}>
+          <P className={styles.sub_title}>제 34 조 (유료 서비스 상품의 이용분 정산 및 환불)</P>
+          <P className={styles.txt1}>
+            1. 회원이 이용 기간 중 자발적으로 해지를 요청하거나, 회사의 서비스 종료 등으로 환불이 필요한 경우, 회사는 회원이 실제로 이용한 기간 및 받은 혜택(할인, 적립, 쿠폰 등)을 고려하여 환불액을 산정합니다.
+            <br />
+            <br />
+            2. 환불액은 회원이 납부한 이용료에서 실제 이용 기간 또는 이용으로 인한 이익을 합리적인 기준에 따라 차감한 후 계산하며, 구체적인 산정 방식은 회사의 별도 운영 정책에 따릅니다.
+          </P>
+        </VerticalFlex>
+      </VerticalFlex>
+
+      <VerticalFlex>
+        <VerticalFlex gap={5}>
           <P className={styles.sub_title}>부칙</P>
           <P className={styles.txt1}>
             1. 이 약관은 2025년 9월 1일부터 시행합니다.

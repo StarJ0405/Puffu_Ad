@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import useNavigate from "@/shared/hooks/useNavigate";
 import FlexChild from "@/components/flex/FlexChild";
 import P from "@/components/P/P";
