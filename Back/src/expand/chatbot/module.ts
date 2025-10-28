@@ -55,7 +55,7 @@ export async function embedContent(
     sort?: string | string[];
   }
 ) {
-  const { K_RESULTS = 100, where, sort } = options || {};
+  const { K_RESULTS = 10, where, sort } = options || {};
   const embeddingResult = await ai.models.embedContent({
     model: EMBEDDING_MODEL,
     contents: query,
