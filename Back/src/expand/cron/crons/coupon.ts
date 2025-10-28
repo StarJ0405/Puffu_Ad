@@ -225,17 +225,24 @@ export function regist(DEV: boolean) {
           })
         );
       }
-      // 구독 발급
+      // 크론: 매월 1일 구독 쿠폰 발급 + 만료 구독 회수
       if (now.getDate() === 1) {
         const subscribeService = container.resolve(SubscribeService);
-        const subscribes = await subscribeService.getList({
+        const couponService = container.resolve(CouponService);
+
+        // 1) 활성 구독 조회: canceled_at IS NULL 추가
+        const activeSubs = await subscribeService.getList({
           where: {
             user_id: Not(IsNull()),
-            ends_at: MoreThan(new Date()),
+            canceled_at: IsNull(),
             starts_at: LessThanOrEqual(new Date()),
+            ends_at: MoreThan(new Date()),
             value: MoreThan(0),
           },
+          select: ["id", "store_id", "user_id", "name", "value"],
         });
+
+        // 이번 달 기간
         const start_date = new Date();
         start_date.setHours(0, 0, 0, 0);
         start_date.setDate(1);
@@ -243,28 +250,26 @@ export function regist(DEV: boolean) {
         end_date.setMonth(end_date.getMonth() + 1);
         end_date.setDate(0);
         end_date.setHours(23, 59, 59, 999);
+
+        // 2) 월 쿠폰 발급: is_subscription + subscription_id 세팅
         await Promise.all(
-          subscribes.map(
-            async (subscribe) =>
-              await service.create({
-                store_id: subscribe.store_id,
-                name: `${subscribe.name} ${now.getMonth() + 1}월 쿠폰`,
-                type: CouponType.ORDER,
-                calc: CalcType.FIX,
-                value: subscribe.value,
-                user_id: subscribe.user_id || undefined,
-                starts_at: start_date,
-                ends_at: end_date,
-                is_subscription: true,
-              })
+          activeSubs.map((sub) =>
+            couponService.create({
+              store_id: sub.store_id,
+              name: `${sub.name} ${now.getMonth() + 1}월 쿠폰`,
+              type: CouponType.ORDER,
+              calc: CalcType.FIX,
+              value: sub.value,
+              user_id: sub.user_id || undefined,
+              starts_at: start_date,
+              ends_at: end_date,
+              is_subscription: true,
+              subscription_id: sub.id,
+            })
           )
         );
-      }
-      {
-        // 구독 회수
-        const subscribeService = container.resolve(SubscribeService);
-        const couponService = container.resolve(CouponService);
 
+        // 3) 만료된 구독의 미사용 구독쿠폰 회수
         const expired = await subscribeService.getList({
           where: {
             user_id: Not(IsNull()),
