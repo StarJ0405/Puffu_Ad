@@ -7,6 +7,7 @@ import Button from "@/components/buttons/Button";
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import Link from "next/link";
+import {ClientTxt} from './client'
 
 export default async function () {
   
@@ -24,11 +25,7 @@ export default async function () {
             가입이 완료되었습니다.
           </P>
 
-          <P className={styles.text1}>
-            이제부터 전제품 <strong>10% 할인</strong> + <br/>
-            매월 프리머니 <strong>1만원 쿠폰</strong> 지급 <br/>
-            혜택을 누리실 수 있습니다.
-          </P>
+          <ClientTxt />
         </VerticalFlex>
 
         <VerticalFlex className={styles.confirm_btn}>

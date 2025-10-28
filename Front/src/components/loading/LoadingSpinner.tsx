@@ -14,7 +14,7 @@ const LoadingSpinner = ({
         {/* <div className={style.spinnerCircle} /> */}
         <img src="/resources/icons/loading.png" className={styles.spin} />
       </div>
-      <p>불러오는 중</p>
+      {/* <p>불러오는 중</p> */}
     </div>
   );
 };

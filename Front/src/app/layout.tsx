@@ -41,6 +41,7 @@ export default function RootLayout({
           name="viewport"
           content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
         />
+        <meta name='keywords' content="푸푸토이, 성인용품, 성인용품사이트, 온라인성인용품, 남자성인용품, 여자성인용품, 성인용품매장, 코스프레, 코스프레의상, 이벤트속옷, 바니룸, 섹시속옷, 콘돔, 란제리, 바이브레이터, 우머나이저, 딜도, 오나홀, 진동기, 러브젤추천, 커플아이템" />
         <meta name="theme-color" content="#000" />
         <meta name="robots" content="index,follow" />
         <link rel="icon" href="/favicon.ico" />

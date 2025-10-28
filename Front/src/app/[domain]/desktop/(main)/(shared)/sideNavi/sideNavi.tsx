@@ -12,11 +12,11 @@ import AdminChat from "@/modals/main/adminChat/adminChat";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import { requester } from "@/shared/Requester";
 import useData from "@/shared/hooks/data/useData";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import P from "@/components/P/P";
 import { useCart } from "@/providers/StoreProvider/StorePorivderClient";
 import CountBadge from "@/components/countBadge/countBadge";
-
+import clsx from "clsx";
 
 // const navigate = useNavigate();
 
@@ -25,10 +25,49 @@ import CountBadge from "@/components/countBadge/countBadge";
 }
 export default function SideNavi() {
   const { userData } = useAuth();
+  const naviRef = useRef<HTMLDivElement | null>(null);
+
+  const [toggle, setToggle] = useState(true);
+  const [mounted, setMounted] = useState(false); // ✅ hydration 보호용 플래그
+
+  useEffect(() => {
+    // ✅ 브라우저에서만 실행됨
+    setMounted(true);
+    const saved = localStorage.getItem('sideNaviToggle');
+    if (saved !== null) {
+      setToggle(JSON.parse(saved));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      localStorage.setItem('sideNaviToggle', JSON.stringify(toggle));
+    }
+  }, [toggle, mounted]);
+
+  useEffect(() => {
+    if (naviRef.current) {
+      const w = naviRef.current.offsetWidth;
+      naviRef.current.style.setProperty('--navi-move', `-${w}px`);
+    }
+  }, [mounted]);
+
+  const handleNaviToggle = () => setToggle(prev => !prev);
+
+  // ✅ mount되기 전에는 아무것도 렌더링하지 않음 → SSR과 CSR 불일치 방지
+  if (!mounted) return null;
+
+  
 
   return (
     <>
-      <nav id={styles.sideNavi}>
+      <nav id={styles.sideNavi} className={toggle ? '' : styles.close} ref={naviRef}>
+        <Button className={clsx(styles.navi_toggle_btn, (toggle ? '' : styles.active))} onClick={handleNaviToggle}>
+          <Image
+            src={"/resources/icons/arrow/slide_arrow.png"}
+            width={8}
+          />
+        </Button>
         <VerticalFlex className={styles.outer_box}>
           <Link href={"/products/hot"} className={styles.hotDeal_link}>
             <Image

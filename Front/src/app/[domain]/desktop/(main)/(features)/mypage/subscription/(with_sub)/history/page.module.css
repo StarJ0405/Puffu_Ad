@@ -1,38 +1,47 @@
 
-.wrapper {
-  --subsribe-color: #3fa0ff;
-  position: relative;
+.list_table {width: 100%;}
+
+.list_table .table_header {
+  background: #323232;
 }
 
-.wrapper * {line-height: 1.3;}
-
-.payment_list {gap: 10px;}
-
-.payment_list .item {
-  gap: 15px; 
-  border-radius: 5px;
-  background: #050505;
-  padding: 10px;
-}
-
-.payment_list .item .date {
-  color: #aeaeae !important;
-  font-size: 14px !important;
-}
-
-.payment_list .item .title {
-  color: #fff !important;
-  font-size: 16px !important;
-}
-
-.payment_list .item .price_box {
-  border-top: 1px solid #333;
-  padding-top: 5px;
-  margin-top: 10px;
-}
-
-.payment_list .item .price {
-  color: #fff !important;
-  font-size: 18px !important;
+.list_table .table_header th {
+  padding: 15px 5px;
+  color: #fff;
   font-weight: 600;
+  font-size: 16px;
+}
+
+
+.list_table tbody tr {
+  border-bottom: 1px solid #5e5e5e;
+}
+
+.list_table tbody td {
+  padding: 30px 5px;
+  font-size: 15px;
+  vertical-align: middle;
+  text-align: center;
+}
+
+/* .list_table tbody td p:not(.title) {
+  width: fit-content !important;
+  background: #333;
+  padding: 7px 10px;
+  border-radius: 50px;
+  background: var(--main-color1);
+}
+
+.list_table tbody td .date {background: #333 !important;} */
+
+.list_table tbody td .title,
+.list_table tbody td .price {
+  font-weight: 600 !important;
+}
+.list_table tbody td .price_sub {
+  font-size: 0.9em;
+  width: fit-content !important;
+  background: #050505;
+  padding: 7px 10px;
+  border-radius: 50px;
 }

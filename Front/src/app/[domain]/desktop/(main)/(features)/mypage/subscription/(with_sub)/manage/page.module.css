@@ -1,8 +1,22 @@
+.manage_box {
+  --subsribe-color: #3fa0ff;
+  gap: 25px !important;
+}
+
+.manage_header {
+  gap: 15px !important;
+}
+
+.manage_header .date_txt {
+  color: #DDDDDD !important;
+  font-size: 15px !important;
+  font-weight: 400 !important;
+}
 
 .wrapper {
-  --subsribe-color: #3fa0ff;
-  padding-bottom: 100px;
   position: relative;
+  padding-bottom: 15px;
+  gap: 25px;
 }
 
 .wrapper * {
@@ -10,56 +24,46 @@
   position: relative; z-index: 2;
 }
 
-.list {gap: 15px;}
-
-.list .link_btn a {
-  padding: 16px 20px;
-  background: #131313;
+.link_btn a {
+  padding: 19px 20px 19px 30px;
+  background: #2A2A2A;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
   width: 100%;
-  font-size: 14px;
+  font-size: 18px;
   color: #fff;
 }
 
 
-.box_layer {max-width: 500px;}
+.box_layer {max-width: 585px; gap: 20px;}
 
-.period_txt {font-size: 14px; gap: 10px;}
-.period_txt span {color: #fff !important;}
-.period_txt p {color: #797979 !important;}
-
-.premium_layer {
-  background: linear-gradient(180deg, var(--subsribe-color), #015BFF);
-  border-radius: 10px;
-  padding: 1px;
+.payment_btn {
+  width: 100%;
+  background: linear-gradient(90deg, var(--subsribe-color), #015BFF);
+  border-radius: 5px;
+  padding: 19px 5px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.1s;
+  position: relative;
 }
 
-.premium_box {
-  background: linear-gradient(180deg, #262626, #131313);
-  border-radius: inherit;
+.payment_btn:active {
+  filter: brightness(0.7);
 }
 
-.premium_box .itemBox {
-  padding: 15px 15px 10px;
-}
 
-.premium_box .service_Title {
-  gap: 8px; align-items: center !important;
-  justify-content: start !important;
-  margin-bottom: 15px;
-}
-
-.premium_box .service_Title .premium_mark {
+.premium_mark {
   width: auto; border-radius: 5px;
   background: linear-gradient(90deg, var(--subsribe-color), #015BFF);
   padding: 1px;
 }
 
-.premium_box .service_Title .premium_mark > div {
+.premium_mark > div {
   padding: 7px; background: #000;
   border-radius: inherit;
   font-size: 12px; text-transform: uppercase;
@@ -67,68 +71,50 @@
   letter-spacing: 0.5px;
 }
 
-.premium_box .service_Title > p {
-  font-size: 20px !important;
-  font-weight: 600 !important;
+.premium_layer {
+  background: linear-gradient(180deg, var(--subsribe-color), #015BFF);
+  border-radius: 10px;
+  padding: 2px;
 }
 
-.item_content {gap: 30px; padding-bottom: 40px;}
-
-.item_content .cumulative {
+.premium_layer .cumulative {
   background: #050505;
   border-radius: 10px;
-  padding: 12px 10px;
+  padding: 15px;
   gap: 20px;
 }
 
-.item_content .cumulative .txt {
-  width: auto;
-  align-self: start;
-  gap: 7px;
-  color: #aeaeae;
-}
-
-.item_content .cumulative .total {
-  width: auto;
-  align-self: end;
-  font-size: 30px;
-  color: var(--subsribe-color);
-  font-weight: 700;
-}
-
-.item_content .unit {gap: 15px;}
-.item_content .unit > div {width: auto; gap: 10px;}
-
-.item_content .unit > div p {font-size: 15px !important; color: #fff !important;}
-.item_content .unit > div p span {color: var(--subsribe-color); font-weight: 600 !important;}
-
-
-.premium_box .payment_txt {
-  align-self: end;
-  font-size: 13px;
+.premium_layer .cumulative .txt {
+  gap: 10px;
   color: #fff;
-  line-height: 1.2;
-}
-
-.premium_box .next_payment_box {
-  border-top: 1px solid #262626;
-  padding: 12px 10px 16px;
-}
-.premium_box .next_payment_box p {
-  font-size: 13px !important;
-  color: #797979 !important;
-}
-
-.premium_box .next_payment_box .payment_btn {
-  width: 100%;
-  background: linear-gradient(90deg, var(--subsribe-color), #015BFF);
-  border-radius: 5px;
-  padding: 12px 5px;
-  margin-top: 15px;
   font-size: 16px;
   font-weight: 600;
 }
 
-.premium_box .next_payment_box .payment_btn:active {
-  filter: var(--mob-active-filter);
+.premium_layer .cumulative .total {
+  width: auto;
+  align-self: end;
+  font-size: 30px;
+  color: #fff;
+  font-weight: 700;
 }
+
+.box_layer .unit {gap: 25px;}
+.box_layer .unit > .unit_item {
+  gap: 25px; background: #303030;
+  padding: 25px 10px 26px;
+  border-radius: 10px;
+}
+
+.box_layer .unit > .unit_item p {
+  font-size: 20px !important; 
+  color: #fff !important;
+  font-weight: 500 !important;
+  text-align: center;
+}
+.box_layer .unit > .unit_item p span {
+  color: var(--subsribe-color); font-weight: 600 !important;
+  line-height: inherit !important;
+  vertical-align: baseline !important;
+}
+
