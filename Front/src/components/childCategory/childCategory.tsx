@@ -7,6 +7,7 @@ import FlexChild from "../flex/FlexChild";
 import Image from "@/components/Image/Image";
 import useNavigate from "@/shared/hooks/useNavigate";
 import P from "@/components/P/P";
+import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
 
 // 중분류, 소분류 카테고리
 export default function ChildCategory({
@@ -18,12 +19,12 @@ export default function ChildCategory({
   parent: CategoryData;
   categoryId: any;
 }) {
-
+  const {isMobile} = useBrowserEvent();
   const navigate = useNavigate();
 
   return (
     <>
-      <ul className={clsx('mob_page_container', styles.category_list)}>
+      <ul className={clsx((isMobile ? 'mob_page_container' : ''), styles.category_list)}>
         {
           childrenData.length > 0 ? (
             <>

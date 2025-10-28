@@ -99,7 +99,7 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
               className={styles.profile_name}
             >
               <P>{userData?.name ?? "익명"}</P>
-              {
+              {/* {
                 // 구독 가입되어 있으면 나타나기
                 isSubscribe && (
                   <Image
@@ -107,7 +107,7 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
                     width={77}
                   />
                 )
-              }
+              } */}
             </VerticalFlex>
           </HorizontalFlex>
         </FlexChild>
@@ -138,7 +138,7 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
         구독내역
       </FlexChild> */}
 
-      {
+      {/* {
         // 구독 가입 되어 있으면 안 보이기
         !isSubscribe && (
           <FlexChild onClick={() => navigate("/mypage/subscription/subscribe")}>
@@ -148,7 +148,7 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
             />
           </FlexChild>
         )
-      }
+      } */}
 
       <VerticalFlex className={styles.membership_box}>
         <HorizontalFlex className={styles.title_box}>
@@ -405,7 +405,7 @@ export function MypageNavi() {
             </Link>
           </li>
 
-          {
+          {/* {
             // 구독 가입되어 있을때만 나오기
             isSubscribe && (
               <li>
@@ -429,7 +429,7 @@ export function MypageNavi() {
                 </Link>
               </li>
             )
-          }
+          } */}
 
           {myInfoMenu.map((item, i) => (
             <li key={i}>
