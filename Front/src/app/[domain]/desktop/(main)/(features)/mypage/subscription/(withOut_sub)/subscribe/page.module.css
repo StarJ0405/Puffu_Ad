@@ -1,9 +1,8 @@
 
 .wrapper {
   --subsribe-color: #3fa0ff;
-  padding-bottom: 200px;
-  overflow: hidden;
-  position: relative;
+  max-width: 768px;
+  margin: 0 auto;
 }
 
 .wrapper * {
@@ -20,42 +19,42 @@
 .bg img {width: 100%; height: auto;}
 
 .bg.heart {
-  width: 144px;
+  width: min(472px, calc(100vw * 472 / 1920));
   height: auto;
   opacity: 0.7;
   transform: rotate(-30deg);
-  top: 4%;
-  right: -15px;
+  top: 20%;
+  right: 10%;
 }
 
 .bg.gift1 {
-  width: 246px;
+  width: min(654px, calc(100vw * 654 / 1920));
   height: auto;
-  opacity: 0.5;
+  opacity: 0.8;
   transform: scaleX(-1);
-  top: 23%;
-  left: -87px;
+  top: 40%;
+  left: -6%;
 }
 
 .bg.gift2 {
-  width: 246px;
+  width: min(654px, calc(100vw * 654 / 1920));;
   height: auto;
-  opacity: 0.5;
-  top: 55%;
-  right: -100px;
+  opacity: 0.8;
+  top: 63%;
+  right: -5%;
 }
 
 
-.title {font-size: 25px; text-align: center; margin-bottom: 50px;}
+.title {font-size: 45px; text-align: center; margin-bottom: 60px;}
 
-.content_container {gap: 20px;}
+.content_container {gap: 35px;}
 
 .itemBox {
   border-radius: 10px;
   background: rgba(5,5,5,0.5);
   -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
-  padding: 20px 10px;
+  padding: 32px 10px;
 }
 
 .itemBox.premiumBox {
@@ -64,24 +63,29 @@
 }
 
 .premiumBox .payment_txt {
-  padding: 12px 10px;
+  padding: 16px 10px;
   background: linear-gradient(90deg, var(--subsribe-color), #015BFF);
-  font-size: 20px; font-weight: 700;
+  font-size: 30px; font-weight: 700;
   text-align: center;
 }
 
 .premiumBox .item_content {
-  padding: 20px 10px;
-  gap: 20px;
+  padding: 45px 10px;
+  gap: 10px;
 }
 
 .premiumBox .item_content .unit {
   gap: 10px; text-align: center;
 }
 
+.premiumBox .item_content .unit .unit_title {
+  font-size: 25px !important; font-weight: 600 !important;
+
+}
+
 .premiumBox .item_content .unit .text1 {
-  font-size: 14px !important;
-  color: #797979;
+  font-size: 18px !important;
+  color: #ddd;
   line-height: 1.4; 
 }
 
@@ -91,17 +95,19 @@
 }
 
 
-.itemBox .txt_list {gap: 10px; max-width: 79%;}
+.itemBox .txt_list {gap: 7px;}
 .itemBox .txt_list .item {
   gap: 5px;
-  font-size: 13px;
+  font-size: 18px;
   color: #afafaf;
   align-items: start !important;
+  justify-content: center !important;
+  text-align: center;
 }
 
 .payment_check {
-  margin-top: 10px;
-  font-size: 13px;
+  margin-top: 20px;
+  font-size: 16px;
   color: #d0d0d0;
   text-align: center;
 }
@@ -111,7 +117,7 @@
 }
 
 .agree_box {
-  margin-top: 180px;
+  margin: 126px 0 80px;
   gap: 10px;
 }
 
@@ -119,43 +125,31 @@
   color: #797979;
   text-decoration: underline;
   text-align: center;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .agree_box .check_box {
   display: flex; gap: 10px;
   justify-content: center;
   align-items: center;
-  font-size: 15px;
+  font-size: 20px;
   color: #fff;
 }
 
 
 .confirm_btn {
-  position: fixed;
-  bottom: 60px;
-  left: 50%;
-  transform: translateX(-50%);
   width: 100%;
-  padding: 0 13px 20px;
-  z-index: 100;
-  max-width: 768px;
-}
-
-.confirm_btn .border_layer {
-  padding: 1px;
-  background: crimson;
-  border-radius: 10px;
-  background: linear-gradient(-90deg, var(--subsribe-color), #015BFF);
+  max-width: 380px;
 }
 
 .confirm_btn button {
   width: 100%;
-  font-size: 18px;
-  padding: 15px 10px;
+  font-size: 20px;
+  padding: 20px 10px;
   border-radius: inherit;
   font-weight: 600;
-  background: linear-gradient(-90deg, #262626 10%, #050505);
+  border-radius: 10px;
+  background: linear-gradient(-90deg, var(--subsribe-color), #015BFF);
 }
 
 .confirm_btn .border_layer:active {

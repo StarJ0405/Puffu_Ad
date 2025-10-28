@@ -3,20 +3,17 @@ import clsx from "clsx";
 import styles from "./page.module.css";
 
 // import { ContentBox } from "./client";
-import { requester } from "@/shared/Requester";
 import FlexChild from "@/components/flex/FlexChild";
-import P from "@/components/P/P";
 import Image from "@/components/Image/Image";
-import Button from "@/components/buttons/Button";
-import Span from "@/components/span/Span";
-import { ContentBox } from "./client"
+import P from "@/components/P/P";
 import Link from "next/link";
+import { ContentBox } from "./client";
 
 export default async function () {
   
   return (
     <>
-      <VerticalFlex className={clsx(styles.wrapper, 'mob_page_container')}>
+      <VerticalFlex className={clsx(styles.wrapper)}>
 
         <VerticalFlex className={styles.list}>
           <ContentBox />

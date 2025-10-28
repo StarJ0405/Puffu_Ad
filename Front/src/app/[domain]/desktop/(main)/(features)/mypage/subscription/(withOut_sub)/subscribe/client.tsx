@@ -7,14 +7,15 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
-import { useStore } from "@/providers/StoreProvider/StorePorivderClient";
 import useNavigate from "@/shared/hooks/useNavigate";
-import { requester } from "@/shared/Requester";
 import { toast } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
+import { requester } from "@/shared/Requester";
+import { useStore } from "@/providers/StoreProvider/StorePorivderClient";
 import styles from "./page.module.css";
+import HorizontalFlex from "@/components/flex/HorizontalFlex";
 
 export function ContentBox({}: {}) {
   const [plan, setPlan] = useState<SubscribeData | null>(null);
@@ -31,6 +32,8 @@ export function ContentBox({}: {}) {
 
   const price = plan?.price;
 
+  console.log('구독', plan);
+
   return (
     <VerticalFlex className={clsx(styles.premiumBox, styles.itemBox)}>
       <FlexChild className={styles.payment_txt} justifyContent="center">
@@ -39,32 +42,36 @@ export function ContentBox({}: {}) {
 
       <VerticalFlex className={styles.item_content}>
         <VerticalFlex className={styles.unit}>
-          <FlexChild gap={5} justifyContent="center">
+          <FlexChild gap={5} justifyContent="center" className={styles.unit_title}>
             <Image
-              src={"/resources/icons/mypage/subscription_sale.png"}
-              width={20}
+              src={"/resources/images/mypage/subscription_cancel_sale_pc.png"}
+              width={40}
               height={"auto"}
             />
             <P>
-              전제품 <Span>10% 상시 할인</Span>
+              전제품 <Span>{plan?.percent}% 상시 할인</Span>
             </P>
           </FlexChild>
 
           <P className={styles.text1}>
             푸푸토이의 모든 제품이 <br />
-            언제나 10% 할인가로 적용됩니다.
+            언제나 {plan?.percent}% 할인가로 적용됩니다.
           </P>
         </VerticalFlex>
+
+        <FlexChild justifyContent="center">
+          <P size={45} lineHeight={1} fontWeight={300}>+</P>
+        </FlexChild>
 
         <VerticalFlex className={styles.unit}>
           <FlexChild gap={5} justifyContent="center">
             <Image
-              src={"/resources/icons/mypage/subscription_coupon.png"}
-              width={20}
+              src={"/resources/images/mypage/subscription_cancel_coupon_pc.png"}
+              width={40}
               height={"auto"}
             />
-            <P>
-              매월 프리머니 <Span>10,000원</Span> 쿠폰 지급
+            <P className={styles.unit_title}>
+              매월 프리머니 <Span verticalAlign={'baseline'}>{(plan?.value || 0).toLocaleString()}원</Span> 쿠폰 지급
             </P>
           </FlexChild>
 
@@ -95,12 +102,12 @@ export function CheckConfirm() {
   }, [storeId]);
 
   const price = plan?.price;
-  
+
   const showModal = (type: "term_check" | "privacy_check") => {
-    NiceModal.show("AgreeContent", { type });
+    NiceModal.show("AgreeContent", { type, onlyView: true, width: '500px', height: '70vh'});
   };
 
-  // === 결제 처리 ===
+  // 결제 버튼
   const handlePaymentSubmit = async () => {
     if (loading) return;
     setLoading(true);
@@ -236,18 +243,14 @@ export function CheckConfirm() {
             className={styles.check_box}
           >
             <CheckboxChild id={"agree_check"} />
+
             <P>상기된 이용약관 내용에 동의합니다.</P>
           </CheckboxGroup>
         </label>
       </VerticalFlex>
 
       <FlexChild className={styles.confirm_btn}>
-        <FlexChild
-          className={styles.border_layer}
-          onClick={handlePaymentSubmit}
-        >
-          <Button disabled={loading}>연간 회원권 결제하기</Button>
-        </FlexChild>
+        <Button onClick={handlePaymentSubmit}>연간 회원권 가입하기</Button>
       </FlexChild>
     </>
   );
