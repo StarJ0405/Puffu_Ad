@@ -6,6 +6,7 @@ import React from "react";
 import { MypageNavi, MainLInkTitle } from "./client";
 import LayoutClient from "./layoutClient";
 import mypage from "./mypage.module.css";
+import clsx from "clsx";
 
 export default async function ({
   children,
@@ -14,9 +15,9 @@ export default async function ({
 }>) {
   return (
     <LayoutClient>
-      <section className="root page_container">
+      <section className={clsx(mypage.mypage_container, 'root')}>
         {/*  */}
-        <VerticalFlex className={mypage.mypage_wrap}>
+        <VerticalFlex className={clsx(mypage.mypage_wrap, 'page_container')}>
           <MainLInkTitle />
 
           <HorizontalFlex alignItems="start" gap={30}>

@@ -24,11 +24,12 @@ import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import mypage from "./mypage.module.css";
 
-const pathnameHidden = () => {
-  // 구독 가입완료, 해지화면에선 가리기
+const pathnameVisible = () => {
+  // 구독 가입 시 관리 화면이랑, 해지 화면만 왼쪽 사이드메뉴 표시
   const pathname = usePathname();
 
   const hidden =
+    pathname === "/mypage/subscription/subscribe" ||
     pathname === "/mypage/subscription/success" ||
     pathname === "/mypage/subscription/cancel";
 
@@ -69,7 +70,7 @@ const editInfoModal = (userData: any, navigate: (path: string) => void) => {
 
 export function MainLInkTitle() {
   return (
-    <FlexChild className={mypage.title} hidden={pathnameHidden()}>
+    <FlexChild className={mypage.title} hidden={pathnameVisible()}>
       <Link href={"/mypage"}>
         <h3>마이페이지</h3>
       </Link>
@@ -286,7 +287,7 @@ export function MypageNavi() {
     <VerticalFlex
       gap={20}
       className={mypage.left_bar}
-      hidden={pathnameHidden()}
+      hidden={pathnameVisible()}
     >
       {
         // 구독 가입 되어 있으면 안 보이기

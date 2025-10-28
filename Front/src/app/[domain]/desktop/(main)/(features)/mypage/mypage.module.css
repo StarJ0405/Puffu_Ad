@@ -1,3 +1,8 @@
+.mypage_container {
+  position: relative;
+  overflow: hidden;
+}
+
 .mypage_wrap {
   padding-top: 50px;
   gap: 30px;

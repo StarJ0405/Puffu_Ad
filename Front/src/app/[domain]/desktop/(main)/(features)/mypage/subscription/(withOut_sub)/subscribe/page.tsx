@@ -10,13 +10,9 @@ import Image from "@/components/Image/Image";
 import Span from "@/components/span/Span";
 
 export default async function () {
-  const initCoupons = await requester.getCoupons({
-    pageSize: 12,
-  });
-
   return (
     <>
-      <VerticalFlex className={clsx(styles.wrapper, 'mob_page_container')}>
+      <VerticalFlex className={clsx(styles.wrapper)}>
 
         <article className={clsx(styles.bg, styles.heart)}>
           <Image
@@ -48,26 +44,14 @@ export default async function () {
           <FlexChild className={styles.itemBox} justifyContent="center">
             <VerticalFlex className={styles.txt_list}>
               <FlexChild className={styles.item}>
-                <Image
-                  src={"/resources/icons/mypage/subscription_check.png"}
-                  width={15} height={'auto'}
-                />
                 <P>결제 후에 언제든지 구독 취소 가능</P>
               </FlexChild>
   
               <FlexChild className={styles.item}>
-                <Image
-                  src={"/resources/icons/mypage/subscription_check.png"}
-                  width={15} height={'auto'}
-                />
                 <P>해지 시 연간 결제액보다 적게 사용한 경우 차액 계산하여 환급</P>
               </FlexChild>
   
               <FlexChild className={styles.item}>
-                <Image
-                  src={"/resources/icons/mypage/subscription_check.png"}
-                  width={15} height={'auto'}
-                />
                 <P>해지 후엔 언제든 다시 재가입 가능!</P>
               </FlexChild>
             </VerticalFlex>

@@ -85,7 +85,7 @@ export function ContentBox({}: {}) {
           <VerticalFlex className={styles.next_payment_box}>
             <P>다음 결제일 : {fmt(sub?.ends_at)}</P>
             <P>(결제일 한달전에 공지)</P>
-            <FlexChild className={styles.payment_btn} justifyContent="center" hidden>
+            <FlexChild className={styles.payment_btn} justifyContent="center">
               결제 진행하기
             </FlexChild>
           </VerticalFlex>
