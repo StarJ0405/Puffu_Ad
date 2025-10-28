@@ -8,50 +8,197 @@ import styles from "./page.module.css";
 import Image from "@/components/Image/Image";
 import Div from "@/components/div/Div";
 import { requester } from "@/shared/Requester";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "@/shared/utils/Functions";
+import useNavigate from "@/shared/hooks/useNavigate";
 
 export function ContentBox({}: {}) {
+  const navigate = useNavigate();
   const [sub, setSub] = useState<any>(null);
   const [plan, setPlan] = useState<any>(null);
   const [benefit, setBenefit] = useState<number>(0);
+  const [reserved, setReserved] = useState<any>(null);
+
+  const [loading, setLoading] = useState(false);
+  const [paying, setPaying] = useState(false);
 
   const fmt = (v?: string | Date) =>
     v ? new Date(v).toISOString().slice(0, 10).replaceAll("-", ".") : "-";
 
   useEffect(() => {
     (async () => {
-      // 최신 구독 1건
-      const my = await requester.getMySubscribes({ latest: true });
-      const s = my?.content?.[0];
-      setSub(s || null);
-      if (!s) return;
+      setLoading(true);
+      try {
+        // 최신 활성 1건
+        const my = await requester.getMySubscribes({ latest: true });
+        const s = my?.content?.[0] ?? null;
+        setSub(s);
+        if (!s) return;
 
-      // 기본 플랜 1건
-      const pl = await requester.getSubscribe({
-        store_id: s.store_id,
-        take: 1,
-      });
-      setPlan(pl?.content?.[0] || null);
+        // 기본 플랜 1건
+        const pl = await requester.getSubscribe({
+          store_id: s.store_id,
+          take: 1,
+        });
+        setPlan(pl?.content?.[0] ?? null);
 
-      // 혜택 합계(퍼센트+구독쿠폰) 서버 계산
-      const now = new Date();
-      const from = new Date(s.starts_at);
-      const benefitRes = await requester.getSubscribeBenefit(s.id, {
-        from: from.toISOString(),
-        to: now.toISOString(),
-      });
-      setBenefit(Number(benefitRes?.content?.total || 0));
+        // 혜택 합계
+        const now = new Date();
+        const from = new Date(s.starts_at);
+        const benefitRes = await requester.getSubscribeBenefit(s.id, {
+          from: from.toISOString(),
+          to: now.toISOString(),
+        });
+        setBenefit(Number(benefitRes?.content?.total || 0));
+
+        const all = await requester.getMySubscribes({
+          activeOnly: false,
+          order: { starts_at: "ASC" },
+          pageSize: 5,
+          pageNumber: 0,
+        });
+        const list: any[] = Array.isArray(all?.content)
+          ? all.content
+          : all?.content?.content ?? [];
+        const nowTs = Date.now();
+        const reservedOne = list.find(
+          (it) =>
+            it?.store_id === s.store_id &&
+            it?.canceled_at == null &&
+            it?.starts_at &&
+            new Date(it.starts_at).getTime() > nowTs
+        );
+        setReserved(reservedOne || null);
+      } finally {
+        setLoading(false);
+      }
     })();
   }, []);
 
   const endsAt = sub?.ends_at ? new Date(sub.ends_at) : null;
-  const showPay = (() => {
+  const showPay = useMemo(() => {
     if (!endsAt) return false;
     const openAt = new Date(endsAt);
     openAt.setMonth(openAt.getMonth() - 1);
     const now = new Date();
     return now >= openAt && now < endsAt;
-  })();
+  }, [endsAt]);
+
+  const ctaLabel = reserved
+    ? "예약 완료"
+    : paying
+    ? "결제 진행 중…"
+    : "결제 진행하기";
+  const disabledPay = !!reserved || paying || !plan || !sub;
+
+  const handlePrepay = async () => {
+    if (disabledPay) return;
+    try {
+      setPaying(true);
+
+      const me = await requester.getCurrentUser();
+      const user = me?.user;
+      if (!user) {
+        toast({ message: "로그인이 필요합니다." });
+        return;
+      }
+
+      const trackId = `${user.id}_${Date.now()}`;
+      const amount = Number(plan?.price ?? 0);
+      const params = {
+        paytype: "nestpay",
+        payMethod: "card",
+        trackId,
+        amount,
+        payerId: user.id,
+        payerName: user.name,
+        payerEmail: user.username,
+        payerTel: user.phone,
+        returnUrl: `${window.location.origin}/mypage/subscription/success`,
+        products: [
+          { name: plan?.name || "연간 구독권", qty: 1, price: amount },
+        ],
+      };
+      const result = await requester.requestPaymentApproval(params);
+
+      // NESTPAY 스크립트 로드
+      const jsUrl = process.env.NEXT_PUBLIC_STATIC;
+      const loadScript = () =>
+        new Promise<void>((resolve) => {
+          const s = document.createElement("script");
+          s.src = jsUrl + "?ver=" + new Date().getTime();
+          s.onload = () => resolve();
+          document.head.appendChild(s);
+        });
+      if (!window.NESTPAY) await loadScript();
+      if (!window.NESTPAY) {
+        toast({ message: "결제 모듈 로드 실패" });
+        return;
+      }
+      window.NESTPAY.welcome();
+      window.NESTPAY.pay({
+        payMethod: "card",
+        trxId: result?.content?.trxId || result?.link?.trxId,
+        openType: "layer",
+        onApprove: async (resp: any) => {
+          if (resp?.resultCd !== "0000") {
+            if (resp?.resultCd !== "CB49")
+              toast({ message: resp?.resultMsg || "결제 실패" });
+            return;
+          }
+          try {
+            // 승인
+            const approve = await requester.approvePayment({
+              trxId: result?.content?.trxId || result?.link?.trxId,
+              resultCd: resp.resultCd,
+              resultMsg: resp.resultMsg,
+              customerData: JSON.stringify(user),
+            });
+            const ok =
+              approve?.approveResult?.result?.resultCd === "0000" &&
+              approve?.approveResult?.pay;
+
+            if (!ok) {
+              toast({
+                message:
+                  approve?.approveResult?.result?.resultMsg || "승인 실패",
+              });
+              return;
+            }
+
+            const optimistic = {
+              id: "__optimistic__",
+              starts_at: sub?.ends_at,
+            };
+            setReserved(optimistic);
+
+            const periodDays = Number(plan?.metadata?.periodDays ?? 365);
+            const startBase = endsAt ? new Date(endsAt) : new Date();
+            const endDate = new Date(
+              startBase.getTime() + periodDays * 86400000
+            );
+
+            await requester.createSubscribe({
+              store_id: sub.store_id,
+              name: plan?.name,
+              ends_at: endDate.toISOString(),
+              payment: approve.approveResult.pay,
+            });
+
+            toast({ message: "예약 결제가 완료되었습니다." });
+            navigate("/mypage/subscription/manage", { type: "replace" });
+          } catch (e: any) {
+            setReserved(null);
+            toast({ message: e?.error || "승인 처리 오류" });
+          }
+        },
+      });
+    } catch (e: any) {
+      toast({ message: e?.error || "결제 요청 오류" });
+    } finally {
+      setPaying(false);
+    }
+  };
 
   return (
     <VerticalFlex className={clsx(styles.box_layer)} gap={10}>
@@ -83,7 +230,9 @@ export function ContentBox({}: {}) {
                   />
                 </FlexChild>
                 <P className={styles.total}>
-                  {benefit.toLocaleString("ko-KR")}원
+                  {loading
+                    ? "계산 중…"
+                    : `${benefit.toLocaleString("ko-KR")}원`}
                 </P>
               </VerticalFlex>
 
@@ -120,12 +269,16 @@ export function ContentBox({}: {}) {
           <VerticalFlex className={styles.next_payment_box}>
             <P>다음 결제일 : {fmt(sub?.ends_at)}</P>
             <P>(결제일 한달전에 공지)</P>
+
             <FlexChild
-              className={styles.payment_btn}
+              className={clsx(styles.payment_btn, {
+                [styles.disabled]: disabledPay,
+              })}
               justifyContent="center"
-              // hidden={!showPay}
+              hidden={!showPay}
+              onClick={handlePrepay}
             >
-              결제 진행하기
+              {ctaLabel}
             </FlexChild>
           </VerticalFlex>
         </VerticalFlex>
