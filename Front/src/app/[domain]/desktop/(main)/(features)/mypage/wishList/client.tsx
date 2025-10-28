@@ -23,7 +23,7 @@ export function WishListTable({ initWishList }: { initWishList: Pageable }) {
   } = usePageData(
     key,
     (pageNumber) => ({
-      relations: ["product", "product.brand", "product.wishlists"],
+      relations: ["product", "product.brand", "product.wishlists","product.variants"],
       pageSize: PAGE_SIZE,
       pageNumber,
     }),
@@ -62,6 +62,7 @@ export function WishListTable({ initWishList }: { initWishList: Pageable }) {
         <VerticalFlex>
           <MasonryGrid width={"100%"} gap={15} breakpoints={5}>
             {list.map((wish: WishData) => {
+              // console.log(list)
               const productWithWish = { ...(wish.product as any), wish };
               return (
                 <ProductCard

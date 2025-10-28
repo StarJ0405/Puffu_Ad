@@ -9,9 +9,10 @@ import { requester } from "@/shared/Requester";
 
 export default async function () {
   const initWishList = await requester.getWishlists({
-    relations: ["product"],
+    relations: ["product", "product.brand", "product.wishlists","product.variants"],
     pageSize: 10,
   });
+  console.log(initWishList)
   return (
     <>
       <VerticalFlex

@@ -23,7 +23,7 @@ export function WishListTable({ initWishList }: { initWishList: Pageable }) {
   } = usePageData(
     key,
     (pageNumber) => ({
-      relations: ["product", "product.brand", "product.wishlists"],
+      relations: ["product", "product.brand", "product.wishlists","product.variants"],
       pageSize: PAGE_SIZE,
       pageNumber,
     }),
