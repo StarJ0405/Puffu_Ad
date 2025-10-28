@@ -11,6 +11,37 @@
   width: 120px;
   height: auto;
   z-index: 100;
+  transition: right 0.3s;
+}
+
+#sideNavi.close {
+  right: var(--navi-move);
+}
+
+.navi_toggle_btn {
+  position: absolute;
+  left: -20px;
+  top: 15%;
+  transform: translateY(-50%);
+  border-radius: 10px 0px 0px 10px;
+  padding: 10px 0;
+  width: 20px;
+  flex: unset;
+  background: #050505;
+  transition: 0.2s;
+}
+
+.navi_toggle_btn img {
+  transform: rotate(180deg);
+  transition: inherit;
+}
+
+.navi_toggle_btn.active {
+  background: var(--main-color2);
+}
+
+.navi_toggle_btn.active img  {
+  transform: rotate(0deg);
 }
 
 #sideNavi .outer_box {

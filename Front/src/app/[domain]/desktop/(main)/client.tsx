@@ -139,60 +139,60 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
   );
 }
 
-export function LinkBanner() {
-  const { storeData } = useStore();
-  const storeId = storeData?.id;
-
-  return (
-    <FlexChild width={"auto"}>
-      <div className={styles.link_Banner}>
-        {[0, 1, 2, 3].map((idx) => (
-          <SubBanner
-            key={idx}
-            index={idx}
-            storeId={storeId}
-            variant="pc"
-            width={"100%"}
-            height={"auto"}
-          />
-        ))}
-      </div>
-    </FlexChild>
-  );
-}
-
 // export function LinkBanner() {
-//   const link_banner = [
-//     { link: "/", src: "/resources/images/dummy_img/link_banner_01.png" },
-//     { link: "/", src: "/resources/images/dummy_img/link_banner_02.png" },
-//     { link: "/", src: "/resources/images/dummy_img/link_banner_03.png" },
-//     { link: "/", src: "/resources/images/dummy_img/link_banner_04.png" },
-//   ];
-
-//   const { userData } = useAuth();
 //   const { storeData } = useStore();
 //   const storeId = storeData?.id;
+
 //   return (
 //     <FlexChild width={"auto"}>
 //       <div className={styles.link_Banner}>
-//         {link_banner.map((item, i) => (
-//           <Link href={item.link} key={i} className={styles.disabled}>
-//             {userData?.adult ? (
-//               <Image src={item.src} width={"100%"} height={"auto"} />
-//             ) : (
-//               // 성인인증 안될때 나오는 이미지
-//               <Image
-//                 src={"/resources/images/19_only_sub_banner_pc.png"}
-//                 width={"100%"}
-//                 height={"auto"}
-//               />
-//             )}
-//           </Link>
+//         {[0, 1, 2, 3].map((idx) => (
+//           <SubBanner
+//             key={idx}
+//             index={idx}
+//             storeId={storeId}
+//             variant="pc"
+//             width={"100%"}
+//             height={"auto"}
+//           />
 //         ))}
 //       </div>
 //     </FlexChild>
 //   );
 // }
+
+export function LinkBanner() {
+  const link_banner = [
+    { link: "/", src: "/resources/images/dummy_img/link_banner_01.png" },
+    { link: "/", src: "/resources/images/dummy_img/link_banner_02.png" },
+    { link: "/", src: "/resources/images/dummy_img/link_banner_03.png" },
+    { link: "/", src: "/resources/images/dummy_img/link_banner_04.png" },
+  ];
+
+  const { userData } = useAuth();
+  const { storeData } = useStore();
+  const storeId = storeData?.id;
+  return (
+    <FlexChild width={"auto"}>
+      <div className={styles.link_Banner}>
+        {link_banner.map((item, i) => (
+          <Link href={item.link} key={i} className={styles.disabled}>
+            {userData?.adult ? (
+              <Image src={item.src} width={"100%"} height={"auto"} />
+            ) : (
+              // 성인인증 안될때 나오는 이미지
+              <Image
+                src={"/resources/images/19_only_sub_banner_pc.png"}
+                width={"100%"}
+                height={"auto"}
+              />
+            )}
+          </Link>
+        ))}
+      </div>
+    </FlexChild>
+  );
+}
 
 export function SubBanner1() {
   const { userData } = useAuth();

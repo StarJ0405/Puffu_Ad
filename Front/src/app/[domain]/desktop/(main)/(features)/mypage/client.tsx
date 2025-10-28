@@ -273,6 +273,7 @@ export function MypageNavi() {
       classNames: {
         title: "confirm_title",
       },
+      title: '로그아웃',
       backgroundColor: "var(--confirmModal-bg)",
       confirmText: "확인",
       cancelText: "취소",

@@ -18,6 +18,7 @@ export function ContentBox({}: {}) {
   const [subId, setSubId] = useState<string | null>(null);
   const [benefit, setBenefit] = useState<number>(0);
   const [loading, setLoading] = useState(false);
+  const [plan, setPlan] = useState<any>(null);
 
   useEffect(() => {
     (async () => {
@@ -26,7 +27,16 @@ export function ContentBox({}: {}) {
         const r = await requester.getMySubscribes({ latest: true });
         const s = r?.content?.[0];
         const id = s?.id ?? null;
+
         setSubId(id);
+        // 기본 플랜 1건
+        const pl = await requester.getSubscribe({
+          store_id: s.store_id,
+          take: 1,
+        });
+        setPlan(pl?.content?.[0] || null);
+
+
         if (id) {
           const now = new Date();
           const from = new Date(
@@ -71,7 +81,7 @@ export function ContentBox({}: {}) {
                   height={"auto"}
                 />
                 <P>
-                  전제품 <Span>10% 상시 할인</Span>
+                  전제품 <Span>{(plan?.percent || 0).toLocaleString()}% 상시 할인</Span>
                 </P>
               </FlexChild>
 
@@ -82,7 +92,7 @@ export function ContentBox({}: {}) {
                   height={"auto"}
                 />
                 <P>
-                  매월 프리 머니 <Span>10,000원</Span> 쿠폰 지급
+                  매월 프리 머니 <Span>{(plan?.value || 0).toLocaleString()}원</Span> 쿠폰 지급
                 </P>
               </FlexChild>
             </VerticalFlex>
@@ -100,14 +110,18 @@ export function ConfirmBtn({}: {}) {
     NiceModal.show(ConfirmModal, {
       message: (
         <FlexChild justifyContent="center" marginBottom={30}>
-          <P color="#333" fontSize={20} weight={600}>
+          <P color="#fff" fontSize={20} weight={600}>
             구독 서비스를 해지하시겠습니까?
           </P>
         </FlexChild>
       ),
+      classNames: {
+        title: "confirm_title",
+      },
+      backgroundColor: "var(--confirmModal-bg)",
       confirmText: "해지하기",
       cancelText: "취소",
-      withCloseButton: true,
+      withCloseButton: false,
       preventable: true,
       onConfirm: async () => {
         // 1) 최신 구독
@@ -126,18 +140,22 @@ export function ConfirmBtn({}: {}) {
         setTimeout(() => {
           NiceModal.show(ConfirmModal, {
             message: (
-              <FlexChild justifyContent="center" marginBottom={20}>
-                <P color="#333" fontSize={18} weight={600}>
+              <VerticalFlex gap={10} justifyContent="center" marginBottom={20}>
+                <P color="#fff" fontSize={18} weight={600}>
                   환불 예상액 {refund.toLocaleString("ko-KR")}원
                 </P>
                 <P color="#666" fontSize={14}>
                   해지를 진행하시겠습니까?
                 </P>
-              </FlexChild>
+              </VerticalFlex>
             ),
+            classNames: {
+              title: "confirm_title",
+            },
+            backgroundColor: "var(--confirmModal-bg)",
             confirmText: "확인",
             cancelText: "취소",
-            withCloseButton: true,
+            withCloseButton: false,
             preventable: true,
             onConfirm: async () => {
               try {
