@@ -132,3 +132,13 @@
 .premium_box .next_payment_box .payment_btn:active {
   filter: var(--mob-active-filter);
 }
+
+.premium_box .next_payment_box .payment_btn.disabled {
+  pointer-events: none;
+  cursor: not-allowed;
+  /* opacity: 0.8;           /* 시각적 비활성화 */
+}
+
+.premium_box .next_payment_box .payment_btn.disabled:active {
+  filter: none;
+}
