@@ -1,0 +1,126 @@
+#.github/workflows
+name: CD with Docker Hub
+on:
+  # main으로 push 시
+  #  push:
+  #    branches:
+  #      - main
+  # 풀 리퀘스트시
+  pull_request:
+    branches:
+      - main
+  # 수동
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: "Log level"
+        required: true
+        default: "warning"
+      environment:
+        description: "Environment to deploy to"
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+# 다른 워크플로우 완료시
+#  workflow_run:
+#    workflows: ["Build CI"] # "Build CI"라는 이름의 워크플로우가 실행된 후
+#    types: [completed]      # 완료되었을 때만 실행
+#    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      # - name: application.yml 생성
+      #   env:
+      #     ACTIONS_STEP_DEBUG: true
+      #     APPLICATION_SECRET: ${{secrets.APPLICATION_SECRET}}
+      #   run: |
+      #     mkdir -p Back/src/main/resources/
+      #     printf "%s" "$APPLICATION_SECRET" > Back/src/main/resources/application.yml
+      - name: env.production 생성
+        env:
+          ACTIONS_STEP_DEBUG: true
+          FRONT_ENV: ${{secrets.FRONT_ENV}}
+          BACK_ENV: ${{secrets.BACK_ENV}}
+        run: |
+          mkdir -p Back
+          mkdir -p Front
+          printf "%s" "$FRONT_ENV" > Front/.env.production
+          printf "%s" "$BACK_ENV" > Back/.env.production
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }} # Access Token 사용
+      - name: Build and Push Docker Image
+        env:
+          IMAGE_FULL_TAG: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:${{ secrets.DOCKER_TAG }}
+        run: |
+          # 1. 이미지 빌드
+          docker build -t ${IMAGE_FULL_TAG} .
+          # 2. 이미지 푸시
+          docker push ${IMAGE_FULL_TAG}
+
+      # - name: Deploy and Load on Server With Admin
+      #   uses: appleboy/ssh-action@master
+      #   id: deploy
+      #   env:
+      #     HOME: ${{ secrets.HOME }}
+      #     IMAGE_FULL_TAG: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:${{ secrets.DOCKER_TAG }}
+      #     DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      #     REGISTRY_URL: https://index.docker.io/v1/
+      #     DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+      #     CONTAINER_NAME: builder
+      #     VOLUME_PATH: ${{ secrets.HOME}}/builder
+      #   with:
+      #     host: ${{ secrets.HOST }}
+      #     username: ${{ secrets.USERNAME }}
+      #     key: ${{ secrets.KEY }}
+      #     port: ${{ secrets.PORT }}
+      #     script: |
+      #       echo "${DOCKER_TOKEN}" | docker login ${REGISTRY_URL} -u "${DOCKER_USERNAME}" --password-stdin
+      #       sudo docker pull "${IMAGE_FULL_TAG}"
+      #       docker logout ${REGISTRY_URL}
+      # sudo rm -rf ${VOLUME_PATH}
+      # sudo mkdir -p ${VOLUME_PATH}
+      # if docker ps -qf "name=${CONTAINER_NAME}" | grep -q .; then
+      #     docker stop "${CONTAINER_NAME}"
+      #     docker rm -f "${CONTAINER_NAME}"
+      # else
+      #     # 실행 중이지 않지만 존재하는 컨테이너도 제거 (선택 사항)
+      #     if docker ps -aqf "name=${CONTAINER_NAME}" | grep -q .; then
+      #         docker rm -f "${CONTAINER_NAME}"
+      #     fi
+      # fi
+      # docker run -d \
+      #   -v "${VOLUME_PATH}":/share \
+      #   --name "${CONTAINER_NAME}" \
+      #   "${IMAGE_FULL_TAG}"
+      - name: Deploy and Load on Server With Non-Admin # Root 권한이 없는 경우
+        uses: appleboy/ssh-action@master
+        id: deploy
+        env:
+          HOME: ${{ secrets.HOME }}
+          IMAGE_FULL_TAG: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:${{ secrets.DOCKER_TAG }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          REGISTRY_URL: https://index.docker.io/v1/
+          DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+          CONTAINER_NAME: builder
+          VOLUME_PATH: ${{ secrets.HOME}}/builder
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            sudo "${HOME}/deploy.sh" \
+              "${{ secrets.HOME }}" \
+              "${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:${{ secrets.DOCKER_TAG }}" \
+              "${{ secrets.DOCKER_USERNAME }}" \
+              "https://index.docker.io/v1/" \
+              "${{ secrets.DOCKER_TOKEN }}" \
+              "builder" \
+              "${{ secrets.HOME}}/builder"
