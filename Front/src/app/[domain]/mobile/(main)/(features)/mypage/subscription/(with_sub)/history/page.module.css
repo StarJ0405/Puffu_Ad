@@ -66,3 +66,17 @@
 .more_btn:hover {
    color: var(--main-color1);
 }
+
+.revoke {
+  color: #aeaeae;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.revoke:hover,
+.revoke:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
