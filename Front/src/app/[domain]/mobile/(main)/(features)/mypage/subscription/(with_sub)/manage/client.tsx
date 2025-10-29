@@ -286,3 +286,50 @@ export function ContentBox({}: {}) {
     </VerticalFlex>
   );
 }
+
+export function Client() {
+  const navigate = useNavigate();
+  const [latestId, setLatestId] = useState<string | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      const r = await requester.getMySubscribes({ latest: true });
+      setLatestId(r?.content?.[0]?.id ?? null);
+    })();
+  }, []);
+
+  const goHistory = () => navigate("/mypage/subscription/history");
+  const goCancel = () => {
+    if (!latestId) return;
+    navigate(`/mypage/subscription/${latestId}/cancel`);
+  };
+
+  return (
+    <VerticalFlex className={styles.list}>
+      <ContentBox />
+
+      <FlexChild
+        className={styles.link_btn}
+        onClick={goHistory}
+      >
+        <P>구독 내역 확인</P>
+
+        <Image
+          src={"/resources/icons/arrow/mypage_arrow.png"}
+          width={10}
+          height={"auto"}
+        />
+      </FlexChild>
+
+      <FlexChild className={styles.link_btn} onClick={goCancel}>
+        <P>구독 해지</P>
+
+        <Image
+          src={"/resources/icons/arrow/mypage_arrow.png"}
+          width={10}
+          height={"auto"}
+        />
+      </FlexChild>
+    </VerticalFlex>
+  );
+}

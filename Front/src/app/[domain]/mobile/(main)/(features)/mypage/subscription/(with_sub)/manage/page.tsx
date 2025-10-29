@@ -1,46 +1,14 @@
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import clsx from "clsx";
+import { Client } from "./client";
 import styles from "./page.module.css";
-
-// import { ContentBox } from "./client";
-import FlexChild from "@/components/flex/FlexChild";
-import Image from "@/components/Image/Image";
-import P from "@/components/P/P";
-import Link from "next/link";
-import { ContentBox } from "./client";
 
 export default async function () {
   
   return (
     <>
       <VerticalFlex className={clsx(styles.wrapper, 'mob_page_container')}>
-
-        <VerticalFlex className={styles.list}>
-          <ContentBox />
-  
-          <FlexChild className={styles.link_btn}>
-            <Link href={'/mypage/subscription/history'}>
-              <P>구독 내역 확인</P>
-
-              <Image
-                src={"/resources/icons/arrow/mypage_arrow.png"}
-                width={10} height={'auto'}
-              />
-            </Link>
-          </FlexChild>
-  
-          <FlexChild className={styles.link_btn}>
-            <Link href={'/mypage/subscription/cancel'}>
-              <P>구독 해지</P>
-
-              <Image
-                src={"/resources/icons/arrow/mypage_arrow.png"}
-                width={10} height={'auto'}
-              />
-            </Link>
-          </FlexChild>
-        </VerticalFlex>
-
+        <Client />
       </VerticalFlex>
     </>
   );
