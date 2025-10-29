@@ -37,19 +37,25 @@ export const POST: ApiHandler = async (req, res) => {
     await service.cancelSubscription(id, user_id);
 
     // 4) 취소 메타 업데이트
+    const [fresh] = await service.getList({ where: { id }, take: 1 }); // 환불 직후 최신값
     await service.update(
       { id },
       {
         cancel_data: {
-          ...(sub.cancel_data ?? {}),
-          reason: reason ?? "user_requested",
-          at: new Date().toISOString(),
-          refund: quote.refund,
-          benefit: quote.benefit,
-          breakdown: quote.breakdown,
+          ...((fresh?.cancel_data as any) ?? {}), // ← 환불 응답(refund/result) 보존
+          cancel_meta: {
+            ...((fresh?.cancel_data as any)?.cancel_meta ?? {}),
+            reason: reason ?? "user_requested",
+            at: new Date().toISOString(),
+            quote: {
+              refund: quote.refund,
+              benefit: quote.benefit,
+              breakdown: quote.breakdown,
+            },
+          },
         },
         ...(metadata
-          ? { metadata: { ...(sub.metadata ?? {}), cancel: metadata } }
+          ? { metadata: { ...(fresh?.metadata ?? {}), cancel: metadata } }
           : {}),
       }
     );

@@ -1,0 +1,205 @@
+"use client";
+import Button from "@/components/buttons/Button";
+import FlexChild from "@/components/flex/FlexChild";
+import VerticalFlex from "@/components/flex/VerticalFlex";
+import Image from "@/components/Image/Image";
+import P from "@/components/P/P";
+import Span from "@/components/span/Span";
+import ConfirmModal from "@/modals/confirm/ConfirmModal";
+import useNavigate from "@/shared/hooks/useNavigate";
+import NiceModal from "@ebay/nice-modal-react";
+import clsx from "clsx";
+import styles from "./page.module.css";
+import { toast } from "@/shared/utils/Functions";
+import { requester } from "@/shared/Requester";
+import { useEffect, useMemo, useState } from "react";
+
+type SubscribeRow = {
+  id: string;
+  starts_at?: string;
+  ends_at?: string;
+  store_id?: string;
+};
+
+export function ContentBox({
+  initSubscribe,
+}: {
+  initSubscribe: SubscribeRow | null;
+}) {
+  const [benefit, setBenefit] = useState<number>(0);
+  const [loading, setLoading] = useState(false);
+
+  const subId = initSubscribe?.id ?? null;
+  const period = useMemo(() => {
+    const s = initSubscribe?.starts_at
+      ? new Date(initSubscribe.starts_at)
+      : null;
+    const e = initSubscribe?.ends_at ? new Date(initSubscribe.ends_at) : null;
+    return { s, e };
+  }, [initSubscribe]);
+
+  useEffect(() => {
+    (async () => {
+      if (!subId || !period.s) return;
+      setLoading(true);
+      try {
+        const now = new Date();
+        const to = period.e
+          ? new Date(Math.min(period.e.getTime(), now.getTime()))
+          : now;
+        const r = await requester.getSubscribeBenefit(subId, {
+          from: period.s.toISOString(),
+          to: to.toISOString(),
+        });
+        setBenefit(Number(r?.content?.total || 0));
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [subId, period]);
+
+  return (
+    <VerticalFlex className={clsx(styles.box_layer)} gap={10}>
+      <FlexChild className={styles.premium_layer}>
+        <VerticalFlex className={styles.premium_box}>
+          <VerticalFlex className={styles.item_content}>
+            <VerticalFlex className={styles.cumulative}>
+              <FlexChild justifyContent="center" className={styles.txt}>
+                <P>지금까지 혜택 받은 금액</P>
+                <Image
+                  src={"/resources/icons/mypage/subscription_heart.png"}
+                  width={20}
+                  height={"auto"}
+                />
+              </FlexChild>
+              <P className={styles.total}>
+                {loading ? "계산 중…" : `${benefit.toLocaleString("ko-KR")}원`}
+              </P>
+            </VerticalFlex>
+
+            <VerticalFlex className={styles.unit} alignItems="start">
+              <FlexChild>
+                <Image
+                  src={"/resources/icons/arrow/checkBox_check.png"}
+                  width={13}
+                  height={"auto"}
+                />
+                <P>
+                  전제품 <Span>10% 상시 할인</Span>
+                </P>
+              </FlexChild>
+              <FlexChild>
+                <Image
+                  src={"/resources/icons/arrow/checkBox_check.png"}
+                  width={13}
+                  height={"auto"}
+                />
+                <P>
+                  매월 프리 머니 <Span>10,000원</Span> 쿠폰 지급
+                </P>
+              </FlexChild>
+            </VerticalFlex>
+          </VerticalFlex>
+        </VerticalFlex>
+      </FlexChild>
+    </VerticalFlex>
+  );
+}
+
+export function ConfirmBtn({
+  initSubscribe,
+}: {
+  initSubscribe: SubscribeRow | null;
+}) {
+  const navigate = useNavigate();
+  const subId = initSubscribe?.id ?? null;
+
+  const openCancelFlow = () => {
+    if (!subId) {
+      toast({ message: "구독 정보를 확인할 수 없습니다." });
+      return;
+    }
+
+    NiceModal.show(ConfirmModal, {
+      message: (
+        <FlexChild justifyContent="center" marginBottom={30}>
+          <P color="#333" fontSize={20} weight={600}>
+            활성 구독을 해지하면, 예약된 다음 구독도 함께 취소·환불됩니다.
+            진행할까요?
+          </P>
+        </FlexChild>
+      ),
+      confirmText: "해지하기",
+      cancelText: "취소",
+      withCloseButton: true,
+      preventable: true,
+      onConfirm: async () => {
+        // 첫 모달은 바로 닫는다
+        setTimeout(async () => {
+          try {
+            const quote = await requester.getSubscribeRefundQuote(subId, {});
+            const refund = Number(quote?.content?.refund || 0);
+
+            NiceModal.show(ConfirmModal, {
+              message: (
+                <FlexChild justifyContent="center" marginBottom={20}>
+                  <P color="#333" fontSize={18} weight={600}>
+                    환불 예상액 {refund.toLocaleString("ko-KR")}원
+                  </P>
+                  <P color="#666" fontSize={14}>
+                    해지를 진행하시겠습니까?
+                  </P>
+                </FlexChild>
+              ),
+              confirmText: "확인",
+              cancelText: "취소",
+              withCloseButton: true,
+              preventable: true,
+              onConfirm: async () => {
+                try {
+                  const r = await requester.postSubscribeRefund(subId, {}); // 본결제 + 다음 예약까지 일괄 처리
+                  const total = Number(r?.content?.total_refund ?? 0);
+                  const cnt = Array.isArray(r?.content?.refunds)
+                    ? r.content.refunds.length
+                    : 0;
+                  toast({
+                    message: `해지 완료. 환불합계 ${total.toLocaleString(
+                      "ko-KR"
+                    )}원${cnt > 1 ? ` / ${cnt}건` : ""}`,
+                  });
+                  setTimeout(() => {
+                    navigate("/mypage", { type: "replace" });
+                  }, 3000);
+                  return true;
+                } catch (e: any) {
+                  toast({
+                    message: e?.error || "처리 중 오류가 발생했습니다.",
+                  });
+                  return false;
+                }
+              },
+            });
+          } catch (e: any) {
+            toast({ message: e?.error || "견적 조회에 실패했습니다." });
+          }
+        }, 0);
+
+        return true;
+      },
+    });
+  };
+
+  return (
+    <VerticalFlex className={styles.confirm_box}>
+      <FlexChild
+        onClick={() => navigate("/mypage/subscription/manage")}
+        className={styles.continue_btn}
+      >
+        <Button>회원권 계속 유지하기</Button>
+      </FlexChild>
+      <FlexChild className={styles.delete_btn} onClick={openCancelFlow}>
+        <Button>회원권 해지하기</Button>
+      </FlexChild>
+    </VerticalFlex>
+  );
+}

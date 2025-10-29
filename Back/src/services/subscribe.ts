@@ -17,7 +17,10 @@ import {
 } from "typeorm";
 
 @injectable()
-export class SubscribeService extends BaseService<Subscribe, SubscribeRepository> {
+export class SubscribeService extends BaseService<
+  Subscribe,
+  SubscribeRepository
+> {
   constructor(
     @inject(SubscribeRepository) repo: SubscribeRepository,
     @inject(CouponService) private couponService: CouponService
@@ -104,7 +107,10 @@ export class SubscribeService extends BaseService<Subscribe, SubscribeRepository
   }
 
   // 기본 플랜 조회(템플릿)
-  async getDefaultPlan(store_id: string, name?: string): Promise<Subscribe | null> {
+  async getDefaultPlan(
+    store_id: string,
+    name?: string
+  ): Promise<Subscribe | null> {
     const list = await this.getList({
       where: { store_id, user_id: IsNull(), ...(name ? { name } : {}) },
       order: { created_at: "ASC", id: "ASC" },
@@ -113,13 +119,109 @@ export class SubscribeService extends BaseService<Subscribe, SubscribeRepository
     return list[0] || null;
   }
 
+  private isActive(sub: Subscribe, now = new Date()): boolean {
+    if (!sub || sub.canceled_at) return false;
+    const s = sub.starts_at ? new Date(sub.starts_at as any) : null;
+    const e = sub.ends_at ? new Date(sub.ends_at as any) : null;
+    if (!s || !e) return false;
+    return s <= now && now < e;
+  }
+
+  private async findNextScheduled(
+    user_id: string,
+    store_id: string,
+    now = new Date()
+  ): Promise<Subscribe | null> {
+    if (!store_id) return null as any;
+    return this.repository.findOne({
+      where: {
+        user_id,
+        store_id,
+        canceled_at: IsNull(),
+        starts_at: MoreThan(now),
+      },
+      order: { starts_at: "ASC", id: "ASC" },
+    });
+  }
+
+  async cancelAndRefundCascade(
+    id: string,
+    userId: string,
+    now = new Date()
+  ): Promise<{
+    refunds: Array<{ id: string; refund: number }>;
+    total_refund: number;
+  }> {
+    const sub = await this.repository.findOne({
+      where: { id, user_id: userId },
+    });
+    if (!sub) throw new Error("SUBSCRIPTION_NOT_FOUND");
+    if (sub.canceled_at) return { refunds: [], total_refund: 0 };
+
+    const targets: Subscribe[] = [sub];
+    if (this.isActive(sub, now)) {
+      const storeId = typeof sub.store_id === "string" ? sub.store_id : "";
+      if (storeId) {
+        const next = await this.findNextScheduled(userId, storeId, now);
+        if (next) targets.push(next);
+      }
+    }
+
+    const refunds: Array<{ id: string; refund: number }> = [];
+    for (const t of targets) {
+      const quote = await this.computeRefundQuote(t.id, userId, now);
+      const paid = Number(quote.paid || 0);
+      const amount = Math.max(0, Math.min(paid, Number(quote.refund || 0)));
+
+      if (amount > 0) await this.refund(t.id, userId, amount);
+      await this.cancelSubscription(t.id, userId);
+
+      const latest = await this.repository.findOne({ where: { id: t.id } }); // 환불·만료 이후 최신본
+      await this.update(
+        { id: t.id },
+        {
+          cancel_data: {
+            ...((latest?.cancel_data as any) ?? {}), // 최신 cancel_data 보존
+            cancel_meta: {
+              ...((latest?.cancel_data as any)?.cancel_meta ?? {}),
+              cascade: t.id === sub.id ? "primary" : "cascade_next",
+              reason: "user_requested",
+              at: new Date().toISOString(),
+              quote: {
+                refund: amount,
+                benefit: quote.benefit,
+                breakdown: quote.breakdown,
+                period: quote.period,
+              },
+            },
+          },
+        }
+      );
+
+      refunds.push({ id: t.id, refund: amount });
+    }
+
+    const total_refund = refunds.reduce((s, r) => s + r.refund, 0);
+    return { refunds, total_refund };
+  }
+
   // 즉시 만료 + 미사용 쿠폰 회수
-  async cancelSubscription(id: string, byUserId?: string): Promise<Subscribe | null> {
+  async cancelSubscription(
+    id: string,
+    byUserId?: string
+  ): Promise<Subscribe | null> {
     const sub = await this.repository.findOne({ where: { id } });
     if (!sub) throw new Error("SUBSCRIPTION_NOT_FOUND");
     // byUserId 체크 필요시 추가
 
-    await this.repository.update({ id }, { ends_at: new Date(), canceled_at: new Date(), repeat: false });
+    if (sub.canceled_at) {
+      await this.couponService.revokeUnusedSubscriptionCoupons(id);
+      return sub;
+    }
+    await this.repository.update(
+      { id },
+      { ends_at: new Date(), canceled_at: new Date(), repeat: false }
+    );
     await this.couponService.revokeUnusedSubscriptionCoupons(id);
     return this.repository.findOne({ where: { id } });
   }
@@ -131,7 +233,11 @@ export class SubscribeService extends BaseService<Subscribe, SubscribeRepository
     to: Date,
     baseAmount: number
   ): Promise<number> {
-    const subCouponUsed = await this.couponService.sumSubscriptionCouponUsage(userId, from, to);
+    const subCouponUsed = await this.couponService.sumSubscriptionCouponUsage(
+      userId,
+      from,
+      to
+    );
     return baseAmount + subCouponUsed;
   }
 
@@ -158,16 +264,17 @@ export class SubscribeService extends BaseService<Subscribe, SubscribeRepository
       const rootTrxId = payment_data.trxId;
       const amount = refund;
       const reason = "구매자가 취소를 원함";
-      const response = await nestpayAxios.post(`${NESTPAY_BASE_URL}/api/refund`, {
-        refund: { trackId, rootTrxId, amount, reason },
-      });
-      if (response.data) {
-        const data = await response.data;
-        await this.repository.update(
-          { id: subscribe.id },
-          { cancel_data: data, canceled_at: new Date(), repeat: false }
-        );
-      }
+      const response = await nestpayAxios.post(
+        `${NESTPAY_BASE_URL}/api/refund`,
+        {
+          refund: { trackId, rootTrxId, amount, reason },
+        }
+      );
+      const data = response.data;
+      await this.repository.update(
+        { id: subscribe.id },
+        { cancel_data: data } // 이후 cancelAndRefundCascade에서 latest.cancel_data 위에 cancel_meta만 얹음
+      );
       return;
     }
 
@@ -180,13 +287,20 @@ export class SubscribeService extends BaseService<Subscribe, SubscribeRepository
         {
           method: "POST",
           headers: { Authorization: auth, "Content-Type": "application/json" },
-          body: JSON.stringify({ cancelReason: "구매자가 취소를 원함", cancelAmount: refund }),
+          body: JSON.stringify({
+            cancelReason: "구매자가 취소를 원함",
+            cancelAmount: refund,
+          }),
         }
       );
       const data = await response.json();
+      const mergedToss = {
+        ...(subscribe.cancel_data ?? {}),
+        refund: data,
+      };
       await this.repository.update(
         { id: subscribe.id },
-        { cancel_data: data, canceled_at: new Date(), repeat: false }
+        { cancel_data: mergedToss }
       );
       return;
     }
@@ -194,7 +308,7 @@ export class SubscribeService extends BaseService<Subscribe, SubscribeRepository
     // 기타
     await this.repository.update(
       { id: subscribe.id },
-      { cancel_data: { refund }, canceled_at: new Date(), repeat: false }
+      { cancel_data: { ...(subscribe.cancel_data ?? {}), refund } }
     );
   }
 
@@ -211,11 +325,15 @@ export class SubscribeService extends BaseService<Subscribe, SubscribeRepository
     breakdown: { percentSum: number; couponSum: number };
     refund: number;
   }> {
-    const sub = await this.repository.findOne({ where: { id, user_id: userId } });
+    const sub = await this.repository.findOne({
+      where: { id, user_id: userId },
+    });
     if (!sub) throw new Error("SUBSCRIPTION_NOT_FOUND");
 
     const from = new Date(sub.starts_at as any);
-    const to = new Date(Math.min(new Date(sub.ends_at as any).getTime(), now.getTime()));
+    const to = new Date(
+      Math.min(new Date(sub.ends_at as any).getTime(), now.getTime())
+    );
 
     // 퍼센트 혜택 합계: 해당 구독에 묶인 주문만
     const orderService = container.resolve(OrderService);
@@ -236,8 +354,13 @@ export class SubscribeService extends BaseService<Subscribe, SubscribeRepository
     }
 
     // 구독 쿠폰 사용 합계: 해당 구독 id 기준, 사용된 것만
-    const couponSum = await this.couponService
-      .sumSubscriptionCouponUsageBySubscription(id, userId, from, to);
+    const couponSum =
+      await this.couponService.sumSubscriptionCouponUsageBySubscription(
+        id,
+        userId,
+        from,
+        to
+      );
 
     const benefit = percentSum + couponSum;
 

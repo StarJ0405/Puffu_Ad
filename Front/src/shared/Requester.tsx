@@ -727,7 +727,32 @@ class _Requester {
     return result;
   }
 
-  // 환불 견적
+  // 견적 조회
+  async getSubscribeRefundQuote(
+    id: string,
+    params: any = {},
+    callback?: (r: any) => void
+  ): Promise<any> {
+    const result = await this.get(
+      `/users/me/subscribe/${id}/refund/quote`,
+      params
+    );
+    if (callback) callback(result);
+    return result;
+  }
+
+  // 환불 실행
+  async postSubscribeRefund(
+    id: string,
+    body: { refund?: number } = {},
+    callback?: (r: any) => void
+  ): Promise<any> {
+    const result = await this.post(`/users/me/subscribe/${id}/refund`, body);
+    if (callback) callback(result);
+    return result;
+  }
+
+  /* // 환불 견적
   async getSubscribeRefundQuote(
     id: string,
     params?: any,
@@ -753,7 +778,7 @@ class _Requester {
     );
     if (callback) callback(result);
     return result;
-  }
+  } */
 }
 
 export default _Requester;
