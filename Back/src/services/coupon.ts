@@ -7,6 +7,7 @@ import { OrderRepository } from "repositories/order";
 import { ReviewRepository } from "repositories/review";
 import { UserRepository } from "repositories/user";
 import { inject, injectable } from "tsyringe";
+import { generateEntityId } from "utils/functions";
 import {
   Brackets,
   DeepPartial,
@@ -39,17 +40,13 @@ export class CouponService extends BaseService<Coupon, CouponRepository> {
       let isUnique = false;
       let code = generateShortId(6, 18);
       do {
-        const exist = await this.repository.exists({
-          where: {
-            code,
-          },
-        });
+        const exist = await this.repository.exists({ where: { code } });
         if (!exist) isUnique = true;
         else code = generateShortId(6, 18);
       } while (!isUnique);
-
-      return await this.repository.create({ ...data, code });
+      data = { ...data, code };
     }
+    // create → save 로 변경하여 실제 INSERT 수행
     return await this.repository.create(data);
   }
 
@@ -682,16 +679,16 @@ export class CouponService extends BaseService<Coupon, CouponRepository> {
   }
 
   async sumSubscriptionCouponUsage(userId: string, from: Date, to: Date) {
-    const rows = await this.repository
+    const row = await this.repository
       .builder("cu")
       .select("COALESCE(SUM(cu.value),0)", "sum")
       .where("cu.user_id = :userId", { userId })
-      .andWhere(`cu.metadata->>'tag' = 'subscription'`)
+      .andWhere("cu.is_subscription = TRUE")
       .andWhere(
         "(cu.item_id IS NOT NULL OR cu.order_id IS NOT NULL OR cu.shipping_method_id IS NOT NULL)"
       )
       .andWhere("cu.created_at BETWEEN :from AND :to", { from, to })
       .getRawOne<{ sum: string }>();
-    return Number(rows?.sum || 0);
+    return Number(row?.sum || 0);
   }
 }

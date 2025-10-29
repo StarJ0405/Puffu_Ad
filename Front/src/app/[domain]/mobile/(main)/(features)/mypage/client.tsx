@@ -56,7 +56,20 @@ const editInfoModal = (userData: any, navigate: (path: string) => void) => {
 
 export function Profile({ initGroups }: { initGroups: Pageable }) {
   const navigate = useNavigate();
-  const { userData } = useAuth(); // 유저정보 받아오기
+  const { userData, reload } = useAuth(); // 유저정보 + 강제 리로드
+  useEffect(() => {
+    reload();
+    const onFocus = () => reload();
+    const onVisible = () => {
+      if (document.visibilityState === "visible") reload();
+    };
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, []);
   const { groups } = useData(
     "groups",
     {},

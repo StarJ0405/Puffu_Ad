@@ -512,11 +512,13 @@ export class OrderService extends BaseService<Order, OrderRepository> {
     }
 
     const couponService = container.resolve(CouponService);
-    const couponSum = await couponService.sumSubscriptionCouponUsage(
-      userId,
-      from,
-      to
-    );
+    const couponSum =
+      await couponService.sumSubscriptionCouponUsageBySubscription(
+        subscriptionId,
+        userId,
+        from,
+        to
+      );
 
     return {
       percent_benefit: percentSum,
