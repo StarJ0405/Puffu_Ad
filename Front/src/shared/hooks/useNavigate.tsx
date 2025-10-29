@@ -8,6 +8,7 @@ interface NavigateFunction {
 interface NavigateOptions {
   type?: "move" | "replace" | "new";
   preventScrollReset?: boolean;
+  refresh?: boolean;
 }
 
 export default function useNavigate(): NavigateFunction {
@@ -44,7 +45,11 @@ export default function useNavigate(): NavigateFunction {
             );
           } else if (option?.type === "replace") {
             router.replace(to, _option);
-          } else router.push(to, _option);
+            if (option?.refresh) setTimeout(() => router.refresh(), 0);
+          } else {
+            router.push(to, _option);
+            if (option?.refresh) setTimeout(() => router.refresh(), 0);
+          }
         } else router.push(to);
       }
     }, 1);

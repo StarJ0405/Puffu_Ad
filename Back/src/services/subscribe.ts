@@ -241,6 +241,23 @@ export class SubscribeService extends BaseService<
     return baseAmount + subCouponUsed;
   }
 
+  async getAccumulatedAmountWithSubCouponsBySubscription(
+    subscriptionId: string,
+    userId: string,
+    from: Date,
+    to: Date,
+    baseAmount: number
+  ): Promise<number> {
+    const subCouponUsed =
+      await this.couponService.sumSubscriptionCouponUsageBySubscription(
+        subscriptionId,
+        userId,
+        from,
+        to
+      );
+    return baseAmount + subCouponUsed;
+  }
+
   // 결제 환불 처리
   async refund(id: string, user_id: string, refund: number): Promise<void> {
     const subscribe = await this.repository.findOne({ where: { id, user_id } });

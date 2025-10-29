@@ -166,7 +166,8 @@ export function regist(DEV: boolean) {
       );
 
       // 정규자동발급
-      if (now.getDate() === 1) {
+      if (now.getDate() === 1 || process.env.FORCE_SUBSCRIPTION_COUPON === "true") {
+        console.log("[cron] sub monthly start", now.toISOString());
         const intervals = await service.getList({
           where: {
             target: Target.INTERVAL,
@@ -226,6 +227,7 @@ export function regist(DEV: boolean) {
         );
       }
       // 크론: 매월 1일 구독 쿠폰 발급 + 만료 구독 회수
+      // if (now.getDate() === 1 || process.env.FORCE_SUBSCRIPTION_COUPON === "true") {
       if (now.getDate() === 1) {
         const subscribeService = container.resolve(SubscribeService);
         const couponService = container.resolve(CouponService);
@@ -235,12 +237,14 @@ export function regist(DEV: boolean) {
           where: {
             user_id: Not(IsNull()),
             canceled_at: IsNull(),
-            starts_at: LessThanOrEqual(new Date()),
-            ends_at: MoreThan(new Date()),
+            starts_at: LessThanOrEqual(now),
+            ends_at: MoreThan(now),
             value: MoreThan(0),
           },
           select: ["id", "store_id", "user_id", "name", "value"],
         });
+        console.log("[cron] activeSubs", activeSubs.length);
+
 
         // 이번 달 기간
         const start_date = new Date();
@@ -287,7 +291,6 @@ export function regist(DEV: boolean) {
           );
         }
       }
-    },
-    {}
+    },{ timezone: "Asia/Seoul" } 
   );
 }

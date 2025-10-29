@@ -9,7 +9,7 @@ interface Cron {
 
 export function init(DEV: boolean) {
   if (!CRONS) return;
-  const moduleFolders = CRONS.split(",");
+  const moduleFolders = CRONS.split(",").map(s => s.trim()).filter(Boolean);
 
   for (const fileName of moduleFolders) {
     if (__dirname.includes("dist")) __regist_init(DEV, fileName, "js");

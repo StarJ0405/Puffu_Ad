@@ -168,7 +168,7 @@ export function ConfirmBtn({
                     )}원${cnt > 1 ? ` / ${cnt}건` : ""}`,
                   });
                   setTimeout(() => {
-                    navigate("/mypage", { type: "replace" });
+                    navigate(`/mypage?ts=${Date.now()}`, { type: "replace" });
                   }, 3000);
                   return true;
                 } catch (e: any) {
