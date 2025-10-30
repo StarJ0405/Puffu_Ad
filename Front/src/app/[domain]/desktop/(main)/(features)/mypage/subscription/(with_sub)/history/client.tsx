@@ -6,7 +6,7 @@ import P from "@/components/P/P";
 import styles from "./page.module.css";
 import FlexChild from "@/components/flex/FlexChild";
 import { requester } from "@/shared/Requester";
-import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
+import usePageData from "@/shared/hooks/data/usePageData";
 import ListPagination from "@/components/listPagination/ListPagination";
 
 type Row = {
@@ -25,15 +25,8 @@ const fmt = (v?: string) =>
 
 const pickRefundAmount = (cd: any): number => {
   if (!cd) return 0;
-
-  // 1) 내부 직접 저장 케이스: { refund: number }
   if (typeof cd.refund === "number") return cd.refund;
-
-  // 2) NESTPAY 응답 추정: { refund: { amount: number, ... } }
-  if (cd.refund && typeof cd.refund.amount === "number")
-    return cd.refund.amount;
-
-  // 3) TOSS 응답 추정: { cancels: [{ cancelAmount: number } ...] }
+  if (cd.refund && typeof cd.refund.amount === "number") return cd.refund.amount;
   if (Array.isArray(cd.cancels)) {
     const s = cd.cancels.reduce(
       (acc: number, c: any) => acc + (Number(c?.cancelAmount) || 0),
@@ -41,11 +34,8 @@ const pickRefundAmount = (cd: any): number => {
     );
     if (s > 0) return s;
   }
-
-  // 4) 기타 호환 필드
   if (typeof cd.cancelAmount === "number") return cd.cancelAmount;
   if (typeof cd.amount === "number") return cd.amount;
-
   return 0;
 };
 
@@ -54,12 +44,13 @@ export function HistoryList() {
 
   const {
     subsHistory,
-    isLoading,
     origin,
-    Load,
+    isLoading,
     page,
+    setPage,
     maxPage,
-  } = useInfiniteData(
+    hasNext,
+  } = usePageData(
     "subsHistory",
     (index) => ({
       activeOnly: false,
@@ -70,8 +61,7 @@ export function HistoryList() {
     (params) => requester.getMySubscribes(params),
     (data) => {
       const tp = Number(data?.totalPages ?? 0);
-      if (tp > 0) return tp;
-      return 1;
+      return tp > 0 ? tp : 1;
     },
     {
       onReprocessing: (d: any) => {
@@ -79,15 +69,13 @@ export function HistoryList() {
         if (Array.isArray(d)) return d;
         return d?.content?.content ?? [];
       },
-      flat: true,
       revalidateOnMount: true,
-      cache: { revalidateAll: false },
+      cache: { revalidateIfStale: true },
+      // fallbackData: 초기 데이터가 있으면 지정
     }
   ) as any;
 
   const rows: Row[] = subsHistory ?? [];
-  const lastResp = Array.isArray(origin) ? origin[origin.length - 1] : origin;
-  const hasMore = Boolean(lastResp && lastResp.last === false);
 
   if (!isLoading && rows.length === 0) {
     return (
@@ -98,17 +86,16 @@ export function HistoryList() {
       </VerticalFlex>
     );
   }
+
   return (
     <VerticalFlex gap={35}>
       <table className={styles.list_table}>
-        {/* 게시판 셀 너비 조정 */}
         <colgroup>
-          <col style={{ width: "20%"}} />
+          <col style={{ width: "20%" }} />
           <col style={{ width: "60%" }} />
-          <col style={{ width: "20%"}} />
+          <col style={{ width: "20%" }} />
         </colgroup>
 
-        {/* 게시판리스트 헤더 */}
         <thead>
           <tr className={styles.table_header}>
             <th>결제일</th>
@@ -119,8 +106,7 @@ export function HistoryList() {
 
         <tbody>
           {rows.map((it) => {
-            const amount =
-              Number(it?.payment_data?.amount ?? it?.price ?? 0) || 0;
+            const amount = Number(it?.payment_data?.amount ?? it?.price ?? 0) || 0;
             const date = fmt(it?.created_at ?? it?.starts_at);
             const title = it?.name || "구독 결제";
             const refund = pickRefundAmount(it?.cancel_data);
@@ -132,7 +118,6 @@ export function HistoryList() {
                   <FlexChild justifyContent="center">
                     <P className={styles.date}>{date}</P>
                   </FlexChild>
-                 
                 </td>
 
                 <td>
@@ -145,7 +130,7 @@ export function HistoryList() {
                 </td>
 
                 <td>
-                  <VerticalFlex gap={10} >
+                  <VerticalFlex gap={10}>
                     <P className={styles.price}>{amount.toLocaleString()}원</P>
                     {isCanceled && (
                       <P className={styles.price_sub}>
@@ -160,18 +145,13 @@ export function HistoryList() {
         </tbody>
       </table>
 
-      {hasMore && (
-        <FlexChild justifyContent="center">
-          <button className={styles.more_btn} onClick={Load}>
-            더 보기
-          </button>
-        </FlexChild>
-        // <ListPagination
-        //   page={page}
-        //   maxPage={maxPage}
-        //   onChange={(next) => setPage(next)}
-        // />
-      )}
+      <FlexChild justifyContent="center" gap={10}>
+        <ListPagination
+          page={page}
+          maxPage={maxPage}
+          onChange={(next) => setPage(next)}
+        />
+      </FlexChild>
     </VerticalFlex>
   );
 }
