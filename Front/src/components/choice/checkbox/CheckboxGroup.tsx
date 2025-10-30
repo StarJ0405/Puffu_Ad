@@ -90,39 +90,41 @@ const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
   style,
   images = defaultCheckboxImages,
 }) => {
-  const [checkedValues, setCheckedValues] = useState(new Set(initialValues));
-  const [allChecked, setAllCheckedState] = useState(false);
+  const isControlled = Array.isArray(values);
+  const [innerSet, setInnerSet] = useState(new Set(initialValues));
+  const currentSet = isControlled ? new Set(values!) : innerSet;
+  const [lastEmittedKey, setLastEmittedKey] = useState<string>("");
   const groupRefs = React.useRef<Set<string>>(new Set()); // 그룹 내 모든 CheckboxChild ID를 관리
 
   // 모든 체크박스가 체크되었는지 확인
-  useEffect(() => {
-    const areAllRegisteredChecked =
-      groupRefs.current.size > 0 &&
-      Array.from(groupRefs.current).every((id) => checkedValues.has(id));
-    setAllCheckedState(areAllRegisteredChecked);
-  }, [checkedValues]);
-  useEffect(() => {
-    if (
-      values &&
-      (values?.length !== checkedValues.size ||
-        JSON.stringify(Array.from(checkedValues).sort()) !==
-          JSON.stringify(Array.from(values).sort()))
-    ) {
-      setCheckedValues(new Set(values));
-    }
-  }, [values]);
+  const allChecked = React.useMemo(() => {
+    const ids = Array.from(groupRefs.current);
+    if (ids.length === 0) return false;
+    return ids.every((id) => currentSet.has(id));
+  }, [currentSet, groupRefs]);
+
+  // 제어 모드에서는 내부 상태 동기화 불필요
+
   // CheckboxChild 상태 토글
-  const toggleCheckbox = useCallback((id: string, checked: boolean) => {
-    setCheckedValues((prev) => {
-      const newSet = new Set(prev);
-      if (checked) {
-        newSet.add(id);
-      } else {
-        newSet.delete(id);
+  const toArraySorted = (s: Set<string>) => Array.from(s).sort();
+  const toggleCheckbox = useCallback(
+    (id: string, checked: boolean) => {
+      if (isControlled) {
+        const next = new Set(currentSet);
+        if (checked) next.add(id);
+        else next.delete(id);
+        onChange?.(toArraySorted(next));
+        return;
       }
-      return newSet;
-    });
-  }, []);
+      setInnerSet((prev) => {
+        const next = new Set(prev);
+        if (checked) next.add(id);
+        else next.delete(id);
+        return next;
+      });
+    },
+    [isControlled, currentSet, onChange]
+  );
 
   // CheckboxChild 등록
   const registerCheckbox = useCallback((id: string) => {
@@ -130,34 +132,47 @@ const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
   }, []);
 
   // CheckboxChild 등록 해제
-  const unregisterCheckbox = useCallback((id: string) => {
-    groupRefs.current.delete(id);
-    setCheckedValues((prev) => {
-      const newSet = new Set(prev);
-      if (!groupRefs.current.has(id)) {
-        // Only delete if it's no longer registered
-        newSet.delete(id);
+  const unregisterCheckbox = useCallback(
+    (id: string) => {
+      groupRefs.current.delete(id);
+      if (!isControlled) {
+        setInnerSet((prev) => {
+          const next = new Set(prev);
+          next.delete(id);
+          return next;
+        });
       }
-      return newSet;
-    });
-  }, []);
+    },
+    [isControlled]
+  );
 
   // CheckboxAll 상태 변경
-  const setAllChecked = useCallback((checked: boolean) => {
-    setCheckedValues(() => {
-      const newSet = new Set<string>();
-      if (checked) {
-        groupRefs.current.forEach((id) => newSet.add(id));
+  const setAllChecked = useCallback(
+    (checked: boolean) => {
+      const next = new Set<string>();
+      if (checked) groupRefs.current.forEach((id) => next.add(id));
+      if (isControlled) {
+        onChange?.(toArraySorted(next));
+      } else {
+        setInnerSet(next);
       }
-      return newSet;
-    });
-  }, []);
+    },
+    [isControlled, onChange]
+  );
+
+  // 변경 알림은 비제어 모드에서만, 그리고 내용이 바뀐 경우에만
   useEffect(() => {
-    if (onChange) onChange?.(Array.from(checkedValues));
-  }, [checkedValues]);
+    if (!onChange || isControlled) return;
+    const key = toArraySorted(currentSet).join("|");
+    if (key !== lastEmittedKey) {
+      setLastEmittedKey(key);
+      onChange(Array.from(currentSet));
+    }
+  }, [currentSet, isControlled, onChange, lastEmittedKey]);
+
   const contextValue = {
     name,
-    value: checkedValues,
+    value: currentSet,
     toggleCheckbox,
     registerCheckbox,
     unregisterCheckbox,
