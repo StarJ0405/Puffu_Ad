@@ -32,7 +32,7 @@ export function ContentBox({}: {}) {
 
   const price = plan?.price;
 
-  console.log('구독', plan);
+  // console.log('구독', plan);
 
   return (
     <VerticalFlex className={clsx(styles.premiumBox, styles.itemBox)}>

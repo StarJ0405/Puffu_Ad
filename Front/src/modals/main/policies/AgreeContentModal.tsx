@@ -45,7 +45,7 @@ const AgreeContentModal = NiceModal.create(({
   const modal = useRef<any>(null);
   const title = "[필수] 구매조건 확인 및 결제진행 동의"
   const [withHeader, withFooter] = [false, false];
-  const isMobile = useBrowserEvent();
+  const { isMobile } = useBrowserEvent();
 
   const onConfirmClick = () => {
     setAgrees((prev) => {

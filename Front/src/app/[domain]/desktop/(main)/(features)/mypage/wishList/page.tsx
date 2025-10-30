@@ -12,7 +12,6 @@ export default async function () {
     relations: ["product", "product.brand", "product.wishlists","product.variants"],
     pageSize: 10,
   });
-  console.log(initWishList)
   return (
     <>
       <VerticalFlex

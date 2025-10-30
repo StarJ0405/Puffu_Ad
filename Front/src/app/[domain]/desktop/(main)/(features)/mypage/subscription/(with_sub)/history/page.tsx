@@ -12,7 +12,7 @@ export default async function () {
     <>
       <VerticalFlex className={clsx(mypage.box_frame)} gap={35}>
         <FlexChild className={clsx(mypage.box_header)}>
-          <P>연간 구독 서비스</P>
+          <P>구독 내역</P>
         </FlexChild>
 
         <HistoryList/>
