@@ -464,6 +464,28 @@ export function CartWrap() {
     // copType, 모달 여는 경로가 상품, 주문, 배송 쿠폰인지 구분한 값
   };
 
+ 
+  // 결제창 취소했을때 hidden 막는 용도
+  if (typeof window !== "undefined" && typeof MutationObserver !== "undefined") {
+    const observer = new MutationObserver(() => {
+      const html = document.documentElement;
+      const body = document.body;
+
+      if (html.style.overflow === "hidden") {
+        html.style.overflow = "";
+      }
+      if (body.style.overflow === "hidden") {
+        body.style.overflow = "";
+      }
+    });
+
+    // body style 바뀌는 거 계속 감시
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["style"],
+    });
+  }
+
   return (
     <HorizontalFlex className={styles.cart_wrap}>
       <VerticalFlex className={styles.cart_data}>
@@ -1175,7 +1197,12 @@ export function CartWrap() {
                                           navigate("/orders/cart"),
                                       });
                                     }
-                                  } catch (error) {}
+                                  } catch (error) {
+
+                                  } finally {
+                                    document.body.style.overflow = "";
+                                    document.documentElement.style.overflow = "";
+                                  }
                                 } else if (response.resultCd !== "CB49") {
                                   NiceModal.show("confirm", {
                                     clickOutsideToClose: false,
@@ -1268,7 +1295,12 @@ export function CartWrap() {
                                       onConfirm: () => navigate("/orders/cart"),
                                     });
                                   }
-                                } catch (error) {}
+                                } catch (error) {
+
+                                } finally {
+                                  document.body.style.overflow = "";
+                                  document.documentElement.style.overflow = "";
+                                }
                               } else if (response.resultCd !== "CB49") {
                                 NiceModal.show("confirm", {
                                   clickOutsideToClose: false,

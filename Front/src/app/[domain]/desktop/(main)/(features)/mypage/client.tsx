@@ -19,7 +19,7 @@ import { requester } from "@/shared/Requester";
 import { Cookies } from "@/shared/utils/Data";
 import { getCookieOption } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import mypage from "./mypage.module.css";
@@ -27,11 +27,12 @@ import mypage from "./mypage.module.css";
 const pathnameVisible = () => {
   // 구독 가입 시 관리 화면이랑, 해지 화면만 왼쪽 사이드메뉴 표시
   const pathname = usePathname();
+  const params = useParams();
 
   const hidden =
     pathname === "/mypage/subscription/subscribe" ||
     pathname === "/mypage/subscription/success" ||
-    pathname === "/mypage/subscription/cancel";
+    pathname === `/mypage/subscription/${params.id}/cancel`;
 
   return hidden;
 };

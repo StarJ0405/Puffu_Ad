@@ -24,7 +24,7 @@
   position: relative; z-index: 2;
 }
 
-.link_btn a {
+.link_btn {
   padding: 19px 20px 19px 30px;
   background: #2A2A2A;
   border-radius: 10px;
@@ -35,6 +35,7 @@
   width: 100%;
   font-size: 18px;
   color: #fff;
+  cursor: pointer;
 }
 
 

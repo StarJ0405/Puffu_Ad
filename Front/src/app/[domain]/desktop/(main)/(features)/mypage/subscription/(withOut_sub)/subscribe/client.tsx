@@ -107,6 +107,27 @@ export function CheckConfirm() {
     NiceModal.show("AgreeContent", { type, onlyView: true, width: '500px', height: '70vh'});
   };
 
+  // 결제창 취소했을때 hidden 막는 용도
+  if (typeof window !== "undefined" && typeof MutationObserver !== "undefined") {
+    const observer = new MutationObserver(() => {
+      const html = document.documentElement;
+      const body = document.body;
+
+      if (html.style.overflow === "hidden") {
+        html.style.overflow = "";
+      }
+      if (body.style.overflow === "hidden") {
+        body.style.overflow = "";
+      }
+    });
+
+    // body style 바뀌는 거 계속 감시
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["style"],
+    });
+  }
+
   // 결제 버튼
   const handlePaymentSubmit = async () => {
     if (loading) return;
@@ -197,6 +218,10 @@ export function CheckConfirm() {
               } catch (err) {
                 console.error(err);
                 toast({ message: "결제 승인 중 오류가 발생했습니다." });
+              } finally {
+                // NESTPAY가 overflow:hidden을 남겼을 가능성 있으므로 복원
+                document.body.style.overflow = "";
+                document.documentElement.style.overflow = "";
               }
             } else if (response.resultCd !== "CB49") {
               toast({

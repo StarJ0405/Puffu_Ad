@@ -126,13 +126,18 @@ export function ConfirmBtn({
 
     NiceModal.show(ConfirmModal, {
       message: (
-        <FlexChild justifyContent="center" marginBottom={30}>
-          <P color="#333" fontSize={20} weight={600}>
-            활성 구독을 해지하면, 예약된 다음 구독도 함께 취소·환불됩니다.
-            진행할까요?
+        <FlexChild justifyContent="center" marginBottom={20}>
+          <P color="#fff" fontSize={16} weight={600} textAlign="center" lineHeight={1.4}>
+            활성 구독을 해지하면, <br /> 
+            예약된 다음 구독도 함께 취소·환불됩니다.
           </P>
         </FlexChild>
       ),
+      classNames: {
+        title: "confirm_title",
+      },
+      title: "구독 해지",
+      backgroundColor: "var(--confirmModal-bg)",
       confirmText: "해지하기",
       cancelText: "취소",
       withCloseButton: true,
@@ -146,15 +151,20 @@ export function ConfirmBtn({
 
             NiceModal.show(ConfirmModal, {
               message: (
-                <FlexChild justifyContent="center" marginBottom={20}>
-                  <P color="#333" fontSize={18} weight={600}>
+                <VerticalFlex gap={20} justifyContent="center" marginBottom={20}>
+                  <P color="#ccc" fontSize={16} weight={600}>
                     환불 예상액 {refund.toLocaleString("ko-KR")}원
                   </P>
-                  <P color="#666" fontSize={14}>
+                  <P color="#fff" fontSize={18}>
                     해지를 진행하시겠습니까?
                   </P>
-                </FlexChild>
+                </VerticalFlex>
               ),
+              classNames: {
+                title: "confirm_title",
+              },
+              title: "구독 해지",
+              backgroundColor: "var(--confirmModal-bg)",
               confirmText: "확인",
               cancelText: "취소",
               withCloseButton: true,
@@ -166,14 +176,37 @@ export function ConfirmBtn({
                   const cnt = Array.isArray(r?.content?.refunds)
                     ? r.content.refunds.length
                     : 0;
+                  // await NiceModal.show(ConfirmModal, {
+                  //   message: (
+                  //     <FlexChild justifyContent="center" marginBottom={20}>
+                  //       <P color="#fff" fontSize={16} weight={600} textAlign="center" lineHeight={1.4}>
+                  //         해지가 완료되었습니다. <br /> 
+                  //         환불합계 {total.toLocaleString("ko-KR")}원{cnt > 1 ? ` / ${cnt}건` : ""}
+                  //       </P>
+                  //     </FlexChild>
+                  //   ),
+                  //   classNames: {
+                  //     title: "confirm_title",
+                  //   },
+                  //   title: "구독 해지",
+                  //   backgroundColor: "var(--confirmModal-bg)",
+                  //   confirmText: "확인",
+                  //   // cancelText: "취소",
+                  //   withCloseButton: true,
+                  //   preventable: true,
+                  //   onConfirm: async () => {
+                  //     navigate('/');
+                  //   }
+                  // });
                   toast({
                     message: `해지 완료. 환불합계 ${total.toLocaleString(
                       "ko-KR"
                     )}원${cnt > 1 ? ` / ${cnt}건` : ""}`,
                   });
                   setTimeout(() => {
-                    navigate(`/mypage?ts=${Date.now()}`, { type: "replace" });
-                  }, 3000);
+                    navigate('/');
+                    // navigate(`/mypage?ts=${Date.now()}`, { type: "replace" });
+                  }, 1500);
                   return true;
                 } catch (e: any) {
                   toast({
