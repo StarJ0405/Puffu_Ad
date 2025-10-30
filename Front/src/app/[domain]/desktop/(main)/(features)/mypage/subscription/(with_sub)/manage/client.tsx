@@ -16,6 +16,8 @@ import clsx from "clsx";
 import Image from "@/components/Image/Image";
 import Div from "@/components/div/Div";
 import mypage from "../../../mypage.module.css";
+import { toast } from "@/shared/utils/Functions";
+import useNavigate from "@/shared/hooks/useNavigate";
 
 export function BoxHeader() {
   const [sub, setSub] = useState<any>(null);
@@ -51,9 +53,14 @@ export function BoxHeader() {
 }
 
 export function ContentBox({}: {}) {
+  const navigate = useNavigate();
   const [sub, setSub] = useState<any>(null);
   const [plan, setPlan] = useState<any>(null);
   const [benefit, setBenefit] = useState<number>(0);
+  const [reserved, setReserved] = useState<any>(null);
+
+  const [loading, setLoading] = useState(false);
+  const [paying, setPaying] = useState(false);
 
   const fmt = (v?: string | Date) =>
     v ? new Date(v).toISOString().slice(0, 10).replaceAll("-", ".") : "-";
@@ -85,13 +92,129 @@ export function ContentBox({}: {}) {
   }, []);
 
   const endsAt = sub?.ends_at ? new Date(sub.ends_at) : null;
-  const showPay = (() => {
+  const showPay = useMemo(() => {
     if (!endsAt) return false;
     const openAt = new Date(endsAt);
     openAt.setMonth(openAt.getMonth() - 1);
     const now = new Date();
     return now >= openAt && now < endsAt;
-  })();
+  }, [endsAt]);
+
+  const ctaLabel = reserved
+    ? "예약 완료"
+    : paying
+    ? "결제 진행 중…"
+    : "결제 진행하기";
+  const disabledPay = !!reserved || paying || !plan || !sub;
+
+  const handlePrepay = async () => {
+      if (disabledPay) return;
+      try {
+        setPaying(true);
+  
+        const me = await requester.getCurrentUser();
+        const user = me?.user;
+        if (!user) {
+          toast({ message: "로그인이 필요합니다." });
+          return;
+        }
+  
+        const trackId = `${user.id}_${Date.now()}`;
+        const amount = Number(plan?.price ?? 0);
+        const params = {
+          paytype: "nestpay",
+          payMethod: "card",
+          trackId,
+          amount,
+          payerId: user.id,
+          payerName: user.name,
+          payerEmail: user.username,
+          payerTel: user.phone,
+          returnUrl: `${window.location.origin}/mypage/subscription/success`,
+          products: [
+            { name: plan?.name || "연간 구독권", qty: 1, price: amount },
+          ],
+        };
+        const result = await requester.requestPaymentApproval(params);
+  
+        // NESTPAY 스크립트 로드
+        const jsUrl = process.env.NEXT_PUBLIC_STATIC;
+        const loadScript = () =>
+          new Promise<void>((resolve) => {
+            const s = document.createElement("script");
+            s.src = jsUrl + "?ver=" + new Date().getTime();
+            s.onload = () => resolve();
+            document.head.appendChild(s);
+          });
+        if (!window.NESTPAY) await loadScript();
+        if (!window.NESTPAY) {
+          toast({ message: "결제 모듈 로드 실패" });
+          return;
+        }
+        window.NESTPAY.welcome();
+        window.NESTPAY.pay({
+          payMethod: "card",
+          trxId: result?.content?.trxId || result?.link?.trxId,
+          openType: "layer",
+          onApprove: async (resp: any) => {
+            if (resp?.resultCd !== "0000") {
+              if (resp?.resultCd !== "CB49")
+                toast({ message: resp?.resultMsg || "결제 실패" });
+              return;
+            }
+            try {
+              // 승인
+              const approve = await requester.approvePayment({
+                trxId: result?.content?.trxId || result?.link?.trxId,
+                resultCd: resp.resultCd,
+                resultMsg: resp.resultMsg,
+                customerData: JSON.stringify(user),
+              });
+              const ok =
+                approve?.approveResult?.result?.resultCd === "0000" &&
+                approve?.approveResult?.pay;
+  
+              if (!ok) {
+                toast({
+                  message:
+                    approve?.approveResult?.result?.resultMsg || "승인 실패",
+                });
+                return;
+              }
+  
+              const optimistic = {
+                id: "__optimistic__",
+                starts_at: sub?.ends_at,
+              };
+              setReserved(optimistic);
+  
+              const periodDays = Number(plan?.metadata?.periodDays ?? 365);
+              const startBase = endsAt ? new Date(endsAt) : new Date();
+              const endDate = new Date(
+                startBase.getTime() + periodDays * 86400000
+              );
+  
+              await requester.createSubscribe({
+                store_id: sub.store_id,
+                name: plan?.name,
+                ends_at: endDate.toISOString(),
+                payment: approve.approveResult.pay,
+              });
+  
+              toast({ message: "예약 결제가 완료되었습니다." });
+              navigate("/mypage/subscription/manage", { type: "replace" });
+            } catch (e: any) {
+              setReserved(null);
+              toast({ message: e?.error || "승인 처리 오류" });
+            }
+          },
+        });
+      } catch (e: any) {
+        toast({ message: e?.error || "결제 요청 오류" });
+      } finally {
+        setPaying(false);
+      }
+    };
 
   return (
     <>
@@ -106,7 +229,8 @@ export function ContentBox({}: {}) {
         <FlexChild
           className={styles.payment_btn}
           justifyContent="center"
-          // hidden={!showPay}
+          hidden={!showPay}
+          onClick={handlePrepay}
         >
           결제 진행하기
         </FlexChild>

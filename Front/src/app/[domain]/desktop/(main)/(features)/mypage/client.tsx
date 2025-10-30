@@ -137,7 +137,7 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
             </FlexChild>
             <FlexChild gap={7} justifyContent="center">
               <P className={styles.membership_level}>{userData?.group?.name}</P>
-              {/* {
+              {
                 // 구독 가입되어 있으면 나타나기
                 isSubscribe && (
                   <Image
@@ -145,7 +145,7 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
                     width={77}
                   />
                 )
-              } */}
+              }
             </FlexChild>
             <FlexChild className={styles.link_btn}>
               <Button onClick={() => navigate("/mypage/wishList")}>
@@ -290,7 +290,7 @@ export function MypageNavi() {
       className={mypage.left_bar}
       hidden={pathnameVisible()}
     >
-      {/* {
+      {
         // 구독 가입 되어 있으면 안 보이기
         !isSubscribe && (
           <FlexChild cursor="pointer" onClick={() => navigate("/mypage/subscription/subscribe")}>
@@ -300,7 +300,7 @@ export function MypageNavi() {
             />
           </FlexChild>
         )
-      } */}
+      }
       <VerticalFlex className={clsx(styles.mypage_navi, styles.box_frame)}>
         <VerticalFlex className={styles.outer_menu}>
           <P>쇼핑정보</P>
@@ -348,7 +348,7 @@ export function MypageNavi() {
               </Link>
             </li>
 
-            {/* {
+            {
               // 구독 가입되어 있을때만 나오기
               isSubscribe && (
                 <li>
@@ -376,7 +376,7 @@ export function MypageNavi() {
                   </Link>
                 </li>
               )
-            } */}
+            }
 
             {myInfoMenu.map((item, i) => {
               const active = pathname === item.link;

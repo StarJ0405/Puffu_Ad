@@ -26,7 +26,6 @@ export function ClientTxt() {
   const [pay, setPay] = useState<any>(null);
   const { userData } = useAuth();
   const navigate = useNavigate();
-
   // 진입 시 토큰 유효성 검사
   useClientEffect(
     () => {

@@ -8,6 +8,8 @@ import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
 import useNavigate from "@/shared/hooks/useNavigate";
 import { requester } from "@/shared/Requester";
 import styles from "./page.module.css";
+import ProductLoadBtn from "@/components/buttons/ProductLoadBtn";
+import Button from "@/components/buttons/Button";
 
 type Row = {
   id: string;
@@ -159,9 +161,9 @@ export function HistoryList() {
 
       {hasMore && (
         <FlexChild justifyContent="center">
-          <button className={styles.more_btn} onClick={Load}>
+          <Button className={styles.more_btn} onClick={Load}>
             더 보기
-          </button>
+          </Button>
         </FlexChild>
       )}
     </VerticalFlex>

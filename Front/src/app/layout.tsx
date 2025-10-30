@@ -1,5 +1,7 @@
 import ProviderWrapper from "@/providers/ProviderWrapper";
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import LoadingOverlay from '@/components/loading/LoadingOverlay'
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -50,6 +52,7 @@ export default function RootLayout({
         <ProviderWrapper>
           {/*  */}
           {children}
+          {/* <Suspense fallback={<LoadingOverlay />}></Suspense> */}
           {/*  */}
         </ProviderWrapper>
       </body>

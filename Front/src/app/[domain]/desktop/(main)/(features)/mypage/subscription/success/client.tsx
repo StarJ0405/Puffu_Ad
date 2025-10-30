@@ -9,22 +9,9 @@ import useNavigate from "@/shared/hooks/useNavigate";
 
 export function ClientTxt() {
    const [plan, setPlan] = useState<any>(null);
-      const { userData } = useAuth(); // 유저정보 받아오기
-   
-      const isSubscribe = userData?.subscribe != null;
-      const navigate = useNavigate();
+   const { userData } = useAuth(); // 유저정보 받아오기
    
       useEffect(() => {
-       if (userData && !isSubscribe) {
-         navigate("/");
-       }
-     }, [userData, isSubscribe, navigate]);
-   
-     if (!userData) return null;
-   
-      useEffect(() => {
-   
-         if (!isSubscribe) return; // 비구독자는 실행 안 함
    
          (async () => {
          // 최신 구독 1건
@@ -40,7 +27,7 @@ export function ClientTxt() {
          setPlan(pl?.content?.[0] || null);
    
        })();
-      }, [isSubscribe])
+      }, [])
 
    return (
       <P className={styles.text1}>
