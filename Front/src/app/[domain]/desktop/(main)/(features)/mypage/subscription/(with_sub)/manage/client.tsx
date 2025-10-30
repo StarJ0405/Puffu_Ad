@@ -1,23 +1,18 @@
 "use client";
-import CouponItemMobile from "@/components/coupon/couponItemMobile";
+import Div from "@/components/div/Div";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import ListPagination from "@/components/listPagination/ListPagination";
-import NoContent from "@/components/noContent/noContent";
+import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
-import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
-import usePageData from "@/shared/hooks/data/usePageData";
-import { requester } from "@/shared/Requester";
-import { useMemo, useState, useRef, useEffect } from "react";
-import styles from "./page.module.css";
-import clsx from "clsx";
-import Image from "@/components/Image/Image";
-import Div from "@/components/div/Div";
-import mypage from "../../../mypage.module.css";
-import { toast } from "@/shared/utils/Functions";
 import useNavigate from "@/shared/hooks/useNavigate";
+import { requester } from "@/shared/Requester";
+import { toast } from "@/shared/utils/Functions";
+import clsx from "clsx";
+import { useEffect, useMemo, useState } from "react";
+import mypage from "../../../mypage.module.css";
+import styles from "./page.module.css";
 
 export function BoxHeader() {
   const [sub, setSub] = useState<any>(null);
@@ -280,4 +275,54 @@ export function ContentBox({}: {}) {
       </VerticalFlex>
     </>
   );
+}
+
+export function Client() {
+  const navigate = useNavigate();
+    const [latestId, setLatestId] = useState<string | null>(null);
+  
+    useEffect(() => {
+      (async () => {
+        const r = await requester.getMySubscribes({ latest: true });
+        setLatestId(r?.content?.[0]?.id ?? null);
+      })();
+    }, []);
+  
+    const goHistory = () => navigate("/mypage/subscription/history");
+    const goCancel = () => {
+      if (!latestId) return;
+      navigate(`/mypage/subscription/${latestId}/cancel`);
+  };
+  
+  return (
+    <VerticalFlex gap={25}>
+      <VerticalFlex className={clsx(mypage.box_frame, styles.manage_box)} gap={35}>
+        <BoxHeader />
+  
+        <VerticalFlex className={clsx(styles.wrapper)}>
+          <ContentBox />
+        </VerticalFlex>
+      </VerticalFlex>
+
+      <FlexChild gap={20}>
+        <FlexChild className={styles.link_btn} onClick={goHistory}>
+            <P>구독 내역 확인</P>
+
+            <Image
+              src={"/resources/icons/arrow/mypage_arrow.png"}
+              width={10} height={'auto'}
+            />
+        </FlexChild>
+
+        <FlexChild className={styles.link_btn} onClick={goCancel}>
+            <P>구독 해지</P>
+
+            <Image
+              src={"/resources/icons/arrow/mypage_arrow.png"}
+              width={10} height={'auto'}
+            />
+        </FlexChild>
+      </FlexChild>
+    </VerticalFlex>
+  )
 }
