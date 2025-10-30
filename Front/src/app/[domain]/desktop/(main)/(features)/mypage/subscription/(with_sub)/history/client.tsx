@@ -8,6 +8,7 @@ import FlexChild from "@/components/flex/FlexChild";
 import { requester } from "@/shared/Requester";
 import usePageData from "@/shared/hooks/data/usePageData";
 import ListPagination from "@/components/listPagination/ListPagination";
+import useNavigate from "@/shared/hooks/useNavigate";
 
 type Row = {
   id: string;
@@ -26,7 +27,8 @@ const fmt = (v?: string) =>
 const pickRefundAmount = (cd: any): number => {
   if (!cd) return 0;
   if (typeof cd.refund === "number") return cd.refund;
-  if (cd.refund && typeof cd.refund.amount === "number") return cd.refund.amount;
+  if (cd.refund && typeof cd.refund.amount === "number")
+    return cd.refund.amount;
   if (Array.isArray(cd.cancels)) {
     const s = cd.cancels.reduce(
       (acc: number, c: any) => acc + (Number(c?.cancelAmount) || 0),
@@ -40,17 +42,10 @@ const pickRefundAmount = (cd: any): number => {
 };
 
 export function HistoryList() {
-  const PAGE_SIZE = 5;
+  const navigate = useNavigate();
+  const PAGE_SIZE = 10;
 
-  const {
-    subsHistory,
-    origin,
-    isLoading,
-    page,
-    setPage,
-    maxPage,
-    hasNext,
-  } = usePageData(
+  const { subsHistory, isLoading, page, setPage, maxPage } = usePageData(
     "subsHistory",
     (index) => ({
       activeOnly: false,
@@ -106,7 +101,8 @@ export function HistoryList() {
 
         <tbody>
           {rows.map((it) => {
-            const amount = Number(it?.payment_data?.amount ?? it?.price ?? 0) || 0;
+            const amount =
+              Number(it?.payment_data?.amount ?? it?.price ?? 0) || 0;
             const date = fmt(it?.created_at ?? it?.starts_at);
             const title = it?.name || "구독 결제";
             const refund = pickRefundAmount(it?.cancel_data);
@@ -137,6 +133,16 @@ export function HistoryList() {
                         환불금액 {refund.toLocaleString()}원
                       </P>
                     )}
+                    <FlexChild justifyContent="center" hidden={isCanceled}>
+                      <P
+                        className={styles.revoke}
+                        onClick={() =>
+                          navigate(`/mypage/subscription/${it.id}/cancel`)
+                        }
+                      >
+                        해지하기
+                      </P>
+                    </FlexChild>
                   </VerticalFlex>
                 </td>
               </tr>
