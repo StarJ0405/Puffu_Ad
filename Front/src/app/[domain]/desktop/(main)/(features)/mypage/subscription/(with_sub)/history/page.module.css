@@ -45,3 +45,17 @@
   padding: 7px 10px;
   border-radius: 50px;
 }
+
+.revoke {
+  color: #aeaeae;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.revoke:hover,
+.revoke:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
