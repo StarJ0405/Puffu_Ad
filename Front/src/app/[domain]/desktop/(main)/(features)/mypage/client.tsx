@@ -80,7 +80,20 @@ export function MainLInkTitle() {
 
 export function Profile({ initGroups }: { initGroups: Pageable }) {
   const navigate = useNavigate();
-  const { userData } = useAuth(); // 유저정보 받아오기
+  const { userData, reload } = useAuth(); // 유저정보 + 강제 리로드
+  useEffect(() => {
+    reload();
+    const onFocus = () => reload();
+    const onVisible = () => {
+      if (document.visibilityState === "visible") reload();
+    };
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, []);
   const { groups } = useData(
     "groups",
     {},
@@ -273,7 +286,7 @@ export function MypageNavi() {
       classNames: {
         title: "confirm_title",
       },
-      title: '로그아웃',
+      title: "로그아웃",
       backgroundColor: "var(--confirmModal-bg)",
       confirmText: "확인",
       cancelText: "취소",
@@ -293,7 +306,10 @@ export function MypageNavi() {
       {
         // 구독 가입 되어 있으면 안 보이기
         !isSubscribe && (
-          <FlexChild cursor="pointer" onClick={() => navigate("/mypage/subscription/subscribe")}>
+          <FlexChild
+            cursor="pointer"
+            onClick={() => navigate("/mypage/subscription/subscribe")}
+          >
             <Image
               src="/resources/images/mypage/subscription_banner.png"
               width={"100%"}

@@ -1,8 +1,6 @@
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import clsx from "clsx";
 import styles from "./page.module.css";
-
-// import { ContentBox } from "./client";
 import Button from "@/components/buttons/Button";
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
