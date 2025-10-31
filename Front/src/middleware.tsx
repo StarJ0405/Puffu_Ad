@@ -36,21 +36,26 @@ export async function middleware(req: NextRequest) {
     mains.some((main) => main?.split(".")?.[0] === subdomain)
   ) {
     const jwt = req.cookies.get(Cookies.JWT);
-    if (jwt && jwt.value) {
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACK}/users/me`,
-        {
+    if (jwt && jwt?.value) {
+      axios
+        .get(`${process.env.NEXT_PUBLIC_BACK}/users/me`, {
           headers: {
-            Authorization: jwt.value,
+            Authorization: jwt?.value,
           },
-        }
-      );
-
-      const user = response.data.user;
-      if (!user?.id && pathname !== "/" && !pathname.startsWith("/auth"))
-        return NextResponse.redirect(
-          new URL(`/auth/login?redirect_url=${pathname}`, req.url)
-        );
+        })
+        .then((response) => {
+          const user = response.data.user;
+          if (!user?.id && pathname !== "/" && !pathname.startsWith("/auth"))
+            return NextResponse.redirect(
+              new URL(`/auth/login?redirect_url=${pathname}`, req.url)
+            );
+        })
+        .catch((error) => {
+          if (pathname !== "/" && !pathname.startsWith("/auth"))
+            return NextResponse.redirect(
+              new URL(`/auth/login?redirect_url=${pathname}`, req.url)
+            );
+        });
     } else if (pathname !== "/" && !pathname.startsWith("/auth"))
       return NextResponse.redirect(
         new URL(`/auth/login?redirect_url=${pathname}`, req.url)

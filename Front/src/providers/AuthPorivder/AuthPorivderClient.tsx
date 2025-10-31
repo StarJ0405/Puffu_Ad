@@ -23,7 +23,7 @@ export default function AuthProviderClient({
   children: React.ReactNode;
   initUserData: UserData | null;
 }) {
-  const [cookies, setCookie] = useCookies([Cookies.JWT]);
+  const [cookies, setCookie,removeCookie] = useCookies([Cookies.JWT]);
   const { [Cookies.JWT]: token } = cookies;
   const {
     user: userData,
