@@ -233,12 +233,6 @@ input[type='search']:focus-visible {
 /* 컴포넌트 공통 css ----------------------- */
 
 
-/* 모달 */
-
-.confirm_title {color: #fff; border-bottom: 1px solid #797979;}
-
-/* 모달 끝 */
-
 
 
 .searchInput_Box {

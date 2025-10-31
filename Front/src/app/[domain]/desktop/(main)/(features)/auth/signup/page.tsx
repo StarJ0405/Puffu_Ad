@@ -585,11 +585,11 @@ function SMS({ setStep, handleUpdate }: StepProps) {
                   className={styles.icon_filter}
                 />
               </FlexChild>
-              <FlexChild gap={8}>
+              <FlexChild gap={8} >
                 <Input
                   id="gender"
                   className={"web_input"}
-                  width={"100%"}
+                  width={55}
                   onFilter={(value: any) =>
                     value.replace(numberOnlyFormat.exp, "")
                   }

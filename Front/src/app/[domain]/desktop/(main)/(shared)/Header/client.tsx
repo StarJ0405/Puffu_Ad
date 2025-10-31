@@ -523,13 +523,7 @@ export function Auth() {
   const logoutModal = () => {
     // 로그아웃
     NiceModal.show(ConfirmModal, {
-      message: (
-        <FlexChild justifyContent="center" marginBottom={30}>
-          <P color="#fff" fontSize={20} weight={600}>
-            로그아웃 하시겠습니까?
-          </P>
-        </FlexChild>
-      ),
+      message: '로그아웃 하시겠습니까?',
       title: '로그아웃',
       classNames: {
         title: 'confirm_title',

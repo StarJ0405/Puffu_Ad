@@ -53,6 +53,7 @@ const DeliveryListModal = forwardRef<DeliveryListRef, DeliveryListProps>(
     const deliveryAddEditModal = (addressData?: AddressDataFrame) => {
       NiceModal.show(ConfirmModal, {
         message: <DeliveryAddEdit ref={formRef} address={addressData} />,
+        width: '100%',
         confirmText: "저장",
         cancelText: "닫기",
         preventable: true,
@@ -98,6 +99,7 @@ const DeliveryListModal = forwardRef<DeliveryListRef, DeliveryListProps>(
     const Content =
       addresses.length > 0 ? (
         <VerticalFlex className={styles.delivery_list}>
+          <P color="#fff">1211</P>
           {addresses.map((addr, i) => (
             <VerticalFlex gap={10} className={styles.container} key={addr.id}>
               <HorizontalFlex key={i} className={styles.item}>
@@ -162,9 +164,9 @@ const DeliveryListModal = forwardRef<DeliveryListRef, DeliveryListProps>(
       );
 
     return (
-      <VerticalFlex className="modal_edit_info">
+      <VerticalFlex>
         <FlexChild className="title" justifyContent="center">
-          <P size={!isMobile ? 25 : 20} weight={600}>
+          <P size={!isMobile ? 25 : 20} weight={600} color="#fff">
             배송지 목록
           </P>
         </FlexChild>
@@ -179,7 +181,7 @@ const DeliveryListModal = forwardRef<DeliveryListRef, DeliveryListProps>(
         ) : (
           Content
         )}
-        <Button onClick={() => deliveryAddEditModal()}>배송지 추가</Button>
+        <Button className={styles.add_btn} onClick={() => deliveryAddEditModal()}>배송지 추가</Button>
       </VerticalFlex>
     );
   }

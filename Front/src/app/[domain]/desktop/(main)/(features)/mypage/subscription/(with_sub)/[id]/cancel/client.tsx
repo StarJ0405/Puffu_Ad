@@ -128,18 +128,14 @@ export function ConfirmBtn({
 
     NiceModal.show(ConfirmModal, {
       message: (
-        <FlexChild justifyContent="center" marginBottom={20}>
+        <FlexChild justifyContent="center" paddingTop={20} marginBottom={20}>
           <P color="#fff" fontSize={16} weight={600} textAlign="center" lineHeight={1.4}>
             활성 구독을 해지하면, <br /> 
             예약된 다음 구독도 함께 취소·환불됩니다.
           </P>
         </FlexChild>
       ),
-      classNames: {
-        title: "confirm_title",
-      },
       title: "구독 해지",
-      backgroundColor: "var(--confirmModal-bg)",
       confirmText: "해지하기",
       cancelText: "취소",
       withCloseButton: true,
@@ -153,7 +149,7 @@ export function ConfirmBtn({
 
             NiceModal.show(ConfirmModal, {
               message: (
-                <VerticalFlex gap={20} justifyContent="center" marginBottom={20}>
+                <VerticalFlex gap={20} paddingTop={20} justifyContent="center" marginBottom={20}>
                   <P color="#ccc" fontSize={16} weight={600}>
                     환불 예상액 {refund.toLocaleString("ko-KR")}원
                   </P>
@@ -162,11 +158,7 @@ export function ConfirmBtn({
                   </P>
                 </VerticalFlex>
               ),
-              classNames: {
-                title: "confirm_title",
-              },
               title: "구독 해지",
-              backgroundColor: "var(--confirmModal-bg)",
               confirmText: "확인",
               cancelText: "취소",
               withCloseButton: true,
@@ -181,18 +173,14 @@ export function ConfirmBtn({
                       : 0;
                     NiceModal.show(ConfirmModal, {
                       message: (
-                        <FlexChild justifyContent="center" marginBottom={20}>
+                        <FlexChild justifyContent="center" paddingTop={20} marginBottom={20}>
                           <P color="#fff" fontSize={16} weight={600} textAlign="center" lineHeight={1.4}>
                             해지가 완료되었습니다. <br /> 
                             환불합계 {total.toLocaleString("ko-KR")}원{cnt > 1 ? ` / ${cnt}건` : ""}
                           </P>
                         </FlexChild>
                       ),
-                      classNames: {
-                        title: "confirm_title",
-                      },
                       title: "구독 해지",
-                      backgroundColor: "var(--confirmModal-bg)",
                       confirmText: "확인",
                       clickOutsideToClose: false,
                       // cancelText: "취소",

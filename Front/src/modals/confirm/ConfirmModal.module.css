@@ -40,3 +40,7 @@
   font-size: 24px;
   line-height: 0;
 }
+
+.normal_title {
+  color: #fff; border-bottom: 1px solid #797979;
+}

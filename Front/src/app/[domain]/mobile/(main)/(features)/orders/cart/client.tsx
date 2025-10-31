@@ -338,6 +338,8 @@ export function CartWrap() {
   const deliveryListModal = () => {
     NiceModal.show(ConfirmModal, {
       message: <DeliveryListModal selectable ref={listRef} address={address} />,
+      width: '100%',
+      // height: '100lvh',
       confirmText: "저장",
       cancelText: "닫기",
       // onclick: setPaswwordStep(1),

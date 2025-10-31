@@ -33,12 +33,12 @@
 }
 
 .delivery_list .content .address {
-   color: #121212; font-weight: 600;
+   color: #fff; font-weight: 600;
    line-height: 1.3;
 }
 
 .delivery_list .content .name {font-size: 13px; gap: 5px;}
-.delivery_list .content .name span {color: #797979;}
+.delivery_list .content .name span {color: #ddd;}
 .delivery_list .content .name p {
    color: #797979 !important; font-weight: 500 !important;
 }
@@ -47,11 +47,15 @@
 .delivery_list .edit_btn button {
    padding: 3px 6px;
    background: transparent;
-   border: 1px solid #727272;
-   color: #727272;
+   border: 1px solid #fff;
+   color: #fff;
+   font-size: 13px;
 }
 
 .delivery_list .edit_btn button:hover {
-   border-color: #111;
-   color: #111;
+   background-color: #050505;
+}
+
+.add_btn {
+   background: var(--main-color2);
 }

@@ -344,18 +344,8 @@ export function MypageNavi() {
     // 로그아웃
 
     NiceModal.show(ConfirmModal, {
-      message: (
-        <FlexChild justifyContent="center" padding={"30px 0 10px"}>
-          <P color="#fff" fontSize={16} weight={600}>
-            로그아웃 하시겠습니까?
-          </P>
-        </FlexChild>
-      ),
+      message: '로그아웃 하시겠습니까?',
       title: "로그아웃",
-      classNames: {
-        title: "confirm_title",
-      },
-      backgroundColor: "var(--confirmModal-bg)",
       confirmText: "확인",
       cancelText: "취소",
       withCloseButton: true,
@@ -478,26 +468,27 @@ export function EditINfo({
   return (
     <VerticalFlex className="modal_edit_info" gap={50}>
       <FlexChild className="title" justifyContent="center">
-        <P size={25} weight={600}>
+        <P size={25} weight={600} color="#fff">
           개인정보 수정
         </P>
       </FlexChild>
 
       <VerticalFlex alignItems="start" gap={30}>
         <VerticalFlex className={"input_box"} alignItems="start" gap={10}>
-          <P size={16} color="#333" weight={600}>
+          <P size={16} color="#aeaeae" weight={600}>
             아이디
           </P>
-          <P size={16} color="#797979">
+          <P size={16} color="#fff">
             {userData?.username ?? "mynameistony"}
           </P>
         </VerticalFlex>
 
         <VerticalFlex className={"input_box"} alignItems="start" gap={10}>
-          <P size={16} color="#333" weight={600}>
+          <P size={16} color="#aeaeae" weight={600}>
             비밀번호
           </P>
           <Input
+            className="web_input"
             type="password"
             width={"100%"}
             placeHolder="비밀번호를 입력하세요."

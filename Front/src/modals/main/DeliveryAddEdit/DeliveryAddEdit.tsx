@@ -115,9 +115,9 @@ const DeliveryAddEdit = forwardRef<DeliveryAddEditRef, DeliveryAddEditProps>(
     );
 
     return (
-      <VerticalFlex className="modal_edit_info">
-        <FlexChild className="title" justifyContent="center">
-          <P size={25} weight={600}>
+      <VerticalFlex>
+        <FlexChild className="title" justifyContent="center" marginBottom={30}>
+          <P size={25} weight={600} color="#fff">
             {address?.id ? "배송지 수정" : "배송지 추가"}
           </P>
         </FlexChild>
@@ -126,10 +126,11 @@ const DeliveryAddEdit = forwardRef<DeliveryAddEditRef, DeliveryAddEditProps>(
         <FlexChild>
           <VerticalFlex alignItems="start" gap={30}>
             <VerticalFlex className={"input_box"} alignItems="start" gap={10}>
-              <P size={16} color="#333" weight={600}>
+              <P size={16} color="#ddd" weight={600}>
                 이름
               </P>
               <Input
+                className='web_input'
                 type="text"
                 width={"100%"}
                 placeHolder="받은 분의 이름을 입력해 주세요."
@@ -140,10 +141,11 @@ const DeliveryAddEdit = forwardRef<DeliveryAddEditRef, DeliveryAddEditProps>(
             </VerticalFlex>
 
             <VerticalFlex className={"input_box"} alignItems="start" gap={10}>
-              <P size={16} color="#333" weight={600}>
+              <P size={16} color="#ddd" weight={600}>
                 휴대폰번호
               </P>
               <Input
+                className='web_input'
                 type="tel" // 'tel' 타입 사용
                 width={"100%"}
                 placeHolder="휴대폰 번호를 입력해 주세요."
@@ -154,13 +156,14 @@ const DeliveryAddEdit = forwardRef<DeliveryAddEditRef, DeliveryAddEditProps>(
               />
             </VerticalFlex>
 
-            <VerticalFlex className={"input_box"} alignItems="start" gap={10}>
-              <P size={16} color="#333" weight={600}>
+            <VerticalFlex className={"input_box"} alignItems="start" gap={10} paddingBottom={30}>
+              <P size={16} color="#ddd" weight={600}>
                 주소
               </P>
               <VerticalFlex gap={10}>
                 <FlexChild gap={10}>
                   <Input
+                    className='web_input'
                     type="text"
                     width={"100%"}
                     placeHolder="우편번호"
@@ -182,6 +185,7 @@ const DeliveryAddEdit = forwardRef<DeliveryAddEditRef, DeliveryAddEditProps>(
                 </FlexChild>
                 <FlexChild>
                   <Input
+                    className='web_input'
                     type="text"
                     width={"100%"}
                     placeHolder="주소"
@@ -193,6 +197,7 @@ const DeliveryAddEdit = forwardRef<DeliveryAddEditRef, DeliveryAddEditProps>(
                 </FlexChild>
                 <FlexChild>
                   <Input
+                    className='web_input'
                     type="text"
                     width={"100%"}
                     placeHolder="상세주소"
@@ -220,7 +225,7 @@ const DeliveryAddEdit = forwardRef<DeliveryAddEditRef, DeliveryAddEditProps>(
                   }
                   style={{ marginRight: "5px" }}
                 />
-                <P size={14} color="#333">
+                <P size={14} color="#fff">
                   기본 배송지로 설정
                 </P>
               </label>

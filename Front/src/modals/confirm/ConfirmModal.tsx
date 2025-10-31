@@ -66,6 +66,8 @@ const ConfirmModal = NiceModal.create(
       modal.current.close();
     };
 
+    const classCheck = classNames?.title ? classNames?.title : styles.normal_title;
+
     return (
       <ModalBase
         zIndex={10055}
@@ -80,7 +82,8 @@ const ConfirmModal = NiceModal.create(
         buttonText={buttonText}
         borderRadius={6}
         slideUp={slideUp}
-        backgroundColor={backgroundColor}
+        backgroundColor={'var(--confirmModal-bg)'}
+        className={styles.confirmModal}
       >
         {(title || withCloseButton) && (
           <FlexChild
@@ -90,7 +93,7 @@ const ConfirmModal = NiceModal.create(
             width={"calc(100% - 30px)"}
           >
             <FlexChild justifyContent="center" position="relative">
-              <FlexChild className={classNames?.title} justifyContent="center" padding={'0 15px 10px'}>
+              <FlexChild className={title ? classCheck : ''} justifyContent="center" padding={'0 15px 10px'}>
                 {typeof title === "string" ? <P>{title}</P> : <>{title}</>}
               </FlexChild>
               {withCloseButton && (
@@ -109,7 +112,7 @@ const ConfirmModal = NiceModal.create(
         )}
 
         <FlexChild
-          padding={!isMobile ? "70px 15px 24px" : "40px 10px 20px"}
+          padding={!isMobile ? "50px 15px 24px" : "40px 10px 20px"}
           height={"100%"}
           position="relative"
         >
@@ -126,15 +129,11 @@ const ConfirmModal = NiceModal.create(
               className={classNames?.message}
             >
               {typeof message === "string" ? (
-                <P
-                  width="100%"
-                  textAlign="center"
-                  size={isMobile ? 16 : 18}
-                  color={"#494949"}
-                  weight={600}
-                >
-                  {message}
-                </P>
+                <FlexChild justifyContent="center" padding={!isMobile ? '20px 15px 0' : '30px 15px 0'} marginBottom={!isMobile ? 30 : 15}>
+                   <P color="#fff" fontSize={!isMobile ? 18 : 16} textAlign="center" weight={600} lineHeight={1.4}>
+                     {message}
+                   </P>
+                 </FlexChild>
               ) : (
                 <>{message}</>
               )}
