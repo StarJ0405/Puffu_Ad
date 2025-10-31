@@ -2,12 +2,11 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import clsx from "clsx";
 import styles from "./page.module.css";
 
-import { ContentBox, CheckConfirm } from "./client";
-import { requester } from "@/shared/Requester";
 import FlexChild from "@/components/flex/FlexChild";
-import P from "@/components/P/P";
 import Image from "@/components/Image/Image";
+import P from "@/components/P/P";
 import Span from "@/components/span/Span";
+import { CheckConfirm, ContentBox } from "./client";
 
 export default async function () {
   return (
