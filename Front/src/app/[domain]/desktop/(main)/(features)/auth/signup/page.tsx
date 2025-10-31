@@ -860,16 +860,18 @@ function SMS({ setStep, handleUpdate }: StepProps) {
                               clickOutsideToClose: true,
                               width: 403,
                               message: (
-                                <VerticalFlex>
+                                <VerticalFlex padding={'30px 0'}>
                                   <P
                                     className={styles.duplicateTitle}
                                     paddingBottom={17}
+                                    color="#aeaeae"
                                   >
                                     이미 가입된 계정이 있습니다
                                   </P>
                                   <P
                                     className={styles.duplicateDescription}
                                     paddingBottom={23}
+                                    color="#aeaeae"
                                   >
                                     아래 아이디로 로그인해주세요
                                   </P>
@@ -877,7 +879,7 @@ function SMS({ setStep, handleUpdate }: StepProps) {
                                     justifyContent="center"
                                     className={styles.duplicateInfoWrapper}
                                   >
-                                    <P>
+                                    <P color="#fff" size={20}>
                                       <Span
                                         className={styles.duplicateInfoLabel}
                                         paddingRight={"2em"}
@@ -893,6 +895,7 @@ function SMS({ setStep, handleUpdate }: StepProps) {
                                   </FlexChild>
                                 </VerticalFlex>
                               ),
+                              title: '알림',
                               confirmText: "기존 계정으로 로그인하기",
                               onConfirm: () => {
                                 navigate(`/login?id=${username}`);

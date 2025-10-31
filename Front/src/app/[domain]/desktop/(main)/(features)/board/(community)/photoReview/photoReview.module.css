@@ -119,3 +119,7 @@
 .more_btn:active {
   background: #b84474;
 }
+
+.sh_select {
+   padding: 14px 15px !important;
+}

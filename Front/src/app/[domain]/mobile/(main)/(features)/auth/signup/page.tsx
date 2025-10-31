@@ -50,6 +50,7 @@ export default function () {
 
   const [percent, setPercent] = useState<string>("25%");
   const data = useRef<any>({});
+
   const handleUpdate = (value: UpdateValue[] | UpdateValue) => {
     if (value) {
       (Array.isArray(value) ? value : [value]).forEach((v) => {
@@ -199,7 +200,10 @@ function Agree({ setStep }: { setStep: Dispatch<SetStateAction<string>> }) {
           <Button
             className={styles.next_btn}
             disabled={agrees.length < 2}
-            onClick={() => setStep("certification")}
+            onClick={() => {
+              setStep("certification");
+               window.scrollTo(0, 0);
+            }}
           >
             다음
           </Button>
@@ -442,6 +446,7 @@ function PASS({ setStep, handleUpdate }: StepProps) {
                     });
                   }
                 });
+                window.scrollTo(0, 0);
               }}
               disabled={
                 !mobileNoFormat.exp.test(phone) ||
@@ -839,18 +844,21 @@ function SMS({ setStep, handleUpdate }: StepProps) {
                           if (exist) {
                             NiceModal.show("confirm", {
                               clickOutsideToClose: true,
-                              width: 403,
+                              width: '80%',
+                              maxWidth: '400px',
                               message: (
-                                <VerticalFlex>
+                                <VerticalFlex padding={'30px 0'}>
                                   <P
                                     className={styles.duplicateTitle}
                                     paddingBottom={17}
+                                    color="#aeaeae"
                                   >
                                     이미 가입된 계정이 있습니다
                                   </P>
                                   <P
                                     className={styles.duplicateDescription}
                                     paddingBottom={23}
+                                    color="#aeaeae"
                                   >
                                     아래 아이디로 로그인해주세요
                                   </P>
@@ -858,7 +866,7 @@ function SMS({ setStep, handleUpdate }: StepProps) {
                                     justifyContent="center"
                                     className={styles.duplicateInfoWrapper}
                                   >
-                                    <P>
+                                    <P color="#fff" size={18}>
                                       <Span
                                         className={styles.duplicateInfoLabel}
                                         paddingRight={"2em"}
@@ -874,6 +882,7 @@ function SMS({ setStep, handleUpdate }: StepProps) {
                                   </FlexChild>
                                 </VerticalFlex>
                               ),
+                              title: '알림',
                               confirmText: "기존 계정으로 로그인하기",
                               onConfirm: () => {
                                 navigate(`/login?id=${username}`);
@@ -893,6 +902,7 @@ function SMS({ setStep, handleUpdate }: StepProps) {
                     }
                   }
                 );
+                 window.scrollTo(0, 0);
               }}
               disabled={!code || phoneApprove === "ready"}
             >
@@ -931,6 +941,7 @@ function PassReady({ setStep, data }: StepProps) {
               이전
             </Button>
           </FlexChild>
+          
           <FlexChild>
             <Button
               width={"100%"}
@@ -965,12 +976,14 @@ function PassReady({ setStep, data }: StepProps) {
                                   <P
                                     className={styles.duplicateTitle}
                                     paddingBottom={17}
+                                    color="#fff"
                                   >
                                     이미 가입된 계정이 있습니다
                                   </P>
                                   <P
                                     className={styles.duplicateDescription}
                                     paddingBottom={23}
+                                    color="#fff"
                                   >
                                     아래 아이디로 로그인해주세요
                                   </P>
@@ -1449,6 +1462,7 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
                     }
                   }
                 );
+              window.scrollTo(0, 0);
             }}
           >
             다음
