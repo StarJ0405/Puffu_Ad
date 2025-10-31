@@ -278,11 +278,7 @@ export function MypageNavi() {
     // 로그아웃
     NiceModal.show(ConfirmModal, {
       message: '로그아웃 하시겠습니까?',
-      classNames: {
-        title: "confirm_title",
-      },
       title: "로그아웃",
-      backgroundColor: "var(--confirmModal-bg)",
       confirmText: "확인",
       cancelText: "취소",
       withCloseButton: true,
