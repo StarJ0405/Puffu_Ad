@@ -54,7 +54,7 @@ export function ClientTxt() {
               sessionStorage.removeItem("SUB_SUCCESS_TOKEN");
               // console.log("[SUB/SUCCESS] Token auto-removed after 10s");
             } catch {}
-          }, 10000);
+          }, 60000);
         }
       } catch (err) {
         console.error("[SUB/SUCCESS] Token parse error:", err);
