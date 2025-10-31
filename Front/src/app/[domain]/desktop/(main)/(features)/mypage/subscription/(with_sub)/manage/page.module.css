@@ -36,6 +36,11 @@
   font-size: 18px;
   color: #fff;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+.link_btn:hover {
+  background: #050505;
 }
 
 
