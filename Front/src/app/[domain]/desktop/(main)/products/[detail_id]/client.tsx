@@ -161,7 +161,7 @@ export function ProductWrapper({
 
     const validSelected = selected.filter((s) => {
       const v = product.variants.find((pv: VariantData) => pv.id === s.variant_id);
-      return v && v.stack > 0 && v.buyable;
+      return v && v.stack > 0 && v.buyable && s.quantity > 0;
     });
     if (!selected.some((f) => f.quantity > 0))
       return toast({ message: "상품을 최소 1개 이상 담아주세요" });
@@ -177,10 +177,16 @@ export function ProductWrapper({
         // setSelected([
         //   ...selected.map((s) => ({ variant_id: s.variant_id, quantity: 1 })),
         // ]);
+        // setSelected(
+        //   product.variants.map((v: VariantData) => ({
+        //     variant_id: v.id,
+        //     quantity: 0,
+        //   }))
+        // );
         setSelected(
-          product.variants.map((v: VariantData) => ({
-            variant_id: v.id,
-            quantity: 0,
+          validSelected.map((v) => ({
+            variant_id: v.variant_id,
+            quantity: 1,
           }))
         );
       } else {
@@ -291,6 +297,7 @@ export function DetailFrame({
       <VerticalFlex className={styles.detail_infoBox} alignItems="start">
         <FlexChild className={styles.brand}>
           <Span>{product?.brand.name}</Span>
+          {selected.length}개
         </FlexChild>
 
         <FlexChild className={styles.detail_title}>

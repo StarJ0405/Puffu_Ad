@@ -486,6 +486,7 @@ export function CartWrap() {
         <CheckboxGroup
           name="carts"
           initialValues={selected}
+          values={selected}
           onChange={setSelected}
         >
           <VerticalFlex className={styles.product_list}>

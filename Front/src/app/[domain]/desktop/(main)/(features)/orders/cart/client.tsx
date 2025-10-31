@@ -486,12 +486,15 @@ export function CartWrap() {
     });
   }
 
+
+
   return (
     <HorizontalFlex className={styles.cart_wrap}>
       <VerticalFlex className={styles.cart_data}>
         <CheckboxGroup
           name="carts"
           initialValues={selected}
+          values={selected}
           onChange={setSelected}
         >
           <VerticalFlex className={styles.product_wrapper}>
