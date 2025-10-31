@@ -13,6 +13,7 @@ import styles from "./page.module.css";
 import { toast } from "@/shared/utils/Functions";
 import { requester } from "@/shared/Requester";
 import { useEffect, useMemo, useState } from "react";
+import LoadingPageChange from "@/components/loading/LoadingPageChange";
 
 type SubscribeRow = {
   id: string;
@@ -113,6 +114,7 @@ export function ConfirmBtn({
 }) {
   const navigate = useNavigate();
   const subId = initSubscribe?.id ?? null;
+  const [ShowLoadingComp, setShowLoadingComp] = useState(false);
 
   const openCancelFlow = () => {
     if (!subId) {
@@ -122,13 +124,18 @@ export function ConfirmBtn({
 
     NiceModal.show(ConfirmModal, {
       message: (
-        <FlexChild justifyContent="center" marginBottom={30}>
-          <P color="#333" fontSize={20} weight={600}>
-            활성 구독을 해지하면, 예약된 다음 구독도 함께 취소·환불됩니다.
-            진행할까요?
+        <FlexChild justifyContent="center" paddingTop={20} marginBottom={20}>
+          <P color="#fff" fontSize={15} weight={600} textAlign="center" lineHeight={1.4}>
+            활성 구독을 해지하면, <br /> 
+            예약된 다음 구독도 함께 취소·환불됩니다.
           </P>
         </FlexChild>
       ),
+      classNames: {
+        title: "confirm_title",
+      },
+      title: "구독 해지",
+      backgroundColor: "var(--confirmModal-bg)",
       confirmText: "해지하기",
       cancelText: "취소",
       withCloseButton: true,
@@ -142,41 +149,72 @@ export function ConfirmBtn({
 
             NiceModal.show(ConfirmModal, {
               message: (
-                <FlexChild justifyContent="center" marginBottom={20}>
-                  <P color="#333" fontSize={18} weight={600}>
+                <VerticalFlex gap={20} justifyContent="center" paddingTop={20} marginBottom={20}>
+                  <P color="#ccc" fontSize={14} weight={600}>
                     환불 예상액 {refund.toLocaleString("ko-KR")}원
                   </P>
-                  <P color="#666" fontSize={14}>
+                  <P color="#fff" fontSize={16}>
                     해지를 진행하시겠습니까?
                   </P>
-                </FlexChild>
+                </VerticalFlex>
               ),
+              classNames: {
+                title: "confirm_title",
+              },
+              title: "구독 해지",
+              backgroundColor: "var(--confirmModal-bg)",
               confirmText: "확인",
               cancelText: "취소",
               withCloseButton: true,
               preventable: true,
               onConfirm: async () => {
-                try {
-                  const r = await requester.postSubscribeRefund(subId, {}); // 본결제 + 다음 예약까지 일괄 처리
-                  const total = Number(r?.content?.total_refund ?? 0);
-                  const cnt = Array.isArray(r?.content?.refunds)
-                    ? r.content.refunds.length
-                    : 0;
-                  toast({
-                    message: `해지 완료. 환불합계 ${total.toLocaleString(
-                      "ko-KR"
-                    )}원${cnt > 1 ? ` / ${cnt}건` : ""}`,
-                  });
-                  setTimeout(() => {
-                    navigate(`/mypage?ts=${Date.now()}`, { type: "replace" });
-                  }, 3000);
-                  return true;
-                } catch (e: any) {
-                  toast({
-                    message: e?.error || "처리 중 오류가 발생했습니다.",
-                  });
-                  return false;
-                }
+                setTimeout(async () => {
+                  try {
+                    const r = await requester.postSubscribeRefund(subId, {}); // 본결제 + 다음 예약까지 일괄 처리
+                    const total = Number(r?.content?.total_refund ?? 0);
+                    const cnt = Array.isArray(r?.content?.refunds)
+                      ? r.content.refunds.length
+                      : 0;
+                    NiceModal.show(ConfirmModal, {
+                      message: (
+                        <FlexChild justifyContent="center" paddingTop={20} marginBottom={20}>
+                          <P color="#fff" fontSize={16} weight={600} textAlign="center" lineHeight={1.4}>
+                            해지가 완료되었습니다. <br /> 
+                            환불합계 {total.toLocaleString("ko-KR")}원{cnt > 1 ? ` / ${cnt}건` : ""}
+                          </P>
+                        </FlexChild>
+                      ),
+                      classNames: {
+                        title: "confirm_title",
+                      },
+                      title: "구독 해지",
+                      backgroundColor: "var(--confirmModal-bg)",
+                      confirmText: "확인",
+                      clickOutsideToClose: false,
+                      // cancelText: "취소",
+                      // withCloseButton: true,
+                      preventable: false,
+                      onConfirm: async () => {
+                        setShowLoadingComp(true);
+                        navigate(`/`, { type: "replace" });
+                      }
+                    });
+                    // toast({
+                    //   message: `해지 완료. 환불합계 ${total.toLocaleString(
+                    //     "ko-KR"
+                    //   )}원${cnt > 1 ? ` / ${cnt}건` : ""}`,
+                    // });
+                    // setTimeout(() => {
+                    //   navigate(`/mypage?ts=${Date.now()}`, { type: "replace" });
+                    // }, 3000);
+                    return true;
+                  } catch (e: any) {
+                    toast({
+                      message: e?.error || "처리 중 오류가 발생했습니다.",
+                    });
+                    return false;
+                  }
+                }, 0);
               },
             });
           } catch (e: any) {
@@ -190,16 +228,20 @@ export function ConfirmBtn({
   };
 
   return (
-    <VerticalFlex className={styles.confirm_box}>
-      <FlexChild
-        onClick={() => navigate("/mypage/subscription/manage")}
-        className={styles.continue_btn}
-      >
-        <Button>회원권 계속 유지하기</Button>
-      </FlexChild>
-      <FlexChild className={styles.delete_btn} onClick={openCancelFlow}>
-        <Button>회원권 해지하기</Button>
-      </FlexChild>
-    </VerticalFlex>
+    <>
+      <VerticalFlex className={styles.confirm_box}>
+        <FlexChild
+          onClick={() => navigate("/mypage/subscription/manage")}
+          className={styles.continue_btn}
+        >
+          <Button>회원권 계속 유지하기</Button>
+        </FlexChild>
+        <FlexChild className={styles.delete_btn} onClick={openCancelFlow}>
+          <Button>회원권 해지하기</Button>
+        </FlexChild>
+      </VerticalFlex>
+
+      {ShowLoadingComp && <LoadingPageChange />}
+    </>
   );
 }

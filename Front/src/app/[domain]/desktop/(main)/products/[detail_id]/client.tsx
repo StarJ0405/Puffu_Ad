@@ -177,14 +177,7 @@ export function ProductWrapper({
         // setSelected([
         //   ...selected.map((s) => ({ variant_id: s.variant_id, quantity: 1 })),
         // ]);
-        // setSelected(
-        //   product.variants.map((v: VariantData) => ({
-        //     variant_id: v.id,
-        //     quantity: 0,
-        //   }))
-        // );
-        setSelected(
-          validSelected.map((v) => ({
+        setSelected(validSelected.map((v) => ({
             variant_id: v.variant_id,
             quantity: 1,
           }))

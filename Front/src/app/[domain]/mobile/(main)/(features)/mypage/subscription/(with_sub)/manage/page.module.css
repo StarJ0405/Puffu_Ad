@@ -12,7 +12,7 @@
 
 .list {gap: 15px;}
 
-.list .link_btn a {
+.list .link_btn {
   padding: 16px 20px;
   background: #131313;
   border-radius: 10px;

@@ -15,6 +15,7 @@ import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
+import LoadingPageChange from "@/components/loading/LoadingPageChange";
 
 export function ContentBox({}: {}) {
   const [plan, setPlan] = useState<SubscribeData | null>(null);
@@ -46,13 +47,13 @@ export function ContentBox({}: {}) {
               height={"auto"}
             />
             <P>
-              전제품 <Span>10% 상시 할인</Span>
+              전제품 <Span>{plan?.percent}% 상시 할인</Span>
             </P>
           </FlexChild>
 
           <P className={styles.text1}>
             푸푸토이의 모든 제품이 <br />
-            언제나 10% 할인가로 적용됩니다.
+            언제나 {plan?.percent}% 할인가로 적용됩니다.
           </P>
         </VerticalFlex>
 
@@ -64,12 +65,12 @@ export function ContentBox({}: {}) {
               height={"auto"}
             />
             <P>
-              매월 프리머니 <Span>10,000원</Span> 쿠폰 지급
+              매월 프리머니 <Span>{(plan?.value || 0).toLocaleString()}원</Span> 쿠폰 지급
             </P>
           </FlexChild>
 
           <P className={styles.text1}>
-            매달 사용 가능한 1만원 <br />
+            매달 사용 가능한 {(plan?.value || 0).toLocaleString()}원 <br />
             프리머니 쿠폰 상시 지급
           </P>
         </VerticalFlex>
@@ -120,6 +121,8 @@ export function CheckConfirm() {
       attributeFilter: ["style"],
     });
   }
+
+  const [ShowLoadingComp, setShowLoadingComp] = useState(false);
 
   // === 결제 처리 ===
   const handlePaymentSubmit = async () => {
@@ -219,14 +222,14 @@ export function CheckConfirm() {
                     Date.now() +
                       Number(latestPlan?.metadata?.periodDays ?? 365) * 86400000
                   );
-
+                  setShowLoadingComp(true);
                   await requester.createSubscribe({
                     store_id: storeId,
                     name: latestPlan?.name,
                     ends_at: endDate.toISOString(),
                     payment: payMeta,
                   });
-
+                  
                   navigate("/mypage/subscription/success", { type: "replace" });
                 } else {
                   const msg =
@@ -305,6 +308,8 @@ export function CheckConfirm() {
           </Button>
         </FlexChild>
       </FlexChild>
+
+      {ShowLoadingComp && <LoadingPageChange />}
     </>
   );
 }

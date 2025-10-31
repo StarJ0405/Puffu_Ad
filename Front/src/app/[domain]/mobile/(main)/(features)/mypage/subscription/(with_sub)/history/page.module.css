@@ -61,15 +61,19 @@
 }
 
 .revoke {
-  color: #aeaeae;
-  font-size: 14px;
+  color: #ddd;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;
+  background: #111;
+  width: auto;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  transition: all 0.1s;
 }
 
-.revoke:hover,
-.revoke:focus-visible {
-  text-decoration: underline;
-  text-underline-offset: 2px;
+.revoke:active {
+  filter: var(--mob-filter-active);
 }

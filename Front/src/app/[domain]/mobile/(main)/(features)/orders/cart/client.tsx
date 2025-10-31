@@ -38,6 +38,7 @@ import clsx from "clsx";
 import _ from "lodash";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
+import LoadingPageChange from "@/components/loading/LoadingPageChange";
 
 export function CartWrap() {
   const { userData } = useAuth();
@@ -479,6 +480,8 @@ export function CartWrap() {
       attributeFilter: ["style"],
     });
   }
+
+  const [ShowLoadingComp, setShowLoadingComp] = useState(false);
 
   return (
     <VerticalFlex className={styles.cart_wrap}>
@@ -1086,6 +1089,7 @@ export function CartWrap() {
                       JSON.stringify(content)
                     );
                     reload();
+                    setShowLoadingComp(true);
                     navigate("/orders/complete", {
                       type: "replace",
                     });
@@ -1121,6 +1125,7 @@ export function CartWrap() {
                           JSON.stringify(content)
                         );
                         reload();
+                        setShowLoadingComp(true);
                         navigate("/orders/complete", {
                           type: "replace",
                         });
@@ -1202,6 +1207,7 @@ export function CartWrap() {
                                           JSON.stringify(content)
                                         );
                                         reload();
+                                        setShowLoadingComp(true);
                                         navigate("/orders/complete", {
                                           type: "replace",
                                         });
@@ -1300,6 +1306,7 @@ export function CartWrap() {
                                         JSON.stringify(content)
                                       );
                                       reload();
+                                      setShowLoadingComp(true);
                                       navigate("/orders/complete", {
                                         type: "replace",
                                       });
@@ -1355,6 +1362,8 @@ export function CartWrap() {
           </Button>
         </VerticalFlex>
       </FlexChild>
+
+      {ShowLoadingComp && <LoadingPageChange />}
     </VerticalFlex>
   );
 }
