@@ -42,7 +42,11 @@ export function ContentBox({}: {}) {
 
       <VerticalFlex className={styles.item_content}>
         <VerticalFlex className={styles.unit}>
-          <FlexChild gap={5} justifyContent="center" className={styles.unit_title}>
+          <FlexChild
+            gap={5}
+            justifyContent="center"
+            className={styles.unit_title}
+          >
             <Image
               src={"/resources/images/mypage/subscription_cancel_sale_pc.png"}
               width={40}
@@ -60,7 +64,9 @@ export function ContentBox({}: {}) {
         </VerticalFlex>
 
         <FlexChild justifyContent="center">
-          <P size={45} lineHeight={1} fontWeight={300}>+</P>
+          <P size={45} lineHeight={1} fontWeight={300}>
+            +
+          </P>
         </FlexChild>
 
         <VerticalFlex className={styles.unit}>
@@ -71,7 +77,11 @@ export function ContentBox({}: {}) {
               height={"auto"}
             />
             <P className={styles.unit_title}>
-              매월 프리머니 <Span verticalAlign={'baseline'}>{(plan?.value || 0).toLocaleString()}원</Span> 쿠폰 지급
+              매월 프리머니{" "}
+              <Span verticalAlign={"baseline"}>
+                {(plan?.value || 0).toLocaleString()}원
+              </Span>{" "}
+              쿠폰 지급
             </P>
           </FlexChild>
 
@@ -102,13 +112,22 @@ export function CheckConfirm() {
   }, [storeId]);
 
   const price = plan?.price;
+  const amount = Number(price ?? 0);
 
   const showModal = (type: "term_check" | "privacy_check") => {
-    NiceModal.show("AgreeContent", { type, onlyView: true, width: '500px', height: '70vh'});
+    NiceModal.show("AgreeContent", {
+      type,
+      onlyView: true,
+      width: "500px",
+      height: "70vh",
+    });
   };
 
   // 결제창 취소했을때 hidden 막는 용도
-  if (typeof window !== "undefined" && typeof MutationObserver !== "undefined") {
+  if (
+    typeof window !== "undefined" &&
+    typeof MutationObserver !== "undefined"
+  ) {
     const observer = new MutationObserver(() => {
       const html = document.documentElement;
       const body = document.body;
@@ -132,6 +151,10 @@ export function CheckConfirm() {
   const handlePaymentSubmit = async () => {
     if (loading) return;
     setLoading(true);
+    if (!storeId || !plan || amount <= 0) {
+      toast({ message: "결제 정보를 확인해주세요." });
+      return;
+    }
     if (isAgree.length === 0) {
       toast({ message: "서비스 이용약관에 동의해주세요." });
       setLoading(false);
@@ -146,31 +169,39 @@ export function CheckConfirm() {
         return;
       }
       const trackId = `${userData.id}_${Date.now()}`;
+
+      sessionStorage.setItem(
+        "SUB_PAY_INTENT",
+        JSON.stringify({ trackId, amount, storeId, planId: plan.id })
+      );
+
       const params = {
         paytype: "nestpay",
         payMethod: "card",
         trackId,
-        amount: price,
+        amount: amount,
         payerId: userData.id,
         payerName: userData.name,
         payerEmail: userData.username,
         payerTel: userData.phone,
         returnUrl: `${window.location.origin}/mypage/subscription/success`,
-        products: [{ name: "연간 구독권", qty: 1, price: 49800 }],
+        products: [{ name: "연간 구독권", qty: 1, price: amount }],
       };
 
       const result = await requester.requestPaymentApproval(params);
 
       const jsUrl = process.env.NEXT_PUBLIC_STATIC;
       const loadScript = () =>
-        new Promise<void>((resolve) => {
+        new Promise<void>((resolve, reject) => {
           const script = document.createElement("script");
           script.src = jsUrl + "?ver=" + new Date().getTime();
           script.onload = () => resolve();
+          script.onerror = () => reject(new Error("결제 스크립트 로드 실패"));
           document.head.appendChild(script);
         });
 
       if (!window.NESTPAY) await loadScript();
+      
       if (typeof window !== "undefined" && window.NESTPAY) {
         window.NESTPAY.welcome();
         window.NESTPAY.pay({
@@ -180,8 +211,10 @@ export function CheckConfirm() {
           onApprove: async (response: any) => {
             if (response.resultCd === "0000") {
               try {
+                const trxId = result?.content?.trxId || result?.link?.trxId;
+
                 const approveResult = await requester.approvePayment({
-                  trxId: result?.content?.trxId || result?.link?.trxId,
+                  trxId,
                   resultCd: response.resultCd,
                   resultMsg: response.resultMsg,
                   customerData: JSON.stringify(userData),
@@ -189,25 +222,38 @@ export function CheckConfirm() {
 
                 if (approveResult?.approveResult?.result?.resultCd === "0000") {
                   const payMeta = approveResult?.approveResult?.pay;
+
+                  // 승인 결과 세션 저장
+                  sessionStorage.setItem(
+                    "SUB_PAY_RESULT",
+                    JSON.stringify({ trxId, trackId, amount, payMeta })
+                  );
+
+                  try {
+                    sessionStorage.setItem(
+                      "SUB_SUCCESS_TOKEN",
+                      JSON.stringify({ at: Date.now() })
+                    );
+                  } catch {}
+
+                  // 최신 플랜 재조회(서버 신뢰)
                   const { content } = await requester.getSubscribe({
                     store_id: storeId,
                   });
-                  const plan = content?.[0];
+                  const latestPlan = content?.[0];
                   const endDate = new Date(
                     Date.now() +
-                      Number(plan?.metadata?.periodDays ?? 365) * 86400000
+                      Number(latestPlan?.metadata?.periodDays ?? 365) * 86400000
                   );
 
                   await requester.createSubscribe({
                     store_id: storeId,
-                    name: plan?.name,
+                    name: latestPlan?.name,
                     ends_at: endDate.toISOString(),
                     payment: payMeta,
                   });
 
-                  navigate("/mypage/subscription/success", {
-                    type: "replace",
-                  });
+                  navigate("/mypage/subscription/success", { type: "replace" });
                 } else {
                   toast({
                     message:
