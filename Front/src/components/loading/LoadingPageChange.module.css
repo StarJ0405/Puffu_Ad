@@ -1,0 +1,34 @@
+.element {
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   z-index: 100000;
+   background: rgba(0,0,0,0.8);
+   color: #fff;
+   font-size: clamp(25px, calc(100vw * 40 / 1920), 40px);
+}
+
+.dote_ani {
+   gap: 10px;
+}
+
+.dote_ani .dote {
+   width: 7px; height: 7px;
+   border-radius: 50%;
+   background: #fff;
+   transform: scale(1);
+   opacity: 1;
+}
+
+.dote_ani .dote:nth-child(1) {animation: doteMove 1s infinite ease-out;}
+.dote_ani .dote:nth-child(2) {animation: doteMove 1s 0.4s infinite ease-out;}
+.dote_ani .dote:nth-child(3) {animation: doteMove 1s 0.6s infinite ease-out;}
+
+@keyframes doteMove {
+   to {
+      transform: scale(1.4);
+      opacity: 0;
+   }
+}

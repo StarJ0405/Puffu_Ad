@@ -133,14 +133,13 @@ export function HistoryList() {
                         환불금액 {refund.toLocaleString()}원
                       </P>
                     )}
-                    <FlexChild justifyContent="center" hidden={isCanceled}>
+                    <FlexChild className={styles.revoke} justifyContent="center" hidden={isCanceled}>
                       <P
-                        className={styles.revoke}
                         onClick={() =>
                           navigate(`/mypage/subscription/${it.id}/cancel`)
                         }
                       >
-                        해지하기
+                        구독 취소
                       </P>
                     </FlexChild>
                   </VerticalFlex>

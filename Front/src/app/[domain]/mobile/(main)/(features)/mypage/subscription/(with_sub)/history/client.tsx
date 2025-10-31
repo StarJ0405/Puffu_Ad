@@ -122,17 +122,16 @@ export function HistoryList() {
           return (
             <VerticalFlex className={styles.item} key={it.id}>
               <HorizontalFlex>
-                <FlexChild>
+                <FlexChild width={'auto'}>
                   <P className={styles.date}>{date}</P>
                 </FlexChild>
-                <FlexChild justifyContent="flex-end" hidden={isCanceled}>
+                <FlexChild className={styles.revoke} justifyContent="flex-end" hidden={isCanceled}>
                   <P
-                    className={styles.revoke}
                     onClick={() =>
                       navigate(`/mypage/subscription/${it.id}/cancel`)
                     }
                   >
-                    해지하기
+                    구독 해지
                   </P>
                 </FlexChild>
               </HorizontalFlex>
@@ -143,7 +142,7 @@ export function HistoryList() {
                 </P>
               </FlexChild>
               <FlexChild className={styles.price_box}>
-                <VerticalFlex alignItems="end">
+                <VerticalFlex alignItems="end" gap={5}>
                   <P className={styles.price}>
                     {amount.toLocaleString("ko-KR")}원
                   </P>

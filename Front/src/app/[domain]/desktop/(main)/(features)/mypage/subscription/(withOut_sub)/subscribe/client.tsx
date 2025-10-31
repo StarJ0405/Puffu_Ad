@@ -16,6 +16,7 @@ import { requester } from "@/shared/Requester";
 import { useStore } from "@/providers/StoreProvider/StorePorivderClient";
 import styles from "./page.module.css";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
+import LoadingPageChange from "@/components/loading/LoadingPageChange";
 
 export function ContentBox({}: {}) {
   const [plan, setPlan] = useState<SubscribeData | null>(null);
@@ -147,8 +148,11 @@ export function CheckConfirm() {
     });
   }
 
+  const [ShowLoadingComp, setShowLoadingComp] = useState(false);
+
   // 결제 버튼
   const handlePaymentSubmit = async () => {
+    
     if (loading) return;
     setLoading(true);
     if (!storeId || !plan || amount <= 0) {
@@ -245,15 +249,16 @@ export function CheckConfirm() {
                     Date.now() +
                       Number(latestPlan?.metadata?.periodDays ?? 365) * 86400000
                   );
-
+                  setShowLoadingComp(true);
                   await requester.createSubscribe({
                     store_id: storeId,
                     name: latestPlan?.name,
                     ends_at: endDate.toISOString(),
                     payment: payMeta,
                   });
-
-                  navigate("/mypage/subscription/success", { type: "replace" });
+                  navigate("/mypage/subscription/success", {
+                    type: "replace",
+                  });
                 } else {
                   toast({
                     message:
@@ -321,8 +326,11 @@ export function CheckConfirm() {
       </VerticalFlex>
 
       <FlexChild className={styles.confirm_btn}>
+        {/* handlePaymentSubmit */}
         <Button onClick={handlePaymentSubmit}>연간 회원권 가입하기</Button>
       </FlexChild>
+
+      {ShowLoadingComp && <LoadingPageChange />}
     </>
   );
 }
