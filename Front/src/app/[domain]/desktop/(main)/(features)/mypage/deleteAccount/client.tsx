@@ -52,7 +52,7 @@ export default function DeleteAccountClient() {
       onConfirm: async () => {
         const res = await requester.deleteUser({ id: userData?.id });
         if (res) {
-          alert("회원탈퇴가 완료되었습니다.");
+          // alert("회원탈퇴가 완료되었습니다.");
           removeCookie(Cookies.JWT, { path: "/" });
           router.push("/");
         } else {
