@@ -525,10 +525,6 @@ export function Auth() {
     NiceModal.show(ConfirmModal, {
       message: '로그아웃 하시겠습니까?',
       title: '로그아웃',
-      classNames: {
-        title: 'confirm_title',
-      },
-      backgroundColor: 'var(--confirmModal-bg)',
       confirmText: "확인",
       cancelText: "취소",
       withCloseButton: true,
