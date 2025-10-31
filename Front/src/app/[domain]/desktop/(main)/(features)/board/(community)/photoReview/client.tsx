@@ -82,7 +82,7 @@ export function BoardTitleBox({
         <FlexChild width={"auto"}>
           <Select
             classNames={{
-              header: "web_select",
+              header: clsx("web_select", styles.sh_select),
               placeholder: "web_select_placholder",
               line: "web_select_line",
               arrow: "web_select_arrow",
