@@ -8,12 +8,19 @@ import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Input from "@/components/inputs/Input";
 import P from "@/components/P/P";
+import SignaturePad from "@/components/sign/SignaturePad";
 import { adminRequester } from "@/shared/AdminRequester";
+import { fileRequester } from "@/shared/FileRequester";
 import useNavigate from "@/shared/hooks/useNavigate";
 import { Cookies } from "@/shared/utils/Data";
-import { getCookieOption, toast } from "@/shared/utils/Functions";
-import { useState } from "react";
+import {
+  dataURLtoFile,
+  getCookieOption,
+  toast,
+} from "@/shared/utils/Functions";
+import { useRef, useState } from "react";
 import { useCookies } from "react-cookie";
+import SignatureCanvas from "react-signature-canvas";
 import styles from "./page.module.css";
 
 export default function ({
@@ -28,7 +35,6 @@ export default function ({
   const [password, setPassword] = useState("");
   const [checkList, setCheckList] = useState<any[]>(pre_id ? ["id"] : []);
   const navigate = useNavigate();
-
   return (
     <CheckboxGroup
       name="login"
@@ -149,5 +155,34 @@ export default function ({
         </VerticalFlex>
       </VerticalFlex>
     </CheckboxGroup>
+  );
+}
+
+function Test() {
+  const signRef = useRef<SignatureCanvas>(null);
+
+  return (
+    <VerticalFlex>
+      <FlexChild backgroundColor="#fff">
+        <SignaturePad ref={signRef} />
+      </FlexChild>
+      <FlexChild justifyContent="center" gap={10}>
+        <Button onClick={() => signRef.current?.clear()}>초기화</Button>
+        <Button
+          onClick={async () => {
+            const dataurl = signRef.current?.toDataURL();
+            if (dataurl) {
+              const file = dataURLtoFile(dataurl, `[유저명].png`);
+              const formData = new FormData();
+              formData.set("files", file);
+              const result = await fileRequester.upload(formData, "/signature");
+              console.log(result);
+            }
+          }}
+        >
+          데이터 출력
+        </Button>
+      </FlexChild>
+    </VerticalFlex>
   );
 }
