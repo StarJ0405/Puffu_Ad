@@ -287,7 +287,15 @@ export function CartWrap() {
         if (now.calc === "fix") return acc + now.value;
         return acc;
       }, 0);
-      return Math.round((amount * (100 - percents)) / 100.0 - fix);
+      return Math.round(
+        (amount * (100 - percents - (userData?.subscribe?.percent || 0))) /
+          100.0 -
+          fix
+      );
+    } else if (userData?.subscribe?.percent) {
+      return Math.round(
+        (amount * (100 - (userData?.subscribe?.percent || 0))) / 100.0
+      );
     }
     return amount;
   };
