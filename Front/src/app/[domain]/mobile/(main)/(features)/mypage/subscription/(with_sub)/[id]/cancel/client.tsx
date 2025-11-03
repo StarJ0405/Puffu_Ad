@@ -131,11 +131,7 @@ export function ConfirmBtn({
           </P>
         </FlexChild>
       ),
-      classNames: {
-        title: "confirm_title",
-      },
       title: "구독 해지",
-      backgroundColor: "var(--confirmModal-bg)",
       confirmText: "해지하기",
       cancelText: "취소",
       withCloseButton: true,
@@ -158,11 +154,7 @@ export function ConfirmBtn({
                   </P>
                 </VerticalFlex>
               ),
-              classNames: {
-                title: "confirm_title",
-              },
               title: "구독 해지",
-              backgroundColor: "var(--confirmModal-bg)",
               confirmText: "확인",
               cancelText: "취소",
               withCloseButton: true,
@@ -184,11 +176,7 @@ export function ConfirmBtn({
                           </P>
                         </FlexChild>
                       ),
-                      classNames: {
-                        title: "confirm_title",
-                      },
                       title: "구독 해지",
-                      backgroundColor: "var(--confirmModal-bg)",
                       confirmText: "확인",
                       clickOutsideToClose: false,
                       // cancelText: "취소",
@@ -234,10 +222,10 @@ export function ConfirmBtn({
           onClick={() => navigate("/mypage/subscription/manage")}
           className={styles.continue_btn}
         >
-          <Button>회원권 계속 유지하기</Button>
+          <Button>구독 계속 유지하기</Button>
         </FlexChild>
         <FlexChild className={styles.delete_btn} onClick={openCancelFlow}>
-          <Button>회원권 해지하기</Button>
+          <Button>구독 해지하기</Button>
         </FlexChild>
       </VerticalFlex>
 

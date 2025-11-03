@@ -24,7 +24,7 @@ export default async function ({ params }: { params: Promise<Params> }) {
 
         <VerticalFlex className={styles.title_box}>
           <P className={styles.title}>
-            연간 회원권을 <br /> 정말 해지하시겠어요?
+            연간 구독 혜택을 <br /> 정말 해지하시겠어요?
           </P>
 
           <P className={styles.text1}>
@@ -36,14 +36,19 @@ export default async function ({ params }: { params: Promise<Params> }) {
         <ContentBox initSubscribe={initSubscribe} />
 
         <VerticalFlex className={styles.cancel_giude}>
-          <P className={styles.text1}>해지하신 이후에도 구독권은 언제든지 다시 <br /> 구매하실 수 있습니다.</P>
+          <P className={styles.text1}>해지하신 이후에도 구독권은 언제든지 다시 <br /> 가입하실 수 있습니다.</P>
 
-          <FlexChild className={styles.giude_unit} justifyContent="center">
+          <VerticalFlex gap={15} className={styles.giude_unit} justifyContent="center">
             <P>
               해지 시 연간 결제 금액보다 혜택을 적게 <br />
               사용하셨을 경우 차액만큼 고객님께 돌려드려요.
             </P>
-          </FlexChild>
+
+            <P>
+              차액이 발생하지 않는 경우 금액 환불이 <br />
+              불가할 수 있습니다.
+            </P>
+          </VerticalFlex>
         </VerticalFlex>
 
         <ConfirmBtn initSubscribe={initSubscribe} />

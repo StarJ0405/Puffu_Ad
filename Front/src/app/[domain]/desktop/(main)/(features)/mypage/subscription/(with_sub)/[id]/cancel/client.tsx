@@ -227,12 +227,12 @@ export function ConfirmBtn({
           onClick={() => navigate("/mypage/subscription/manage")}
           className={styles.continue_btn}
         >
-          <Button>회원권 계속 유지하기</Button>
+          <Button>구독 계속 유지하기</Button>
         </FlexChild>
   
         {/* onClick={()=> ()} */}
         <FlexChild className={styles.delete_btn} onClick={openCancelFlow}>
-          <Button>회원권 해지하기</Button>
+          <Button>구독 해지하기</Button>
         </FlexChild>
       </VerticalFlex>
 
