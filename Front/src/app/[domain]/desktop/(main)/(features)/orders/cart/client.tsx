@@ -43,9 +43,9 @@ import styles from "./page.module.css";
 import LoadingPageChange from "@/components/loading/LoadingPageChange";
 
 export function CartWrap() {
-  const { userData, reload } = useAuth();
+  const { userData } = useAuth();
   const { storeData } = useStore();
-  const { cartData } = useCart();
+  const { cartData, reload } = useCart();
   const { addresses, mutate } = useAddress();
   const [address, setAddress] = useState<AddressData>();
   const [selected, setSelected] = useState<string[]>(
