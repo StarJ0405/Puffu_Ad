@@ -25,7 +25,7 @@ export default async function ({ params }: { params: Promise<Params> }) {
       <VerticalFlex className={clsx(styles.wrapper, "mob_page_container")}>
         <VerticalFlex className={styles.title_box}>
           <P className={styles.title}>
-            연간 회원권을 <br /> 정말 해지하시겠어요?
+            연간 구독 혜택을 <br /> 정말 해지하시겠어요?
           </P>
 
           <P className={styles.text1}>
@@ -39,7 +39,7 @@ export default async function ({ params }: { params: Promise<Params> }) {
 
           <VerticalFlex className={styles.cancel_giude}>
             <P className={styles.text1}>
-              해지하신 이후에도 구독권은 언제든지 다시 <br /> 구매하실 수
+              해지하신 이후에도 구독권은 언제든지 다시 <br /> 가입하실 수
               있습니다.
             </P>
 

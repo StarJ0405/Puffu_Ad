@@ -42,7 +42,7 @@ export function ContentBox({}: {}) {
         <VerticalFlex className={styles.unit}>
           <FlexChild gap={5} justifyContent="center">
             <Image
-              src={"/resources/icons/mypage/subscription_sale.png"}
+              src={"/resources/images/mypage/subscription_cancel_sale_pc.png"}
               width={20}
               height={"auto"}
             />
@@ -60,7 +60,7 @@ export function ContentBox({}: {}) {
         <VerticalFlex className={styles.unit}>
           <FlexChild gap={5} justifyContent="center">
             <Image
-              src={"/resources/icons/mypage/subscription_coupon.png"}
+              src={"/resources/images/mypage/subscription_cancel_coupon_pc.png"}
               width={20}
               height={"auto"}
             />
@@ -304,7 +304,7 @@ export function CheckConfirm() {
           onClick={handlePaymentSubmit}
         >
           <Button disabled={loading || !plan || amount <= 0}>
-            연간 회원권 결제하기
+            연간 회원권 가입하기
           </Button>
         </FlexChild>
       </FlexChild>
