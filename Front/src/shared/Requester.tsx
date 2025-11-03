@@ -20,7 +20,7 @@ class _Requester {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      // withCredentials: true,
+      withCredentials: true,
     });
 
     this.instance.interceptors.request.use(
@@ -52,12 +52,8 @@ class _Requester {
           error.response.data === "Unauthorized"
         ) {
           const location = window.location;
-          let [, lang, ...others] = location.pathname.split("/");
-          if (lang === "m") {
-            lang += "/" + others[0];
-          }
           if (!location.pathname.includes("/login"))
-            window.location.href = `${location.origin}/${lang}/login`;
+            window.location.href = `${location.origin}/login?redirect_url=${location.pathname}`;
         }
         return Promise.reject(error);
       }
@@ -779,6 +775,16 @@ class _Requester {
     if (callback) callback(result);
     return result;
   } */
+
+  // 접속 대기열 체크
+  async getConnection(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/connection`, data));
+    else return await this.get(`/connection`, data);
+  }
+  async deleteConnection(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.delete(`/connection`, data));
+    else return await this.delete(`/connection`, data);
+  }
 }
 
 export default _Requester;
