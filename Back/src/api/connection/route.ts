@@ -2,8 +2,7 @@ import redisClient from "redis";
 import { RedisKey } from "utils/data";
 import { generateShortId, generateToken, verifyToken } from "utils/functions";
 
-const MAX_CAPACITY =
-  1 || parseInt(process.env.MAX_CAPACITY || "10000", 10) || 1000;
+const MAX_CAPACITY = parseInt(process.env.MAX_CAPACITY || "10000", 10) || 1000;
 export const tick = 61;
 
 export const GET: ApiHandler = async (req, res) => {
