@@ -210,13 +210,28 @@
 }
 
 .input_box .input_item .label > span {
-  color: #da1e1e;
+  color: var(--main-color2);
 }
+
+.check_txt {
+  font-size: 13px;
+  color: #ddd;
+}
+
+.check_txt .duplicate_true {color: #f53333 !important;}
+.check_txt .duplicate_false {color: #21e621 !important;}
+.check_txt .impossible_true {color: #f53333 !important;}
 
 .inputError{
   padding-top: 2px;
   color: #da1e1e;
   font-size: 12px;
+}
+
+.duplicate_btn {
+  white-space: nowrap;
+  background: transparent;
+  border: 1px solid #fff;
 }
 
 
@@ -294,8 +309,7 @@
 /* 회원가입 완료 시 */
 
 .continue_box .home_btn {
-  background: transparent;
-  border: 1px solid #fff;
+  background: var(--main-color1);
 }
 
 .continue_box .login_btn {
@@ -303,8 +317,7 @@
 }
 
 .continue_box .home_btn:hover {
-  color: var(--main-color1);
-  border-color: var(--main-color1);
+  background: var(--main-color2);
 }
 
 .continue_box .login_btn:hover {

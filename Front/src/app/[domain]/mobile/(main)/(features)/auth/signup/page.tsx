@@ -131,6 +131,10 @@ export default function () {
 function Agree({ setStep }: { setStep: Dispatch<SetStateAction<string>> }) {
   const [agrees, setAgrees] = useState<string[]>([]);
 
+  const showModal = (type: "term_check" | "privacy_check") => {
+    NiceModal.show("AgreeContent", { type, setAgrees });
+  };
+
   return (
     <VerticalFlex>
       <FlexChild className={styles.step_title}>
@@ -153,29 +157,35 @@ function Agree({ setStep }: { setStep: Dispatch<SetStateAction<string>> }) {
           </FlexChild>
 
           <VerticalFlex className={styles.agree_item}>
-            <FlexChild className={styles.checkbox}>
+            <HorizontalFlex className={styles.checkbox}>
               <label>
                 <CheckboxChild id="term_agree" />
                 <Span>이용약관 동의</Span>
               </label>
-            </FlexChild>
 
-            <FlexChild className={"agree_content"}>
-              <TermContent size={7} />
-            </FlexChild>
+              <Span
+                className={styles.agree_btn}
+                onClick={() => showModal("term_check")}
+              >
+                자세히보기
+              </Span>
+            </HorizontalFlex>
           </VerticalFlex>
 
           <VerticalFlex className={styles.agree_item}>
-            <FlexChild className={styles.checkbox}>
+            <HorizontalFlex className={styles.checkbox}>
               <label>
                 <CheckboxChild id="privacy_agree" />
                 <Span>개인정보 수집 및 이용 동의</Span>
               </label>
-            </FlexChild>
 
-            <FlexChild className={"agree_content"}>
-              <PrivacyContent size={7} />
-            </FlexChild>
+              <Span
+                className={styles.agree_btn}
+                onClick={() => showModal("privacy_check")}
+              >
+                자세히보기
+              </Span>
+            </HorizontalFlex>
           </VerticalFlex>
         </CheckboxGroup>
 
@@ -1041,6 +1051,26 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
   const [username, setUsername] = useState<string>(
     data?.current?.username || ""
   );
+
+  // id 중복 체크 확인
+  const [id_duplicate, setId_duplicate] = useState<boolean | undefined>(undefined);
+  const [id_checkTxt, setId_checkTxt] = useState<boolean>(true);
+  
+  const impossibleId = () => {
+    // 한글, 공백, 숫자로만 구성, 4자 미만, 20자 이상은 불가.
+    const invalidPattern = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]|\s|^[0-9]+$|^.{0,4}$|^.{19,}$/;
+
+    // 위 조건중 하나라도 들어가면 return true
+    return invalidPattern.test(username);
+  }
+
+  useEffect(()=> {
+    if (username.length < 1) {
+      setId_checkTxt(true);
+    }
+  }, [username]);
+  // id 중복 체크 확인 끝
+
   // const [email, setEmail] = useState<string>(data?.current?.email || "");
   // const [emailError, setEmailError] = useState<string>("");
   const [password, setPassword] = useState<string>(
@@ -1232,10 +1262,33 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
 
         <VerticalFlex className={styles.input_item}>
           <HorizontalFlex className={styles.label}>
-            <P>아이디</P>
+            <FlexChild gap={10} width={'auto'}>
+              <P>아이디</P>
+              <P className={styles.check_txt}>
+                {!impossibleId() ? (
+                  id_duplicate === undefined ? (
+                    // 아직 검사 전: 아무 메시지도 표시하지 않음
+                    null
+                  ) : id_duplicate ? (
+                    <Span hidden={id_checkTxt} className={styles.duplicate_true}>
+                      이미 가입되어 있는 아이디입니다.
+                    </Span>
+                  ) : (
+                    <Span hidden={id_checkTxt} className={styles.duplicate_false}>
+                      사용 가능한 아이디입니다.
+                    </Span>
+                  )
+                ) : (
+                  <Span className={styles.impossible_true} hidden={id_checkTxt}>
+                    사용할 수 없는 아이디입니다.
+                  </Span>
+                )}
+              </P>
+            </FlexChild>
+
             <Span>(필수)</Span>
           </HorizontalFlex>
-          <FlexChild>
+          <FlexChild gap={10}>
             <Input
               type="text"
               width={"100%"}
@@ -1244,6 +1297,34 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
               onChange={(value) => setUsername(value as string)}
               className="web_input"
             />
+
+            <Button
+              className={styles.duplicate_btn}
+              disabled={username.length < 1 && true}
+              onClick={()=> {
+                requester
+                .isExistUser({ username })
+                .then(
+                  ({
+                    exist,
+                    username: _username,
+                  }: {
+                    exist: boolean;
+                    username: string;
+                  }) => {
+                    if (exist) {
+                      // 이미 존재하는 계정일 때 실행되는 코드
+                      setId_duplicate(true);
+                    } else {
+                      // 통과
+                      setId_duplicate(false);
+                    }
+                  }
+                );
+
+                setId_checkTxt(false);
+              }}
+            >중복확인</Button>
           </FlexChild>
         </VerticalFlex>
 
@@ -1500,7 +1581,7 @@ function Completed({ data }: StepProps) {
             navigate("/");
           }}
         >
-          홈으로
+          쇼핑 시작하기
         </Button>
         {/* <Button className={styles.login_btn}>로그인</Button> */}
       </FlexChild>

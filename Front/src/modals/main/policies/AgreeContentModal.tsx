@@ -14,6 +14,7 @@ import TermContent from "@/components/agreeContent/TermContent";
 import PrivacyContent from "@/components/agreeContent/privacyContent";
 import Span from "@/components/span/Span";
 import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
+import { usePathname, useParams } from "next/navigation";
 
 type AgreeType = 'term_check' | 'privacy_check';
 
@@ -46,6 +47,7 @@ const AgreeContentModal = NiceModal.create(({
   const title = "[필수] 구매조건 확인 및 결제진행 동의"
   const [withHeader, withFooter] = [false, false];
   const { isMobile } = useBrowserEvent();
+  const pathname = usePathname();
 
   const onConfirmClick = () => {
     setAgrees((prev) => {
@@ -64,9 +66,12 @@ const AgreeContentModal = NiceModal.create(({
     modal.current.close();
   };
 
+  const term_txt = 
+    pathname === '/auth/signup' ? '이용 약관' : '구매조건 확인 및 결제진행 동의';
+
   const agreeContents = {
     term_check: {
-      title: "구매조건 확인 및 결제진행 동의",
+      title: term_txt,
       content: <TermContent size={!isMobile ? 8 : 7} />,
     },
     privacy_check: {
@@ -88,7 +93,7 @@ const AgreeContentModal = NiceModal.create(({
       clickOutsideToClose={true}
       overflow={overflow}
       backgroundColor={"var(--mainBg)"}
-      borderRadius={!isMobile ? 0 : 10}
+      borderRadius={!isMobile ? 0 : pathname === '/auth/signup' ? 0 : 10}
     >
       <VerticalFlex className={styles.modal_body}>
         {(title || withCloseButton) && (
