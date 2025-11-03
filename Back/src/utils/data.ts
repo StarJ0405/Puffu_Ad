@@ -292,3 +292,7 @@ export function eventToDocument(event: Event): InsertDocument {
     },
   };
 }
+export enum RedisKey {
+  users = "_connection_active_users",
+  waiting = "_connection_waiting_users",
+}
