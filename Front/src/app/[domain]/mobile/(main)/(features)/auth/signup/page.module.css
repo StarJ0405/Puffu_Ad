@@ -83,6 +83,12 @@
   gap: 10px;
 }
 
+.agree_btn {
+  color: #adadad;
+  font-size: 13px;
+  text-decoration: underline;
+}
+
 .agree_item .checkbox label span {
   font-size: 16px !important; color: #fff;
   font-weight: 500 !important;
@@ -213,12 +219,26 @@
   color: var(--main-color2);
 }
 
+.check_txt {
+  font-size: 13px;
+  color: #ddd;
+}
+
+.check_txt .duplicate_true {color: #f53333 !important;}
+.check_txt .duplicate_false {color: #21e621 !important;}
+.check_txt .impossible_true {color: #f53333 !important;}
+
 .inputError{
   padding-top: 2px;
   color: #da1e1e;
   font-size: 12px;
 }
 
+.duplicate_btn {
+  white-space: nowrap;
+  background: transparent;
+  border: 1px solid #fff;
+}
 
 /* 4단계 */
 .signup_completed {
@@ -292,8 +312,12 @@
 
 .continue_box .home_btn {
   width: 363px;
-  background: transparent;
-  border: 1px solid #fff;
+  background: var(--main-color2);
+  /* border: 1px solid #fff; */
+}
+
+.continue_box .home_btn:active {
+  filter: var(--mob-active-filter);
 }
 
 .continue_box .login_btn {
