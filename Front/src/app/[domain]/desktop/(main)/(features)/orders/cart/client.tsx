@@ -756,7 +756,7 @@ export function CartWrap() {
               <P className={styles.list_title}>결제 금액</P>
 
               <P fontSize={13} color="#797979" lineHeight={1.3}>
-                상품 금액(세일 할인가 포함) 50,000원 이상 구매 시 배송비 무료
+                상품 금액(세일 할인가 포함) {(shipping?.max || 0).toLocaleString()}원 이상 구매 시 배송비 무료
               </P>
             </article>
 

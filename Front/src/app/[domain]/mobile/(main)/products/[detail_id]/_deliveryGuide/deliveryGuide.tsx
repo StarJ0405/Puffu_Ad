@@ -1,8 +1,36 @@
 import FlexChild from "@/components/flex/FlexChild";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import styles from "./deliveryGuide.module.css";
+import { useState, useEffect } from "react";
+import { useStore, useCart } from "@/providers/StoreProvider/StorePorivderClient";
 
 export default function DeliveryGuide() {
+
+  const { storeData } = useStore();
+  const { cartData, reload } = useCart();
+  const [selected, setSelected] = useState<string[]>(
+    cartData?.items.map((i) => i.id) || []
+  );
+  const [shipping, setShipping] = useState<ShippingMethodData>();
+  
+
+  const totalDiscounted =
+    cartData?.items
+      .filter((item) => selected.includes(item.id))
+      .reduce((acc, item) => {
+        return acc + (item?.variant?.discount_price || 0) * item.quantity;
+      }, 0) || 0;
+  const shippingMethod = storeData?.methods
+    ?.filter(
+      (f) =>
+        f.min <= totalDiscounted && (f.max === -1 || f.max > totalDiscounted)
+    )
+    .sort((m1, m2) => m1.amount - m2.amount)?.[0];
+  
+  useEffect(() => {
+    setShipping(shippingMethod);
+  }, [shippingMethod]);
+
   return (
     <VerticalFlex className={styles.delivery_wrap}>
       <FlexChild className={styles.delivery_title}>
@@ -14,7 +42,8 @@ export default function DeliveryGuide() {
           <h4 className={styles.title}>[배송정보]</h4>
 
           <p className={styles.txt1}>
-            영업일 기준 14시 이전 주문완료(결제확인) 건에 한하여 당일출고됩니다.{" "}
+            {shipping?.description}
+            {/* 영업일 기준 14시 이전 주문완료(결제확인) 건에 한하여 당일출고됩니다.{" "} */}
             <br />
             금요일 14시 이후부터 주말 주문 건은 월요일 출고됩니다.
           </p>
@@ -22,7 +51,7 @@ export default function DeliveryGuide() {
           <p className={styles.txt1}>
             배송 방법 : 택배 (CJ 대한통운) <br />
             배송 지역 : 전국지역 <br />
-            배송 비용 : 2,500원 (총 구매금액이 50,000원 이상인 경우 무료배송){" "}
+            배송 비용 : {(shipping?.amount || 0).toLocaleString()}원 (총 구매금액이 {(shipping?.max || 0).toLocaleString()}원 이상인 경우 무료배송){" "}
             <br />
             배송 기간 : 1일 ~ 3일 (도서산간 지역은 3~4일 추가될 수 있습니다.){" "}
             <br />
