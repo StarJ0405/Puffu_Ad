@@ -13,7 +13,7 @@ dotenv.config({ path: envPath, override: true });
 import express, { NextFunction, Request, Response, Router } from "express";
 import * as fs from "fs";
 import multer from "multer";
-
+import cookieParse from "cookie-parser";
 import { createServer } from "http";
 import { Socket, Server as SocketIOServer } from "socket.io";
 import { initializeDataSource } from "./data-source";
@@ -79,6 +79,7 @@ app.use(
 //
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParse());
 
 const httpServer = createServer(app);
 

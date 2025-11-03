@@ -21,7 +21,7 @@ export function generateToken(
 
 export function verifyToken(token: string, options?: VerifyOptions): any {
   try {
-    return jwt.verify(token, JWT_SECRET);
+    return jwt.verify(token, JWT_SECRET, options);
   } catch (err) {
     return null;
   }
