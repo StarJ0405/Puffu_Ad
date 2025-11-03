@@ -237,6 +237,42 @@ const SidebarNav: NavParent[] = [
       },
     ],
   },
+  {
+    name: "전자문서 관리",
+    path: "/contract",
+    navs: [
+      {
+        name: "계약 목록",
+        to: "/",
+        icon: "",
+      },
+      {
+        name: "계약 작성",
+        to: "/",
+        icon: "",
+      },
+      {
+        name: "계약 상세",
+        to: "/",
+        icon: "",
+      },
+      {
+        name: "피계약자 관리",
+        to: "/",
+        icon: "",
+      },
+      {
+        name: "템플릿 관리",
+        to: "/",
+        icon: "",
+      },
+      {
+        name: "초대 관리",
+        to: "/",
+        icon: "",
+      },
+    ]
+  },
 ];
 
 export default function ({
