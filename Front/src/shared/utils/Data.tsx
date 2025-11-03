@@ -6,6 +6,8 @@ export const Cookies = {
   VISIT: "_toy_visity",
   SUBDOMAIN: "_toy_subdomain",
   LOGIN_REDIRECT_URL: "_toy_login_redirect_url",
+  SESSION_TOKEN: "_connection_session",
+  REFESH_TOKEN: "_connection_refresh",
 };
 export const Sessions = {
   PAYMENT: "_toy_payment",
