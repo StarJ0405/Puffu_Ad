@@ -1,17 +1,3 @@
-// import dynamic from "next/dynamic";
-// import { SignatureCanvasProps } from "react-signature-canvas";
-
-// const SignatureCanvas = dynamic(
-//   () => import("react-signature-canvas"),
-//   { ssr: false } // 👈 **SSR 비활성화 필수**
-// );
-
-// function SignaturePad(props: SignatureCanvasProps) {
-//   return <SignatureCanvas {...props} />;
-// }
-
-// export default SignaturePad;
-
 import dynamic from "next/dynamic";
 import { forwardRef, useRef } from "react";
 import { SignatureCanvasProps } from "react-signature-canvas";
