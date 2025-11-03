@@ -1,61 +1,34 @@
 import { BaseEntity } from "data-source";
-import {
-  BeforeInsert,
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-} from "typeorm";
+import { BeforeInsert, Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 import { generateEntityId } from "utils/functions";
-import { Store } from "./store";
-import { Counterparty } from "./counterparty";
-import { CounterpartySnapshot } from "./counterparty_snapshot";
+import { Contract } from "./contract";
 
-@Entity({ name: "contract" })
-@Index(["store_id"])
-@Index(["starts_at"])
-@Index(["ends_at"])
+@Entity({ name: "contract_version" })
+@Index(["contract_id"])
+@Index(["v_no"])
 @Index(["created_at"])
-export class Contract extends BaseEntity {
+export class ContractVersion extends BaseEntity {
   @Column({ type: "character varying", nullable: false })
-  store_id!: string;
+  contract_id!: string;
 
-  @ManyToOne(() => Store)
-  @JoinColumn({ name: "store_id", referencedColumnName: "id" })
-  store?: Store;
+  @ManyToOne(() => Contract)
+  @JoinColumn({ name: "contract_id", referencedColumnName: "id" })
+  contract?: Contract;
 
-  @Column({ type: "character varying", nullable: false })
-  counterparty_id!: string;
+  @Column({ type: "integer", nullable: false })
+  v_no!: number;
 
-  @ManyToOne(() => Counterparty)
-  @JoinColumn({ name: "counterparty_id", referencedColumnName: "id" })
-  counterparty?: Counterparty;
-
-  @Column({ type: "character varying", nullable: true })
-  snapshot_id?: string;
-
-  @ManyToOne(() => CounterpartySnapshot)
-  @JoinColumn({ name: "snapshot_id", referencedColumnName: "id" })
-  snapshot?: CounterpartySnapshot;
-
-  @Column({ type: "character varying", nullable: true })
-  title?: string;
-
-  @Column({ type: "timestamp with time zone", nullable: true })
-  starts_at?: Date;
-
-  @Column({ type: "timestamp with time zone", nullable: true })
-  ends_at?: Date;
-
-  @Column({ type: "real", default: 0 })
-  payout_rate?: number; // CHECK 0~100
+  @Column({ type: "text", nullable: true })
+  body?: string;
 
   @Column({ type: "jsonb", default: {} })
-  metadata?: Record<string, unknown> | null;
+  variables?: Record<string, unknown> | null;
+
+  @Column({ type: "boolean", default: false })
+  locked?: boolean;
 
   @BeforeInsert()
   protected BeforeInsert(): void {
-    this.id = generateEntityId(this.id, "con");
+    this.id = generateEntityId(this.id, "cov");
   }
 }
