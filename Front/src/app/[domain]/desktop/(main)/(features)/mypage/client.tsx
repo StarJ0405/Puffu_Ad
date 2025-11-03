@@ -154,10 +154,12 @@ export function Profile({ initGroups }: { initGroups: Pageable }) {
               {
                 // 구독 가입되어 있으면 나타나기
                 isSubscribe && (
-                  <Image
-                    src="/resources/images/mypage/subscription_mark.png"
-                    width={77}
-                  />
+                  <FlexChild width={'auto'} cursor="pointer" onClick={()=> navigate('/mypage/subscription/manage')}>
+                    <Image
+                      src="/resources/images/mypage/subscription_mark.png"
+                      width={77}
+                    />
+                  </FlexChild>
                 )
               }
             </FlexChild>

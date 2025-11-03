@@ -978,22 +978,22 @@ function PassReady({ setStep, data }: StepProps) {
                         }) => {
                           if (exist) {
                             NiceModal.show("confirm", {
-                              slideUp: true,
                               clickOutsideToClose: true,
-                              width: 403,
+                              width: '80%',
+                              maxWidth: '400px',
                               message: (
                                 <VerticalFlex>
                                   <P
                                     className={styles.duplicateTitle}
                                     paddingBottom={17}
-                                    color="#fff"
+                                    color="#aeaeae"
                                   >
                                     이미 가입된 계정이 있습니다
                                   </P>
                                   <P
                                     className={styles.duplicateDescription}
                                     paddingBottom={23}
-                                    color="#fff"
+                                    color="#aeaeae"
                                   >
                                     아래 아이디로 로그인해주세요
                                   </P>
@@ -1005,11 +1005,13 @@ function PassReady({ setStep, data }: StepProps) {
                                       <Span
                                         className={styles.duplicateInfoLabel}
                                         paddingRight={"2em"}
+                                        color={'#fff'}
                                       >
                                         아이디
                                       </Span>
                                       <Span
                                         className={styles.duplicateInfoValue}
+                                        color={'#fff'}
                                       >
                                         {username}
                                       </Span>
@@ -1467,18 +1469,21 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
                     if (exist) {
                       NiceModal.show("confirm", {
                         clickOutsideToClose: true,
-                        width: 403,
+                        width: '80%',
+                        maxWidth: '400px',
                         message: (
                           <VerticalFlex>
                             <P
                               className={styles.duplicateTitle}
                               paddingBottom={17}
+                              color={'#aeaeae'}
                             >
                               이미 가입된 계정이 있습니다
                             </P>
                             <P
                               className={styles.duplicateDescription}
                               paddingBottom={23}
+                              color={'#aeaeae'}
                             >
                               아래 아이디로 로그인해주세요
                             </P>
@@ -1490,10 +1495,11 @@ function Info({ setStep, handleUpdate, data }: StepProps) {
                                 <Span
                                   className={styles.duplicateInfoLabel}
                                   paddingRight={"2em"}
+                                  color={'#fff'}
                                 >
                                   아이디
                                 </Span>
-                                <Span className={styles.duplicateInfoValue}>
+                                <Span className={styles.duplicateInfoValue} color={'#fff'}>
                                   {_username}
                                 </Span>
                               </P>
