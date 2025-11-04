@@ -6,41 +6,47 @@ export const GET: ApiHandler = async (req, res) => {
   const {
     pageSize,
     pageNumber = 0,
-    relations,
-    order,
-    select,
     q,
-    status,
     store_id,
     counterparty_id,
     tag,
-    ...others
-  } = req.query;
+    order,
+    relations,
+    select,
+  } = req.parsedQuery;
 
-  const where = svc.buildWhere(
-    String(q || "") || undefined,
-    String(status || "") || undefined,
-    String(store_id || "") || undefined,
-    String(counterparty_id || "") || undefined,
-    String(tag || "") || undefined
-  );
+  const where = svc.buildWhere(q, store_id, counterparty_id, tag);
+  const base = { where, order, relations, select } as any;
 
-  const base = { where, relations, order, select, whereExtra: others } as any;
-
-  if (pageSize) {
-    const page = await svc.getPageable(
-      { pageSize: Number(pageSize), pageNumber: Number(pageNumber) },
-      base as any
-    );
-    return res.json(page);
-  } else {
-    const content = await svc.getList(base as any);
-    return res.json({ content });
+  try {
+    if (pageSize) {
+      const page = await svc.getPageable(
+        { pageSize: Number(pageSize), pageNumber: Number(pageNumber) },
+        base
+      );
+      return res.json(page);
+    } else {
+      const list = await svc.getList(base);
+      return res.json(list);
+    }
+  } catch (e) {
+    return res.status(500).json({ message: "error", error: String(e) });
   }
 };
 
 export const POST: ApiHandler = async (req, res) => {
   const svc = container.resolve(ContractService);
-  const created = await svc.create(req.body);
-  return res.json(created);
+  const { contractData, versionBody, _return_data } = req.body;
+
+  try {
+    const result = await svc.createWithVersionAndSnapshot(
+      contractData,
+      versionBody
+    );
+    return res.json(
+      _return_data ? { content: result } : { message: "success" }
+    );
+  } catch (e) {
+    return res.status(500).json({ message: "error", error: String(e) });
+  }
 };

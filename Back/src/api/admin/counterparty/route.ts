@@ -14,7 +14,8 @@ export const GET: ApiHandler = async (req, res) => {
     store_id,
     tag,
     ...others
-  } = req.query;
+  } = req.parsedQuery;
+
   const where = svc.buildWhere(
     String(q || "") || undefined,
     String(status || "") || undefined,
@@ -23,21 +24,60 @@ export const GET: ApiHandler = async (req, res) => {
   );
   const base = { where, relations, order, select, whereExtra: others } as any;
 
-  if (pageSize) {
-    const page = await svc.getPageable(
-      { pageSize: Number(pageSize), pageNumber: Number(pageNumber) },
-      base as any
-    );
-    return res.json(page);
-  } else {
-    const content = await svc.getList(base as any);
-    return res.json({ content });
+  try {
+    if (pageSize) {
+      const page = await svc.getPageable(
+        { pageSize: Number(pageSize), pageNumber: Number(pageNumber) },
+        base
+      );
+      return res.json(page);
+    } else {
+      const content = await svc.getList(base);
+      return res.json({ content });
+    }
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ message: "internal_error" });
   }
 };
 
 export const POST: ApiHandler = async (req, res) => {
   const svc = container.resolve(CounterpartyService);
-  const body = req.body;
-  const created = await svc.create(body);
-  return res.json(created);
+  const {
+    store_id,
+    name,
+    email,
+    phone,
+    biz_no,
+    channel,
+    bank,
+    bank_account,
+    status,
+    tags,
+    metadata,
+    _return_data = false,
+  } = req.body;
+
+  const _data = {
+    store_id,
+    name,
+    email,
+    phone,
+    biz_no,
+    channel,
+    bank,
+    bank_account,
+    status,
+    tags,
+    metadata,
+  };
+
+  try {
+    const result = await svc.create(_data);
+    if (_return_data) return res.json({ content: result });
+    return res.json({ message: "success" });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ message: "create_failed" });
+  }
 };

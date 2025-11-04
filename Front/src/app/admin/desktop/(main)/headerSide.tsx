@@ -262,8 +262,13 @@ const SidebarNav: NavParent[] = [
         icon: "",
       },
       {
+        name: "템플릿 등록",
+        to: "template/regist",
+        icon: "",
+      },
+      {
         name: "템플릿 관리",
-        to: "/",
+        to: "template/management",
         icon: "",
       },
       {

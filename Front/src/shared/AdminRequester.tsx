@@ -903,102 +903,111 @@ class _AdminRequester {
 
   // 계약
   async getContracts(data?: any, callback?: Function) {
-    if (callback) callback(await this.get(`/contracts`, data));
-    else return await this.get(`/contracts`, data);
+    if (callback) callback(await this.get(`/contract`, data));
+    else return await this.get(`/contract`, data);
   }
   async createContract(data?: any, callback?: Function) {
-    if (callback) callback(await this.post(`/contracts`, data));
-    else return await this.post(`/contracts`, data);
+    if (callback) callback(await this.post(`/contract`, data));
+    else return await this.post(`/contract`, data);
   }
   async getContract(id: string, data?: any, callback?: Function) {
-    if (callback) callback(await this.get(`/contracts/${id}`, data));
-    else return await this.get(`/contracts/${id}`, data);
+    if (callback) callback(await this.get(`/contract/${id}`, data));
+    else return await this.get(`/contract/${id}`, data);
   }
   async updateContract(id: string, data?: any, callback?: Function) {
-    if (callback) callback(await this.post(`/contracts/${id}`, data));
-    else return await this.post(`/contracts/${id}`, data);
+    if (callback) callback(await this.post(`/contract/${id}`, data));
+    else return await this.post(`/contract/${id}`, data);
   }
   async deleteContract(id: string, callback?: Function) {
-    if (callback) callback(await this.delete(`/contracts/${id}`, {}));
-    else return await this.delete(`/contracts/${id}`, {});
+    if (callback) callback(await this.delete(`/contract/${id}`, {}));
+    else return await this.delete(`/contract/${id}`, {});
   }
 
   // 피계약자(Counterparty)
   async getCounterparties(data?: any, callback?: Function) {
-    if (callback) callback(await this.get(`/counterparties`, data));
-    else return await this.get(`/counterparties`, data);
+    if (callback) callback(await this.get(`/counterparty`, data));
+    else return await this.get(`/counterparty`, data);
   }
   async createCounterparty(data?: any, callback?: Function) {
-    if (callback) callback(await this.post(`/counterparties`, data));
-    else return await this.post(`/counterparties`, data);
+    if (callback) callback(await this.post(`/counterparty`, data));
+    else return await this.post(`/counterparty`, data);
   }
   async updateCounterparty(id: string, data?: any, callback?: Function) {
-    if (callback) callback(await this.post(`/counterparties/${id}`, data));
-    else return await this.post(`/counterparties/${id}`, data);
+    if (callback) callback(await this.post(`/counterparty/${id}`, data));
+    else return await this.post(`/counterparty/${id}`, data);
   }
   async deleteCounterparty(id: string, callback?: Function) {
-    if (callback) callback(await this.delete(`/counterparties/${id}`, {}));
-    else return await this.delete(`/counterparties/${id}`, {});
+    if (callback) callback(await this.delete(`/counterparty/${id}`, {}));
+    else return await this.delete(`/counterparty/${id}`, {});
   }
 
   // 템플릿
   async getContractTemplates(data?: any, callback?: Function) {
-    if (callback) callback(await this.get(`/contract-template`, data));
-    else return await this.get(`/contract-template`, data);
+    const p = await this.get(`/contract_template`, data);
+    if (callback) callback(p);
+    else return p;
   }
   async createContractTemplate(data?: any, callback?: Function) {
-    if (callback) callback(await this.post(`/contract-template`, data));
-    else return await this.post(`/contract-template`, data);
+    const p = await this.post(`/contract_template`, data);
+    if (callback) callback(p);
+    else return p;
+  }
+  async getContractTemplate(id: string, data?: any, callback?: Function) {
+    const p = await this.get(`/contract_template/${id}`, data);
+    if (callback) callback(p);
+    else return p;
   }
   async updateContractTemplate(id: string, data?: any, callback?: Function) {
-    if (callback) callback(await this.post(`/contract-template/${id}`, data));
-    else return await this.post(`/contract-template/${id}`, data);
+    const p = await this.post(`/contract_template/${id}`, data);
+    if (callback) callback(p);
+    else return p;
   }
   async deleteContractTemplate(id: string, callback?: Function) {
-    if (callback) callback(await this.delete(`/contract-template/${id}`, {}));
-    else return await this.delete(`/contract-template/${id}`, {});
+    const p = await this.delete(`/contract_template/${id}`, {});
+    if (callback) callback(p);
+    else return p;
   }
 
   // 승인(Approval)
   async getApprovals(data?: any, callback?: Function) {
-    if (callback) callback(await this.get(`/approvals`, data));
-    else return await this.get(`/approvals`, data);
+    if (callback) callback(await this.get(`/approval`, data));
+    else return await this.get(`/approval`, data);
   }
   async updateApproval(id: string, data?: any, callback?: Function) {
-    if (callback) callback(await this.post(`/approvals/${id}`, data));
-    else return await this.post(`/approvals/${id}`, data);
+    if (callback) callback(await this.post(`/approval/${id}`, data));
+    else return await this.post(`/approval/${id}`, data);
   }
 
   // 증빙(Evidence)
   async getEvidences(data?: any, callback?: Function) {
-    if (callback) callback(await this.get(`/evidences`, data));
-    else return await this.get(`/evidences`, data);
+    if (callback) callback(await this.get(`/evidence`, data));
+    else return await this.get(`/evidence`, data);
   }
   async createEvidence(data?: any, callback?: Function) {
-    if (callback) callback(await this.post(`/evidences`, data));
-    else return await this.post(`/evidences`, data);
+    if (callback) callback(await this.post(`/evidence`, data));
+    else return await this.post(`/evidence`, data);
   }
   async deleteEvidence(id: string, callback?: Function) {
-    if (callback) callback(await this.delete(`/evidences/${id}`, {}));
-    else return await this.delete(`/evidences/${id}`, {});
+    if (callback) callback(await this.delete(`/evidence/${id}`, {}));
+    else return await this.delete(`/evidence/${id}`, {});
   }
 
   // 초대(Invitation)
   async getInvitations(data?: any, callback?: Function) {
-    if (callback) callback(await this.get(`/invitations`, data));
-    else return await this.get(`/invitations`, data);
+    if (callback) callback(await this.get(`/invitation`, data));
+    else return await this.get(`/invitation`, data);
   }
   async createInvitation(data?: any, callback?: Function) {
-    if (callback) callback(await this.post(`/invitations`, data));
-    else return await this.post(`/invitations`, data);
+    if (callback) callback(await this.post(`/invitation`, data));
+    else return await this.post(`/invitation`, data);
   }
   async updateInvitation(id: string, data?: any, callback?: Function) {
-    if (callback) callback(await this.post(`/invitations/${id}`, data));
-    else return await this.post(`/invitations/${id}`, data);
+    if (callback) callback(await this.post(`/invitation/${id}`, data));
+    else return await this.post(`/invitation/${id}`, data);
   }
   async deleteInvitation(id: string, callback?: Function) {
-    if (callback) callback(await this.delete(`/invitations/${id}`, {}));
-    else return await this.delete(`/invitations/${id}`, {});
+    if (callback) callback(await this.delete(`/invitation/${id}`, {}));
+    else return await this.delete(`/invitation/${id}`, {});
   }
 }
 

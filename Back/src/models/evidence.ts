@@ -31,6 +31,9 @@ export class Evidence extends BaseEntity {
   @Column({ type: "character varying", nullable: true })
   file_name?: string;
 
+  @Column({ type: "boolean", default: false })
+  verified!: boolean;
+
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;
 
