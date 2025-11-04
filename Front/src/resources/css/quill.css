@@ -1,0 +1,189 @@
+.quill {
+  em {
+    font-style: italic;
+  }
+  strong {
+    font-weight: bolder;
+  }
+  code {
+    font-family: monospace;
+  }
+  h1 {
+    display: block;
+    font-size: 2em;
+    margin-block-start: 0.67em;
+    margin-block-end: 0.67em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    unicode-bidi: isolate;
+  }
+  h2 {
+    display: block;
+    font-size: 1.5em;
+    margin-block-start: 0.83em;
+    margin-block-end: 0.83em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    unicode-bidi: isolate;
+  }
+  ul {
+    display: block;
+    list-style-type: disc;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    padding-inline-start: 40px;
+    unicode-bidi: isolate;
+  }
+  li {
+    display: list-item;
+    text-align: -webkit-match-parent;
+    unicode-bidi: isolate;
+  }
+  ol {
+    display: block;
+    list-style-type: decimal;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    padding-inline-start: 40px;
+    unicode-bidi: isolate;
+  }
+  pre {
+    display: block;
+    font-family: monospace;
+    unicode-bidi: isolate;
+    white-space: pre;
+    margin-block: 1em;
+    margin-inline: 0px;
+  }
+  blockquote {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 40px;
+    margin-inline-end: 40px;
+    unicode-bidi: isolate;
+  }
+  sub {
+    vertical-align: sub;
+    font-size: smaller;
+  }
+  sup {
+    vertical-align: super;
+    font-size: smaller;
+  }
+  img {
+    width: 100%;
+  }
+}
+.ql-tooltip {
+  width: auto;
+}
+.ql-container,
+.ql-editor {
+  min-height: 400px;
+}
+
+/* Pretendard */
+[data-value="Pretendard"].ql-picker-item::before {
+  content: "Pretendard" !important;
+}
+
+[data-value="Pretendard"].ql-picker-label::before {
+  content: "Pretendard" !important;
+}
+
+.ql-font-Pretendard {
+  font-family: var(--font-pretendard);
+}
+
+/* NotoSans */
+[data-value="NotoSans"].ql-picker-item::before {
+  content: "구글 본고딕" !important;
+}
+
+[data-value="NotoSans"].ql-picker-label::before {
+  content: "구글 본고딕" !important;
+}
+
+.ql-font-NotoSans {
+  font-family: var(--font-notosans);
+}
+
+/* 나눔바른고딕 */
+[data-value="NanumBarunGothic"].ql-picker-item::before {
+  content: "나눔 바른 고딕" !important;
+}
+[data-value="NanumBarunGothic"].ql-picker-label::before {
+  content: "나눔 바른 고딕" !important;
+}
+.ql-font-NanumBarunGothic {
+  font-family: var(--font-barun-gothic);
+}
+
+/* 나눔브러쉬 */
+[data-value="BrushFont"].ql-picker-item::before {
+  content: "나눔 브러쉬" !important;
+}
+[data-value="BrushFont"].ql-picker-label::before {
+  content: "나눔 브러쉬" !important;
+}
+.ql-font-BrushFont {
+  font-family: var(--font-brush);
+}
+
+/* 나눔고딕 */
+[data-value="NanumGothic"].ql-picker-item::before {
+  content: "나눔고딕" !important;
+}
+[data-value="NanumGothic"].ql-picker-label::before {
+  content: "나눔고딕" !important;
+}
+.ql-font-NanumGothic {
+  font-family: var(--font-gothic);
+}
+
+/* 나눔휴먼 */
+[data-value="NanumHuman"].ql-picker-item::before {
+  content: "나눔휴먼" !important;
+}
+[data-value="NanumHuman"].ql-picker-label::before {
+  content: "나눔휴먼" !important;
+}
+.ql-font-NanumHuman {
+  font-family: var(--font-human);
+}
+
+/* 나눔명조 */
+[data-value="NanumMyeongjo"].ql-picker-item::before {
+  content: "나눔명조" !important;
+}
+[data-value="NanumMyeongjo"].ql-picker-label::before {
+  content: "나눔명조" !important;
+}
+.ql-font-NanumMyeongjo {
+  font-family: var(--font-myeongjo);
+}
+
+/* 나눔펜 */
+[data-value="NanumPen"].ql-picker-item::before {
+  content: "나눔펜" !important;
+}
+[data-value="NanumPen"].ql-pciker-label::before {
+  content: "나눔펜" !important;
+}
+.ql-font-NanumPen {
+  font-family: var(--font-pen);
+}
+/* 나늠스퀘어네오 */
+[data-value="NanumSqaureNeo"].ql-picker-item::before {
+  content: "나늠스퀘어네오" !important;
+}
+
+[data-value="NanumSqaureNeo"].ql-picker-label::before {
+  content: "나늠스퀘어네오" !important;
+}
+.ql-font-NanumSqaureNeo {
+  font-family: var(--font-square-neo);
+}

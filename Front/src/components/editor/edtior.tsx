@@ -11,7 +11,17 @@ import {
   RangeStatic,
 } from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
-
+export const FontWhitelist = [
+  "Pretendard",
+  "NotoSans",
+  "NanumBarunGothic",
+  "BrushFont",
+  "NanumGothic",
+  "NanumHuman",
+  "NanumMyeongjo",
+  "NanumPen",
+  "NanumSqaureNeo",
+];
 // (Keep the dynamic import and type interfaces as they are)
 const ReactQuill = dynamic(
   async () => {
@@ -21,6 +31,10 @@ const ReactQuill = dynamic(
     const { default: Test } = await import("./add-on/test/add-on");
     Test.register(RQ);
 
+    // 폰트
+    const Font: any = RQ.Quill.import("attributors/class/font");
+    Font.whitelist = FontWhitelist;
+    RQ.Quill.register(Font, true);
     const Component = ({ forwardedRef, ...props }: any) => (
       <RQ ref={forwardedRef} {...props} />
     );
