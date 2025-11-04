@@ -187,3 +187,13 @@
 .ql-font-NanumSqaureNeo {
   font-family: var(--font-square-neo);
 }
+/* 사천 */
+[data-value="Sacheon"].ql-picker-item::before {
+  content: "사천항공체" !important;
+}
+[data-value="Sacheon"].ql-picker-label::before {
+  content: "사천항공체" !important;
+}
+.ql-font-Sacheon {
+  font-family: var(--font-sacheon);
+}

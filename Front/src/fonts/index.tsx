@@ -229,6 +229,11 @@ export const NotoSans = localFont({
   display: "swap",
   variable: "--font-notosans",
 });
+export const Sacheon = localFont({
+  src: "../../public/resources/fonts/SacheonHangGong-Regular.woff2",
+  display: "swap",
+  variable: "--font-sacheon",
+});
 
 const FontLists = clsx(
   NanumBarunGothic.variable,
@@ -239,6 +244,7 @@ const FontLists = clsx(
   NanumPen.variable,
   NanumSqaureNeo.variable,
   Pretendard.variable,
-  NotoSans.variable
+  NotoSans.variable,
+  Sacheon.variable
 );
 export default FontLists;

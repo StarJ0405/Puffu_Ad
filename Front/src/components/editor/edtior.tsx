@@ -21,6 +21,7 @@ export const FontWhitelist = [
   "NanumMyeongjo",
   "NanumPen",
   "NanumSqaureNeo",
+  "Sacheon",
 ];
 // (Keep the dynamic import and type interfaces as they are)
 const ReactQuill = dynamic(
