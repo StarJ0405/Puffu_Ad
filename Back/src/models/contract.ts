@@ -51,6 +51,12 @@ export class Contract extends BaseEntity {
   @Column({ type: "real", default: 0 })
   payout_rate?: number; // CHECK 0~100
 
+  @Column({ type: "character varying", default: "active" })
+  status!: string;
+
+  @Column({ type: "text", array: true, default: "{}" })
+  tags?: string[];
+
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;
 

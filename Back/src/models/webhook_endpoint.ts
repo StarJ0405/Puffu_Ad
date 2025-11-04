@@ -12,7 +12,7 @@ import { Store } from "./store";
 
 @Entity({ name: "webhook_endpoint" })
 @Index(["store_id"])
-@Index(["store_id", "url"], { unique: true })
+@Index(["url"], { unique: true })
 @Index(["created_at"])
 export class WebhookEndpoint extends BaseEntity {
   @Column({ type: "character varying", nullable: false })
@@ -25,11 +25,11 @@ export class WebhookEndpoint extends BaseEntity {
   @Column({ type: "character varying", nullable: false })
   url!: string;
 
-  @Column({ type: "character varying", nullable: true })
-  secret?: string;
+  @Column({ type: "character varying", default: "active" })
+  status!: string; // active | inactive
 
-  @Column({ type: "boolean", default: true })
-  active?: boolean;
+  @Column({ type: "character varying", nullable: true })
+  secret?: string; // HMAC 검증용 secret key
 
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;

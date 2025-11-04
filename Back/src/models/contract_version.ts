@@ -1,5 +1,12 @@
 import { BaseEntity } from "data-source";
-import { BeforeInsert, Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+} from "typeorm";
 import { generateEntityId } from "utils/functions";
 import { Contract } from "./contract";
 
@@ -14,6 +21,9 @@ export class ContractVersion extends BaseEntity {
   @ManyToOne(() => Contract)
   @JoinColumn({ name: "contract_id", referencedColumnName: "id" })
   contract?: Contract;
+
+  @Column({ type: "character varying", nullable: false })
+  store_id!: string;
 
   @Column({ type: "integer", nullable: false })
   v_no!: number;

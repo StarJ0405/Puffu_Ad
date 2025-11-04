@@ -32,8 +32,11 @@ export class Approval extends BaseEntity {
   @Column({ type: "timestamp with time zone", nullable: true })
   approved_at?: Date;
 
-  @Column({ type: "character varying", nullable: true })
-  status?: string; // e.g. 'pending' | 'approved' | 'rejected'
+  @Column({ type: "timestamp with time zone", nullable: true })
+  rejected_at?: Date;
+
+  @Column({ type: "character varying", default: "pending" })
+  status!: string; // 'pending' | 'approved' | 'rejected'
 
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;

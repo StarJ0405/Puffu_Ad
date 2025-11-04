@@ -33,6 +33,9 @@ export class ContractTemplate extends BaseEntity {
   @Column({ type: "boolean", default: false })
   default?: boolean; // 기본 템플릿 여부
 
+  @Column({ type: "boolean", default: false })
+  locked?: boolean;
+
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;
 

@@ -2,25 +2,31 @@ import { container } from "tsyringe";
 import { ContractVersionService } from "services/contract_version";
 
 export const GET: ApiHandler = async (req, res) => {
-  const svc = container.resolve(ContractVersionService);
   const { id } = req.params;
-  const { relations, select } = req.query;
-  const one = await svc.get({ where: { id }, relations, select } as any);
-  return res.json(one);
+  const { relations, select } = req.parsedQuery;
+  const svc = container.resolve(ContractVersionService);
+  const content = await svc.getById(id, { relations, select });
+  return res.json({ content });
 };
 
 export const POST: ApiHandler = async (req, res) => {
-  const svc = container.resolve(ContractVersionService);
   const { id } = req.params;
-  const patch = req.query; // req.query 사용
-  await svc.update({ id } as any, patch);
-  const updated = await svc.getById(id, {});
-  return res.json(updated);
+  const { body, variables, locked, return_data = false } = req.body;
+
+  const svc = container.resolve(ContractVersionService);
+  try {
+    const _data = { body, variables, locked };
+    const result = await svc.update({ id }, _data, true);
+    return res.json(return_data ? { content: result } : { message: "success" });
+  } catch (err: any) {
+    return res.status(500).json({ error: err?.message, status: 500 });
+  }
 };
 
 export const DELETE: ApiHandler = async (req, res) => {
-  const svc = container.resolve(ContractVersionService);
   const { id } = req.params;
-  await svc.delete({ id } as any, true);
-  return res.json({ ok: true });
+  const svc = container.resolve(ContractVersionService);
+  const result = await svc.delete({ id }, true);
+  if (result) return res.json({ message: "success" });
+  else return res.status(404).json({ error: "fail" });
 };
