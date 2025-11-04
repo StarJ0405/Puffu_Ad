@@ -1,5 +1,5 @@
 :root {
-  --mainBg: #221F22;
+  --mainBg: #221f22;
   --foreground: #333;
   --default-color: #fff;
   --main-color1: #ff62a3;
@@ -7,8 +7,7 @@
 
   --confirmModal-bg: #222;
 
-
-  --button-disabled-bg : #535353;
+  --button-disabled-bg: #535353;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -18,28 +17,9 @@
   }
 } */
 
-@font-face {
-  font-family: "GmarketSansBold";
-  font-weight: 600;
-  font-display: swap;
-  src: local("GmarketSansBold"),
-    url(./woff/GmarketSansBold.woff) format("woff");
-}
-
-@font-face {
-  font-family: "SacheonHangGong-Regular";
-  font-weight: 400;
-  font-display: swap;
-  src: local("SacheonHangGong-Regular"),
-    url(./woff-subset/SacheonHangGong-Regular.woff) format("woff");
-}
-
-.GmarketFont {font-family: "GmarketSansBold", sans-serif !important;}
-.SacheonFont {font-family: "SacheonHangGong-Regular", sans-serif !important;}
-
 * {
-  font-size: 16px; 
-  line-height: 1.4; 
+  font-size: 16px;
+  line-height: 1.4;
   /* word-break: break-all; */
 }
 
@@ -50,16 +30,18 @@ body {
   /* overflow-x: hidden; */
   /* scrollbar-width: none; */
   -ms-overflow-style: none;
-  font-family: "pretendard", sans-serif !important;
+  font-family: var(--font-pretendard), var(--font-notosans) !important;
   /* overflow: unset !important; */
 }
 
-textarea {font-family: "pretendard", sans-serif !important;}
+textarea {
+  font-family: var(--font-pretendard), var(--font-notosans) !important;
+}
 
 body {
   color: var(--foreground);
   background: var(--mainBg);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-pretendard), var(--font-notosans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -85,7 +67,6 @@ body {
   color: var(--default-color);
 }
 
-
 div {
   width: 100%;
 }
@@ -110,7 +91,7 @@ a {
   display: none !important;
   pointer-events: none !important;
 }
-[aria-hidden] {
+[aria-hidden]:not([aria-hidden="false"]) {
   visibility: hidden !important;
   display: none !important;
   pointer-events: none !important;
@@ -120,7 +101,7 @@ a {
   display: none !important;
   pointer-events: none !important;
 }
-[hidden] {
+[hidden]:not([hidden="false"]) {
   visibility: hidden !important;
   display: none !important;
   pointer-events: none !important;
@@ -131,7 +112,7 @@ a {
   display: none !important;
   pointer-events: none !important;
 }
-[aria-hidden] * {
+[aria-hidden]:not([aria-hidden="false"]) * {
   visibility: hidden !important;
   display: none !important;
   pointer-events: none !important;
@@ -141,7 +122,7 @@ a {
   display: none !important;
   pointer-events: none !important;
 }
-[hidden] * {
+[hidden]:not([hidden="false"]) * {
   visibility: hidden !important;
   display: none !important;
   pointer-events: none !important;
@@ -168,7 +149,6 @@ a {
   }
 }
 
-
 /* 모바일 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 /* @media (max-width: 1280px) {
@@ -178,23 +158,25 @@ a {
 } */
 
 @media (max-width: 768px) {
-
   /* 탭 하이라이트 제거 */
-  * {-webkit-tap-highlight-color: transparent;}
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
 
   :root {
     --mob-active-filter: brightness(0.5);
-    --subpageHeader-H : 50px;
+    --subpageHeader-H: 50px;
   }
 
   /* html {
     max-width: 768px;
   } */
-
-  
 }
 
-.mob_wrap {max-width: 768px; margin: 0 auto;}
+.mob_wrap {
+  max-width: 768px;
+  margin: 0 auto;
+}
 
 .mob_page_container {
   width: 100%;
@@ -222,4 +204,3 @@ a {
 .mob_root .swiper .swiper-wrapper {
   align-items: center;
 }
-

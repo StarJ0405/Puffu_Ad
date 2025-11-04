@@ -91,92 +91,6 @@ video:not(#tiptap-container) {
   font: inherit;
   vertical-align: baseline;
 }
-.quill {
-  em {
-    font-style: italic;
-  }
-  strong {
-    font-weight: bolder;
-  }
-  code {
-    font-family: monospace;
-  }
-  h1 {
-    display: block;
-    font-size: 2em;
-    margin-block-start: 0.67em;
-    margin-block-end: 0.67em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    font-weight: bold;
-    unicode-bidi: isolate;
-  }
-  h2 {
-    display: block;
-    font-size: 1.5em;
-    margin-block-start: 0.83em;
-    margin-block-end: 0.83em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    font-weight: bold;
-    unicode-bidi: isolate;
-  }
-  ul {
-    display: block;
-    list-style-type: disc;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    padding-inline-start: 40px;
-    unicode-bidi: isolate;
-  }
-  li {
-    display: list-item;
-    text-align: -webkit-match-parent;
-    unicode-bidi: isolate;
-  }
-  ol {
-    display: block;
-    list-style-type: decimal;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    padding-inline-start: 40px;
-    unicode-bidi: isolate;
-  }
-  pre {
-    display: block;
-    font-family: monospace;
-    unicode-bidi: isolate;
-    white-space: pre;
-    margin-block: 1em;
-    margin-inline: 0px;
-  }
-  blockquote {
-    display: block;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    margin-inline-start: 40px;
-    margin-inline-end: 40px;
-    unicode-bidi: isolate;
-  }
-  sub {
-    vertical-align: sub;
-    font-size: smaller;
-  }
-  sup {
-    vertical-align: super;
-    font-size: smaller;
-  }
-  img {
-    width: 100%;
-  }
-}
-.ql-tooltip {
-  width: auto;
-}
-.ql-container,
-.ql-editor {
-  min-height: 400px;
-}
 
 /* HTML5 display-role reset for older browsers */
 article,
@@ -218,25 +132,19 @@ table {
   line-height: 1;
 } */
 
-
-
-input[type='search']:focus-visible {
-  border: none; outline: none;
+input[type="search"]:focus-visible {
+  border: none;
+  outline: none;
 }
 
-::-webkit-search-cancel-button { display:none }
-
-
-
-
+::-webkit-search-cancel-button {
+  display: none;
+}
 
 /* 컴포넌트 공통 css ----------------------- */
 
-
-
-
 .searchInput_Box {
-  border-color: rgba(255,255,255,0.3);
+  border-color: rgba(255, 255, 255, 0.3);
   background: #111;
 }
 
@@ -248,10 +156,8 @@ input[type='search']:focus-visible {
 }
 
 .searchInput_Box input::placeholder {
-  color: #A9A9A9;
+  color: #a9a9a9;
 }
-
-
 
 /* 리뷰등록, 문의하기, 게시물 등록 버튼 */
 .post_btn {
@@ -269,13 +175,11 @@ input[type='search']:focus-visible {
   background: var(--main-color2) !important;
 }
 
-
 /* 버튼들 비활성화 될 때 */
 .disabled {
   background: #444 !important;
   color: #777 !important;
 }
-
 
 /* 기본 인풋 스타일 */
 .web_input {
@@ -289,12 +193,10 @@ input[type='search']:focus-visible {
   border: 1px solid #fff !important;
 }
 
-
 @media (max-width: 768px) {
   .web_input {
     padding: 10px 12px !important;
   }
-
 
   .post_btn {
     width: 100% !important;
@@ -310,10 +212,7 @@ input[type='search']:focus-visible {
   .post_btn:active {
     filter: var(--mob-active-filter);
   }
-
 }
-
-
 
 /* 셀렉트 */
 /* width는 위에 flexChild 씌워서 그걸로 조정하면 됨. */
@@ -333,7 +232,9 @@ input[type='search']:focus-visible {
   border-color: #fff !important;
 }
 
-.web_select_arrow {color: #fff !important;}
+.web_select_arrow {
+  color: #fff !important;
+}
 
 .web_select_placholder {
   color: #fff;
@@ -358,28 +259,23 @@ input[type='search']:focus-visible {
   width: 100px;
 }
 
-
-
 .agree_content {
   width: 100%;
   border-radius: 5px;
   border: 1px solid #707070;
-  background-color: #2b2b2b;  
+  background-color: #2b2b2b;
   padding: 20px;
   height: 200px;
   align-items: start !important;
   overflow-y: auto;
   font-size: 16px;
   line-height: 1.6;
-  color: #BFBFBF;
+  color: #bfbfbf;
 }
-
 
 .modal_body {
   color: #000 !important;
 }
-
-
 
 /* 모달용 셀렉트(임시) */
 
@@ -407,7 +303,6 @@ input[type='search']:focus-visible {
   appearance: none;
 }
 
-
 .custom-toast-body {
   background: #111;
   border: none;
@@ -416,7 +311,5 @@ input[type='search']:focus-visible {
 .custom-toast {
   margin: 5px 0 0;
 }
-
-
 
 /* 컴포넌트 공통 css end ------------------ */
