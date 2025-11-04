@@ -4,7 +4,7 @@ WORKDIR /Front
 COPY /Front/*.json /Front/
 COPY /Front/.env* /Front/
 RUN npm install
-COPY /Front/public /Front/
+COPY /Front/public/. /Front/public/
 COPY /Front/src/. /Front/src/
 COPY /Front/*.mjs /Front/
 COPY /Front/*.ts /Front/
