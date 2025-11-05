@@ -9,6 +9,7 @@ import {
 } from "typeorm";
 import { generateEntityId } from "utils/functions";
 import { Store } from "./store";
+import { User } from "./user";
 
 @Entity({ name: "counterparty" })
 @Index(["created_at"])
@@ -22,6 +23,13 @@ export class Counterparty extends BaseEntity {
   @ManyToOne(() => Store)
   @JoinColumn({ name: "store_id", referencedColumnName: "id" })
   store?: Store;
+
+  @Column({ type: "character varying", nullable: true })
+  user_id?: string;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: "user_id", referencedColumnName: "id" })
+  user?: User;
 
   @Column({ type: "character varying", nullable: false })
   name!: string;
