@@ -243,22 +243,17 @@ const SidebarNav: NavParent[] = [
     navs: [
       {
         name: "계약 목록",
-        to: "/",
+        to: "/list",
         icon: "",
       },
       {
         name: "계약 작성",
-        to: "/",
-        icon: "",
-      },
-      {
-        name: "계약 상세",
-        to: "/",
+        to: "/create",
         icon: "",
       },
       {
         name: "피계약자 관리",
-        to: "/",
+        to: "/counterparty",
         icon: "",
       },
       {

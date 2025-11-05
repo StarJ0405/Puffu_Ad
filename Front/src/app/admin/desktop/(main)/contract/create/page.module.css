@@ -1,0 +1,15 @@
+.previewBox {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fafafa;
+  padding: 15px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.previewBody {
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
