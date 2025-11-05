@@ -1009,6 +1009,26 @@ class _AdminRequester {
     if (callback) callback(await this.delete(`/invitation/${id}`, {}));
     else return await this.delete(`/invitation/${id}`, {});
   }
+
+    // 피계약자 정보 요청 (Intake)
+  async getIntakeRequests(data?: any, callback?: Function) {
+    const p = await this.get(`/intake`, data);
+    if (callback) callback(p);
+    else return p;
+  }
+
+  async createIntakeRequest(data?: any, callback?: Function) {
+    const p = await this.post(`/intake`, data);
+    if (callback) callback(p);
+    else return p;
+  }
+
+  async submitIntakeRequest(data?: any, callback?: Function) {
+    const p = await this.post(`/intake/submit`, data);
+    if (callback) callback(p);
+    else return p;
+  }
+
 }
 
 export default _AdminRequester;
