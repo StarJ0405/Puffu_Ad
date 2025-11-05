@@ -1,9 +1,16 @@
 "use client";
 import { fileRequester } from "@/shared/FileRequester";
 import useClientEffect from "@/shared/hooks/useClientEffect";
+import clsx from "clsx";
 import katex from "katex";
 import dynamic from "next/dynamic";
-import { forwardRef, useCallback, useImperativeHandle, useRef } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+} from "react";
 import {
   DeltaStatic,
   EmitterSource,
@@ -11,6 +18,7 @@ import {
   RangeStatic,
 } from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
+import LoadingSpinner from "../loading/LoadingSpinner";
 export const FontWhitelist = [
   "Pretendard",
   "NotoSans",
@@ -29,8 +37,14 @@ const ReactQuill = dynamic(
     const { default: RQ } = await import("react-quill-new");
 
     //add-on
-    const { default: Test } = await import("./add-on/test/add-on");
-    Test.register(RQ);
+    const { default: FontSizeAddOn } = await import(
+      "./add-on/font-size/add-on"
+    );
+    FontSizeAddOn.register(RQ);
+    const { default: TextFormAddOn } = await import("./add-on/textform/add-on");
+    TextFormAddOn.register(RQ);
+    const { default: BoxformAddOn } = await import("./add-on/boxform/add-on");
+    BoxformAddOn.register(RQ);
 
     // 폰트
     const Font: any = RQ.Quill.import("attributors/class/font");
@@ -40,10 +54,20 @@ const ReactQuill = dynamic(
       <RQ ref={forwardedRef} {...props} />
     );
 
+    const Size: any = RQ.Quill.import("attributors/style/size");
+    // 폰트사이즈
+    Size.whitelist = Array.from({
+      length: FontSizeAddOn.max - FontSizeAddOn.min + 1,
+    }).map((_, index) => `${index + 1}px`);
+    RQ.Quill.register(Size, true);
+
     Component.displayName = "ReactQuill";
     return Component;
   },
-  { ssr: false }
+  {
+    ssr: false,
+    loading: () => <LoadingSpinner id="ql-loader" />,
+  }
 );
 
 type Value = string | DeltaStatic;
@@ -87,6 +111,7 @@ interface Props {
   path?: string;
   container?: Record<string, any>;
   modules?: Record<string, any>;
+  type?: "a4";
 }
 interface UnprivilegedEditor {
   getLength: Quill["getLength"];
@@ -158,7 +183,6 @@ const Editor = forwardRef(
       const editor = quillRef.current?.getEditor();
       if (!editor) return;
       const root = editor.root;
-
       // Paste handler
       const handlePaste = async (event: ClipboardEvent) => {
         const clipboardData = event.clipboardData;
@@ -219,7 +243,50 @@ const Editor = forwardRef(
         root.removeEventListener("dragover", handleDragOver, true);
       };
     }, [imageUploadHandler, quillRef.current]); // Rerun if the handler changes
-
+    useEffect(() => {
+      const targetNode = document.querySelector("#ql-loader")?.parentNode;
+      if (targetNode) {
+        const observer = new MutationObserver((mutationsList, observer) => {
+          for (const mutation of mutationsList) {
+            if (mutation.type === "childList") {
+              // 제거된 노드(요소) 목록 확인
+              mutation.removedNodes.forEach((node) => {
+                if ((node as HTMLElement).id === "ql-loader") {
+                  const container = document.querySelector(
+                    ".ql-container"
+                  ) as HTMLElement;
+                  if (container) {
+                    container.addEventListener("wheel", (e) => {
+                      if (!e.ctrlKey) return;
+                      e.preventDefault();
+                      e.stopPropagation();
+                      const direction = e.deltaY > 0 ? -1 : 1;
+                      const editor = container.querySelector(
+                        ".ql-editor"
+                      ) as HTMLElement;
+                      const scale = parseFloat(
+                        editor.getAttribute("scale") || "1"
+                      );
+                      const newScale = Math.min(
+                        Math.max(
+                          0.1,
+                          Math.round((scale + direction * 0.1) * 10) / 10
+                        ),
+                        2.0
+                      );
+                      editor.setAttribute("scale", String(newScale));
+                      editor.style.transform = `scale(${newScale})`;
+                    });
+                  }
+                  // setLoaded(true);
+                }
+              });
+            }
+          }
+        });
+        observer.observe(targetNode, { childList: true });
+      }
+    }, []);
     const _modules = {
       toolbar: {
         container,
@@ -234,14 +301,24 @@ const Editor = forwardRef(
         matchVisual: false,
       },
     };
-    useImperativeHandle(ref, () => ({}));
+    useImperativeHandle(ref, () => ({
+      getEditor() {
+        return quillRef.current.getEditor();
+      },
+      getValue() {
+        return quillRef.current.getEditor().root.innerHTML;
+      },
+      getDelta() {
+        return quillRef.current.getEditor().getContents();
+      },
+    }));
     return (
       <ReactQuill
         {...props}
         forwardedRef={quillRef}
         theme="snow"
         modules={_modules}
-        className="wrap-quill"
+        className={clsx("wrap-quill", (props.type || "a4").toLowerCase())}
       />
     );
   }

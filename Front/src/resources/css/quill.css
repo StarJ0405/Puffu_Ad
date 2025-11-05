@@ -44,9 +44,10 @@
   ol {
     display: block;
     list-style-type: decimal;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    padding-inline-start: 40px;
+    /* margin-block-start: 1em; */
+    /* margin-block-end: 1em; */
+    /* padding-inline-start: 40px; */
+    padding-inline-start: 0;
     unicode-bidi: isolate;
   }
   pre {
@@ -196,4 +197,58 @@
 }
 .ql-font-Sacheon {
   font-family: var(--font-sacheon);
+}
+
+/* Icon UI */
+.ql-formats {
+  border-right: 1px solid #d0d0d0;
+  padding-right: 10px;
+  margin-right: 10px !important;
+}
+.ql-fontsize {
+  width: 100% !important;
+  cursor: default !important;
+}
+.ql-container {
+  background-color: #ededed;
+  overflow: auto;
+}
+.ql-editor {
+  background-color: #fff;
+}
+.a4 .ql-editor {
+  width: 210mm;
+  margin: 0 auto;
+}
+
+.a4 .ql-container,
+.ql-editor {
+  min-height: 297mm;
+}
+
+.ql-disabled .textform {
+  resize: none !important;
+}
+.textform {
+  text-align: center;
+  resize: horizontal;
+  border: 1px dotted red;
+  border-bottom: 1px solid #111;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.boxform {
+  text-align: center;
+  resize: horizontal;
+  border: 5px double #111;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.ql-disabled .boxform {
+  resize: none;
+  pointer-events: none;
+  cursor: default;
 }
