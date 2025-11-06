@@ -23,7 +23,16 @@ export default function () {
               >
                 <P>{readOnly ? "편집모드로 전환" : "계약모드로 전환"}</P>
               </FlexChild>
-              <FlexChild className={styles.inputs} onClick={() => {}}>
+              <FlexChild
+                className={styles.inputs}
+                onClick={async () => {
+                  const quill = editor.current.getEditor();
+                  const { default: SignformAddOn } = await import(
+                    "@/components/editor/add-on/signform/add-on"
+                  );
+                  SignformAddOn.handleInsert(quill);
+                }}
+              >
                 <P>서명</P>
               </FlexChild>
               <FlexChild

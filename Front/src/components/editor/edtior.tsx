@@ -45,6 +45,8 @@ const ReactQuill = dynamic(
     TextFormAddOn.register(RQ);
     const { default: BoxformAddOn } = await import("./add-on/boxform/add-on");
     BoxformAddOn.register(RQ);
+    const { default: SignformAddOn } = await import("./add-on/signform/add-on");
+    SignformAddOn.register(RQ);
 
     // 폰트
     const Font: any = RQ.Quill.import("attributors/class/font");
@@ -276,9 +278,118 @@ const Editor = forwardRef(
                       );
                       editor.setAttribute("scale", String(newScale));
                       editor.style.transform = `scale(${newScale})`;
+
+                      // 1. 데이터 계산
+                      const scaleRatio = newScale / scale;
+                      const containerRect = container.getBoundingClientRect();
+                      const mouseX = e.clientX - containerRect.left;
+                      const mouseY = e.clientY - containerRect.top;
+
+                      // 2. 현재 스크롤 위치 보정
+                      const currentScrollX = editor.scrollLeft;
+                      const currentScrollY = editor.scrollTop;
+
+                      // 3. 커서 위치 (컨텐츠 기준)
+                      const newScrollX =
+                        (mouseX + currentScrollX) * scaleRatio - mouseX;
+                      const newScrollY =
+                        (mouseY + currentScrollY) * scaleRatio - mouseY;
+
+                      // 4. 업데이트
+                      container.scrollLeft = newScrollX;
+                      container.scrollTop = newScrollY;
+                    });
+
+                    const getDistance = (touches: TouchList): number => {
+                      const touch1 = touches[0];
+                      const touch2 = touches[1];
+                      return Math.sqrt(
+                        Math.pow(touch2.clientX - touch1.clientX, 2) +
+                          Math.pow(touch2.clientY - touch1.clientY, 2)
+                      );
+                    };
+                    container.addEventListener("touchstart", (e) => {
+                      const editor = container.querySelector(
+                        ".ql-editor"
+                      ) as HTMLElement;
+                      if (editor)
+                        if (e.touches.length === 2) {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          editor.setAttribute(
+                            "distance",
+                            String(getDistance(e.touches))
+                          );
+                        } else {
+                          editor.removeAttribute("distance");
+                        }
+                    });
+                    container.addEventListener("touchmove", (e) => {
+                      const editor = container.querySelector(
+                        ".ql-editor"
+                      ) as HTMLElement;
+                      if (
+                        e.touches.length === 2 &&
+                        editor &&
+                        editor.getAttribute("distance")
+                      ) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const scale = parseFloat(
+                          editor.getAttribute("scale") || "1"
+                        );
+                        const current = getDistance(e.touches);
+                        const init = parseFloat(
+                          editor.getAttribute("distance") || "0"
+                        );
+
+                        const scaleRatio = current / init;
+
+                        const newScale = Math.min(
+                          2.0,
+                          Math.max(
+                            0.1,
+                            Math.round(scale * scaleRatio * 10) / 10
+                          )
+                        );
+                        if (newScale === scale) return;
+                        editor.setAttribute("scale", String(newScale));
+                        editor.setAttribute("distance", String(current));
+                        editor.style.transform = `scale(${newScale})`;
+
+                        // 1. 데이터 계산
+                        const containerRect = container.getBoundingClientRect();
+                        const mouseX =
+                          (e.touches[0].clientX + e.touches[1].clientX) / 2 -
+                          containerRect.left;
+                        const mouseY =
+                          (e.touches[0].clientY + e.touches[1].clientY) / 2 -
+                          containerRect.top;
+
+                        // 2. 현재 스크롤 위치 보정
+                        const currentScrollX = editor.scrollLeft;
+                        const currentScrollY = editor.scrollTop;
+
+                        // 3. 커서 위치 (컨텐츠 기준)
+                        const newScrollX =
+                          (mouseX + currentScrollX) * scaleRatio - mouseX;
+                        const newScrollY =
+                          (mouseY + currentScrollY) * scaleRatio - mouseY;
+
+                        // 4. 업데이트
+                        container.scrollLeft = newScrollX;
+                        container.scrollTop = newScrollY;
+                      }
+                    });
+                    container.addEventListener("touchend", (e) => {
+                      if (e.touches.length < 2) {
+                        const editor = container.querySelector(
+                          ".ql-editor"
+                        ) as HTMLElement;
+                        editor.removeAttribute("distance");
+                      }
                     });
                   }
-                  // setLoaded(true);
                 }
               });
             }
