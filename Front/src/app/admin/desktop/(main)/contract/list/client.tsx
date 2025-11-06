@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import FlexChild from "@/components/flex/FlexChild";
@@ -20,17 +20,12 @@ type ContractRow = {
 };
 
 export function ContractListClient() {
-  // usePageData는 실제 API 호출
+  // --- 데이터 로드 -------------------------------------------------
   const {
-    contracts,
+    data: contracts,
     origin,
     error,
     isLoading,
-    mutate,
-    page,
-    setPage,
-    maxPage,
-    hasNext,
   } = usePageData(
     "contracts",
     (page) => ({
@@ -45,9 +40,7 @@ export function ContractListClient() {
     }
   );
 
-  // 렌더링용 목업 데이터
-  const [list, setList] = useState<ContractRow[]>([]);
-
+  // --- 목업 fallback ----------------------------------------------
   const dummyList: ContractRow[] = [
     {
       id: "con001",
@@ -67,14 +60,16 @@ export function ContractListClient() {
     },
   ];
 
+  const list: ContractRow[] = useMemo(() => {
+    if (contracts && contracts.length > 0) return contracts;
+    return dummyList;
+  }, [contracts]);
+
   useEffect(() => {
-    // 실제 API 결과는 로그로 확인
-    console.debug("[CONTRACT] fetched:", contracts, origin);
+    console.debug("[CONTRACT/LIST] fetched:", contracts || dummyList, origin);
+  }, [contracts, origin]);
 
-    // 렌더링은 목업 데이터 기준
-    setList(dummyList);
-  }, []);
-
+  // --- 렌더링 ------------------------------------------------------
   return (
     <VerticalFlex gap={15} alignItems="stretch" padding={50}>
       <P fontSize={18} fontWeight={600}>
@@ -84,30 +79,20 @@ export function ContractListClient() {
       {isLoading && <P>로딩 중...</P>}
       {error && <P>데이터를 불러오는 중 오류가 발생했습니다.</P>}
 
-      <VerticalFlex className="contract-list" gap={10}>
-        <HorizontalFlex className="header">
-          <FlexChild justifyContent="center">
-            <Span className={styles.tableHeader}>계약명</Span>
-          </FlexChild>
-          <FlexChild justifyContent="center">
-            <Span className={styles.tableHeader}>피계약자</Span>
-          </FlexChild>
-          <FlexChild justifyContent="center">
-            <Span className={styles.tableHeader}>기간</Span>
-          </FlexChild>
-          <FlexChild justifyContent="center">
-            <Span className={styles.tableHeader}>상태</Span>
-          </FlexChild>
-          <FlexChild justifyContent="center">
-            <Span className={styles.tableHeader}>최근 수정일</Span>
-          </FlexChild>
+      <VerticalFlex className={styles.contractList} gap={10}>
+        <HorizontalFlex className={styles.header}>
+          {["계약명", "피계약자", "기간", "상태", "최근 수정일"].map((h) => (
+            <FlexChild key={h} justifyContent="center">
+              <Span className={styles.tableHeader}>{h}</Span>
+            </FlexChild>
+          ))}
         </HorizontalFlex>
 
         {list.map((item) => (
           <HorizontalFlex
             key={item.id}
             justifyContent="space-between"
-            className="row"
+            className={styles.row}
           >
             <FlexChild justifyContent="center">
               <Span>{item.name}</Span>
@@ -122,7 +107,9 @@ export function ContractListClient() {
               <Span>{item.status}</Span>
             </FlexChild>
             <FlexChild justifyContent="center">
-              <Span>{item.updated_at}</Span>
+              <Span>
+                {new Date(item.updated_at).toLocaleDateString("ko-KR")}
+              </Span>
             </FlexChild>
           </HorizontalFlex>
         ))}

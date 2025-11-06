@@ -32,12 +32,18 @@ export function ContractCreateClient() {
   const [startsAt, setStartsAt] = useState("");
   const [endsAt, setEndsAt] = useState("");
   const [payoutRate, setPayoutRate] = useState<number | "">("");
-  const [body, setBody] = useState("");
+  const [body, setBody] = useState(`
+  <h3 style="margin-bottom:8px;">푸푸 광고 계약서</h3>
+  <p>이 계약은 푸푸애드와 피계약자 간의 광고 진행에 관한 조건을 명시합니다.</p>
+  <ul>
+    <li>계약 기간: 입력한 시작일 ~ 종료일</li>
+    <li>지급률: 입력한 비율 (%)</li>
+  </ul>
+  <p style="margin-top:12px;">계약 당사자는 상기 내용을 이해하고 이에 동의합니다.</p>
+`);
 
   // --- data fetch (템플릿 / 피계약자) -------------------------------
-  const {
-    contract_templates: templates,
-  } = usePageData(
+  const { contract_templates: templates } = usePageData(
     "contract_templates",
     (page) => ({ pageNumber: page, pageSize: 50 }),
     (params) => adminRequester.getContractTemplates(params),
@@ -45,9 +51,7 @@ export function ContractCreateClient() {
     { onReprocessing: (data) => data?.items || [], revalidateOnMount: true }
   );
 
-  const {
-    counterparties,
-  } = usePageData(
+  const { counterparties } = usePageData(
     "counterparties",
     (page) => ({ pageNumber: page, pageSize: 50 }),
     (params) => adminRequester.getCounterparties(params),
@@ -58,7 +62,9 @@ export function ContractCreateClient() {
   // --- 템플릿 선택 시 본문 자동 로드 -------------------------------
   useEffect(() => {
     if (!templateId) return;
-    const selected = templates?.find((t: TemplateOption) => t.id === templateId);
+    const selected = templates?.find(
+      (t: TemplateOption) => t.id === templateId
+    );
     if (selected) setBody(selected.body || "");
   }, [templateId, templates]);
 
@@ -132,7 +138,7 @@ export function ContractCreateClient() {
         </HorizontalFlex>
 
         {/* 기간 */}
-        <HorizontalFlex alignItems="center" gap={10}>
+        <HorizontalFlex alignItems="center" justifyContent="flex-start" gap={10}>
           <P width={120}>계약 기간</P>
           <Input
             type="date"
@@ -143,17 +149,17 @@ export function ContractCreateClient() {
           <Input
             type="date"
             value={endsAt}
-            onChange={(value: string | number) => setStartsAt(String(value))}
+            onChange={(value: string | number) => setEndsAt(String(value))}
           />
         </HorizontalFlex>
 
         {/* 지급률 */}
-        <HorizontalFlex alignItems="center" gap={10}>
+        <HorizontalFlex alignItems="center" justifyContent="flex-start" gap={10}>
           <P width={120}>지급률(%)</P>
           <Input
             type="number"
             value={payoutRate}
-            onChange={(value: string | number) => setStartsAt(String(value))}
+            onChange={(value: string | number) => setPayoutRate(Number(value))}
             placeHolder="0~100"
           />
         </HorizontalFlex>
