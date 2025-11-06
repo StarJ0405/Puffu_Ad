@@ -290,7 +290,6 @@ export function DetailFrame({
       <VerticalFlex className={styles.detail_infoBox} alignItems="start">
         <FlexChild className={styles.brand}>
           <Span>{product?.brand.name}</Span>
-          {selected.length}개
         </FlexChild>
 
         <FlexChild className={styles.detail_title}>
