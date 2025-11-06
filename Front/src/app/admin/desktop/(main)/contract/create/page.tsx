@@ -1,5 +1,5 @@
-import { ContractCreateClient } from "./client";
-
-export default async function Page() {
-  return <ContractCreateClient />;
+export default async function () {
+  return (
+    <></>
+  );
 }
