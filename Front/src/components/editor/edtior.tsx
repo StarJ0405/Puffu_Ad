@@ -471,7 +471,7 @@ const Editor = forwardRef(
         forwardedRef={quillRef}
         theme="snow"
         modules={_modules}
-        className={clsx("wrap-quill", (props.type || "a4").toLowerCase())}
+        className={clsx("wrap-quill", (props.type || "").toLowerCase())}
       />
     );
   }

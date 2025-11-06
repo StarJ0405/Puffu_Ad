@@ -1,0 +1,61 @@
+.upload {
+  padding: 20px;
+  background-color: #fff;
+  margin: 20px;
+  border-radius: 12px;
+  gap: 20px;
+  user-select: none;
+}
+
+.upload .title {
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1.5;
+  color: #111;
+}
+
+.upload .dropzone {
+  border: 1px dotted #d0d0d0;
+  border-width: 4px;
+  padding: 100px;
+  gap: 15px;
+  transition: all 0.2s ease;
+  background-color: #fff;
+}
+.dropzone.hover {
+  border-color: #007bff;
+  background-color: #e6f3ff;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+}
+
+.upload .dragText {
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.5;
+  color: #111;
+}
+
+.upload .or {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #c1c1c1;
+}
+
+.upload .button {
+  background-color: var(--admin-color);
+  padding: 8px 64px;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #eee;
+}
+
+.upload .format {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #c1c1c1;
+  white-space: pre-wrap;
+  text-align: center;
+}

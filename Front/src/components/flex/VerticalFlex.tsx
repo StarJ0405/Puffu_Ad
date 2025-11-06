@@ -57,6 +57,10 @@ function VerticalFlex({
   position,
   onWheel,
   onClick,
+  onDrop,
+  onDragEnter,
+  onDragLeave,
+  onDragOver,
   onMouseEnter,
   onMouseLeave,
   onTransitionStart,
@@ -160,6 +164,10 @@ function VerticalFlex({
       onMouseLeave={onMouseLeave}
       onTransitionEnd={onTransitionEnd}
       onTransitionStart={onTransitionStart}
+      onDrop={onDrop}
+      onDragOver={onDragOver}
+      onDragEnter={onDragEnter}
+      onDragLeave={onDragLeave}
     >
       {childrenWithProps}
     </div>
