@@ -37,6 +37,7 @@
     "lodash": "^4.17.21",
     "lunisolar": "^2.6.0",
     "next": "^15.5.2",
+    "pdfjs-dist": "^5.4.394",
     "qrcode.react": "^4.2.0",
     "quill": "^2.0.3",
     "react": "^19.1.0",
