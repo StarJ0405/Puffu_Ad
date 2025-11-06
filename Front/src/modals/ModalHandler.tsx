@@ -52,10 +52,12 @@ import SearchModal from "./main/search/SearchModal";
 import SelectModal from "./main/select/SelectModal";
 import TableModal from "./table/TableModal";
 import DeliveryDetailModal from "./main/delivery/DeliveryModal";
+import SignatureModal from "./signature/SignatureModal";
 
 function ModalHandler() {
   NiceModal.register("toast", ToastModal);
   NiceModal.register("confirm", ConfirmModal);
+  NiceModal.register("signature", SignatureModal);
   NiceModal.register("table", TableModal);
   NiceModal.register("list", ListModal);
   NiceModal.register("contextMenu", ContextMenuModal);

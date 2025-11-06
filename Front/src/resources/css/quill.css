@@ -44,9 +44,10 @@
   ol {
     display: block;
     list-style-type: decimal;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    padding-inline-start: 40px;
+    /* margin-block-start: 1em; */
+    /* margin-block-end: 1em; */
+    /* padding-inline-start: 40px; */
+    padding-inline-start: 0;
     unicode-bidi: isolate;
   }
   pre {
@@ -196,4 +197,127 @@
 }
 .ql-font-Sacheon {
   font-family: var(--font-sacheon);
+}
+
+/* Icon UI */
+.ql-formats {
+  border-right: 1px solid #d0d0d0;
+  padding-right: 10px;
+  margin-right: 10px !important;
+}
+.ql-fontsize {
+  width: 100% !important;
+  cursor: default !important;
+}
+.ql-container {
+  background-color: #ededed;
+  overflow: auto;
+}
+.ql-editor {
+  background-color: #fff;
+  transform-origin: center 0;
+  transition: transform 0.1s ease-out;
+  position: relative;
+}
+.a4 .ql-editor {
+  width: 210mm;
+  margin: 0 auto;
+}
+.a4 .ql-container {
+  padding: 10px 20px;
+}
+.a4 .ql-container,
+.ql-editor {
+  min-height: 297mm;
+}
+
+.ql-disabled .textform {
+  resize: none !important;
+}
+.textform {
+  text-align: center;
+  resize: horizontal;
+  border: 1px dotted red;
+  border-bottom: 1px solid #111;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.boxform {
+  text-align: center;
+  resize: horizontal;
+  border: 5px double #111;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.ql-disabled .boxform {
+  resize: none;
+  pointer-events: none;
+  cursor: default;
+}
+.signfloat {
+  border: 1px solid #d0d0d0;
+  font-size: 2em;
+  display: flex;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  resize: both;
+  overflow: auto;
+  background-color: #fff;
+  color: #505050;
+  font-weight: 300;
+}
+.signfloat:hover {
+  cursor: pointer;
+}
+.signform {
+  width: 0;
+  height: 0;
+}
+
+.ql-disabled .signfloat {
+  resize: none;
+}
+.ql-disabled .close-btn {
+  pointer-events: none;
+  display: none;
+}
+.close-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  max-width: 20px;
+  min-width: 20px;
+  width: 20px;
+  height: 20px;
+  min-height: 20px;
+  max-height: 20px;
+}
+.close-btn::before,
+.close-btn::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -50%;
+  width: 20px; /* 막대 길이 */
+  height: 2px; /* 막대 굵기 */
+  background-color: #333;
+}
+.close-btn::before {
+  transform: translate(-50%, -50%) rotate(45deg); /* 중심 맞추고 45도 회전 */
+}
+
+.close-btn::after {
+  transform: translate(-50%, -50%) rotate(-45deg); /* 중심 맞추고 -45도 회전 */
+}
+
+.signfloat::after {
+  content: "(서명)";
+}
+
+[data-signature].signform .signfloat::after {
+  content: "";
 }

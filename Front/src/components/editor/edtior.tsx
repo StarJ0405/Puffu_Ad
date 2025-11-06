@@ -1,9 +1,16 @@
 "use client";
 import { fileRequester } from "@/shared/FileRequester";
 import useClientEffect from "@/shared/hooks/useClientEffect";
+import clsx from "clsx";
 import katex from "katex";
 import dynamic from "next/dynamic";
-import { forwardRef, useCallback, useImperativeHandle, useRef } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+} from "react";
 import {
   DeltaStatic,
   EmitterSource,
@@ -11,6 +18,7 @@ import {
   RangeStatic,
 } from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
+import LoadingSpinner from "../loading/LoadingSpinner";
 export const FontWhitelist = [
   "Pretendard",
   "NotoSans",
@@ -29,8 +37,16 @@ const ReactQuill = dynamic(
     const { default: RQ } = await import("react-quill-new");
 
     //add-on
-    const { default: Test } = await import("./add-on/test/add-on");
-    Test.register(RQ);
+    const { default: FontSizeAddOn } = await import(
+      "./add-on/font-size/add-on"
+    );
+    FontSizeAddOn.register(RQ);
+    const { default: TextFormAddOn } = await import("./add-on/textform/add-on");
+    TextFormAddOn.register(RQ);
+    const { default: BoxformAddOn } = await import("./add-on/boxform/add-on");
+    BoxformAddOn.register(RQ);
+    const { default: SignformAddOn } = await import("./add-on/signform/add-on");
+    SignformAddOn.register(RQ);
 
     // 폰트
     const Font: any = RQ.Quill.import("attributors/class/font");
@@ -40,10 +56,20 @@ const ReactQuill = dynamic(
       <RQ ref={forwardedRef} {...props} />
     );
 
+    const Size: any = RQ.Quill.import("attributors/style/size");
+    // 폰트사이즈
+    Size.whitelist = Array.from({
+      length: FontSizeAddOn.max - FontSizeAddOn.min + 1,
+    }).map((_, index) => `${index + 1}px`);
+    RQ.Quill.register(Size, true);
+
     Component.displayName = "ReactQuill";
     return Component;
   },
-  { ssr: false }
+  {
+    ssr: false,
+    loading: () => <LoadingSpinner id="ql-loader" />,
+  }
 );
 
 type Value = string | DeltaStatic;
@@ -87,6 +113,7 @@ interface Props {
   path?: string;
   container?: Record<string, any>;
   modules?: Record<string, any>;
+  type?: "a4";
 }
 interface UnprivilegedEditor {
   getLength: Quill["getLength"];
@@ -158,7 +185,6 @@ const Editor = forwardRef(
       const editor = quillRef.current?.getEditor();
       if (!editor) return;
       const root = editor.root;
-
       // Paste handler
       const handlePaste = async (event: ClipboardEvent) => {
         const clipboardData = event.clipboardData;
@@ -219,7 +245,159 @@ const Editor = forwardRef(
         root.removeEventListener("dragover", handleDragOver, true);
       };
     }, [imageUploadHandler, quillRef.current]); // Rerun if the handler changes
+    useEffect(() => {
+      const targetNode = document.querySelector("#ql-loader")?.parentNode;
+      if (targetNode) {
+        const observer = new MutationObserver((mutationsList, observer) => {
+          for (const mutation of mutationsList) {
+            if (mutation.type === "childList") {
+              // 제거된 노드(요소) 목록 확인
+              mutation.removedNodes.forEach((node) => {
+                if ((node as HTMLElement).id === "ql-loader") {
+                  const container = document.querySelector(
+                    ".ql-container"
+                  ) as HTMLElement;
+                  if (container) {
+                    container.addEventListener("wheel", (e) => {
+                      if (!e.ctrlKey) return;
+                      e.preventDefault();
+                      e.stopPropagation();
+                      const direction = e.deltaY > 0 ? -1 : 1;
+                      const editor = container.querySelector(
+                        ".ql-editor"
+                      ) as HTMLElement;
+                      const scale = parseFloat(
+                        editor.getAttribute("scale") || "1"
+                      );
+                      const newScale = Math.min(
+                        Math.max(
+                          0.1,
+                          Math.round((scale + direction * 0.1) * 10) / 10
+                        ),
+                        2.0
+                      );
+                      editor.setAttribute("scale", String(newScale));
+                      editor.style.transform = `scale(${newScale})`;
 
+                      // 1. 데이터 계산
+                      const scaleRatio = newScale / scale;
+                      const containerRect = container.getBoundingClientRect();
+                      const mouseX = e.clientX - containerRect.left;
+                      const mouseY = e.clientY - containerRect.top;
+
+                      // 2. 현재 스크롤 위치 보정
+                      const currentScrollX = editor.scrollLeft;
+                      const currentScrollY = editor.scrollTop;
+
+                      // 3. 커서 위치 (컨텐츠 기준)
+                      const newScrollX =
+                        (mouseX + currentScrollX) * scaleRatio - mouseX;
+                      const newScrollY =
+                        (mouseY + currentScrollY) * scaleRatio - mouseY;
+
+                      // 4. 업데이트
+                      container.scrollLeft = newScrollX;
+                      container.scrollTop = newScrollY;
+                    });
+
+                    const getDistance = (touches: TouchList): number => {
+                      const touch1 = touches[0];
+                      const touch2 = touches[1];
+                      return Math.sqrt(
+                        Math.pow(touch2.clientX - touch1.clientX, 2) +
+                          Math.pow(touch2.clientY - touch1.clientY, 2)
+                      );
+                    };
+                    container.addEventListener("touchstart", (e) => {
+                      const editor = container.querySelector(
+                        ".ql-editor"
+                      ) as HTMLElement;
+                      if (editor)
+                        if (e.touches.length === 2) {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          editor.setAttribute(
+                            "distance",
+                            String(getDistance(e.touches))
+                          );
+                        } else {
+                          editor.removeAttribute("distance");
+                        }
+                    });
+                    container.addEventListener("touchmove", (e) => {
+                      const editor = container.querySelector(
+                        ".ql-editor"
+                      ) as HTMLElement;
+                      if (
+                        e.touches.length === 2 &&
+                        editor &&
+                        editor.getAttribute("distance")
+                      ) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const scale = parseFloat(
+                          editor.getAttribute("scale") || "1"
+                        );
+                        const current = getDistance(e.touches);
+                        const init = parseFloat(
+                          editor.getAttribute("distance") || "0"
+                        );
+
+                        const scaleRatio = current / init;
+
+                        const newScale = Math.min(
+                          2.0,
+                          Math.max(
+                            0.1,
+                            Math.round(scale * scaleRatio * 10) / 10
+                          )
+                        );
+                        if (newScale === scale) return;
+                        editor.setAttribute("scale", String(newScale));
+                        editor.setAttribute("distance", String(current));
+                        editor.style.transform = `scale(${newScale})`;
+
+                        // 1. 데이터 계산
+                        const containerRect = container.getBoundingClientRect();
+                        const mouseX =
+                          (e.touches[0].clientX + e.touches[1].clientX) / 2 -
+                          containerRect.left;
+                        const mouseY =
+                          (e.touches[0].clientY + e.touches[1].clientY) / 2 -
+                          containerRect.top;
+
+                        // 2. 현재 스크롤 위치 보정
+                        const currentScrollX = editor.scrollLeft;
+                        const currentScrollY = editor.scrollTop;
+
+                        // 3. 커서 위치 (컨텐츠 기준)
+                        const newScrollX =
+                          (mouseX + currentScrollX) * scaleRatio - mouseX;
+                        const newScrollY =
+                          (mouseY + currentScrollY) * scaleRatio - mouseY;
+
+                        // 4. 업데이트
+                        container.scrollLeft = newScrollX;
+                        container.scrollTop = newScrollY;
+                      }
+                    });
+                    container.addEventListener("touchend", (e) => {
+                      if (e.touches.length < 2) {
+                        const editor = container.querySelector(
+                          ".ql-editor"
+                        ) as HTMLElement;
+                        editor.removeAttribute("distance");
+                      }
+                    });
+                  }
+                }
+              });
+            }
+          }
+        });
+        observer.observe(targetNode, { childList: true });
+      }
+    }, []);
     const _modules = {
       toolbar: {
         container,
@@ -234,14 +412,24 @@ const Editor = forwardRef(
         matchVisual: false,
       },
     };
-    useImperativeHandle(ref, () => ({}));
+    useImperativeHandle(ref, () => ({
+      getEditor() {
+        return quillRef.current.getEditor();
+      },
+      getValue() {
+        return quillRef.current.getEditor().root.innerHTML;
+      },
+      getDelta() {
+        return quillRef.current.getEditor().getContents();
+      },
+    }));
     return (
       <ReactQuill
         {...props}
         forwardedRef={quillRef}
         theme="snow"
         modules={_modules}
-        className="wrap-quill"
+        className={clsx("wrap-quill", (props.type || "a4").toLowerCase())}
       />
     );
   }
