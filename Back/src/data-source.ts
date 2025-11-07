@@ -534,7 +534,7 @@ export abstract class BaseService<
     if (options?.where) {
       options.where = parseWhere(options.where);
     }
-    if (options.relations && !Array.isArray(options.relations)) {
+    if (options.relations && !Array.isArray(options.relations)) { 
       options.relations = [options.relations as any];
     }
     if (options?.select && !Array.isArray(options.select)) {
