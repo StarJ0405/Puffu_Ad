@@ -252,11 +252,6 @@ const SidebarNav: NavParent[] = [
         icon: "",
       },
       {
-        name: "피계약자 관리",
-        to: "/counterparty",
-        icon: "",
-      },
-      {
         name: "템플릿 등록",
         to: "template/regist",
         icon: "",
@@ -264,11 +259,6 @@ const SidebarNav: NavParent[] = [
       {
         name: "템플릿 관리",
         to: "template/management",
-        icon: "",
-      },
-      {
-        name: "초대 관리",
-        to: "/",
         icon: "",
       },
     ]
