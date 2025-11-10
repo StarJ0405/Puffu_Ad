@@ -389,6 +389,7 @@ function Setting({
                         },
                       })) || [],
                   })),
+                  users: contractUsers,
                 };
                 const formData = new FormData();
                 _data.pages.forEach((page) => {
