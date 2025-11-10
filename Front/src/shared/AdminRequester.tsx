@@ -898,7 +898,88 @@ class _AdminRequester {
     else return await this.post(`/reviews/${id}`, data);
   }
 
+  // 전자문서(e-contract) 관련
+  // ──────────────────────────────────────────────
 
+  // 계약 목록 조회
+  async getContracts(data?: any, callback?: Function) {
+    if (callback) callback(await this.get(`/users/me/contract`, data));
+    else return await this.get(`/users/me/contract`, data);
+  }
+
+  // 계약 상세조회
+  async getContract(id: string, data?: any, callback?: Function) {
+    if (callback) callback(await this.get(`/users/me/contract/${id}`, data));
+    else return await this.get(`/users/me/contract/${id}`, data);
+  }
+
+  // 계약 생성 (템플릿 복제 기반)
+  async createContract(origin_id: string, data?: any, callback?: Function) {
+    if (callback)
+      callback(await this.post(`/users/me/contract/${origin_id}/create`, data));
+    else return await this.post(`/users/me/contract/${origin_id}/create`, data);
+  }
+
+  // 계약 수정 (페이지, 입력필드 포함)
+  async updateContract(id: string, data?: any, callback?: Function) {
+    if (callback) callback(await this.post(`/users/me/contract/${id}`, data));
+    else return await this.post(`/users/me/contract/${id}`, data);
+  }
+
+  // 계약 삭제
+  async deleteContract(id: string, callback?: Function) {
+    if (callback) callback(await this.delete(`/users/me/contract/${id}`, {}));
+    else return await this.delete(`/users/me/contract/${id}`, {});
+  }
+
+  // 계약 완료 처리
+  async completeContract(id: string, callback?: Function) {
+    if (callback)
+      callback(await this.post(`/users/me/contract/${id}/complete`, {}));
+    else return await this.post(`/users/me/contract/${id}/complete`, {});
+  }
+
+  // 템플릿 생성
+  async createTemplate(data?: any, callback?: Function) {
+    if (callback)
+      callback(await this.post(`/users/me/contract/template`, data));
+    else return await this.post(`/users/me/contract/template`, data);
+  }
+
+  // 동일 템플릿 기반 계약 목록 조회
+  async getContractVersions(
+    origin_id: string,
+    data?: any,
+    callback?: Function
+  ) {
+    if (callback)
+      callback(
+        await this.get(`/users/me/contract/${origin_id}/versions`, data)
+      );
+    else
+      return await this.get(`/users/me/contract/${origin_id}/versions`, data);
+  }
+
+  // 참여자 상태 변경 (ready / confirm)
+  async updateContractUserStatus(
+    contract_user_id: string,
+    user_id: string,
+    data: { status: string },
+    callback?: Function
+  ) {
+    if (callback)
+      callback(
+        await this.post(`/users/me/contract_user/${contract_user_id}/status`, {
+          user_id,
+          ...data,
+        })
+      );
+    else
+      return await this.post(
+        `/users/me/contract_user/${contract_user_id}/status`,
+        { user_id, ...data }
+      );
+  }
 }
 
 export default _AdminRequester;

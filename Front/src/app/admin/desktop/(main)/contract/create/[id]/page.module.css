@@ -1,0 +1,50 @@
+.detail {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 30px;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.preview {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+  width: 100%;
+}
+
+.pageImage {
+  width: 100%;
+  max-width: 800px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fafafa;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.pageImage:hover {
+  transform: scale(1.01);
+  transition: transform 0.15s ease-in-out;
+}
+
+.pageLine {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 30px;
+}
