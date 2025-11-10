@@ -655,6 +655,7 @@ interface SubscribeData extends BaseEntity, SubscribeDataFrame {
 interface ContractDataFrame {
   name: string;
   pages: PageDataFrame[];
+  users: ContractUserDataFrame[];
 }
 interface ContractData extends BaseEntity, ContractDataFrame {
   origin_id?: string;
