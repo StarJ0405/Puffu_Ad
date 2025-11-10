@@ -11,11 +11,10 @@ import InputNumber from "@/components/inputs/InputNumber";
 import LoadingSpinner from "@/components/loading/LoadingSpinner";
 import P from "@/components/P/P";
 import Select from "@/components/select/Select";
+import { fileRequester } from "@/shared/FileRequester";
 import { dataURLtoFile, toast } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 import {
   CSSProperties,
   Dispatch,
@@ -26,7 +25,6 @@ import {
 } from "react";
 import ContractInput from "./class";
 import styles from "./page.module.css";
-import { fileRequester } from "@/shared/FileRequester";
 
 async function getPdfPageAsBase64(pdfFileUrlOrData: any) {
   const pdfjsLib = await import("pdfjs-dist");
@@ -266,39 +264,7 @@ function Setting({
   const [fold, setFold] = useState(true);
   const [data, setData] = useState<PageData>({});
   const [selectedInputs, setSelectedInputs] = useState<string[]>([]);
-  const exportAsPdf = async (input: HTMLElement) => {
-    if (!input) {
-      console.error("PDF로 변환할 요소를 찾을 수 없습니다.");
-      return;
-    }
 
-    try {
-      // 1. 📸 html2canvas로 DOM 요소를 캡처하여 Canvas 생성
-      const canvas = await html2canvas(input, {
-        scale: 2, // 해상도 높이기 위해 스케일 팩터 사용
-        useCORS: true, // 외부 이미지를 포함할 경우 필수
-      });
-
-      // 2. 🖼️ Canvas를 이미지 데이터(PNG)로 변환
-      const imgData = canvas.toDataURL("image/png");
-
-      // 3. 📄 jsPDF 인스턴스 생성 및 크기 계산
-      const pdf = new jsPDF("p", "mm", "a4"); // 'p': 세로, 'mm': 단위, 'a4': 용지 크기
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-
-      const imgProps = pdf.getImageProperties(imgData);
-      const imgHeight = (imgProps.height * pdfWidth) / imgProps.width; // 이미지 비율 유지
-
-      // 4. 🖼️ 이미지 데이터를 PDF에 추가 (X, Y 좌표, 너비, 높이)
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, imgHeight);
-
-      // 5. 💾 파일 저장
-      pdf.save("component_export.pdf");
-    } catch (error) {
-      console.error("PDF 생성 중 오류 발생:", error);
-    }
-  };
   useEffect(() => {
     function setMaxHeight() {
       const admin_header = document.getElementById("admin_header");
