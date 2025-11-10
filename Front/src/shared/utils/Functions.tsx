@@ -1,5 +1,7 @@
 import i18n from "@/lang/i18n";
 import { saveAs } from "file-saver";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import { RefObject } from "react";
 import * as XLSX from "xlsx";
 
@@ -671,3 +673,34 @@ export function blobToFile(blob: Blob, fileName: string) {
 export function dataURLtoFile(dataurl: string, fileName: string) {
   return blobToFile(dataURLtoBlob(dataurl), fileName);
 }
+
+const exportAsPdf = async (pages: HTMLElement[]) => {
+  if (!pages || !pages.length) {
+    console.error("PDF로 변환할 요소를 찾을 수 없습니다.");
+    return;
+  }
+
+  try {
+    const pdf = new jsPDF("p", "mm", "a4"); // 'p': 세로, 'mm': 단위, 'a4': 용지 크기
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+
+    for (let index = 0; index < pages.length; index++) {
+      const page = pages[index];
+      if (index > 0) pdf.addPage();
+      const canvas = await html2canvas(page, {
+        scale: 2, // 해상도 높이기 위해 스케일 팩터 사용
+        useCORS: true, // 외부 이미지를 포함할 경우 필수
+        scrollY: -window.scrollY,
+      });
+      const imgData = canvas.toDataURL("image/png");
+      const imgProps = pdf.getImageProperties(imgData);
+      const imgHeight = (imgProps.height * pdfWidth) / imgProps.width; // 이미지 비율 유지
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, imgHeight);
+    }
+
+    pdf.save("component_export.pdf");
+  } catch (error) {
+    console.error("PDF 생성 중 오류 발생:", error);
+  }
+};
