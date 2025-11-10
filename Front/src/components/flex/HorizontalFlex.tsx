@@ -3,6 +3,7 @@ import React, { Children } from "react";
 import style from "./HorizontalFlex.module.css";
 
 function HorizontalFlex({
+  id,
   flexStart,
   width,
   maxWidth,
@@ -29,6 +30,7 @@ function HorizontalFlex({
   borderLeft,
   borderRadius,
   flexWrap,
+  flexShrink,
   margin,
   marginTop,
   marginRight,
@@ -106,6 +108,7 @@ function HorizontalFlex({
   };
   return (
     <div
+      id={id}
       hidden={hidden}
       className={clsx(
         style.horizontal,
@@ -130,6 +133,7 @@ function HorizontalFlex({
         borderRadius,
         textDecorationLine,
         flexWrap,
+        flexShrink,
         borderBottom,
         justifyContent,
         flexGrow,

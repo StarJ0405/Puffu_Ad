@@ -13,6 +13,7 @@ import HeaderUser from "./headerUser";
 export default async function () {
   return (
     <VerticalFlex
+      id="admin_header"
       zIndex={100}
       className={styles.header}
       height={128}

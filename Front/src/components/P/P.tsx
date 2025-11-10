@@ -60,7 +60,7 @@ function P({
   overflowWrap,
   textOverflow,
   scrollMarginTop,
-  onMouseDown,
+  transition,
   position,
   textDecorationLine,
   top,
@@ -72,6 +72,7 @@ function P({
   justifyContent,
   translate,
   dangerouslySetInnerHTML,
+  onMouseDown,
   onClick,
   onMouseEnter,
   onContextMenu,
@@ -161,6 +162,7 @@ function P({
       )}
       hidden={hidden}
       style={{
+        transition,
         width: width,
         minWidth,
         maxWidth,

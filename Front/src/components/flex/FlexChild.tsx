@@ -62,11 +62,14 @@ function FlexChild({
   flexShrink,
   scrollMarginTop,
   transform,
+  scale,
   hidden,
   hideScrollbar,
   onClick,
   onContextMenu,
   scrollbarGutter,
+  onMouseDown,
+  onMouseUp,
   onMouseEnter,
   onMouseLeave,
   onWheel,
@@ -170,6 +173,7 @@ function FlexChild({
         transform,
         flexShrink,
         boxShadow,
+        scale,
         scrollMarginTop,
         scrollbarWidth: hideScrollbar ? "none" : undefined,
         msOverflowStyle: hideScrollbar ? "none" : undefined,
@@ -178,6 +182,8 @@ function FlexChild({
       hidden={hidden}
       onClick={onClick}
       onContextMenu={onContextMenu}
+      onMouseDown={onMouseDown}
+      onMouseUp={onMouseUp}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onWheel={onWheel}

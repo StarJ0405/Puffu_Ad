@@ -53,6 +53,7 @@ const Image = ({
   bottom,
   left,
   transform,
+  scale,
   zIndex,
   draggable,
   selectable,
@@ -243,6 +244,7 @@ const Image = ({
               aspectRatio,
               transform,
               boxShadow,
+              scale,
             },
             successStyle,
             { ...getDirectionalStyles() }

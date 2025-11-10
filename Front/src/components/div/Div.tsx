@@ -124,7 +124,7 @@ function Div({
         opacity,
         translate,
         pointerEvents,
-        cursor: cursor ? "pointer" : undefined,
+        cursor: cursor ? cursor : undefined,
         ...getDirectionalStyles(),
       }}
       dangerouslySetInnerHTML={dangerouslySetInnerHTML}

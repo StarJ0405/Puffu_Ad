@@ -271,7 +271,7 @@ const SidebarNav: NavParent[] = [
         to: "/",
         icon: "",
       },
-    ]
+    ],
   },
 ];
 

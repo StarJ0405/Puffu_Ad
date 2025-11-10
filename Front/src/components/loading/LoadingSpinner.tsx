@@ -5,13 +5,15 @@ const LoadingSpinner = ({
   id,
   width = 34,
   height = 34,
+  paddingBottom,
 }: {
   id?: string;
   width?: React.CSSProperties["width"];
   height?: React.CSSProperties["width"];
+  paddingBottom?: React.CSSProperties["paddingBottom"];
 }) => {
   return (
-    <div id={id} className={styles.spinner_wrap}>
+    <div id={id} className={styles.spinner_wrap} style={{ paddingBottom }}>
       <div className={styles.spinner} style={{ width, height }}>
         {/* <div className={style.spinnerCircle} /> */}
         <img src="/resources/icons/loading.png" className={styles.spin} />
