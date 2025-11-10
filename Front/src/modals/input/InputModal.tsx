@@ -100,21 +100,23 @@ const InputModal = NiceModal.create(
       >
         <FlexChild padding={"50px 24px 24px 24px"} height="100%">
           <VerticalFlex gap={20} height={"100%"}>
-            <FlexChild>
-              {typeof message === "string" ? (
-                <P
-                  width="100%"
-                  textAlign="center"
-                  size={isMobile ? 16 : 18}
-                  color={"#111"}
-                  weight={600}
-                >
-                  {message}
-                </P>
-              ) : (
-                message
-              )}
-            </FlexChild>
+            {message && (
+              <FlexChild>
+                {typeof message === "string" ? (
+                  <P
+                    width="100%"
+                    textAlign="center"
+                    size={isMobile ? 16 : 18}
+                    color={"#111"}
+                    weight={600}
+                  >
+                    {message}
+                  </P>
+                ) : (
+                  message
+                )}
+              </FlexChild>
+            )}
             {(Array.isArray(input) ? input : [input]).map((value, index) => (
               <FlexChild key={`inputs_${index}_${value.label}`}>
                 <VerticalFlex gap={4}>

@@ -650,3 +650,46 @@ interface SubscribeData extends BaseEntity, SubscribeDataFrame {
   repeat?: boolean;
   metadata?: Record<string, unknown> | null;
 }
+
+// 계약서 관련 선언 시작
+interface ContractDataFrame {
+  name: string;
+  pages: PageDataFrame[];
+}
+interface ContractData extends BaseEntity, ContractDataFrame {
+  origin_id?: string;
+  origin?: ContractData;
+  completed_at?: Date | string | null;
+}
+interface ContractUserDataFrame {
+  name: string;
+}
+type approveType = "pending" | "ready" | "confirm";
+interface ContractUserData extends BaseEntity, ContractUserDataFrame {
+  id: string;
+  contract_id: string;
+  contract?: ContractData;
+  approve: approveType;
+  user_id?: string;
+  user?: UserData;
+}
+interface PageDataFrame {
+  page: number;
+  image: string;
+  inputs: InputFieldDataFrame[];
+}
+interface PageData extends BaseEntity, PageDataFrame {
+  contract_id: string;
+  contract?: ContractData;
+}
+interface InputFieldDataFrame {
+  type: string;
+  metadata: Record<string, any>;
+}
+interface InputFieldData extends BaseEntity, InputFieldDataFrame {
+  page_id: string;
+  page?: PageData;
+  value: REcord<string, any>;
+}
+
+// 계약서 관련 선언 끝

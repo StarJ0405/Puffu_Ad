@@ -123,12 +123,12 @@
   font-family: var(--font-barun-gothic);
 }
 
-/* 나눔브러쉬 */
+/* 나눔붓글씨 */
 [data-value="BrushFont"].ql-picker-item::before {
-  content: "나눔 브러쉬" !important;
+  content: "나눔 붓글씨" !important;
 }
 [data-value="BrushFont"].ql-picker-label::before {
-  content: "나눔 브러쉬" !important;
+  content: "나눔 붓글씨" !important;
 }
 .ql-font-BrushFont {
   font-family: var(--font-brush);

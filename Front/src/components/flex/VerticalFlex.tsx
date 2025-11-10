@@ -53,6 +53,7 @@ function VerticalFlex({
   right,
   left,
   bottom,
+  scale,
   scrollMarginTop,
   position,
   onWheel,
@@ -61,8 +62,11 @@ function VerticalFlex({
   onDragEnter,
   onDragLeave,
   onDragOver,
+  onMouseUp,
   onMouseEnter,
+  onMouseMove,
   onMouseLeave,
+  onScroll,
   onTransitionStart,
   onTransitionEnd,
   className,
@@ -155,19 +159,23 @@ function VerticalFlex({
         fontWeight,
         scrollMarginTop,
         overscrollBehavior,
+        scale,
         zIndex,
         ...getDirectionalStyles(), // 방향성 스타일 적용
       }}
       onWheel={onWheel}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
+      onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
+      onMouseUp={onMouseUp}
       onTransitionEnd={onTransitionEnd}
       onTransitionStart={onTransitionStart}
       onDrop={onDrop}
       onDragOver={onDragOver}
       onDragEnter={onDragEnter}
       onDragLeave={onDragLeave}
+      onScroll={onScroll}
     >
       {childrenWithProps}
     </div>
