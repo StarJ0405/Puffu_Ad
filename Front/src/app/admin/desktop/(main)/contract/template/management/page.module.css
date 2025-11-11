@@ -114,3 +114,17 @@
 .pageButton.selected:hover {
   text-decoration: unset;
 }
+
+.btn {
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  border: 1px solid var(--main-color2);
+  color: var(--main-color2);
+}
+
+.btn:active {
+  background: var(--main-color2);
+  color: #252525;
+}

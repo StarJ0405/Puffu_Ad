@@ -11,6 +11,9 @@ import FlexChild from "@/components/flex/FlexChild";
 import clsx from "clsx";
 import usePageData from "@/shared/hooks/data/usePageData";
 import useNavigate from "@/shared/hooks/useNavigate";
+import { unset } from "lodash";
+import NiceModal from "@ebay/nice-modal-react";
+import { toast } from "@/shared/utils/Functions";
 
 export function TemplateManagementClient() {
   const navigate = useNavigate();
@@ -21,6 +24,7 @@ export function TemplateManagementClient() {
     setPage,
     maxPage,
     isLoading,
+    mutate,
   } = usePageData(
     key,
     (pageNumber) => ({
@@ -69,13 +73,13 @@ export function TemplateManagementClient() {
 
       {/* 테이블 헤더 */}
       <HorizontalFlex className={styles.headerRow} alignItems="center">
-        <FlexChild flex="1.5" justifyContent="center">
+        <FlexChild flex="1" justifyContent="center">
           <P className={styles.headerText}>이름</P>
         </FlexChild>
         <FlexChild flex="1" justifyContent="center">
           <P className={styles.headerText}>최근 수정일</P>
         </FlexChild>
-        <FlexChild flex="0.5" justifyContent="center">
+        <FlexChild flex="1" justifyContent="center">
           <P className={styles.headerText}>설정</P>
         </FlexChild>
       </HorizontalFlex>
@@ -89,7 +93,7 @@ export function TemplateManagementClient() {
               alignItems="center"
               className={styles.row}
             >
-              <FlexChild flex="1.5" justifyContent="center">
+              <FlexChild flex="1" justifyContent="center">
                 <P>{tpl.name}</P>
               </FlexChild>
               <FlexChild flex="1" justifyContent="center">
@@ -97,13 +101,37 @@ export function TemplateManagementClient() {
                   {new Date(tpl.updated_at).toLocaleDateString()}
                 </P>
               </FlexChild>
-              <FlexChild flex="0.5" justifyContent="center">
-                <Button
-                  styleType="white"
-                  onClick={() => navigate(`/contract/template/management/${tpl.id}`)}
-                >
-                  설정
-                </Button>
+              <FlexChild flex="1" justifyContent="center">
+                <HorizontalFlex gap={5} width={"auto"} justifyContent="center">
+                  <Button
+                    className={styles.btn}
+                    styleType="white"
+                    onClick={() =>
+                      navigate(`/contract/template/management/${tpl.id}`)
+                    }
+                  >
+                    설정
+                  </Button>
+                  <Button
+                    className={styles.btn}
+                    styleType="white"
+                    onClick={() =>
+                      NiceModal.show("confirm", {
+                        message: "이 템플릿을 삭제하시겠습니까?",
+                        confirmText: "삭제",
+                        cancelText: "취소",
+                        withCloseButton: true,
+                        onConfirm: async () => {
+                          await adminRequester.deleteContract(tpl.id);
+                          toast({ message: "삭제되었습니다." });
+                          mutate();
+                        },
+                      })
+                    }
+                  >
+                    삭제
+                  </Button>
+                </HorizontalFlex>
               </FlexChild>
             </HorizontalFlex>
           ))
