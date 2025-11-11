@@ -674,7 +674,7 @@ export function dataURLtoFile(dataurl: string, fileName: string) {
   return blobToFile(dataURLtoBlob(dataurl), fileName);
 }
 
-const exportAsPdf = async (pages: HTMLElement[]) => {
+export const exportAsPdf = async (pages: HTMLElement[]) => {
   if (!pages || !pages.length) {
     console.error("PDF로 변환할 요소를 찾을 수 없습니다.");
     return;
@@ -704,3 +704,28 @@ const exportAsPdf = async (pages: HTMLElement[]) => {
     console.error("PDF 생성 중 오류 발생:", error);
   }
 };
+
+export function calculateFontSize(
+  divElement: HTMLElement,
+  textContent: string,
+  baseFontSize: number = 100,
+  maxFontSize?: number
+) {
+  const divWidth = divElement.offsetWidth;
+
+  const tempSpan = document.createElement("span");
+  tempSpan.textContent = textContent;
+  tempSpan.style.whiteSpace = "nowrap";
+  tempSpan.style.fontSize = `${baseFontSize}px`;
+  tempSpan.style.visibility = "hidden";
+
+  document.body.appendChild(tempSpan);
+
+  const textWidth = tempSpan.offsetWidth;
+
+  document.body.removeChild(tempSpan);
+
+  const newFontSize = baseFontSize * (divWidth / textWidth);
+  if (maxFontSize) return Math.min(maxFontSize, newFontSize);
+  else return newFontSize;
+}

@@ -100,7 +100,7 @@ function P({
   // if (!font) {
   //   switch (flagCode) {
   //     case "kr":
-  font = "Pretendard";
+  if (!font) font = "Pretendard";
   //       break;
   //     case "cn":
   //     default:

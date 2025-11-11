@@ -384,7 +384,7 @@ function Setting({
                       data[Number(key)]?.inputs?.map((input) => ({
                         type: input.input.getKey(),
                         metadata: {
-                          id: input.id,
+                          name: input.id,
                           top: input.top,
                           left: input.left,
                           width: input.width,

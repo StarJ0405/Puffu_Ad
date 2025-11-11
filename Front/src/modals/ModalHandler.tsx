@@ -35,12 +35,14 @@ import OrderListModal from "./admin/user/OrderListModal";
 import PointListModal from "./admin/user/PointListModal";
 import SubscribeListModal from "./admin/user/SubscribeListModal";
 import UserModal from "./admin/user/UserModal";
+import ContractSignatureModal from "./contract/signature/ContractSignatureModal";
 import InputModal from "./input/InputModal";
 import ListModal from "./list/ListModal";
 import AddressListModal from "./main/address/AddressListModal";
 import AddressModal from "./main/address/AddressModal";
 import PostalCodeModal from "./main/address/PostaCodelModal";
 import CouponProductsModal from "./main/couponProductsModal/couponProductsModal";
+import DeliveryDetailModal from "./main/delivery/DeliveryModal";
 import ImgViewSliderModal from "./main/imgViewerSlider/imgViewSliderModal";
 import OrderCouponListModal from "./main/orderCouponListModal/orderCouponListModal";
 import PhotoReviewDetailModal from "./main/photoReviewDetailModal/photoReviewDetailModal";
@@ -50,9 +52,8 @@ import PurchaseModal from "./main/product/PurchaseModal";
 import ReviewWriteModal from "./main/review/ReviewWriteModal";
 import SearchModal from "./main/search/SearchModal";
 import SelectModal from "./main/select/SelectModal";
-import TableModal from "./table/TableModal";
-import DeliveryDetailModal from "./main/delivery/DeliveryModal";
 import SignatureModal from "./signature/SignatureModal";
+import TableModal from "./table/TableModal";
 
 function ModalHandler() {
   NiceModal.register("toast", ToastModal);
@@ -63,6 +64,8 @@ function ModalHandler() {
   NiceModal.register("contextMenu", ContextMenuModal);
   NiceModal.register("input", InputModal);
   NiceModal.register("loading", LoadingModal);
+  //  contract
+  NiceModal.register("contract/signature", ContractSignatureModal);
   // main
   NiceModal.register("select", SelectModal);
   NiceModal.register("address", AddressModal);
