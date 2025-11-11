@@ -99,11 +99,14 @@ export default abstract class ContractInput {
   public getKey() {
     return this.key;
   }
-  getWidth(): number {
+  public getWidth(): number {
     return this.width;
   }
-  getHeight(): number {
+  public getHeight(): number {
     return this.height;
+  }
+  public getWrite(props?: { onChange?: (data: any) => void }) {
+    return <FlexChild justifyContent="center">{this.getIcon(32)}</FlexChild>;
   }
   protected static map: Map<string, ContractInput> = new Map();
   public static getList(): readonly ContractInput[] {
