@@ -88,7 +88,7 @@ const _data: {
   ],
 };
 
-export default function Setting() {
+export default function () {
   const navigate = useNavigate();
   const contentRef = useRef<any>(null);
   const inputs = useRef<any[]>([]);

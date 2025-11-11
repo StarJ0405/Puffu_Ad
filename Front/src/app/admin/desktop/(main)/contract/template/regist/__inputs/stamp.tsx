@@ -1,3 +1,4 @@
+"use client";
 import Icon from "@/components/icons/Icon";
 import ContractInput from "../class";
 

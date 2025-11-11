@@ -1,3 +1,4 @@
+"use client";
 import FlexChild from "@/components/flex/FlexChild";
 import Icon from "@/components/icons/Icon";
 import Image from "@/components/Image/Image";
