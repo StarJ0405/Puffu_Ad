@@ -13,6 +13,7 @@ import P from "@/components/P/P";
 import Select from "@/components/select/Select";
 import { fileRequester } from "@/shared/FileRequester";
 import { dataURLtoFile, toast } from "@/shared/utils/Functions";
+import { adminRequester } from "@/shared/AdminRequester";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import {
@@ -25,6 +26,7 @@ import {
 } from "react";
 import ContractInput from "./class";
 import styles from "./page.module.css";
+import useNavigate from "@/shared/hooks/useNavigate";
 
 async function getPdfPageAsBase64(pdfFileUrlOrData: any) {
   const pdfjsLib = await import("pdfjs-dist");
@@ -242,6 +244,7 @@ function Setting({
   images: string[];
   onCancel: () => void;
 }) {
+  const navigate = useNavigate();
   const contentRef = useRef<any>(null);
   const inputs = useRef<any>({});
   const mouseRef = useRef<any>(null);
@@ -407,7 +410,17 @@ function Setting({
                   page.image = urls[index];
                   return page;
                 });
-                console.log(_data);
+                try {
+                  const result = await adminRequester.createTemplate(_data);
+                  toast({ message: "템플릿이 성공적으로 저장되었습니다." });
+                  // console.log("[Template Create Result]", result);
+                  setTimeout(() => {
+                    navigate("/contract/template/management");
+                  }, 2000);
+                } catch (err) {
+                  console.error(err);
+                  toast({ message: "템플릿 저장 중 오류가 발생했습니다." });
+                }
               }}
             >
               저장
