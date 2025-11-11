@@ -6,7 +6,9 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import useNavigate from "@/shared/hooks/useNavigate";
+import { exportAsPdf } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
+import clsx from "clsx";
 import {
   Dispatch,
   forwardRef,
@@ -18,6 +20,7 @@ import {
 } from "react";
 import ContractInput from "../regist/class";
 import styles from "./page.module.css";
+import Input from "@/components/inputs/Input";
 const _data: {
   name: string;
   pages: {
@@ -184,12 +187,18 @@ export default function Setting() {
             <Button
               className={styles.button}
               onClick={async () => {
-                _data.pages.map((page) => {
-                  page.inputs.map((input) => {
+                _data.pages = _data.pages.map((page) => {
+                  page.inputs = page.inputs.map((input) => {
                     input.metadata.value =
-                      inputs.current[page.page][input.metadata.name].getValue();
+                      inputs.current[page.page][
+                        input.metadata.name
+                      ]?.getValue?.();
+                    return input;
                   });
+                  return page;
                 });
+                _data.name = name;
+                console.log(_data);
               }}
             >
               저장
@@ -200,54 +209,124 @@ export default function Setting() {
       <FlexChild justifyContent="center">
         <VerticalFlex className={styles.middleSide}>
           <FlexChild className={styles.toolbar}>
-            <HorizontalFlex justifyContent="flex-start">
-              <FlexChild
-                width={"max-content"}
-                className={styles.slot}
-                onClick={() => document.getElementById("scaleSelect")?.click()}
-              >
-                <ScaleSelect
-                  className={styles.scaler}
-                  value={scale}
-                  onChange={setScale}
-                  scales={[30, 50, 80, 100, 120, 150, 200, 300, 400]}
-                />
-              </FlexChild>
-              <FlexChild
-                width={"max-content"}
-                className={styles.slot}
-                onClick={() => setScale(Math.max(30, scale - 10))}
-              >
-                <Image
-                  src={
-                    scale <= 30
-                      ? "/resources/images/minusWhite.png"
-                      : "/resources/images/minus.png"
+            <FlexChild className={styles.group}>
+              <HorizontalFlex justifyContent="flex-start">
+                <FlexChild
+                  width={"max-content"}
+                  className={styles.slot}
+                  onClick={() =>
+                    NiceModal.show("confirm", {
+                      message: `${name}을 다운로드 하시겠습니까?`,
+                      confirmText: "다운로드",
+                      cancelText: "취소",
+                      onConfirm: async () => {
+                        const pages = _data.pages.map((_, index) => {
+                          const page = document.getElementById(`page_${index}`);
+                          if (page) page.className = styles.print;
+                          return page;
+                        });
+                        await exportAsPdf(
+                          pages.filter((f) => f !== null),
+                          name
+                        );
+                        pages.forEach((page) => {
+                          if (page) page.className = "";
+                        });
+                      },
+                    })
                   }
-                  width={24}
-                  height={"auto"}
-                />
-              </FlexChild>
-              <FlexChild
-                width={"max-content"}
-                className={styles.slot}
-                onClick={() => setScale(Math.min(400, scale + 10))}
-              >
-                <Image
-                  src={
-                    scale >= 400
-                      ? "/resources/images/plusWhite.png"
-                      : "/resources/images/plus.png"
+                >
+                  <Image
+                    src={"/resources/contract/file-download.svg"}
+                    size={24}
+                  />
+                </FlexChild>
+                <FlexChild
+                  width={"max-content"}
+                  className={styles.slot}
+                  onClick={() => {
+                    //         window.print();
+                    const content = document.getElementById("print-content");
+                    const printWindow = window.open(
+                      "",
+                      "",
+                      "height=600,width=800"
+                    );
+
+                    // 1. 인쇄 CSS를 포함하여 새 창에 내용을 복사
+                    printWindow?.document.write(
+                      "<html><head><title>다중 페이지 인쇄</title>"
+                    );
+
+                    // 인쇄 전용 스타일 태그 추가 (여기서 page-break 속성 정의)
+                    printWindow?.document.write(
+                      "<style>@media print { .page-break { page-break-after: always; } }</style>"
+                    );
+
+                    printWindow?.document.write("</head><body>");
+                    printWindow?.document.write(content?.innerHTML || "");
+                    printWindow?.document.write("</body></html>");
+                    printWindow?.document.close();
+                    printWindow?.print();
+                  }}
+                >
+                  <Image src={"/resources/contract/print.svg"} size={24} />
+                </FlexChild>
+              </HorizontalFlex>
+            </FlexChild>
+            <FlexChild className={styles.group}>
+              <HorizontalFlex justifyContent="flex-start">
+                <FlexChild
+                  width={"max-content"}
+                  className={styles.slot}
+                  onClick={() =>
+                    document.getElementById("scaleSelect")?.click()
                   }
-                  width={24}
-                  height={"auto"}
-                />
-              </FlexChild>
-            </HorizontalFlex>
+                >
+                  <ScaleSelect
+                    className={styles.scaler}
+                    value={scale}
+                    onChange={setScale}
+                    scales={[30, 50, 80, 100, 120, 150, 200, 300, 400]}
+                  />
+                </FlexChild>
+                <FlexChild
+                  width={"max-content"}
+                  className={styles.slot}
+                  onClick={() => setScale(Math.max(30, scale - 10))}
+                >
+                  <Image
+                    src={
+                      scale <= 30
+                        ? "/resources/images/minusWhite.png"
+                        : "/resources/images/minus.png"
+                    }
+                    width={24}
+                    height={"auto"}
+                  />
+                </FlexChild>
+                <FlexChild
+                  width={"max-content"}
+                  className={styles.slot}
+                  onClick={() => setScale(Math.min(400, scale + 10))}
+                >
+                  <Image
+                    src={
+                      scale >= 400
+                        ? "/resources/images/plusWhite.png"
+                        : "/resources/images/plus.png"
+                    }
+                    width={24}
+                    height={"auto"}
+                  />
+                </FlexChild>
+              </HorizontalFlex>
+            </FlexChild>
           </FlexChild>
           <FlexChild justifyContent="center">
             <VerticalFlex
               Ref={contentRef}
+              id="print-content"
               position="relative"
               className={styles.scrollbar}
               alignItems="center"
@@ -281,6 +360,9 @@ export default function Setting() {
                           inputs.current[page.page] = {
                             [input.metadata.name]: el,
                           };
+                        else {
+                          inputs.current[page.page][input.metadata.name] = el;
+                        }
                       }}
                       key={`${input.type}_${index}`}
                       input={input as any}
@@ -375,7 +457,7 @@ const FloatInput = forwardRef(({ input }: { input: InputFieldData }, ref) => {
       left={input.metadata.left}
       width={input.metadata.width}
       height={input.metadata.height}
-      className={styles.float}
+      className={clsx(styles.float, { [styles.has]: data })}
       transition={"0.5s all"}
     >
       {ci?.getWrite({

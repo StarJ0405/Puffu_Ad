@@ -674,7 +674,7 @@ export function dataURLtoFile(dataurl: string, fileName: string) {
   return blobToFile(dataURLtoBlob(dataurl), fileName);
 }
 
-export const exportAsPdf = async (pages: HTMLElement[]) => {
+export const exportAsPdf = async (pages: HTMLElement[], fileName: string) => {
   if (!pages || !pages.length) {
     console.error("PDF로 변환할 요소를 찾을 수 없습니다.");
     return;
@@ -699,7 +699,7 @@ export const exportAsPdf = async (pages: HTMLElement[]) => {
       pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, imgHeight);
     }
 
-    pdf.save("component_export.pdf");
+    pdf.save(`${fileName}.pdf`);
   } catch (error) {
     console.error("PDF 생성 중 오류 발생:", error);
   }
