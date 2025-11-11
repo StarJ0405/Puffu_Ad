@@ -1,9 +1,8 @@
+"use client";
 import FlexChild from "@/components/flex/FlexChild";
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
-import clsx from "clsx";
 import { CSSProperties } from "react";
-import styles from "./page.module.css";
 import("@/app/admin/desktop/(main)/contract/template/regist/__inputs");
 type IconComponent = (props: InputProps) => React.ReactNode;
 interface Props {
@@ -22,7 +21,7 @@ interface InputProps {
   color?: CSSProperties["color"];
   onClick?: React.HTMLAttributes<HTMLEmbedElement>["onClick"];
   onMouseUp?: React.HTMLAttributes<HTMLEmbedElement>["onMouseUp"];
-  selected?: boolean;
+  className?: React.HTMLAttributes<HTMLElement>["className"];
 }
 export default abstract class ContractInput {
   public readonly key: Props["key"];
@@ -46,11 +45,11 @@ export default abstract class ContractInput {
       color,
       onClick,
       onMouseUp,
-      selected = false,
+      className,
     }: InputProps) => (
       <FlexChild
         gap={gap}
-        className={clsx(styles.slot_input, { [styles.selected]: selected })}
+        className={className}
         onMouseDown={onClick}
         onMouseUp={onMouseUp}
       >

@@ -653,6 +653,7 @@ interface SubscribeData extends BaseEntity, SubscribeDataFrame {
 
 // 계약서 관련 선언 시작
 interface ContractDataFrame {
+  id?: string;
   name: string;
   pages: PageDataFrame[];
   contract_users: ContractUserDataFrame[];
@@ -661,6 +662,8 @@ interface ContractData extends BaseEntity, ContractDataFrame {
   origin_id?: string;
   origin?: ContractData;
   completed_at?: Date | string | null;
+  contract_users: ContractUserData[];
+  pages: PageData[];
 }
 interface ContractUserDataFrame {
   name: string;
@@ -675,6 +678,7 @@ interface ContractUserData extends BaseEntity, ContractUserDataFrame {
   user?: UserData;
 }
 interface PageDataFrame {
+  id?: string;
   page: number;
   image: string;
   input_fields: InputFieldDataFrame[];
@@ -682,6 +686,7 @@ interface PageDataFrame {
 interface PageData extends BaseEntity, PageDataFrame {
   contract_id: string;
   contract?: ContractData;
+  input_fields: InputFieldData[];
 }
 interface InputFieldDataFrame {
   type: string;
