@@ -214,3 +214,27 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #print-content,
+  #print-content * {
+    visibility: visible !important;
+  }
+  #print-content {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+  .section-start {
+    page-break-before: always;
+  }
+  .do-not-split {
+    page-break-inside: avoid;
+  }
+}
