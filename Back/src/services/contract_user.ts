@@ -13,16 +13,16 @@ export class ContractUserService extends BaseService<
     super(repo);
   }
 
-  // 참여자 목록 조회
+  /** 참여자 목록 조회 */
   async getUsers(contract_id: string) {
-    return await this.repository.findAll({
+    return this.repository.findAll({
       where: { contract_id },
       relations: ["user"],
       order: { created_at: "ASC" },
     });
   }
 
-  // 참여자 추가
+  /** 참여자 추가 */
   async addUser(contract_id: string, user_id: string, name?: string) {
     const cu = await this.repository.create({
       contract_id,
@@ -31,18 +31,16 @@ export class ContractUserService extends BaseService<
       approve: ApproveStatus.PENDING,
     });
 
-    await this.repository.getManager().save(
-      this.repository.getManager().create(Log, {
-        name: "contract_user_add",
-        type: "contract_user",
-        data: { contract_id, user_id },
-      })
-    );
+    await this.repository.manager.save(Log, {
+      name: "contract_user_add",
+      type: "contract_user",
+      data: { contract_id, user_id },
+    });
 
     return cu;
   }
 
-  // 상태 변경 (pending → ready → confirm)
+  /** 상태 변경 (pending → ready → confirm) */
   async updateApproveStatus(
     contract_id: string,
     user_id: string,
@@ -55,28 +53,27 @@ export class ContractUserService extends BaseService<
 
     await this.repository.update({ id: user.id }, { approve: status });
 
-    const log = this.repository.getManager().create(Log, {
+    await this.repository.manager.save(Log, {
       name: "contract_user_update",
       type: "contract_user",
       data: { contract_id, user_id, status },
     });
-    await this.repository.getManager().save(log);
 
     return { ...user, approve: status };
   }
 
-  // 삭제
+  /** 참여자 삭제 */
   async removeUser(id: string) {
     await this.repository.delete({ id });
-    const log = this.repository.getManager().create(Log, {
+
+    await this.repository.manager.save(Log, {
       name: "contract_user_delete",
       type: "contract_user",
       data: { contract_user_id: id },
     });
-    await this.repository.getManager().save(log);
   }
 
-  // 모든 참여자가 confirm 되었는지 확인
+  /** 모든 참여자가 confirm 되었는지 확인 */
   async isAllConfirmed(contract_id: string): Promise<boolean> {
     const users = await this.repository.findAll({ where: { contract_id } });
     return users.every((u) => u.approve === ApproveStatus.CONFIRM);

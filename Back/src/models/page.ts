@@ -3,7 +3,6 @@ import {
   BeforeInsert,
   Column,
   Entity,
-  Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -13,22 +12,24 @@ import { Contract } from "./contract";
 import { InputField } from "./input_field";
 
 @Entity({ name: "page" })
-@Index(["created_at"])
 export class Page extends BaseEntity {
-  @Column({ type: "character varying", nullable: true })
-  contract_id?: string;
-
-  @ManyToOne(() => Contract, (contract) => contract.pages, { nullable: true })
-  @JoinColumn({ name: "contract_id", referencedColumnName: "id" })
-  contract?: Contract;
-
   @Column({ type: "character varying" })
   image!: string;
 
-  @Column({ type: "integer", nullable: true })
-  page?: number;
+  @Column({ type: "integer" })
+  page!: number;
 
-  @OneToMany(() => InputField, (field) => field.page)
+  @Column({ type: "character varying" })
+  contract_id!: string;
+
+  @ManyToOne(() => Contract, (contract) => contract.pages, { onDelete: "CASCADE" })
+  @JoinColumn({ name: "contract_id", referencedColumnName: "id" })
+  contract!: Contract;
+
+  @OneToMany(() => InputField, (field) => field.page, {
+    cascade: ["insert", "update"],
+    orphanedRowAction: "soft-delete",
+  })
   input_fields?: InputField[];
 
   @BeforeInsert()

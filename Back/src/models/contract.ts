@@ -18,9 +18,9 @@ export class Contract extends BaseEntity {
   @Column({ type: "character varying" })
   name!: string;
 
-  // 자기 자신(contract.id) 참조 (self FK)
+  // 자기 자신(contract.id) 참조 (템플릿 기반 계약 생성용)
   @Column({ type: "character varying", nullable: true })
-  origin_id?: string;
+  origin_id?: string | null;
 
   @ManyToOne(() => Contract, (contract) => contract.children, { nullable: true })
   @JoinColumn({ name: "origin_id", referencedColumnName: "id" })
@@ -29,20 +29,24 @@ export class Contract extends BaseEntity {
   @OneToMany(() => Contract, (contract) => contract.origin)
   children?: Contract[];
 
-  // 완료 시각
   @Column({ type: "timestamp with time zone", nullable: true })
   completed_at?: Date | string | null;
 
-  // 계약 삭제 시각 (origin_id != null인 경우에만 사용)
   @Column({ type: "timestamp with time zone", nullable: true })
   is_delete?: Date | string | null;
 
-  // 페이지 (1:N)
-  @OneToMany(() => Page, (page) => page.contract)
+  // 페이지
+  @OneToMany(() => Page, (page) => page.contract, {
+    cascade: ["insert", "update"],
+    orphanedRowAction: "soft-delete",
+  })
   pages?: Page[];
 
-  // 계약 참여자 (1:N)
-  @OneToMany(() => ContractUser, (cu) => cu.contract)
+  // 참여자 슬롯 (템플릿 생성 시 자리)
+  @OneToMany(() => ContractUser, (cu) => cu.contract, {
+    cascade: ["insert", "update"],
+    orphanedRowAction: "soft-delete",
+  })
   contract_users?: ContractUser[];
 
   @BeforeInsert()
