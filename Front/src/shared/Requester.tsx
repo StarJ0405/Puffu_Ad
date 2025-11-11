@@ -786,37 +786,6 @@ class _Requester {
     else return await this.delete(`/connection`, data);
   }
 
-  // 전자문서(e-contract) 관련
-  // ──────────────────────────────────────────────
-
-  // 내 계약 목록 조회
-  async getMyContracts(data?: any, callback?: Function) {
-    if (callback) callback(await this.get(`/users/me/contract`, data));
-    else return await this.get(`/users/me/contract`, data);
-  }
-
-  // 내 계약 상세 조회
-  async getMyContract(id: string, data?: any, callback?: Function) {
-    if (callback) callback(await this.get(`/users/me/contract/${id}`, data));
-    else return await this.get(`/users/me/contract/${id}`, data);
-  }
-
-  // 내 계약 입력값 / 서명 업데이트
-  async updateMyContract(id: string, data?: any, callback?: Function) {
-    if (callback) callback(await this.post(`/users/me/contract/${id}`, data));
-    else return await this.post(`/users/me/contract/${id}`, data);
-  }
-
-  // 내 계약 승인 상태 변경 (ready / confirm)
-  async updateMyApproveStatus(
-    id: string,
-    data: { status: string },
-    callback?: Function
-  ) {
-    if (callback)
-      callback(await this.post(`/users/me/contract/${id}/approve`, data));
-    else return await this.post(`/users/me/contract/${id}/approve`, data);
-  }
 }
 
 export default _Requester;
