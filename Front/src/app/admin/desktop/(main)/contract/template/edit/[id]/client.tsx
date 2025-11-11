@@ -47,6 +47,7 @@ export default function ({ contract }: { contract: ContractData }) {
   const contentRef = useRef<any>(null);
   const inputs = useRef<any>({});
   const mouseRef = useRef<any>(null);
+  const [inputList, setInputList] = useState<ContractInput[]>([]);
   const [name, setName] = useState(contract.name);
   const [height, setHeight] = useState(0);
   const [width, setWidth] = useState(0);
@@ -133,6 +134,9 @@ export default function ({ contract }: { contract: ContractData }) {
         return acc;
       }, {})
     );
+  }, []);
+  useEffect(() => {
+    setInputList(Array.from(ContractInput.getList()));
   }, []);
 
   return (
@@ -394,7 +398,7 @@ export default function ({ contract }: { contract: ContractData }) {
               </LeftSlot>
               <LeftSlot title={"입력항목"}>
                 <VerticalFlex>
-                  {ContractInput.getList().map((input) => (
+                  {inputList.map((input) => (
                     <input.Input
                       key={input.key}
                       className={clsx(styles.slot_input, {
