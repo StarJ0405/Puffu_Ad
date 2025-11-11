@@ -18,81 +18,80 @@ import {
   useRef,
   useState,
 } from "react";
-import ContractInput from "../regist/class";
+import ContractInput from "../../../template/regist/class";
 import styles from "./page.module.css";
-import Input from "@/components/inputs/Input";
-const _data: {
-  name: string;
-  pages: {
-    page: number;
-    image: string;
-    inputs: {
-      type: string;
-      metadata: {
-        name: string;
-        top: string;
-        left: string;
-        width: number;
-        height: number;
-        value?: any;
-      };
-    }[];
-  }[];
-  users: {
-    name: string;
-  }[];
-} = {
-  name: "홍성재 초본 2025.10.30",
-  pages: [
-    {
-      page: 0,
-      image:
-        "http://worldeco.kro.kr:18001/uploads/contract/2025_11_10/files-1762762230107-901971990-íì±ì¬ ì´ë³¸ 2025.10.30_0.png",
-      inputs: [
-        {
-          type: "signature",
-          metadata: {
-            name: "서명 1",
-            top: "calc(290.812px - 30px)",
-            left: "calc(176px - 67.15625px)",
-            width: 150,
-            height: 60,
-          },
-        },
-        {
-          type: "stamp",
-          metadata: {
-            name: "회사 도장 1",
-            top: "calc(302.812px - 30px)",
-            left: "calc(626px - 67.15625px)",
-            width: 90,
-            height: 90,
-          },
-        },
-      ],
-    },
-    {
-      page: 1,
-      image:
-        "http://worldeco.kro.kr:18001/uploads/contract/2025_11_10/files-1762762230124-349031818-íì±ì¬ ì´ë³¸ 2025.10.30_1.png",
-      inputs: [],
-    },
-  ],
-  users: [
-    {
-      name: "발송인",
-    },
-    {
-      name: "참여자 1",
-    },
-  ],
-};
+// const _data: {
+//   name: string;
+//   pages: {
+//     page: number;
+//     image: string;
+//     inputs: {
+//       type: string;
+//       metadata: {
+//         name: string;
+//         top: string;
+//         left: string;
+//         width: number;
+//         height: number;
+//         value?: any;
+//       };
+//     }[];
+//   }[];
+//   users: {
+//     name: string;
+//   }[];
+// } = {
+//   name: "홍성재 초본 2025.10.30",
+//   pages: [
+//     {
+//       page: 0,
+//       image:
+//         "http://worldeco.kro.kr:18001/uploads/contract/2025_11_10/files-1762762230107-901971990-íì±ì¬ ì´ë³¸ 2025.10.30_0.png",
+//       inputs: [
+//         {
+//           type: "signature",
+//           metadata: {
+//             name: "서명 1",
+//             top: "calc(290.812px - 30px)",
+//             left: "calc(176px - 67.15625px)",
+//             width: 150,
+//             height: 60,
+//           },
+//         },
+//         {
+//           type: "stamp",
+//           metadata: {
+//             name: "회사 도장 1",
+//             top: "calc(302.812px - 30px)",
+//             left: "calc(626px - 67.15625px)",
+//             width: 90,
+//             height: 90,
+//           },
+//         },
+//       ],
+//     },
+//     {
+//       page: 1,
+//       image:
+//         "http://worldeco.kro.kr:18001/uploads/contract/2025_11_10/files-1762762230124-349031818-íì±ì¬ ì´ë³¸ 2025.10.30_1.png",
+//       inputs: [],
+//     },
+//   ],
+//   users: [
+//     {
+//       name: "발송인",
+//     },
+//     {
+//       name: "참여자 1",
+//     },
+//   ],
+// };
 
-export default function () {
+export default function ({ contract }: { contract: ContractData }) {
   const navigate = useNavigate();
   const contentRef = useRef<any>(null);
   const inputs = useRef<any[]>([]);
-  const [name, setName] = useState(_data.name);
+  const [name, setName] = useState(contract.name);
   const [height, setHeight] = useState(0);
   const [width, setWidth] = useState(0);
   const [scale, setScale] = useState(100);
@@ -187,9 +186,10 @@ export default function () {
             <Button
               className={styles.button}
               onClick={async () => {
+                const _data = { ...contract };
                 _data.pages = _data.pages.map((page) => {
-                  page.inputs = page.inputs.map((input) => {
-                    input.metadata.value =
+                  page.input_fields = page.input_fields.map((input) => {
+                    input.value =
                       inputs.current[page.page][
                         input.metadata.name
                       ]?.getValue?.();
@@ -220,7 +220,7 @@ export default function () {
                       confirmText: "다운로드",
                       cancelText: "취소",
                       onConfirm: async () => {
-                        const pages = _data.pages.map((_, index) => {
+                        const pages = contract.pages.map((_, index) => {
                           const page = document.getElementById(`page_${index}`);
                           if (page) page.className = styles.print;
                           return page;
@@ -338,7 +338,7 @@ export default function () {
               padding={"30px"}
               gap={12}
             >
-              {_data.pages.map((page, index) => (
+              {contract.pages.map((page, index) => (
                 <FlexChild
                   id={`page_${index}`}
                   key={index}
@@ -353,7 +353,7 @@ export default function () {
                     height={"297mm"}
                     scale={scale / 100}
                   />
-                  {page.inputs.map((input, index) => (
+                  {page.input_fields.map((input, index) => (
                     <FloatInput
                       ref={(el) => {
                         if (!inputs.current[page.page])
@@ -437,7 +437,7 @@ function ScaleSelect({
 }
 const FloatInput = forwardRef(({ input }: { input: InputFieldData }, ref) => {
   const [ci, setCi] = useState<ContractInput>();
-  const [data, setData] = useState<any>({});
+  const [data, setData] = useState<any>();
   useEffect(() => {
     const _input = ContractInput.getList().find(
       (f) => f.getKey() === input.type
@@ -446,7 +446,7 @@ const FloatInput = forwardRef(({ input }: { input: InputFieldData }, ref) => {
   }, []);
   useImperativeHandle(ref, () => ({
     getValue() {
-      return data;
+      return data || {};
     },
   }));
 
