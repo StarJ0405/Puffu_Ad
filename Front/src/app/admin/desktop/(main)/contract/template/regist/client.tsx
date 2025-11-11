@@ -1479,7 +1479,7 @@ function FloatInput({
       }}
     >
       <FlexChild position="relative" height={"100%"}>
-        {input.input.getInput()}
+        {input.input ? input.input.getInput() : null}
         <FlexChild
           hidden={!selected}
           position="absolute"
