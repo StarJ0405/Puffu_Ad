@@ -51,4 +51,16 @@ export class ContractRepository extends BaseRepository<Contract> {
 
     return this.repo.save(contract);
   }
+
+  async updateContract(id: string, data: DeepPartial<Contract>): Promise<Contract> {
+    const contract = await this.repo.findOne({
+      where: { id },
+      relations: ["pages", "pages.input_fields", "contract_users"],
+    });
+    if (!contract) throw new Error("Contract not found");
+
+    contract.name = data.name ?? contract.name;
+
+    return await this.repo.save(contract);
+  }
 }
