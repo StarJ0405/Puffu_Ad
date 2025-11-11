@@ -677,7 +677,7 @@ interface ContractUserData extends BaseEntity, ContractUserDataFrame {
 interface PageDataFrame {
   page: number;
   image: string;
-  input_fields: InputFieldDataFrame[];
+  inputs: InputFieldDataFrame[];
 }
 interface PageData extends BaseEntity, PageDataFrame {
   contract_id: string;
@@ -690,7 +690,7 @@ interface InputFieldDataFrame {
 interface InputFieldData extends BaseEntity, InputFieldDataFrame {
   page_id: string;
   page?: PageData;
-  value: Record<string, any>;
+  value: REcord<string, any>;
 }
 
 // 계약서 관련 선언 끝

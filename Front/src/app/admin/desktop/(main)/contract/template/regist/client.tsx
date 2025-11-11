@@ -380,7 +380,7 @@ function Setting({
                   pages: images.map((_, key) => ({
                     page: Number(key),
                     image: images[Number(key)],
-                    input_fields:
+                    inputs:
                       data[Number(key)]?.inputs?.map((input) => ({
                         type: input.input.getKey(),
                         metadata: {

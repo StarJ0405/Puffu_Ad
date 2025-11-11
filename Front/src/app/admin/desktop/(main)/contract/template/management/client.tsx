@@ -6,12 +6,11 @@ import { adminRequester } from "@/shared/AdminRequester";
 import Button from "@/components/buttons/Button";
 import P from "@/components/P/P";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
-import useNavigate from "@/shared/hooks/useNavigate";
 
 export function TemplateManagementClient() {
   const [templates, setTemplates] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+
   useEffect(() => {
     loadTemplates();
   }, []);
@@ -37,7 +36,7 @@ export function TemplateManagementClient() {
     <div className={styles.page}>
       <HorizontalFlex justifyContent="space-between" alignItems="center">
         <P className={styles.title}>템플릿 관리</P>
-        <Button styleType="admin" onClick={() => navigate("/contract/template/regist")}>
+        <Button styleType="admin" onClick={() => alert("새 템플릿 만들기")}>
           새 템플릿 만들기
         </Button>
       </HorizontalFlex>
