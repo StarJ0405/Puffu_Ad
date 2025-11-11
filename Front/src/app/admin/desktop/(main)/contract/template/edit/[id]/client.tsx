@@ -23,7 +23,7 @@ import {
   useRef,
   useState,
 } from "react";
-import ContractInput from "../regist/class";
+import ContractInput from "../../regist/class";
 import styles from "./page.module.css";
 
 interface Data {
