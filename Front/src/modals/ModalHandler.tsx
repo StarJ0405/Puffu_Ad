@@ -54,6 +54,7 @@ import SearchModal from "./main/search/SearchModal";
 import SelectModal from "./main/select/SelectModal";
 import SignatureModal from "./signature/SignatureModal";
 import TableModal from "./table/TableModal";
+import ContractStampModal from "./contract/stamp/ContractStampModal";
 
 function ModalHandler() {
   NiceModal.register("toast", ToastModal);
@@ -66,6 +67,7 @@ function ModalHandler() {
   NiceModal.register("loading", LoadingModal);
   //  contract
   NiceModal.register("contract/signature", ContractSignatureModal);
+  NiceModal.register("contract/stamp", ContractStampModal);
   // main
   NiceModal.register("select", SelectModal);
   NiceModal.register("address", AddressModal);

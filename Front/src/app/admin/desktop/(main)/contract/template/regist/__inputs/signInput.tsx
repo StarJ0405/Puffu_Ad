@@ -7,7 +7,6 @@ import { JSX } from "react";
 import ContractInput from "../class";
 
 const key: string = "signature";
-
 export default class SignatureInput extends ContractInput {
   constructor() {
     super({
@@ -24,6 +23,8 @@ export default class SignatureInput extends ContractInput {
     url?: string;
     onChange?: (data: any) => void;
     name?: string;
+    width: number;
+    height: number;
   }): JSX.Element {
     return (
       <FlexChild
@@ -40,8 +41,8 @@ export default class SignatureInput extends ContractInput {
             src={props.url}
             width={"100%"}
             height={"auto"}
-            maxHeight={this.getHeight()}
-            maxWidth={this.getWidth()}
+            maxHeight={props.height}
+            maxWidth={props.width}
           />
         ) : (
           this.getIcon(32)
