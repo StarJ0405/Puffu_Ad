@@ -20,72 +20,6 @@ import {
 } from "react";
 import ContractInput from "../../../template/regist/class";
 import styles from "./page.module.css";
-// const _data: {
-//   name: string;
-//   pages: {
-//     page: number;
-//     image: string;
-//     inputs: {
-//       type: string;
-//       metadata: {
-//         name: string;
-//         top: string;
-//         left: string;
-//         width: number;
-//         height: number;
-//         value?: any;
-//       };
-//     }[];
-//   }[];
-//   users: {
-//     name: string;
-//   }[];
-// } = {
-//   name: "홍성재 초본 2025.10.30",
-//   pages: [
-//     {
-//       page: 0,
-//       image:
-//         "http://worldeco.kro.kr:18001/uploads/contract/2025_11_10/files-1762762230107-901971990-íì±ì¬ ì´ë³¸ 2025.10.30_0.png",
-//       inputs: [
-//         {
-//           type: "signature",
-//           metadata: {
-//             name: "서명 1",
-//             top: "calc(290.812px - 30px)",
-//             left: "calc(176px - 67.15625px)",
-//             width: 150,
-//             height: 60,
-//           },
-//         },
-//         {
-//           type: "stamp",
-//           metadata: {
-//             name: "회사 도장 1",
-//             top: "calc(302.812px - 30px)",
-//             left: "calc(626px - 67.15625px)",
-//             width: 90,
-//             height: 90,
-//           },
-//         },
-//       ],
-//     },
-//     {
-//       page: 1,
-//       image:
-//         "http://worldeco.kro.kr:18001/uploads/contract/2025_11_10/files-1762762230124-349031818-íì±ì¬ ì´ë³¸ 2025.10.30_1.png",
-//       inputs: [],
-//     },
-//   ],
-//   users: [
-//     {
-//       name: "발송인",
-//     },
-//     {
-//       name: "참여자 1",
-//     },
-//   ],
-// };
 
 export default function ({ contract }: { contract: ContractData }) {
   const navigate = useNavigate();
@@ -245,7 +179,6 @@ export default function ({ contract }: { contract: ContractData }) {
                   width={"max-content"}
                   className={styles.slot}
                   onClick={() => {
-                    //         window.print();
                     const content = document.getElementById("print-content");
                     const printWindow = window.open(
                       "",
@@ -267,7 +200,9 @@ export default function ({ contract }: { contract: ContractData }) {
                     printWindow?.document.write(content?.innerHTML || "");
                     printWindow?.document.write("</body></html>");
                     printWindow?.document.close();
-                    printWindow?.print();
+                    setTimeout(() => {
+                      printWindow?.print();
+                    }, 500);
                   }}
                 >
                   <Image src={"/resources/contract/print.svg"} size={24} />
@@ -439,10 +374,18 @@ const FloatInput = forwardRef(({ input }: { input: InputFieldData }, ref) => {
   const [ci, setCi] = useState<ContractInput>();
   const [data, setData] = useState<any>();
   useEffect(() => {
-    const _input = ContractInput.getList().find(
-      (f) => f.getKey() === input.type
-    );
-    if (_input) setCi(_input);
+    let timer = 10;
+    const interval = setInterval(() => {
+      if (timer <= 0) clearInterval(interval);
+      const _input = ContractInput.getList().find(
+        (f) => f.getKey() === input.type
+      );
+      if (_input) {
+        setCi(_input);
+        clearInterval(interval);
+      }
+      timer--;
+    }, 500);
   }, []);
   useImperativeHandle(ref, () => ({
     getValue() {
@@ -455,14 +398,19 @@ const FloatInput = forwardRef(({ input }: { input: InputFieldData }, ref) => {
       position={"absolute"}
       top={input.metadata.top}
       left={input.metadata.left}
+      minWidth={input.metadata.width}
       width={input.metadata.width}
       height={input.metadata.height}
+      minHeight={input.metadata.height}
       className={clsx(styles.float, { [styles.has]: data })}
       transition={"0.5s all"}
     >
       {ci?.getWrite({
         onChange: (data) => setData(data),
         ...data,
+        ...input,
+        width: input.metadata.width,
+        height: input.metadata.height,
       })}
     </FlexChild>
   );

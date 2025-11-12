@@ -11,12 +11,14 @@ import InputNumber from "@/components/inputs/InputNumber";
 import LoadingSpinner from "@/components/loading/LoadingSpinner";
 import P from "@/components/P/P";
 import Select from "@/components/select/Select";
-import { fileRequester } from "@/shared/FileRequester";
-import { dataURLtoFile, toast } from "@/shared/utils/Functions";
 import { adminRequester } from "@/shared/AdminRequester";
+import { fileRequester } from "@/shared/FileRequester";
+import useNavigate from "@/shared/hooks/useNavigate";
+import { dataURLtoFile, toast } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
-import {
+import _ from "lodash";
+import React, {
   CSSProperties,
   Dispatch,
   SetStateAction,
@@ -26,7 +28,6 @@ import {
 } from "react";
 import ContractInput from "./class";
 import styles from "./page.module.css";
-import useNavigate from "@/shared/hooks/useNavigate";
 
 async function getPdfPageAsBase64(pdfFileUrlOrData: any) {
   const pdfjsLib = await import("pdfjs-dist");
@@ -228,6 +229,17 @@ interface Data {
   left: React.CSSProperties["left"];
   width: number;
   height: number;
+  fontFamily?: React.CSSProperties["fontFamily"];
+  fontSize?: number;
+  fontWeight?: React.CSSProperties["fontWeight"];
+  bold?: boolean;
+  italic?: boolean;
+  underline?: boolean;
+  color?: React.CSSProperties["color"];
+  align?: React.CSSProperties["textAlign"];
+  vertical?: React.CSSProperties["alignItems"];
+  backgroundColor?: React.CSSProperties["backgroundColor"];
+  data?: any;
 }
 interface PageData {
   [key: number]: {
@@ -263,11 +275,17 @@ function Setting({
   const [selectedUser, setSelectedUser] = useState<string>("발송인");
   const [selectedInput, setSelectedInput] = useState<ContractInput>();
   const [selectFontFamilly, setFontFamilly] = useState<string>("");
+  const [isBold, setBold] = useState(false);
+  const [isItalic, setItalic] = useState(false);
+  const [isUnderLine, setUnderLine] = useState(false);
+  const [color, setColor] = useState<string>("");
+  const [align, setAlign] = useState<string>("");
+  const [vertical, setVertical] = useState<string>("");
+  const [backgroundColor, setBackgroundColor] = useState<string>("");
   const [extra, setExtra] = useState(false);
   const [fold, setFold] = useState(true);
   const [data, setData] = useState<PageData>({});
   const [selectedInputs, setSelectedInputs] = useState<string[]>([]);
-
   useEffect(() => {
     function setMaxHeight() {
       const admin_header = document.getElementById("admin_header");
@@ -317,7 +335,16 @@ function Setting({
       return () => content.removeEventListener("wheel", onWheel);
     }
   }, []);
-
+  useEffect(() => {
+    setFontFamilly("");
+    setBold(false);
+    setItalic(false);
+    setUnderLine(false);
+    setColor("");
+    setAlign("");
+    setVertical("");
+    setBackgroundColor("");
+  }, [selectedInputs]);
   return (
     <VerticalFlex className={styles.setting}>
       <FlexChild>
@@ -389,6 +416,16 @@ function Setting({
                           left: input.left,
                           width: input.width,
                           height: input.height,
+                          fontFamily: input.fontFamily,
+                          fontSize: input.fontSize,
+                          bold: input.bold,
+                          italic: input.italic,
+                          underline: input.underline,
+                          color: input.color,
+                          align: input.align,
+                          vertical: input.vertical,
+                          backgroundColor: input.backgroundColor,
+                          ...(input.data || {}),
                         },
                       })) || [],
                   })),
@@ -634,31 +671,62 @@ function Setting({
                     >
                       <FlexChild className={styles.slot}>
                         <Select
-                          disabled
+                          disabled={!selectedInputs.length}
                           zIndex={1}
                           width={150}
                           maxWidth={150}
                           classNames={{ header: styles.selectHeader }}
                           options={[
-                            { value: "Pretendard", display: "Pretendard" },
-                            { value: "NotoSans", display: "구글 본고딕" },
                             {
-                              value: "NanumBarunGothic",
+                              value: "var(--font-pretendard)",
+                              display: "Pretendard",
+                            },
+                            {
+                              value: "var(--font-notosans)",
+                              display: "구글 본고딕",
+                            },
+                            {
+                              value: "var(--font-barun-gothic)",
                               display: "나눔 바른 고딕",
                             },
-                            { value: "BrushFont", display: "나눔 붓글씨" },
-                            { value: "NanumGothic", display: "sksnarhelr" },
-                            { value: "NanumHuman", display: "나눔휴먼" },
-                            { value: "NanumMyeongjo", display: "나눔명조" },
-                            { value: "NanumPen", display: "나눔펜" },
                             {
-                              value: "NanumSqaureNeo",
+                              value: "var(--font-brush)",
+                              display: "나눔 붓글씨",
+                            },
+                            {
+                              value: "var(--font-gothic)",
+                              display: "sksnarhelr",
+                            },
+                            { value: "var(--font-human)", display: "나눔휴먼" },
+                            {
+                              value: "var(--font-myeongjo)",
+                              display: "나눔명조",
+                            },
+                            { value: "var(--font-pen)", display: "나눔펜" },
+                            {
+                              value: "var(--font-square-neo)",
                               display: "나눔스퀘어네오",
                             },
-                            { value: "Sacheon", display: "사천항공체" },
+                            {
+                              value: "var(--font-sacheon)",
+                              display: "사천항공체",
+                            },
                           ]}
+                          placeholder=""
                           value={selectFontFamilly}
-                          onChange={(value) => setFontFamilly(value as string)}
+                          onChange={(value) => {
+                            setFontFamilly(value as string);
+                            Object.keys(data).forEach((key) => {
+                              const inputs = data[Number(key)].inputs;
+                              data[Number(key)].inputs = inputs.map((input) => {
+                                if (selectedInputs.includes(input.name)) {
+                                  input.fontFamily = value as string;
+                                }
+                                return input;
+                              });
+                            });
+                            setData({ ...data });
+                          }}
                         />
                       </FlexChild>
                     </HorizontalFlex>
@@ -670,13 +738,25 @@ function Setting({
                     >
                       <FlexChild className={styles.slot}>
                         <InputNumber
-                          disabled
+                          disabled={!selectedInputs.length}
                           ref={(el) => {
                             inputs.current["fontsize"] = el;
                           }}
                           value={16}
                           min={1}
                           max={150}
+                          onChange={(value) => {
+                            Object.keys(data).forEach((key) => {
+                              const inputs = data[Number(key)].inputs;
+                              data[Number(key)].inputs = inputs.map((input) => {
+                                if (selectedInputs.includes(input.name)) {
+                                  input.fontSize = value;
+                                }
+                                return input;
+                              });
+                            });
+                            setData({ ...data });
+                          }}
                         />
                       </FlexChild>
                     </HorizontalFlex>
@@ -687,8 +767,10 @@ function Setting({
                       width={"max-content"}
                     >
                       <FlexChild
-                        className={styles.slot}
-                        color={true ? "#d0d0d0" : undefined}
+                        className={clsx(styles.slot, {
+                          [styles.selected]: isBold,
+                        })}
+                        color={!selectedInputs.length ? "#d0d0d0" : undefined}
                       >
                         <Icon
                           src="contract/"
@@ -696,11 +778,41 @@ function Setting({
                           type="svg"
                           cursor="pointer"
                           size={15}
+                          onClick={() => {
+                            if (!selectedInputs.length) return;
+                            setBold(!isBold);
+                            Object.keys(data).forEach((key) => {
+                              const inputs = data[Number(key)].inputs;
+                              data[Number(key)].inputs = inputs.map((input) => {
+                                if (selectedInputs.includes(input.name)) {
+                                  input.bold = !isBold;
+                                }
+                                return input;
+                              });
+                            });
+                            setData({ ...data });
+                          }}
                         />
                       </FlexChild>
                       <FlexChild
-                        className={styles.slot}
-                        color={true ? "#d0d0d0" : undefined}
+                        className={clsx(styles.slot, {
+                          [styles.selected]: isItalic,
+                        })}
+                        color={!selectedInputs.length ? "#d0d0d0" : undefined}
+                        onClick={() => {
+                          if (!selectedInputs.length) return;
+                          setItalic(!isItalic);
+                          Object.keys(data).forEach((key) => {
+                            const inputs = data[Number(key)].inputs;
+                            data[Number(key)].inputs = inputs.map((input) => {
+                              if (selectedInputs.includes(input.name)) {
+                                input.italic = !isItalic;
+                              }
+                              return input;
+                            });
+                          });
+                          setData({ ...data });
+                        }}
                       >
                         <Icon
                           src="contract/"
@@ -711,8 +823,24 @@ function Setting({
                         />
                       </FlexChild>
                       <FlexChild
-                        className={styles.slot}
-                        color={true ? "#d0d0d0" : undefined}
+                        className={clsx(styles.slot, {
+                          [styles.selected]: isUnderLine,
+                        })}
+                        color={!selectedInputs.length ? "#d0d0d0" : undefined}
+                        onClick={() => {
+                          if (!selectedInputs.length) return;
+                          setUnderLine(!isUnderLine);
+                          Object.keys(data).forEach((key) => {
+                            const inputs = data[Number(key)].inputs;
+                            data[Number(key)].inputs = inputs.map((input) => {
+                              if (selectedInputs.includes(input.name)) {
+                                input.underline = !isUnderLine;
+                              }
+                              return input;
+                            });
+                          });
+                          setData({ ...data });
+                        }}
                       >
                         <Icon
                           src="contract/"
@@ -724,7 +852,27 @@ function Setting({
                       </FlexChild>
                       <FlexChild
                         className={styles.slot}
-                        color={true ? "#d0d0d0" : undefined}
+                        color={!selectedInputs.length ? "#d0d0d0" : undefined}
+                        onClick={() => {
+                          if (!selectedInputs.length) return;
+                          NiceModal.show("contract/color", {
+                            onConfirm: ({ color }: { color: string }) => {
+                              setColor(color);
+                              Object.keys(data).forEach((key) => {
+                                const inputs = data[Number(key)].inputs;
+                                data[Number(key)].inputs = inputs.map(
+                                  (input) => {
+                                    if (selectedInputs.includes(input.name)) {
+                                      input.color = color;
+                                    }
+                                    return input;
+                                  }
+                                );
+                                setData({ ...data });
+                              });
+                            },
+                          });
+                        }}
                       >
                         <Icon
                           src="contract/"
@@ -765,7 +913,26 @@ function Setting({
                         >
                           <FlexChild
                             className={styles.slot}
-                            color={true ? "#d0d0d0" : undefined}
+                            color={
+                              !selectedInputs.length ? "#d0d0d0" : undefined
+                            }
+                            onClick={() => {
+                              if (!selectedInputs.length) return;
+                              setAlign("left");
+                              Object.keys(data).forEach((key) => {
+                                const inputs = data[Number(key)].inputs;
+                                data[Number(key)].inputs = inputs.map(
+                                  (input) => {
+                                    if (selectedInputs.includes(input.name)) {
+                                      input.align = "left";
+                                    }
+                                    return input;
+                                  }
+                                );
+                              });
+                              setData({ ...data });
+                              setFold(true);
+                            }}
                           >
                             <Icon
                               src="contract/"
@@ -777,7 +944,26 @@ function Setting({
                           </FlexChild>
                           <FlexChild
                             className={styles.slot}
-                            color={true ? "#d0d0d0" : undefined}
+                            color={
+                              !selectedInputs.length ? "#d0d0d0" : undefined
+                            }
+                            onClick={() => {
+                              if (!selectedInputs.length) return;
+                              setAlign("center");
+                              Object.keys(data).forEach((key) => {
+                                const inputs = data[Number(key)].inputs;
+                                data[Number(key)].inputs = inputs.map(
+                                  (input) => {
+                                    if (selectedInputs.includes(input.name)) {
+                                      input.align = "center";
+                                    }
+                                    return input;
+                                  }
+                                );
+                              });
+                              setData({ ...data });
+                              setFold(true);
+                            }}
                           >
                             <Icon
                               src="contract/"
@@ -789,7 +975,26 @@ function Setting({
                           </FlexChild>
                           <FlexChild
                             className={styles.slot}
-                            color={true ? "#d0d0d0" : undefined}
+                            color={
+                              !selectedInputs.length ? "#d0d0d0" : undefined
+                            }
+                            onClick={() => {
+                              if (!selectedInputs.length) return;
+                              setAlign("right");
+                              Object.keys(data).forEach((key) => {
+                                const inputs = data[Number(key)].inputs;
+                                data[Number(key)].inputs = inputs.map(
+                                  (input) => {
+                                    if (selectedInputs.includes(input.name)) {
+                                      input.align = "right";
+                                    }
+                                    return input;
+                                  }
+                                );
+                              });
+                              setData({ ...data });
+                              setFold(true);
+                            }}
                           >
                             <Icon
                               src="contract/"
@@ -808,7 +1013,26 @@ function Setting({
                         >
                           <FlexChild
                             className={styles.slot}
-                            color={true ? "#d0d0d0" : undefined}
+                            color={
+                              !selectedInputs.length ? "#d0d0d0" : undefined
+                            }
+                            onClick={() => {
+                              if (!selectedInputs.length) return;
+                              setVertical("flex-start");
+                              Object.keys(data).forEach((key) => {
+                                const inputs = data[Number(key)].inputs;
+                                data[Number(key)].inputs = inputs.map(
+                                  (input) => {
+                                    if (selectedInputs.includes(input.name)) {
+                                      input.vertical = "flex-start";
+                                    }
+                                    return input;
+                                  }
+                                );
+                              });
+                              setData({ ...data });
+                              setFold(true);
+                            }}
                           >
                             <Icon
                               src="contract/"
@@ -820,7 +1044,26 @@ function Setting({
                           </FlexChild>
                           <FlexChild
                             className={styles.slot}
-                            color={true ? "#d0d0d0" : undefined}
+                            color={
+                              !selectedInputs.length ? "#d0d0d0" : undefined
+                            }
+                            onClick={() => {
+                              if (!selectedInputs.length) return;
+                              setVertical("center");
+                              Object.keys(data).forEach((key) => {
+                                const inputs = data[Number(key)].inputs;
+                                data[Number(key)].inputs = inputs.map(
+                                  (input) => {
+                                    if (selectedInputs.includes(input.name)) {
+                                      input.vertical = "center";
+                                    }
+                                    return input;
+                                  }
+                                );
+                              });
+                              setData({ ...data });
+                              setFold(true);
+                            }}
                           >
                             <Icon
                               src="contract/"
@@ -832,7 +1075,26 @@ function Setting({
                           </FlexChild>
                           <FlexChild
                             className={styles.slot}
-                            color={true ? "#d0d0d0" : undefined}
+                            color={
+                              !selectedInputs.length ? "#d0d0d0" : undefined
+                            }
+                            onClick={() => {
+                              if (!selectedInputs.length) return;
+                              setVertical("flex-end");
+                              Object.keys(data).forEach((key) => {
+                                const inputs = data[Number(key)].inputs;
+                                data[Number(key)].inputs = inputs.map(
+                                  (input) => {
+                                    if (selectedInputs.includes(input.name)) {
+                                      input.vertical = "flex-end";
+                                    }
+                                    return input;
+                                  }
+                                );
+                              });
+                              setData({ ...data });
+                              setFold(true);
+                            }}
                           >
                             <Icon
                               src="contract/"
@@ -851,7 +1113,33 @@ function Setting({
                         >
                           <FlexChild
                             className={styles.slot}
-                            color={true ? "#d0d0d0" : undefined}
+                            color={
+                              !selectedInputs.length ? "#d0d0d0" : undefined
+                            }
+                            onClick={() => {
+                              if (!selectedInputs.length) return;
+                              NiceModal.show("contract/color", {
+                                background: true,
+                                onConfirm: ({ color }: { color: string }) => {
+                                  setBackgroundColor(color);
+                                  Object.keys(data).forEach((key) => {
+                                    const inputs = data[Number(key)].inputs;
+                                    data[Number(key)].inputs = inputs.map(
+                                      (input) => {
+                                        if (
+                                          selectedInputs.includes(input.name)
+                                        ) {
+                                          input.backgroundColor = color;
+                                        }
+                                        return input;
+                                      }
+                                    );
+                                    setData({ ...data });
+                                    setFold(true);
+                                  });
+                                },
+                              });
+                            }}
                           >
                             <Icon
                               src="contract/"
@@ -1043,12 +1331,22 @@ function Setting({
                           )}
                           width={(input.width * scale) / 100}
                           height={(input.height * scale) / 100}
-                          onUpdate={({ width, height, top, left }) => {
+                          onUpdate={({
+                            width,
+                            height,
+                            top,
+                            left,
+                            data: _data,
+                          }) => {
                             const input = data[index].inputs[idx];
-                            input.width = width;
-                            input.height = height;
-                            input.top = top;
-                            input.left = left;
+                            if (typeof width !== "undefined")
+                              input.width = width;
+                            if (typeof height !== "undefined")
+                              input.height = height;
+                            if (typeof top !== "undefined") input.top = top;
+                            if (typeof left !== "undefined") input.left = left;
+                            if (typeof data !== "undefined")
+                              input.data = _.merge(input.data || {}, _data);
                             setData({ ...data });
                           }}
                           onClick={(e) => {
@@ -1296,11 +1594,13 @@ function FloatInput({
     left,
     height,
     width,
+    data,
   }: {
-    top: CSSProperties["top"];
-    left: CSSProperties["left"];
-    width: number;
-    height: number;
+    top?: CSSProperties["top"];
+    left?: CSSProperties["left"];
+    width?: number;
+    height?: number;
+    data?: any;
   }) => void;
   onClick: (e: any) => void;
 }) {
@@ -1478,8 +1778,23 @@ function FloatInput({
         };
       }}
     >
-      <FlexChild position="relative" height={"100%"}>
-        {input.input ? input.input.getInput() : null}
+      <FlexChild
+        position="relative"
+        height={"100%"}
+        fontFamily={input.fontFamily}
+        fontSize={input.fontSize}
+        fontWeight={input.bold ? 700 : 500}
+        textDecorationLine={input.underline ? "underline" : "none"}
+        fontStyle={input.italic ? "italic" : "normal"}
+        textAlign={input.align}
+        color={input.color}
+        alignItems={input.vertical}
+        backgroundColor={input.backgroundColor}
+        className={styles.input}
+      >
+        {input.input.getInput({
+          onChange: (data) => onUpdate({ data }),
+        })}
         <FlexChild
           hidden={!selected}
           position="absolute"

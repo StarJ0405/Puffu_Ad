@@ -7,32 +7,18 @@ import FlexChild from "@/components/flex/FlexChild";
 import FlexGrid from "@/components/flex/FlexGrid";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import Input from "@/components/inputs/Input";
 import LoadingSpinner from "@/components/loading/LoadingSpinner";
-import Select from "@/components/select/Select";
-import SignaturePad from "@/components/sign/SignaturePad";
 import ModalBase from "@/modals/ModalBase";
 import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
+import { toast } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
-import html2canvas from "html2canvas";
-import { useEffect, useRef, useState } from "react";
-import styles from "./ContractSignatureModal.module.css";
-import Div from "@/components/div/Div";
-const fonts = [
-  "--font-barun-gothic",
-  "--font-gothic",
-  "--font-human",
-  "--font-myeongjo",
-  "--font-pen",
-  "--font-square-neo",
-  "--font-pretendard",
-  "--font-notosans",
-  "--font-sacheon",
-];
-const ContractSignatureModal = NiceModal.create(
+import { Dispatch, SetStateAction, useRef, useState } from "react";
+import styles from "./ContractStampModal.module.css";
+
+const ContractStampModal = NiceModal.create(
   ({
-    url,
+    list,
     onConfirm,
     width = "min(80%, 800px)",
     height = "auto",
@@ -40,20 +26,15 @@ const ContractSignatureModal = NiceModal.create(
     clickOutsideToClose = true,
     classNames,
     preventable = false, // true시 onConfirm false면 캔슬됨
-    name: pre_name = "",
   }: any) => {
     const [withHeader, withFooter] = [false, false];
     const buttonText = "close";
-    const [tab, setTab] = useState<"그리기" | "텍스트">("그리기");
-    const [lang, setLang] = useState<string>("ko");
+    const [tab, setTab] = useState<"이미지" | "목록">("이미지");
     const modal = useRef<any>(null);
     const [isBlocked, setIsBlocked] = useState(false);
     const { isMobile } = useBrowserEvent();
-    const padRef = useRef<any>(null);
-    const [fontImages, setFontImages] = useState<
-      { name: string; url: string }[]
-    >([]);
-    const [select, setSelect] = useState<string>(fonts[0]);
+    const [image, setImage] = useState<string>("");
+    const [select, setSelect] = useState<string>(list?.[0] || "");
     const onConfirmClick = async () => {
       if (isBlocked) return;
       setIsBlocked(true);
@@ -62,10 +43,10 @@ const ContractSignatureModal = NiceModal.create(
         let isAsyncFn =
           onConfirm.constructor.name === "AsyncFunction" ? true : false;
         if (isAsyncFn) {
-          const result = await onConfirm({ url: padRef.current.toDataURL() });
+          const result = await onConfirm({ url: image });
           if (!preventable || result) modal.current.close();
         } else {
-          const result = onConfirm({ url: padRef.current.toDataURL() });
+          const result = onConfirm({ url: image });
           if (!preventable || result) modal.current.close();
         }
       } else {
@@ -76,91 +57,21 @@ const ContractSignatureModal = NiceModal.create(
     const onConfirmClick2 = async () => {
       if (isBlocked) return;
       setIsBlocked(true);
-      const url = fontImages.find((f) => f.name === select)?.url;
 
       if (onConfirm) {
         let isAsyncFn =
           onConfirm.constructor.name === "AsyncFunction" ? true : false;
         if (isAsyncFn) {
-          const result = await onConfirm({ url });
+          const result = await onConfirm({ url: select });
           if (!preventable || result) modal.current.close();
         } else {
-          const result = onConfirm({ url });
+          const result = onConfirm({ url: select });
           if (!preventable || result) modal.current.close();
         }
       } else {
         modal.current.close();
       }
       setIsBlocked(false);
-    };
-    useEffect(() => {
-      if (url) {
-        fetch(url)
-          .then((res) => res.blob())
-          .then(async (blob) => {
-            const result = await new Promise((resolve, reject) => {
-              const reader = new FileReader();
-
-              // 읽기 성공 시 Data URL 반환
-              reader.onloadend = () => {
-                // reader.result는 'data:image/png;base64,...' 형식의 문자열
-                resolve(reader.result);
-              };
-
-              // 읽기 실패 시 에러 처리
-              reader.onerror = reject;
-
-              // Data URL 형식으로 읽기 시작
-              reader.readAsDataURL(blob);
-            });
-            padRef.current.fromDataURL(result);
-          });
-      }
-    }, [url]);
-
-    useEffect(() => {
-      if (pre_name) createSignal();
-    }, [pre_name]);
-    const onCancelClick = () => {
-      padRef.current.clear();
-    };
-
-    const createSignal = async () => {
-      let value = (document.getElementById("name") as HTMLInputElement).value;
-      value = value.trim();
-
-      setFontImages(fonts.map((font) => ({ name: font, url: "" })));
-
-      fonts.forEach(async (font, index) => {
-        const div = document.createElement("div");
-        div.style.position = "absolute";
-        div.style.height = "93.5px";
-        div.style.width = "auto";
-        div.style.zIndex = "100000";
-        div.style.backgroundColor = "transparent";
-        const p = document.createElement("p");
-        div.style.padding = "5px";
-        p.style.fontFamily = `var(${font})`;
-        p.style.textAlign = "center";
-        p.style.margin = "0";
-        p.style.lineHeight = "1.1";
-        p.style.fontSize = "85px";
-        p.innerHTML = value;
-        document.body.appendChild(div);
-        div.appendChild(p);
-
-        const canvas = await html2canvas(div, {
-          scale: 2,
-          useCORS: true,
-          backgroundColor: null,
-        });
-        const imgData = canvas.toDataURL("image/png");
-        div.remove();
-        setFontImages((prev) => {
-          prev[index] = { name: font, url: imgData };
-          return [...prev];
-        });
-      });
     };
 
     return (
@@ -173,7 +84,7 @@ const ContractSignatureModal = NiceModal.create(
         withFooter={withFooter}
         withCloseButton={false}
         clickOutsideToClose={clickOutsideToClose}
-        title={"서명"}
+        title={"도장"}
         buttonText={buttonText}
         borderRadius={6}
         slideUp={slideUp}
@@ -186,7 +97,7 @@ const ContractSignatureModal = NiceModal.create(
           left={15}
           className={styles.title}
         >
-          <P>서명</P>
+          <P>도장</P>
         </FlexChild>
 
         <FlexChild
@@ -202,7 +113,7 @@ const ContractSignatureModal = NiceModal.create(
             hideScrollbar
           >
             <FlexChild>
-              {["그리기", "텍스트"].map((text) => (
+              {["이미지", "목록"].map((text) => (
                 <P
                   className={clsx(styles.tab, {
                     [styles.selected]: tab === text,
@@ -214,45 +125,23 @@ const ContractSignatureModal = NiceModal.create(
                 </P>
               ))}
             </FlexChild>
-            {tab === "그리기" ? (
+            {tab === "이미지" ? (
               <>
                 <FlexChild
                   height={"100%"}
                   alignItems="flex-start"
-                  className={classNames?.message}
-                  backgroundColor={"#fff"}
                   minHeight={500}
                 >
-                  <SignaturePad
-                    ref={padRef}
-                    velocityFilterWeight={0}
-                    canvasProps={{
-                      style: { width: "100%", height: "100%", minHeight: 500 },
-                    }}
-                  />
+                  <Upload image={image} setImage={setImage} />
                 </FlexChild>
                 <FlexChild position="sticky" bottom={0}>
                   <FlexChild>
                     <HorizontalFlex>
-                      <FlexChild height={48} padding={3} width={"max-content"}>
-                        <div
-                          className={clsx(
-                            styles.confirmButton,
-                            styles.white,
-                            classNames?.cancel
-                          )}
-                          onClick={onCancelClick}
-                        >
-                          <P
-                            size={16}
-                            textAlign="center"
-                            color={"var(--admin-text-color)"}
-                            minWidth={100}
-                          >
-                            초기화
-                          </P>
-                        </div>
-                      </FlexChild>
+                      <FlexChild
+                        height={48}
+                        padding={3}
+                        width={"max-content"}
+                      ></FlexChild>
                       <FlexChild width={"max-content"}>
                         <HorizontalFlex justifyContent={"center"}>
                           <FlexChild height={48} padding={3}>
@@ -311,79 +200,39 @@ const ContractSignatureModal = NiceModal.create(
               <>
                 <FlexChild>
                   <VerticalFlex>
-                    <FlexChild>
-                      <HorizontalFlex gap={10}>
-                        <FlexChild width={150}>
-                          <Select
-                            width={150}
-                            maxWidth={150}
-                            zIndex={10830}
-                            classNames={{ header: styles.selectHeader }}
-                            value={lang}
-                            onChange={(value) => setLang(value as string)}
-                            options={[
-                              {
-                                display: "한국어",
-                                value: "ko",
-                              },
-                              {
-                                display: "영어",
-                                value: "en",
-                              },
-                            ]}
-                          />
-                        </FlexChild>
-                        <FlexChild>
-                          <Input
-                            id="name"
-                            value={pre_name}
-                            className={styles.input}
-                            width={"100%"}
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter") createSignal();
-                            }}
-                          />
-                        </FlexChild>
-                        <FlexChild width={"max-content"}>
-                          <Button
-                            className={styles.button}
-                            onClick={createSignal}
-                          >
-                            <P>생성</P>
-                          </Button>
-                        </FlexChild>
-                      </HorizontalFlex>
-                    </FlexChild>
-                    <FlexChild flexWrap="wrap" padding={"10px 0"}>
-                      <FlexGrid columns={3} gap={10}>
-                        {fontImages.map((font) => (
-                          <FlexChild
-                            key={font.name}
-                            className={clsx(styles.fontTextWrapper, {
-                              [styles.selected]: select === font.name,
-                            })}
-                            onClick={() => setSelect(font.name)}
-                          >
+                    {list.length > 0 ? (
+                      <FlexChild flexWrap="wrap" padding={"10px 0"}>
+                        <FlexGrid
+                          columns={3}
+                          rows={Math.max(1, list.length / 3)}
+                          gap={10}
+                        >
+                          {list.map((url: string) => (
                             <FlexChild
-                              id={font.name}
-                              className={styles.fontText}
+                              key={url}
+                              className={clsx(styles.fontTextWrapper, {
+                                [styles.selected]: select === url,
+                              })}
+                              onClick={() => setSelect(url)}
                             >
-                              {font.url ? (
+                              <FlexChild className={styles.fontText}>
                                 <Image
-                                  src={font.url}
+                                  src={url}
                                   width={"auto"}
                                   maxWidth={"100%"}
                                   minHeight={"93.5px"}
                                   maxHeight={"93.5px"}
                                 />
-                              ) : (
-                                <Div height={"93.5px"} width={"100%"} />
-                              )}
+                              </FlexChild>
                             </FlexChild>
-                          </FlexChild>
-                        ))}
-                      </FlexGrid>
-                    </FlexChild>
+                          ))}
+                        </FlexGrid>
+                      </FlexChild>
+                    ) : (
+                      <P color="#fff" fontWeight={600} fontSize={32}>
+                        저장된 목록이 없습니다.
+                      </P>
+                    )}
                   </VerticalFlex>
                 </FlexChild>
                 <FlexChild position="sticky" bottom={0}>
@@ -456,4 +305,108 @@ const ContractSignatureModal = NiceModal.create(
   }
 );
 
-export default ContractSignatureModal;
+function Upload({
+  image,
+  setImage,
+}: {
+  image: string;
+  setImage: Dispatch<SetStateAction<string>>;
+}) {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const onUploaded = async (files: FileList | null) => {
+    setIsLoading(true);
+    if (!files || files?.length === 0) {
+      setIsLoading(false);
+      toast({ message: "파일이 없습니다." });
+      return;
+    }
+
+    const file = files[0];
+    if (!file.type.startsWith("image/")) {
+      setIsLoading(false);
+      toast({ message: "허용되지않는 파일 형식입니다." });
+      return;
+    }
+    if (file.size > 1024 * 1024 * 9) {
+      setIsLoading(false);
+      toast({ message: "파일의 용량이 제한된 크기를 넘겼습니다." });
+      return;
+    }
+    const reader = new FileReader();
+    // 3. 파일 읽기가 완료되었을 때 실행될 이벤트 핸들러 정의
+    reader.onload = function (e) {
+      // e.target.result에 Base64 문자열이 담겨 있습니다.
+      const base64String = e.target?.result;
+      setImage(base64String as string);
+    };
+    reader.readAsDataURL(file);
+
+    setIsLoading(false);
+  };
+
+  return (
+    <VerticalFlex className={styles.upload}>
+      <input
+        type="file"
+        ref={inputRef}
+        hidden
+        accept={"image/*"}
+        onChange={(e) => {
+          onUploaded(e.target.files);
+          e.target.value = "";
+        }}
+      />
+      {/* <FlexChild className={styles.title}>
+        <P>파일 업로드</P>
+      </FlexChild> */}
+      <FlexChild>
+        <VerticalFlex
+          className={styles.dropzone}
+          hidden={!isLoading}
+          minHeight={464}
+          justifyContent="center"
+        >
+          <LoadingSpinner paddingBottom={0} width={100} height={100} />
+        </VerticalFlex>
+        <VerticalFlex
+          hidden={isLoading}
+          className={clsx(styles.dropzone, { [styles.url]: image })}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            (e.target as HTMLElement).classList.remove(styles.hover);
+            onUploaded(e.dataTransfer.files);
+          }}
+          onDragEnter={(e) => {
+            e.preventDefault();
+            (e.target as HTMLElement).classList.add(styles.hover);
+          }}
+          onDragLeave={(e) => {
+            (e.target as HTMLElement).classList.remove(styles.hover);
+          }}
+        >
+          {image ? (
+            <Image src={image} width={"100%"} />
+          ) : (
+            <>
+              <Image src="/resources/icons/drop.png" size={60} />
+              <P className={styles.dragText}>여기에 파일을 드래그 하세요.</P>
+              <P className={styles.or}>또는</P>
+              <Button
+                className={styles.button}
+                onClick={() => inputRef.current?.click()}
+              >
+                <P>내 컴퓨터에서 파일 선택</P>
+              </Button>
+              <P className={styles.format}>
+                {"파일 형식 : 이미지\n파일 크기 : 최대 9MB"}
+              </P>
+            </>
+          )}
+        </VerticalFlex>
+      </FlexChild>
+    </VerticalFlex>
+  );
+}
+export default ContractStampModal;
