@@ -87,6 +87,7 @@ export default abstract class ContractInput {
   }
   public getInput(props?: {
     onChange?: (data: any) => void;
+    data?: any;
   }): React.JSX.Element {
     return <FlexChild justifyContent="center">{this.getIcon(32)}</FlexChild>;
   }
