@@ -44,10 +44,8 @@ export default function Client({ contract }: { contract: ContractData }) {
       return;
     }
 
-    const params = new URLSearchParams();
-    params.set("contract_id", contract.id);
-    params.set("user_ids", participants.join(","));
-    navigate(`/contract/create/temp/${contract.id}?${params.toString()}`);
+    const userIds = participants.join(",");
+    navigate(`/contract/create/temp/${contract.id}?user_ids=${userIds}`);
   };
 
   const [currentPage, setCurrentPage] = useState(0);
