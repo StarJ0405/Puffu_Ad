@@ -12,7 +12,7 @@ import P from "@/components/P/P";
 import Select from "@/components/select/Select";
 import { fileRequester } from "@/shared/FileRequester";
 import useNavigate from "@/shared/hooks/useNavigate";
-import { dataURLtoFile } from "@/shared/utils/Functions";
+import { dataURLtoFile, toast } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import _ from "lodash";
@@ -26,6 +26,7 @@ import {
 } from "react";
 import ContractInput from "../../regist/class";
 import styles from "./page.module.css";
+import { adminRequester } from "@/shared/AdminRequester";
 
 interface Data {
   id?: string;
@@ -194,7 +195,7 @@ export default function ({ contract }: { contract: ContractData }) {
                   message: "저장하지 않고 나가시겠습니까?",
                   confirmText: "나가기",
                   cancelText: "취소",
-                  // onConfirm: onCancel,
+                  onConfirm: () => navigate(-1),
                 })
               }
               cursor="pointer"
@@ -251,6 +252,16 @@ export default function ({ contract }: { contract: ContractData }) {
                           left: input.left,
                           width: input.width,
                           height: input.height,
+                          fontFamily: input.fontFamily,
+                          fontSize: input.fontSize,
+                          bold: input.bold,
+                          italic: input.italic,
+                          underline: input.underline,
+                          color: input.color,
+                          align: input.align,
+                          vertical: input.vertical,
+                          backgroundColor: input.backgroundColor,
+                          data: input.data || {},
                         },
                       })) || [],
                   })),
@@ -276,18 +287,20 @@ export default function ({ contract }: { contract: ContractData }) {
                   })
                 );
 
-                console.log(_data);
-                // try {
-                //   const result = await adminRequester.createTemplate(_data);
-                //   toast({ message: "템플릿이 성공적으로 저장되었습니다." });
-                //   // console.log("[Template Create Result]", result);
-                //   setTimeout(() => {
-                //     navigate("/contract/template/management");
-                //   }, 2000);
-                // } catch (err) {
-                //   console.error(err);
-                //   toast({ message: "템플릿 저장 중 오류가 발생했습니다." });
-                // }
+                try {
+                  const result = await adminRequester.updateContract(
+                    contract.id,
+                    _data
+                  );
+                  toast({ message: "템플릿이 성공적으로 저장되었습니다." });
+                  // console.log("[Template Create Result]", result);
+                  setTimeout(() => {
+                    navigate("/contract/template/management");
+                  }, 2000);
+                } catch (err) {
+                  console.error(err);
+                  toast({ message: "템플릿 저장 중 오류가 발생했습니다." });
+                }
               }}
             >
               저장
@@ -501,31 +514,62 @@ export default function ({ contract }: { contract: ContractData }) {
                     >
                       <FlexChild className={styles.slot}>
                         <Select
-                          disabled
+                          disabled={!selectedInputs.length}
                           zIndex={1}
                           width={150}
                           maxWidth={150}
                           classNames={{ header: styles.selectHeader }}
                           options={[
-                            { value: "Pretendard", display: "Pretendard" },
-                            { value: "NotoSans", display: "구글 본고딕" },
                             {
-                              value: "NanumBarunGothic",
+                              value: "var(--font-pretendard)",
+                              display: "Pretendard",
+                            },
+                            {
+                              value: "var(--font-notosans)",
+                              display: "구글 본고딕",
+                            },
+                            {
+                              value: "var(--font-barun-gothic)",
                               display: "나눔 바른 고딕",
                             },
-                            { value: "BrushFont", display: "나눔 붓글씨" },
-                            { value: "NanumGothic", display: "sksnarhelr" },
-                            { value: "NanumHuman", display: "나눔휴먼" },
-                            { value: "NanumMyeongjo", display: "나눔명조" },
-                            { value: "NanumPen", display: "나눔펜" },
                             {
-                              value: "NanumSqaureNeo",
+                              value: "var(--font-brush)",
+                              display: "나눔 붓글씨",
+                            },
+                            {
+                              value: "var(--font-gothic)",
+                              display: "sksnarhelr",
+                            },
+                            { value: "var(--font-human)", display: "나눔휴먼" },
+                            {
+                              value: "var(--font-myeongjo)",
+                              display: "나눔명조",
+                            },
+                            { value: "var(--font-pen)", display: "나눔펜" },
+                            {
+                              value: "var(--font-square-neo)",
                               display: "나눔스퀘어네오",
                             },
-                            { value: "Sacheon", display: "사천항공체" },
+                            {
+                              value: "var(--font-sacheon)",
+                              display: "사천항공체",
+                            },
                           ]}
+                          placeholder=""
                           value={selectFontFamilly}
-                          onChange={(value) => setFontFamilly(value as string)}
+                          onChange={(value) => {
+                            setFontFamilly(value as string);
+                            Object.keys(data).forEach((key) => {
+                              const inputs = data[Number(key)].inputs;
+                              data[Number(key)].inputs = inputs.map((input) => {
+                                if (selectedInputs.includes(input.name)) {
+                                  input.fontFamily = value as string;
+                                }
+                                return input;
+                              });
+                            });
+                            setData({ ...data });
+                          }}
                         />
                       </FlexChild>
                     </HorizontalFlex>
@@ -537,13 +581,25 @@ export default function ({ contract }: { contract: ContractData }) {
                     >
                       <FlexChild className={styles.slot}>
                         <InputNumber
-                          disabled
+                          disabled={!selectedInputs.length}
                           ref={(el) => {
                             inputs.current["fontsize"] = el;
                           }}
                           value={16}
                           min={1}
                           max={150}
+                          onChange={(value) => {
+                            Object.keys(data).forEach((key) => {
+                              const inputs = data[Number(key)].inputs;
+                              data[Number(key)].inputs = inputs.map((input) => {
+                                if (selectedInputs.includes(input.name)) {
+                                  input.fontSize = value;
+                                }
+                                return input;
+                              });
+                            });
+                            setData({ ...data });
+                          }}
                         />
                       </FlexChild>
                     </HorizontalFlex>
@@ -554,8 +610,10 @@ export default function ({ contract }: { contract: ContractData }) {
                       width={"max-content"}
                     >
                       <FlexChild
-                        className={styles.slot}
-                        color={true ? "#d0d0d0" : undefined}
+                        className={clsx(styles.slot, {
+                          [styles.selected]: isBold,
+                        })}
+                        color={!selectedInputs.length ? "#d0d0d0" : undefined}
                       >
                         <Icon
                           src="contract/"
@@ -563,11 +621,41 @@ export default function ({ contract }: { contract: ContractData }) {
                           type="svg"
                           cursor="pointer"
                           size={15}
+                          onClick={() => {
+                            if (!selectedInputs.length) return;
+                            setBold(!isBold);
+                            Object.keys(data).forEach((key) => {
+                              const inputs = data[Number(key)].inputs;
+                              data[Number(key)].inputs = inputs.map((input) => {
+                                if (selectedInputs.includes(input.name)) {
+                                  input.bold = !isBold;
+                                }
+                                return input;
+                              });
+                            });
+                            setData({ ...data });
+                          }}
                         />
                       </FlexChild>
                       <FlexChild
-                        className={styles.slot}
-                        color={true ? "#d0d0d0" : undefined}
+                        className={clsx(styles.slot, {
+                          [styles.selected]: isItalic,
+                        })}
+                        color={!selectedInputs.length ? "#d0d0d0" : undefined}
+                        onClick={() => {
+                          if (!selectedInputs.length) return;
+                          setItalic(!isItalic);
+                          Object.keys(data).forEach((key) => {
+                            const inputs = data[Number(key)].inputs;
+                            data[Number(key)].inputs = inputs.map((input) => {
+                              if (selectedInputs.includes(input.name)) {
+                                input.italic = !isItalic;
+                              }
+                              return input;
+                            });
+                          });
+                          setData({ ...data });
+                        }}
                       >
                         <Icon
                           src="contract/"
@@ -578,8 +666,24 @@ export default function ({ contract }: { contract: ContractData }) {
                         />
                       </FlexChild>
                       <FlexChild
-                        className={styles.slot}
-                        color={true ? "#d0d0d0" : undefined}
+                        className={clsx(styles.slot, {
+                          [styles.selected]: isUnderLine,
+                        })}
+                        color={!selectedInputs.length ? "#d0d0d0" : undefined}
+                        onClick={() => {
+                          if (!selectedInputs.length) return;
+                          setUnderLine(!isUnderLine);
+                          Object.keys(data).forEach((key) => {
+                            const inputs = data[Number(key)].inputs;
+                            data[Number(key)].inputs = inputs.map((input) => {
+                              if (selectedInputs.includes(input.name)) {
+                                input.underline = !isUnderLine;
+                              }
+                              return input;
+                            });
+                          });
+                          setData({ ...data });
+                        }}
                       >
                         <Icon
                           src="contract/"
@@ -591,7 +695,27 @@ export default function ({ contract }: { contract: ContractData }) {
                       </FlexChild>
                       <FlexChild
                         className={styles.slot}
-                        color={true ? "#d0d0d0" : undefined}
+                        color={!selectedInputs.length ? "#d0d0d0" : undefined}
+                        onClick={() => {
+                          if (!selectedInputs.length) return;
+                          NiceModal.show("contract/color", {
+                            onConfirm: ({ color }: { color: string }) => {
+                              setColor(color);
+                              Object.keys(data).forEach((key) => {
+                                const inputs = data[Number(key)].inputs;
+                                data[Number(key)].inputs = inputs.map(
+                                  (input) => {
+                                    if (selectedInputs.includes(input.name)) {
+                                      input.color = color;
+                                    }
+                                    return input;
+                                  }
+                                );
+                                setData({ ...data });
+                              });
+                            },
+                          });
+                        }}
                       >
                         <Icon
                           src="contract/"
@@ -632,7 +756,26 @@ export default function ({ contract }: { contract: ContractData }) {
                         >
                           <FlexChild
                             className={styles.slot}
-                            color={true ? "#d0d0d0" : undefined}
+                            color={
+                              !selectedInputs.length ? "#d0d0d0" : undefined
+                            }
+                            onClick={() => {
+                              if (!selectedInputs.length) return;
+                              setAlign("left");
+                              Object.keys(data).forEach((key) => {
+                                const inputs = data[Number(key)].inputs;
+                                data[Number(key)].inputs = inputs.map(
+                                  (input) => {
+                                    if (selectedInputs.includes(input.name)) {
+                                      input.align = "left";
+                                    }
+                                    return input;
+                                  }
+                                );
+                              });
+                              setData({ ...data });
+                              setFold(true);
+                            }}
                           >
                             <Icon
                               src="contract/"
@@ -644,7 +787,26 @@ export default function ({ contract }: { contract: ContractData }) {
                           </FlexChild>
                           <FlexChild
                             className={styles.slot}
-                            color={true ? "#d0d0d0" : undefined}
+                            color={
+                              !selectedInputs.length ? "#d0d0d0" : undefined
+                            }
+                            onClick={() => {
+                              if (!selectedInputs.length) return;
+                              setAlign("center");
+                              Object.keys(data).forEach((key) => {
+                                const inputs = data[Number(key)].inputs;
+                                data[Number(key)].inputs = inputs.map(
+                                  (input) => {
+                                    if (selectedInputs.includes(input.name)) {
+                                      input.align = "center";
+                                    }
+                                    return input;
+                                  }
+                                );
+                              });
+                              setData({ ...data });
+                              setFold(true);
+                            }}
                           >
                             <Icon
                               src="contract/"
@@ -656,7 +818,26 @@ export default function ({ contract }: { contract: ContractData }) {
                           </FlexChild>
                           <FlexChild
                             className={styles.slot}
-                            color={true ? "#d0d0d0" : undefined}
+                            color={
+                              !selectedInputs.length ? "#d0d0d0" : undefined
+                            }
+                            onClick={() => {
+                              if (!selectedInputs.length) return;
+                              setAlign("right");
+                              Object.keys(data).forEach((key) => {
+                                const inputs = data[Number(key)].inputs;
+                                data[Number(key)].inputs = inputs.map(
+                                  (input) => {
+                                    if (selectedInputs.includes(input.name)) {
+                                      input.align = "right";
+                                    }
+                                    return input;
+                                  }
+                                );
+                              });
+                              setData({ ...data });
+                              setFold(true);
+                            }}
                           >
                             <Icon
                               src="contract/"
@@ -675,7 +856,26 @@ export default function ({ contract }: { contract: ContractData }) {
                         >
                           <FlexChild
                             className={styles.slot}
-                            color={true ? "#d0d0d0" : undefined}
+                            color={
+                              !selectedInputs.length ? "#d0d0d0" : undefined
+                            }
+                            onClick={() => {
+                              if (!selectedInputs.length) return;
+                              setVertical("flex-start");
+                              Object.keys(data).forEach((key) => {
+                                const inputs = data[Number(key)].inputs;
+                                data[Number(key)].inputs = inputs.map(
+                                  (input) => {
+                                    if (selectedInputs.includes(input.name)) {
+                                      input.vertical = "flex-start";
+                                    }
+                                    return input;
+                                  }
+                                );
+                              });
+                              setData({ ...data });
+                              setFold(true);
+                            }}
                           >
                             <Icon
                               src="contract/"
@@ -687,7 +887,26 @@ export default function ({ contract }: { contract: ContractData }) {
                           </FlexChild>
                           <FlexChild
                             className={styles.slot}
-                            color={true ? "#d0d0d0" : undefined}
+                            color={
+                              !selectedInputs.length ? "#d0d0d0" : undefined
+                            }
+                            onClick={() => {
+                              if (!selectedInputs.length) return;
+                              setVertical("center");
+                              Object.keys(data).forEach((key) => {
+                                const inputs = data[Number(key)].inputs;
+                                data[Number(key)].inputs = inputs.map(
+                                  (input) => {
+                                    if (selectedInputs.includes(input.name)) {
+                                      input.vertical = "center";
+                                    }
+                                    return input;
+                                  }
+                                );
+                              });
+                              setData({ ...data });
+                              setFold(true);
+                            }}
                           >
                             <Icon
                               src="contract/"
@@ -699,7 +918,26 @@ export default function ({ contract }: { contract: ContractData }) {
                           </FlexChild>
                           <FlexChild
                             className={styles.slot}
-                            color={true ? "#d0d0d0" : undefined}
+                            color={
+                              !selectedInputs.length ? "#d0d0d0" : undefined
+                            }
+                            onClick={() => {
+                              if (!selectedInputs.length) return;
+                              setVertical("flex-end");
+                              Object.keys(data).forEach((key) => {
+                                const inputs = data[Number(key)].inputs;
+                                data[Number(key)].inputs = inputs.map(
+                                  (input) => {
+                                    if (selectedInputs.includes(input.name)) {
+                                      input.vertical = "flex-end";
+                                    }
+                                    return input;
+                                  }
+                                );
+                              });
+                              setData({ ...data });
+                              setFold(true);
+                            }}
                           >
                             <Icon
                               src="contract/"
@@ -718,7 +956,33 @@ export default function ({ contract }: { contract: ContractData }) {
                         >
                           <FlexChild
                             className={styles.slot}
-                            color={true ? "#d0d0d0" : undefined}
+                            color={
+                              !selectedInputs.length ? "#d0d0d0" : undefined
+                            }
+                            onClick={() => {
+                              if (!selectedInputs.length) return;
+                              NiceModal.show("contract/color", {
+                                background: true,
+                                onConfirm: ({ color }: { color: string }) => {
+                                  setBackgroundColor(color);
+                                  Object.keys(data).forEach((key) => {
+                                    const inputs = data[Number(key)].inputs;
+                                    data[Number(key)].inputs = inputs.map(
+                                      (input) => {
+                                        if (
+                                          selectedInputs.includes(input.name)
+                                        ) {
+                                          input.backgroundColor = color;
+                                        }
+                                        return input;
+                                      }
+                                    );
+                                    setData({ ...data });
+                                    setFold(true);
+                                  });
+                                },
+                              });
+                            }}
                           >
                             <Icon
                               src="contract/"
