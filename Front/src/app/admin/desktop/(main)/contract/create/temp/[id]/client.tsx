@@ -6,7 +6,7 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import useNavigate from "@/shared/hooks/useNavigate";
-import { exportAsPdf } from "@/shared/utils/Functions";
+import { dataURLtoFile, exportAsPdf } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import {
@@ -20,6 +20,7 @@ import {
 } from "react";
 import ContractInput from "../../../template/regist/class";
 import styles from "./page.module.css";
+import { fileRequester } from "@/shared/FileRequester";
 
 export default function ({ contract }: { contract: ContractData }) {
   const navigate = useNavigate();
@@ -121,16 +122,19 @@ export default function ({ contract }: { contract: ContractData }) {
               className={styles.button}
               onClick={async () => {
                 const _data = { ...contract };
-                _data.pages = _data.pages.map((page) => {
-                  page.input_fields = page.input_fields.map((input) => {
-                    input.value =
-                      inputs.current[page.page][
-                        input.metadata.name
-                      ]?.getValue?.();
-                    return input;
-                  });
-                  return page;
-                });
+                _data.pages = await Promise.all(
+                  _data.pages.map(async (page) => {
+                    page.input_fields = await Promise.all(
+                      page.input_fields.map(async (input) => {
+                        input.value = await inputs.current[page.page][
+                          input.metadata.name
+                        ]?.getValue?.();
+                        return input;
+                      })
+                    );
+                    return page;
+                  })
+                );
                 _data.name = name;
                 console.log(_data);
               }}
@@ -372,7 +376,7 @@ function ScaleSelect({
 }
 const FloatInput = forwardRef(({ input }: { input: InputFieldData }, ref) => {
   const [ci, setCi] = useState<ContractInput>();
-  const [data, setData] = useState<any>();
+  const [value, setValue] = useState<any>();
   useEffect(() => {
     let timer = 10;
     const interval = setInterval(() => {
@@ -388,8 +392,31 @@ const FloatInput = forwardRef(({ input }: { input: InputFieldData }, ref) => {
     }, 500);
   }, []);
   useImperativeHandle(ref, () => ({
-    getValue() {
-      return data || {};
+    async getValue() {
+      if (value) {
+        async function transferFile(data: any) {
+          await Promise.all(
+            Object.keys(data).map(async (key) => {
+              const value = data[key];
+              if (
+                typeof value === "string" &&
+                value.startsWith("data:image/png;base64,")
+              ) {
+                const file = dataURLtoFile(value, `${input.type}.png`);
+                const formData = new FormData();
+                formData.append("files", file);
+                const { urls } = await fileRequester.upload(formData);
+                data[key] = urls[0];
+              } else if (typeof value === "object") {
+                data[key] = transferFile(value);
+              }
+            })
+          );
+          return data;
+        }
+        return transferFile(value);
+      }
+      return {};
     },
   }));
 
@@ -402,13 +429,22 @@ const FloatInput = forwardRef(({ input }: { input: InputFieldData }, ref) => {
       width={input.metadata.width}
       height={input.metadata.height}
       minHeight={input.metadata.height}
-      className={clsx(styles.float, { [styles.has]: data })}
+      fontFamily={input.metadata.fontFamily}
+      fontSize={input.metadata.fontSize}
+      fontWeight={input.metadata.bold ? 700 : 500}
+      fontStyle={input.metadata.italic ? "italic" : "normal"}
+      textDecorationLine={input.metadata.underline ? "underline" : "none"}
+      color={input.metadata.color}
+      textAlign={input.metadata.align}
+      alignItems={input.metadata.vertical}
+      backgroundColor={input.metadata.backgroundColor}
+      className={clsx(styles.float, { [styles.has]: value })}
       transition={"0.5s all"}
     >
       {ci?.getWrite({
-        onChange: (data) => setData(data),
-        ...data,
-        ...input,
+        onChange: (value) => setValue(value),
+        ...value,
+        data: input.metadata.data,
         width: input.metadata.width,
         height: input.metadata.height,
       })}
