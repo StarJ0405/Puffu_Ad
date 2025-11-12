@@ -8,6 +8,7 @@ import {
 } from "typeorm";
 import { generateEntityId } from "utils/functions";
 import { Contract } from "./contract";
+import { User } from "./user";
 
 export enum ApproveStatus {
   PENDING = "pending",
@@ -23,6 +24,10 @@ export class ContractUser extends BaseEntity {
   @Column({ type: "character varying", nullable: true })
   user_id?: string | null;
 
+  @ManyToOne(() => User, { onDelete: "SET NULL" })
+  @JoinColumn({ name: "user_id", referencedColumnName: "id" })
+  user?: User | null;
+
   @Column({
     type: "enum",
     enum: ApproveStatus,
@@ -33,7 +38,9 @@ export class ContractUser extends BaseEntity {
   @Column({ type: "character varying" })
   contract_id!: string;
 
-  @ManyToOne(() => Contract, (contract) => contract.contract_users, { onDelete: "CASCADE" })
+  @ManyToOne(() => Contract, (contract) => contract.contract_users, {
+    onDelete: "CASCADE",
+  })
   @JoinColumn({ name: "contract_id", referencedColumnName: "id" })
   contract!: Contract;
 

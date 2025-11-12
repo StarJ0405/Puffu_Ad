@@ -1,15 +1,14 @@
-// import { Params } from "next/dist/server/request/params";
-// import { DetailFrame } from "./client";
-// import { adminRequester } from "@/shared/AdminRequester";
+import { adminRequester } from "@/shared/AdminRequester";
+import { Params } from "next/dist/server/request/params";
+import Client from "./client";
 
-// export default async function ({ params }: { params: Promise<Params> }) {
-//   const { id } = await params;
-//   if (!id) throw new Error("템플릿 ID 누락");
+export default async function ({ params }: { params: Promise<Params> }) {
+  const { id } = await params;
 
-//   const template = await adminRequester.getContract(String(id));
-//   return <DetailFrame initTemplate={template} />;
-// }
+  // relations로 템플릿 세부 데이터까지 가져오기
+  const contract = await adminRequester.getContract(id as string, {
+    relations: ["pages", "pages.input_fields", "contract_users"],
+  });
 
-export default async function () {
-  return (<></>)
+  return <Client contract={contract} />;
 }
