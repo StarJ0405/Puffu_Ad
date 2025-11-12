@@ -10,28 +10,121 @@
   font-weight: 600;
 }
 
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  background: #fff;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.table th,
-.table td {
+.headerRow {
+  background: #fafafa;
   border-bottom: 1px solid #e5e5e5;
   padding: 12px 16px;
-  text-align: left;
+  border-radius: 6px 6px 0 0;
 }
 
-.table th {
-  background-color: #fafafa;
+.headerText {
   font-weight: 500;
   color: #333;
 }
 
-.table tr:hover {
-  background-color: #f9f9f9;
+.row {
+  background: #fff;
+  border-bottom: 1px solid #e5e5e5;
+  padding: 12px 16px;
+  transition: background 0.2s ease;
+  border-radius: 4px;
+}
+
+.row:hover {
+  background: #f9f9f9;
+}
+
+.date {
+  color: #666;
+  font-size: 14px;
+}
+
+.empty {
+  text-align: center;
+  color: #777;
+  padding: 20px 0;
+}
+
+.pageLine {
+  padding-top: 20px;
+  width: 100%;
+}
+
+.pageButton {
+  background-color: #ffffff;
+  color: #3c4b64;
+  border: 1px solid #cecece;
+  padding: 5px 10px;
+  font-size: 16px;
+  border-radius: 50px;
+  cursor: pointer;
+  width: max-content;
+  min-width: 35px;
+  height: 35px;
+  text-align: center;
+  transition: 0.2s;
+  font-weight: bold;
+}
+.pageButton:hover {
+  background-color: #ccc;
+}
+
+.pageButton.selected {
+  background-color: var(--admin-background-color);
+  color: #ffffff;
+  font-weight: bold;
+  border-color: var(--admin-border-color);
+}
+
+.pageButton.arrow {
+  background-color: #3c4b64;
+  color: #ffffff;
+  border-color: #3c4b64;
+  position: relative;
+}
+.pageButton.arrow::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: url("/resources/icons/arrow_left.png") no-repeat center center /
+    cover;
+  width: 10px;
+  height: 16px;
+}
+.pageButton.arrowNext::before {
+  transform: translate(-50%, -50%) rotate(180deg);
+}
+
+.pageButton.arrowTwice::before {
+  width: 16px;
+  height: 16px;
+  background: url("/resources/icons/arrow_twice.png") no-repeat center center /
+    cover;
+}
+.pageButton.arrowTwiceNext::before {
+  width: 16px;
+  height: 16px;
+  transform: translate(-50%, -50%) rotate(180deg);
+  background: url("/resources/icons/arrow_twice.png") no-repeat center center /
+    cover;
+}
+
+.pageButton.selected:hover {
+  text-decoration: unset;
+}
+
+.btn {
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  border: 1px solid var(--main-color2);
+  color: var(--main-color2);
+}
+
+.btn:active {
+  background: var(--main-color2);
+  color: #252525;
 }

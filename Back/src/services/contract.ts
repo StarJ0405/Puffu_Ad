@@ -113,10 +113,8 @@ export class ContractService extends BaseService<Contract, ContractRepository> {
       });
       if (!contract) throw new Error("Contract not found");
 
-      // 이름 갱신
       if (payload.name) contract.name = payload.name;
 
-      // 페이지 갱신
       if (payload.pages) {
         contract.pages = payload.pages.map((p: any) => {
           const page = new Page();
@@ -135,20 +133,29 @@ export class ContractService extends BaseService<Contract, ContractRepository> {
         });
       }
 
-      // 참여자 갱신
       if (payload.contract_users) {
-        contract.contract_users = payload.contract_users.map((u: any) => {
-          const cu = new ContractUser();
-          cu.id = u.id;
-          cu.name = u.name;
-          cu.user_id = u.user_id ?? null;
-          cu.approve = u.approve ?? ApproveStatus.PENDING;
+        const existing = contract.contract_users || [];
+        const incoming = payload.contract_users || [];
+
+        const removed = existing.filter(
+          (old) => !incoming.some((nu: any) => nu.id === old.id)
+        );
+
+        const updated = incoming.map((nu: any) => {
+          const cu =
+            existing.find((old) => old.id === nu.id) || new ContractUser();
+          cu.name = nu.name;
+          cu.user_id = nu.user_id ?? null;
+          cu.approve = nu.approve ?? ApproveStatus.PENDING;
           return cu;
         });
+        if (removed.length > 0) {
+          await manager.softRemove(removed);
+        }
+        contract.contract_users = updated;
       }
-
+      // ──────────────────────────────────────────────
       await manager.save(contract);
-
       const log = manager.create(Log, {
         name: "contract_update",
         type: "contract",
