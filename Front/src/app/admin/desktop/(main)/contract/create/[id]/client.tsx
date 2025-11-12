@@ -346,8 +346,19 @@ function Write({
                       document.getElementById(`page_${index}`)
                     );
                     const images = await pageToDataURL(
-                      pages.filter((f) => f !== null)
+                      pages
+                        .filter((f) => f !== null)
+                        .map((page) => {
+                          page.classList.add(styles.print);
+                          return page;
+                        })
                     );
+                    pages
+                      .filter((f) => f !== null)
+                      .map((page) => {
+                        page.classList.remove(styles.print);
+                        return page;
+                      });
                     if (images) {
                       // const content = document.getElementById("print-content");
                       if (openRef.current) openRef.current.close();

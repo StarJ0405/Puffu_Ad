@@ -479,7 +479,7 @@
 .middleSide .float.has {
   border: none;
 }
-.middleSide .print .float {
-  border: none;
+.print .float {
   background-color: transparent;
+  border: none;
 }
