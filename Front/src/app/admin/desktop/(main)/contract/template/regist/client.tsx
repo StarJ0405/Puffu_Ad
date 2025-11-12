@@ -312,37 +312,68 @@ function Setting({
     });
     setSelectedInputs(Array.from(input));
   });
+  useHotkeys(
+    "ctrl+c",
+    (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!selectedInputs.length) {
+        return;
+      }
+      const copies: any[] = [];
+      Object.keys(data).forEach((k) => {
+        data[Number(k)].inputs
+          .filter((f) => selectedInputs.includes(f.name))
+          .forEach((input) => {
+            copies.push({
+              key: input.input.getKey(),
+              data: input,
+              page: Number(k),
+            });
+          });
+      });
+      sessionStorage.setItem("copy", JSON.stringify(copies));
+    },
+    {},
+    [selectedInputs]
+  );
   useHotkeys("ctrl+v", (e) => {
     e.preventDefault();
     e.stopPropagation();
     const copied = sessionStorage.getItem("copy");
     if (copied) {
-      const {
-        key,
-        data: _data,
-        page,
-      }: { key: string; data: Data; page: number } = JSON.parse(copied);
-      if (_data) {
-        let number = 1;
-        while (true) {
-          if (
-            !Object.keys(data).some((k) =>
-              data[Number(k)].inputs.some(
-                (input) => input.name === _data.name + ` ${number}`
+      const array: any[] = JSON.parse(copied);
+      const selected: string[] = [];
+      array.forEach((element) => {
+        const {
+          key,
+          data: _data,
+          page,
+        }: { key: string; data: Data; page: number } = element;
+        if (_data) {
+          let number = 1;
+          while (true) {
+            if (
+              !Object.keys(data).some((k) =>
+                data[Number(k)].inputs.some(
+                  (input) => input.name === _data.name + ` ${number}`
+                )
               )
-            )
-          ) {
-            break;
-          } else {
-            number++;
+            ) {
+              break;
+            } else {
+              number++;
+            }
           }
+          _data.name += ` ${number}`;
+          selected.push(_data.name);
+          const input = ContractInput.getList().find((f) => f.getKey() === key);
+          if (input) _data.input = input;
+          data[page].inputs.push(_data);
         }
-        _data.name += ` ${number}`;
-        const input = ContractInput.getList().find((f) => f.getKey() === key);
-        if (input) _data.input = input;
-        data[page].inputs.push(_data);
-        setData({ ...data });
-      }
+      });
+      setData({ ...data });
+      setSelectedInputs(selected);
     }
   });
   useEffect(() => {
@@ -1498,23 +1529,16 @@ function Setting({
                                     label: "복사",
                                     key: "Ctrl+C",
                                     onClick: () => {
-                                      Object.keys(data).forEach((k) => {
-                                        const find = data[
-                                          Number(k)
-                                        ].inputs.find(
-                                          (f) => f.name === input.name
-                                        );
-                                        if (find) {
-                                          sessionStorage.setItem(
-                                            "copy",
-                                            JSON.stringify({
-                                              key: find.input.getKey(),
-                                              data: find,
-                                              page: Number(k),
-                                            })
-                                          );
-                                        }
-                                      });
+                                      sessionStorage.setItem(
+                                        "copy",
+                                        JSON.stringify([
+                                          {
+                                            key: input.input.getKey(),
+                                            data: input,
+                                            page: Number(page),
+                                          },
+                                        ])
+                                      );
                                     },
                                   },
                                   {
