@@ -1,9 +1,6 @@
-// import ContractCreatePage from "./client";
-
-// export default async function() {
-//   return <ContractCreatePage />;
-// }
+import ContractCreatePage from "./client";
 
 export default async function() {
-  return (<></>);
+  return <ContractCreatePage />;
 }
+
