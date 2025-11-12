@@ -194,6 +194,10 @@
 .toolbar .slot.disabled:hover {
   background-color: transparent;
 }
+.toolbar .slot.selected {
+  background-color: #f0f0f0;
+}
+
 .toolbar .extra {
   background-color: #fff;
   position: absolute;
