@@ -5,8 +5,13 @@ import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
+import { fileRequester } from "@/shared/FileRequester";
 import useNavigate from "@/shared/hooks/useNavigate";
-import { dataURLtoFile, exportAsPdf } from "@/shared/utils/Functions";
+import {
+  dataURLtoFile,
+  exportAsPdf,
+  pageToDataURL,
+} from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
 import {
@@ -20,12 +25,12 @@ import {
 } from "react";
 import ContractInput from "../../../template/regist/class";
 import styles from "./page.module.css";
-import { fileRequester } from "@/shared/FileRequester";
 
 export default function ({ contract }: { contract: ContractData }) {
   const navigate = useNavigate();
   const contentRef = useRef<any>(null);
   const inputs = useRef<any[]>([]);
+  const openRef = useRef<Window>(null);
   const [name, setName] = useState(contract.name);
   const [height, setHeight] = useState(0);
   const [width, setWidth] = useState(0);
@@ -182,31 +187,44 @@ export default function ({ contract }: { contract: ContractData }) {
                 <FlexChild
                   width={"max-content"}
                   className={styles.slot}
-                  onClick={() => {
-                    const content = document.getElementById("print-content");
-                    const printWindow = window.open(
-                      "",
-                      "",
-                      "height=600,width=800"
+                  onClick={async () => {
+                    const pages = contract.pages.map((_, index) =>
+                      document.getElementById(`page_${index}`)
                     );
-
-                    // 1. 인쇄 CSS를 포함하여 새 창에 내용을 복사
-                    printWindow?.document.write(
-                      "<html><head><title>다중 페이지 인쇄</title>"
+                    const images = await pageToDataURL(
+                      pages.filter((f) => f !== null)
                     );
+                    if (images) {
+                      // const content = document.getElementById("print-content");
+                      if (openRef.current) openRef.current.close();
+                      const printWindow = window.open(
+                        "",
+                        "",
+                        "height=600,width=800"
+                      );
+                      openRef.current = printWindow;
+                      // 1. 인쇄 CSS를 포함하여 새 창에 내용을 복사
+                      printWindow?.document.write(
+                        "<html><head><title>다중 페이지 인쇄</title>"
+                      );
 
-                    // 인쇄 전용 스타일 태그 추가 (여기서 page-break 속성 정의)
-                    printWindow?.document.write(
-                      "<style>@media print { .page-break { page-break-after: always; } }</style>"
-                    );
-
-                    printWindow?.document.write("</head><body>");
-                    printWindow?.document.write(content?.innerHTML || "");
-                    printWindow?.document.write("</body></html>");
-                    printWindow?.document.close();
-                    setTimeout(() => {
-                      printWindow?.print();
-                    }, 500);
+                      // 인쇄 전용 스타일 태그 추가 (여기서 page-break 속성 정의)
+                      printWindow?.document.write(
+                        "<style>@media print { .page-break { page-break-after: always; } }</style>"
+                      );
+                      printWindow?.document.write("</head><body>");
+                      images.forEach((url) => {
+                        printWindow?.document.write(
+                          `<img src="${url}" style="width: 100%;"/>`
+                        );
+                      });
+                      // printWindow?.document.write(content?.innerHTML || "");
+                      printWindow?.document.write("</body></html>");
+                      printWindow?.document.close();
+                      setTimeout(() => {
+                        printWindow?.print();
+                      }, 500);
+                    }
                   }}
                 >
                   <Image src={"/resources/contract/print.svg"} size={24} />
