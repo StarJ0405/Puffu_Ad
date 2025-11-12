@@ -11,6 +11,7 @@ interface Props {
   title: string;
   width: number;
   height: number;
+  textable?: boolean;
 }
 interface InputProps {
   gap?: CSSProperties["gap"];
@@ -29,13 +30,15 @@ export default abstract class ContractInput {
   protected title: Props["title"];
   protected width: number;
   protected height: number;
+  protected textable: boolean;
   public readonly Input: (props: InputProps) => React.ReactNode;
-  constructor({ key, icon, title, width, height }: Props) {
+  constructor({ key, icon, title, width, height, textable = false }: Props) {
     this.key = key;
     this.icon = icon;
     this.title = title;
     this.width = width;
     this.height = height;
+    this.textable = textable;
     this.Input = ({
       gap = 6,
       size = 24,
@@ -82,7 +85,9 @@ export default abstract class ContractInput {
     div.style.pointerEvents = "none";
     return div;
   }
-  public getInput(): React.JSX.Element {
+  public getInput(props?: {
+    onChange?: (data: any) => void;
+  }): React.JSX.Element {
     return <FlexChild justifyContent="center">{this.getIcon(32)}</FlexChild>;
   }
   public getIcon(size: number) {
@@ -106,6 +111,9 @@ export default abstract class ContractInput {
   }
   public getWrite(props?: { onChange?: (data: any) => void }) {
     return <FlexChild justifyContent="center">{this.getIcon(32)}</FlexChild>;
+  }
+  public getTextable() {
+    return this.textable;
   }
   protected static map: Map<string, ContractInput> = new Map();
   public static getList(): readonly ContractInput[] {
