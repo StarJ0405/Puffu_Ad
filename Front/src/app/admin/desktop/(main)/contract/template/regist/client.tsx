@@ -26,6 +26,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import ContractInput from "./class";
 import styles from "./page.module.css";
 
@@ -286,6 +287,64 @@ function Setting({
   const [fold, setFold] = useState(true);
   const [data, setData] = useState<PageData>({});
   const [selectedInputs, setSelectedInputs] = useState<string[]>([]);
+  useHotkeys(
+    "delete",
+    (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      Object.keys(data).forEach((k) => {
+        data[Number(k)].inputs = data[Number(k)].inputs.filter(
+          (f) => !selectedInputs.includes(f.name)
+        );
+      });
+      setData({ ...data });
+      setSelectedInputs([]);
+    },
+    {},
+    [selectedInputs]
+  );
+  useHotkeys("ctrl+a", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    let input = new Set<string>();
+    Object.keys(data).forEach((k) => {
+      data[Number(k)].inputs.forEach((e) => input.add(e.name));
+    });
+    setSelectedInputs(Array.from(input));
+  });
+  useHotkeys("ctrl+v", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const copied = sessionStorage.getItem("copy");
+    if (copied) {
+      const {
+        key,
+        data: _data,
+        page,
+      }: { key: string; data: Data; page: number } = JSON.parse(copied);
+      if (_data) {
+        let number = 1;
+        while (true) {
+          if (
+            !Object.keys(data).some((k) =>
+              data[Number(k)].inputs.some(
+                (input) => input.name === _data.name + ` ${number}`
+              )
+            )
+          ) {
+            break;
+          } else {
+            number++;
+          }
+        }
+        _data.name += ` ${number}`;
+        const input = ContractInput.getList().find((f) => f.getKey() === key);
+        if (input) _data.input = input;
+        data[page].inputs.push(_data);
+        setData({ ...data });
+      }
+    }
+  });
   useEffect(() => {
     function setMaxHeight() {
       const admin_header = document.getElementById("admin_header");
@@ -1398,33 +1457,146 @@ function Setting({
                   }, 0)}
                 </P>
               </FlexChild>
-              {images.map((_, page) => (
-                <RightSlot key={page} title={`${Number(page) + 1} 페이지`}>
-                  <VerticalFlex>
-                    {data[Number(page)]?.inputs?.map((input) => (
-                      <FlexChild
-                        key={input.name}
-                        className={clsx(styles.slot, {
-                          [styles.selected]: selectedInputs.some(
-                            (id) => id === input.name
-                          ),
-                        })}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          if (e.shiftKey)
-                            setSelectedInputs([...selectedInputs, input.name]);
-                          else setSelectedInputs([input.name]);
-                          document.getElementById(input.name)?.scrollIntoView();
-                        }}
-                      >
-                        {input.input.getIcon(24)}
-                        <P>{input.name}</P>
-                      </FlexChild>
-                    ))}
-                  </VerticalFlex>
-                </RightSlot>
-              ))}
+              <FlexChild>
+                <VerticalFlex height={"100%"}>
+                  {images.map((_, page) => (
+                    <RightSlot key={page} title={`${Number(page) + 1} 페이지`}>
+                      <VerticalFlex>
+                        {data[Number(page)]?.inputs?.map((input, idx) => (
+                          <FlexChild
+                            key={input.name}
+                            className={clsx(styles.slot, {
+                              [styles.selected]: selectedInputs.some(
+                                (id) => id === input.name
+                              ),
+                            })}
+                            onContextMenu={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              NiceModal.show("contextMenu", {
+                                x: e.clientX,
+                                y: e.clientY,
+                                rows: [
+                                  {
+                                    label: "삭제",
+                                    key: "Delete",
+                                    onClick: () => {
+                                      setSelectedInputs((prev) =>
+                                        prev.filter((f) => f !== input.name)
+                                      );
+                                      Object.keys(data).forEach((k) => {
+                                        data[Number(k)].inputs = data[
+                                          Number(k)
+                                        ].inputs.filter(
+                                          (f) => f.name !== input.name
+                                        );
+                                      });
+                                      setData({ ...data });
+                                    },
+                                  },
+                                  {
+                                    label: "복사",
+                                    key: "Ctrl+C",
+                                    onClick: () => {
+                                      Object.keys(data).forEach((k) => {
+                                        const find = data[
+                                          Number(k)
+                                        ].inputs.find(
+                                          (f) => f.name === input.name
+                                        );
+                                        if (find) {
+                                          sessionStorage.setItem(
+                                            "copy",
+                                            JSON.stringify({
+                                              key: find.input.getKey(),
+                                              data: find,
+                                              page: Number(k),
+                                            })
+                                          );
+                                        }
+                                      });
+                                    },
+                                  },
+                                  {
+                                    label: "이름변경",
+                                    onClick: () => {
+                                      NiceModal.show("input", {
+                                        message: `${input.name}을 변경하시겠습니까?`,
+                                        input: [
+                                          {
+                                            label: "이름",
+                                            value: input.name,
+                                            placeHolder: input.name,
+                                          },
+                                        ],
+                                        confirmText: "변경",
+                                        cancelText: "취소",
+                                        onConfirm: (value: string) => {
+                                          value = value.trim();
+                                          if (value === input.name) return;
+                                          if (
+                                            Object.keys(data).some((k) =>
+                                              data[Number(k)].inputs.some(
+                                                (input) => input.name === value
+                                              )
+                                            )
+                                          ) {
+                                            let number = 1;
+                                            while (true) {
+                                              if (
+                                                !Object.keys(data).some((k) =>
+                                                  data[Number(k)].inputs.some(
+                                                    (input) =>
+                                                      input.name ===
+                                                      value + ` ${number}`
+                                                  )
+                                                )
+                                              ) {
+                                                break;
+                                              } else {
+                                                number++;
+                                              }
+                                            }
+                                            data[Number(page)].inputs[
+                                              idx
+                                            ].name = value + ` ${number}`;
+                                          } else {
+                                            data[Number(page)].inputs[
+                                              idx
+                                            ].name = value;
+                                          }
+                                          setData({ ...data });
+                                          setSelectedInputs([]);
+                                        },
+                                      });
+                                    },
+                                  },
+                                ],
+                              });
+                            }}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              if (e.shiftKey)
+                                setSelectedInputs([
+                                  ...selectedInputs,
+                                  input.name,
+                                ]);
+                              else setSelectedInputs([input.name]);
+                              document
+                                .getElementById(input.name)
+                                ?.scrollIntoView();
+                            }}
+                          >
+                            {input.input.getIcon(24)}
+                            <P>{input.name}</P>
+                          </FlexChild>
+                        ))}
+                      </VerticalFlex>
+                    </RightSlot>
+                  ))}
+                </VerticalFlex>
+              </FlexChild>
             </VerticalFlex>
           </FlexChild>
         </HorizontalFlex>

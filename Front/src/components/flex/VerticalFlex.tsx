@@ -69,6 +69,7 @@ function VerticalFlex({
   onScroll,
   onTransitionStart,
   onTransitionEnd,
+  onContextMenu,
   className,
   children,
 }: ComponentProps<HTMLDivElement> & {
@@ -176,6 +177,7 @@ function VerticalFlex({
       onDragEnter={onDragEnter}
       onDragLeave={onDragLeave}
       onScroll={onScroll}
+      onContextMenu={onContextMenu}
     >
       {childrenWithProps}
     </div>
