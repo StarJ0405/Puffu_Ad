@@ -673,7 +673,28 @@ export function blobToFile(blob: Blob, fileName: string) {
 export function dataURLtoFile(dataurl: string, fileName: string) {
   return blobToFile(dataURLtoBlob(dataurl), fileName);
 }
-
+export const pageToDataURL = async (
+  pages: HTMLElement[]
+): Promise<string[] | void> => {
+  if (!pages || !pages.length) {
+    console.error("PDF로 변환할 요소를 찾을 수 없습니다.");
+    return;
+  }
+  try {
+    return await Promise.all(
+      pages.map(async (page) => {
+        const canvas = await html2canvas(page, {
+          scale: 2, // 해상도 높이기 위해 스케일 팩터 사용
+          useCORS: true, // 외부 이미지를 포함할 경우 필수
+          scrollY: -window.scrollY,
+        });
+        return canvas.toDataURL("image/png");
+      })
+    );
+  } catch (error) {
+    console.error("PDF 생성 중 오류 발생:", error);
+  }
+};
 export const exportAsPdf = async (pages: HTMLElement[], fileName: string) => {
   if (!pages || !pages.length) {
     console.error("PDF로 변환할 요소를 찾을 수 없습니다.");
