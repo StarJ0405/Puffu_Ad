@@ -15,6 +15,7 @@ import useNavigate from "@/shared/hooks/useNavigate";
 import { dataURLtoFile } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
+import _ from "lodash";
 import {
   CSSProperties,
   Dispatch,
@@ -34,6 +35,17 @@ interface Data {
   left: React.CSSProperties["left"];
   width: number;
   height: number;
+  fontFamily?: React.CSSProperties["fontFamily"];
+  fontSize?: number;
+  fontWeight?: React.CSSProperties["fontWeight"];
+  bold?: boolean;
+  italic?: boolean;
+  underline?: boolean;
+  color?: React.CSSProperties["color"];
+  align?: React.CSSProperties["textAlign"];
+  vertical?: React.CSSProperties["alignItems"];
+  backgroundColor?: React.CSSProperties["backgroundColor"];
+  data?: any;
 }
 interface PageData {
   [key: number]: {
@@ -60,6 +72,13 @@ export default function ({ contract }: { contract: ContractData }) {
   );
   const [selectedInput, setSelectedInput] = useState<ContractInput>();
   const [selectFontFamilly, setFontFamilly] = useState<string>("");
+  const [isBold, setBold] = useState(false);
+  const [isItalic, setItalic] = useState(false);
+  const [isUnderLine, setUnderLine] = useState(false);
+  const [color, setColor] = useState<string>("");
+  const [align, setAlign] = useState<string>("");
+  const [vertical, setVertical] = useState<string>("");
+  const [backgroundColor, setBackgroundColor] = useState<string>("");
   const [extra, setExtra] = useState(false);
   const [fold, setFold] = useState(true);
   const [data, setData] = useState<PageData>({});
@@ -129,6 +148,16 @@ export default function ({ contract }: { contract: ContractData }) {
             left: input.metadata.left,
             width: input.metadata.width,
             height: input.metadata.height,
+            fontFamily: input.metadata.fontFamily,
+            fontSize: input.metadata.fontSize,
+            bold: input.metadata.bold,
+            italic: input.metadata.italic,
+            underline: input.metadata.underline,
+            color: input.metadata.color,
+            align: input.metadata.align,
+            vertical: input.metadata.vertical,
+            backgroundColor: input.metadata.backgroundColor,
+            data: input.metadata.data,
           })),
         };
         return acc;
@@ -138,7 +167,16 @@ export default function ({ contract }: { contract: ContractData }) {
   useEffect(() => {
     setInputList(Array.from(ContractInput.getList()));
   }, []);
-
+  useEffect(() => {
+    setFontFamilly("");
+    setBold(false);
+    setItalic(false);
+    setUnderLine(false);
+    setColor("");
+    setAlign("");
+    setVertical("");
+    setBackgroundColor("");
+  }, [selectedInputs]);
   return (
     <VerticalFlex className={styles.setting}>
       <FlexChild>
@@ -872,12 +910,22 @@ export default function ({ contract }: { contract: ContractData }) {
                           )}
                           width={(input.width * scale) / 100}
                           height={(input.height * scale) / 100}
-                          onUpdate={({ width, height, top, left }) => {
+                          onUpdate={({
+                            width,
+                            height,
+                            top,
+                            left,
+                            data: _data,
+                          }) => {
                             const input = data[index].inputs[idx];
-                            input.width = width;
-                            input.height = height;
-                            input.top = top;
-                            input.left = left;
+                            if (typeof width !== "undefined")
+                              input.width = width;
+                            if (typeof height !== "undefined")
+                              input.height = height;
+                            if (typeof top !== "undefined") input.top = top;
+                            if (typeof left !== "undefined") input.left = left;
+                            if (typeof data !== "undefined")
+                              input.data = _.merge(input.data || {}, _data);
                             setData({ ...data });
                           }}
                           onClick={(e) => {
@@ -1125,11 +1173,13 @@ function FloatInput({
     left,
     height,
     width,
+    data,
   }: {
-    top: CSSProperties["top"];
-    left: CSSProperties["left"];
-    width: number;
-    height: number;
+    top?: CSSProperties["top"];
+    left?: CSSProperties["left"];
+    width?: number;
+    height?: number;
+    data?: any;
   }) => void;
   onClick: (e: any) => void;
 }) {
@@ -1307,8 +1357,24 @@ function FloatInput({
         };
       }}
     >
-      <FlexChild position="relative" height={"100%"}>
-        {input.input.getInput()}
+      <FlexChild
+        position="relative"
+        height={"100%"}
+        fontFamily={input.fontFamily}
+        fontSize={input.fontSize}
+        fontWeight={input.bold ? 700 : 500}
+        textDecorationLine={input.underline ? "underline" : "none"}
+        fontStyle={input.italic ? "italic" : "normal"}
+        textAlign={input.align}
+        color={input.color}
+        alignItems={input.vertical}
+        backgroundColor={input.backgroundColor}
+        className={styles.input}
+      >
+        {input?.input?.getInput({
+          onChange: (data) => onUpdate({ data }),
+          data: input.data,
+        })}
         <FlexChild
           hidden={!selected}
           position="absolute"

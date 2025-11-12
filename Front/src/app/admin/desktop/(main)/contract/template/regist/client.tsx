@@ -425,7 +425,7 @@ function Setting({
                           align: input.align,
                           vertical: input.vertical,
                           backgroundColor: input.backgroundColor,
-                          ...(input.data || {}),
+                          data: input.data || {},
                         },
                       })) || [],
                   })),
@@ -1794,6 +1794,7 @@ function FloatInput({
       >
         {input.input.getInput({
           onChange: (data) => onUpdate({ data }),
+          data: input.data,
         })}
         <FlexChild
           hidden={!selected}

@@ -22,6 +22,7 @@ export default class TextInput extends ContractInput {
   }
   public getInput(props?: {
     onChange?: (data: any) => void;
+    data?: any;
   }): React.JSX.Element {
     return (
       <FlexChild justifyContent="center">
@@ -46,7 +47,8 @@ export default class TextInput extends ContractInput {
             e.preventDefault();
             (e.target as HTMLInputElement).focus();
           }}
-          onChange={props?.onChange}
+          onChange={(e) => props?.onChange?.({ value: e.target.value })}
+          defaultValue={props?.data?.value}
         />
       </FlexChild>
     );
