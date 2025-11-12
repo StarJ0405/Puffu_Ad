@@ -312,37 +312,68 @@ function Setting({
     });
     setSelectedInputs(Array.from(input));
   });
+  useHotkeys(
+    "ctrl+c",
+    (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!selectedInputs.length) {
+        return;
+      }
+      const copies: any[] = [];
+      Object.keys(data).forEach((k) => {
+        data[Number(k)].inputs
+          .filter((f) => selectedInputs.includes(f.name))
+          .forEach((input) => {
+            copies.push({
+              key: input.input.getKey(),
+              data: input,
+              page: Number(k),
+            });
+          });
+      });
+      sessionStorage.setItem("copy", JSON.stringify(copies));
+    },
+    {},
+    [selectedInputs]
+  );
   useHotkeys("ctrl+v", (e) => {
     e.preventDefault();
     e.stopPropagation();
     const copied = sessionStorage.getItem("copy");
     if (copied) {
-      const {
-        key,
-        data: _data,
-        page,
-      }: { key: string; data: Data; page: number } = JSON.parse(copied);
-      if (_data) {
-        let number = 1;
-        while (true) {
-          if (
-            !Object.keys(data).some((k) =>
-              data[Number(k)].inputs.some(
-                (input) => input.name === _data.name + ` ${number}`
+      const array: any[] = JSON.parse(copied);
+      const selected: string[] = [];
+      array.forEach((element) => {
+        const {
+          key,
+          data: _data,
+          page,
+        }: { key: string; data: Data; page: number } = element;
+        if (_data) {
+          let number = 1;
+          while (true) {
+            if (
+              !Object.keys(data).some((k) =>
+                data[Number(k)].inputs.some(
+                  (input) => input.name === _data.name + ` ${number}`
+                )
               )
-            )
-          ) {
-            break;
-          } else {
-            number++;
+            ) {
+              break;
+            } else {
+              number++;
+            }
           }
+          _data.name += ` ${number}`;
+          selected.push(_data.name);
+          const input = ContractInput.getList().find((f) => f.getKey() === key);
+          if (input) _data.input = input;
+          data[page].inputs.push(_data);
         }
-        _data.name += ` ${number}`;
-        const input = ContractInput.getList().find((f) => f.getKey() === key);
-        if (input) _data.input = input;
-        data[page].inputs.push(_data);
-        setData({ ...data });
-      }
+      });
+      setData({ ...data });
+      setSelectedInputs(selected);
     }
   });
   useEffect(() => {
@@ -1381,6 +1412,8 @@ function Setting({
                       />
                       {data[index]?.inputs?.map((input, idx) => (
                         <FloatInput
+                          page={index}
+                          maxPage={images.length}
                           key={input.name}
                           input={input}
                           top={`calc(${input.top} * ${scale / 100})`}
@@ -1396,6 +1429,7 @@ function Setting({
                             top,
                             left,
                             data: _data,
+                            page,
                           }) => {
                             const input = data[index].inputs[idx];
                             if (typeof width !== "undefined")
@@ -1406,6 +1440,21 @@ function Setting({
                             if (typeof left !== "undefined") input.left = left;
                             if (typeof data !== "undefined")
                               input.data = _.merge(input.data || {}, _data);
+                            if (typeof page !== "undefined") {
+                              if (index !== page) {
+                                data[index].inputs = data[index].inputs.filter(
+                                  (f) => f.name !== input.name
+                                );
+                                if (!data[page])
+                                  data[page] = {
+                                    inputs: [],
+                                    page,
+                                  };
+                                else if (!data[page].inputs)
+                                  data[page].inputs = [];
+                                data[page].inputs.push(input);
+                              }
+                            }
                             setData({ ...data });
                           }}
                           onClick={(e) => {
@@ -1473,6 +1522,9 @@ function Setting({
                             onContextMenu={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
+                              document
+                                .getElementById(input.name)
+                                ?.scrollIntoView();
                               NiceModal.show("contextMenu", {
                                 x: e.clientX,
                                 y: e.clientY,
@@ -1498,23 +1550,16 @@ function Setting({
                                     label: "복사",
                                     key: "Ctrl+C",
                                     onClick: () => {
-                                      Object.keys(data).forEach((k) => {
-                                        const find = data[
-                                          Number(k)
-                                        ].inputs.find(
-                                          (f) => f.name === input.name
-                                        );
-                                        if (find) {
-                                          sessionStorage.setItem(
-                                            "copy",
-                                            JSON.stringify({
-                                              key: find.input.getKey(),
-                                              data: find,
-                                              page: Number(k),
-                                            })
-                                          );
-                                        }
-                                      });
+                                      sessionStorage.setItem(
+                                        "copy",
+                                        JSON.stringify([
+                                          {
+                                            key: input.input.getKey(),
+                                            data: input,
+                                            page: Number(page),
+                                          },
+                                        ])
+                                      );
                                     },
                                   },
                                   {
@@ -1746,6 +1791,8 @@ function RightSlot({
 }
 
 function FloatInput({
+  page,
+  maxPage,
   input,
   selected,
   top,
@@ -1755,6 +1802,8 @@ function FloatInput({
   onUpdate,
   onClick,
 }: {
+  page: number;
+  maxPage: number;
   input: Data;
   selected: boolean;
   top: CSSProperties["top"];
@@ -1767,12 +1816,14 @@ function FloatInput({
     height,
     width,
     data,
+    page,
   }: {
     top?: CSSProperties["top"];
     left?: CSSProperties["left"];
     width?: number;
     height?: number;
     data?: any;
+    page?: number;
   }) => void;
   onClick: (e: any) => void;
 }) {
@@ -1906,17 +1957,54 @@ function FloatInput({
         setMove(false);
         const div = _ref.current as HTMLElement;
         const computed = div.computedStyleMap();
+
+        let top = computed.get("top") as any;
+        const bottom = top.value + div.getBoundingClientRect().height;
+
+        if (top.value < 0) {
+          if (page === 0) top.value = 0;
+          else {
+            page -= 1;
+            top.value +=
+              (div.parentNode as HTMLElement).getBoundingClientRect().height +
+              12;
+          }
+        } else if (
+          bottom >
+          (div.parentNode as HTMLElement).getBoundingClientRect().height + 12
+        ) {
+          if (page + 1 === maxPage)
+            top.value =
+              (div.parentNode as HTMLElement).getBoundingClientRect().height -
+              div.getBoundingClientRect().height;
+          else {
+            top.value -=
+              (div.parentNode as HTMLElement).getBoundingClientRect().height +
+              12;
+            page += 1;
+          }
+        }
+        let left = computed.get("left") as any;
+        const maxWidth: number = (
+          div.parentNode as HTMLElement
+        ).getBoundingClientRect().width;
+        const right = left.value + div.getBoundingClientRect().width;
+        if (left.value < 0) left.value = 0;
+        else if (right > maxWidth) {
+          left.value = maxWidth - div.getBoundingClientRect().width;
+        }
         onUpdate({
-          top: computed.get("top")?.toString(),
-          left: computed.get("left")?.toString(),
+          top: top?.toString(),
+          left: left?.toString(),
           width: width + data.dx,
           height: height + data.dy,
+          page,
         });
         posRef.current = { x: 0, y: 0 };
         setData({ dx: 0, dy: 0, dt: 0, dl: 0 });
       };
       const handleMouseMove = (e: MouseEvent) => {
-        const dx = posRef.current.x - e.clientX;
+        let dx = posRef.current.x - e.clientX;
         const dy = posRef.current.y - e.clientY;
         setData({ dx: 0, dy: 0, dt: dy, dl: dx });
       };
@@ -1932,6 +2020,7 @@ function FloatInput({
     <FlexChild
       id={input.name}
       Ref={_ref}
+      zIndex={1}
       position="absolute"
       top={`calc(${top} - ${data.dt}px)`}
       left={`calc(${left} - ${data.dl}px)`}
