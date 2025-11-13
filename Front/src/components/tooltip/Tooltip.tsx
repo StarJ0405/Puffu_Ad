@@ -154,14 +154,14 @@ const Tooltip = ({
     };
     if (show) {
       window.addEventListener("mousemove", handleMouseMove);
-      window.addEventListener("click", handleMouseClick);
+      window.addEventListener("mousedown", handleMouseClick);
     } else {
       window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("click", handleMouseClick);
+      window.removeEventListener("mousedown", handleMouseClick);
     }
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("click", handleMouseClick);
+      window.removeEventListener("mousedown", handleMouseClick);
     };
   }, [show]);
   useEffect(() => setMounted(true), []);
