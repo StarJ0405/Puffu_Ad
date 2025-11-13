@@ -66,7 +66,7 @@ export const GET: ApiHandler = async (req, res) => {
     select,
     withDeleted,
     ...where
-  } = req.parsedQuery;
+  } = req.parsedQuery;  
   if ("deleted_at" in where) {
     if (where?.deleted_at) where.deleted_at = Not(IsNull());
     else where.deleted_at = IsNull();

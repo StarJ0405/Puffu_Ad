@@ -33,7 +33,9 @@ import styles from "./page.module.css";
 export default function Client({ contract }: { contract: ContractData }) {
   const navigate = useNavigate();
   const [users, setUsers] = useState<UserData[]>([]);
-  const [participants, setParticipants] = useState<string[]>([]);
+  const [contractUsers, setContractUsers] = useState<ContractUserData[]>(
+    contract.contract_users ?? []
+  );
   const [ready, setReady] = useState(false);
   useEffect(() => {
     (async () => {
@@ -42,27 +44,46 @@ export default function Client({ contract }: { contract: ContractData }) {
     })();
   }, []);
 
-  const handleSelect = (userId: string) => {
-    if (userId && !participants.includes(userId)) {
-      setParticipants((prev) => [...prev, userId]);
-    }
-  };
+  useEffect(() => {
+    (async () => {
+      const res = await adminRequester.getUsers();
+      const filtered = (res?.content ?? []).filter(
+        (u: UserData) => u.role === "vendor" || u.role === "admin"
+      );
+      setUsers(filtered);
+    })();
+  }, []);
 
-  const removeParticipant = (userId: string) => {
-    setParticipants((prev) => prev.filter((id) => id !== userId));
+  const removeContractUser = (index: number) => {
+    setContractUsers((prev) => {
+      const updated = [...prev];
+      updated[index] = {
+        ...updated[index],
+        user_id: undefined,
+        user: undefined,
+      };
+      return updated;
+    });
   };
 
   const handleNext = () => {
-    const required = (contract.contract_users?.length ?? 1) - 1;
-    const selected = participants.length;
+    const required = (contractUsers.length ?? 1) - 1;
+    const selected = contractUsers.filter((u) => u.user_id).length - 1;
 
     if (selected !== required) {
       alert(`이 계약에는 총 ${required}명의 참여자가 필요합니다.`);
       return;
     }
+
     setReady(true);
-    // const userIds = participants.join(",");
-    // navigate(`/contract/create/temp/${contract.id}?user_ids=${userIds}`);
+  };
+
+  const handleSelectUser = (index: number, user: UserData) => {
+    setContractUsers((prev) => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], user_id: user.id, user };
+      return updated;
+    });
   };
 
   const [currentPage, setCurrentPage] = useState(0);
@@ -70,13 +91,12 @@ export default function Client({ contract }: { contract: ContractData }) {
   const handlePrev = () => {
     setCurrentPage((p) => Math.max(0, p - 1));
   };
-
   const handleNextPage = () => {
     if (!contract.pages) return;
     setCurrentPage((p) => Math.min(contract.pages.length - 1, p + 1));
   };
   if (ready) {
-    return <Write contract={contract} participants={participants} />;
+    return <Write contract={{ ...contract, contract_users: contractUsers }} />;
   }
 
   return (
@@ -125,41 +145,52 @@ export default function Client({ contract }: { contract: ContractData }) {
       <FlexChild flex="1" className={styles.participantSection}>
         <VerticalFlex gap={20}>
           <P className={styles.subTitle}>
-            참여자 설정 ({(contract.contract_users?.length ?? 1) - 1}명)
+            참여자 설정 ({contract.contract_users?.length ?? 1}명)
           </P>
+          {contractUsers.map((cu, index) => (
+            <Div key={cu.id || index} className={styles.row}>
+              <P>{index === 0 ? "발송인" : `참여자 ${index}`}</P>
+              <HorizontalFlex gap={10}>
+                <input
+                  className={styles.input}
+                  value={cu.user?.name || ""}
+                  placeholder="미지정"
+                  disabled
+                />
+                <Button
+                  styleType="admin2"
+                  onClick={() => {
+                    const selectedIds = contractUsers
+                      .filter((u) => u.user_id)
+                      .map((u) => u.user_id);
 
-          <div className={styles.row}>
-            <P>발송자</P>
-            <input className={styles.input} value="관리자" disabled />
-          </div>
+                    const availableUsers = users.filter(
+                      (u) =>
+                        (u.role === "vendor" || u.role === "admin") &&
+                        !selectedIds.includes(u.id)
+                    );
 
-          <Div className={styles.row}>
-            <P>참여자 선택</P>
-            <Select
-              width="100%"
-              placeholder="참여자를 선택하세요"
-              options={users.map((u) => ({
-                value: u.id,
-                display: u.name,
-              }))}
-              onChange={(val) => {
-                if (typeof val === "string") handleSelect(val);
-              }}
-            />
-          </Div>
+                    NiceModal.show("contractUser", {
+                      users: availableUsers,
+                      onSelect: (user: UserData) =>
+                        handleSelectUser(index, user),
+                    });
+                  }}
+                >
+                  선택
+                </Button>
 
-          {participants.map((id) => {
-            const user = users.find((u) => u.id === id);
-            return (
-              <P
-                key={id}
-                className={styles.participantTag}
-                onClick={() => removeParticipant(id)}
-              >
-                {user?.name ?? id} ✕
-              </P>
-            );
-          })}
+                {cu.user?.role !== "admin" && cu.user_id && (
+                  <Button
+                    styleType="admin"
+                    onClick={() => removeContractUser(index)}
+                  >
+                    ✕
+                  </Button>
+                )}
+              </HorizontalFlex>
+            </Div>
+          ))}
 
           <Button
             styleType="admin"
@@ -174,13 +205,7 @@ export default function Client({ contract }: { contract: ContractData }) {
   );
 }
 
-function Write({
-  contract,
-  participants,
-}: {
-  contract: ContractData;
-  participants: string[];
-}) {
+function Write({ contract }: { contract: ContractData }) {
   const navigate = useNavigate();
   const contentRef = useRef<any>(null);
   const inputs = useRef<any[]>([]);
@@ -189,7 +214,6 @@ function Write({
   const [height, setHeight] = useState(0);
   const [width, setWidth] = useState(0);
   const [scale, setScale] = useState(100);
-
   useEffect(() => {
     function setMaxHeight() {
       const admin_header = document.getElementById("admin_header");
@@ -295,7 +319,23 @@ function Write({
                   })
                 );
                 _data.name = name;
-                console.log(_data);
+                // console.log(_data);
+                try {
+                  const res = await adminRequester.createContractFromTemplate(
+                    contract.id,
+                    _data
+                  );
+                  // console.log("계약 생성 완료:", res);
+                  NiceModal.show("toast", {
+                    message: "계약이 성공적으로 생성되었습니다.",
+                  });
+                  navigate(-1);
+                } catch (err) {
+                  console.error(err);
+                  NiceModal.show("toast", {
+                    message: "계약 생성 중 오류가 발생했습니다.",
+                  });
+                }
               }}
             >
               저장

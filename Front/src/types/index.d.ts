@@ -93,7 +93,7 @@ interface UserDataFrame {
 }
 interface UserData extends BaseEntity, UserDataFrame {
   adult: boolean;
-  role: "member" | "developer" | "admin" | "member";
+  role: "member" | "developer" | "admin" | "vendor";
   point: number;
   coupon: number;
   accounts?: AccountLinkData[];
