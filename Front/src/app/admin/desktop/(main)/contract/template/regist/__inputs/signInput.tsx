@@ -7,18 +7,12 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import Icon from "@/components/icons/Icon";
 import Image from "@/components/Image/Image";
 import Input from "@/components/inputs/Input";
-import InputColor from "@/components/inputs/InputColor";
+import InputColor, { RGBtoHEX } from "@/components/inputs/InputColor";
 import InputNumber from "@/components/inputs/InputNumber";
 import InputTextArea from "@/components/inputs/InputTextArea";
 import P from "@/components/P/P";
 import NiceModal from "@ebay/nice-modal-react";
-import {
-  forwardRef,
-  JSX,
-  useEffect,
-  useImperativeHandle,
-  useState,
-} from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import ContractInput from "../class";
 
 const key: string = "signature";
@@ -34,37 +28,51 @@ export default class SignatureInput extends ContractInput {
       height: 60,
     });
   }
-  public getWrite(props?: {
-    url?: string;
-    onChange?: (data: any) => void;
-    name?: string;
-    width: number;
-    height: number;
-  }): JSX.Element {
-    return (
-      <FlexChild
-        onClick={() =>
-          NiceModal.show("contract/signature", {
-            onConfirm: props?.onChange,
-            name: props?.name,
-          })
-        }
-        justifyContent="center"
-      >
-        {props?.url ? (
-          <Image
-            src={props.url}
-            width={"100%"}
-            height={"auto"}
-            maxHeight={props.height}
-            maxWidth={props.width}
-          />
-        ) : (
-          this.getIcon(32)
-        )}
-      </FlexChild>
-    );
+  public isValid(data: any): boolean {
+    return !!data?.url;
   }
+  public Write = forwardRef(
+    (
+      props: {
+        data?: any;
+        url?: string;
+        onChange?: (data: any) => void;
+        name?: string;
+        width: number;
+        height: number;
+      },
+      ref: any
+    ) => {
+      return (
+        <FlexChild
+          Ref={ref}
+          onClick={() =>
+            NiceModal.show("contract/signature", {
+              onConfirm: props?.onChange,
+              name: props?.name,
+              tabs: props?.data?.tabs,
+              penSize: props?.data?.penSize,
+              penColor: props?.data?.penColor,
+            })
+          }
+          justifyContent="center"
+        >
+          {props?.url ? (
+            <Image
+              src={props.url}
+              width={"100%"}
+              height={"auto"}
+              maxHeight={props.height}
+              maxWidth={props.width}
+            />
+          ) : (
+            this.getIcon(32)
+          )}
+        </FlexChild>
+      );
+    }
+  );
+
   public initData() {
     return {
       tabs: ["그리기", "텍스트"],
@@ -332,16 +340,12 @@ export default class SignatureInput extends ContractInput {
                 <FlexChild paddingBottom={6} justifyContent="space-between">
                   <P>서명펜 색</P>
                   <InputColor
+                    type="hex"
                     displayType="bar"
                     zIndex={10080}
                     value={penColor}
                     onChange={(color) => {
-                      const rgb = color.rgb;
-                      setPenColor(
-                        `#${Number(rgb.r).toString(16)}${Number(rgb.g).toString(
-                          16
-                        )}${Number(rgb.b).toString(16)}`
-                      );
+                      setPenColor(RGBtoHEX(color.rgb));
                     }}
                   />
                 </FlexChild>

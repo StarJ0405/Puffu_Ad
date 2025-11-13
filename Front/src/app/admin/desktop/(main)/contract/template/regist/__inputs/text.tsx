@@ -10,13 +10,8 @@ import InputNumber from "@/components/inputs/InputNumber";
 import InputTextArea from "@/components/inputs/InputTextArea";
 import P from "@/components/P/P";
 import Select from "@/components/select/Select";
-import {
-  forwardRef,
-  JSX,
-  useEffect,
-  useImperativeHandle,
-  useState,
-} from "react";
+import NiceModal from "@ebay/nice-modal-react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import ContractInput from "../class";
 
 const key: string = "text";
@@ -40,7 +35,7 @@ export default class TextInput extends ContractInput {
     return (
       <FlexChild justifyContent="center">
         <input
-          placeholder="(텍스트)"
+          placeholder={props?.data?.placeholder || "(텍스트)"}
           style={{
             width: "100%",
             backgroundColor: "transparent",
@@ -55,6 +50,7 @@ export default class TextInput extends ContractInput {
             color: "inherit",
             textAlign: "inherit",
           }}
+          maxLength={props?.data?.limit ? props?.data?.limit : undefined}
           onClick={(e) => {
             e.stopPropagation();
             e.preventDefault();
@@ -66,40 +62,91 @@ export default class TextInput extends ContractInput {
       </FlexChild>
     );
   }
-  public getWrite(props?: {
-    data?: any;
-    onChange?: (data: any) => void;
-    name?: string;
-    width: number;
-    height: number;
-  }): JSX.Element {
-    return (
-      <input
-        placeholder="(텍스트)"
-        style={{
-          width: "100%",
-          backgroundColor: "transparent",
-          border: "none",
-          outline: "none",
-          textOverflow: "clip",
-          fontFamily: "inherit",
-          fontSize: "inherit",
-          fontWeight: "inherit",
-          textDecorationLine: "inherit",
-          fontStyle: "inherit",
-          color: "inherit",
-          textAlign: "inherit",
-        }}
-        onClick={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          (e.target as HTMLInputElement).focus();
-        }}
-        onChange={(e) => props?.onChange?.({ value: e.target.value })}
-        defaultValue={props?.data?.value}
-      />
-    );
+  public isValid(data: any): boolean {
+    return !!data?.value;
   }
+  public Write = forwardRef(
+    (
+      props: {
+        value?: any;
+        data?: any;
+        onChange?: (data: any) => void;
+        name?: string;
+        width: number;
+        height: number;
+      },
+      ref: any
+    ) => {
+      useEffect(() => {
+        if (props.onChange && !props.value && props.data.value)
+          props.onChange({ value: props.data.value });
+      }, []);
+
+      return (
+        <input
+          ref={ref}
+          placeholder={props?.data?.placeholder || "(텍스트)"}
+          style={{
+            width: "100%",
+            backgroundColor: "transparent",
+            border: "none",
+            outline: "none",
+            textOverflow: "clip",
+            fontFamily: "inherit",
+            fontSize: "inherit",
+            fontWeight: "inherit",
+            textDecorationLine: "inherit",
+            fontStyle: "inherit",
+            color: "inherit",
+            textAlign: "inherit",
+          }}
+          inputMode={props.data.inputMode}
+          maxLength={props?.data?.limit ? props?.data?.limit : undefined}
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            const target = e.target as HTMLInputElement;
+            if (props.data.inputType === "text") {
+              target.focus();
+            } else {
+              target.blur();
+              NiceModal.show("postalcode", {
+                width: "600px",
+                height: "auto",
+                onSuccess: ({
+                  postal_code,
+                  address1,
+                }: {
+                  postal_code: string;
+                  address1: string;
+                }) => {
+                  switch (props.data.inputType) {
+                    case "postalcode": {
+                      target.value = postal_code;
+                      props.onChange?.({ value: postal_code });
+                      break;
+                    }
+                    case "address": {
+                      target.value = address1;
+                      props.onChange?.({ value: address1 });
+                      break;
+                    }
+                    case "postaladdress": {
+                      target.value = `${postal_code} ${address1}`;
+                      props.onChange?.({ value: `${postal_code} ${address1}` });
+                      break;
+                    }
+                  }
+                },
+              });
+            }
+          }}
+          onChange={(e) => props?.onChange?.({ value: e.target.value })}
+          defaultValue={props?.data?.value}
+        />
+      );
+    }
+  );
   public initData() {
     return {
       inputMode: "text",
@@ -279,7 +326,7 @@ export default class TextInput extends ContractInput {
                     플레이스 홀더
                   </P>
                 </FlexChild>
-                <FlexChild paddingBottom={6}>
+                {/* <FlexChild paddingBottom={6}>
                   <CheckboxGroup
                     name="icon"
                     onChange={(values) => setIcon(values.includes("icon"))}
@@ -294,7 +341,7 @@ export default class TextInput extends ContractInput {
                       <P fontSize={14}>아이콘 표시</P>
                     </FlexChild>
                   </CheckboxGroup>
-                </FlexChild>
+                </FlexChild> */}
                 <FlexChild>
                   <InputTextArea
                     width={"100%"}
@@ -332,6 +379,7 @@ export default class TextInput extends ContractInput {
                     style={{ padding: "6px 12px" }}
                     value={value}
                     onChange={(value) => setValue(value as string)}
+                    maxLength={limitCount ? limit : undefined}
                   />
                 </FlexChild>
                 <FlexChild

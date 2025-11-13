@@ -7,7 +7,7 @@ import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
-import Select from "@/components/select/Select";
+import { useAdminAuth } from "@/providers/AdminAuthPorivder/AdminAuthPorivderClient";
 import { adminRequester } from "@/shared/AdminRequester";
 import { fileRequester } from "@/shared/FileRequester";
 import useNavigate from "@/shared/hooks/useNavigate";
@@ -15,9 +15,11 @@ import {
   dataURLtoFile,
   exportAsPdf,
   pageToDataURL,
+  toast,
 } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
+import _ from "lodash";
 import {
   Dispatch,
   forwardRef,
@@ -31,6 +33,7 @@ import ContractInput from "../../template/regist/class";
 import styles from "./page.module.css";
 
 export default function Client({ contract }: { contract: ContractData }) {
+  const { userData } = useAdminAuth();
   const navigate = useNavigate();
   const [users, setUsers] = useState<UserData[]>([]);
   const [contractUsers, setContractUsers] = useState<ContractUserData[]>(
@@ -95,8 +98,13 @@ export default function Client({ contract }: { contract: ContractData }) {
     if (!contract.pages) return;
     setCurrentPage((p) => Math.min(contract.pages.length - 1, p + 1));
   };
-  if (ready) {
-    return <Write contract={{ ...contract, contract_users: contractUsers }} />;
+  if (ready && userData) {
+    return (
+      <Write
+        user={userData}
+        contract={{ ...contract, contract_users: contractUsers }}
+      />
+    );
   }
 
   return (
@@ -205,7 +213,7 @@ export default function Client({ contract }: { contract: ContractData }) {
   );
 }
 
-function Write({ contract }: { contract: ContractData }) {
+function Write({ user, contract }: { user: UserData; contract: ContractData }) {
   const navigate = useNavigate();
   const contentRef = useRef<any>(null);
   const inputs = useRef<any[]>([]);
@@ -214,6 +222,9 @@ function Write({ contract }: { contract: ContractData }) {
   const [height, setHeight] = useState(0);
   const [width, setWidth] = useState(0);
   const [scale, setScale] = useState(100);
+  const [assigns, setAssigns] = useState<string[]>([]);
+  const [requires, setRequires] = useState<string[]>([]);
+  const [inputed, setInputed] = useState<string[]>([]);
   useEffect(() => {
     function setMaxHeight() {
       const admin_header = document.getElementById("admin_header");
@@ -248,6 +259,32 @@ function Write({ contract }: { contract: ContractData }) {
       content.addEventListener("wheel", onWheel);
       return () => content.removeEventListener("wheel", onWheel);
     }
+  }, []);
+  useEffect(() => {
+    const _user = contract.contract_users.find((f) => f.user_id === user.id);
+
+    setRequires(
+      contract.pages
+        .map((page) =>
+          page.input_fields
+            .filter(
+              (f) =>
+                f.metadata.data?.assign?.includes(_user?.name) &&
+                f.metadata.data?.require?.includes(_user?.name)
+            )
+            .map((input) => input.metadata.name)
+        )
+        .flat()
+    );
+    setAssigns(
+      contract.pages
+        .map((page) =>
+          page.input_fields
+            .filter((f) => f.metadata.data?.assign?.includes(_user?.name))
+            .map((input) => input.metadata.name)
+        )
+        .flat()
+    );
   }, []);
 
   return (
@@ -301,9 +338,18 @@ function Write({ contract }: { contract: ContractData }) {
             />
           </FlexChild>
           <FlexChild width={"max-content"}>
+            <P>
+              필수 입력 항목 ({inputed.length}/{requires.length})
+            </P>
+          </FlexChild>
+          <FlexChild width={"max-content"}>
             <Button
               className={styles.button}
               onClick={async () => {
+                if (inputed.length < requires.length) {
+                  toast({ message: "필수 입력항목이 남아있습니다." });
+                  return;
+                }
                 const _data = { ...contract };
                 _data.pages = await Promise.all(
                   _data.pages.map(async (page) => {
@@ -319,13 +365,20 @@ function Write({ contract }: { contract: ContractData }) {
                   })
                 );
                 _data.name = name;
-                // console.log(_data);
+
+                const changed = _data.pages.map((page) => {
+                  const input_fields =
+                    page.input_fields.filter((f) =>
+                      assigns.includes(f.metadata.name)
+                    ) || [];
+                  return { ...page, input_fields };
+                });
+                console.log(changed);
                 try {
-                  const res = await adminRequester.createContractFromTemplate(
-                    contract.id,
-                    _data
-                  );
-                  // console.log("계약 생성 완료:", res);
+                  // const res = await adminRequester.createContractFromTemplate(
+                  //   contract.id,
+                  //   _data
+                  // );
                   NiceModal.show("toast", {
                     message: "계약이 성공적으로 생성되었습니다.",
                   });
@@ -517,6 +570,8 @@ function Write({ contract }: { contract: ContractData }) {
                   />
                   {page.input_fields.map((input, index) => (
                     <FloatInput
+                      require={requires.includes(input.metadata.name)}
+                      assign={assigns.includes(input.metadata.name)}
                       ref={(el) => {
                         if (!inputs.current[page.page])
                           inputs.current[page.page] = {
@@ -528,6 +583,16 @@ function Write({ contract }: { contract: ContractData }) {
                       }}
                       key={`${input.type}_${index}`}
                       input={input as any}
+                      updateInput={(status) => {
+                        if (status)
+                          setInputed(
+                            _.uniq([...inputed, input?.metadata?.name])
+                          );
+                        else
+                          setInputed((prev) =>
+                            prev.filter((f) => f !== input?.metadata?.name)
+                          );
+                      }}
                     />
                   ))}
                 </FlexChild>
@@ -597,80 +662,143 @@ function ScaleSelect({
     </FlexChild>
   );
 }
-const FloatInput = forwardRef(({ input }: { input: InputFieldData }, ref) => {
-  const [ci, setCi] = useState<ContractInput>();
-  const [value, setValue] = useState<any>();
-  useEffect(() => {
-    let timer = 10;
-    const interval = setInterval(() => {
-      if (timer <= 0) clearInterval(interval);
-      const _input = ContractInput.getList().find(
-        (f) => f.getKey() === input.type
-      );
-      if (_input) {
-        setCi(_input);
-        clearInterval(interval);
-      }
-      timer--;
-    }, 500);
-  }, []);
-  useImperativeHandle(ref, () => ({
-    async getValue() {
-      if (value) {
-        async function transferFile(data: any) {
-          await Promise.all(
-            Object.keys(data).map(async (key) => {
-              const value = data[key];
-              if (
-                typeof value === "string" &&
-                value.startsWith("data:image/png;base64,")
-              ) {
-                const file = dataURLtoFile(value, `${input.type}.png`);
-                const formData = new FormData();
-                formData.append("files", file);
-                const { urls } = await fileRequester.upload(formData);
-                data[key] = urls[0];
-              } else if (typeof value === "object") {
-                data[key] = transferFile(value);
-              }
-            })
-          );
-          return data;
-        }
-        return transferFile(value);
-      }
-      return {};
+const FloatInput = forwardRef(
+  (
+    {
+      assign,
+      require,
+      input,
+      updateInput,
+    }: {
+      assign: boolean;
+      require: boolean;
+      input: InputFieldData;
+      updateInput: (status: boolean) => void;
     },
-  }));
-
-  return (
-    <FlexChild
-      position={"absolute"}
-      top={input.metadata.top}
-      left={input.metadata.left}
-      minWidth={input.metadata.width}
-      width={input.metadata.width}
-      height={input.metadata.height}
-      minHeight={input.metadata.height}
-      fontFamily={input.metadata.fontFamily}
-      fontSize={input.metadata.fontSize}
-      fontWeight={input.metadata.bold ? 700 : 500}
-      fontStyle={input.metadata.italic ? "italic" : "normal"}
-      textDecorationLine={input.metadata.underline ? "underline" : "none"}
-      color={input.metadata.color}
-      textAlign={input.metadata.align}
-      alignItems={input.metadata.vertical}
-      backgroundColor={input.metadata.backgroundColor}
-      className={clsx(styles.float, { [styles.has]: value })}
-      transition={"0.5s all"}
-    >
-      {ci?.getWrite({
-        onChange: (value) => setValue(value),
-        ...value,
-        data: input.metadata.data,
-        width: input.metadata.width,
-        height: input.metadata.height,
-      })}
-    </FlexChild>
-  );
-});
+    ref
+  ) => {
+    const divRef = useRef<any>(null);
+    const timeoutRef = useRef<any>(null);
+    const [ci, setCi] = useState<ContractInput>();
+    const [value, setValue] = useState<any>();
+    const [hover, setHover] = useState<{ x: number; y: number } | null>(null);
+    useEffect(() => {
+      let timer = 10;
+      const interval = setInterval(() => {
+        if (timer <= 0) clearInterval(interval);
+        const _input = ContractInput.getList().find(
+          (f) => f.getKey() === input.type
+        );
+        if (_input) {
+          setCi(_input);
+          clearInterval(interval);
+        }
+        timer--;
+      }, 500);
+    }, []);
+    useImperativeHandle(ref, () => ({
+      async getValue() {
+        if (value) {
+          async function transferFile(data: any) {
+            await Promise.all(
+              Object.keys(data).map(async (key) => {
+                const value = data[key];
+                if (
+                  typeof value === "string" &&
+                  value.startsWith("data:image/png;base64,")
+                ) {
+                  const file = dataURLtoFile(value, `${input.type}.png`);
+                  const formData = new FormData();
+                  formData.append("files", file);
+                  const { urls } = await fileRequester.upload(formData);
+                  data[key] = urls[0];
+                } else if (typeof value === "object") {
+                  data[key] = transferFile(value);
+                }
+              })
+            );
+            return data;
+          }
+          return transferFile(value);
+        }
+        return {};
+      },
+    }));
+    useEffect(() => {
+      if (ci && require) updateInput(ci.isValid(value));
+    }, [ci, value, require]);
+    return (
+      <FlexChild
+        Ref={divRef}
+        position={"absolute"}
+        top={input.metadata.top}
+        left={input.metadata.left}
+        minWidth={input.metadata.width}
+        width={input.metadata.width}
+        height={input.metadata.height}
+        minHeight={input.metadata.height}
+        fontFamily={input.metadata.fontFamily}
+        fontSize={input.metadata.fontSize}
+        fontWeight={input.metadata.bold ? 700 : 500}
+        fontStyle={input.metadata.italic ? "italic" : "normal"}
+        textDecorationLine={input.metadata.underline ? "underline" : "none"}
+        color={input.metadata.color}
+        textAlign={input.metadata.align}
+        alignItems={input.metadata.vertical}
+        backgroundColor={input.metadata.backgroundColor}
+        className={clsx({ [styles.float]: assign, [styles.has]: value })}
+        transition={"0.5s all"}
+        onMouseEnter={() => {
+          if (timeoutRef.current) clearTimeout(timeoutRef.current);
+          timeoutRef.current = setTimeout(() => {
+            setHover({
+              x:
+                divRef.current.getBoundingClientRect().x +
+                divRef.current.getBoundingClientRect().width * 0.5,
+              y:
+                divRef.current.getBoundingClientRect().y +
+                divRef.current.getBoundingClientRect().height * 0.5,
+            });
+          }, 1000);
+        }}
+        onMouseLeave={() => {
+          setHover(null);
+          if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        }}
+        pointerEvents={assign ? undefined : "none"}
+      >
+        {hover && (
+          <FlexChild
+            zIndex={10}
+            position="fixed"
+            left={hover.x}
+            top={hover.y}
+            padding={10}
+            border={"1px solid #d0d0d0"}
+            borderRadius={5}
+            backgroundColor="#fff"
+            width={"max-content"}
+            maxWidth={400}
+            fontWeight={500}
+            fontSize={16}
+            color="#111"
+            fontStyle="normal"
+            textDecorationLine="none"
+            textAlign="left"
+          >
+            <P whiteSpace="pre-wrap">{input.metadata.data.tooltip}</P>
+          </FlexChild>
+        )}
+        {ci && (
+          <ci.Write
+            onChange={(value: any) => setValue(value)}
+            {...value}
+            data={input.metadata.data}
+            width={input.metadata.width}
+            heigh={input.metadata.height}
+          />
+        )}
+      </FlexChild>
+    );
+  }
+);
