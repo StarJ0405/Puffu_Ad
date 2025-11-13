@@ -1,4 +1,96 @@
-.tableHeader {
-  font-size: 20px;
-  font-family: "Sacheon";
+.wrapper {
+  padding: 30px;
+  width: 100%;
 }
+
+.header {
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.filterBox {
+  margin-bottom: 20px;
+}
+
+.listBox {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 16px 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  width: 65%;
+}
+
+.contractName {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.sender {
+  font-size: 13px;
+  color: #666;
+}
+
+.badge {
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.badge.active {
+  background: #007aff;
+  color: #fff;
+}
+
+.badge.complete {
+  background: #4caf50;
+  color: #fff;
+}
+
+.date {
+  font-size: 12px;
+  color: #999;
+}
+
+.badge.ready {
+  background: #ffa726;
+  color: #fff;
+}
+
+.participants {
+  border-top: 1px solid #eee;
+  margin-top: 6px;
+  padding-top: 6px;
+}
+
+.participantRow {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.participantName {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.participantUser {
+  font-size: 12px;
+  color: #666;
+  flex: 1;
+  text-align: left;
+  margin-left: 10px;
+}
+

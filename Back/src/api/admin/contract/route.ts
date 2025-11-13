@@ -1,6 +1,6 @@
 import { container } from "tsyringe";
 import { ContractService } from "services/contract";
-import { IsNull, Like } from "typeorm";
+import { IsNull, Like, Not } from "typeorm";
 
 export const GET: ApiHandler = async (req, res) => {
   const svc = container.resolve(ContractService);
@@ -16,8 +16,10 @@ export const GET: ApiHandler = async (req, res) => {
   } = req.parsedQuery;
 
   const where: any = {};
+
   if (origin_id === null || origin_id === "null") where.origin_id = IsNull();
-  else if (origin_id) where.origin_id = origin_id;
+  else if (origin_id) where.origin_id = origin_id;                                     
+  else if ("origin_id__not" in req.query) where.origin_id = Not(IsNull());            
   if (q) where.name = Like(`%${q}%`);
 
   const base = { select, order, relations, where, whereExtra: others } as any;
