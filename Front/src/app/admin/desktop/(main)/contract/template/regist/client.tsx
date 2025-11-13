@@ -1396,6 +1396,12 @@ function Setting({
                           name: `${id} ${number}`,
                           height: selectedInput.getHeight(),
                           width: selectedInput.getWidth(),
+                          data: {
+                            assign: [selectedUser],
+                            require: [selectedUser],
+                            icon: true,
+                            ...selectedInput.initData(),
+                          },
                         });
                         setSelectedInputs([`${id} ${number}`]);
                         setData({ ...data });
@@ -1508,7 +1514,7 @@ function Setting({
               </FlexChild>
               <FlexChild>
                 <VerticalFlex height={"100%"}>
-                  {images.map((_, page) => (
+                  {images.map((__, page) => (
                     <RightSlot key={page} title={`${Number(page) + 1} 페이지`}>
                       <VerticalFlex>
                         {data[Number(page)]?.inputs?.map((input, idx) => (
@@ -1519,6 +1525,7 @@ function Setting({
                                 (id) => id === input.name
                               ),
                             })}
+                            cursor="pointer"
                             onContextMenu={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
@@ -1635,6 +1642,62 @@ function Setting({
                           >
                             {input.input.getIcon(24)}
                             <P>{input.name}</P>
+                            <Icon
+                              src="contract/"
+                              name="setting"
+                              type="svg"
+                              size={24}
+                              marginLeft={"auto"}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                NiceModal.show("contract/setting", {
+                                  name: input.name,
+                                  input: input.input,
+                                  data: input.data,
+                                  users: contractUsers,
+                                  onConfirm: ({
+                                    data: _data,
+                                    name,
+                                  }: {
+                                    data: any;
+                                    name: string;
+                                  }) => {
+                                    input.data = {
+                                      ...input.data,
+                                      ..._data,
+                                    };
+                                    name = name.trim();
+                                    if (input.name !== name)
+                                      if (
+                                        Object.keys(data).some((k) =>
+                                          data[Number(k)].inputs.some(
+                                            (input) => input.name === name
+                                          )
+                                        )
+                                      ) {
+                                        let number = 1;
+                                        while (true) {
+                                          if (
+                                            Object.keys(data).some((k) =>
+                                              data[Number(k)].inputs.some(
+                                                (input) =>
+                                                  input.name ===
+                                                  `${name} ${number}`
+                                              )
+                                            )
+                                          ) {
+                                            number++;
+                                          } else break;
+                                        }
+                                        input.name = `${name} ${number}`;
+                                      } else input.name = name;
+
+                                    setData({ ...data });
+                                  },
+                                });
+                              }}
+                            />
                           </FlexChild>
                         ))}
                       </VerticalFlex>

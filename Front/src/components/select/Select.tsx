@@ -1,4 +1,5 @@
 "use client";
+import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
 import useClientEffect from "@/shared/hooks/useClientEffect";
 import useNavigate from "@/shared/hooks/useNavigate";
 import clsx from "clsx";
@@ -12,7 +13,6 @@ import React, {
 } from "react";
 import { createPortal } from "react-dom";
 import styles from "./Select.module.css";
-import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
 
 // 옵션의 데이터 타입 정의
 interface SelectOption<T extends string | number> {
@@ -53,6 +53,15 @@ interface SelectProps<T extends string | number> {
     arrow?: React.HTMLAttributes<HTMLElement>["className"];
     search?: React.HTMLAttributes<HTMLElement>["className"];
     header?: React.HTMLAttributes<HTMLElement>["className"];
+    display?: React.HTMLAttributes<HTMLElement>["className"];
+  };
+  styles?: {
+    line?: React.CSSProperties;
+    placeholder?: React.CSSProperties;
+    arrow?: React.CSSProperties;
+    search?: React.CSSProperties;
+    header?: React.CSSProperties;
+    display?: React.CSSProperties;
   };
   disabled?: boolean;
   /**
@@ -95,6 +104,7 @@ function Select<T extends string | number>({
   minHeight,
   maxHeight = "200px",
   classNames,
+  styles: style,
   disabled = false,
   maxSelectionLimit, // maxSelectionLimit prop 받기
   searchable = false,
@@ -195,7 +205,10 @@ function Select<T extends string | number>({
     const currentSelected = Array.from(currentSelectedValues);
     if (currentSelected.length === 0) {
       return (
-        <span className={clsx(styles.placeholder, classNames?.placeholder)}>
+        <span
+          className={clsx(styles.placeholder, classNames?.placeholder)}
+          style={style?.placeholder}
+        >
           {placeholder}
         </span>
       );
@@ -208,12 +221,18 @@ function Select<T extends string | number>({
     if (multiple) {
       if (selectedDisplays.length === 0)
         return (
-          <span className={clsx(styles.placeholder, classNames?.placeholder)}>
+          <span
+            className={clsx(styles.placeholder, classNames?.placeholder)}
+            style={style?.placeholder}
+          >
             {placeholder}
           </span>
         );
       return (
-        <span className={clsx(styles.placeholder, classNames?.placeholder)}>
+        <span
+          className={clsx(styles.placeholder, classNames?.placeholder)}
+          style={style?.placeholder}
+        >
           {selectedDisplays.length > 1
             ? `${selectedDisplays.length}개 선택됨`
             : selectedDisplays[0]}
@@ -222,7 +241,10 @@ function Select<T extends string | number>({
     } else {
       return (
         selectedDisplays[0] || (
-          <span className={clsx(styles.placeholder, classNames?.placeholder)}>
+          <span
+            className={clsx(styles.placeholder, classNames?.placeholder)}
+            style={style?.placeholder}
+          >
             {placeholder}
           </span>
         )
@@ -236,7 +258,7 @@ function Select<T extends string | number>({
         {options.length === 0 ? (
           <div
             className={clsx(styles.optionItem, classNames?.line)}
-            style={{ cursor: "default" }}
+            style={{ cursor: "default", ...style?.line }}
           >
             옵션이 없습니다.
           </div>
@@ -247,7 +269,7 @@ function Select<T extends string | number>({
             })
             .map((option, index) => (
               <div
-                style={{ fontSize: isMobile ? "12px" : "" }}
+                style={{ fontSize: isMobile ? "12px" : "", ...style?.line }}
                 key={String(option?.value) + index}
                 className={clsx(
                   styles.optionItem,
@@ -372,11 +394,13 @@ function Select<T extends string | number>({
           style={{
             padding: searchable && isOpen ? 0 : undefined,
             scrollMarginTop,
+            ...style?.header,
           }}
         >
           {searchable && isOpen ? (
             <input
               className={clsx(styles.search, classNames?.search)}
+              style={{ ...style?.search }}
               placeholder="내용을 검색해주세요"
               onClick={(e) => {
                 e.stopPropagation();
@@ -385,7 +409,10 @@ function Select<T extends string | number>({
               onChange={(e) => setKeyword(e.target.value)}
             />
           ) : (
-            <div className={styles.selectedItemsDisplay}>
+            <div
+              className={clsx(styles.selectedItemsDisplay, classNames?.display)}
+              style={{ ...style?.display }}
+            >
               {getDisplayValue()}
             </div>
           )}
@@ -397,6 +424,7 @@ function Select<T extends string | number>({
             )}
             style={{
               marginRight: isOpen && searchable ? 15 : undefined,
+              ...style?.arrow,
             }}
           />
         </div>
@@ -437,6 +465,7 @@ function Select<T extends string | number>({
             padding: searchable && isOpen ? 0 : undefined,
             scrollMarginTop,
             minHeight,
+            ...style?.header,
           }}
         >
           {searchable && isOpen ? (
@@ -455,7 +484,10 @@ function Select<T extends string | number>({
               onChange={(e) => setKeyword(e.target.value)}
             />
           ) : (
-            <div className={styles.selectedItemsDisplay}>
+            <div
+              className={clsx(styles.selectedItemsDisplay, classNames?.display)}
+              style={{ ...style?.display }}
+            >
               {getDisplayValue()}
             </div>
           )}
@@ -467,6 +499,7 @@ function Select<T extends string | number>({
             )}
             style={{
               marginRight: isOpen && searchable ? 15 : undefined,
+              ...style?.arrow,
             }}
           />
         </div>

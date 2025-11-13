@@ -36,6 +36,7 @@ import PointListModal from "./admin/user/PointListModal";
 import SubscribeListModal from "./admin/user/SubscribeListModal";
 import UserModal from "./admin/user/UserModal";
 import ColorModal from "./contract/color/ColorModal";
+import SettingModal from "./contract/setting/SettingModal";
 import ContractSignatureModal from "./contract/signature/ContractSignatureModal";
 import ContractStampModal from "./contract/stamp/ContractStampModal";
 import InputModal from "./input/InputModal";
@@ -70,6 +71,7 @@ function ModalHandler() {
   NiceModal.register("contract/signature", ContractSignatureModal);
   NiceModal.register("contract/stamp", ContractStampModal);
   NiceModal.register("contract/color", ColorModal);
+  NiceModal.register("contract/setting", SettingModal);
   // main
   NiceModal.register("select", SelectModal);
   NiceModal.register("address", AddressModal);
