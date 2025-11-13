@@ -950,6 +950,16 @@ class _AdminRequester {
     if (callback) callback(await this.delete(`/contract/${id}`, {}));
     else return await this.delete(`/contract/${id}`, {});
   }
+
+    async updateContractUserStatus(
+    id: string,
+    data: { user_id: string; status: string },
+    callback?: Function
+  ): Promise<any> {
+    if (callback)
+      callback(await this.post(`/contract/${id}/approve`, data));
+    else return await this.post(`/contract/${id}/approve`, data);
+  }
 }
 
 export default _AdminRequester;
