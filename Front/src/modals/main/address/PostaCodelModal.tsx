@@ -10,8 +10,12 @@ import styles from "./PostaCodelModal.module.css";
 
 const PostalCodeModal = NiceModal.create(
   ({
+    width = "100vw",
+    height = "100dvh",
     onSuccess,
   }: {
+    width: React.CSSProperties["width"];
+    height: React.CSSProperties["width"];
     onSuccess?: ({
       postal_code,
       address1,
@@ -21,7 +25,6 @@ const PostalCodeModal = NiceModal.create(
     }) => void;
   }) => {
     const [withHeader, withFooter] = [false, false];
-    const [width, height] = ["100vw", "100dvh"];
     const withCloseButton = false;
     const clickOutsideToClose = false;
     const title = "";

@@ -69,6 +69,7 @@ function FlexChild({
   scale,
   hidden,
   hideScrollbar,
+  pointerEvents,
   onClick,
   onContextMenu,
   scrollbarGutter,
@@ -185,6 +186,7 @@ function FlexChild({
         scrollMarginTop,
         scrollbarWidth: hideScrollbar ? "none" : undefined,
         msOverflowStyle: hideScrollbar ? "none" : undefined,
+        pointerEvents,
         ...getDirectionalStyles(), // 방향성 스타일 적용
       }}
       hidden={hidden}

@@ -3,6 +3,7 @@
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import Button from "@/components/buttons/Button";
+import Div from "@/components/div/Div";
 import FlexChild from "@/components/flex/FlexChild";
 import FlexGrid from "@/components/flex/FlexGrid";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
@@ -18,7 +19,6 @@ import clsx from "clsx";
 import html2canvas from "html2canvas";
 import { useEffect, useRef, useState } from "react";
 import styles from "./ContractSignatureModal.module.css";
-import Div from "@/components/div/Div";
 const fonts = [
   "--font-barun-gothic",
   "--font-gothic",
@@ -41,10 +41,13 @@ const ContractSignatureModal = NiceModal.create(
     classNames,
     preventable = false, // true시 onConfirm false면 캔슬됨
     name: pre_name = "",
+    tabs = ["그리기", "텍스트"],
+    penSize = 1,
+    penColor = "#000000",
   }: any) => {
     const [withHeader, withFooter] = [false, false];
     const buttonText = "close";
-    const [tab, setTab] = useState<"그리기" | "텍스트">("그리기");
+    const [tab, setTab] = useState<string>("그리기");
     const [lang, setLang] = useState<string>("ko");
     const modal = useRef<any>(null);
     const [isBlocked, setIsBlocked] = useState(false);
@@ -202,7 +205,7 @@ const ContractSignatureModal = NiceModal.create(
             hideScrollbar
           >
             <FlexChild>
-              {["그리기", "텍스트"].map((text) => (
+              {tabs.map((text: string) => (
                 <P
                   className={clsx(styles.tab, {
                     [styles.selected]: tab === text,
@@ -226,6 +229,9 @@ const ContractSignatureModal = NiceModal.create(
                   <SignaturePad
                     ref={padRef}
                     velocityFilterWeight={0}
+                    minWidth={penSize * 0.5}
+                    maxWidth={penSize * 0.5}
+                    penColor={penColor}
                     canvasProps={{
                       style: { width: "100%", height: "100%", minHeight: 500 },
                     }}

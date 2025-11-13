@@ -458,6 +458,7 @@ export function HEXtoRGB(hex: string) {
     b = parseInt(hex?.[4] + hex?.[5], 16);
     a = parseInt(hex?.[6] + hex?.[7], 16) / 255;
   }
+
   const data: { r: number; g: number; b: number; a?: number } = { r, g, b };
   if (typeof a !== "undefined") data.a = a;
   return data;

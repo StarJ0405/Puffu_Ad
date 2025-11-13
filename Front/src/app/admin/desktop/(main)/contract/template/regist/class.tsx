@@ -127,9 +127,19 @@ export default abstract class ContractInput {
   public getHeight(): number {
     return this.height;
   }
-  public getWrite(props?: { onChange?: (data: any) => void }) {
-    return <FlexChild justifyContent="center">{this.getIcon(32)}</FlexChild>;
+  public isValid(data: any) {
+    return true;
   }
+  public Write: any = forwardRef(
+    (props: { onChange?: (data: any) => void; data: any }, ref: any) => {
+      return (
+        <FlexChild Ref={ref} justifyContent="center">
+          {props?.data?.icon && this.getIcon(32)}
+          {props?.data?.placeholder && <P>{props?.data?.placeholder}</P>}
+        </FlexChild>
+      );
+    }
+  );
   public getTextable() {
     return this.textable;
   }
