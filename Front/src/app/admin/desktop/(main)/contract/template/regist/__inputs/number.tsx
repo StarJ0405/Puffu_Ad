@@ -138,7 +138,7 @@ export default class NumberInput extends ContractInput {
             }
             props?.onChange?.({ value });
           }}
-          value={props?.value || props?.data?.value}
+          defaultValue={props?.value || props?.data?.value}
         />
       );
     }

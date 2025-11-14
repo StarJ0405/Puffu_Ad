@@ -56,7 +56,9 @@ interface PageData {
   };
 }
 export default function ({ contract }: { contract: ContractData }) {
-  const images = contract.pages.map((page) => page.image);
+  const images = contract.pages
+    .sort((p1, p2) => p1.page - p2.page)
+    .map((page) => page.image);
   const navigate = useNavigate();
   const contentRef = useRef<any>(null);
   const inputs = useRef<any>({});
