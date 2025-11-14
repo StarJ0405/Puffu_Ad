@@ -749,6 +749,7 @@ const FloatInput = forwardRef(
         className={clsx({ [styles.float]: assign, [styles.has]: value })}
         transition={"0.5s all"}
         onMouseEnter={() => {
+          if (!input.metadata.data.tooltip) return;
           if (timeoutRef.current) clearTimeout(timeoutRef.current);
           timeoutRef.current = setTimeout(() => {
             setHover({
@@ -767,7 +768,7 @@ const FloatInput = forwardRef(
         }}
         pointerEvents={assign ? undefined : "none"}
       >
-        {hover && (
+        {input.metadata.data.tooltip && hover && (
           <FlexChild
             zIndex={10}
             position="fixed"

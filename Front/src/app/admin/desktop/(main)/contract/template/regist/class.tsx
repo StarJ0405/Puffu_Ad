@@ -97,17 +97,23 @@ export default abstract class ContractInput {
     div.style.pointerEvents = "none";
     return div;
   }
-  public getInput(props?: {
-    onChange?: (data: any) => void;
-    data?: any;
-  }): React.JSX.Element {
-    return (
-      <FlexChild justifyContent="center">
-        {props?.data?.icon && this.getIcon(32)}
-        {props?.data?.placeholder && <P>{props?.data?.placeholder}</P>}
-      </FlexChild>
-    );
-  }
+  public Float = forwardRef(
+    (
+      props: {
+        name?: string;
+        onChange?: (data: any) => void;
+        data?: any;
+      },
+      ref: any
+    ) => {
+      return (
+        <FlexChild Ref={ref} justifyContent="center">
+          {props?.data?.icon && this.getIcon(32)}
+          {props?.data?.placeholder && <P>{props?.data?.placeholder}</P>}
+        </FlexChild>
+      );
+    }
+  );
   public getIcon(size: number) {
     return typeof this.icon === "string" ? (
       <Image src={this.icon} size={size} />
