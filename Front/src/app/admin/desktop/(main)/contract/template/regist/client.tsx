@@ -538,9 +538,9 @@ function Setting({
                   return page;
                 });
                 try {
+                  // console.log(_data);
                   const result = await adminRequester.createTemplate(_data);
                   toast({ message: "템플릿이 성공적으로 저장되었습니다." });
-                  // console.log("[Template Create Result]", result);
                   setTimeout(() => {
                     navigate("/contract/template/management");
                   }, 2000);

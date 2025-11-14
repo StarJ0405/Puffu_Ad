@@ -192,6 +192,27 @@ export class ContractService extends BaseService<Contract, ContractRepository> {
     });
   }
 
+  async updateInputField(fieldId: string, value: any) {
+    return this.repository.manager.transaction(async (manager) => {
+      const field = await manager.findOne(InputField, {
+        where: { id: fieldId },
+      });
+      if (!field) throw new Error("Input field not found");
+
+      field.value = value;
+      await manager.save(field);
+
+      const log = manager.create(Log, {
+        name: "input_field_update",
+        type: "input_field",
+        data: { field_id: fieldId },
+      });
+      await manager.save(log);
+
+      return field;
+    });
+  }
+
   /** 계약 완료 처리 */
   async completeContract(id: string) {
     return this.repository.manager.transaction(async (manager) => {

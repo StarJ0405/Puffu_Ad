@@ -483,3 +483,7 @@
   background-color: transparent;
   border: none;
 }
+
+.btnSelectUser {
+  white-space: nowrap;
+}
