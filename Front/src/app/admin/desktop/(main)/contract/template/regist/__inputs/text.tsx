@@ -149,7 +149,7 @@ export default class TextInput extends ContractInput {
             }
           }}
           onChange={(e) => props?.onChange?.({ value: e.target.value })}
-          value={props?.value || props?.data?.value}
+          defaultValue={props?.value || props?.data?.value}
         />
       );
     }
