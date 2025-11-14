@@ -11,6 +11,7 @@ import Input from "@/components/inputs/Input";
 import InputNumber from "@/components/inputs/InputNumber";
 import InputTextArea from "@/components/inputs/InputTextArea";
 import P from "@/components/P/P";
+import Select from "@/components/select/Select";
 import _ from "lodash";
 import {
   CSSProperties,
@@ -21,7 +22,6 @@ import {
   useState,
 } from "react";
 import ContractInput from "../class";
-import Select from "@/components/select/Select";
 
 const key: string = "checkbox";
 export default class CheckboxInput extends ContractInput {
@@ -498,10 +498,8 @@ export default class CheckboxInput extends ContractInput {
     }
   );
 
-  public isValid(data: any): boolean {
-    if (data?.value?.disabed) return true;
-
-    return false;
+  public isValid(data: any, value: any): boolean {
+    return data?.min <= value?.boxes?.filter((box: any) => box.checked).length;
   }
   public Write = forwardRef(
     (
@@ -515,46 +513,64 @@ export default class CheckboxInput extends ContractInput {
       },
       ref: any
     ) => {
-      const [disabled, setDisabled] = useState(
-        props?.value?.disabled || props.data?.disabled
-      );
-      const [checked, setChecked] = useState(
-        props?.value?.checked || props?.data?.checked
-      );
-      useEffect(() => {
-        if (props.onChange) {
-          const _data = { checked: false, disabled: false };
-          _data.checked = props?.value?.checked || props?.data?.value;
-          _data.disabled = props?.value?.disabled || props?.data?.disabled;
-          props.onChange(_data);
-        }
-      }, []);
+      const boxes = props.value?.boxes || props?.data?.boxes || [];
+      const BoxCompnent = ({ box, boxes }: { box: any; boxes: any[] }) => {
+        return (
+          <FlexChild
+            position="absolute"
+            width={box.width}
+            height={box.height}
+            top={box.y}
+            left={box.x}
+            border={"1px solid transparent"}
+            cursor="pointer"
+          >
+            <FlexChild padding={6} position="relative" justifyContent="center">
+              <input
+                id={`${props?.name}_${box.value}`}
+                type="checkbox"
+                name={props?.name}
+                value={box.value}
+                hidden
+              />
+              <Image
+                src={
+                  box?.disabled
+                    ? props?.data?.style?.disabled
+                    : box?.checked
+                    ? props?.data?.style?.on
+                    : props?.data?.style?.off
+                }
+                width={"100%"}
+                height={"100%"}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+
+                  if (
+                    !box.disabled &&
+                    (boxes.filter((f) => f.checked).length < props.data.max ||
+                      boxes.some((f) => f.value === box.value && f.checked))
+                  ) {
+                    box.checked = !box.checked;
+                    props?.onChange?.({
+                      boxes,
+                    });
+                  }
+                }}
+              />
+            </FlexChild>
+          </FlexChild>
+        );
+      };
 
       return (
-        <FlexChild padding={20}>
-          <input
-            ref={ref}
-            id={`${props?.name}_checkbox`}
-            hidden
-            type="checkbox"
-          />
-          <Image
-            onClick={() => {
-              if (!props.data?.disabled) {
-                setChecked(!checked);
-                props?.onChange?.({ disabled, checked: !checked });
-              }
-            }}
-            src={
-              disabled
-                ? props?.data?.style?.disabled
-                : checked
-                ? props?.data?.style?.on
-                : props?.data?.style?.off
-            }
-            width={"100%"}
-            height={"100%"}
-          />
+        <FlexChild padding={5} height={"100%"} width={"100%"}>
+          <FlexChild position="relative" height={"100%"} width={"100%"}>
+            {boxes.map((box: any, index: number) => (
+              <BoxCompnent key={box.value} box={box} boxes={boxes} />
+            ))}
+          </FlexChild>
         </FlexChild>
       );
     }
@@ -639,6 +655,7 @@ export default class CheckboxInput extends ContractInput {
               borderRight={"1px solid #d0d0d0"}
               paddingRight={6}
               marginRight={6}
+              height={"100%"}
             >
               <VerticalFlex width={400} padding={"0 20px"}>
                 <FlexChild padding={"12px 0"}>

@@ -21,8 +21,8 @@ export default class StampInput extends ContractInput {
       height: 90,
     });
   }
-  public isValid(data: any): boolean {
-    return !!data?.url;
+  public isValid(data: any, value: any): boolean {
+    return !!value?.url;
   }
   public Write = forwardRef(
     (

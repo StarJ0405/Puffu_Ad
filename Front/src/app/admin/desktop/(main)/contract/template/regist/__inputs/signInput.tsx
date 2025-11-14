@@ -28,8 +28,8 @@ export default class SignatureInput extends ContractInput {
       height: 60,
     });
   }
-  public isValid(data: any): boolean {
-    return !!data?.url;
+  public isValid(data: any, value: any): boolean {
+    return !!value?.url;
   }
   public Write = forwardRef(
     (
