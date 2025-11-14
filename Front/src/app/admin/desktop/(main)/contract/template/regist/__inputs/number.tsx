@@ -80,8 +80,8 @@ export default class NumberInput extends ContractInput {
       );
     }
   );
-  public isValid(data: any): boolean {
-    return !!data?.value;
+  public isValid(data: any, value: any): boolean {
+    return !!value?.value;
   }
   public Write = forwardRef(
     (

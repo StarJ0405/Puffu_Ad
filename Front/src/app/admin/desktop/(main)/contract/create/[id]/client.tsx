@@ -725,7 +725,7 @@ const FloatInput = forwardRef(
       },
     }));
     useEffect(() => {
-      if (ci && require) updateInput(ci.isValid(value));
+      if (ci && require) updateInput(ci.isValid(input.metadata.data, value));
     }, [ci, value, require]);
     return (
       <FlexChild
@@ -746,7 +746,10 @@ const FloatInput = forwardRef(
         textAlign={input.metadata.align}
         alignItems={input.metadata.vertical}
         backgroundColor={input.metadata.backgroundColor}
-        className={clsx({ [styles.float]: assign, [styles.has]: value })}
+        className={clsx({
+          [styles.float]: assign,
+          [styles.has]: ci?.isValid?.(input.metadata.data, value),
+        })}
         transition={"0.5s all"}
         onMouseEnter={() => {
           if (!input.metadata.data.tooltip) return;

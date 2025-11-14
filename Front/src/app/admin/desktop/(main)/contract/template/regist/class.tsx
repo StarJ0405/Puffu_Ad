@@ -133,7 +133,7 @@ export default abstract class ContractInput {
   public getHeight(): number {
     return this.height;
   }
-  public isValid(data: any) {
+  public isValid(data: any, value: any): boolean {
     return true;
   }
   public Write: any = forwardRef(
