@@ -116,21 +116,47 @@ export class ContractService extends BaseService<Contract, ContractRepository> {
       if (payload.name) contract.name = payload.name;
 
       if (payload.pages) {
-        contract.pages = payload.pages.map((p: any) => {
-          const page = new Page();
-          page.id = p.id;
-          page.image = p.image;
-          page.page = p.page;
-          page.input_fields = p.input_fields?.map((f: any) => {
-            const field = new InputField();
-            field.id = f.id;
-            field.type = f.type;
-            field.metadata = f.metadata ?? {};
-            field.value = f.value ?? {};
-            return field;
-          });
-          return page;
-        });
+        const oldPages = contract.pages ?? [];
+
+        const finalPages: Page[] = [];
+
+        for (const incomingPage of payload.pages) {
+          const oldPage = oldPages.find((p) => p.id === incomingPage.id);
+
+          // 페이지 신규 생성 or 업데이트
+          const page = oldPage ?? new Page();
+          page.id = incomingPage.id;
+          page.image = incomingPage.image;
+          page.page = incomingPage.page;
+
+          const oldFields = oldPage?.input_fields ?? [];
+          const newFields = incomingPage.input_fields ?? [];
+
+          // 삭제 대상
+          const removeTargets = oldFields.filter(
+            (old) => !newFields.some((nf: any) => nf.id === old.id)
+          );
+          if (removeTargets.length) await manager.softRemove(removeTargets);
+
+          // 추가 + 수정
+          const finalFields: InputField[] = [];
+          for (const nf of newFields) {
+            const oldF = oldFields.find((of) => of.id === nf.id);
+            const field = oldF ?? new InputField();
+
+            field.id = nf.id;
+            field.type = nf.type;
+            field.metadata = nf.metadata ?? {};
+            field.value = nf.value ?? {};
+
+            finalFields.push(field);
+          }
+
+          page.input_fields = finalFields;
+          finalPages.push(page);
+        }
+
+        contract.pages = finalPages;
       }
 
       if (payload.contract_users) {
@@ -154,7 +180,6 @@ export class ContractService extends BaseService<Contract, ContractRepository> {
         }
         contract.contract_users = updated;
       }
-      // ──────────────────────────────────────────────
       await manager.save(contract);
       const log = manager.create(Log, {
         name: "contract_update",
