@@ -1849,7 +1849,7 @@ function FloatInput({
         const computed = div.computedStyleMap();
 
         let top = computed.get("top") as any;
-        const bottom = top.value + div.getBoundingClientRect().height;
+        // const bottom = top.value + div.getBoundingClientRect().height;
 
         if (top.value < 0) {
           if (page === 0) top.value = 0;
@@ -1860,7 +1860,7 @@ function FloatInput({
               12;
           }
         } else if (
-          bottom >
+          top.value >
           (div.parentNode as HTMLElement).getBoundingClientRect().height + 12
         ) {
           if (page + 1 === maxPage)
@@ -1917,11 +1917,12 @@ function FloatInput({
       width={width + data.dx}
       height={height + data.dy}
       border={"1px dotted red"}
-      cursor="move"
+      cursor={selected ? "move" : "pointer"}
       onClick={onClick}
       onMouseDown={(e) => {
         e.stopPropagation();
         e.preventDefault();
+        if (!selected) return;
         setMove(true);
         posRef.current = {
           x: e.clientX,
@@ -1942,13 +1943,14 @@ function FloatInput({
         alignItems={input.vertical}
         backgroundColor={input.backgroundColor}
         className={styles.input}
-        overflow="hidden"
       >
-        <input.input.Float
-          name={input.name}
-          onChange={(data) => onUpdate({ data })}
-          data={input.data}
-        />
+        {input?.input?.Float && (
+          <input.input.Float
+            name={input.name}
+            onChange={(data) => onUpdate({ data })}
+            data={input.data}
+          />
+        )}
         <FlexChild
           hidden={!selected}
           position="absolute"

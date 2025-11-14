@@ -1,16 +1,27 @@
 "use client";
 import CheckboxChild from "@/components/choice/checkbox/CheckboxChild";
 import CheckboxGroup from "@/components/choice/checkbox/CheckboxGroup";
+import Div from "@/components/div/Div";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Icon from "@/components/icons/Icon";
 import Image from "@/components/Image/Image";
 import Input from "@/components/inputs/Input";
+import InputNumber from "@/components/inputs/InputNumber";
 import InputTextArea from "@/components/inputs/InputTextArea";
 import P from "@/components/P/P";
-import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import _ from "lodash";
+import {
+  CSSProperties,
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import ContractInput from "../class";
+import Select from "@/components/select/Select";
 
 const key: string = "checkbox";
 export default class CheckboxInput extends ContractInput {
@@ -35,25 +46,453 @@ export default class CheckboxInput extends ContractInput {
       },
       ref: any
     ) => {
+      const [boxes, setBoxes] = useState<any[]>(props?.data?.boxes || []);
+      const [select, setSelect] = useState<string>("");
+      const BoxCompnent = ({
+        box,
+        selected,
+        onClick,
+        onUpdate,
+      }: {
+        box: any;
+        selected: boolean;
+        onClick: (name: string) => void;
+        onUpdate: ({
+          top,
+          left,
+          width,
+          height,
+        }: {
+          top: number;
+          left: number;
+          width: number;
+          height: number;
+        }) => void;
+      }) => {
+        const _ref = useRef<any>(null);
+        const posRef = useRef<any>({});
+        const [select, setSelect] = useState<any>(null);
+        const [data, setData] = useState<any>({ dx: 0, dy: 0, dt: 0, dl: 0 });
+        const [move, setMove] = useState(false);
+        const list: {
+          top: CSSProperties["top"];
+          left: CSSProperties["left"];
+          curosr: CSSProperties["cursor"];
+          transform: CSSProperties["transform"];
+          onMouseMove?: (e: MouseEvent) => void;
+        }[] = [
+          {
+            top: 0,
+            left: 0,
+            curosr: "nw-resize",
+            transform: "translate(-50%,-50%)",
+            onMouseMove: (e) => {
+              const dx = posRef.current.x - e.clientX;
+              const dy = posRef.current.y - e.clientY;
+              setData({ dx, dy, dt: dy, dl: dx });
+            },
+          },
+          {
+            top: 0,
+            left: "50%",
+            curosr: "n-resize",
+            transform: "translate(-50%,-50%)",
+            onMouseMove: (e) => {
+              const dy = posRef.current.y - e.clientY;
+              setData({ dx: 0, dy, dt: dy, dl: 0 });
+            },
+          },
+          {
+            top: 0,
+            left: "100%",
+            curosr: "ne-resize",
+            transform: "translate(-50%,-50%)",
+            onMouseMove: (e) => {
+              const dx = e.clientX - posRef.current.x;
+              const dy = posRef.current.y - e.clientY;
+              setData({ dx, dy, dt: dy, dl: 0 });
+            },
+          },
+          {
+            top: "50%",
+            left: "100%",
+            curosr: "e-resize",
+            transform: "translate(-50%,-50%)",
+            onMouseMove: (e) => {
+              const dx = e.clientX - posRef.current.x;
+              setData({ dx, dy: 0, dt: 0, dl: 0 });
+            },
+          },
+          {
+            top: "100%",
+            left: "100%",
+            curosr: "se-resize",
+            transform: "translate(-50%,-50%)",
+            onMouseMove: (e) => {
+              const dx = e.clientX - posRef.current.x;
+              const dy = e.clientY - posRef.current.y;
+              setData({ dx, dy, dt: 0, dl: 0 });
+            },
+          },
+          {
+            top: "100%",
+            left: "50%",
+            curosr: "s-resize",
+            transform: "translate(-50%,-50%)",
+            onMouseMove: (e) => {
+              const dy = e.clientY - posRef.current.y;
+              setData({ dx: 0, dy, dt: 0, dl: 0 });
+            },
+          },
+          {
+            top: "100%",
+            left: "0%",
+            curosr: "sw-resize",
+            transform: "translate(-50%,-50%)",
+            onMouseMove: (e) => {
+              const dx = posRef.current.x - e.clientX;
+              const dy = e.clientY - posRef.current.y;
+              setData({ dx, dy, dt: 0, dl: dx });
+            },
+          },
+          {
+            top: "50%",
+            left: "0%",
+            curosr: "w-resize",
+            transform: "translate(-50%,-50%)",
+            onMouseMove: (e) => {
+              const dx = posRef.current.x - e.clientX;
+              setData({ dx, dy: 0, dt: 0, dl: dx });
+            },
+          },
+        ];
+        useEffect(() => {
+          if (select) {
+            window.addEventListener("mousemove", select.onMouseMove);
+            const handleMouseUp = (e: any) => {
+              e.stopPropagation();
+              e.preventDefault();
+              setSelect(null);
+              posRef.current = {};
+              const div = _ref.current as HTMLElement;
+              const computed = div.computedStyleMap();
+              onUpdate({
+                top: (computed.get("top") as any)?.value,
+                left: (computed.get("left") as any)?.value,
+                width: box.width + data.dx,
+                height: box.height + data.dy,
+              });
+              setData({ dx: 0, dy: 0, dt: 0, dl: 0 });
+            };
+            window.addEventListener("mouseup", handleMouseUp);
+            return () => {
+              window.removeEventListener("mousemove", select.onMouseMove);
+              window.removeEventListener("mouseup", handleMouseUp);
+            };
+          }
+        }, [select, data]);
+        useEffect(() => {
+          if (move) {
+            const handleMouseUp = (e: MouseEvent) => {
+              e.stopPropagation();
+              e.preventDefault();
+              setMove(false);
+              const div = _ref.current as HTMLElement;
+              const computed = div.computedStyleMap();
+
+              let top = computed.get("top") as any;
+              // const bottom = top.value + div.getBoundingClientRect().height;
+
+              if (top.value < 0) {
+                top.value = 0;
+              } else if (
+                top.value >
+                (div.parentNode as HTMLElement).getBoundingClientRect().height +
+                  12
+              ) {
+                top.value =
+                  (div.parentNode as HTMLElement).getBoundingClientRect()
+                    .height - div.getBoundingClientRect().height;
+              }
+              let left = computed.get("left") as any;
+              const maxWidth: number = (
+                div.parentNode as HTMLElement
+              ).getBoundingClientRect().width;
+              const right = left.value + div.getBoundingClientRect().width;
+              if (left.value < 0) left.value = 0;
+              else if (right > maxWidth) {
+                left.value = maxWidth - div.getBoundingClientRect().width;
+              }
+              onUpdate({
+                top: top?.value,
+                left: left?.value,
+                width: box.width + data.dx,
+                height: box.height + data.dy,
+              });
+              posRef.current = { x: 0, y: 0 };
+              setData({ dx: 0, dy: 0, dt: 0, dl: 0 });
+            };
+            const handleMouseMove = (e: MouseEvent) => {
+              let dx = posRef.current.x - e.clientX;
+              const dy = posRef.current.y - e.clientY;
+              setData({ dx: 0, dy: 0, dt: dy, dl: dx });
+            };
+            window.addEventListener("mouseup", handleMouseUp);
+            window.addEventListener("mousemove", handleMouseMove);
+            return () => {
+              window.removeEventListener("mouseup", handleMouseUp);
+              window.removeEventListener("mousemove", handleMouseMove);
+            };
+          }
+        }, [move]);
+        return (
+          <FlexChild
+            Ref={_ref}
+            position="absolute"
+            width={box.width + data.dx}
+            height={box.height + data.dy}
+            top={box.y - data.dt}
+            left={box.x - data.dl}
+            border={"1px solid green"}
+            cursor={selected ? "move" : "pointer"}
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              onClick(box.value);
+            }}
+            onMouseDown={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              if (!selected) return;
+              setMove(true);
+              posRef.current = {
+                x: e.clientX,
+                y: e.clientY,
+              };
+            }}
+          >
+            <FlexChild padding={6} position="relative" justifyContent="center">
+              <input
+                id={`${props?.name}_${box.value}`}
+                type="checkbox"
+                name={props?.name}
+                value={box.value}
+                hidden
+              />
+              <Image
+                src={
+                  box?.disabled
+                    ? props?.data?.style?.disabled
+                    : box?.checked
+                    ? props?.data?.style?.on
+                    : props?.data?.style?.off
+                }
+                width={"100%"}
+                height={"100%"}
+              />
+              <FlexChild
+                hidden={!selected}
+                position="absolute"
+                width={box.width + data.dx}
+                height={box.height + data.dy}
+                border={"1px solid blue"}
+              >
+                <FlexChild position="relative" height={"100%"}>
+                  {list.map((l, index) => (
+                    <Div
+                      key={index}
+                      width={10}
+                      height={10}
+                      border={"1px solid blue"}
+                      backgroundColor="#fff"
+                      position="absolute"
+                      top={l.top}
+                      left={l.left}
+                      transform={l.transform}
+                      cursor={l.curosr}
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setSelect(l);
+                        posRef.current = {
+                          x: e.clientX,
+                          y: e.clientY,
+                        };
+                      }}
+                    />
+                  ))}
+                  <Div
+                    width={20}
+                    height={20}
+                    position="absolute"
+                    zIndex={1}
+                    top={"50%"}
+                    left={"100%"}
+                    transform="translate(-50%,-50%)"
+                    cursor="pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      const div = _ref.current as HTMLElement;
+                      const computed = div.computedStyleMap();
+                      const width = div.getBoundingClientRect().width;
+                      const height = div.getBoundingClientRect().height;
+                      let top = computed.get("top") as any;
+                      let left = computed.get("left") as any;
+                      left.value = left.value + width;
+                      const right =
+                        left.value + div.getBoundingClientRect().width;
+                      if (
+                        right >
+                        (div.parentNode as HTMLElement).getBoundingClientRect()
+                          .width
+                      ) {
+                        left.value =
+                          (
+                            div.parentElement as HTMLElement
+                          ).getBoundingClientRect().width - width;
+                      }
+                      let number = 1;
+                      while (true) {
+                        if (!boxes.some((box) => box.value === `체크${number}`))
+                          break;
+                        else number++;
+                      }
+
+                      const _boxes = [
+                        ...boxes,
+                        {
+                          disabled: false,
+                          checked: false,
+                          text: "",
+                          value: `체크${number}`,
+                          x: left.value,
+                          y: top.value,
+                          width,
+                          height,
+                        },
+                      ];
+                      setBoxes(_boxes);
+                      props.onChange?.({ boxes: _boxes });
+                    }}
+                    onMouseDown={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                    }}
+                  >
+                    <Icon src="contract/" name="add-circle" type="svg" />
+                  </Div>
+                  <Div
+                    width={20}
+                    height={20}
+                    position="absolute"
+                    zIndex={1}
+                    top={"100%"}
+                    left={"50%"}
+                    transform="translate(-50%,-50%)"
+                    cursor="pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      const div = _ref.current as HTMLElement;
+                      const computed = div.computedStyleMap();
+                      const width = div.getBoundingClientRect().width;
+                      const height = div.getBoundingClientRect().height;
+                      let top = computed.get("top") as any;
+                      top.value = top.value + height;
+                      const bottom =
+                        top.value + div.getBoundingClientRect().height;
+                      if (
+                        bottom >
+                        (div.parentNode as HTMLElement).getBoundingClientRect()
+                          .height
+                      ) {
+                        top.value =
+                          (
+                            div.parentNode as HTMLElement
+                          ).getBoundingClientRect().height - height;
+                      }
+
+                      let left = computed.get("left") as any;
+
+                      let number = 1;
+                      while (true) {
+                        if (!boxes.some((box) => box.value === `체크${number}`))
+                          break;
+                        else number++;
+                      }
+
+                      const _boxes = [
+                        ...boxes,
+                        {
+                          disabled: false,
+                          checked: false,
+                          text: "",
+                          value: `체크${number}`,
+                          x: left.value,
+                          y: top.value,
+                          width,
+                          height,
+                        },
+                      ];
+                      setBoxes(_boxes);
+                      props.onChange?.({ boxes: _boxes });
+                    }}
+                    onMouseDown={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                    }}
+                  >
+                    <Icon src="contract/" name="add-circle" type="svg" />
+                  </Div>
+                </FlexChild>
+              </FlexChild>
+            </FlexChild>
+          </FlexChild>
+        );
+      };
+      useEffect(() => {
+        if (select) {
+          const handelCancel = (e: MouseEvent) => {
+            const extra = document.getElementById(`extra_${props.name}`);
+            if (extra?.contains(e.target as HTMLElement)) {
+              return;
+            } else setSelect("");
+          };
+          window.addEventListener("mousedown", handelCancel);
+          return () => window.removeEventListener("mousedown", handelCancel);
+        }
+      }, [select]);
       return (
-        <FlexChild justifyContent="center" padding={20}>
-          <input
-            id={`${props?.name}_checkbox`}
-            name={props?.data?.group}
-            hidden
-            type="checkbox"
-          />
-          <Image
-            src={
-              props?.data?.disabled
-                ? props?.data?.style?.disabled
-                : props?.data?.checked
-                ? props?.data?.style?.on
-                : props?.data?.style?.off
-            }
-            width={"100%"}
-            height={"100%"}
-          />
+        <FlexChild
+          id={`extra_${props.name}`}
+          padding={5}
+          height={"100%"}
+          width={"100%"}
+          onMouseDown={() => setSelect("")}
+        >
+          <FlexChild position="relative" height={"100%"} width={"100%"}>
+            {boxes.map((box, index) => (
+              <BoxCompnent
+                key={box.value}
+                box={box}
+                selected={select === box.value}
+                onClick={(name) => setSelect(name)}
+                onUpdate={({ top, left, width, height }) => {
+                  boxes[index] = _.merge(boxes[index] || {}, {
+                    y: top,
+                    x: left,
+                    width,
+                    height,
+                  });
+                  setBoxes([...boxes]);
+                  props.onChange?.({
+                    boxes,
+                  });
+                }}
+              />
+            ))}
+          </FlexChild>
         </FlexChild>
       );
     }
@@ -123,14 +562,19 @@ export default class CheckboxInput extends ContractInput {
   public initData() {
     return {
       style: {
+        disabled: "/resources/contract/checkbox_disabled1.png",
         on: "/resources/contract/checkbox_on1.png",
         off: "/resources/contract/checkbox_off1.png",
       },
-      group: [
+      boxes: [
         {
+          disabled: false,
           checked: false,
-          text: "",
           value: "체크1",
+          x: 0,
+          y: 0,
+          width: 18 + 6 * 2,
+          height: 18 + 6 * 2,
         },
       ],
     };
@@ -149,7 +593,10 @@ export default class CheckboxInput extends ContractInput {
       const [require, setRequire] = useState<string[]>([]);
       const [loaded, setLoaded] = useState<boolean>(false);
       const [tooltip, setTooltip] = useState<string>(data?.tooltip || "");
-      const [checkList, setCheckList] = useState<string[]>([]);
+      const [boxes, setBoxes] = useState<any[]>(data?.boxes || []);
+      const [min, setMin] = useState<number>(data?.min || 0);
+      const [max, setMax] = useState<number>(data?.max || 100);
+      const [style, setStyle] = useState<any>(data?.style);
       useEffect(() => {
         if (data?.assign) {
           data?.assign?.forEach?.((assign: string) =>
@@ -164,8 +611,7 @@ export default class CheckboxInput extends ContractInput {
         if (data?.icon) {
           document.getElementById("icon")?.click();
         }
-        if (data?.checked) document.getElementById("checked")?.click();
-        if (data?.disabled) document.getElementById("disabled")?.click();
+
         setLoaded(true);
       }, []);
       useImperativeHandle(ref, () => ({
@@ -175,8 +621,9 @@ export default class CheckboxInput extends ContractInput {
               assign: assign.map((ass) => ass.replace("_assign", "")),
               require: require.map((req) => req.replace("_require", "")),
               tooltip,
-              checked: checkList.includes("checked"),
-              disabled: checkList.includes("disabled"),
+              min,
+              max,
+              boxes,
             },
             name,
           };
@@ -305,39 +752,243 @@ export default class CheckboxInput extends ContractInput {
               </VerticalFlex>
             </FlexChild>
             <FlexChild height={"100%"}>
-              <CheckboxGroup
-                name="status"
-                onChange={(values) => setCheckList(values)}
-              >
-                <VerticalFlex width={400} padding={"0 20px"}>
-                  <FlexChild padding={"12px 0"}>
-                    <P fontSize={20} fontWeight={700}>
-                      그룹명
-                    </P>
-                  </FlexChild>
-                  <FlexChild>
-                    <Input style={{ padding: "6px 12px" }} />
-                  </FlexChild>
-
-                  <FlexChild
-                    padding={"12px 0"}
-                    borderTop={"1px solid #d0d0d0"}
-                    marginTop={12}
+              <VerticalFlex width={400} padding={"0 20px"}>
+                <FlexChild padding={"12px 0"}>
+                  <P fontSize={20} fontWeight={700}>
+                    아이템 리스트
+                  </P>
+                </FlexChild>
+                <FlexChild>
+                  <CheckboxGroup
+                    name="boxes"
+                    values={boxes
+                      .filter((box) => box.checked)
+                      .map((box) => box.value)}
+                    initialValues={boxes
+                      .filter((box) => box.checked)
+                      .map((box) => box.value)}
                   >
-                    <P fontSize={20} fontWeight={700}>
-                      기본 체크
-                    </P>
-                  </FlexChild>
-                  <FlexChild paddingBottom={6} gap={12}>
-                    <CheckboxChild id="checked" />
-                    <P>체크됨</P>
-                  </FlexChild>
-                  <FlexChild paddingBottom={6} gap={12}>
-                    <CheckboxChild id="disabled" />
-                    <P>비활성화</P>
-                  </FlexChild>
-                </VerticalFlex>
-              </CheckboxGroup>
+                    <HorizontalFlex alignItems="stretch">
+                      {[
+                        {
+                          label: "선택",
+                          Display: ({
+                            box,
+                            index,
+                          }: {
+                            box: any;
+                            index: number;
+                          }) => (
+                            <FlexChild
+                              border={"1px solid #d0d0d0"}
+                              padding={6}
+                              height={"100%"}
+                              justifyContent="center"
+                            >
+                              <CheckboxChild
+                                id={box.value}
+                                onChange={(e) => {
+                                  boxes[index].checked = !e.target.checked;
+                                  setBoxes([...boxes]);
+                                }}
+                              />
+                            </FlexChild>
+                          ),
+                          width: "30%",
+                        },
+                        {
+                          label: "값",
+                          Display: ({
+                            box,
+                            index,
+                          }: {
+                            box: any;
+                            index: number;
+                          }) => (
+                            <FlexChild
+                              padding={6}
+                              height={"100%"}
+                              border={"1px solid #d0d0d0"}
+                            >
+                              <Input
+                                width={"inherit"}
+                                value={box.value}
+                                style={{
+                                  padding: 0,
+                                  outline: "none",
+                                  border: "none",
+                                }}
+                                onChange={(value) => {
+                                  boxes[index].value = value;
+                                  setBoxes(boxes);
+                                }}
+                              />
+                            </FlexChild>
+                          ),
+                          width: "70%",
+                        },
+                      ].map((str) => (
+                        <FlexChild
+                          key={str.label}
+                          width={str?.width}
+                          minWidth={str?.width}
+                        >
+                          <VerticalFlex
+                            height={"100%"}
+                            justifyContent="stretch"
+                          >
+                            <FlexChild
+                              padding={6}
+                              backgroundColor={"#f1f1f166"}
+                              color="#666"
+                              border={"1px solid #d0d0d0"}
+                              borderBottom={"none"}
+                              justifyContent="center"
+                            >
+                              <P>{str.label}</P>
+                            </FlexChild>
+                            {boxes.map((box, index) => (
+                              <str.Display
+                                index={index}
+                                key={box.value}
+                                box={box}
+                              />
+                            ))}
+                          </VerticalFlex>
+                        </FlexChild>
+                      ))}
+                    </HorizontalFlex>
+                  </CheckboxGroup>
+                </FlexChild>
+
+                <FlexChild
+                  padding={"12px 0"}
+                  borderTop={"1px solid #d0d0d0"}
+                  marginTop={12}
+                >
+                  <P fontSize={20} fontWeight={700}>
+                    제한
+                  </P>
+                </FlexChild>
+                <FlexChild paddingBottom={6} justifyContent="space-between">
+                  <P>최소 선택필수 개수</P>
+                  <InputNumber
+                    width={60}
+                    hideArrow
+                    value={min}
+                    onChange={(value) => setMin(value)}
+                    min={0}
+                    max={max}
+                  />
+                </FlexChild>
+                <FlexChild paddingBottom={6} justifyContent="space-between">
+                  <P>최대 선택가능 개수</P>
+                  <InputNumber
+                    width={60}
+                    hideArrow
+                    value={max}
+                    onChange={(value) => setMax(value)}
+                    min={min}
+                    max={100}
+                  />
+                </FlexChild>
+                <FlexChild
+                  padding={"12px 0"}
+                  borderTop={"1px solid #d0d0d0"}
+                  marginTop={12}
+                >
+                  <P fontSize={20} fontWeight={700}>
+                    선택 스타일
+                  </P>
+                </FlexChild>
+                <FlexChild paddingBottom={6}>
+                  <Select
+                    zIndex={10080}
+                    styles={{
+                      display: { color: "#111" },
+                    }}
+                    value={style?.on}
+                    onChange={(value) => {
+                      style.on = value;
+                      setStyle(style);
+                    }}
+                    options={[
+                      {
+                        display: (
+                          <Image src="/resources/contract/checkbox_on1.png" />
+                        ),
+                        value: "/resources/contract/checkbox_on1.png",
+                      },
+                      {
+                        display: (
+                          <Image src="/resources/contract/checkbox_on2.png" />
+                        ),
+                        value: "/resources/contract/checkbox_on2.png",
+                      },
+                      {
+                        display: (
+                          <Image src="/resources/contract/checkbox_on3.png" />
+                        ),
+                        value: "/resources/contract/checkbox_on3.png",
+                      },
+                      {
+                        display: (
+                          <Image src="/resources/contract/checkbox_on4.png" />
+                        ),
+                        value: "/resources/contract/checkbox_on4.png",
+                      },
+                    ]}
+                  />
+                </FlexChild>
+                <FlexChild
+                  padding={"12px 0"}
+                  borderTop={"1px solid #d0d0d0"}
+                  marginTop={12}
+                >
+                  <P fontSize={20} fontWeight={700}>
+                    비선택 스타일
+                  </P>
+                </FlexChild>
+                <FlexChild paddingBottom={6}>
+                  <Select
+                    zIndex={10080}
+                    styles={{
+                      display: { color: "#111" },
+                    }}
+                    value={style?.off}
+                    onChange={(value) => {
+                      style.off = value;
+                      setStyle(style);
+                    }}
+                    options={[
+                      {
+                        display: (
+                          <Image src="/resources/contract/checkbox_off1.png" />
+                        ),
+                        value: "/resources/contract/checkbox_off1.png",
+                      },
+                      {
+                        display: (
+                          <Image src="/resources/contract/checkbox_off2.png" />
+                        ),
+                        value: "/resources/contract/checkbox_off2.png",
+                      },
+                      {
+                        display: (
+                          <Image src="/resources/contract/checkbox_off3.png" />
+                        ),
+                        value: "/resources/contract/checkbox_off3.png",
+                      },
+                      {
+                        display: (
+                          <Image src="/resources/contract/checkbox_off4.png" />
+                        ),
+                        value: "/resources/contract/checkbox_off4.png",
+                      },
+                    ]}
+                  />
+                </FlexChild>
+              </VerticalFlex>
             </FlexChild>
           </HorizontalFlex>
         </FlexChild>
