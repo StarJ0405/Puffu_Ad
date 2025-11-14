@@ -951,14 +951,35 @@ class _AdminRequester {
     else return await this.delete(`/contract/${id}`, {});
   }
 
-    async updateContractUserStatus(
-    id: string,
-    data: { user_id: string; status: string },
+  async updateInputField(
+    contractId: string,
+    fieldId: string,
+    value: any,
     callback?: Function
-  ): Promise<any> {
+  ) {
+    const res = await this.post(
+      `/contract/${contractId}/input_field/${fieldId}`,
+      { value }
+    );
+    if (callback) callback(res);
+    else return res;
+  }
+
+  async updateContractUserStatus(
+    contractId: string,
+    contractUserId: string,
+    status: string,
+    callback?: Function
+  ) {
+    const p = await this.post(
+      `/contract/${contractId}/contract_user/${contractUserId}`,
+      { status }
+    );
     if (callback)
-      callback(await this.post(`/contract/${id}/approve`, data));
-    else return await this.post(`/contract/${id}/approve`, data);
+      callback(`/contract/${contractId}/contract_user/${contractUserId}`, {
+        status,
+      });
+    else return p;
   }
 }
 

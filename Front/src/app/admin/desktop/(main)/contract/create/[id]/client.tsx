@@ -31,6 +31,7 @@ import {
 } from "react";
 import ContractInput from "../../template/regist/class";
 import styles from "./page.module.css";
+import Input from "@/components/inputs/Input";
 
 export default function Client({ contract }: { contract: ContractData }) {
   const { userData } = useAdminAuth();
@@ -74,7 +75,7 @@ export default function Client({ contract }: { contract: ContractData }) {
     const selected = contractUsers.filter((u) => u.user_id).length - 1;
 
     if (selected !== required) {
-      alert(`이 계약에는 총 ${required}명의 참여자가 필요합니다.`);
+      alert(`이 계약에는 총 ${required + 1}명의 참여자가 필요합니다.`);
       return;
     }
 
@@ -157,15 +158,17 @@ export default function Client({ contract }: { contract: ContractData }) {
           </P>
           {contractUsers.map((cu, index) => (
             <Div key={cu.id || index} className={styles.row}>
-              <P>{index === 0 ? "발송인" : `참여자 ${index}`}</P>
-              <HorizontalFlex gap={10}>
-                <input
+              <P minWidth={60}>{index === 0 ? cu.name : cu.name}</P>
+              <HorizontalFlex gap={15}>
+                <Input
                   className={styles.input}
                   value={cu.user?.name || ""}
-                  placeholder="미지정"
+                  placeHolder="미지정"
                   disabled
+                  width={"100%"}
                 />
                 <Button
+                  className={styles.btnSelectUser}
                   styleType="admin2"
                   onClick={() => {
                     const selectedIds = contractUsers
@@ -187,8 +190,7 @@ export default function Client({ contract }: { contract: ContractData }) {
                 >
                   선택
                 </Button>
-
-                {cu.user?.role !== "admin" && cu.user_id && (
+                {cu.user_id && (
                   <Button
                     styleType="admin"
                     onClick={() => removeContractUser(index)}
@@ -373,16 +375,48 @@ function Write({ user, contract }: { user: UserData; contract: ContractData }) {
                     ) || [];
                   return { ...page, input_fields };
                 });
-                console.log(changed);
+
                 try {
-                  // const res = await adminRequester.createContractFromTemplate(
-                  //   contract.id,
-                  //   _data
-                  // );
+                  const templateData = {
+                    ...contract,
+                    name,
+                    pages: contract.pages.map((page) => ({
+                      ...page,
+                      input_fields: page.input_fields.map((f) => ({
+                        ...f,
+                        value: {}, // value 제거
+                      })),
+                    })),
+                  };
+
+                  const newContract =
+                    await adminRequester.createContractFromTemplate(
+                      contract.id,
+                      templateData
+                    );
+
+                  for (const page of changed) {
+                    for (const field of page.input_fields) {
+                      const newPage = newContract.pages.find(
+                        (p: any) => p.page === page.page
+                      );
+                      const newField = newPage?.input_fields.find(
+                        (f: any) => f.metadata.name === field.metadata.name
+                      );
+                      if (newField) {
+                        await adminRequester.updateInputField(
+                          newContract.id,
+                          newField.id,
+                          field.value
+                        );
+                      }
+                    }
+                  }
+
                   NiceModal.show("toast", {
-                    message: "계약이 성공적으로 생성되었습니다.",
+                    message: "계약이 성공적으로 생성 및 저장되었습니다.",
                   });
-                  navigate(-1);
+                  // navigate(-1);
                 } catch (err) {
                   console.error(err);
                   NiceModal.show("toast", {
