@@ -285,19 +285,19 @@ function Setting({
   const [backgroundColor, setBackgroundColor] = useState<string>("");
   const [extra, setExtra] = useState(false);
   const [fold, setFold] = useState(true);
-  const [data, setData] = useState<PageData>({});
+  const [pageData, setPageData] = useState<PageData>({});
   const [selectedInputs, setSelectedInputs] = useState<string[]>([]);
   useHotkeys(
     "delete",
     (e) => {
       e.preventDefault();
       e.stopPropagation();
-      Object.keys(data).forEach((k) => {
-        data[Number(k)].inputs = data[Number(k)].inputs.filter(
+      Object.keys(pageData).forEach((k) => {
+        pageData[Number(k)].inputs = pageData[Number(k)].inputs.filter(
           (f) => !selectedInputs.includes(f.name)
         );
       });
-      setData({ ...data });
+      setPageData({ ...pageData });
       setSelectedInputs([]);
     },
     {},
@@ -307,8 +307,8 @@ function Setting({
     e.preventDefault();
     e.stopPropagation();
     let input = new Set<string>();
-    Object.keys(data).forEach((k) => {
-      data[Number(k)].inputs.forEach((e) => input.add(e.name));
+    Object.keys(pageData).forEach((k) => {
+      pageData[Number(k)].inputs.forEach((e) => input.add(e.name));
     });
     setSelectedInputs(Array.from(input));
   });
@@ -321,8 +321,8 @@ function Setting({
         return;
       }
       const copies: any[] = [];
-      Object.keys(data).forEach((k) => {
-        data[Number(k)].inputs
+      Object.keys(pageData).forEach((k) => {
+        pageData[Number(k)].inputs
           .filter((f) => selectedInputs.includes(f.name))
           .forEach((input) => {
             copies.push({
@@ -354,8 +354,8 @@ function Setting({
           let number = 1;
           while (true) {
             if (
-              !Object.keys(data).some((k) =>
-                data[Number(k)].inputs.some(
+              !Object.keys(pageData).some((k) =>
+                pageData[Number(k)].inputs.some(
                   (input) => input.name === _data.name + ` ${number}`
                 )
               )
@@ -369,10 +369,10 @@ function Setting({
           selected.push(_data.name);
           const input = ContractInput.getList().find((f) => f.getKey() === key);
           if (input) _data.input = input;
-          data[page].inputs.push(_data);
+          pageData[page].inputs.push(_data);
         }
       });
-      setData({ ...data });
+      setPageData({ ...pageData });
       setSelectedInputs(selected);
     }
   });
@@ -498,7 +498,7 @@ function Setting({
                     page: Number(key),
                     image: images[Number(key)],
                     input_fields:
-                      data[Number(key)]?.inputs?.map((input) => ({
+                      pageData[Number(key)]?.inputs?.map((input) => ({
                         type: input.input.getKey(),
                         metadata: {
                           name: input.name,
@@ -611,6 +611,30 @@ function Setting({
                                       return;
                                     if (selectedUser === user.name)
                                       setSelectedUser(value);
+                                    Object.keys(pageData).map((key) => {
+                                      pageData[Number(key)].inputs = pageData[
+                                        Number(key)
+                                      ].inputs.map((input) => {
+                                        input.data.assign =
+                                          input.data?.assign?.map(
+                                            (ass: string) => {
+                                              if (ass === user.name)
+                                                return value;
+                                              return ass;
+                                            }
+                                          );
+                                        input.data.require =
+                                          input.data?.require?.map(
+                                            (req: string) => {
+                                              if (req === user.name)
+                                                return value;
+                                              return req;
+                                            }
+                                          );
+                                        return input;
+                                      });
+                                    });
+                                    setPageData({ ...pageData });
                                     setContractUser(
                                       contractUsers.map((u) => {
                                         if (u.name === user.name)
@@ -806,16 +830,18 @@ function Setting({
                           value={selectFontFamilly}
                           onChange={(value) => {
                             setFontFamilly(value as string);
-                            Object.keys(data).forEach((key) => {
-                              const inputs = data[Number(key)].inputs;
-                              data[Number(key)].inputs = inputs.map((input) => {
-                                if (selectedInputs.includes(input.name)) {
-                                  input.fontFamily = value as string;
+                            Object.keys(pageData).forEach((key) => {
+                              const inputs = pageData[Number(key)].inputs;
+                              pageData[Number(key)].inputs = inputs.map(
+                                (input) => {
+                                  if (selectedInputs.includes(input.name)) {
+                                    input.fontFamily = value as string;
+                                  }
+                                  return input;
                                 }
-                                return input;
-                              });
+                              );
                             });
-                            setData({ ...data });
+                            setPageData({ ...pageData });
                           }}
                         />
                       </FlexChild>
@@ -836,16 +862,18 @@ function Setting({
                           min={1}
                           max={150}
                           onChange={(value) => {
-                            Object.keys(data).forEach((key) => {
-                              const inputs = data[Number(key)].inputs;
-                              data[Number(key)].inputs = inputs.map((input) => {
-                                if (selectedInputs.includes(input.name)) {
-                                  input.fontSize = value;
+                            Object.keys(pageData).forEach((key) => {
+                              const inputs = pageData[Number(key)].inputs;
+                              pageData[Number(key)].inputs = inputs.map(
+                                (input) => {
+                                  if (selectedInputs.includes(input.name)) {
+                                    input.fontSize = value;
+                                  }
+                                  return input;
                                 }
-                                return input;
-                              });
+                              );
                             });
-                            setData({ ...data });
+                            setPageData({ ...pageData });
                           }}
                         />
                       </FlexChild>
@@ -871,16 +899,18 @@ function Setting({
                           onClick={() => {
                             if (!selectedInputs.length) return;
                             setBold(!isBold);
-                            Object.keys(data).forEach((key) => {
-                              const inputs = data[Number(key)].inputs;
-                              data[Number(key)].inputs = inputs.map((input) => {
-                                if (selectedInputs.includes(input.name)) {
-                                  input.bold = !isBold;
+                            Object.keys(pageData).forEach((key) => {
+                              const inputs = pageData[Number(key)].inputs;
+                              pageData[Number(key)].inputs = inputs.map(
+                                (input) => {
+                                  if (selectedInputs.includes(input.name)) {
+                                    input.bold = !isBold;
+                                  }
+                                  return input;
                                 }
-                                return input;
-                              });
+                              );
                             });
-                            setData({ ...data });
+                            setPageData({ ...pageData });
                           }}
                         />
                       </FlexChild>
@@ -892,16 +922,18 @@ function Setting({
                         onClick={() => {
                           if (!selectedInputs.length) return;
                           setItalic(!isItalic);
-                          Object.keys(data).forEach((key) => {
-                            const inputs = data[Number(key)].inputs;
-                            data[Number(key)].inputs = inputs.map((input) => {
-                              if (selectedInputs.includes(input.name)) {
-                                input.italic = !isItalic;
+                          Object.keys(pageData).forEach((key) => {
+                            const inputs = pageData[Number(key)].inputs;
+                            pageData[Number(key)].inputs = inputs.map(
+                              (input) => {
+                                if (selectedInputs.includes(input.name)) {
+                                  input.italic = !isItalic;
+                                }
+                                return input;
                               }
-                              return input;
-                            });
+                            );
                           });
-                          setData({ ...data });
+                          setPageData({ ...pageData });
                         }}
                       >
                         <Icon
@@ -920,16 +952,18 @@ function Setting({
                         onClick={() => {
                           if (!selectedInputs.length) return;
                           setUnderLine(!isUnderLine);
-                          Object.keys(data).forEach((key) => {
-                            const inputs = data[Number(key)].inputs;
-                            data[Number(key)].inputs = inputs.map((input) => {
-                              if (selectedInputs.includes(input.name)) {
-                                input.underline = !isUnderLine;
+                          Object.keys(pageData).forEach((key) => {
+                            const inputs = pageData[Number(key)].inputs;
+                            pageData[Number(key)].inputs = inputs.map(
+                              (input) => {
+                                if (selectedInputs.includes(input.name)) {
+                                  input.underline = !isUnderLine;
+                                }
+                                return input;
                               }
-                              return input;
-                            });
+                            );
                           });
-                          setData({ ...data });
+                          setPageData({ ...pageData });
                         }}
                       >
                         <Icon
@@ -948,9 +982,9 @@ function Setting({
                           NiceModal.show("contract/color", {
                             onConfirm: ({ color }: { color: string }) => {
                               setColor(color);
-                              Object.keys(data).forEach((key) => {
-                                const inputs = data[Number(key)].inputs;
-                                data[Number(key)].inputs = inputs.map(
+                              Object.keys(pageData).forEach((key) => {
+                                const inputs = pageData[Number(key)].inputs;
+                                pageData[Number(key)].inputs = inputs.map(
                                   (input) => {
                                     if (selectedInputs.includes(input.name)) {
                                       input.color = color;
@@ -958,7 +992,7 @@ function Setting({
                                     return input;
                                   }
                                 );
-                                setData({ ...data });
+                                setPageData({ ...pageData });
                               });
                             },
                           });
@@ -1009,9 +1043,9 @@ function Setting({
                             onClick={() => {
                               if (!selectedInputs.length) return;
                               setAlign("left");
-                              Object.keys(data).forEach((key) => {
-                                const inputs = data[Number(key)].inputs;
-                                data[Number(key)].inputs = inputs.map(
+                              Object.keys(pageData).forEach((key) => {
+                                const inputs = pageData[Number(key)].inputs;
+                                pageData[Number(key)].inputs = inputs.map(
                                   (input) => {
                                     if (selectedInputs.includes(input.name)) {
                                       input.align = "left";
@@ -1020,7 +1054,7 @@ function Setting({
                                   }
                                 );
                               });
-                              setData({ ...data });
+                              setPageData({ ...pageData });
                               setFold(true);
                             }}
                           >
@@ -1040,9 +1074,9 @@ function Setting({
                             onClick={() => {
                               if (!selectedInputs.length) return;
                               setAlign("center");
-                              Object.keys(data).forEach((key) => {
-                                const inputs = data[Number(key)].inputs;
-                                data[Number(key)].inputs = inputs.map(
+                              Object.keys(pageData).forEach((key) => {
+                                const inputs = pageData[Number(key)].inputs;
+                                pageData[Number(key)].inputs = inputs.map(
                                   (input) => {
                                     if (selectedInputs.includes(input.name)) {
                                       input.align = "center";
@@ -1051,7 +1085,7 @@ function Setting({
                                   }
                                 );
                               });
-                              setData({ ...data });
+                              setPageData({ ...pageData });
                               setFold(true);
                             }}
                           >
@@ -1071,9 +1105,9 @@ function Setting({
                             onClick={() => {
                               if (!selectedInputs.length) return;
                               setAlign("right");
-                              Object.keys(data).forEach((key) => {
-                                const inputs = data[Number(key)].inputs;
-                                data[Number(key)].inputs = inputs.map(
+                              Object.keys(pageData).forEach((key) => {
+                                const inputs = pageData[Number(key)].inputs;
+                                pageData[Number(key)].inputs = inputs.map(
                                   (input) => {
                                     if (selectedInputs.includes(input.name)) {
                                       input.align = "right";
@@ -1082,7 +1116,7 @@ function Setting({
                                   }
                                 );
                               });
-                              setData({ ...data });
+                              setPageData({ ...pageData });
                               setFold(true);
                             }}
                           >
@@ -1109,9 +1143,9 @@ function Setting({
                             onClick={() => {
                               if (!selectedInputs.length) return;
                               setVertical("flex-start");
-                              Object.keys(data).forEach((key) => {
-                                const inputs = data[Number(key)].inputs;
-                                data[Number(key)].inputs = inputs.map(
+                              Object.keys(pageData).forEach((key) => {
+                                const inputs = pageData[Number(key)].inputs;
+                                pageData[Number(key)].inputs = inputs.map(
                                   (input) => {
                                     if (selectedInputs.includes(input.name)) {
                                       input.vertical = "flex-start";
@@ -1120,7 +1154,7 @@ function Setting({
                                   }
                                 );
                               });
-                              setData({ ...data });
+                              setPageData({ ...pageData });
                               setFold(true);
                             }}
                           >
@@ -1140,9 +1174,9 @@ function Setting({
                             onClick={() => {
                               if (!selectedInputs.length) return;
                               setVertical("center");
-                              Object.keys(data).forEach((key) => {
-                                const inputs = data[Number(key)].inputs;
-                                data[Number(key)].inputs = inputs.map(
+                              Object.keys(pageData).forEach((key) => {
+                                const inputs = pageData[Number(key)].inputs;
+                                pageData[Number(key)].inputs = inputs.map(
                                   (input) => {
                                     if (selectedInputs.includes(input.name)) {
                                       input.vertical = "center";
@@ -1151,7 +1185,7 @@ function Setting({
                                   }
                                 );
                               });
-                              setData({ ...data });
+                              setPageData({ ...pageData });
                               setFold(true);
                             }}
                           >
@@ -1171,9 +1205,9 @@ function Setting({
                             onClick={() => {
                               if (!selectedInputs.length) return;
                               setVertical("flex-end");
-                              Object.keys(data).forEach((key) => {
-                                const inputs = data[Number(key)].inputs;
-                                data[Number(key)].inputs = inputs.map(
+                              Object.keys(pageData).forEach((key) => {
+                                const inputs = pageData[Number(key)].inputs;
+                                pageData[Number(key)].inputs = inputs.map(
                                   (input) => {
                                     if (selectedInputs.includes(input.name)) {
                                       input.vertical = "flex-end";
@@ -1182,7 +1216,7 @@ function Setting({
                                   }
                                 );
                               });
-                              setData({ ...data });
+                              setPageData({ ...pageData });
                               setFold(true);
                             }}
                           >
@@ -1212,9 +1246,9 @@ function Setting({
                                 background: true,
                                 onConfirm: ({ color }: { color: string }) => {
                                   setBackgroundColor(color);
-                                  Object.keys(data).forEach((key) => {
-                                    const inputs = data[Number(key)].inputs;
-                                    data[Number(key)].inputs = inputs.map(
+                                  Object.keys(pageData).forEach((key) => {
+                                    const inputs = pageData[Number(key)].inputs;
+                                    pageData[Number(key)].inputs = inputs.map(
                                       (input) => {
                                         if (
                                           selectedInputs.includes(input.name)
@@ -1224,7 +1258,7 @@ function Setting({
                                         return input;
                                       }
                                     );
-                                    setData({ ...data });
+                                    setPageData({ ...pageData });
                                     setFold(true);
                                   });
                                 },
@@ -1356,8 +1390,8 @@ function Setting({
                       onMouseUp={(e) => {
                         if (!selectedInput || !mouseRef.current) return;
 
-                        if (!data[index])
-                          data[index] = { page: index, inputs: [] };
+                        if (!pageData[index])
+                          pageData[index] = { page: index, inputs: [] };
 
                         const page = document.getElementById(
                           `page_${index}`
@@ -1378,8 +1412,8 @@ function Setting({
                         let number = 1;
                         while (true) {
                           if (
-                            !Object.keys(data).some((key) => {
-                              return data[Number(key)].inputs.some(
+                            !Object.keys(pageData).some((key) => {
+                              return pageData[Number(key)].inputs.some(
                                 (f) => f.name === `${id} ${number}`
                               );
                             })
@@ -1389,7 +1423,7 @@ function Setting({
                             number++;
                           }
                         }
-                        data[index].inputs.push({
+                        pageData[index].inputs.push({
                           top,
                           left,
                           input: selectedInput,
@@ -1404,7 +1438,7 @@ function Setting({
                           },
                         });
                         setSelectedInputs([`${id} ${number}`]);
-                        setData({ ...data });
+                        setPageData({ ...pageData });
                         setSelectedInput(undefined);
                         mouseRef.current?.remove();
                         mouseRef.current = null;
@@ -1416,8 +1450,10 @@ function Setting({
                         height={"297mm"}
                         scale={scale / 100}
                       />
-                      {data[index]?.inputs?.map((input, idx) => (
+                      {pageData[index]?.inputs?.map((input, idx) => (
                         <FloatInput
+                          pageData={pageData}
+                          setPageData={setPageData}
                           page={index}
                           maxPage={images.length}
                           key={input.name}
@@ -1437,31 +1473,31 @@ function Setting({
                             data: _data,
                             page,
                           }) => {
-                            const input = data[index].inputs[idx];
+                            const input = pageData[index].inputs[idx];
                             if (typeof width !== "undefined")
                               input.width = width;
                             if (typeof height !== "undefined")
                               input.height = height;
                             if (typeof top !== "undefined") input.top = top;
                             if (typeof left !== "undefined") input.left = left;
-                            if (typeof data !== "undefined")
+                            if (typeof pageData !== "undefined")
                               input.data = _.merge(input.data || {}, _data);
                             if (typeof page !== "undefined") {
                               if (index !== page) {
-                                data[index].inputs = data[index].inputs.filter(
-                                  (f) => f.name !== input.name
-                                );
-                                if (!data[page])
-                                  data[page] = {
+                                pageData[index].inputs = pageData[
+                                  index
+                                ].inputs.filter((f) => f.name !== input.name);
+                                if (!pageData[page])
+                                  pageData[page] = {
                                     inputs: [],
                                     page,
                                   };
-                                else if (!data[page].inputs)
-                                  data[page].inputs = [];
-                                data[page].inputs.push(input);
+                                else if (!pageData[page].inputs)
+                                  pageData[page].inputs = [];
+                                pageData[page].inputs.push(input);
                               }
                             }
-                            setData({ ...data });
+                            setPageData({ ...pageData });
                           }}
                           onClick={(e) => {
                             e.preventDefault();
@@ -1488,6 +1524,8 @@ function Setting({
                               } else setSelectedInputs([input.name]);
                             }
                           }}
+                          setSelectedInputs={setSelectedInputs}
+                          contractUsers={contractUsers}
                         />
                       ))}
                     </FlexChild>
@@ -1507,8 +1545,8 @@ function Setting({
               <FlexChild className={styles.title}>
                 <P>
                   추가된 입력 항목{" "}
-                  {Object.keys(data).reduce((acc, now) => {
-                    return acc + data[Number(now)].inputs.length;
+                  {Object.keys(pageData).reduce((acc, now) => {
+                    return acc + pageData[Number(now)].inputs.length;
                   }, 0)}
                 </P>
               </FlexChild>
@@ -1517,7 +1555,7 @@ function Setting({
                   {images.map((__, page) => (
                     <RightSlot key={page} title={`${Number(page) + 1} 페이지`}>
                       <VerticalFlex>
-                        {data[Number(page)]?.inputs?.map((input, idx) => (
+                        {pageData[Number(page)]?.inputs?.map((input, idx) => (
                           <FlexChild
                             key={input.name}
                             className={clsx(styles.slot, {
@@ -1543,14 +1581,14 @@ function Setting({
                                       setSelectedInputs((prev) =>
                                         prev.filter((f) => f !== input.name)
                                       );
-                                      Object.keys(data).forEach((k) => {
-                                        data[Number(k)].inputs = data[
+                                      Object.keys(pageData).forEach((k) => {
+                                        pageData[Number(k)].inputs = pageData[
                                           Number(k)
                                         ].inputs.filter(
                                           (f) => f.name !== input.name
                                         );
                                       });
-                                      setData({ ...data });
+                                      setPageData({ ...pageData });
                                     },
                                   },
                                   {
@@ -1587,8 +1625,8 @@ function Setting({
                                           value = value.trim();
                                           if (value === input.name) return;
                                           if (
-                                            Object.keys(data).some((k) =>
-                                              data[Number(k)].inputs.some(
+                                            Object.keys(pageData).some((k) =>
+                                              pageData[Number(k)].inputs.some(
                                                 (input) => input.name === value
                                               )
                                             )
@@ -1596,12 +1634,15 @@ function Setting({
                                             let number = 1;
                                             while (true) {
                                               if (
-                                                !Object.keys(data).some((k) =>
-                                                  data[Number(k)].inputs.some(
-                                                    (input) =>
-                                                      input.name ===
-                                                      value + ` ${number}`
-                                                  )
+                                                !Object.keys(pageData).some(
+                                                  (k) =>
+                                                    pageData[
+                                                      Number(k)
+                                                    ].inputs.some(
+                                                      (input) =>
+                                                        input.name ===
+                                                        value + ` ${number}`
+                                                    )
                                                 )
                                               ) {
                                                 break;
@@ -1609,15 +1650,15 @@ function Setting({
                                                 number++;
                                               }
                                             }
-                                            data[Number(page)].inputs[
+                                            pageData[Number(page)].inputs[
                                               idx
                                             ].name = value + ` ${number}`;
                                           } else {
-                                            data[Number(page)].inputs[
+                                            pageData[Number(page)].inputs[
                                               idx
                                             ].name = value;
                                           }
-                                          setData({ ...data });
+                                          setPageData({ ...pageData });
                                           setSelectedInputs([]);
                                         },
                                       });
@@ -1670,8 +1711,8 @@ function Setting({
                                     name = name.trim();
                                     if (input.name !== name)
                                       if (
-                                        Object.keys(data).some((k) =>
-                                          data[Number(k)].inputs.some(
+                                        Object.keys(pageData).some((k) =>
+                                          pageData[Number(k)].inputs.some(
                                             (input) => input.name === name
                                           )
                                         )
@@ -1679,8 +1720,8 @@ function Setting({
                                         let number = 1;
                                         while (true) {
                                           if (
-                                            Object.keys(data).some((k) =>
-                                              data[Number(k)].inputs.some(
+                                            Object.keys(pageData).some((k) =>
+                                              pageData[Number(k)].inputs.some(
                                                 (input) =>
                                                   input.name ===
                                                   `${name} ${number}`
@@ -1693,7 +1734,7 @@ function Setting({
                                         input.name = `${name} ${number}`;
                                       } else input.name = name;
 
-                                    setData({ ...data });
+                                    setPageData({ ...pageData });
                                   },
                                 });
                               }}
@@ -1854,6 +1895,8 @@ function RightSlot({
 }
 
 function FloatInput({
+  pageData,
+  setPageData,
   page,
   maxPage,
   input,
@@ -1864,7 +1907,11 @@ function FloatInput({
   height,
   onUpdate,
   onClick,
+  setSelectedInputs,
+  contractUsers,
 }: {
+  pageData: PageData;
+  setPageData: React.Dispatch<React.SetStateAction<PageData>>;
   page: number;
   maxPage: number;
   input: Data;
@@ -1889,6 +1936,8 @@ function FloatInput({
     page?: number;
   }) => void;
   onClick: (e: any) => void;
+  setSelectedInputs: React.Dispatch<React.SetStateAction<string[]>>;
+  contractUsers: ContractUserDataFrame[];
 }) {
   const list: {
     top: CSSProperties["top"];
@@ -2101,6 +2150,189 @@ function FloatInput({
           x: e.clientX,
           y: e.clientY,
         };
+      }}
+      onContextMenu={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        NiceModal.show("contextMenu", {
+          x: e.clientX,
+          y: e.clientY,
+          rows: [
+            {
+              label: "삭제",
+              key: "Delete",
+              onClick: () => {
+                setSelectedInputs((prev) =>
+                  prev.filter((f) => f !== input.name)
+                );
+                Object.keys(pageData).forEach((k) => {
+                  pageData[Number(k)].inputs = pageData[
+                    Number(k)
+                  ].inputs.filter((f) => f.name !== input.name);
+                });
+                setPageData({ ...pageData });
+              },
+            },
+            {
+              label: "복사",
+              key: "Ctrl+C",
+              onClick: () => {
+                sessionStorage.setItem(
+                  "copy",
+                  JSON.stringify([
+                    {
+                      key: input.input.getKey(),
+                      data: input,
+                      page: Number(page),
+                    },
+                  ])
+                );
+              },
+            },
+            {
+              label: "이름변경",
+              onClick: () => {
+                NiceModal.show("input", {
+                  message: `${input.name}을 변경하시겠습니까?`,
+                  input: [
+                    {
+                      label: "이름",
+                      value: input.name,
+                      placeHolder: input.name,
+                    },
+                  ],
+                  confirmText: "변경",
+                  cancelText: "취소",
+                  onConfirm: (value: string) => {
+                    value = value.trim();
+                    if (value === input.name) return;
+                    if (
+                      Object.keys(pageData).some((k) =>
+                        pageData[Number(k)].inputs.some(
+                          (input) => input.name === value
+                        )
+                      )
+                    ) {
+                      let number = 1;
+                      while (true) {
+                        if (
+                          !Object.keys(pageData).some((k) =>
+                            pageData[Number(k)].inputs.some(
+                              (input) => input.name === value + ` ${number}`
+                            )
+                          )
+                        ) {
+                          break;
+                        } else {
+                          number++;
+                        }
+                      }
+                      input.name = value + ` ${number}`;
+                    } else {
+                      input.name = value;
+                    }
+                    setPageData({ ...pageData });
+                    setSelectedInputs([]);
+                  },
+                });
+              },
+            },
+            {
+              label: "설정",
+              hotKey: "s",
+              onHotKey: () => {
+                NiceModal.show("contract/setting", {
+                  name: input.name,
+                  input: input.input,
+                  data: input.data,
+                  users: contractUsers,
+                  onConfirm: ({
+                    data: _data,
+                    name,
+                  }: {
+                    data: any;
+                    name: string;
+                  }) => {
+                    input.data = {
+                      ...input.data,
+                      ..._data,
+                    };
+                    name = name.trim();
+                    if (input.name !== name)
+                      if (
+                        Object.keys(pageData).some((k) =>
+                          pageData[Number(k)].inputs.some(
+                            (input) => input.name === name
+                          )
+                        )
+                      ) {
+                        let number = 1;
+                        while (true) {
+                          if (
+                            Object.keys(pageData).some((k) =>
+                              pageData[Number(k)].inputs.some(
+                                (input) => input.name === `${name} ${number}`
+                              )
+                            )
+                          ) {
+                            number++;
+                          } else break;
+                        }
+                        input.name = `${name} ${number}`;
+                      } else input.name = name;
+
+                    setPageData({ ...pageData });
+                  },
+                });
+              },
+              onClick: () => {
+                NiceModal.show("contract/setting", {
+                  name: input.name,
+                  input: input.input,
+                  data: input.data,
+                  users: contractUsers,
+                  onConfirm: ({
+                    data: _data,
+                    name,
+                  }: {
+                    data: any;
+                    name: string;
+                  }) => {
+                    input.data = {
+                      ...input.data,
+                      ..._data,
+                    };
+                    name = name.trim();
+                    if (input.name !== name)
+                      if (
+                        Object.keys(pageData).some((k) =>
+                          pageData[Number(k)].inputs.some(
+                            (input) => input.name === name
+                          )
+                        )
+                      ) {
+                        let number = 1;
+                        while (true) {
+                          if (
+                            Object.keys(pageData).some((k) =>
+                              pageData[Number(k)].inputs.some(
+                                (input) => input.name === `${name} ${number}`
+                              )
+                            )
+                          ) {
+                            number++;
+                          } else break;
+                        }
+                        input.name = `${name} ${number}`;
+                      } else input.name = name;
+
+                    setPageData({ ...pageData });
+                  },
+                });
+              },
+            },
+          ],
+        });
       }}
     >
       <FlexChild
