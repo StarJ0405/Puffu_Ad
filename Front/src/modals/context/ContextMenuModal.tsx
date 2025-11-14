@@ -64,10 +64,10 @@ const ContextMenuModal = NiceModal.create(
       modal.remove();
     };
     useEffect(() => {
-      window.addEventListener("click", onEvent);
+      window.addEventListener("mousedown", onEvent);
       window.addEventListener("wheel", onScroll);
       return () => {
-        window.removeEventListener("click", onEvent);
+        window.removeEventListener("mousedown", onEvent);
         window.removeEventListener("wheel", onScroll);
       };
     }, []);
