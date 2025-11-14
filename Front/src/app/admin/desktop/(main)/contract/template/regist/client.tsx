@@ -2115,11 +2115,13 @@ function FloatInput({
         alignItems={input.vertical}
         backgroundColor={input.backgroundColor}
         className={styles.input}
+        overflow="hidden"
       >
-        {input.input.getInput({
-          onChange: (data) => onUpdate({ data }),
-          data: input.data,
-        })}
+        <input.input.Float
+          name={input.name}
+          onChange={(data) => onUpdate({ data })}
+          data={input.data}
+        />
         <FlexChild
           hidden={!selected}
           position="absolute"

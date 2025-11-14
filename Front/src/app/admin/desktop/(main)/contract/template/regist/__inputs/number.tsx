@@ -6,23 +6,20 @@ import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Icon from "@/components/icons/Icon";
 import Input from "@/components/inputs/Input";
-import InputNumber from "@/components/inputs/InputNumber";
 import InputTextArea from "@/components/inputs/InputTextArea";
 import P from "@/components/P/P";
-import Select from "@/components/select/Select";
-import NiceModal from "@ebay/nice-modal-react";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import ContractInput from "../class";
 
-const key: string = "text";
-export default class TextInput extends ContractInput {
+const key: string = "number";
+export default class NumberInput extends ContractInput {
   constructor() {
     super({
       key: key,
       icon: ({ size }) => (
-        <Icon src="contract/" name="text" type="svg" size={size} />
+        <Icon src="contract/" name="number" type="svg" size={size} />
       ),
-      title: "텍스트",
+      title: "숫자",
       width: 150,
       height: 60,
       textable: true,
@@ -40,7 +37,8 @@ export default class TextInput extends ContractInput {
       return (
         <FlexChild justifyContent="center">
           <input
-            placeholder={props?.data?.placeholder || "(텍스트)"}
+            placeholder={props?.data?.placeholder || "(숫자)"}
+            type="number"
             style={{
               width: "100%",
               backgroundColor: "transparent",
@@ -55,14 +53,27 @@ export default class TextInput extends ContractInput {
               color: "inherit",
               textAlign: "inherit",
             }}
-            maxLength={props?.data?.limit ? props?.data?.limit : undefined}
+            min={props?.data?.min}
+            max={props?.data?.max}
             inputMode={props?.data?.inputMode}
+            maxLength={props?.data?.limit ? props?.data?.limit : undefined}
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
               (e.target as HTMLInputElement).focus();
             }}
-            onChange={(e) => props?.onChange?.({ value: e.target.value })}
+            onBlur={(e) => {
+              let value = Number(e.target.value);
+
+              if (props?.data?.min) {
+                value = Math.max(Number(props.data.min), value);
+              }
+              if (props?.data?.max) {
+                value = Math.min(Number(props.data.max), value);
+              }
+              e.target.value = String(value);
+              props?.onChange?.({ value });
+            }}
             defaultValue={props?.data?.value}
           />
         </FlexChild>
@@ -92,7 +103,8 @@ export default class TextInput extends ContractInput {
       return (
         <input
           ref={ref}
-          placeholder={props?.data?.placeholder || "(텍스트)"}
+          type="number"
+          placeholder={props?.data?.placeholder || "(숫자)"}
           style={{
             width: "100%",
             backgroundColor: "transparent",
@@ -107,48 +119,25 @@ export default class TextInput extends ContractInput {
             color: "inherit",
             textAlign: "inherit",
           }}
-          inputMode={props.data.inputMode}
+          min={props?.data?.min}
+          max={props?.data?.max}
           maxLength={props?.data?.limit ? props?.data?.limit : undefined}
           onClick={(e) => {
             e.stopPropagation();
             e.preventDefault();
             const target = e.target as HTMLInputElement;
-            if (props.data.inputType === "text") {
-              target.focus();
-            } else {
-              target.blur();
-              NiceModal.show("postalcode", {
-                width: "600px",
-                height: "auto",
-                onSuccess: ({
-                  postal_code,
-                  address1,
-                }: {
-                  postal_code: string;
-                  address1: string;
-                }) => {
-                  switch (props.data.inputType) {
-                    case "postalcode": {
-                      target.value = postal_code;
-                      props.onChange?.({ value: postal_code });
-                      break;
-                    }
-                    case "address": {
-                      target.value = address1;
-                      props.onChange?.({ value: address1 });
-                      break;
-                    }
-                    case "postaladdress": {
-                      target.value = `${postal_code} ${address1}`;
-                      props.onChange?.({ value: `${postal_code} ${address1}` });
-                      break;
-                    }
-                  }
-                },
-              });
-            }
+            target.focus();
           }}
-          onChange={(e) => props?.onChange?.({ value: e.target.value })}
+          onBlur={(e) => {
+            let value = Number(e.target.value);
+            if (props.data?.min) {
+              value = Math.max(Number(props.data.min), value);
+            }
+            if (props.data?.max) {
+              value = Math.min(Number(props.data.max), value);
+            }
+            props?.onChange?.({ value });
+          }}
           value={props?.value || props?.data?.value}
         />
       );
@@ -156,8 +145,6 @@ export default class TextInput extends ContractInput {
   );
   public initData() {
     return {
-      inputMode: "text",
-      inputType: "text",
       limit: 0,
     };
   }
@@ -180,10 +167,8 @@ export default class TextInput extends ContractInput {
       );
       const [tooltip, setTooltip] = useState<string>(data?.tooltip || "");
       const [value, setValue] = useState<string>(data?.value || "");
-      const [inputMode, setInputMode] = useState<string>(data?.inputMode || "");
-      const [inputType, setInputType] = useState<string>(data?.inputType || "");
-      const [limitCount, setLimitCount] = useState<boolean>(data?.limit > 0);
-      const [limit, setLimit] = useState<number>(data?.limit || 0);
+      const [min, setMin] = useState<number>(data?.min);
+      const [max, setMax] = useState<number>(data?.max);
 
       useEffect(() => {
         if (data?.assign) {
@@ -212,9 +197,8 @@ export default class TextInput extends ContractInput {
               tooltip,
               placeholder,
               value,
-              inputMode,
-              inputType,
-              limit: limitCount ? limit : 0,
+              min: min ? min : undefined,
+              max: max ? max : undefined,
             },
             name,
           };
@@ -383,121 +367,50 @@ export default class TextInput extends ContractInput {
                 </FlexChild>
                 <FlexChild>
                   <Input
+                    type="number"
                     style={{ padding: "6px 12px" }}
                     value={value}
                     onChange={(value) => setValue(value as string)}
-                    maxLength={limitCount ? limit : undefined}
+                    min={min ? min : -99999999999}
+                    max={max ? max : 99999999999}
                   />
                 </FlexChild>
+
                 <FlexChild
                   padding={"12px 0"}
                   borderTop={"1px solid #d0d0d0"}
                   marginTop={12}
                 >
                   <P fontSize={20} fontWeight={700}>
-                    입력 타입
+                    최솟값
                   </P>
                 </FlexChild>
-                <FlexChild paddingBottom={6} justifyContent="space-between">
-                  <Select
-                    styles={{
-                      display: {
-                        color: "#111",
-                      },
-                    }}
-                    zIndex={10080}
-                    value={inputType}
-                    options={[
-                      { display: "일반 텍스트", value: "text" },
-                      {
-                        display: "우편번호",
-                        value: "postalcode",
-                      },
-                      {
-                        display: "주소",
-                        value: "address",
-                      },
-                      {
-                        display: "(우편번호) 주소",
-                        value: "postaladdress",
-                      },
-                    ]}
-                    onChange={(value) => setInputType(value as string)}
+                <FlexChild paddingBottom={6}>
+                  <Input
+                    type="number"
+                    value={min}
+                    onChange={(value) => setMin(Number(value))}
+                    min={-99999999999}
+                    max={max ? max : 99999999999}
                   />
                 </FlexChild>
+
                 <FlexChild
                   padding={"12px 0"}
                   borderTop={"1px solid #d0d0d0"}
                   marginTop={12}
                 >
                   <P fontSize={20} fontWeight={700}>
-                    입력 가능 글자 수
+                    최댓값
                   </P>
                 </FlexChild>
                 <FlexChild paddingBottom={6}>
-                  <CheckboxGroup
-                    name="limit"
-                    onChange={(values) => {
-                      setLimitCount(values.includes("limit"));
-                      setLimit(values.includes("limit") ? 1000 : 0);
-                    }}
-                  >
-                    <FlexChild gap={6}>
-                      <CheckboxChild id="limit" />
-                      <P>글자수 제한</P>
-                    </FlexChild>
-                  </CheckboxGroup>
-                </FlexChild>
-                <FlexChild paddingBottom={6}>
-                  <InputNumber
-                    disabled={!limitCount}
-                    value={limit}
-                    onChange={(value) => setLimit(value)}
-                    min={limitCount ? 1 : 0}
-                    max={1000}
-                  />
-                </FlexChild>
-                <FlexChild
-                  padding={"12px 0"}
-                  borderTop={"1px solid #d0d0d0"}
-                  marginTop={12}
-                >
-                  <P fontSize={20} fontWeight={700}>
-                    키패드 타입 (모바일 전용)
-                  </P>
-                </FlexChild>
-                <FlexChild paddingBottom={6}>
-                  <Select
-                    styles={{
-                      display: {
-                        color: "#111",
-                      },
-                    }}
-                    zIndex={10080}
-                    value={inputMode}
-                    options={[
-                      {
-                        display: "기본",
-                        value: "text",
-                      },
-                      {
-                        display: "이메일",
-                        value: "email",
-                      },
-                      {
-                        display: "전화번호",
-                        value: "tel",
-                      },
-                      {
-                        display: "URL",
-                        value: "url",
-                      },
-                      {
-                        display: "숫자",
-                        value: "numeric",
-                      },
-                    ]}
-                    onChange={(value) => setInputMode(value as string)}
+                  <Input
+                    type="number"
+                    value={max}
+                    onChange={(value) => setMax(Number(value))}
+                    min={min ? min : -99999999999}
+                    max={99999999999}
                   />
                 </FlexChild>
               </VerticalFlex>
@@ -509,4 +422,4 @@ export default class TextInput extends ContractInput {
   );
 }
 if (!ContractInput.getList().some((input) => input.key === key))
-  new TextInput();
+  new NumberInput();

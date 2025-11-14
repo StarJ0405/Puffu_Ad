@@ -14,15 +14,15 @@ import NiceModal from "@ebay/nice-modal-react";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import ContractInput from "../class";
 
-const key: string = "text";
-export default class TextInput extends ContractInput {
+const key: string = "textarea";
+export default class TextAreaInput extends ContractInput {
   constructor() {
     super({
       key: key,
       icon: ({ size }) => (
-        <Icon src="contract/" name="text" type="svg" size={size} />
+        <Icon src="contract/" name="textarea" type="svg" size={size} />
       ),
-      title: "텍스트",
+      title: "멀티라인 텍스트",
       width: 150,
       height: 60,
       textable: true,
@@ -39,10 +39,11 @@ export default class TextInput extends ContractInput {
     ) => {
       return (
         <FlexChild justifyContent="center">
-          <input
-            placeholder={props?.data?.placeholder || "(텍스트)"}
+          <textarea
+            placeholder={props?.data?.placeholder || "(멀티라인 텍스트)"}
             style={{
               width: "100%",
+              resize: "none",
               backgroundColor: "transparent",
               border: "none",
               outline: "none",
@@ -54,16 +55,21 @@ export default class TextInput extends ContractInput {
               fontStyle: "inherit",
               color: "inherit",
               textAlign: "inherit",
+              overflowY: "hidden",
             }}
-            maxLength={props?.data?.limit ? props?.data?.limit : undefined}
             inputMode={props?.data?.inputMode}
+            maxLength={props?.data?.limit ? props?.data?.limit : undefined}
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
               (e.target as HTMLInputElement).focus();
             }}
-            onChange={(e) => props?.onChange?.({ value: e.target.value })}
-            defaultValue={props?.data?.value}
+            rows={1}
+            onChange={(e) => {
+              props?.onChange?.({ value: e.target.value });
+              e.target.style.height = e.target.scrollHeight + "px";
+            }}
+            value={props?.data?.value}
           />
         </FlexChild>
       );
@@ -90,11 +96,12 @@ export default class TextInput extends ContractInput {
       }, []);
 
       return (
-        <input
+        <textarea
           ref={ref}
-          placeholder={props?.data?.placeholder || "(텍스트)"}
+          placeholder={props?.data?.placeholder || "(멀티라인 텍스트)"}
           style={{
             width: "100%",
+            resize: "none",
             backgroundColor: "transparent",
             border: "none",
             outline: "none",
@@ -131,16 +138,19 @@ export default class TextInput extends ContractInput {
                     case "postalcode": {
                       target.value = postal_code;
                       props.onChange?.({ value: postal_code });
+                      target.style.height = target.scrollHeight + "px";
                       break;
                     }
                     case "address": {
                       target.value = address1;
                       props.onChange?.({ value: address1 });
+                      target.style.height = target.scrollHeight + "px";
                       break;
                     }
                     case "postaladdress": {
                       target.value = `${postal_code} ${address1}`;
                       props.onChange?.({ value: `${postal_code} ${address1}` });
+                      target.style.height = target.scrollHeight + "px";
                       break;
                     }
                   }
@@ -148,7 +158,10 @@ export default class TextInput extends ContractInput {
               });
             }
           }}
-          onChange={(e) => props?.onChange?.({ value: e.target.value })}
+          onChange={(e) => {
+            props?.onChange?.({ value: e.target.value });
+            e.target.style.height = e.target.scrollHeight + "px";
+          }}
           value={props?.value || props?.data?.value}
         />
       );
@@ -382,8 +395,9 @@ export default class TextInput extends ContractInput {
                   </P>
                 </FlexChild>
                 <FlexChild>
-                  <Input
+                  <InputTextArea
                     style={{ padding: "6px 12px" }}
+                    width={"100%"}
                     value={value}
                     onChange={(value) => setValue(value as string)}
                     maxLength={limitCount ? limit : undefined}
@@ -509,4 +523,4 @@ export default class TextInput extends ContractInput {
   );
 }
 if (!ContractInput.getList().some((input) => input.key === key))
-  new TextInput();
+  new TextAreaInput();

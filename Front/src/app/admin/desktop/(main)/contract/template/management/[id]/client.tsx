@@ -10,6 +10,7 @@ import Image from "@/components/Image/Image";
 import InputNumber from "@/components/inputs/InputNumber";
 import P from "@/components/P/P";
 import Select from "@/components/select/Select";
+import { adminRequester } from "@/shared/AdminRequester";
 import { fileRequester } from "@/shared/FileRequester";
 import useNavigate from "@/shared/hooks/useNavigate";
 import { dataURLtoFile, toast } from "@/shared/utils/Functions";
@@ -24,9 +25,9 @@ import {
   useRef,
   useState,
 } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import ContractInput from "../../regist/class";
 import styles from "./page.module.css";
-import { adminRequester } from "@/shared/AdminRequester";
 
 interface Data {
   id?: string;
@@ -84,7 +85,95 @@ export default function ({ contract }: { contract: ContractData }) {
   const [fold, setFold] = useState(true);
   const [data, setData] = useState<PageData>({});
   const [selectedInputs, setSelectedInputs] = useState<string[]>([]);
-
+  useHotkeys(
+    "delete",
+    (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      Object.keys(data).forEach((k) => {
+        data[Number(k)].inputs = data[Number(k)].inputs.filter(
+          (f) => !selectedInputs.includes(f.name)
+        );
+      });
+      setData({ ...data });
+      setSelectedInputs([]);
+    },
+    {},
+    [selectedInputs]
+  );
+  useHotkeys("ctrl+a", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    let input = new Set<string>();
+    Object.keys(data).forEach((k) => {
+      data[Number(k)].inputs.forEach((e) => input.add(e.name));
+    });
+    setSelectedInputs(Array.from(input));
+  });
+  useHotkeys(
+    "ctrl+c",
+    (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!selectedInputs.length) {
+        return;
+      }
+      const copies: any[] = [];
+      Object.keys(data).forEach((k) => {
+        data[Number(k)].inputs
+          .filter((f) => selectedInputs.includes(f.name))
+          .forEach((input) => {
+            copies.push({
+              key: input.input.getKey(),
+              data: input,
+              page: Number(k),
+            });
+          });
+      });
+      sessionStorage.setItem("copy", JSON.stringify(copies));
+    },
+    {},
+    [selectedInputs]
+  );
+  useHotkeys("ctrl+v", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const copied = sessionStorage.getItem("copy");
+    if (copied) {
+      const array: any[] = JSON.parse(copied);
+      const selected: string[] = [];
+      array.forEach((element) => {
+        const {
+          key,
+          data: _data,
+          page,
+        }: { key: string; data: Data; page: number } = element;
+        if (_data) {
+          let number = 1;
+          while (true) {
+            if (
+              !Object.keys(data).some((k) =>
+                data[Number(k)].inputs.some(
+                  (input) => input.name === _data.name + ` ${number}`
+                )
+              )
+            ) {
+              break;
+            } else {
+              number++;
+            }
+          }
+          _data.name += ` ${number}`;
+          selected.push(_data.name);
+          const input = ContractInput.getList().find((f) => f.getKey() === key);
+          if (input) _data.input = input;
+          data[page].inputs.push(_data);
+        }
+      });
+      setData({ ...data });
+      setSelectedInputs(selected);
+    }
+  });
   useEffect(() => {
     function setMaxHeight() {
       const admin_header = document.getElementById("admin_header");
@@ -1268,7 +1357,7 @@ export default function ({ contract }: { contract: ContractData }) {
               {images.map((_, page) => (
                 <RightSlot key={page} title={`${Number(page) + 1} 페이지`}>
                   <VerticalFlex>
-                    {data[Number(page)]?.inputs?.map((input) => (
+                    {data[Number(page)]?.inputs?.map((input, idx) => (
                       <FlexChild
                         key={input.name}
                         className={clsx(styles.slot, {
@@ -1276,6 +1365,102 @@ export default function ({ contract }: { contract: ContractData }) {
                             (id) => id === input.name
                           ),
                         })}
+                        onContextMenu={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          document.getElementById(input.name)?.scrollIntoView();
+                          NiceModal.show("contextMenu", {
+                            x: e.clientX,
+                            y: e.clientY,
+                            rows: [
+                              {
+                                label: "삭제",
+                                key: "Delete",
+                                onClick: () => {
+                                  setSelectedInputs((prev) =>
+                                    prev.filter((f) => f !== input.name)
+                                  );
+                                  Object.keys(data).forEach((k) => {
+                                    data[Number(k)].inputs = data[
+                                      Number(k)
+                                    ].inputs.filter(
+                                      (f) => f.name !== input.name
+                                    );
+                                  });
+                                  setData({ ...data });
+                                },
+                              },
+                              {
+                                label: "복사",
+                                key: "Ctrl+C",
+                                onClick: () => {
+                                  sessionStorage.setItem(
+                                    "copy",
+                                    JSON.stringify([
+                                      {
+                                        key: input.input.getKey(),
+                                        data: input,
+                                        page: Number(page),
+                                      },
+                                    ])
+                                  );
+                                },
+                              },
+                              {
+                                label: "이름변경",
+                                onClick: () => {
+                                  NiceModal.show("input", {
+                                    message: `${input.name}을 변경하시겠습니까?`,
+                                    input: [
+                                      {
+                                        label: "이름",
+                                        value: input.name,
+                                        placeHolder: input.name,
+                                      },
+                                    ],
+                                    confirmText: "변경",
+                                    cancelText: "취소",
+                                    onConfirm: (value: string) => {
+                                      value = value.trim();
+                                      if (value === input.name) return;
+                                      if (
+                                        Object.keys(data).some((k) =>
+                                          data[Number(k)].inputs.some(
+                                            (input) => input.name === value
+                                          )
+                                        )
+                                      ) {
+                                        let number = 1;
+                                        while (true) {
+                                          if (
+                                            !Object.keys(data).some((k) =>
+                                              data[Number(k)].inputs.some(
+                                                (input) =>
+                                                  input.name ===
+                                                  value + ` ${number}`
+                                              )
+                                            )
+                                          ) {
+                                            break;
+                                          } else {
+                                            number++;
+                                          }
+                                        }
+                                        data[Number(page)].inputs[idx].name =
+                                          value + ` ${number}`;
+                                      } else {
+                                        data[Number(page)].inputs[idx].name =
+                                          value;
+                                      }
+                                      setData({ ...data });
+                                      setSelectedInputs([]);
+                                    },
+                                  });
+                                },
+                              },
+                            ],
+                          });
+                        }}
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
@@ -1757,11 +1942,13 @@ function FloatInput({
         alignItems={input.vertical}
         backgroundColor={input.backgroundColor}
         className={styles.input}
+        overflow="hidden"
       >
-        {input?.input?.getInput({
-          onChange: (data) => onUpdate({ data }),
-          data: input.data,
-        })}
+        <input.input.Float
+          name={input.name}
+          onChange={(data) => onUpdate({ data })}
+          data={input.data}
+        />
         <FlexChild
           hidden={!selected}
           position="absolute"
