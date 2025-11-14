@@ -10,6 +10,7 @@ import FlexChild from "@/components/flex/FlexChild";
 import clsx from "clsx";
 import P from "@/components/P/P";
 import usePageData from "@/shared/hooks/data/usePageData";
+import Div from "@/components/div/Div";
 
 export default function ContractCreatePage() {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ export default function ContractCreatePage() {
   } = usePageData(
     "templates",
     (pageNumber) => ({
-      origin_id: null, // 템플릿만 조회
+      origin_id: null,
       pageSize: 12,
       pageNumber,
       relations: ["pages"],
@@ -54,9 +55,9 @@ export default function ContractCreatePage() {
     <VerticalFlex className={styles.page}>
       <P className={styles.title}>템플릿으로 계약 작성</P>
 
-      <div className={styles.grid}>
+      <Div className={styles.grid}>
         {isLoading ? (
-          <p className={styles.loading}>로딩 중...</p>
+          <P className={styles.loading}>로딩 중...</P>
         ) : list.length > 0 ? (
           list.map((tpl: any) => (
             <TemplateCard
@@ -67,9 +68,9 @@ export default function ContractCreatePage() {
             />
           ))
         ) : (
-          <p className={styles.empty}>등록된 템플릿이 없습니다.</p>
+          <P className={styles.empty}>등록된 템플릿이 없습니다.</P>
         )}
-      </div>
+      </Div>
 
       {maxPage > 0 && (
         <FlexChild className={styles.pageLine}>
