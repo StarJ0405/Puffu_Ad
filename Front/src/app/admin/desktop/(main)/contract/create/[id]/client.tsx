@@ -115,7 +115,8 @@ export default function Client({ contract }: { contract: ContractData }) {
         <VerticalFlex alignItems="center" justifyContent="center" gap={20}>
           <P className={styles.title}>{contract.name}</P>
           <Div className={styles.previewBox}>
-            {contract.pages && contract.pages.length > 0 ? (
+            {contract.pages &&
+            contract.pages.sort((p1, p2) => p1.page - p2.page).length > 0 ? (
               <Div className={styles.imageWrapper}>
                 <Button
                   className={`${styles.navBtn} ${styles.left}`}
@@ -416,7 +417,7 @@ function Write({ user, contract }: { user: UserData; contract: ContractData }) {
                   NiceModal.show("toast", {
                     message: "계약이 성공적으로 생성 및 저장되었습니다.",
                   });
-                  // navigate(-1);
+                  navigate(-1);
                 } catch (err) {
                   console.error(err);
                   NiceModal.show("toast", {
@@ -587,50 +588,52 @@ function Write({ user, contract }: { user: UserData; contract: ContractData }) {
               padding={"30px"}
               gap={12}
             >
-              {contract.pages.map((page, index) => (
-                <FlexChild
-                  id={`page_${index}`}
-                  key={index}
-                  position="relative"
-                  justifyContent="center"
-                  width={`calc(210mm * ${scale / 100})`}
-                  height={`calc(297mm * ${scale / 100})`}
-                >
-                  <Image
-                    src={page.image}
-                    width={"210mm"}
-                    height={"297mm"}
-                    scale={scale / 100}
-                  />
-                  {page.input_fields.map((input, index) => (
-                    <FloatInput
-                      require={requires.includes(input.metadata.name)}
-                      assign={assigns.includes(input.metadata.name)}
-                      ref={(el) => {
-                        if (!inputs.current[page.page])
-                          inputs.current[page.page] = {
-                            [input.metadata.name]: el,
-                          };
-                        else {
-                          inputs.current[page.page][input.metadata.name] = el;
-                        }
-                      }}
-                      key={`${input.type}_${index}`}
-                      input={input as any}
-                      updateInput={(status) => {
-                        if (status)
-                          setInputed(
-                            _.uniq([...inputed, input?.metadata?.name])
-                          );
-                        else
-                          setInputed((prev) =>
-                            prev.filter((f) => f !== input?.metadata?.name)
-                          );
-                      }}
+              {contract.pages
+                ?.sort((a, b) => a.page - b.page)
+                .map((page, index) => (
+                  <FlexChild
+                    id={`page_${index}`}
+                    key={index}
+                    position="relative"
+                    justifyContent="center"
+                    width={`calc(210mm * ${scale / 100})`}
+                    height={`calc(297mm * ${scale / 100})`}
+                  >
+                    <Image
+                      src={page.image}
+                      width={"210mm"}
+                      height={"297mm"}
+                      scale={scale / 100}
                     />
-                  ))}
-                </FlexChild>
-              ))}
+                    {page.input_fields.map((input, index) => (
+                      <FloatInput
+                        require={requires.includes(input.metadata.name)}
+                        assign={assigns.includes(input.metadata.name)}
+                        ref={(el) => {
+                          if (!inputs.current[page.page])
+                            inputs.current[page.page] = {
+                              [input.metadata.name]: el,
+                            };
+                          else {
+                            inputs.current[page.page][input.metadata.name] = el;
+                          }
+                        }}
+                        key={`${input.type}_${index}`}
+                        input={input as any}
+                        updateInput={(status) => {
+                          if (status)
+                            setInputed(
+                              _.uniq([...inputed, input?.metadata?.name])
+                            );
+                          else
+                            setInputed((prev) =>
+                              prev.filter((f) => f !== input?.metadata?.name)
+                            );
+                        }}
+                      />
+                    ))}
+                  </FlexChild>
+                ))}
             </VerticalFlex>
           </FlexChild>
         </VerticalFlex>
