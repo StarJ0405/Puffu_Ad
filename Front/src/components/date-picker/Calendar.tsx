@@ -11,6 +11,8 @@ interface CalendarProps {
   onSelectRange?: (range: [Date | null, Date | null]) => void; // 범위 날짜 선택 시 콜백 (시간 포함)
   selectionMode?: "single" | "range"; // 'single' 또는 'range' 모드
   showTimePicker?: boolean; // 시간 선택기 표시 여부
+  min?: Date;
+  max?: Date;
 }
 
 const Calendar: React.FC<CalendarProps> = ({
@@ -21,6 +23,8 @@ const Calendar: React.FC<CalendarProps> = ({
   onSelectRange,
   selectionMode = "single",
   showTimePicker = false,
+  min,
+  max,
 }) => {
   let startY: number | null = null;
   const [type, setType] = useState<"date" | "month" | "year">("date");
@@ -422,6 +426,9 @@ const Calendar: React.FC<CalendarProps> = ({
                   hover &&
                   date.getTime() < hover.getTime() &&
                   date.getTime() > rangeStart.getTime(),
+                [styles.outOfMinMax]:
+                  (min && date.getTime() < min.getTime()) ||
+                  (max && date.getTime() >= max.getTime()),
               })}
               onClick={() => handleDateClick(date)}
               onMouseEnter={() => {

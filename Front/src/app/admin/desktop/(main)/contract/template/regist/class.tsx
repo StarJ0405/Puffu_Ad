@@ -24,6 +24,7 @@ interface Props {
   width: number;
   height: number;
   textable?: boolean;
+  assignanble?: boolean;
 }
 interface InputProps {
   gap?: CSSProperties["gap"];
@@ -43,14 +44,24 @@ export default abstract class ContractInput {
   protected width: number;
   protected height: number;
   protected textable: boolean;
+  protected assignanble: boolean;
   public readonly Input: (props: InputProps) => React.ReactNode;
-  constructor({ key, icon, title, width, height, textable = false }: Props) {
+  constructor({
+    key,
+    icon,
+    title,
+    width,
+    height,
+    textable = false,
+    assignanble = true,
+  }: Props) {
     this.key = key;
     this.icon = icon;
     this.title = title;
     this.width = width;
     this.height = height;
     this.textable = textable;
+    this.assignanble = assignanble;
     this.Input = ({
       gap = 6,
       size = 24,
@@ -148,6 +159,9 @@ export default abstract class ContractInput {
   );
   public getTextable() {
     return this.textable;
+  }
+  public isAssignanble() {
+    return this.assignanble;
   }
   public initData() {
     return {};

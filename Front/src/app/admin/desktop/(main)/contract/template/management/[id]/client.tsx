@@ -297,38 +297,45 @@ export default function ({ contract }: { contract: ContractData }) {
     }
   }, []);
   useEffect(() => {
-    setPageData(
-      contract.pages.reduce((acc: PageData, now) => {
-        acc[now.page] = {
-          page: now.page,
-          inputs: now.input_fields.map((input) => ({
-            id: input.id,
-            input: ContractInput.getList().find(
-              (f) => f.getKey() === input.type
-            ) as any,
-            name: input.metadata.name,
-            top: input.metadata.top,
-            left: input.metadata.left,
-            width: input.metadata.width,
-            height: input.metadata.height,
-            fontFamily: input.metadata.fontFamily,
-            fontSize: input.metadata.fontSize,
-            bold: input.metadata.bold,
-            italic: input.metadata.italic,
-            underline: input.metadata.underline,
-            color: input.metadata.color,
-            align: input.metadata.align,
-            vertical: input.metadata.vertical,
-            backgroundColor: input.metadata.backgroundColor,
-            data: input.metadata.data,
-          })),
-        };
-        return acc;
-      }, {})
-    );
-  }, []);
+    if (inputList.length > 0)
+      setPageData(
+        contract.pages.reduce((acc: PageData, now) => {
+          acc[now.page] = {
+            page: now.page,
+            inputs: now.input_fields.map((input) => ({
+              id: input.id,
+              input: inputList.find((f) => f.getKey() === input.type) as any,
+              name: input.metadata.name,
+              top: input.metadata.top,
+              left: input.metadata.left,
+              width: input.metadata.width,
+              height: input.metadata.height,
+              fontFamily: input.metadata.fontFamily,
+              fontSize: input.metadata.fontSize,
+              bold: input.metadata.bold,
+              italic: input.metadata.italic,
+              underline: input.metadata.underline,
+              color: input.metadata.color,
+              align: input.metadata.align,
+              vertical: input.metadata.vertical,
+              backgroundColor: input.metadata.backgroundColor,
+              data: input.metadata.data,
+            })),
+          };
+          return acc;
+        }, {})
+      );
+  }, [inputList]);
   useEffect(() => {
-    setInputList(Array.from(ContractInput.getList()));
+    let timer = 10;
+    const interval = setInterval(() => {
+      if (timer <= 0) clearInterval(interval);
+      const list = Array.from(ContractInput.getList());
+      if (list.length > 0) {
+        setInputList(list);
+        clearInterval(interval);
+      } else timer--;
+    }, 500);
   }, []);
   useEffect(() => {
     setFontFamilly("");
