@@ -100,9 +100,23 @@ export function TemplateRegistClient() {
 
   if (!images || images?.length === 0)
     return <Upload setImages={setImages} setName={setName} />;
-  else return <Setting name={name} images={images} onCancel={onCancel} />;
+  else
+    return (
+      <Setting
+        name={name}
+        images={images}
+        setImages={setImages}
+        setName={setName}
+        onCancel={onCancel}
+      />
+    );
 }
-
+const checkFiles = (name: string, type: string) => {
+  return (
+    includes.some((inc) => name.endsWith(inc)) ||
+    mtypes.some((m) => m.check(type))
+  );
+};
 function Upload({
   setImages,
   setName,
@@ -126,7 +140,7 @@ function Upload({
       toast({ message: "허용되지않는 파일 형식입니다." });
       return;
     }
-    if (file.size > 1024 * 1024 * 9) {
+    if (file.size > 1024 * 1024 * 100) {
       setIsLoading(false);
       toast({ message: "파일의 용량이 제한된 크기를 넘겼습니다." });
       return;
@@ -155,12 +169,7 @@ function Upload({
     }
     setIsLoading(false);
   };
-  const checkFiles = (name: string, type: string) => {
-    return (
-      includes.some((inc) => name.endsWith(inc)) ||
-      mtypes.some((m) => m.check(type))
-    );
-  };
+
   return (
     <VerticalFlex className={styles.upload}>
       <input
@@ -213,7 +222,7 @@ function Upload({
           </Button>
           <P className={styles.format}>
             {
-              "파일 형식 : PDF, 이미지\n파일 크기 : 최대 9MB"
+              "파일 형식 : PDF, 이미지\n파일 크기 : 최대 100MB"
               // "파일 형식 : PDF, 한글, 워드, 엑셀, 파워포인트, 이미지\n파일 크기 : 최대 9MB"
             }
           </P>
@@ -250,12 +259,16 @@ interface PageData {
 }
 function Setting({
   name: origin_name,
+  setName: setOriginName,
   images,
   onCancel,
+  setImages,
 }: {
   name: string;
+  setName: Dispatch<SetStateAction<string>>;
   images: string[];
   onCancel: () => void;
+  setImages: Dispatch<SetStateAction<string[]>>;
 }) {
   const navigate = useNavigate();
   const contentRef = useRef<any>(null);
@@ -311,6 +324,11 @@ function Setting({
       pageData[Number(k)].inputs.forEach((e) => input.add(e.name));
     });
     setSelectedInputs(Array.from(input));
+  });
+  useHotkeys("ctrl+o", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    document.getElementById("file_change")?.click();
   });
   useHotkeys(
     "ctrl+c",
@@ -437,6 +455,60 @@ function Setting({
   }, [selectedInputs]);
   return (
     <VerticalFlex className={styles.setting}>
+      <input
+        type="file"
+        hidden
+        id="file_change"
+        accept="image/*,.pdf"
+        onChange={async (e) => {
+          const files = e.target.files;
+          if (!files || files?.length === 0) {
+            toast({ message: "파일이 없습니다." });
+            return;
+          }
+          const file = files[0];
+          if (!checkFiles(file.name, file.type)) {
+            toast({ message: "허용되지않는 파일 형식입니다." });
+            return;
+          }
+          if (file.size > 1024 * 1024 * 100) {
+            toast({ message: "파일의 용량이 제한된 크기를 넘겼습니다." });
+            return;
+          }
+
+          const index = file.name.lastIndexOf(".");
+          setName(file.name.slice(0, index));
+          setOriginName(file.name.slice(0, index));
+          if (file.type.startsWith("image/")) {
+            const reader = new FileReader();
+
+            // 3. 파일 읽기가 완료되었을 때 실행될 이벤트 핸들러 정의
+            reader.onload = function (e) {
+              // e.target.result에 Base64 문자열이 담겨 있습니다.
+              const base64String = e.target?.result;
+              setImages([base64String as string]);
+              setPageData({ 0: pageData?.[0] });
+            };
+            reader.readAsDataURL(file);
+          } else if (file.name.endsWith(".pdf")) {
+            const dataUrl = await new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = (e) => resolve(e.target?.result); // Base64 Data URL
+              reader.onerror = reject;
+              reader.readAsDataURL(file);
+            });
+            const result = await getPdfPageAsBase64(dataUrl);
+            const _pageData: PageData = {};
+            Object.keys(pageData).forEach((k) => {
+              if (Number(k) < result.length) {
+                _pageData[Number(k)] = pageData[Number(k)];
+              }
+            });
+            setImages(result);
+            setPageData(_pageData);
+          }
+        }}
+      />
       <FlexChild>
         <HorizontalFlex
           id="setting_header"
@@ -1386,6 +1458,23 @@ function Setting({
                           setSelectedInputs([]);
                           return;
                         }
+                      }}
+                      onContextMenu={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        NiceModal.show("contextMenu", {
+                          x: e.clientX,
+                          y: e.clientY,
+                          rows: [
+                            {
+                              label: "파일 변경",
+                              key: "ctrl+o",
+                              onClick: () => {
+                                document.getElementById("file_change")?.click();
+                              },
+                            },
+                          ],
+                        });
                       }}
                       onMouseUp={(e) => {
                         if (!selectedInput || !mouseRef.current) return;
