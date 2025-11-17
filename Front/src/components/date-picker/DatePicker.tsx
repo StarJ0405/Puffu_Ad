@@ -14,6 +14,8 @@ import styles from "./DatePicker.module.css"; // CSS Modules import
 import SpinnerCalendar from "./SpinnerCalendar"; // 새 스피너 캘린더 컴포넌트
 
 interface DatePickerProps {
+  id?: string;
+  hidden?: boolean;
   initialDate?: Date;
   defaultSelectedDate?: Date; // 단일 선택 시 초기 날짜
   defaultSelectedRange?: [Date | null, Date | null]; // 범위 선택 시 초기 날짜
@@ -28,6 +30,8 @@ interface DatePickerProps {
   showTimePicker?: boolean; // 시간 선택기 표시 여부
   zIndex?: CSSProperties["zIndex"];
   disabled?: boolean;
+  min?: Date;
+  max?: Date;
 }
 
 // 날짜/시간 포맷 함수 (YYYY-MM-DD HH:MM)
@@ -63,6 +67,8 @@ const defaultDateFormat = (
 };
 
 const DatePicker: React.FC<DatePickerProps> = ({
+  id,
+  hidden,
   initialDate = new Date(),
   defaultSelectedDate = null,
   defaultSelectedRange = [null, null],
@@ -74,6 +80,8 @@ const DatePicker: React.FC<DatePickerProps> = ({
   showTimePicker = false,
   zIndex = 1000,
   disabled = false,
+  min,
+  max,
 }) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedSingleDate, setSelectedSingleDate] = useState<Date | null>(
@@ -157,6 +165,17 @@ const DatePicker: React.FC<DatePickerProps> = ({
     [onChange, selectionMode]
   );
 
+  useEffect(() => {
+    if (defaultSelectedDate && (min || max)) {
+      let _date = defaultSelectedDate;
+      if (min && _date.getTime() < min.getTime()) _date = min;
+      if (max && _date.getTime() > max.getTime()) _date = max;
+      if (_date !== defaultSelectedDate) {
+        setSelectedSingleDate(_date);
+        onChange?.(_date);
+      }
+    }
+  }, [defaultSelectedDate, min, max]);
   const handleSelectRange = useCallback(
     (range: [Date | null, Date | null]) => {
       setSelectedDateRange(range);
@@ -213,14 +232,17 @@ const DatePicker: React.FC<DatePickerProps> = ({
           onSelectRange={handleSelectRange}
           selectionMode={selectionMode}
           showTimePicker={showTimePicker}
+          min={min}
+          max={max}
         />
       );
     }
   };
 
   return (
-    <div className={styles.datePickerContainer}>
+    <div className={styles.datePickerContainer} hidden={hidden}>
       <div
+        id={id}
         ref={pickerRef}
         className={clsx(styles.dateDisplay, { [styles.disabled]: disabled })}
         onClick={() => {

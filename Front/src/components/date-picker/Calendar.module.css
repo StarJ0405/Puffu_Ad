@@ -172,6 +172,11 @@
   background-color: #1890ff;
 }
 
+.outOfMinMax {
+  pointer-events: none;
+  cursor: not-allowed;
+  background-color: #f0f0f0;
+}
 /* 범위 내 날짜 */
 .inRange {
   background-color: #bae7ff;

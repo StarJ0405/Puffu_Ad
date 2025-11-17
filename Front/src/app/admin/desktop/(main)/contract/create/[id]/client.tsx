@@ -6,6 +6,7 @@ import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
+import Input from "@/components/inputs/Input";
 import P from "@/components/P/P";
 import { useAdminAuth } from "@/providers/AdminAuthPorivder/AdminAuthPorivderClient";
 import { adminRequester } from "@/shared/AdminRequester";
@@ -31,7 +32,6 @@ import {
 } from "react";
 import ContractInput from "../../template/regist/class";
 import styles from "./page.module.css";
-import Input from "@/components/inputs/Input";
 
 export default function Client({ contract }: { contract: ContractData }) {
   const { userData } = useAdminAuth();
@@ -806,7 +806,9 @@ const FloatInput = forwardRef(
           setHover(null);
           if (timeoutRef.current) clearTimeout(timeoutRef.current);
         }}
-        pointerEvents={assign ? undefined : "none"}
+        pointerEvents={
+          ci?.isAssignanble() ? (assign ? undefined : "none") : undefined
+        }
       >
         {input.metadata.data.tooltip && hover && (
           <FlexChild
