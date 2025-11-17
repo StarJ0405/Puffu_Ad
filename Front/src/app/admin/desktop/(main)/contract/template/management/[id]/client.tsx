@@ -29,6 +29,72 @@ import { useHotkeys } from "react-hotkeys-hook";
 import ContractInput from "../../regist/class";
 import styles from "./page.module.css";
 
+async function getPdfPageAsBase64(pdfFileUrlOrData: any) {
+  const pdfjsLib = await import("pdfjs-dist");
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `/resources/pdf.worker.min.mjs`;
+
+  // 1. PDF 로드
+  const loadingTask = pdfjsLib.getDocument(pdfFileUrlOrData);
+  const pdf = await loadingTask.promise;
+
+  // 2. 첫 페이지 (1페이지) 로드
+  const numPages = pdf.numPages;
+  const base64Pages: string[] = [];
+
+  // 3. A4 규격 뷰포트 설정
+  // A4 비율을 유지하면서 이미지 품질을 위해 높은 DPI(예: 150 DPI) 기준 픽셀 크기 사용
+  const A4_WIDTH_PX = 1240; // A4 (210mm) @ 150 DPI
+  const A4_HEIGHT_PX = 1754; // A4 (297mm) @ 150 DPI (1.414 ratio)
+
+  for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+    const page = await pdf.getPage(pageNum);
+    // 페이지의 기본 크기를 A4 너비에 맞게 조정
+    const originalViewport = page.getViewport({ scale: 1 });
+    const scale = A4_WIDTH_PX / originalViewport.width;
+    const viewport = page.getViewport({ scale: scale });
+    // 4. 캔버스 설정
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+
+    canvas.width = A4_WIDTH_PX;
+    canvas.height = A4_HEIGHT_PX;
+
+    // 5. 페이지를 캔버스에 렌더링
+    const renderContext = {
+      canvasContext: context,
+      viewport: viewport,
+    };
+    await page.render(renderContext as any).promise;
+
+    // 6. 캔버스 이미지를 Base64 Data URL로 변환
+    const dataUrl = canvas.toDataURL("image/png");
+    base64Pages.push(dataUrl);
+  }
+  return base64Pages;
+}
+const includes = [
+  ".pdf",
+  // ".hwp",
+  // ".doc",
+  // ".docx",
+  // ".xls",
+  // ".xlsx",
+  // ".ppt",
+  // ".pptx",
+];
+const mtypes: { name: string; check: (type: string) => boolean }[] = [
+  { name: "image/*", check: (type) => type.startsWith("image/") },
+  {
+    name: "application/pdf",
+    check: (type) => type === "application/pdf",
+  },
+];
+const checkFiles = (name: string, type: string) => {
+  return (
+    includes.some((inc) => name.endsWith(inc)) ||
+    mtypes.some((m) => m.check(type))
+  );
+};
 interface Data {
   id?: string;
   input: ContractInput;
@@ -56,9 +122,9 @@ interface PageData {
   };
 }
 export default function ({ contract }: { contract: ContractData }) {
-  const images = contract.pages
-    .sort((p1, p2) => p1.page - p2.page)
-    .map((page) => page.image);
+  const [images, setImages] = useState<string[]>(
+    contract.pages.sort((p1, p2) => p1.page - p2.page).map((page) => page.image)
+  );
   const navigate = useNavigate();
   const contentRef = useRef<any>(null);
   const inputs = useRef<any>({});
@@ -111,6 +177,11 @@ export default function ({ contract }: { contract: ContractData }) {
       pageData[Number(k)].inputs.forEach((e) => input.add(e.name));
     });
     setSelectedInputs(Array.from(input));
+  });
+  useHotkeys("ctrl+o", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    document.getElementById("file_change")?.click();
   });
   useHotkeys(
     "ctrl+c",
@@ -271,6 +342,59 @@ export default function ({ contract }: { contract: ContractData }) {
   }, [selectedInputs]);
   return (
     <VerticalFlex className={styles.setting}>
+      <input
+        type="file"
+        hidden
+        id="file_change"
+        accept="image/*,.pdf"
+        onChange={async (e) => {
+          const files = e.target.files;
+          if (!files || files?.length === 0) {
+            toast({ message: "파일이 없습니다." });
+            return;
+          }
+          const file = files[0];
+          if (!checkFiles(file.name, file.type)) {
+            toast({ message: "허용되지않는 파일 형식입니다." });
+            return;
+          }
+          if (file.size > 1024 * 1024 * 100) {
+            toast({ message: "파일의 용량이 제한된 크기를 넘겼습니다." });
+            return;
+          }
+
+          const index = file.name.lastIndexOf(".");
+          setName(file.name.slice(0, index));
+          if (file.type.startsWith("image/")) {
+            const reader = new FileReader();
+
+            // 3. 파일 읽기가 완료되었을 때 실행될 이벤트 핸들러 정의
+            reader.onload = function (e) {
+              // e.target.result에 Base64 문자열이 담겨 있습니다.
+              const base64String = e.target?.result;
+              setImages([base64String as string]);
+              setPageData({ 0: pageData?.[0] });
+            };
+            reader.readAsDataURL(file);
+          } else if (file.name.endsWith(".pdf")) {
+            const dataUrl = await new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = (e) => resolve(e.target?.result); // Base64 Data URL
+              reader.onerror = reject;
+              reader.readAsDataURL(file);
+            });
+            const result = await getPdfPageAsBase64(dataUrl);
+            const _pageData: PageData = {};
+            Object.keys(pageData).forEach((k) => {
+              if (Number(k) < result.length) {
+                _pageData[Number(k)] = pageData[Number(k)];
+              }
+            });
+            setImages(result);
+            setPageData(_pageData);
+          }
+        }}
+      />
       <FlexChild>
         <HorizontalFlex
           id="setting_header"
@@ -1230,6 +1354,23 @@ export default function ({ contract }: { contract: ContractData }) {
                           setSelectedInputs([]);
                           return;
                         }
+                      }}
+                      onContextMenu={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        NiceModal.show("contextMenu", {
+                          x: e.clientX,
+                          y: e.clientY,
+                          rows: [
+                            {
+                              label: "파일 변경",
+                              key: "ctrl+o",
+                              onClick: () => {
+                                document.getElementById("file_change")?.click();
+                              },
+                            },
+                          ],
+                        });
                       }}
                       onMouseUp={(e) => {
                         if (!selectedInput || !mouseRef.current) return;
