@@ -14,6 +14,10 @@ export class ContractService extends BaseService<Contract, ContractRepository> {
     super(repo);
   }
 
+  async findOne(options: any) {
+    return await this.repository.findOne(options);
+  }
+
   /** 템플릿 생성 (origin_id = null) */
   async createTemplate(payload: any) {
     return this.repository.manager.transaction(async (manager) => {
@@ -261,6 +265,32 @@ export class ContractService extends BaseService<Contract, ContractRepository> {
     return this.repository.findAll({
       where: { origin_id },
       order: { created_at: "DESC" },
+    });
+  }
+
+  /** 참여자 승인 상태 변경 (본인 기준) */
+  async updateUserApproveStatus(
+    contract_id: string,
+    user_id: string,
+    approve: string
+  ) {
+    return this.repository.manager.transaction(async (manager) => {
+      const cu = await manager.findOne(ContractUser, {
+        where: { contract_id, user_id },
+      });
+      if (!cu) throw new Error("Contract user not found");
+
+      cu.approve = approve as any;
+      await manager.save(cu);
+
+      const log = manager.create(Log, {
+        name: "contract_user_update",
+        type: "contract_user",
+        data: { contract_id, user_id, approve },
+      });
+      await manager.save(log);
+
+      return cu;
     });
   }
 }
