@@ -23,12 +23,9 @@ export default function Client() {
     return contract.completed_at ? "complete" : "pending";
   };
 
-  const handleReview = async (id: string, user_id: string) => {
+  const handleReview = async (id: string, contractUserId: string) => {
     if (!confirm("모든 참여자의 작성 내용이 검토되었습니까?")) return;
-    await adminRequester.updateContractUserStatus(id, {
-      user_id,
-      status: "confirm",
-    });
+    await adminRequester.updateContractUserStatus(id, contractUserId, "confirm");
     await loadContracts();
   };
 
