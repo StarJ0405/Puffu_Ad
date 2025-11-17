@@ -48,29 +48,33 @@ async function getPdfPageAsBase64(pdfFileUrlOrData: any) {
   const A4_HEIGHT_PX = 1754; // A4 (297mm) @ 150 DPI (1.414 ratio)
 
   for (let pageNum = 1; pageNum <= numPages; pageNum++) {
-    const page = await pdf.getPage(pageNum);
-    // 페이지의 기본 크기를 A4 너비에 맞게 조정
-    const originalViewport = page.getViewport({ scale: 1 });
+    const pageIndex = pageNum - 1; // index 확정
+
+    const pageObj = await pdf.getPage(pageNum);
+    const originalViewport = pageObj.getViewport({ scale: 1 });
     const scale = A4_WIDTH_PX / originalViewport.width;
-    const viewport = page.getViewport({ scale: scale });
-    // 4. 캔버스 설정
+    const viewport = pageObj.getViewport({ scale });
+
     const canvas = document.createElement("canvas");
-    const context = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
     canvas.width = A4_WIDTH_PX;
     canvas.height = A4_HEIGHT_PX;
 
-    // 5. 페이지를 캔버스에 렌더링
-    const renderContext = {
-      canvasContext: context,
-      viewport: viewport,
-    };
-    await page.render(renderContext as any).promise;
-
-    // 6. 캔버스 이미지를 Base64 Data URL로 변환
-    const dataUrl = canvas.toDataURL("image/png");
-    base64Pages.push(dataUrl);
+    // 렌더링 완료 순서 무관하게 index 에 직접 넣기
+    await new Promise<void>((resolve) => {
+      const task = pageObj.render({
+        canvas: canvas,
+        canvasContext: ctx,
+        viewport,
+      });
+      task.promise.then(() => {
+        base64Pages[pageIndex] = canvas.toDataURL("image/png");
+        resolve();
+      });
+    });
   }
+
   return base64Pages;
 }
 const includes = [

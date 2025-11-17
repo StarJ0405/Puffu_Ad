@@ -4,10 +4,18 @@ import { ContractService } from "services/contract";
 export const GET: ApiHandler = async (req, res) => {
   const { id } = req.params;
   const svc = container.resolve(ContractService);
-  const data = await svc.getById(id, {
+
+  const list = await svc.getList({
+    where: { id },
     relations: ["pages", "pages.input_fields", "contract_users"],
+    order: {
+      pages: {
+        page: "ASC",
+      },
+    },
   });
-  return res.json(data);
+
+  return res.json(list[0] || null);
 };
 
 export const POST: ApiHandler = async (req, res) => {
