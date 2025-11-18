@@ -10,5 +10,6 @@ import "./date";
 import "./link";
 import "./camera";
 import "./upload";
+import "./record";
 
 export * from ".";

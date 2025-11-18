@@ -37,6 +37,7 @@ import SubscribeListModal from "./admin/user/SubscribeListModal";
 import UserModal from "./admin/user/UserModal";
 import ContractCameraModal from "./contract/camera/ContractCameraModal";
 import ColorModal from "./contract/color/ColorModal";
+import ContractRecordModal from "./contract/record/ContractRecordModal";
 import SettingModal from "./contract/setting/SettingModal";
 import ContractSignatureModal from "./contract/signature/ContractSignatureModal";
 import ContractStampModal from "./contract/stamp/ContractStampModal";
@@ -75,6 +76,7 @@ function ModalHandler() {
   NiceModal.register("contract/stamp", ContractStampModal);
   NiceModal.register("contract/camera", ContractCameraModal);
   NiceModal.register("contract/upload", ContractUploadModal);
+  NiceModal.register("contract/record", ContractRecordModal);
   NiceModal.register("contract/color", ColorModal);
   NiceModal.register("contract/setting", SettingModal);
   // main
