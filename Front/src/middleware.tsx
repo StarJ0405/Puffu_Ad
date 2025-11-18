@@ -4,7 +4,7 @@ import { Cookies } from "./shared/utils/Data";
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|org-img.png|assets|resources).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|org-img.png|assets|resources).*)",
   ],
 };
 
