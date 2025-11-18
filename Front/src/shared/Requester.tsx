@@ -805,6 +805,21 @@ class _Requester {
     else return await this.post(`/users/me/contract/${id}`, data);
   }
 
+  // 입력 필드 값 (본인 계약)
+  async updateInputField(
+    contractId: string,
+    fieldId: string,
+    value: any,
+    callback?: Function
+  ) {
+    const p = await this.post(
+      `/users/me/contract/${contractId}/input_field/${fieldId}`,
+      { value }
+    );
+    if (callback) callback(p);
+    else return p;
+  }
+
   // 계약 승인 / 검토 상태 변경
   async updateMyApproveStatus(id: string, data?: any, callback?: Function) {
     if (callback)

@@ -19,12 +19,12 @@
 .previewBox {
   position: relative;
   height: 340px;
-  background-color: #f3f3f3;
+  background-color: #e2e2e2;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  padding: 28px;
+  padding: 20px 20px 0px 20px;
 }
 
 .preview {
@@ -90,3 +90,22 @@
   color: var(--main-color1);
   transform: translateY(-1px);
 }
+
+.badgeWrapper {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.badge {
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.badge.active { background-color: #007bff; }
+.badge.ready { background-color: #f39c12; }
+.badge.confirm { background-color: #27ae60; }
+.badge.complete { background-color: #6c757d; }

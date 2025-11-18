@@ -14,18 +14,39 @@ export const GET: ApiHandler = async (req, res) => {
 
   const base: any = {
     where,
-    relations: ["contract_users", "contract_users.user", "pages"],
+    relations: [
+      "contract_users",
+      "contract_users.user",
+      "pages",
+      "pages.input_fields",
+    ],
+    relationLoadStrategy: "join",
     order: { created_at: "DESC" },
   };
 
-  if (pageSize)
-    return res.json(
-      await svc.getPageable(
-        { pageSize: Number(pageSize), pageNumber: Number(pageNumber) },
-        base
-      )
-    );
-  else return res.json(await svc.getList(base));
+  const listData = pageSize
+    ? (
+        await svc.getPageable(
+          { pageSize: Number(pageSize), pageNumber: Number(pageNumber) },
+          base
+        )
+      )?.content ?? []
+    : await svc.getList(base);
+
+  for (const c of listData) {
+    const full = await svc.get({
+      where: { id: c.id },
+      relations: [
+        "contract_users",
+        "contract_users.user",
+        "pages",
+        "pages.input_fields",
+      ],
+    });
+    Object.assign(c, full);
+  }
+
+  return res.json(listData);
 };
 
 export const POST: ApiHandler = async (req, res) => {
