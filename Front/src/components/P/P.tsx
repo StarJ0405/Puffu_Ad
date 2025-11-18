@@ -37,6 +37,7 @@ function P({
   paddingRight,
   paddingBottom,
   paddingLeft,
+  transform,
   margin = "0",
   marginTop,
   marginRight,
@@ -81,6 +82,7 @@ function P({
   maximumFractionDigits = 0,
   lineClamp,
   children,
+  zIndex,
 }: ComponentProps<HTMLParagraphElement> & {
   weight?: CSSProperties["fontWeight"];
   size?: CSSProperties["fontSize"];
@@ -205,9 +207,11 @@ function P({
         alignItems,
         justifyContent,
         scrollMarginTop,
+        transform,
         WebkitLineClamp: lineClamp,
         WebkitBoxOrient: lineClamp ? "vertical" : undefined,
         ...getDirectionalStyles(),
+        zIndex,
       }}
       onClick={onClick}
       onMouseDown={onMouseDown}

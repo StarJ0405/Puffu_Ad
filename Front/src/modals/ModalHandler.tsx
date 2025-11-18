@@ -35,15 +35,18 @@ import OrderListModal from "./admin/user/OrderListModal";
 import PointListModal from "./admin/user/PointListModal";
 import SubscribeListModal from "./admin/user/SubscribeListModal";
 import UserModal from "./admin/user/UserModal";
+import ContractCameraModal from "./contract/camera/ContractCameraModal";
 import ColorModal from "./contract/color/ColorModal";
 import SettingModal from "./contract/setting/SettingModal";
 import ContractSignatureModal from "./contract/signature/ContractSignatureModal";
 import ContractStampModal from "./contract/stamp/ContractStampModal";
+import ContractUploadModal from "./contract/upload/ContractUploadModal";
 import InputModal from "./input/InputModal";
 import ListModal from "./list/ListModal";
 import AddressListModal from "./main/address/AddressListModal";
 import AddressModal from "./main/address/AddressModal";
 import PostalCodeModal from "./main/address/PostaCodelModal";
+import SelectContractUserModal from "./main/contract/SelectContractUserModal";
 import CouponProductsModal from "./main/couponProductsModal/couponProductsModal";
 import DeliveryDetailModal from "./main/delivery/DeliveryModal";
 import ImgViewSliderModal from "./main/imgViewerSlider/imgViewSliderModal";
@@ -57,7 +60,6 @@ import SearchModal from "./main/search/SearchModal";
 import SelectModal from "./main/select/SelectModal";
 import SignatureModal from "./signature/SignatureModal";
 import TableModal from "./table/TableModal";
-import SelectContractUserModal from "./main/contract/SelectContractUserModal";
 
 function ModalHandler() {
   NiceModal.register("toast", ToastModal);
@@ -71,6 +73,8 @@ function ModalHandler() {
   //  contract
   NiceModal.register("contract/signature", ContractSignatureModal);
   NiceModal.register("contract/stamp", ContractStampModal);
+  NiceModal.register("contract/camera", ContractCameraModal);
+  NiceModal.register("contract/upload", ContractUploadModal);
   NiceModal.register("contract/color", ColorModal);
   NiceModal.register("contract/setting", SettingModal);
   // main

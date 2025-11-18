@@ -1,0 +1,166 @@
+.confirmButton {
+  cursor: pointer;
+  background-color: var(--admin-background-color);
+  border: 1px solid var(--admin-border-color);
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 3px;
+  position: relative;
+}
+
+.confirmButton.main {
+  background-color: var(--main-color2, var(--admin-color));
+  border: 1px solid var(--main-color2, var(--admin-border-color));
+}
+
+.confirmButton.admin {
+  background-color: var(--admin-color, red);
+}
+
+.confirmButton.white {
+  background-color: #ffffff;
+}
+.confirmButton.white:active {
+  background-color: #ffffff 1f4;
+}
+
+.close_box {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.closeButton {
+  background-color: transparent !important;
+  color: #999 !important;
+  padding: 0 !important;
+  z-index: 1;
+  font-size: 24px;
+  line-height: 0;
+}
+
+.normal_title {
+  color: #fff;
+  border-bottom: 1px solid #797979;
+}
+.tab {
+  color: #fff;
+  border-bottom: 2px solid #e0e0e011;
+  padding: 10px;
+  cursor: pointer;
+}
+.tab.selected {
+  border-bottom: 2px solid #fff;
+}
+
+.button {
+  padding: 8px 18px;
+  background-color: #fff;
+  color: var(--admin-color);
+  border: 1px solid var(--admin-color);
+}
+
+.input {
+  padding: 8px;
+}
+
+.selectHeader {
+  padding: 8px;
+  height: 39px;
+}
+.selectHeader div {
+  font-weight: 500;
+  color: #111;
+}
+
+.title {
+  font-weight: 700;
+  font-size: 24px;
+  color: #fff;
+}
+.fontTextWrapper {
+  justify-content: center;
+  background-color: #fff;
+  border: 3px solid #888;
+}
+.fontText {
+  text-align: center;
+  justify-content: center;
+  font-size: 85px;
+  line-height: 1.1;
+  cursor: pointer;
+  padding: 5px;
+}
+.fontTextWrapper:hover {
+  border-color: var(--admin-color);
+}
+.fontTextWrapper.selected {
+  border-color: var(--admin-color);
+}
+
+.upload {
+  padding: 20px;
+  background-color: #fff;
+  margin: 20px;
+  border-radius: 12px;
+  gap: 20px;
+  user-select: none;
+}
+
+.upload .title {
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1.5;
+  color: #111;
+}
+
+.upload .dropzone {
+  border: 1px dotted #d0d0d0;
+  border-width: 4px;
+  padding: 100px;
+  gap: 15px;
+  transition: all 0.2s ease;
+  background-color: #fff;
+}
+.upload .dropzone.url {
+  padding: 0;
+}
+.dropzone.hover {
+  border-color: #007bff;
+  background-color: #e6f3ff;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+}
+
+.upload .dragText {
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.5;
+  color: #111;
+}
+
+.upload .or {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #c1c1c1;
+}
+
+.upload .button {
+  background-color: var(--admin-color);
+  padding: 8px 64px;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #eee;
+}
+
+.upload .format {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #c1c1c1;
+  white-space: pre-wrap;
+  text-align: center;
+}

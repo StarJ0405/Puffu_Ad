@@ -487,3 +487,17 @@
 .btnSelectUser {
   white-space: nowrap;
 }
+.middleSide .uploadText {
+  color: #111;
+  top: 5;
+  left: 5;
+  position: absolute;
+  z-index: 1;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.print .uploadText {
+  display: none;
+}

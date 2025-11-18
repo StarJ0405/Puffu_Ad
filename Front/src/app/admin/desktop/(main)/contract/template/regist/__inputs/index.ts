@@ -8,5 +8,7 @@ import "./radio";
 import "./select";
 import "./date";
 import "./link";
+import "./camera";
+import "./upload";
 
 export * from ".";

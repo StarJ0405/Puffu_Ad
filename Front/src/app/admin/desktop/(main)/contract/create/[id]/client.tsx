@@ -450,8 +450,35 @@ function Write({ user, contract }: { user: UserData; contract: ContractData }) {
                           if (page) page.className = styles.print;
                           return page;
                         });
+                        const uploads = contract.pages
+                          .map((page) =>
+                            page.input_fields
+                              .filter((f) => f.type === "upload")
+                              .map((input) => {
+                                const files =
+                                  inputs.current?.[page.page]?.[
+                                    input.metadata.name
+                                  ]?.getTemp()?.value?.files || [];
+                                return files
+                                  .map((file: any) =>
+                                    file.images.map((_: any, idx: number) =>
+                                      document.getElementById(
+                                        `${input.id}_${idx}`
+                                      )
+                                    )
+                                  )
+                                  .flat();
+                              })
+                              .flat()
+                          )
+                          .flat()
+                          .filter((f) => f !== null);
+
                         await exportAsPdf(
-                          pages.filter((f) => f !== null),
+                          [
+                            ...pages.filter((f) => f !== null),
+                            ...(uploads || []),
+                          ],
                           name
                         );
                         pages.forEach((page) => {
@@ -487,6 +514,52 @@ function Write({ user, contract }: { user: UserData; contract: ContractData }) {
                         page.classList.remove(styles.print);
                         return page;
                       });
+                    console.log(
+                      contract.pages
+                        .map((page) =>
+                          page.input_fields
+                            .filter((f) => f.type === "upload")
+                            .map((input) => {
+                              const files =
+                                inputs.current?.[page.page]?.[
+                                  input.metadata.name
+                                ]?.getTemp()?.value?.files || [];
+                              return files.map((file: any) =>
+                                file.images.map((_: any, idx: number) =>
+                                  document.getElementById(`${input.id}_${idx}`)
+                                )
+                              );
+                            })
+                            .flat()
+                        )
+                        .flat()
+                        .filter((f) => f !== null)
+                    );
+                    const uploads = await pageToDataURL(
+                      contract.pages
+                        .map((page) =>
+                          page.input_fields
+                            .filter((f) => f.type === "upload")
+                            .map((input) => {
+                              const files =
+                                inputs.current?.[page.page]?.[
+                                  input.metadata.name
+                                ]?.getTemp()?.value?.files || [];
+                              return files
+                                .map((file: any) =>
+                                  file.images.map((_: any, idx: number) =>
+                                    document.getElementById(
+                                      `${input.id}_${idx}`
+                                    )
+                                  )
+                                )
+                                .flat();
+                            })
+                            .flat()
+                        )
+                        .flat()
+                        .filter((f) => f !== null)
+                    );
                     if (images) {
                       // const content = document.getElementById("print-content");
                       if (openRef.current) openRef.current.close();
@@ -507,6 +580,11 @@ function Write({ user, contract }: { user: UserData; contract: ContractData }) {
                       );
                       printWindow?.document.write("</head><body>");
                       images.forEach((url) => {
+                        printWindow?.document.write(
+                          `<img src="${url}" style="width: 100%;"/>`
+                        );
+                      });
+                      uploads?.forEach((url: string) => {
                         printWindow?.document.write(
                           `<img src="${url}" style="width: 100%;"/>`
                         );
@@ -634,6 +712,51 @@ function Write({ user, contract }: { user: UserData; contract: ContractData }) {
                     ))}
                   </FlexChild>
                 ))}
+              {contract.pages
+                .filter((page) => {
+                  return page.input_fields.some((input) => {
+                    return (
+                      input.type === "upload" &&
+                      inputs.current?.[page.page]?.[
+                        input.metadata.name
+                      ]?.getTemp()?.value?.files?.length
+                    );
+                  });
+                })
+                .map((page) =>
+                  page.input_fields
+                    .filter((f) => f.type === "upload")
+                    .map((input) => {
+                      const files =
+                        inputs.current?.[page.page]?.[
+                          input.metadata.name
+                        ]?.getTemp()?.value?.files || [];
+                      return files.map((file: any) => (
+                        <FlexChild key={`${file.index}_${file.name}`}>
+                          <VerticalFlex gap={12}>
+                            {file.images.map((url: string, idx: number) => (
+                              <FlexChild
+                                id={`${input.id}_${idx}`}
+                                key={url}
+                                width={"max-content"}
+                                position="relative"
+                              >
+                                <P className={styles.uploadText}>
+                                  첨부. {file.name}
+                                </P>
+                                <Image
+                                  src={url}
+                                  width={"210mm"}
+                                  height={"297mm"}
+                                  scale={scale / 100}
+                                />
+                              </FlexChild>
+                            ))}
+                          </VerticalFlex>
+                        </FlexChild>
+                      ));
+                    })
+                )}
             </VerticalFlex>
           </FlexChild>
         </VerticalFlex>
@@ -759,6 +882,9 @@ const FloatInput = forwardRef(
           return transferFile(value);
         }
         return {};
+      },
+      getTemp() {
+        return value;
       },
     }));
     useEffect(() => {
