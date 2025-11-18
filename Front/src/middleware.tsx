@@ -4,33 +4,41 @@ import { Cookies } from "./shared/utils/Data";
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|org-img.png|assets|resources).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|org-img.png|assets|resources).*)",
   ],
 };
 
 export async function middleware(req: NextRequest) {
   const url = req.nextUrl;
   const pathname = url.pathname;
+  const requestHeaders = new Headers(req.headers);
+  const hostname = req.headers.get("host")?.split(":")?.[0] || "";
+  const subdomain = hostname.split(".")[0];
+  requestHeaders.set("x-pathname", pathname);
+  requestHeaders.set("x-searchParams", url.search);
+  const mains = (process.env.NEXT_PUBLIC_MAIN_DOMAIN || "").split(",");
   if (
     pathname.startsWith("/_next/static/") ||
     pathname.startsWith("/_next/image/") ||
     pathname.startsWith("/favicon.ico") ||
     pathname.startsWith("/assets/") ||
-    pathname.startsWith("/resources/")
+    pathname.startsWith("/resources/") ||
+    pathname.startsWith("/sitemap.xml") ||
+    pathname.startsWith("/robots.txt")
   ) {
-    return NextResponse.next();
+    if (
+      subdomain &&
+      subdomain !== "www" &&
+      !mains.some((main) => main?.split(".")?.[0] === subdomain)
+    )
+      requestHeaders.set("x-subdomain", subdomain);
+    return NextResponse.next({
+      headers: requestHeaders,
+    });
   }
-
-  const hostname = req.headers.get("host")?.split(":")?.[0] || "";
 
   const userAgent = req.headers.get("user-agent");
   const deviceType = getDeviceType(userAgent);
-  const subdomain = hostname.split(".")[0];
-  const mains = (process.env.NEXT_PUBLIC_MAIN_DOMAIN || "").split(",");
-  const requestHeaders = new Headers(req.headers);
-  requestHeaders.set("x-pathname", pathname);
-  requestHeaders.set("x-searchParams", url.search);
-
   if (
     subdomain === "www" ||
     mains.some((main) => main?.split(".")?.[0] === subdomain)
