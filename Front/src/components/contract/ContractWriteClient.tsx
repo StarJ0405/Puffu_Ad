@@ -9,6 +9,7 @@ import {
   Dispatch,
 } from "react";
 import { requester } from "@/shared/Requester";
+import { adminRequester } from "@/shared/AdminRequester";
 import { fileRequester } from "@/shared/FileRequester";
 import { dataURLtoFile, toast } from "@/shared/utils/Functions";
 import VerticalFlex from "@/components/flex/VerticalFlex";
@@ -27,9 +28,12 @@ import useNavigate from "@/shared/hooks/useNavigate";
 
 export default function ContractWriteClient({
   contract,
+  mode = "user",
 }: {
   contract: ContractData;
+  mode?: "user" | "admin";
 }) {
+  const requesterInstance = mode === "admin" ? adminRequester : requester;
   const navigate = useNavigate();
   const { userData } = useAuth();
   const [assigns, setAssigns] = useState<string[]>([]);
@@ -39,18 +43,18 @@ export default function ContractWriteClient({
   const [saving, setSaving] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
   const inputs = useRef<any[]>([]);
-  const userContract = contract.contract_users.find(
-    (u) => u.user_id === userData?.id
-  );
+  const userContract =
+    mode === "admin"
+      ? contract.contract_users.find((u) => u.user?.role === "admin")
+      : contract.contract_users.find((u) => u.user_id === userData?.id);
   const approveStatus = userContract?.approve ?? "pending";
   const buttonText =
     approveStatus === "ready"
       ? "검토 완료"
       : approveStatus === "confirm"
       ? "완료됨"
-      : "서명 완료";
+      : "서명 및 확인 완료";
 
-  // ── 참여자별 입력권한 계산
   useEffect(() => {
     const user = contract.contract_users.find(
       (u) => u.user_id === userData?.id
@@ -75,7 +79,6 @@ export default function ContractWriteClient({
     );
   }, [contract, userData]);
 
-  // ── PDF 다운로드
   const exportAsPdf = async () => {
     const element = contentRef.current;
     if (!element) return;
@@ -104,13 +107,8 @@ export default function ContractWriteClient({
 
     setSaving(true);
     try {
-      // 현재 사용자 상태
-      const userContract = contract.contract_users.find(
-        (u) => u.user_id === userData?.id
-      );
-      const approveStatus = userContract?.approve ?? "pending";
-
-      // 필드 저장
+      const isAdmin = mode === "admin" || userData?.role === "admin";
+      // 필드 저장 (공통)
       for (const page of contract.pages) {
         for (const field of page.input_fields) {
           if (assigns.includes(field.metadata.name)) {
@@ -118,31 +116,55 @@ export default function ContractWriteClient({
               field.metadata.name
             ]?.getValue?.();
             if (val)
-              await requester.updateInputField(contract.id, field.id, val);
+              await requesterInstance.updateInputField(
+                contract.id,
+                field.id,
+                val
+              );
           }
         }
       }
 
-      // 상태 갱신 분기
-      if (approveStatus === "pending") {
-        await requester.updateMyApproveStatus(contract.id, {
-          approve: "ready",
-        });
-        toast({ message: "서명이 완료되었습니다." });
-        setTimeout(() => {
-          navigate(-1);
-        }, 2000);
-      } else if (approveStatus === "ready") {
-        await requester.updateMyApproveStatus(contract.id, {
-          approve: "confirm",
-        });
-        toast({ message: "검토가 완료되었습니다." });
-        setTimeout(() => {
-          navigate(-1);
-        }, 2000);
+      if (isAdmin) {
+        const allParticipantsReady = contract.contract_users
+          .filter((u) => u.user?.role !== "admin")
+          .every((u) => ["ready", "confirm"].includes(u.approve));
+
+        if (approveStatus === "pending") {
+          await requesterInstance.updateApproveStatus(contract.id, {
+            approve: "ready",
+          });
+          toast({ message: "관리자 서명 및 확인이 완료되었습니다." });
+        } else if (approveStatus === "ready" && allParticipantsReady) {
+          await requesterInstance.updateApproveStatus(contract.id, {
+            approve: "confirm",
+          });
+          toast({ message: "검토가 완료되었습니다." });
+        } else if (approveStatus === "ready" && !allParticipantsReady) {
+          toast({ message: "아직 모든 참여자가 서명을 완료하지 않았습니다." });
+        } else if (approveStatus === "confirm") {
+          toast({ message: "이미 검토가 완료된 계약입니다." });
+        } else {
+          toast({ message: "이미 완료된 계약입니다." });
+        }
       } else {
-        toast({ message: "이미 완료된 계약입니다." });
+        // 일반 사용자
+        if (approveStatus === "pending") {
+          await requesterInstance.updateApproveStatus(contract.id, {
+            approve: "ready",
+          });
+          toast({ message: "서명 및 확인이 완료되었습니다." });
+        } else if (approveStatus === "ready") {
+          await requesterInstance.updateApproveStatus(contract.id, {
+            approve: "confirm",
+          });
+          toast({ message: "검토가 완료되었습니다." });
+        } else {
+          toast({ message: "이미 완료된 계약입니다." });
+        }
       }
+
+      setTimeout(() => navigate(-1), 2000);
     } catch (err) {
       console.error(err);
       toast({ message: "저장 중 오류가 발생했습니다." });
@@ -160,7 +182,9 @@ export default function ContractWriteClient({
           alignItems="center"
           gap={10}
         >
-          <P fontWeight={600}>{contract.name}</P>
+          <P fontWeight={600} color="#e7e7e7">
+            {contract.name}
+          </P>
           <HorizontalFlex gap={20} alignItems="center">
             <Image
               src="/resources/contract/file-download.svg"
@@ -284,7 +308,7 @@ function ScaleSelect({
         setTimeout(() => setFold(false), 10);
       }}
     >
-      <P>{value}%</P>
+      <P color="#e7e7e7">{value}%</P>
       <Image src="/resources/icons/down_arrow.png" width={12} height={"auto"} />
       <FlexChild hidden={fold} className={styles.list}>
         <VerticalFlex>

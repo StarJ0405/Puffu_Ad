@@ -7,6 +7,6 @@ export default async function ({ params }: { params: Promise<Params> }) {
   const contract = await requester.getMyContract(id as string, {
     relations: ["pages", "pages.input_fields", "contract_users"],
   }) as ContractData;
-
-  return <ContractWriteClient contract={contract}/>;
+  
+  return <ContractWriteClient contract={contract} mode={"user"} />;
 }

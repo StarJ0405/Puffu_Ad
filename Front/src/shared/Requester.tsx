@@ -821,7 +821,7 @@ class _Requester {
   }
 
   // 계약 승인 / 검토 상태 변경
-  async updateMyApproveStatus(id: string, data?: any, callback?: Function) {
+  async updateApproveStatus(id: string, data?: any, callback?: Function) {
     if (callback)
       callback(await this.post(`/users/me/contract/${id}/approve`, data));
     else return await this.post(`/users/me/contract/${id}/approve`, data);

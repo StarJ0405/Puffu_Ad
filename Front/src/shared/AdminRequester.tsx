@@ -964,23 +964,28 @@ class _AdminRequester {
     if (callback) callback(res);
     else return res;
   }
-
-  async updateContractUserStatus(
-    contractId: string,
-    contractUserId: string,
-    status: string,
-    callback?: Function
-  ) {
-    const p = await this.post(
-      `/contract/${contractId}/contract_user/${contractUserId}`,
-      { status }
-    );
-    if (callback)
-      callback(`/contract/${contractId}/contract_user/${contractUserId}`, {
-        status,
-      });
-    else return p;
+  // contract_user  pending | ready | confirms
+  async updateApproveStatus(id: string, data?: any, callback?: Function) {
+    if (callback) callback(await this.post(`/contract/${id}/approve`, data));
+    else return await this.post(`/contract/${id}/approve`, data);
   }
+
+  // async updateContractUserStatus(
+  //   contractId: string,
+  //   contractUserId: string,
+  //   status: string,
+  //   callback?: Function
+  // ) {
+  //   const p = await this.post(
+  //     `/contract/${contractId}/contract_user/${contractUserId}`,
+  //     { status }
+  //   );
+  //   if (callback)
+  //     callback(`/contract/${contractId}/contract_user/${contractUserId}`, {
+  //       status,
+  //     });
+  //   else return p;
+  // }
 }
 
 export default _AdminRequester;

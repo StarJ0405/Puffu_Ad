@@ -94,3 +94,13 @@
   margin-left: 10px;
 }
 
+.deleteBtn {
+  font-size: 12px;
+  padding: 2px 8px;
+  background-color: #f7f7f7;
+  color: #d33;
+  border: 1px solid #d33;
+}
+.deleteBtn:hover {
+  background-color: #ffeaea;
+}

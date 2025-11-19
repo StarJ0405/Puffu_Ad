@@ -249,8 +249,16 @@ export class ContractService extends BaseService<Contract, ContractRepository> {
     const contract = await this.repository.findOne({ where: { id } });
     if (!contract) return;
 
-    if (!contract.origin_id) await this.repository.delete({ id }); // 템플릿
-    else await this.repository.update({ id }, { deleted_at: new Date() }); // 계약
+    if (!contract.origin_id) {
+      // 템플릿 삭제
+      await this.repository.delete({ id });
+    } else {
+      // 계약 삭제 (소프트 삭제 + 플래그)
+      await this.repository.update(
+        { id },
+        { is_delete: new Date() }
+      );
+    }
 
     const log = this.repository.manager.create(Log, {
       name: "contract_delete",

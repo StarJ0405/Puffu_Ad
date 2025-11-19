@@ -13,26 +13,36 @@ import { useEffect, useState } from "react";
 import { adminRequester } from "@/shared/AdminRequester";
 import Div from "@/components/div/Div";
 import clsx from "clsx";
+import useNavigate from "@/shared/hooks/useNavigate";
+import { toast } from "@/shared/utils/Functions";
+import NiceModal from "@ebay/nice-modal-react";
 
 export default function Client() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
   const [list, setList] = useState<ContractData[]>([]);
 
+  const navigate = useNavigate();
   const getContractStatus = (contract: ContractData) => {
     return contract.completed_at ? "complete" : "pending";
   };
 
   const handleReview = async (id: string, contractUserId: string) => {
     if (!confirm("모든 참여자의 작성 내용이 검토되었습니까?")) return;
-    await adminRequester.updateContractUserStatus(id, contractUserId, "confirm");
-    await loadContracts();
+    // await adminRequester.updateApproveStatus(id, { approve: "confirm" });
+    // await loadContracts();
   };
 
   const handleComplete = async (id: string) => {
     if (!confirm("모든 참여자의 서명이 완료되었습니까?")) return;
-    await adminRequester.completeContract(id);
-    await loadContracts();
+    try {
+      await adminRequester.completeContract(id);
+      toast({ message: "계약이 완료되었습니다." });
+      await loadContracts(); // 갱신
+    } catch (e) {
+      toast({ message: "완료 처리 중 오류가 발생했습니다." });
+      console.error(e);
+    }
   };
 
   const getUserBadge = (cu: ContractUserData) => {
@@ -45,9 +55,9 @@ export default function Client() {
         })}
       >
         {cu.approve === "pending"
-          ? "진행 중"
+          ? "서명 진행 중"
           : cu.approve === "ready"
-          ? "검토 중"
+          ? "서명 완료"
           : "검토 완료"}
       </Span>
     );
@@ -113,6 +123,20 @@ export default function Client() {
         {list.length === 0 && <P>계약 데이터가 없습니다.</P>}
 
         {list.map((contract) => {
+          const adminUser = contract.contract_users.find(
+            (u) => u.user?.role === "admin"
+          );
+          const otherUsers = contract.contract_users.filter(
+            (u) => u.user?.role !== "admin"
+          );
+          const allParticipantsConfirmed = otherUsers.every(
+            (u) => u.approve === "confirm"
+          );
+
+          const isAdminPending = adminUser?.approve === "pending";
+          const isAdminReady = adminUser?.approve === "ready";
+          const isAdminConfirm = adminUser?.approve === "confirm";
+
           const state = getContractStatus(contract);
           const users = contract.contract_users ?? [];
           const isAllReady = users
@@ -171,17 +195,75 @@ export default function Client() {
                   </P>
 
                   <HorizontalFlex gap={6} justifyContent="flex-end">
-                    <Button styleType="admin2">보기</Button>
+                    {/* 삭제 버튼: 항상 보임 (Modal Confirm) */}
+                    <Button
+                      styleType="admin2"
+                      className={styles.deleteBtn}
+                      onClick={() => {
+                        NiceModal.show("confirm", {
+                          message: "정말로 이 계약을 파기하시겠습니까?",
+                          confirmText: "확인",
+                          withCloseButton: true,
+                          onConfirm: async () => {
+                            try {
+                              await adminRequester.deleteContract(contract.id);
+                              toast({ message: "계약이 파기되었습니다." });
+                              await loadContracts();
+                            } catch (e) {
+                              toast({
+                                message: "파기 중 오류가 발생했습니다.",
+                              });
+                              console.error(e);
+                            }
+                          },
+                        });
+                      }}
+                    >
+                      파기
+                    </Button>
+                    {/* 보기 버튼: 항상 가능 */}
+                    <Button
+                      styleType="admin2"
+                      onClick={() => navigate(`/contract/list/${contract.id}`)}
+                    >
+                      보기
+                    </Button>
 
-                    {/* 모든 참여자가 ready일 때만 관리자 검토 버튼 노출 */}
-                    {!contract.completed_at && isAllReady && (
+                    {/* 상태별 버튼 분기 */}
+                    {contract.completed_at ? (
+                      <Button styleType="admin2" disabled>
+                        계약 완료
+                      </Button>
+                    ) : isAdminPending ? (
+                      <Button
+                        styleType="admin2"
+                        onClick={() =>
+                          navigate(`/contract/list/${contract.id}`)
+                        }
+                      >
+                        서명 및 확인
+                      </Button>
+                    ) : isAdminReady && !allParticipantsConfirmed ? (
+                      <Button styleType="admin2" disabled>
+                        참여자 검토 중
+                      </Button>
+                    ) : isAdminReady && allParticipantsConfirmed ? (
+                      <Button
+                        styleType="admin2"
+                        onClick={() =>
+                          navigate(`/contract/list/${contract.id}`)
+                        }
+                      >
+                        검토하기
+                      </Button>
+                    ) : isAdminConfirm && !contract.completed_at ? (
                       <Button
                         styleType="admin2"
                         onClick={() => handleComplete(contract.id)}
                       >
-                        검토 완료
+                        계약 완료처리
                       </Button>
-                    )}
+                    ) : null}
                   </HorizontalFlex>
                 </VerticalFlex>
               </HorizontalFlex>
