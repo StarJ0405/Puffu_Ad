@@ -29,7 +29,7 @@ export default function ContractWriteClient({
   contract,
 }: {
   contract: ContractData;
-  }) {
+}) {
   const navigate = useNavigate();
   const { userData } = useAuth();
   const [assigns, setAssigns] = useState<string[]>([]);
@@ -131,7 +131,7 @@ export default function ContractWriteClient({
         toast({ message: "서명이 완료되었습니다." });
         setTimeout(() => {
           navigate(-1);
-            }, 2000);
+        }, 2000);
       } else if (approveStatus === "ready") {
         await requester.updateMyApproveStatus(contract.id, {
           approve: "confirm",
@@ -139,7 +139,7 @@ export default function ContractWriteClient({
         toast({ message: "검토가 완료되었습니다." });
         setTimeout(() => {
           navigate(-1);
-            }, 2000);
+        }, 2000);
       } else {
         toast({ message: "이미 완료된 계약입니다." });
       }
@@ -214,9 +214,7 @@ export default function ContractWriteClient({
                 const readonlyMode =
                   userApprove === "ready" || userApprove === "confirm";
                 const editable =
-                  assigns.includes(input.metadata.name) &&
-                  !input.value &&
-                  !readonlyMode;
+                  assigns.includes(input.metadata.name) && !readonlyMode;
 
                 return (
                   <FloatInput
@@ -224,7 +222,7 @@ export default function ContractWriteClient({
                     assign={editable}
                     require={requires.includes(input.metadata.name)}
                     input={input}
-                    readonly={readonlyMode || !!input.value}
+                    readonly={!editable}
                     ref={(el) => {
                       if (!inputs.current[page.page])
                         inputs.current[page.page] = {

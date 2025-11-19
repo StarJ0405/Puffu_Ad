@@ -37,16 +37,11 @@ export default function Client({ contract }: { contract: ContractData }) {
   const { userData } = useAdminAuth();
   const navigate = useNavigate();
   const [users, setUsers] = useState<UserData[]>([]);
+
   const [contractUsers, setContractUsers] = useState<ContractUserData[]>(
     contract.contract_users ?? []
   );
   const [ready, setReady] = useState(false);
-  useEffect(() => {
-    (async () => {
-      const res = await adminRequester.getUsers({ role: "vendor" });
-      setUsers(res?.content ?? []);
-    })();
-  }, []);
 
   useEffect(() => {
     (async () => {
@@ -151,11 +146,11 @@ export default function Client({ contract }: { contract: ContractData }) {
         </VerticalFlex>
       </FlexChild>
 
-      {/* 오른쪽: 참여자 설정 */}
+      {/* 오른쪽: 계약 인원 설정 */}
       <FlexChild flex="1" className={styles.participantSection}>
         <VerticalFlex gap={20}>
           <P className={styles.subTitle}>
-            참여자 설정 ({contract.contract_users?.length ?? 1}명)
+            계약 인원 지정 ({contract.contract_users?.length ?? 1}명)
           </P>
           {contractUsers.map((cu, index) => (
             <Div key={cu.id || index} className={styles.row}>
