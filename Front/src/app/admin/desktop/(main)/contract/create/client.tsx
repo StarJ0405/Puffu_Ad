@@ -50,12 +50,11 @@ export default function ContractCreatePage() {
   );
 
   const list = templates?.rows ?? [];
-  // console.log(list)
   return (
     <VerticalFlex className={styles.page}>
       <P className={styles.title}>템플릿으로 계약 작성</P>
 
-      <Div className={styles.grid}>
+      <Div className={styles.grid} display="grid">
         {isLoading ? (
           <P className={styles.loading}>로딩 중...</P>
         ) : list.length > 0 ? (
