@@ -7,7 +7,12 @@ export const GET: ApiHandler = async (req, res) => {
 
   const list = await svc.getList({
     where: { id },
-    relations: ["pages", "pages.input_fields", "contract_users"],
+    relations: [
+      "pages",
+      "pages.input_fields",
+      "contract_users",
+      "contract_users.user",
+    ],
     order: {
       pages: {
         page: "ASC",

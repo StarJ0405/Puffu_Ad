@@ -430,7 +430,7 @@
 .rightSide .title {
   font-weight: 600;
   font-size: 14px;
-  color: #111;
+  color: #f3f3f3;
   line-height: 1.3;
   padding: 10px;
   border-bottom: 1px solid #d0d0d0;
@@ -472,14 +472,14 @@
   line-height: 1.3;
 }
 
-.middleSide .float {
+.middleSide {
   background-color: rgba(255, 0, 0, 0.1);
   border: 1px solid red;
 }
-.middleSide .float.has {
+.middleSide  {
   border: none;
 }
-.print .float {
+.print {
   background-color: transparent;
   border: none;
 }
@@ -555,6 +555,7 @@
 .float {
   border: 1px solid rgb(0, 0, 0);
   background-color: rgba(0, 0, 0, 0.137);
+  color: #222;
 }
 .float.has {
   border: none;
