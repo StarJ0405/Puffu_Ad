@@ -27,25 +27,24 @@ export default function Client() {
     return contract.completed_at ? "complete" : "pending";
   };
 
-  const handleReview = async (id: string, contractUserId: string) => {
-    if (!confirm("모든 참여자의 작성 내용이 검토되었습니까?")) return;
-    // await adminRequester.updateApproveStatus(id, { approve: "confirm" });
-    // await loadContracts();
-  };
-
   const handleComplete = async (id: string) => {
     if (!confirm("모든 참여자의 서명이 완료되었습니까?")) return;
     try {
       await adminRequester.completeContract(id);
       toast({ message: "계약이 완료되었습니다." });
-      await loadContracts(); // 갱신
+      await loadContracts();
     } catch (e) {
       toast({ message: "완료 처리 중 오류가 발생했습니다." });
       console.error(e);
     }
   };
 
-  const getUserBadge = (cu: ContractUserData) => {
+  const getUserBadge = (cu: ContractUserData, is_delete?: boolean) => {
+    if (is_delete) {
+      return (
+        <Span className={clsx(styles.badge, styles.deleted)}>파기된 계약</Span>
+      );
+    }
     return (
       <Span
         className={clsx(styles.badge, {
@@ -86,7 +85,7 @@ export default function Client() {
         className={styles.header}
       >
         <P className={styles.title}>전자계약 목록</P>
-        <Button styleType="admin2">새 계약 등록</Button>
+        <Button styleType="admin2" onClick={() => navigate("/contract/create")}>새 계약 등록</Button>
       </HorizontalFlex>
 
       {/* Filter */}
@@ -112,10 +111,11 @@ export default function Client() {
           ]}
           onChange={(v) => setStatus(String(v))}
         />
-
-        <Button styleType="admin" onClick={loadContracts}>
-          검색
-        </Button>
+        <FlexChild>
+          <Button styleType="admin" onClick={loadContracts}>
+            검색
+          </Button>
+        </FlexChild>
       </HorizontalFlex>
 
       {/* List */}
@@ -139,9 +139,20 @@ export default function Client() {
 
           const state = getContractStatus(contract);
           const users = contract.contract_users ?? [];
-          const isAllReady = users
-            .slice(1)
-            .every((u) => u.approve !== "pending"); // 발송자 제외
+
+          const is_complete = !!contract.completed_at;
+          const is_delete = !!contract.is_delete;
+
+          let statusClass = styles.active;
+          let statusText = "계약 진행 중";
+
+          if (is_delete) {
+            statusClass = styles.deleted;
+            statusText = "파기된 계약";
+          } else if (is_complete) {
+            statusClass = styles.complete;
+            statusText = "계약 완료";
+          }
 
           return (
             <FlexChild key={contract.id} className={styles.card}>
@@ -154,12 +165,7 @@ export default function Client() {
 
                   <VerticalFlex alignItems="flex-start" gap={5}>
                     {users.map((cu, idx) => (
-                      <HorizontalFlex
-                        key={cu.id}
-                        gap={8}
-                        alignItems="center"
-                        justifyContent="flex_start"
-                      >
+                      <HorizontalFlex key={cu.id} gap={8} alignItems="center">
                         <FlexChild flexGrow={1} width="auto" minWidth={"120px"}>
                           <P>
                             {cu.name}
@@ -172,7 +178,7 @@ export default function Client() {
                           </P>
                         </FlexChild>
                         <FlexChild>
-                          <Div>{getUserBadge(cu)}</Div>
+                          <Div>{getUserBadge(cu, is_delete)}</Div>
                         </FlexChild>
                       </HorizontalFlex>
                     ))}
@@ -181,13 +187,8 @@ export default function Client() {
 
                 {/* 우측 영역 */}
                 <VerticalFlex alignItems="flex-end" gap={8}>
-                  <Span
-                    className={clsx(styles.badge, {
-                      [styles.complete]: contract.completed_at,
-                      [styles.active]: !contract.completed_at,
-                    })}
-                  >
-                    {contract.completed_at ? "계약 완료" : "계약 진행 중"}
+                  <Span className={clsx(styles.badge, statusClass)}>
+                    {statusText}
                   </Span>
 
                   <P className={styles.date}>
@@ -197,6 +198,7 @@ export default function Client() {
                   <HorizontalFlex gap={6} justifyContent="flex-end">
                     {/* 삭제 버튼: 항상 보임 (Modal Confirm) */}
                     <Button
+                      hidden={is_delete}
                       styleType="admin2"
                       className={styles.deleteBtn}
                       onClick={() => {
@@ -228,42 +230,46 @@ export default function Client() {
                     >
                       보기
                     </Button>
-
-                    {/* 상태별 버튼 분기 */}
-                    {contract.completed_at ? (
-                      <Button styleType="admin2" disabled>
-                        계약 완료
-                      </Button>
-                    ) : isAdminPending ? (
-                      <Button
-                        styleType="admin2"
-                        onClick={() =>
-                          navigate(`/contract/list/${contract.id}`)
-                        }
-                      >
-                        서명 및 확인
-                      </Button>
-                    ) : isAdminReady && !allParticipantsConfirmed ? (
-                      <Button styleType="admin2" disabled>
-                        참여자 검토 중
-                      </Button>
-                    ) : isAdminReady && allParticipantsConfirmed ? (
-                      <Button
-                        styleType="admin2"
-                        onClick={() =>
-                          navigate(`/contract/list/${contract.id}`)
-                        }
-                      >
-                        검토하기
-                      </Button>
-                    ) : isAdminConfirm && !contract.completed_at ? (
-                      <Button
-                        styleType="admin2"
-                        onClick={() => handleComplete(contract.id)}
-                      >
-                        계약 완료처리
-                      </Button>
-                    ) : null}
+                    <FlexChild
+                      flexGrow={0}
+                      width={"auto"} hidden={is_delete}
+                    >
+                      {/* 상태별 버튼 분기 */}
+                      {contract.completed_at ? (
+                        <Button styleType="admin2" disabled>
+                          계약 완료
+                        </Button>
+                      ) : isAdminPending ? (
+                        <Button
+                          styleType="admin2"
+                          onClick={() =>
+                            navigate(`/contract/list/${contract.id}`)
+                          }
+                        >
+                          서명 및 확인
+                        </Button>
+                      ) : isAdminReady && !allParticipantsConfirmed ? (
+                        <Button styleType="admin2" disabled>
+                          참여자 검토 중
+                        </Button>
+                      ) : isAdminReady && allParticipantsConfirmed ? (
+                        <Button
+                          styleType="admin2"
+                          onClick={() =>
+                            navigate(`/contract/list/${contract.id}`)
+                          }
+                        >
+                          검토하기
+                        </Button>
+                      ) : isAdminConfirm && !contract.completed_at ? (
+                        <Button
+                          styleType="admin2"
+                          onClick={() => handleComplete(contract.id)}
+                        >
+                          계약 완료처리
+                        </Button>
+                      ) : null}
+                    </FlexChild>
                   </HorizontalFlex>
                 </VerticalFlex>
               </HorizontalFlex>

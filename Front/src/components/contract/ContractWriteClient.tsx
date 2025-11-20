@@ -43,6 +43,8 @@ export default function ContractWriteClient({
   const [saving, setSaving] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
   const inputs = useRef<any[]>([]);
+  const isComplete = !!contract.completed_at;
+  const isDeleted = !!contract.is_delete;
   const userContract =
     mode === "admin"
       ? contract.contract_users.find((u) => u.user?.role === "admin")
@@ -100,6 +102,10 @@ export default function ContractWriteClient({
 
   // ── 저장 / 서명 완료 or 검토 완료
   const handleSave = async () => {
+    if (isComplete || isDeleted) {
+      navigate(-1);
+      return;
+    }
     if (inputed.length < requires.length) {
       toast({ message: "필수 입력항목이 남아있습니다." });
       return;
@@ -124,20 +130,20 @@ export default function ContractWriteClient({
           }
         }
       }
-
       if (isAdmin) {
         const allParticipantsReady = contract.contract_users
           .filter((u) => u.user?.role !== "admin")
           .every((u) => ["ready", "confirm"].includes(u.approve));
-
         if (approveStatus === "pending") {
           await requesterInstance.updateApproveStatus(contract.id, {
             approve: "ready",
+            user_id: userContract?.user_id,
           });
           toast({ message: "관리자 서명 및 확인이 완료되었습니다." });
         } else if (approveStatus === "ready" && allParticipantsReady) {
           await requesterInstance.updateApproveStatus(contract.id, {
             approve: "confirm",
+            user_id: userContract?.user_id,
           });
           toast({ message: "검토가 완료되었습니다." });
         } else if (approveStatus === "ready" && !allParticipantsReady) {
@@ -199,11 +205,23 @@ export default function ContractWriteClient({
             />
             <Button
               styleType="admin2"
-              onClick={handleSave}
-              disabled={saving || approveStatus === "confirm"}
+              onClick={() => {
+                if (isComplete || isDeleted) {
+                  navigate(-1);
+                  return;
+                }
+                handleSave();
+              }}
+              disabled={saving}
               className={styles.btnText}
             >
-              {saving ? "저장 중..." : buttonText}
+              {isComplete
+                ? "확인"
+                : isDeleted
+                ? "확인"
+                : saving
+                ? "저장 중..."
+                : buttonText}
             </Button>
           </HorizontalFlex>
         </HorizontalFlex>
@@ -235,8 +253,13 @@ export default function ContractWriteClient({
                   (u) => u.user_id === userData?.id
                 );
                 const userApprove = user?.approve;
+                const forceReadonly = isComplete || isDeleted;
+
                 const readonlyMode =
-                  userApprove === "ready" || userApprove === "confirm";
+                  forceReadonly ||
+                  userApprove === "ready" ||
+                  userApprove === "confirm";
+
                 const editable =
                   assigns.includes(input.metadata.name) && !readonlyMode;
 

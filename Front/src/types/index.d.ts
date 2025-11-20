@@ -662,6 +662,7 @@ interface ContractData extends BaseEntity, ContractDataFrame {
   origin_id?: string;
   origin?: ContractData;
   completed_at?: Date | string | null;
+  is_delete?: Date | string | null;
   contract_users: ContractUserData[];
   pages: PageData[];
 }

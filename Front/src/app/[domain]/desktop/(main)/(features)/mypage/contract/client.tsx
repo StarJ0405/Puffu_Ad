@@ -73,6 +73,7 @@ export function Client() {
               title={contract.name}
               approveStatus={myUser?.approve}
               completed={!!contract.completed_at}
+              deleted={!!contract.is_delete}
               senderReady={senderReady}
               onSign={() => navigate(`/mypage/contract/${contract.id}`)}
               onView={() => navigate(`/mypage/contract/${contract.id}`)}

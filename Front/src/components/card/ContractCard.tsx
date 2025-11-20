@@ -13,6 +13,7 @@ interface ContractCardProps {
   title: string;
   approveStatus?: "pending" | "ready" | "confirm";
   completed?: boolean;
+  deleted?: boolean;
   onView?: () => void;
   onSign?: () => void;
   senderReady?: boolean;
@@ -23,11 +24,17 @@ export default function ContractCard({
   title,
   approveStatus = "pending",
   completed = false,
+  deleted = false,
   onView,
   onSign,
   senderReady = false,
 }: ContractCardProps) {
   const getBadge = () => {
+    if (deleted)
+      return (
+        <Span className={clsx(styles.badge, styles.deleted)}>파기된 계약</Span>
+      );
+
     if (completed)
       return (
         <Span className={clsx(styles.badge, styles.complete)}>계약 완료</Span>
@@ -54,6 +61,15 @@ export default function ContractCard({
   };
 
   const getButton = () => {
+    // 🔴
+    if (deleted)
+      return (
+        <Button styleType="admin2" disabled>
+          파기된 계약
+        </Button>
+      );
+
+    // 🟢
     if (completed)
       return (
         <Button styleType="admin2" disabled>
@@ -61,6 +77,7 @@ export default function ContractCard({
         </Button>
       );
 
+    // 🟡
     switch (approveStatus) {
       case "pending":
         return (
@@ -106,6 +123,18 @@ export default function ContractCard({
       <FlexChild className={styles.previewBox}>
         <img src={image} alt={title} className={styles.preview} />
         <div className={styles.badgeWrapper}>{getBadge()}</div>
+
+        {/* Hover Overlay */}
+        <div className={styles.overlay} />
+
+        {/* Center Hover Button */}
+        <Button
+          styleType="admin2"
+          className={styles.hoverButton}
+          onClick={onView}
+        >
+          보기
+        </Button>
       </FlexChild>
 
       <FlexChild className={styles.info}>
