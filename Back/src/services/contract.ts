@@ -301,4 +301,20 @@ export class ContractService extends BaseService<Contract, ContractRepository> {
       return cu;
     });
   }
+
+  /** 계약명 / 참여자명 검색 → contract.id 목록 반환 */
+  async searchIdsByQuery(q: string): Promise<string[]> {
+    const qb = this.repository.manager
+      .createQueryBuilder("contract", "c")
+      .leftJoin("c.contract_users", "cu")
+      .leftJoin("cu.user", "u")
+      .where("c.name ILIKE :q", { q: `%${q}%` })
+      .orWhere("cu.name ILIKE :q", { q: `%${q}%` })
+      .orWhere("u.name ILIKE :q", { q: `%${q}%` })
+      .select("c.id", "id");
+
+    const rows = await qb.getRawMany();
+    return rows.map((r) => r.id);
+  }
 }
+
