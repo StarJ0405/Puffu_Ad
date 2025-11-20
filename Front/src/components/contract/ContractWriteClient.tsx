@@ -11,7 +11,12 @@ import {
 import { requester } from "@/shared/Requester";
 import { adminRequester } from "@/shared/AdminRequester";
 import { fileRequester } from "@/shared/FileRequester";
-import { dataURLtoFile, toast } from "@/shared/utils/Functions";
+import {
+  dataURLtoFile,
+  exportAsPdf,
+  pageToDataURL,
+  toast,
+} from "@/shared/utils/Functions";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
@@ -25,6 +30,7 @@ import ContractInput from "@/app/admin/desktop/(main)/contract/template/regist/c
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import useNavigate from "@/shared/hooks/useNavigate";
+import NiceModal from "@ebay/nice-modal-react";
 
 export default function ContractWriteClient({
   contract,
@@ -45,6 +51,7 @@ export default function ContractWriteClient({
   const inputs = useRef<any[]>([]);
   const isComplete = !!contract.completed_at;
   const isDeleted = !!contract.is_delete;
+  const openRef = useRef<Window>(null);
   const userContract =
     mode === "admin"
       ? contract.contract_users.find((u) => u.user?.role === "admin")
@@ -80,25 +87,6 @@ export default function ContractWriteClient({
       )
     );
   }, [contract, userData]);
-
-  const exportAsPdf = async () => {
-    const element = contentRef.current;
-    if (!element) return;
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pages = element.querySelectorAll("[data-page]");
-
-    for (let i = 0; i < pages.length; i++) {
-      const page = pages[i] as HTMLElement;
-      const canvas = await html2canvas(page, { scale: 2 });
-      const imgData = canvas.toDataURL("image/png");
-      const pdfWidth = 210;
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      if (i > 0) pdf.addPage();
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    }
-    pdf.save(`${contract.name}.pdf`);
-    toast({ message: "PDF가 다운로드되었습니다." });
-  };
 
   // ── 저장 / 서명 완료 or 검토 완료
   const handleSave = async () => {
@@ -194,8 +182,156 @@ export default function ContractWriteClient({
           <HorizontalFlex gap={20} alignItems="center">
             <Image
               src="/resources/contract/file-download.svg"
-              onClick={exportAsPdf}
+              style={{
+                filter: "brightness(0) invert(1)",
+              }}
+              onClick={() =>
+                NiceModal.show("confirm", {
+                  message: `${contract.name}을 다운로드 하시겠습니까?`,
+                  confirmText: "다운로드",
+                  cancelText: "취소",
+                  onConfirm: async () => {
+                    const pages = contract.pages.map((_, index) => {
+                      const page = document.getElementById(`page_${index}`);
+                      if (page) page.className = styles.print;
+                      return page;
+                    });
+                    const uploads = contract.pages
+                      .map((page) =>
+                        page.input_fields
+                          .filter((f) => f.type === "upload")
+                          .map((input) => {
+                            const files =
+                              inputs.current?.[page.page]?.[
+                                input.metadata.name
+                              ]?.getTemp()?.value?.files || [];
+                            return files
+                              .map((file: any) =>
+                                file.images.map((_: any, idx: number) =>
+                                  document.getElementById(`${input.id}_${idx}`)
+                                )
+                              )
+                              .flat();
+                          })
+                          .flat()
+                      )
+                      .flat()
+                      .filter((f) => f !== null);
+
+                    await exportAsPdf(
+                      [...pages.filter((f) => f !== null), ...(uploads || [])],
+                      contract.name
+                    );
+                    pages.forEach((page) => {
+                      if (page) page.className = "";
+                    });
+                  },
+                })
+              }
               size={24}
+            />
+            <Image
+              src="/resources/contract/print.svg"
+              size={24}
+              onClick={async () => {
+                const pages = contract.pages.map((_, index) =>
+                  document.getElementById(`page_${index}`)
+                );
+                const images = await pageToDataURL(
+                  pages
+                    .filter((f) => f !== null)
+                    .map((page) => {
+                      page.classList.add(styles.print);
+                      return page;
+                    })
+                );
+                pages
+                  .filter((f) => f !== null)
+                  .map((page) => {
+                    page.classList.remove(styles.print);
+                    return page;
+                  });
+                console.log(
+                  contract.pages
+                    .map((page) =>
+                      page.input_fields
+                        .filter((f) => f.type === "upload")
+                        .map((input) => {
+                          const files =
+                            inputs.current?.[page.page]?.[
+                              input.metadata.name
+                            ]?.getTemp()?.value?.files || [];
+                          return files.map((file: any) =>
+                            file.images.map((_: any, idx: number) =>
+                              document.getElementById(`${input.id}_${idx}`)
+                            )
+                          );
+                        })
+                        .flat()
+                    )
+                    .flat()
+                    .filter((f) => f !== null)
+                );
+                const uploads = await pageToDataURL(
+                  contract.pages
+                    .map((page) =>
+                      page.input_fields
+                        .filter((f) => f.type === "upload")
+                        .map((input) => {
+                          const files =
+                            inputs.current?.[page.page]?.[
+                              input.metadata.name
+                            ]?.getTemp()?.value?.files || [];
+                          return files
+                            .map((file: any) =>
+                              file.images.map((_: any, idx: number) =>
+                                document.getElementById(`${input.id}_${idx}`)
+                              )
+                            )
+                            .flat();
+                        })
+                        .flat()
+                    )
+                    .flat()
+                    .filter((f) => f !== null)
+                );
+                if (images) {
+                  // const content = document.getElementById("print-content");
+                  if (openRef.current) openRef.current.close();
+                  const printWindow = window.open(
+                    "",
+                    "",
+                    "height=600,width=800"
+                  );
+                  openRef.current = printWindow;
+                  // 1. 인쇄 CSS를 포함하여 새 창에 내용을 복사
+                  printWindow?.document.write(
+                    "<html><head><title>다중 페이지 인쇄</title>"
+                  );
+
+                  // 인쇄 전용 스타일 태그 추가 (여기서 page-break 속성 정의)
+                  printWindow?.document.write(
+                    "<style>@media print { .page-break { page-break-after: always; } }</style>"
+                  );
+                  printWindow?.document.write("</head><body>");
+                  images.forEach((url) => {
+                    printWindow?.document.write(
+                      `<img src="${url}" style="width: 100%;"/>`
+                    );
+                  });
+                  uploads?.forEach((url: string) => {
+                    printWindow?.document.write(
+                      `<img src="${url}" style="width: 100%;"/>`
+                    );
+                  });
+                  // printWindow?.document.write(content?.innerHTML || "");
+                  printWindow?.document.write("</body></html>");
+                  printWindow?.document.close();
+                  setTimeout(() => {
+                    printWindow?.print();
+                  }, 500);
+                }
+              }}
             />
 
             <ScaleSelect
