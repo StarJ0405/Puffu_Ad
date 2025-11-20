@@ -63,18 +63,37 @@ export default function Client() {
   };
 
   const loadContracts = async () => {
+    let statusFilter: any = {};
+
+    if (status === "pending") {
+      statusFilter = {
+        completed_at: null,
+        is_delete: null,
+      };
+    } else if (status === "complete") {
+      statusFilter = {
+        completed_at__not: null,
+      };
+    } else if (status === "delete") {
+      statusFilter = {
+        is_delete__not: null,
+      };
+    }
+
     const res = await adminRequester.getContracts({
       q: search,
       pageSize: 20,
       origin_id__not: null,
       relations: ["contract_users", "contract_users.user"],
+      ...statusFilter,
     });
+
     setList(res?.content ?? []);
   };
 
   useEffect(() => {
     loadContracts();
-  }, []);
+  }, [search, status]);
 
   return (
     <VerticalFlex className={styles.wrapper}>
@@ -85,7 +104,9 @@ export default function Client() {
         className={styles.header}
       >
         <P className={styles.title}>전자계약 목록</P>
-        <Button styleType="admin2" onClick={() => navigate("/contract/create")}>새 계약 등록</Button>
+        <Button styleType="admin2" onClick={() => navigate("/contract/create")}>
+          새 계약 등록
+        </Button>
       </HorizontalFlex>
 
       {/* Filter */}
@@ -100,17 +121,19 @@ export default function Client() {
           onChange={(value) => setSearch(String(value))}
           width="250px"
         />
-
-        <Select
-          width="160px"
-          placeholder="전체 상태"
-          options={[
-            { display: "전체 상태", value: "" },
-            { display: "진행 중", value: "pending" },
-            { display: "완료", value: "complete" },
-          ]}
-          onChange={(v) => setStatus(String(v))}
-        />
+        <FlexChild>
+          <Select
+            width="160px"
+            placeholder="전체 상태"
+            options={[
+              { display: "전체 상태", value: "" },
+              { display: "진행 중", value: "pending" },
+              { display: "완료", value: "complete" },
+              { display: "파기", value: "delete" },
+            ]}
+            onChange={(v) => setStatus(String(v))}
+          />
+        </FlexChild>
         <FlexChild>
           <Button styleType="admin" onClick={loadContracts}>
             검색
@@ -230,10 +253,7 @@ export default function Client() {
                     >
                       보기
                     </Button>
-                    <FlexChild
-                      flexGrow={0}
-                      width={"auto"} hidden={is_delete}
-                    >
+                    <FlexChild flexGrow={0} width={"auto"} hidden={is_delete}>
                       {/* 상태별 버튼 분기 */}
                       {contract.completed_at ? (
                         <Button styleType="admin2" disabled>
