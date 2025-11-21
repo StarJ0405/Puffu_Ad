@@ -148,7 +148,7 @@ export default abstract class ContractInput {
     return true;
   }
   public Write: any = forwardRef(
-    (props: { onChange?: (data: any) => void; data: any }, ref: any) => {
+    (props: { onChange?: (data: any) => void; data: any, value?: any, }, ref: any) => {
       return (
         <FlexChild Ref={ref} justifyContent="center">
           {props?.data?.icon && this.getIcon(32)}

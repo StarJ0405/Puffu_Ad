@@ -16,6 +16,7 @@ import {
   exportAsPdf,
   pageToDataURL,
   toast,
+  parseCalc,
 } from "@/shared/utils/Functions";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import FlexChild from "@/components/flex/FlexChild";
@@ -166,7 +167,6 @@ export default function ContractWriteClient({
       setSaving(false);
     }
   };
-
   return (
     <div className={styles.wrapper}>
       {/* ── 헤더 */}
@@ -398,13 +398,13 @@ export default function ContractWriteClient({
 
                 const editable =
                   assigns.includes(input.metadata.name) && !readonlyMode;
-
                 return (
                   <FloatInput
                     key={`${input.id}_${idx}`}
                     assign={editable}
                     require={requires.includes(input.metadata.name)}
                     input={input}
+                    scale={scale}
                     readonly={!editable}
                     ref={(el) => {
                       if (!inputs.current[page.page])
@@ -502,12 +502,14 @@ const FloatInput = forwardRef(
       input,
       updateInput,
       readonly,
+      scale,
     }: {
       assign: boolean;
       require: boolean;
       input: InputFieldData;
       updateInput: (status: boolean) => void;
       readonly?: boolean;
+      scale: number;
     },
     ref
   ) => {
@@ -517,6 +519,16 @@ const FloatInput = forwardRef(
     const [value, setValue] = useState<any>(input.value ?? {});
     const [hover, setHover] = useState<{ x: number; y: number } | null>(null);
 
+    const toNum = (v: any) => {
+      if (v === null || v === undefined) return 0;
+      if (typeof v === "number") return v;
+      const n = parseFloat(String(v).replace("px", ""));
+      return isNaN(n) ? 0 : n;
+    };
+    const scaled = scale / 100;
+    const rawFont = input.metadata.fontSize ?? 16; // 기본값 16
+    const scaledFont = rawFont * scaled;
+    
     // Input Type 매칭
     useEffect(() => {
       let timer = 10;
@@ -573,12 +585,12 @@ const FloatInput = forwardRef(
       <FlexChild
         Ref={divRef}
         position="absolute"
-        top={input.metadata.top}
-        left={input.metadata.left}
-        width={input.metadata.width}
-        height={input.metadata.height}
+        top={parseCalc(input.metadata.top) * scaled}
+        left={parseCalc(input.metadata.left) * scaled}
+        width={toNum(input.metadata.width) * scaled}
+        height={toNum(input.metadata.height) * scaled}
         fontFamily={input.metadata.fontFamily}
-        fontSize={input.metadata.fontSize}
+        fontSize={scaledFont}
         fontWeight={input.metadata.bold ? 700 : 500}
         fontStyle={input.metadata.italic ? "italic" : "normal"}
         textDecorationLine={input.metadata.underline ? "underline" : "none"}

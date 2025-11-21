@@ -255,7 +255,6 @@ export default function Client() {
                     >
                       파기
                     </Button>
-                    {/* 보기 버튼: 항상 가능 */}
                     <Button
                       styleType="admin2"
                       onClick={() => navigate(`/contract/list/${contract.id}`)}

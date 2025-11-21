@@ -769,3 +769,30 @@ export function getDateDay(date: Date) {
       return "토";
   }
 }
+
+export function parseCalc(v: any): number {
+  if (typeof v === "number") return v;
+  if (!v) return 0;
+
+  const str = String(v).trim();
+
+  // calc() 형태 파싱
+  if (str.startsWith("calc(") && str.endsWith(")")) {
+    try {
+      const expr = str
+        .replace("calc(", "")
+        .replace(")", "")
+        .replace(/px/g, "")
+        .trim();
+
+      return Function(`return ${expr}`)();
+    } catch (err) {
+      console.error("parseCalc error:", v, err);
+      return 0;
+    }
+  }
+
+  // px 숫자 처리
+  const n = parseFloat(str.replace("px", ""));
+  return isNaN(n) ? 0 : n;
+}
