@@ -1,4 +1,5 @@
 import ContractWriteClient from "@/components/contract/ContractWriteClient";
+import FlexChild from "@/components/flex/FlexChild";
 import { adminRequester } from "@/shared/AdminRequester";
 import { Params } from "next/dist/server/request/params";
 
@@ -13,5 +14,11 @@ export default async function ({ params }: { params: Promise<Params> }) {
       "pages.input_fields",
     ],
   });
-  return <ContractWriteClient contract={contract} mode={"admin"} />;
+  return (
+    <FlexChild justifyContent="center">
+      <FlexChild width={"55%"} justifyContent="center" flexGrow={"unset"}>
+        <ContractWriteClient contract={contract} mode={"admin"} />
+      </FlexChild>
+    </FlexChild>
+  );
 }

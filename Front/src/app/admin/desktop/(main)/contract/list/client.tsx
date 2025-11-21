@@ -213,11 +213,20 @@ export default function Client() {
                   <Span className={clsx(styles.badge, statusClass)}>
                     {statusText}
                   </Span>
-
-                  <P className={styles.date}>
-                    {new Date(contract.created_at).toLocaleDateString("ko-KR")}
-                  </P>
-
+                  <VerticalFlex alignItems="flex-end">
+                    <P className={styles.date}>
+                      {"생성한 날짜 : "}
+                      {new Date(contract.created_at).toLocaleDateString(
+                        "ko-KR"
+                      )}
+                    </P>
+                    <P className={styles.date}>
+                      {"최근 수정 : "}
+                      {new Date(contract.updated_at).toLocaleDateString(
+                        "ko-KR"
+                      )}
+                    </P>
+                  </VerticalFlex>
                   <HorizontalFlex gap={6} justifyContent="flex-end">
                     {/* 삭제 버튼: 항상 보임 (Modal Confirm) */}
                     <Button
