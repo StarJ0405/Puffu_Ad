@@ -30,7 +30,7 @@ import {
   useRef,
   useState,
 } from "react";
-import ContractInput from "../../template/regist/class";
+import ContractInput from "../../../regist/class";
 import styles from "./page.module.css";
 
 export default function Client({ contract }: { contract: ContractData }) {
