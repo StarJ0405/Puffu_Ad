@@ -247,11 +247,6 @@ const SidebarNav: NavParent[] = [
         icon: "",
       },
       {
-        name: "계약 생성",
-        to: "/create",
-        icon: "",
-      },
-      {
         name: "템플릿 등록",
         to: "template/regist",
         icon: "",

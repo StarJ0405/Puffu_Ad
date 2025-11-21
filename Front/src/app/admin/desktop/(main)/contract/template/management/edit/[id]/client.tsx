@@ -26,7 +26,7 @@ import {
   useState,
 } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import ContractInput from "../../regist/class";
+import ContractInput from "../../../regist/class";
 import styles from "./page.module.css";
 
 async function getPdfPageAsBase64(pdfFileUrlOrData: any) {
