@@ -16,6 +16,7 @@ import {
   dataURLtoFile,
   exportAsPdf,
   pageToDataURL,
+  parseCalc,
   toast,
 } from "@/shared/utils/Functions";
 import NiceModal from "@ebay/nice-modal-react";
@@ -703,6 +704,7 @@ function Write({ user, contract }: { user: UserData; contract: ContractData }) {
                               prev.filter((f) => f !== input?.metadata?.name)
                             );
                         }}
+                        scale={scale}
                       />
                     ))}
                   </FlexChild>
@@ -824,11 +826,13 @@ const FloatInput = forwardRef(
       require,
       input,
       updateInput,
+      scale,
     }: {
       assign: boolean;
       require: boolean;
       input: InputFieldData;
       updateInput: (status: boolean) => void;
+      scale: number;
     },
     ref
   ) => {
@@ -837,6 +841,17 @@ const FloatInput = forwardRef(
     const [ci, setCi] = useState<ContractInput>();
     const [value, setValue] = useState<any>();
     const [hover, setHover] = useState<{ x: number; y: number } | null>(null);
+
+    const toNum = (v: any) => {
+      if (v === null || v === undefined) return 0;
+      if (typeof v === "number") return v;
+      const n = parseFloat(String(v).replace("px", ""));
+      return isNaN(n) ? 0 : n;
+    };
+    const scaled = scale / 100;
+    const rawFont = input.metadata.fontSize ?? 16; // 기본값 16
+    const scaledFont = rawFont * scaled;
+
     useEffect(() => {
       let timer = 10;
       const interval = setInterval(() => {
@@ -889,14 +904,14 @@ const FloatInput = forwardRef(
       <FlexChild
         Ref={divRef}
         position={"absolute"}
-        top={input.metadata.top}
-        left={input.metadata.left}
-        minWidth={input.metadata.width}
-        width={input.metadata.width}
-        height={input.metadata.height}
-        minHeight={input.metadata.height}
+        top={parseCalc(input.metadata.top) * scaled}
+        left={parseCalc(input.metadata.left) * scaled}
+        minWidth={toNum(input.metadata.width) * scaled}
+        width={toNum(input.metadata.width) * scaled}
+        height={toNum(input.metadata.height) * scaled}
+        minHeight={toNum(input.metadata.height) * scaled}
         fontFamily={input.metadata.fontFamily}
-        fontSize={input.metadata.fontSize}
+        fontSize={scaledFont}
         fontWeight={input.metadata.bold ? 700 : 500}
         fontStyle={input.metadata.italic ? "italic" : "normal"}
         textDecorationLine={input.metadata.underline ? "underline" : "none"}
