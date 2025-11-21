@@ -8,6 +8,8 @@ import P from "@/components/P/P";
 import { requester } from "@/shared/Requester";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import useNavigate from "@/shared/hooks/useNavigate";
+import FlexChild from "@/components/flex/FlexChild";
+import FlexGrid from "@/components/flex/FlexGrid";
 
 export function Client() {
   const [contracts, setContracts] = useState<ContractData[]>([]);
@@ -49,9 +51,9 @@ export function Client() {
 
   return (
     <VerticalFlex gap={20} alignItems="flex-start">
-      <P fontWeight={600}>내가 참가한 계약</P>
+      <P fontWeight={600} fontSize={25}>내가 참가한 계약</P>
 
-      <HorizontalFlex gap={20} flexWrap="wrap" width={"auto"}>
+      <FlexGrid columns={4} gap={25} width="100%">
         {contracts.length === 0 && <P>참가 중인 계약이 없습니다.</P>}
 
         {contracts.map((contract) => {
@@ -67,20 +69,30 @@ export function Client() {
             ) ?? false;
 
           return (
-            <ContractCard
+            <FlexChild
               key={contract.id}
-              image={contract.pages?.[0]?.image}
-              title={contract.name}
-              approveStatus={myUser?.approve}
-              completed={!!contract.completed_at}
-              deleted={!!contract.is_delete}
-              senderReady={senderReady}
-              onSign={() => navigate(`/mypage/contract/${contract.id}`)}
-              onView={() => navigate(`/mypage/contract/${contract.id}`)}
-            />
+              width="100%"
+              style={{
+                gridColumn: "span 1",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <ContractCard
+                image={contract.pages?.[0]?.image}
+                title={contract.name}
+                approveStatus={myUser?.approve}
+                completed={!!contract.completed_at}
+                deleted={!!contract.is_delete}
+                senderReady={senderReady}
+                onSign={() => navigate(`/mypage/contract/${contract.id}`)}
+                onView={() => navigate(`/mypage/contract/${contract.id}`)}
+              />
+            </FlexChild>
           );
         })}
-      </HorizontalFlex>
+      </FlexGrid>
     </VerticalFlex>
   );
 }
