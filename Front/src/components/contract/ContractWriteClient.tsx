@@ -32,6 +32,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import useNavigate from "@/shared/hooks/useNavigate";
 import NiceModal from "@ebay/nice-modal-react";
+import Span from "../span/Span";
 
 export default function ContractWriteClient({
   contract,
@@ -42,11 +43,7 @@ export default function ContractWriteClient({
   mode?: "user" | "admin";
   readOnly?: boolean;
 }) {
-  const searchParams =
-    typeof window !== "undefined"
-      ? new URLSearchParams(window.location.search)
-      : null;
-  const isViewMode = searchParams?.get("view") === "readonly";
+  const [isViewMode, setIsViewMode] = useState<boolean | null>(null);
   const requesterInstance = mode === "admin" ? adminRequester : requester;
   const navigate = useNavigate();
   const { userData } = useAuth();
@@ -174,8 +171,13 @@ export default function ContractWriteClient({
       setSaving(false);
     }
   };
+
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    setIsViewMode(q.get("view") === "readonly");
+  }, []);
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.wrapper} style={{ color: "black" }}>
       {/* ── 헤더 */}
       <div id="contract_header" className={styles.header}>
         <HorizontalFlex
@@ -348,6 +350,16 @@ export default function ContractWriteClient({
               onChange={setScale}
               scales={[30, 50, 80, 100, 120, 150, 200, 300, 400]}
             />
+            {isViewMode !== null && mode !== "admin" && (
+              <P
+                color="#e7e7e7"
+                fontWeight={500}
+                width="auto"
+                whiteSpace="nowrap"
+              >
+                필수입력항목 ({inputed.length} / {requires.length})
+              </P>
+            )}
             <Button
               styleType="admin2"
               onClick={() => {

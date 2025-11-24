@@ -413,7 +413,7 @@ function Write({ user, contract }: { user: UserData; contract: ContractData }) {
                   NiceModal.show("toast", {
                     message: "계약이 성공적으로 생성 및 저장되었습니다.",
                   });
-                  navigate(-1);
+                  navigate("/contract/list");
                 } catch (err) {
                   console.error(err);
                   NiceModal.show("toast", {
