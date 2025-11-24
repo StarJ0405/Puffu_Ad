@@ -61,7 +61,6 @@ export default function ContractCard({
   };
 
   const getButton = () => {
-    // 🔴
     if (deleted)
       return (
         <Button styleType="admin2" disabled>
@@ -69,7 +68,6 @@ export default function ContractCard({
         </Button>
       );
 
-    // 🟢
     if (completed)
       return (
         <Button styleType="admin2" disabled>
@@ -77,7 +75,6 @@ export default function ContractCard({
         </Button>
       );
 
-    // 🟡
     switch (approveStatus) {
       case "pending":
         return (
@@ -88,7 +85,7 @@ export default function ContractCard({
 
       case "ready":
         return senderReady ? (
-          <Button styleType="admin2" onClick={onView}>
+          <Button styleType="admin2" onClick={onSign}>
             검토하기
           </Button>
         ) : (

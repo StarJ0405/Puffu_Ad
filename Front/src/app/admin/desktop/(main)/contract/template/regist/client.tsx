@@ -2199,11 +2199,10 @@ function FloatInput({
           left.value = maxWidth - div.getBoundingClientRect().width;
         }
         onUpdate({
-          top: top?.toString(),
-          left: left?.toString(),
-          width: width + data.dx,
-          height: height + data.dy,
-          page,
+          top: computed.get("top")?.toString(),
+          left: computed.get("left")?.toString(),
+          width: posRef.current.initialWidth + data.dx,
+          height: posRef.current.initialHeight + data.dy,
         });
         posRef.current = { x: 0, y: 0 };
         setData({ dx: 0, dy: 0, dt: 0, dl: 0 });
@@ -2242,6 +2241,8 @@ function FloatInput({
         posRef.current = {
           x: e.clientX,
           y: e.clientY,
+          initialWidth: width,
+          initialHeight: height,
         };
       }}
       onContextMenu={(e) => {
@@ -2476,6 +2477,8 @@ function FloatInput({
                   posRef.current = {
                     x: e.clientX,
                     y: e.clientY,
+                    initialWidth: width,
+                    initialHeight: height,
                   };
                 }}
               />

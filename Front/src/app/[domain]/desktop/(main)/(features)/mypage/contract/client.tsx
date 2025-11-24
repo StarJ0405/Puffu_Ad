@@ -87,7 +87,7 @@ export function Client() {
                 deleted={!!contract.is_delete}
                 senderReady={senderReady}
                 onSign={() => navigate(`/mypage/contract/${contract.id}`)}
-                onView={() => navigate(`/mypage/contract/${contract.id}`)}
+                onView={() => navigate(`/mypage/contract/${contract.id}?view=readonly`)}
               />
             </FlexChild>
           );
