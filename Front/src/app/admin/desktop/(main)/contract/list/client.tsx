@@ -257,7 +257,7 @@ export default function Client() {
                     </Button>
                     <Button
                       styleType="admin2"
-                      onClick={() => navigate(`/contract/list/${contract.id}`)}
+                      onClick={() => navigate(`/contract/list/${contract.id}?view=readonly`)}
                     >
                       보기
                     </Button>

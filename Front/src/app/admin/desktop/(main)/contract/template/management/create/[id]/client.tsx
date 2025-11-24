@@ -510,7 +510,7 @@ function Write({ user, contract }: { user: UserData; contract: ContractData }) {
                         page.classList.remove(styles.print);
                         return page;
                       });
-                    console.log(
+                    /* console.log(
                       contract.pages
                         .map((page) =>
                           page.input_fields
@@ -530,32 +530,31 @@ function Write({ user, contract }: { user: UserData; contract: ContractData }) {
                         )
                         .flat()
                         .filter((f) => f !== null)
-                    );
-                    const uploads = await pageToDataURL(
-                      contract.pages
-                        .map((page) =>
-                          page.input_fields
-                            .filter((f) => f.type === "upload")
-                            .map((input) => {
-                              const files =
-                                inputs.current?.[page.page]?.[
-                                  input.metadata.name
-                                ]?.getTemp()?.value?.files || [];
-                              return files
-                                .map((file: any) =>
-                                  file.images.map((_: any, idx: number) =>
-                                    document.getElementById(
-                                      `${input.id}_${idx}`
-                                    )
-                                  )
+                    ); */
+                    const upload_pages = contract.pages
+                      .map((page) =>
+                        page.input_fields
+                          .filter((f) => f.type === "upload")
+                          .map((input) => {
+                            const files =
+                              inputs.current?.[page.page]?.[
+                                input.metadata.name
+                              ]?.getTemp()?.value?.files || [];
+                            return files
+                              .map((file: any) =>
+                                file.images.map((_: any, idx: number) =>
+                                  document.getElementById(`${input.id}_${idx}`)
                                 )
-                                .flat();
-                            })
-                            .flat()
-                        )
-                        .flat()
-                        .filter((f) => f !== null)
-                    );
+                              )
+                              .flat();
+                          })
+                          .flat()
+                      )
+                      .flat()
+                      .filter((f) => f !== null);
+                    const uploads = upload_pages?.length
+                      ? await pageToDataURL(upload_pages)
+                      : [];
                     if (images) {
                       // const content = document.getElementById("print-content");
                       if (openRef.current) openRef.current.close();

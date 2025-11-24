@@ -36,10 +36,17 @@ import NiceModal from "@ebay/nice-modal-react";
 export default function ContractWriteClient({
   contract,
   mode = "user",
+  readOnly = false,
 }: {
   contract: ContractData;
   mode?: "user" | "admin";
+  readOnly?: boolean;
 }) {
+  const searchParams =
+    typeof window !== "undefined"
+      ? new URLSearchParams(window.location.search)
+      : null;
+  const isViewMode = searchParams?.get("view") === "readonly";
   const requesterInstance = mode === "admin" ? adminRequester : requester;
   const navigate = useNavigate();
   const { userData } = useAuth();
@@ -91,7 +98,7 @@ export default function ContractWriteClient({
 
   // ── 저장 / 서명 완료 or 검토 완료
   const handleSave = async () => {
-    if (isComplete || isDeleted) {
+    if (isViewMode || isComplete || isDeleted) {
       navigate(-1);
       return;
     }
@@ -251,7 +258,7 @@ export default function ContractWriteClient({
                     page.classList.remove(styles.print);
                     return page;
                   });
-                console.log(
+                /* console.log(
                   contract.pages
                     .map((page) =>
                       page.input_fields
@@ -271,30 +278,32 @@ export default function ContractWriteClient({
                     )
                     .flat()
                     .filter((f) => f !== null)
-                );
-                const uploads = await pageToDataURL(
-                  contract.pages
-                    .map((page) =>
-                      page.input_fields
-                        .filter((f) => f.type === "upload")
-                        .map((input) => {
-                          const files =
-                            inputs.current?.[page.page]?.[
-                              input.metadata.name
-                            ]?.getTemp()?.value?.files || [];
-                          return files
-                            .map((file: any) =>
-                              file.images.map((_: any, idx: number) =>
-                                document.getElementById(`${input.id}_${idx}`)
-                              )
+                ); */
+                const upload_pages = contract.pages
+                  .map((page) =>
+                    page.input_fields
+                      .filter((f) => f.type === "upload")
+                      .map((input) => {
+                        const files =
+                          inputs.current?.[page.page]?.[
+                            input.metadata.name
+                          ]?.getTemp()?.value?.files || [];
+                        return files
+                          .map((file: any) =>
+                            file.images.map((_: any, idx: number) =>
+                              document.getElementById(`${input.id}_${idx}`)
                             )
-                            .flat();
-                        })
-                        .flat()
-                    )
-                    .flat()
-                    .filter((f) => f !== null)
-                );
+                          )
+                          .flat();
+                      })
+                      .flat()
+                  )
+                  .flat()
+                  .filter((f) => f !== null);
+
+                const uploads = upload_pages?.length
+                  ? await pageToDataURL(upload_pages)
+                  : [];
                 if (images) {
                   // const content = document.getElementById("print-content");
                   if (openRef.current) openRef.current.close();
@@ -342,7 +351,7 @@ export default function ContractWriteClient({
             <Button
               styleType="admin2"
               onClick={() => {
-                if (isComplete || isDeleted) {
+                if (isViewMode || isComplete || isDeleted) {
                   navigate(-1);
                   return;
                 }
@@ -351,9 +360,7 @@ export default function ContractWriteClient({
               disabled={saving}
               className={styles.btnText}
             >
-              {isComplete
-                ? "확인"
-                : isDeleted
+              {isViewMode || isComplete || isDeleted
                 ? "확인"
                 : saving
                 ? "저장 중..."
@@ -389,7 +396,8 @@ export default function ContractWriteClient({
                   (u) => u.user_id === userData?.id
                 );
                 const userApprove = user?.approve;
-                const forceReadonly = isComplete || isDeleted;
+                const forceReadonly =
+                  isViewMode || readOnly || isComplete || isDeleted;
 
                 const readonlyMode =
                   forceReadonly ||
@@ -398,6 +406,7 @@ export default function ContractWriteClient({
 
                 const editable =
                   assigns.includes(input.metadata.name) && !readonlyMode;
+
                 return (
                   <FloatInput
                     key={`${input.id}_${idx}`}
@@ -528,7 +537,6 @@ const FloatInput = forwardRef(
     const scaled = scale / 100;
     const rawFont = input.metadata.fontSize ?? 16; // 기본값 16
     const scaledFont = rawFont * scaled;
-    
     // Input Type 매칭
     useEffect(() => {
       let timer = 10;
