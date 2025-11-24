@@ -104,7 +104,7 @@ export default function Client() {
         className={styles.header}
       >
         <P className={styles.title}>전자계약 목록</P>
-        <Button styleType="admin2" onClick={() => navigate("/contract/create")}>
+        <Button styleType="admin2" onClick={() => navigate("/contract/template/management")}>
           새 계약 등록
         </Button>
       </HorizontalFlex>

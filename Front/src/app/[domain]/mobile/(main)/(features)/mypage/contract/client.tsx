@@ -53,7 +53,7 @@ export function Client() {
     <VerticalFlex gap={20} alignItems="flex-start">
       <P fontWeight={600} fontSize={25}>내가 참가한 계약</P>
 
-      <FlexGrid columns={4} gap={25} width="100%">
+      <FlexGrid columns={2} gap={25} width="100%">
         {contracts.length === 0 && <P>참가 중인 계약이 없습니다.</P>}
 
         {contracts.map((contract) => {
