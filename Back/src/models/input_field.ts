@@ -1,11 +1,5 @@
 import { BaseEntity } from "data-source";
-import {
-  BeforeInsert,
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-} from "typeorm";
+import { BeforeInsert, Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { generateEntityId } from "utils/functions";
 import { Page } from "./page";
 
@@ -26,6 +20,9 @@ export class InputField extends BaseEntity {
 
   @Column({ type: "jsonb", default: {} })
   value!: Record<string, any>;
+
+  @Column({ type: "varchar", nullable: true })
+  value_hash?: string | null;
 
   @BeforeInsert()
   protected BeforeInsert(): void {

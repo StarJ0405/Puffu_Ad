@@ -826,6 +826,11 @@ class _Requester {
       callback(await this.post(`/users/me/contract/${id}/approve`, data));
     else return await this.post(`/users/me/contract/${id}/approve`, data);
   }
+
+  async verifyContract(id: string, data?: any, callback?: Function) {
+    if (callback) callback(await this.get(`/contract/${id}/verify`, data));
+    else return await this.get(`/contract/${id}/verify`, data);
+  }
 }
 
 export default _Requester;

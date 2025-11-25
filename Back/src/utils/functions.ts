@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import crypto, { randomUUID } from "crypto";
 import jwt, { SignOptions, VerifyOptions } from "jsonwebtoken";
+import fs from "fs";
 
 export function generateEntityId(idProperty?: string, prefix?: string) {
   if (idProperty) return idProperty;
@@ -120,3 +121,12 @@ export const dataToQuery = (data: any) => {
     }, {})
   ).toString();
 };
+
+export function sha256(data: string): string {
+  return crypto.createHash("sha256").update(data).digest("hex");
+}
+
+export function sha256File(filePath: string): string {
+  const buffer = fs.readFileSync(filePath);
+  return crypto.createHash("sha256").update(buffer).digest("hex");
+}
