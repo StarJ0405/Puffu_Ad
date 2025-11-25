@@ -7,6 +7,7 @@ import { InputField } from "models/input_field";
 import { ContractUser, ApproveStatus } from "models/contract_user";
 import { Log } from "models/log";
 import { IsNull } from "typeorm";
+import path from "path";
 
 @injectable()
 export class ContractService extends BaseService<Contract, ContractRepository> {
@@ -203,6 +204,17 @@ export class ContractService extends BaseService<Contract, ContractRepository> {
       });
       if (!field) throw new Error("Input field not found");
 
+      //페이지 + 계약 조회
+      const page = await manager.findOne(Page, {
+        where: { id: field.page_id },
+        relations: ["contract"],
+      });
+
+      //완료된 계약 수정 금지
+      if (page?.contract?.completed_at) {
+        throw new Error("Completed contract cannot be updated");
+      }
+
       field.value = value;
       await manager.save(field);
 
@@ -217,14 +229,17 @@ export class ContractService extends BaseService<Contract, ContractRepository> {
     });
   }
 
-  /** 계약 완료 처리 */
   async completeContract(id: string) {
     return this.repository.manager.transaction(async (manager) => {
       const contract = await manager.findOne(Contract, {
         where: { id },
-        relations: ["contract_users"],
+        relations: ["contract_users", "pages", "pages.input_fields"],
       });
       if (!contract) throw new Error("Contract not found");
+
+      if (contract.completed_at) {
+        throw new Error("Completed contract cannot be updated");
+      }
 
       const allConfirmed = contract.contract_users?.every(
         (u) => u.approve === ApproveStatus.CONFIRM
@@ -233,14 +248,68 @@ export class ContractService extends BaseService<Contract, ContractRepository> {
         throw new Error("All users must confirm before completion");
 
       contract.completed_at = new Date();
+
+      const { sha256, sha256File } = await import("utils/functions");
+
+      // --- 모든 필드 해시 생성 ---
+      for (const page of contract.pages || []) {
+        for (const field of page.input_fields || []) {
+          // 업로드 타입이면 원본 파일 해시를 value 내부에 고정 저장
+          if (field.type === "upload" && field.value?.url) {
+            const url = field.value.url;
+            const localPath = url.replace(/^https?:\/\/[^\/]+\/uploads\//, "");
+            const fullPath = path.join(process.cwd(), "uploads", localPath);
+            try {
+              const fileHash = sha256File(fullPath);
+              field.value.fileHash = fileHash; //new
+            } catch (e) {
+              console.error("File hash fail:", e);
+            }
+          }
+
+          // 모든 필드 공통 value_hash 생성
+          const valueJson = JSON.stringify(field.value ?? {});
+          field.value_hash = sha256(valueJson); //new
+
+          await manager.save(field);
+        }
+      }
+
+      // --- snapshot 구성 ---
+      const snapshot = {
+        contract_id: contract.id,
+        name: contract.name,
+        completed_at: contract.completed_at,
+        pages: contract.pages?.map((p) => ({
+          page: p.page,
+          image: p.image,
+          input_fields: p.input_fields?.map((f) => ({
+            type: f.type,
+            metadata: f.metadata,
+            value: f.value, // fileHash 포함
+            value_hash: f.value_hash, //new snapshot에 포함해도 무방
+          })),
+        })),
+        participants: contract.contract_users?.map((cu) => ({
+          name: cu.name,
+          user_id: cu.user_id,
+          approve: cu.approve,
+        })),
+      };
+
+      const finalHash = sha256(JSON.stringify(snapshot));
+      (contract as any).final_hash = finalHash;
+
       await manager.save(contract);
 
       const log = manager.create(Log, {
         name: "contract_complete",
         type: "contract",
-        data: { contract_id: id },
+        data: { contract_id: id, final_hash: finalHash },
       });
       await manager.save(log);
+
+      return contract;
     });
   }
 
@@ -254,10 +323,7 @@ export class ContractService extends BaseService<Contract, ContractRepository> {
       await this.repository.delete({ id });
     } else {
       // 계약 삭제 (소프트 삭제 + 플래그)
-      await this.repository.update(
-        { id },
-        { is_delete: new Date() }
-      );
+      await this.repository.update({ id }, { is_delete: new Date() });
     }
 
     const log = this.repository.manager.create(Log, {
@@ -316,5 +382,67 @@ export class ContractService extends BaseService<Contract, ContractRepository> {
     const rows = await qb.getRawMany();
     return rows.map((r) => r.id);
   }
-}
 
+  async verifyContractHash(id: string): Promise<boolean> {
+    const contract = await this.repository.findOne({
+      where: { id },
+      relations: ["contract_users", "pages", "pages.input_fields"],
+    });
+    if (!contract) throw new Error("Contract not found");
+    if (!contract.final_hash) return false;
+
+    const { sha256, sha256File } = await import("utils/functions");
+
+    // 1) 업로드 파일 검증
+    for (const page of contract.pages || []) {
+      for (const field of page.input_fields || []) {
+        if (field.type === "upload" && field.value?.url) {
+          const url = field.value.url;
+          const localPath = url.replace(/^https?:\/\/[^\/]+\/uploads\//, "");
+          const fullPath = path.join(process.cwd(), "uploads", localPath);
+
+          try {
+            const currentFileHash = sha256File(fullPath);
+            if (currentFileHash !== field.value.fileHash) {
+              return false;
+            }
+          } catch (e) {
+            console.error("file verify fail:", e);
+            return false;
+          }
+        }
+
+        // 2) value_hash 재검증
+        const valueJson = JSON.stringify(field.value ?? {});
+        if (field.value_hash !== sha256(valueJson)) {
+          return false;
+        }
+      }
+    }
+
+    // 3) 최종 스냅샷 재구성 후 final_hash 비교
+    const snapshot = {
+      contract_id: contract.id,
+      name: contract.name,
+      completed_at: contract.completed_at,
+      pages: contract.pages?.map((p) => ({
+        page: p.page,
+        image: p.image,
+        input_fields: p.input_fields?.map((f) => ({
+          type: f.type,
+          metadata: f.metadata,
+          value: f.value,
+          value_hash: f.value_hash,
+        })),
+      })),
+      participants: contract.contract_users?.map((cu) => ({
+        name: cu.name,
+        user_id: cu.user_id,
+        approve: cu.approve,
+      })),
+    };
+
+    const newFinalHash = sha256(JSON.stringify(snapshot));
+    return newFinalHash === contract.final_hash;
+  }
+}

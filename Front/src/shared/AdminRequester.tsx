@@ -970,6 +970,12 @@ class _AdminRequester {
     else return await this.post(`/contract/${id}/approve`, data);
   }
 
+  /** 계약 무결성 검증 */
+  async verifyContract(id: string, data?: any, callback?: Function) {
+    if (callback) callback(await this.get(`/contract/${id}/verify`, data));
+    else return await this.get(`/contract/${id}/verify`, data);
+  }
+
   // async updateContractUserStatus(
   //   contractId: string,
   //   contractUserId: string,

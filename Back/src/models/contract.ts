@@ -22,7 +22,9 @@ export class Contract extends BaseEntity {
   @Column({ type: "character varying", nullable: true })
   origin_id?: string | null;
 
-  @ManyToOne(() => Contract, (contract) => contract.children, { nullable: true })
+  @ManyToOne(() => Contract, (contract) => contract.children, {
+    nullable: true,
+  })
   @JoinColumn({ name: "origin_id", referencedColumnName: "id" })
   origin?: Contract | null;
 
@@ -32,10 +34,13 @@ export class Contract extends BaseEntity {
   @Column({ type: "timestamp with time zone", nullable: true })
   completed_at?: Date | string | null;
 
+  @Column({ type: "character varying", nullable: true })
+  final_hash?: string | null;
+
   @Column({ type: "timestamp with time zone", nullable: true })
   is_delete?: Date | string | null;
 
-  // 페이지
+  // 페이지a
   @OneToMany(() => Page, (page) => page.contract, {
     cascade: ["insert", "update"],
     orphanedRowAction: "soft-delete",
