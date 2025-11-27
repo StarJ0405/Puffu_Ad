@@ -796,3 +796,53 @@ export function parseCalc(v: any): number {
   const n = parseFloat(str.replace("px", ""));
   return isNaN(n) ? 0 : n;
 }
+
+export function uuid() {
+  if (
+    typeof crypto !== "undefined" &&
+    typeof crypto.randomUUID === "function"
+  ) {
+    return crypto.randomUUID();
+  }
+
+  const buf = new Uint8Array(16);
+  if (typeof crypto !== "undefined" && crypto.getRandomValues) {
+    crypto.getRandomValues(buf);
+  } else {
+    for (let i = 0; i < buf.length; i++) {
+      buf[i] = Math.floor(Math.random() * 256);
+    }
+  }
+
+  // RFC4122 version 4 UUID
+  buf[6] = (buf[6] & 0x0f) | 0x40;
+  buf[8] = (buf[8] & 0x3f) | 0x80;
+
+  const hex: string[] = [];
+  for (let i = 0; i < 256; i++) {
+    hex[i] = (i + 0x100).toString(16).substring(1);
+  }
+
+  return (
+    hex[buf[0]] +
+    hex[buf[1]] +
+    hex[buf[2]] +
+    hex[buf[3]] +
+    "-" +
+    hex[buf[4]] +
+    hex[buf[5]] +
+    "-" +
+    hex[buf[6]] +
+    hex[buf[7]] +
+    "-" +
+    hex[buf[8]] +
+    hex[buf[9]] +
+    "-" +
+    hex[buf[10]] +
+    hex[buf[11]] +
+    hex[buf[12]] +
+    hex[buf[13]] +
+    hex[buf[14]] +
+    hex[buf[15]]
+  );
+}
