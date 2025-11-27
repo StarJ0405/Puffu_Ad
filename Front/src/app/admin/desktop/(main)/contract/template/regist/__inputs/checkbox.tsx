@@ -12,6 +12,7 @@ import InputNumber from "@/components/inputs/InputNumber";
 import InputTextArea from "@/components/inputs/InputTextArea";
 import P from "@/components/P/P";
 import Select from "@/components/select/Select";
+import { uuid } from "@/shared/utils/Functions";
 import _ from "lodash";
 import {
   CSSProperties,
@@ -22,6 +23,7 @@ import {
   useState,
 } from "react";
 import ContractInput from "../class";
+import { useHotkeys } from "react-hotkeys-hook";
 
 const key: string = "checkbox";
 export default class CheckboxInput extends ContractInput {
@@ -48,6 +50,22 @@ export default class CheckboxInput extends ContractInput {
     ) => {
       const [boxes, setBoxes] = useState<any[]>(props?.data?.boxes || []);
       const [select, setSelect] = useState<string>("");
+      useHotkeys(
+        "delete",
+        (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (!select) return;
+          const newBoxes = boxes.filter((b) => b.id !== select);
+          props.data.boxes = newBoxes;
+          setBoxes([...newBoxes]);
+          props.onChange?.({ __sync: true });
+          setSelect("");
+        },
+        {},
+        [select, boxes]
+      );
+
       const BoxCompnent = ({
         box,
         selected,
@@ -167,6 +185,16 @@ export default class CheckboxInput extends ContractInput {
           },
         ];
         useEffect(() => {
+          if (!props.data?.__sync) {
+            if (
+              props?.data?.boxes &&
+              JSON.stringify(props.data.boxes) !== JSON.stringify(boxes)
+            ) {
+              setBoxes(props.data.boxes);
+            }
+          }
+        }, [props.data?.boxes]);
+        useEffect(() => {
           if (select) {
             window.addEventListener("mousemove", select.onMouseMove);
             const handleMouseUp = (e: any) => {
@@ -258,7 +286,7 @@ export default class CheckboxInput extends ContractInput {
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              onClick(box.value);
+              onClick(box.id);
             }}
             onMouseDown={(e) => {
               e.stopPropagation();
@@ -273,7 +301,7 @@ export default class CheckboxInput extends ContractInput {
           >
             <FlexChild padding={6} position="relative" justifyContent="center">
               <input
-                id={`${props?.name}_${box.value}`}
+                id={`${props?.name}_${box.id}`}
                 type="checkbox"
                 name={props?.name}
                 value={box.value}
@@ -327,7 +355,7 @@ export default class CheckboxInput extends ContractInput {
                     position="absolute"
                     zIndex={1}
                     top={"50%"}
-                    left={"100%"}
+                    left={"150%"}
                     transform="translate(-50%,-50%)"
                     cursor="pointer"
                     onClick={(e) => {
@@ -362,6 +390,7 @@ export default class CheckboxInput extends ContractInput {
                       const _boxes = [
                         ...boxes,
                         {
+                          id: uuid(),
                           disabled: false,
                           checked: false,
                           text: "",
@@ -387,7 +416,7 @@ export default class CheckboxInput extends ContractInput {
                     height={20}
                     position="absolute"
                     zIndex={1}
-                    top={"100%"}
+                    top={"150%"}
                     left={"50%"}
                     transform="translate(-50%,-50%)"
                     cursor="pointer"
@@ -425,6 +454,7 @@ export default class CheckboxInput extends ContractInput {
                       const _boxes = [
                         ...boxes,
                         {
+                          id: uuid(),
                           disabled: false,
                           checked: false,
                           text: "",
@@ -474,10 +504,10 @@ export default class CheckboxInput extends ContractInput {
           <FlexChild position="relative" height={"100%"} width={"100%"}>
             {boxes.map((box, index) => (
               <BoxCompnent
-                key={box.value}
+                key={box.id}
                 box={box}
-                selected={select === box.value}
-                onClick={(name) => setSelect(name)}
+                selected={select === box.id}
+                onClick={(id) => setSelect(id)}
                 onUpdate={({ top, left, width, height }) => {
                   boxes[index] = _.merge(boxes[index] || {}, {
                     y: top,
@@ -527,7 +557,7 @@ export default class CheckboxInput extends ContractInput {
           >
             <FlexChild padding={6} position="relative" justifyContent="center">
               <input
-                id={`${props?.name}_${box.value}`}
+                id={`${props?.name}_${box.id}`}
                 type="checkbox"
                 name={props?.name}
                 value={box.value}
@@ -568,7 +598,7 @@ export default class CheckboxInput extends ContractInput {
         <FlexChild padding={5} height={"100%"} width={"100%"}>
           <FlexChild position="relative" height={"100%"} width={"100%"}>
             {boxes.map((box: any, index: number) => (
-              <BoxCompnent key={box.value} box={box} boxes={boxes} />
+              <BoxCompnent key={box.id} box={box} boxes={boxes} />
             ))}
           </FlexChild>
         </FlexChild>
@@ -584,6 +614,7 @@ export default class CheckboxInput extends ContractInput {
       },
       boxes: [
         {
+          id: uuid(),
           disabled: false,
           checked: false,
           value: "체크1",
@@ -728,7 +759,15 @@ export default class CheckboxInput extends ContractInput {
                     <FlexChild width={60}>
                       <CheckboxGroup
                         name="require"
-                        onChange={(values) => setRequire(values)}
+                        onChange={(values) => {
+                          setRequire(values);
+                          if (values.length > 0) {
+                            setMin(1);
+                            if (max < 1) setMax(1);
+                          } else {
+                            setMin(0);
+                          }
+                        }}
                       >
                         <VerticalFlex gap={6}>
                           <P fontSize={14}>필수</P>
@@ -826,6 +865,7 @@ export default class CheckboxInput extends ContractInput {
                               padding={6}
                               height={"100%"}
                               border={"1px solid #d0d0d0"}
+                              position="relative"
                             >
                               <Input
                                 width={"inherit"}
@@ -840,6 +880,27 @@ export default class CheckboxInput extends ContractInput {
                                   setBoxes(boxes);
                                 }}
                               />
+
+                              {/* 삭제 버튼 */}
+                              <Div
+                                width={16}
+                                height={16}
+                                position="absolute"
+                                right={4}
+                                top={"50%"}
+                                transform="translateY(-50%)"
+                                cursor="pointer"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  e.preventDefault();
+                                  const newList = boxes.filter(
+                                    (_, i) => i !== index
+                                  );
+                                  setBoxes([...newList]);
+                                }}
+                              >
+                                <Icon src="contract/" name="close" type="svg" />
+                              </Div>
                             </FlexChild>
                           ),
                           width: "70%",
@@ -867,7 +928,7 @@ export default class CheckboxInput extends ContractInput {
                             {boxes.map((box, index) => (
                               <str.Display
                                 index={index}
-                                key={box.value}
+                                key={box.id}
                                 box={box}
                               />
                             ))}

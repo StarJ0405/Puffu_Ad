@@ -1,0 +1,13 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <mask id="cutout">
+      <rect width="120" height="120" fill="white" />
+      <path fill="black" d="
+        M 45 40 L 40 45 L 55 60 L 40 75 L 45 80
+        L 60 65 L 75 80 L 80 75 L 65 60 L 80 45
+        L 75 40 L 60 55 Z
+      "/>
+    </mask>
+  </defs>
+  <circle cx="60" cy="60" r="50" fill="black" mask="url(#cutout)" />
+</svg>

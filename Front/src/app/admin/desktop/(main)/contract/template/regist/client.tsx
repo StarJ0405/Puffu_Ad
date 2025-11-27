@@ -2446,7 +2446,7 @@ function FloatInput({
         {input?.input?.Float && (
           <input.input.Float
             name={input.name}
-            onChange={(data) => onUpdate({ data })}
+            onChange={(data) => onUpdate({ data: { ...input.data, ...data } })}
             data={input.data}
           />
         )}
