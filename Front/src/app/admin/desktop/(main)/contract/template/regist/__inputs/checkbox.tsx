@@ -185,15 +185,10 @@ export default class CheckboxInput extends ContractInput {
           },
         ];
         useEffect(() => {
-          if (!props.data?.__sync) {
-            if (
-              props?.data?.boxes &&
-              JSON.stringify(props.data.boxes) !== JSON.stringify(boxes)
-            ) {
-              setBoxes(props.data.boxes);
-            }
-          }
+          if (props.data?.__sync) return;
+          setBoxes([...props.data.boxes]);
         }, [props.data?.boxes]);
+
         useEffect(() => {
           if (select) {
             window.addEventListener("mousemove", select.onMouseMove);
