@@ -153,6 +153,14 @@ export default function ({ contract }: { contract: ContractData }) {
   const [fold, setFold] = useState(true);
   const [pageData, setPageData] = useState<PageData>({});
   const [selectedInputs, setSelectedInputs] = useState<string[]>([]);
+
+  const undoStack = useRef<PageData[]>([]);
+  const redoStack = useRef<PageData[]>([]);
+  const saveTimer = useRef<any>(null);
+  const pageDataRef = useRef(pageData);
+  useEffect(() => {
+    pageDataRef.current = pageData;
+  }, [pageData]);
   useHotkeys(
     "delete",
     (e) => {
@@ -247,6 +255,35 @@ export default function ({ contract }: { contract: ContractData }) {
       setSelectedInputs(selected);
     }
   });
+
+  useHotkeys(
+    "ctrl+z",
+    (e) => {
+      e.preventDefault();
+      if (!undoStack.current.length) return;
+
+      redoStack.current.push(_.cloneDeep(pageDataRef.current));
+      const prev = undoStack.current.pop();
+      if (prev) setPageData(_.cloneDeep(prev));
+    },
+    { preventDefault: true },
+    []
+  );
+
+  useHotkeys(
+    "ctrl+y",
+    (e) => {
+      e.preventDefault();
+      if (!redoStack.current.length) return;
+
+      undoStack.current.push(_.cloneDeep(pageDataRef.current));
+      const next = redoStack.current.pop();
+      if (next) setPageData(_.cloneDeep(next));
+    },
+    { preventDefault: true },
+    []
+  );
+
   useEffect(() => {
     function setMaxHeight() {
       const admin_header = document.getElementById("admin_header");
@@ -326,6 +363,7 @@ export default function ({ contract }: { contract: ContractData }) {
         }, {})
       );
   }, [inputList]);
+
   useEffect(() => {
     let timer = 10;
     const interval = setInterval(() => {
@@ -337,6 +375,7 @@ export default function ({ contract }: { contract: ContractData }) {
       } else timer--;
     }, 500);
   }, []);
+
   useEffect(() => {
     setFontFamilly("");
     setBold(false);
@@ -347,6 +386,14 @@ export default function ({ contract }: { contract: ContractData }) {
     setVertical("");
     setBackgroundColor("");
   }, [selectedInputs]);
+
+  useEffect(() => {
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => {
+      undoStack.current.push(_.cloneDeep(pageData));
+    }, 300);
+  }, [pageData]);
+
   return (
     <VerticalFlex className={styles.setting}>
       <input
