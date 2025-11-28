@@ -1,0 +1,216 @@
+.container {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.flexGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 15px;
+  width: 100%;
+  /* max-width: 1400px; */
+}
+
+.flexBox {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card {
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+}
+
+.section {
+  width: 100%;
+}
+
+.sectionTitle {
+  padding: 15px;
+  border-bottom: 1px solid #dedede;
+  font-weight: 600;
+  font-size: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sectionContent {
+  padding: 15px;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.statItem {
+  text-align: center;
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+}
+
+.statLabel {
+  font-size: 14px;
+  color: #6c757d;
+  margin-bottom: 5px;
+}
+
+.statValue {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  color: #777;
+}
+
+/* 디버깅용 로딩 및 에러 표시 스타일 */
+.loadingIndicator {
+  font-size: 14px;
+  color: #3498db;
+  font-weight: normal;
+  margin-left: 10px;
+}
+
+.errorIndicator {
+  font-size: 14px;
+  color: #e74c3c;
+  font-weight: normal;
+  margin-left: 10px;
+}
+
+.debug {
+  background-color: #f8f9fa;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 4px;
+  font-family: monospace;
+  white-space: pre-wrap;
+  overflow: auto;
+  max-height: 200px;
+  font-size: 12px;
+}
+
+.wideBox {
+  grid-column: span 2;
+}
+
+.fullWidthBox {
+  grid-column: 1 / -1; /* 그리드의 첫 번째 라인부터 마지막 라인까지 확장 */
+  width: 100%;
+}
+
+@media (min-width: 1200px) {
+  .flexGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .wideBox {
+    grid-column: span 2;
+  }
+
+  .fullWidthBox {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .flexGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .wideBox {
+    grid-column: span 2;
+  }
+
+  .fullWidthBox {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 767px) {
+  .flexGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .wideBox {
+    grid-column: span 1;
+  }
+
+  .fullWidthBox {
+    grid-column: span 1;
+  }
+}
+
+.container2 {
+  width: 100%;
+  overflow-x: auto;
+  height: 390px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: "none";
+}
+
+.salesTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.salesTable th,
+.salesTable td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.salesTable th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+}
+
+.salesTable tr:hover {
+  background-color: #f8f9fa;
+}
+
+.storeName {
+  font-weight: 500;
+  color: #343a40;
+}
+
+.amount {
+  text-align: right;
+  color: #495057;
+}
+
+@media (max-width: 600px) {
+  .salesTable {
+    min-width: 500px;
+  }
+}
+
+.clickable {
+  cursor: pointer;
+}
+.clickable:hover {
+  text-decoration: underline;
+}
+
+.clickable.selected {
+  text-decoration: underline;
+  font-weight: bold;
+}
