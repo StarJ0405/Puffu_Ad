@@ -154,18 +154,32 @@ export default function ({ contract }: { contract: ContractData }) {
   const [pageData, setPageData] = useState<PageData>({});
   const [selectedInputs, setSelectedInputs] = useState<string[]>([]);
 
-  const undoStack = useRef<PageData[]>([]);
-  const redoStack = useRef<PageData[]>([]);
-  const saveTimer = useRef<any>(null);
+  // 히스토리 시스템 준비
   const pageDataRef = useRef(pageData);
+
   useEffect(() => {
     pageDataRef.current = pageData;
   }, [pageData]);
+
+  const undoStack = useRef<any[]>([]);
+  const redoStack = useRef<any[]>([]);
+
+  const beforeActionSnapshot = useRef<PageData | null>(null);
+
+  const snapshot = () => _.cloneDeep(pageDataRef.current);
+
+  const pushHistory = (before: PageData, after: PageData) => {
+    undoStack.current.push({ before, after });
+    redoStack.current = []; // 새로운 작업 후 redo 초기화
+  };
+  const isAction = useRef(false);
+
   useHotkeys(
     "delete",
     (e) => {
       e.preventDefault();
       e.stopPropagation();
+      const before = snapshot();
       Object.keys(pageData).forEach((k) => {
         pageData[Number(k)].inputs = pageData[Number(k)].inputs.filter(
           (f) => !selectedInputs.includes(f.name)
@@ -173,6 +187,8 @@ export default function ({ contract }: { contract: ContractData }) {
       });
       setPageData({ ...pageData });
       setSelectedInputs([]);
+      const after = snapshot();
+      pushHistory(before, after);
     },
     {},
     [selectedInputs]
@@ -262,9 +278,11 @@ export default function ({ contract }: { contract: ContractData }) {
       e.preventDefault();
       if (!undoStack.current.length) return;
 
-      redoStack.current.push(_.cloneDeep(pageDataRef.current));
-      const prev = undoStack.current.pop();
-      if (prev) setPageData(_.cloneDeep(prev));
+      const current = snapshot();
+      const { before } = undoStack.current.pop();
+
+      redoStack.current.push({ before: current, after: pageDataRef.current });
+      setPageData(before);
     },
     { preventDefault: true },
     []
@@ -276,9 +294,11 @@ export default function ({ contract }: { contract: ContractData }) {
       e.preventDefault();
       if (!redoStack.current.length) return;
 
-      undoStack.current.push(_.cloneDeep(pageDataRef.current));
-      const next = redoStack.current.pop();
-      if (next) setPageData(_.cloneDeep(next));
+      const current = snapshot();
+      const { after } = redoStack.current.pop();
+
+      undoStack.current.push({ before: current, after });
+      setPageData(after);
     },
     { preventDefault: true },
     []
@@ -386,13 +406,6 @@ export default function ({ contract }: { contract: ContractData }) {
     setVertical("");
     setBackgroundColor("");
   }, [selectedInputs]);
-
-  useEffect(() => {
-    if (saveTimer.current) clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(() => {
-      undoStack.current.push(_.cloneDeep(pageData));
-    }, 300);
-  }, [pageData]);
 
   return (
     <VerticalFlex className={styles.setting}>
@@ -920,6 +933,8 @@ export default function ({ contract }: { contract: ContractData }) {
                           size={15}
                           onClick={() => {
                             if (!selectedInputs.length) return;
+                            const before = snapshot();
+
                             setBold(!isBold);
                             Object.keys(pageData).forEach((key) => {
                               const inputs = pageData[Number(key)].inputs;
@@ -933,6 +948,8 @@ export default function ({ contract }: { contract: ContractData }) {
                               );
                             });
                             setPageData({ ...pageData });
+                            const after = snapshot();
+                            pushHistory(before, after);
                           }}
                         />
                       </FlexChild>
@@ -943,6 +960,7 @@ export default function ({ contract }: { contract: ContractData }) {
                         color={!selectedInputs.length ? "#d0d0d0" : undefined}
                         onClick={() => {
                           if (!selectedInputs.length) return;
+                          const before = snapshot();
                           setItalic(!isItalic);
                           Object.keys(pageData).forEach((key) => {
                             const inputs = pageData[Number(key)].inputs;
@@ -956,6 +974,8 @@ export default function ({ contract }: { contract: ContractData }) {
                             );
                           });
                           setPageData({ ...pageData });
+                          const after = snapshot();
+                          pushHistory(before, after);
                         }}
                       >
                         <Icon
@@ -973,6 +993,7 @@ export default function ({ contract }: { contract: ContractData }) {
                         color={!selectedInputs.length ? "#d0d0d0" : undefined}
                         onClick={() => {
                           if (!selectedInputs.length) return;
+                          const before = snapshot();
                           setUnderLine(!isUnderLine);
                           Object.keys(pageData).forEach((key) => {
                             const inputs = pageData[Number(key)].inputs;
@@ -986,6 +1007,8 @@ export default function ({ contract }: { contract: ContractData }) {
                             );
                           });
                           setPageData({ ...pageData });
+                          const after = snapshot();
+                          pushHistory(before, after);
                         }}
                       >
                         <Icon
@@ -1003,6 +1026,7 @@ export default function ({ contract }: { contract: ContractData }) {
                           if (!selectedInputs.length) return;
                           NiceModal.show("contract/color", {
                             onConfirm: ({ color }: { color: string }) => {
+                              const before = snapshot();
                               setColor(color);
                               Object.keys(pageData).forEach((key) => {
                                 const inputs = pageData[Number(key)].inputs;
@@ -1015,6 +1039,8 @@ export default function ({ contract }: { contract: ContractData }) {
                                   }
                                 );
                                 setPageData({ ...pageData });
+                                const after = snapshot();
+                                pushHistory(before, after);
                               });
                             },
                           });
@@ -1064,6 +1090,7 @@ export default function ({ contract }: { contract: ContractData }) {
                             }
                             onClick={() => {
                               if (!selectedInputs.length) return;
+                              const before = snapshot();
                               setAlign("left");
                               Object.keys(pageData).forEach((key) => {
                                 const inputs = pageData[Number(key)].inputs;
@@ -1078,6 +1105,8 @@ export default function ({ contract }: { contract: ContractData }) {
                               });
                               setPageData({ ...pageData });
                               setFold(true);
+                              const after = snapshot();
+                              pushHistory(before, after);
                             }}
                           >
                             <Icon
@@ -1462,6 +1491,9 @@ export default function ({ contract }: { contract: ContractData }) {
                             number++;
                           }
                         }
+                        //생성 전 스냅샷
+                        const before = snapshot();
+
                         pageData[index].inputs.push({
                           top,
                           left,
@@ -1476,9 +1508,16 @@ export default function ({ contract }: { contract: ContractData }) {
                             ...selectedInput.initData(),
                           },
                         });
+
+                        // 상태 반영
                         setSelectedInputs([`${id} ${number}`]);
                         setPageData({ ...pageData });
                         setSelectedInput(undefined);
+
+                        // 생성 후 스냅샷 + 히스토리 저장
+                        const after = snapshot();
+                        pushHistory(before, after);
+
                         mouseRef.current?.remove();
                         mouseRef.current = null;
                       }}
@@ -1497,6 +1536,9 @@ export default function ({ contract }: { contract: ContractData }) {
                           maxPage={images.length}
                           key={input.name}
                           input={input}
+                          beforeActionSnapshot={beforeActionSnapshot}
+                          snapshot={snapshot}
+                          pushHistory={pushHistory}
                           top={`calc(${input.top} * ${scale / 100})`}
                           left={`calc(${input.left} * ${scale / 100})`}
                           selected={selectedInputs.some(
@@ -1612,6 +1654,9 @@ export default function ({ contract }: { contract: ContractData }) {
                                 label: "삭제",
                                 key: "Delete",
                                 onClick: () => {
+                                  // 삭제 전 스냅샷
+                                  const before = snapshot();
+
                                   setSelectedInputs((prev) =>
                                     prev.filter((f) => f !== input.name)
                                   );
@@ -1622,7 +1667,12 @@ export default function ({ contract }: { contract: ContractData }) {
                                       (f) => f.name !== input.name
                                     );
                                   });
+
                                   setPageData({ ...pageData });
+
+                                  // 삭제 후 스냅샷 + pushHistory
+                                  const after = snapshot();
+                                  pushHistory(before, after);
                                 },
                               },
                               {
@@ -1932,6 +1982,9 @@ function FloatInput({
   onClick,
   setSelectedInputs,
   contractUsers,
+  beforeActionSnapshot,
+  snapshot,
+  pushHistory,
 }: {
   pageData: PageData;
   setPageData: React.Dispatch<React.SetStateAction<PageData>>;
@@ -1943,6 +1996,9 @@ function FloatInput({
   left: CSSProperties["left"];
   width: number;
   height: number;
+  beforeActionSnapshot: any;
+  snapshot: () => PageData;
+  pushHistory: (before: PageData, after: PageData) => void;
   onUpdate: ({
     top,
     left,
@@ -2066,17 +2122,27 @@ function FloatInput({
         e.stopPropagation();
         e.preventDefault();
         setSelect(null);
-        posRef.current = {};
+
         const div = _ref.current as HTMLElement;
         const computed = div.computedStyleMap();
+
         onUpdate({
           top: computed.get("top")?.toString(),
           left: computed.get("left")?.toString(),
           width: width + data.dx,
           height: height + data.dy,
         });
+
+        const after = snapshot();
+        if (beforeActionSnapshot.current) {
+          pushHistory(beforeActionSnapshot.current, after);
+          beforeActionSnapshot.current = null;
+        }
+
+        posRef.current = {};
         setData({ dx: 0, dy: 0, dt: 0, dl: 0 });
       };
+
       window.addEventListener("mouseup", handleMouseUp);
       return () => {
         window.removeEventListener("mousemove", select.onMouseMove);
@@ -2135,6 +2201,13 @@ function FloatInput({
           height: height + data.dy,
           page,
         });
+
+        // ★ 드래그 종료: afterSnapshot + pushHistory
+        const after = snapshot();
+        if (beforeActionSnapshot.current) {
+          pushHistory(beforeActionSnapshot.current, after);
+          beforeActionSnapshot.current = null;
+        }
         posRef.current = { x: 0, y: 0 };
         setData({ dx: 0, dy: 0, dt: 0, dl: 0 });
       };
@@ -2168,6 +2241,10 @@ function FloatInput({
         e.stopPropagation();
         e.preventDefault();
         if (!selected) return;
+
+        // 드래그 시작 시점 히스토리 저장
+        beforeActionSnapshot.current = snapshot();
+
         setMove(true);
         posRef.current = {
           x: e.clientX,
@@ -2275,6 +2352,7 @@ function FloatInput({
                     data: any;
                     name: string;
                   }) => {
+                    const before = snapshot();
                     input.data = {
                       ...input.data,
                       ..._data,
@@ -2301,9 +2379,12 @@ function FloatInput({
                           } else break;
                         }
                         input.name = `${name} ${number}`;
-                      } else input.name = name;
-
+                      } else {
+                        input.name = name;
+                      }
                     setPageData({ ...pageData });
+                    const after = snapshot();
+                    pushHistory(before, after);
                   },
                 });
               },
@@ -2329,7 +2410,12 @@ function FloatInput({
         {input?.input?.Float && (
           <input.input.Float
             name={input.name}
-            onChange={(data) => onUpdate({ data })}
+            onChange={(data) => {
+              const before = snapshot();
+              onUpdate({ data });
+              const after = snapshot();
+              pushHistory(before, after);
+            }}
             data={input.data}
           />
         )}
@@ -2356,6 +2442,10 @@ function FloatInput({
                 onMouseDown={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
+
+                  // ★ 리사이즈 시작시 스냅샷 저장
+                  beforeActionSnapshot.current = snapshot();
+
                   setSelect(l);
                   posRef.current = {
                     x: e.clientX,
