@@ -1,6 +1,7 @@
 export const Cookies = {
   JWT: "_toy_official_jwt",
   ADMIN_JWT: "_toy_admin_jwt",
+  VENDOR_JWT: "_toy_vendor_jwt",
   ID: "_toy_official_id",
   HISTORY: "_toy_history",
   VISIT: "_toy_visity",
