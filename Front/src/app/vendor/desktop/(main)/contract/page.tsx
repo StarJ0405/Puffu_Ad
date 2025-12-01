@@ -4,7 +4,7 @@ import { Client } from "./client";
 export default async function () {
   return (
     <>
-      <VerticalFlex>
+      <VerticalFlex padding={40}>
         <Client />
       </VerticalFlex>
     </>
