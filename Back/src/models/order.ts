@@ -19,6 +19,7 @@ import { ShippingMethod } from "./shipping_method";
 import { Store } from "./store";
 import { User } from "./user";
 import { Subscribe } from "./subscribe";
+import { OfflineStore } from "./offline_store";
 
 export enum OrderStatus {
   AWAITING = "awaiting",
@@ -50,6 +51,13 @@ export class Order extends BaseEntity {
   @ManyToOne(() => Store)
   @JoinColumn({ name: "store_id", referencedColumnName: "id" })
   store?: Store;
+
+  @Column({ type: "character varying", nullable: true })
+  offline_store_id?: string;
+
+  @ManyToOne(() => OfflineStore)
+  @JoinColumn({ name: "offline_store_id", referencedColumnName: "id" })
+  offline_store?: OfflineStore;
 
   @OneToOne(() => Address, (address) => address.order, {
     cascade: ["insert", "update"],
