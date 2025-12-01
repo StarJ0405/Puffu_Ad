@@ -1,5 +1,5 @@
 import Div from "@/components/div/Div";
-import { useVandorAuth } from "@/providers/VendorAuthProiveder/VendorAuthProvider";
+import { useVendorAuth } from "@/providers/VendorAuthProiveder/VendorAuthProvider";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import React from "react";
@@ -13,7 +13,7 @@ export default async function ({ children }: { children: React.ReactNode }) {
   );
   const redirect_url = searchParams.get("redirect_url");
 
-  const { userData } = await useVandorAuth();
+  const { userData } = await useVendorAuth();
 
   if (pathname === "/login") {
     if (
