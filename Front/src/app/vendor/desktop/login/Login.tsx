@@ -129,7 +129,7 @@ export default function ({
                         );
                       else removeCookie(Cookies.ID, getCookieOption());
                       setCookies(
-                        Cookies.ADMIN_JWT,
+                        Cookies.VENDOR_JWT,
                         access_token,
                         getCookieOption(
                           checkList.includes("auto")

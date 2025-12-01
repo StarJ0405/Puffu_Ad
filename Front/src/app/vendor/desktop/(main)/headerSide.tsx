@@ -42,17 +42,7 @@ const SidebarNav: NavParent[] = [
     navs: [
       {
         name: "계약 관리",
-        to: "/list",
-        icon: "",
-      },
-      {
-        name: "템플릿 등록",
-        to: "template/regist",
-        icon: "",
-      },
-      {
-        name: "템플릿 관리",
-        to: "template/management",
+        to: "/",
         icon: "",
       },
     ]

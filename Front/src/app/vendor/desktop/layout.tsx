@@ -5,13 +5,9 @@ import { redirect } from "next/navigation";
 import React from "react";
 import LayoutClient from "./layoutClient";
 
-export default async function ({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default async function ({ children }: { children: React.ReactNode }) {
   const headerList = await headers();
-  const pathname = headerList.get("x-pathname"); 
+  const pathname = headerList.get("x-pathname");
   const searchParams = new URLSearchParams(
     headerList.get("x-searchParams") as string
   );
@@ -41,11 +37,7 @@ export default async function ({
 
   return (
     <Div minHeight={"100dvh"}>
-      <LayoutClient>
-        {/*  */}
-        {children}
-        {/*  */}
-      </LayoutClient>
+      <LayoutClient>{children}</LayoutClient>
     </Div>
   );
 }
