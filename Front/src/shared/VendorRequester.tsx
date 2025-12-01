@@ -323,23 +323,6 @@ class _VendorRequester {
     else return p;
   }
 
-  async replaceStoreMiniBanners(
-    id: string,
-    items: Array<{
-      name: string;
-      link: string;
-      thumbnail: { pc: string; mobile: string };
-    }>,
-    callback?: Function
-  ): Promise<any> {
-    const p = await this.post(`/admin/stores/${id}/minibanner`, {
-      action: "replace",
-      data: items,
-    });
-    if (callback) callback(p);
-    else return p;
-  }
-
   // 배송설정
   async createShippingMethod(
     data?: ShippingMethodDataFrame,
@@ -937,7 +920,6 @@ class _VendorRequester {
     if (callback) callback(await this.get(`/contract/${id}/verify`, data));
     else return await this.get(`/contract/${id}/verify`, data);
   }
-
 }
 
 export default _VendorRequester;
