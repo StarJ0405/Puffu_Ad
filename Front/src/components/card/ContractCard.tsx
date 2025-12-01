@@ -121,10 +121,8 @@ export default function ContractCard({
         <img src={image} alt={title} className={styles.preview} />
         <div className={styles.badgeWrapper}>{getBadge()}</div>
 
-        {/* Hover Overlay */}
         <div className={styles.overlay} />
 
-        {/* Center Hover Button */}
         <Button
           styleType="admin2"
           className={styles.hoverButton}
