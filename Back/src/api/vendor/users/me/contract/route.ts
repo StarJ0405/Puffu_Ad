@@ -1,5 +1,6 @@
 import { container } from "tsyringe";
 import { ContractService } from "services/contract";
+import { Like, Not, IsNull } from "typeorm";
 
 export const GET: ApiHandler = async (req, res) => {
   const svc = container.resolve(ContractService);
@@ -10,7 +11,23 @@ export const GET: ApiHandler = async (req, res) => {
     deleted_at: null,
     contract_users: { user_id: user.id },
   };
-  if (q) where.name = q;
+  if (q) where.name = Like(`%${q}%`);
+
+  if (req.parsedQuery.status) {
+    const status = req.parsedQuery.status;
+
+    if (status === "pending") {
+      where.completed_at = IsNull();
+      where.is_delete = IsNull();
+    }
+    if (status === "complete") {
+      where.completed_at = Not(IsNull());
+      where.is_delete = IsNull();
+    }
+    if (status === "delete") {
+      where.is_delete = Not(IsNull());
+    }
+  }
 
   const base: any = {
     where,
