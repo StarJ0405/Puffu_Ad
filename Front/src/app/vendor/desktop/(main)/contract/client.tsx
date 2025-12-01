@@ -9,10 +9,13 @@ import { vendorRequester } from "@/shared/VendorRequester";
 import { useVendorAuth } from "@/providers/VendorAuthProiveder/VendorAuthProviderClient";
 import useNavigate from "@/shared/hooks/useNavigate";
 import FlexChild from "@/components/flex/FlexChild";
-import FlexGrid from "@/components/flex/FlexGrid";
+import Input from "@/components/inputs/Input";
+import Select from "@/components/select/Select";
 
 export function Client() {
   const [contracts, setContracts] = useState<ContractData[]>([]);
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(true);
   const { userData } = useVendorAuth();
   const navigate = useNavigate();
@@ -26,6 +29,8 @@ export function Client() {
           "contract_users",
           "contract_users.user",
         ],
+        q: search,
+        status: status,
       });
 
       const userId = userData?.id;
@@ -44,9 +49,8 @@ export function Client() {
   }
 
   useEffect(() => {
-    if (!userData?.id) return;
     loadContracts();
-  }, [userData]);
+  }, [search, status]);
 
   if (loading) return <P>로딩 중...</P>;
 
@@ -55,6 +59,26 @@ export function Client() {
       <P fontWeight={600} fontSize={25}>
         내가 참가한 계약
       </P>
+
+      <HorizontalFlex gap={10}>
+        <Input
+          placeHolder="계약명 검색"
+          value={search}
+          onChange={(value) => setSearch(String(value))}
+          width={250}
+        />
+        <Select
+          width="160px"
+          placeholder="전체 상태"
+          options={[
+            { display: "전체 상태", value: "" },
+            { display: "진행 중", value: "pending" },
+            { display: "완료", value: "complete" },
+            { display: "파기", value: "delete" },
+          ]}
+          onChange={(v) => setStatus(String(v))}
+        />
+      </HorizontalFlex>
 
       <FlexChild
         width="100%"
@@ -80,11 +104,13 @@ export function Client() {
           return (
             <FlexChild
               key={contract.id}
-              flexBasis="calc(25% - 25px)"
-              maxWidth="calc(25% - 25px)"
+              flexBasis="calc(20% - 25px)"
+              maxWidth="calc(20% - 25px)"
               display="flex"
               justifyContent="center"
               alignItems="center"
+              flexGrow={"unset"}
+              width={"auto"}
             >
               <ContractCard
                 image={contract.pages?.[0]?.image}
