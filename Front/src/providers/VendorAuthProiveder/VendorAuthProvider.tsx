@@ -14,7 +14,7 @@ export default async function VendorAuthProvider({
     </VendorAuthProviderClient>
   );
 }
-export const useVandorAuth = async (): Promise<{ userData: UserData }> => {
+export const useVendorAuth = async (): Promise<{ userData: UserData }> => {
   const { user } = await vendorRequester.getCurrentUser();
   return { userData: user };
 };

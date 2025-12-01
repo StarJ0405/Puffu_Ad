@@ -6,7 +6,7 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import P from "@/components/P/P";
 import { vendorRequester } from "@/shared/VendorRequester";
-import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
+import { useVendorAuth } from "@/providers/VendorAuthProiveder/VendorAuthProviderClient";
 import useNavigate from "@/shared/hooks/useNavigate";
 import FlexChild from "@/components/flex/FlexChild";
 import FlexGrid from "@/components/flex/FlexGrid";
@@ -14,7 +14,7 @@ import FlexGrid from "@/components/flex/FlexGrid";
 export function Client() {
   const [contracts, setContracts] = useState<ContractData[]>([]);
   const [loading, setLoading] = useState(true);
-  const { userData } = useAuth();
+  const { userData } = useVendorAuth();
   const navigate = useNavigate();
 
   async function loadContracts() {
@@ -44,16 +44,25 @@ export function Client() {
   }
 
   useEffect(() => {
+    if (!userData?.id) return;
     loadContracts();
-  }, []);
+  }, [userData]);
 
   if (loading) return <P>로딩 중...</P>;
 
   return (
     <VerticalFlex gap={20} alignItems="flex-start">
-      <P fontWeight={600} fontSize={25}>내가 참가한 계약</P>
+      <P fontWeight={600} fontSize={25}>
+        내가 참가한 계약
+      </P>
 
-      <FlexGrid columns={4} gap={25} width="100%">
+      <FlexChild
+        width="100%"
+        display="flex"
+        flexWrap="wrap"
+        gap={25}
+        justifyContent="flex-start"
+      >
         {contracts.length === 0 && <P>참가 중인 계약이 없습니다.</P>}
 
         {contracts.map((contract) => {
@@ -71,13 +80,11 @@ export function Client() {
           return (
             <FlexChild
               key={contract.id}
-              width="100%"
-              style={{
-                gridColumn: "span 1",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
+              flexBasis="calc(25% - 25px)"
+              maxWidth="calc(25% - 25px)"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
             >
               <ContractCard
                 image={contract.pages?.[0]?.image}
@@ -87,12 +94,14 @@ export function Client() {
                 deleted={!!contract.is_delete}
                 senderReady={senderReady}
                 onSign={() => navigate(`/contract/${contract.id}`)}
-                onView={() => navigate(`/contract/${contract.id}?view=readonly`)}
+                onView={() =>
+                  navigate(`/contract/${contract.id}?view=readonly`)
+                }
               />
             </FlexChild>
           );
         })}
-      </FlexGrid>
+      </FlexChild>
     </VerticalFlex>
   );
 }
