@@ -56,8 +56,14 @@ export function Client() {
         내가 참가한 계약
       </P>
 
-      <FlexGrid columns={4} gap={25} width="100%">
-        {contracts.length === 0 && <P>참가 중인 계약이 없 습니다.</P>}
+      <FlexChild
+        width="100%"
+        display="flex"
+        flexWrap="wrap"
+        gap={25}
+        justifyContent="flex-start"
+      >
+        {contracts.length === 0 && <P>참가 중인 계약이 없습니다.</P>}
 
         {contracts.map((contract) => {
           const myUser = contract.contract_users.find(
@@ -74,13 +80,11 @@ export function Client() {
           return (
             <FlexChild
               key={contract.id}
-              width="100%"
-              style={{
-                gridColumn: "span 1",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
+              flexBasis="calc(25% - 25px)"
+              maxWidth="calc(25% - 25px)"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
             >
               <ContractCard
                 image={contract.pages?.[0]?.image}
@@ -97,7 +101,7 @@ export function Client() {
             </FlexChild>
           );
         })}
-      </FlexGrid>
+      </FlexChild>
     </VerticalFlex>
   );
 }
