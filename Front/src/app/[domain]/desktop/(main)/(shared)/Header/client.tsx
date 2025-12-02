@@ -12,7 +12,6 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useCookies } from "react-cookie";
 import styles from "./header.module.css";
-import { HeaderCategory } from "./headerCategory";
 import useNavigate from "@/shared/hooks/useNavigate";
 import { usePathname } from "next/navigation";
 import NiceModal from "@ebay/nice-modal-react";
@@ -157,10 +156,10 @@ export function SearchBox() {
     i === 0
       ? styles.rank1
       : i === 1
-      ? styles.rank2
-      : i === 2
-      ? styles.rank3
-      : styles.rank;
+        ? styles.rank2
+        : i === 2
+          ? styles.rank3
+          : styles.rank;
 
   const base = recentSearches;
   const filtered = value
@@ -208,7 +207,7 @@ export function SearchBox() {
     >
       <input
         type="search"
-        placeholder="상품 검색"
+        placeholder="원하시는 제품을 검색해 보세요."
         value={value}
         autoComplete="off"
         onFocus={() => {
@@ -223,17 +222,20 @@ export function SearchBox() {
         }}
         onKeyDown={onKeyDown}
       />
-      <Image
-        src="/resources/images/header/input_search_icon.png"
-        width={18}
-        height="auto"
-        cursor="pointer"
-        onClick={() => {
+      <FlexChild className={styles.search_icon}>
+        <Image
+          src="/resources/images/header/input_search_icon_b.png"
+          width={16}
+          height="auto"
+          cursor="pointer"
+          onClick={() => {
             latestSearch();
             handleSearch();
           }
-        }
-      />
+          }
+        />
+      </FlexChild>
+
 
       {open && (items.length > 0 || recentSearches.length > 0) && (
         <FlexChild className={styles.search_dropdown}>
@@ -279,7 +281,7 @@ export function SearchBox() {
                   </li>
                 ))}
               </ul>
-    
+
               <div className={styles.search_actions}>
                 <button
                   type="button"
@@ -334,7 +336,7 @@ export function SearchBox() {
                       ))}
                     </VerticalFlex>
                   </FlexChild>
-  
+
                   {/* Right column */}
                   <FlexChild className={styles.col}>
                     <VerticalFlex gap={20}>
@@ -384,33 +386,39 @@ export function SearchBox() {
 
 export function HeaderBottom() {
   const menu1 = [
-    { name: "BEST 상품", link: "/products/best" },
-    { name: "입고예정", link: "/products/commingSoon" },
-    { name: "신상품", link: "/products/new" },
-    {
-      name: "이달의 핫딜",
-      link: "/products/hot",
-      icon: "/resources/images/header/HotDeal_icon.png",
-    },
+    { name: "상품", link: "/" },
+    { name: "픽업 매장", link: "/" },
+    { name: "멤버쉽&구독", link: "/" },
+    { name: "이벤트", link: "/board/event" },
+    { name: "사용후기", link: "/board/photoReview" },
+    { name: "창업안내", link: "/" },
+    // { name: "BEST 상품", link: "/products/best" },
+    // { name: "입고예정", link: "/products/commingSoon" },
+    // { name: "신상품", link: "/products/new" },
+    // {
+    //   name: "이달의 핫딜",
+    //   link: "/products/hot",
+    //   icon: "/resources/images/header/HotDeal_icon.png",
+    // },
     // { name: "세트메뉴", link: "/products/set" },
     // { name: "랜덤박스", link: "/products/randomBox" },
   ];
 
-  const menu2 = [
-    { name: "포토 사용후기", link: "/board/photoReview" },
-    { name: "공지사항", link: "/board/notice" },
-    { name: "1:1문의", link: "/board/inquiry" },
-    { name: "이벤트", link: "/board/event" },
-    // {
-    //   name: "고객센터",
-    //   link: "/board/notice",
-    //   inner: [
-    //     { name: "공지사항", link: "/board/notice" },
-    //     { name: "1:1문의", link: "/board/inquiry" },
-    //     { name: "이벤트", link: "/board/event" },
-    //   ],
-    // },
-  ];
+  // const menu2 = [
+  //   { name: "포토 사용후기", link: "/board/photoReview" },
+  //   { name: "공지사항", link: "/board/notice" },
+  //   { name: "1:1문의", link: "/board/inquiry" },
+  //   { name: "이벤트", link: "/board/event" },
+  //   // {
+  //   //   name: "고객센터",
+  //   //   link: "/board/notice",
+  //   //   inner: [
+  //   //     { name: "공지사항", link: "/board/notice" },
+  //   //     { name: "1:1문의", link: "/board/inquiry" },
+  //   //     { name: "이벤트", link: "/board/event" },
+  //   //   ],
+  //   // },
+  // ];
 
   const pathname = usePathname();
   const [CaOpen, SetCaOpen] = useState(false);
@@ -437,7 +445,7 @@ export function HeaderBottom() {
       {/* <div className={`${fixed ? styles.fixed : ""}`}> */}
       <HorizontalFlex className="page_container" position="relative">
         <HorizontalFlex gap={25} justifyContent="start">
-          <FlexChild
+          {/* <FlexChild
             width={"auto"}
             position="relative"
             className={styles.CategoryBox}
@@ -453,7 +461,7 @@ export function HeaderBottom() {
               <span className="SacheonFont">카테고리</span>
             </FlexChild>
             <HeaderCategory CaOpen={CaOpen} />
-          </FlexChild>
+          </FlexChild> */}
 
           <FlexChild width={"auto"}>
             <nav>
@@ -461,15 +469,15 @@ export function HeaderBottom() {
                 {menu1.map((item, i) => (
                   <li
                     key={i}
-                    className={clsx({
-                      [styles.active]: pathname === item.link,
-                    })}
+                  // className={clsx({
+                  //   [styles.active]: pathname === item.link,
+                  // })}
                   >
-                    <Link href={item.link} className="SacheonFont">
+                    <Link href={item.link}>
                       {item.name}
-                      {item.icon ? <Image src={item.icon} width={12} /> : null}
+                      {/* {item.icon ? <Image src={item.icon} width={12} /> : null} */}
                     </Link>
-                    <Span className={styles.active_line}></Span>
+                    {/* <Span className={styles.active_line}></Span> */}
                   </li>
                 ))}
               </ul>
@@ -479,14 +487,14 @@ export function HeaderBottom() {
 
         <FlexChild gap={20} width={"auto"}>
           <ul className={clsx(styles.outerMenu, styles.commu_outer)}>
-            {menu2.map((item, i) => (
+            {/* {menu2.map((item, i) => (
               <li
                 key={i}
                 className={clsx({ [styles.active]: pathname === item.link })}
               >
                 <Link href={item.link}>{item.name}</Link>
               </li>
-            ))}
+            ))} */}
             {/* <li key={i} className={clsx({[styles.active]: pathname === item.link})}>
                   <Link href={item.link}>
                     {item.name}
