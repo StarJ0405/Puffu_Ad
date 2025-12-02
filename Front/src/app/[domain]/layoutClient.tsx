@@ -38,7 +38,7 @@ export default function ({ children }: { children: React.ReactNode }) {
         {/*  */}
       </motion.div>
     </AnimatePresence>
-    // </Wating>
+    //  </Wating>
   );
 }
 
@@ -64,7 +64,7 @@ export function Wating({ children }: { children: React.ReactNode }) {
       interval.current = setInterval(() => {
         if (
           new Date().getTime() >=
-          (lastRef.current?.getTime() || 0) + 1000 * 60 * 1
+          (lastRef.current?.getTime() || 0) + 1000 * 15 * 1
         ) {
           setActive(false);
           clearInterval(interval.current);
@@ -73,7 +73,7 @@ export function Wating({ children }: { children: React.ReactNode }) {
             setWaiting(res.waiting);
             if (res.key) setKey(res.key);
           });
-      }, 1000 * 60);
+      }, 1000 * 15);
     }
   }, [key]);
 

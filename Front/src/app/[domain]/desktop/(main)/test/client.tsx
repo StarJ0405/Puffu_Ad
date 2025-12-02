@@ -15,6 +15,7 @@ interface Chat {
 export default function () {
   const [chats, setChats] = useState<Chat[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
+  const [chatId, setChatId] = useState<String>();
   const input = useRef<any>(null);
   const onSearch = () => {
     if (isLoading) return;
@@ -22,8 +23,10 @@ export default function () {
     if (value) {
       setChats([...chats, { mine: true, date: new Date(), chat: value }]);
       setLoading(true);
-      requester.queryChatbot({ question: value }, (response: any) => {
+      requester.queryChatbot({ question: value, chatId }, (response: any) => {
         if (response.answer) {
+          console.log(response);
+          if (response.chatId) setChatId(response.chatId);
           setChats((prev) => [
             ...prev,
             {
