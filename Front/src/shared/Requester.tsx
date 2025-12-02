@@ -6,7 +6,7 @@ const mode = process.env.REACT_APP_MODE;
 
 const origin = mode
   ? process.env["NEXT_PUBLIC_BACK_" + mode.toUpperCase()] ||
-    process.env.NEXT_PUBLIC_BACK
+  process.env.NEXT_PUBLIC_BACK
   : process.env.NEXT_PUBLIC_BACK;
 
 class _Requester {
@@ -125,7 +125,7 @@ class _Requester {
             resolve(result);
           });
       });
-    } catch (e) {}
+    } catch (e) { }
   }
 
   async delete(url: string, data: any) {
@@ -161,7 +161,7 @@ class _Requester {
             resolve(result);
           });
       });
-    } catch (e) {}
+    } catch (e) { }
   }
   async put(url: string, data: any) {
     let instance = this.instance;
@@ -189,7 +189,7 @@ class _Requester {
             resolve(result);
           });
       });
-    } catch (e) {}
+    } catch (e) { }
   }
 
   // 회원 관련
@@ -831,7 +831,20 @@ class _Requester {
     if (callback) callback(await this.get(`/contract/${id}/verify`, data));
     else return await this.get(`/contract/${id}/verify`, data);
   }
+
+  async getOfflineStores(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/offline_store`, data));
+    else return await this.get(`/offline_store`, data);
+  }
+  async getOfflineStore(id : string , data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.get(`/offline_store/${id}`, data));
+    else return await this.get(`/offline_store/${id}`, data);
+  }
+
+
+
 }
+
 
 export default _Requester;
 
