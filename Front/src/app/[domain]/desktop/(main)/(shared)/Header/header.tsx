@@ -1,7 +1,6 @@
 "use client";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
-import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import Link from "next/link";
 import { Auth, HeaderBottom, SearchBox } from "./client";
@@ -9,6 +8,7 @@ import styles from "./header.module.css";
 import { useRef, useState, useEffect } from "react";
 import clsx from "clsx";
 import CountBadge from "@/components/countBadge/countBadge";
+
 
 export default function Header() {
 
@@ -28,9 +28,13 @@ export default function Header() {
   return (
     <>
       {/* className={styles.header} className={clsx(`${fixed ? styles.scroll : ""}`, styles.header)} */}
-      <header ref={headerRef} className={clsx(`${fixed ? styles.scroll : ""}`, styles.header)}>
+      <header ref={headerRef} className={
+        clsx(
+          // `${fixed ? styles.scroll : ""}`,
+          styles.header
+        )}>
         <HorizontalFlex
-          className={clsx('page_container', styles.header_wrap)}
+          className={styles.header_wrap}
         >
           <FlexChild gap={20}>
             <FlexChild className={styles.logo}>
@@ -40,54 +44,66 @@ export default function Header() {
                 />
               </Link>
             </FlexChild>
-            <SearchBox /> {/* 검색창 */}
+            <HeaderBottom />
           </FlexChild>
 
           <FlexChild width={"auto"} className={styles.info_box}>
-            <VerticalFlex className={styles.info_wrap}>
+            {/* <VerticalFlex className={styles.info_wrap}>
               <Auth />
+            </VerticalFlex> */}
+            <HorizontalFlex width={"auto"} gap={15}>
+              <SearchBox /> {/* 검색창 */}
 
-              <HorizontalFlex width={"auto"} gap={10}>
-                <FlexChild>
-                  <Link href={"/mypage"}>
-                    <Image
-                      src="/resources/icons/main/user_icon.png"
-                      width={28}
-                      height={"auto"}
-                      cursor="pointer"
-                    />
-                  </Link>
-                </FlexChild>
+              <FlexChild width={"fit-content"}>
+                <Link href={"/board/notice"}>
+                  <Image
+                    src="/resources/icons/main/customer_center_b.png"
+                    width={25}
+                    height={"auto"}
+                    cursor="pointer"
+                  />
+                </Link>
+              </FlexChild>
 
-                <FlexChild>
-                  <Link href={"/orders/cart"} className={styles.cart_btn}>
-                    <Image
-                      src="/resources/icons/main/cart_icon.png"
-                      width={30}
-                      height={"auto"}
-                      cursor="pointer"
-                    />
-                    <CountBadge bottom="-3px" right="-5px" />
-                  </Link>
-                </FlexChild>
+              <FlexChild width={"fit-content"}>
+                <Link href={"/mypage"}>
+                  <Image
+                    src="/resources/icons/main/user_icon_b.png"
+                    width={25}
+                    height={"auto"}
+                    cursor="pointer"
+                  />
+                </Link>
+              </FlexChild>
 
-                <FlexChild>
-                  <Link href={"/mypage/wishList"}>
-                    <Image
-                      src="/resources/icons/main/product_heart_icon.png"
-                      width={30}
-                      height={"auto"}
-                      cursor="pointer"
-                    />
-                  </Link>
-                </FlexChild>
-              </HorizontalFlex>
-            </VerticalFlex>
+              <FlexChild width={"fit-content"}>
+                <Link href={"/mypage/wishList"}>
+                  <Image
+                    src="/resources/icons/main/product_heart_icon_b.png"
+                    width={25}
+                    height={"auto"}
+                    cursor="pointer"
+                  />
+                </Link>
+              </FlexChild>
+
+              <FlexChild width={"fit-content"}>
+                <Link href={"/orders/cart"} className={styles.cart_btn}>
+                  <Image
+                    src="/resources/icons/main/cart_icon_b.png"
+                    width={20}
+                    height={"auto"}
+                    cursor="pointer"
+                  />
+                  <CountBadge bottom="-3px" right="-10px" />
+                </Link>
+              </FlexChild>
+            </HorizontalFlex>
           </FlexChild>
         </HorizontalFlex>
 
-        <HeaderBottom />
+
       </header>
-    </>
+      </>
   );
 }
