@@ -36,6 +36,9 @@ export class OfflineStore extends BaseEntity {
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;
 
+  @Column({ type: "character varying", nullable: true })
+  thumbnail?: string;
+
   @BeforeInsert()
   protected async beforeInsert(): Promise<void> {
     this.id = generateEntityId(this.id, "ofs");
