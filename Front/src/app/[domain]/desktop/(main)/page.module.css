@@ -1,16 +1,19 @@
 /* 메인베너 */
 .main_banner {
    width: 100%;
+   max-width: 1600px;
    height: auto;
-   margin-top: 20px;
+   margin: 30px auto 0;
 }
 
 .main_banner .slideItem {
-   width: 100%;
-   padding-bottom: 450px;
-   background-repeat: no-repeat;
-   background-size: cover;
+   /* width: 80% !important; */
+   /* max-width: 1600px; */
    /* background-position: center bottom; */
+}
+
+.main_banner .slideItem img {
+   width: 100%;
 }
 
 /* 메인베너 end ------------------------ */

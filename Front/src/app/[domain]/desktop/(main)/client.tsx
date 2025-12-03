@@ -26,7 +26,7 @@ import ReviewImgCard from "@/components/card/reviewImgCard";
 import LoadingSpinner from "@/components/loading/LoadingSpinner";
 import LoadingCard from "@/components/card/LoadingCard";
 import ProductLoadBtn from "@/components/buttons/ProductLoadBtn";
-import SubBanner from "@/components/subBanner/subBanner";
+// import SubBanner from "@/components/subBanner/subBanner";
 
 export function MainBanner({ initBanners }: { initBanners: Pageable }) {
   const { userData } = useAuth();
@@ -49,6 +49,12 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
   //     setBanners(result);
   //   });
   // }, []);
+
+  const cardData = [
+    { id: 1, title: '렌즈삽입술', subTitle: 'ICL', description: '각막을 깎지 않는 시력 교정술로 안전한 시력 회복을 돕습니다.', imageUrl: 'image_2b9053_icl.jpg' },
+    { id: 2, title: '녹내장', subTitle: 'GLAUCOMA', description: '시신경 손상이 시작되기 전에 정기 검진 및 치료를 시작해야 합니다.', imageUrl: 'image_2b9053_glaucoma.jpg' },
+    { id: 3, title: '안종합검진', subTitle: 'COMPREHENSIVE EYE EXAM', description: '시력 뿐만 아니라 안과 질환 전반에 걸친 정밀 검진으로 건강한 눈을 지키실 수 있습니다.', imageUrl: 'image_2b9053_exam.jpg' },
+  ];
 
   const paintBullets = (swiper: SwiperType) => {
     // 페이지네이션 스타일 설정
@@ -78,18 +84,18 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
   };
 
   return (
-    <FlexChild className={clsx("page_container", styles.main_banner)}>
+    <FlexChild className={clsx(styles.main_banner)}>
       <Swiper
         loop={true}
         slidesPerView={1}
         speed={600}
-        spaceBetween={0}
+        spaceBetween={90}
+        autoplay={{ delay: 400000 }}
         modules={[Pagination, Autoplay]}
         pagination={{
           dynamicBullets: true,
           clickable: true,
         }}
-        autoplay={{ delay: 4000 }}
         onSwiper={(swiper) => {
           swiperRef.current = swiper;
         }}
@@ -109,28 +115,26 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
         {[...banners]?.map(
           (item: BannerDataFrame, i: number) =>
             item.thumbnail.pc && (
-              <SwiperSlide key={i} className={`swiper_0${i}`}>
+              <SwiperSlide key={i} className={clsx(`swiper_0${i}`, styles.slideItem)}>
                 {item.to ? (
-                  <Link href={item.to}>
+                    <Link href={item.to}>
+                      <Image
+                        src={
+                          userData?.adult
+                            ? item.thumbnail.pc
+                            : "/resources/images/19_only_banner.png"
+                        }
+                      />
+                    </Link>
+                  ) : (
                     <Image
                       src={
                         userData?.adult
                           ? item.thumbnail.pc
                           : "/resources/images/19_only_banner.png"
                       }
-                      width="100%"
                     />
-                  </Link>
-                ) : (
-                  <Image
-                    src={
-                      userData?.adult
-                        ? item.thumbnail.pc
-                        : "/resources/images/19_only_banner.png"
-                    }
-                    width="100%"
-                  />
-                )}
+                  )}
               </SwiperSlide>
             )
         )}
