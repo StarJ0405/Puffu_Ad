@@ -49,11 +49,11 @@
    /* font-weight: 600; */
 }
 
-.edit_button_group button.edit_btn {border-color: var(--main-color2);}
+.edit_button_group button.edit_btn {border-color: var(--main-color1);}
 .edit_button_group button.delete_btn:hover {
-   border-color: var(--main-color2);
+   border-color: var(--main-color1);
 }
-.edit_button_group button:hover {background: var(--main-color2);}
+.edit_button_group button:hover {background: var(--main-color1);}
 
 .list_btn {
    width: 100%;

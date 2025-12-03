@@ -59,8 +59,8 @@
    transition: all 0.1s;
 }
 .comment_form .post_btn:hover {
-   background: var(--main-color2);
-   border-color: var(--main-color2);
+   background: var(--main-color1);
+   border-color: var(--main-color1);
 }
 
 .comment_form .content_textArea {

@@ -2,7 +2,7 @@
   gap: 15px;
   padding: 15px 10px;
   border-radius: 10px;
-  background-color: var(--main-color2);
+  background-color: var(--main-color1);
 }
 
 .my_point_box .title {
@@ -101,7 +101,7 @@
 }
 
 .point_history .status.used {
-  color: var(--main-color2);
+  color: var(--main-color1);
 }
 
 .point_history .space_line {

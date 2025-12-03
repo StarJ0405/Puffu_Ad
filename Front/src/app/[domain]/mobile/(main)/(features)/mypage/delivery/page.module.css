@@ -30,7 +30,7 @@
 
 .delivery_box .top_box .add_btn button {
    padding: 12px 13px;
-   background: var(--main-color2);
+   background: var(--main-color1);
    border-radius: 5px;
    color: #fff;
    transition: all 0.2s;
@@ -75,7 +75,7 @@
    font-size: 11px;
    color: #fff;
    padding: 5px 9px;
-   background: var(--main-color2);
+   background: var(--main-color1);
    width: auto;
    border-radius: 20px;
 }

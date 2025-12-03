@@ -124,7 +124,7 @@
 }
 
 .profile .point_box .currency {
-  color: var(--main-color2);
+  color: var(--main-color1);
 }
 
 .profile .membership_btn {
@@ -133,7 +133,7 @@
   font-size: 20px;
   font-weight: 500;
   border-radius: 0 0 10px 10px;
-  background-color: var(--main-color2);
+  background-color: var(--main-color1);
 }
 
 .profile .membership_btn p:hover {

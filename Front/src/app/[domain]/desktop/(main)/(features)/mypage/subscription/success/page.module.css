@@ -69,7 +69,7 @@
 }
 
 .confirm_btn .shop_btn {
-  background: var(--main-color2);
+  background: var(--main-color1);
 
   opacity: 0; transform: translateY(5%);
   animation: fadeUP 0.7s 1.6s forwards;

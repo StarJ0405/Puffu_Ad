@@ -216,7 +216,7 @@
 }
 
 .input_box .input_item .label > span {
-  color: var(--main-color2);
+  color: var(--main-color1);
 }
 
 .check_txt {
@@ -312,7 +312,7 @@
 
 .continue_box .home_btn {
   width: 363px;
-  background: var(--main-color2);
+  background: var(--main-color1);
   /* border: 1px solid #fff; */
 }
 

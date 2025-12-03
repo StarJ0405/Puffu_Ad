@@ -173,7 +173,7 @@ const DeliveryAddEdit = forwardRef<DeliveryAddEditRef, DeliveryAddEditProps>(
                     readOnly
                   />
                   <Button
-                    backgroundColor="var(--main-color2)"
+                    backgroundColor="var(--main-color1)"
                     padding={"7px 5px"}
                     width={130}
                     onClick={() => openPostcode({ onComplete: handleComplete })}

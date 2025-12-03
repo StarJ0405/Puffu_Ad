@@ -64,7 +64,7 @@
 }
 
 .ca_box .ca_item:hover {
-  background: var(--main-color2);
+  background: var(--main-color1);
 }
 
 
@@ -84,7 +84,7 @@
 
 @media (min-width: 768px) {
   .submit_btn:hover {
-    background: var(--main-color2);
+    background: var(--main-color1);
   } 
 }
 
@@ -106,7 +106,7 @@
 .mob_container .button_box {padding: 0 13px 20px; background: transparent;}
 
 .mob_container .submit_btn {
-  background: var(--main-color2);
+  background: var(--main-color1);
 }
 
 .mob_container .submit_btn:active {

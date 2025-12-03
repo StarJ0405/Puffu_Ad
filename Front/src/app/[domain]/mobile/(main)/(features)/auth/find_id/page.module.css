@@ -66,7 +66,7 @@
 }
 
 .find_id_link .link_btn:active {
-  color: var(--main-color2) !important;
+  color: var(--main-color1) !important;
 }
 
 .btn {
@@ -87,7 +87,7 @@
 }
 
 .next_btn:hover {
-  background: var(--main-color2);
+  background: var(--main-color1);
 }
 
 .prev_btn {
@@ -292,7 +292,7 @@
 
 .forgetPW {font-size: 14px !important;}
 .findPW {font-size: 14px !important;}
-.findPW:active {color: var(--main-color2);}
+.findPW:active {color: var(--main-color1);}
 
 /* 진행 버튼박스 */
 
@@ -328,7 +328,7 @@
 }
 
 .continue_box .login_btn:hover {
-  background: var(--main-color2);
+  background: var(--main-color1);
 }
 
 

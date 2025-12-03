@@ -58,7 +58,7 @@
 
 .chat_number {
   position: absolute;
-  background-color: var(--main-color2);
+  background-color: var(--main-color1);
   z-index: 2;
   border-radius: 5px;
   width: max-content;

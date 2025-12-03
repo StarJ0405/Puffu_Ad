@@ -47,7 +47,7 @@
 }
 
 .hoverButton:hover {
-  background-color: var(--main-color2);
+  background-color: var(--main-color1);
 }
 
 .previewBox:hover .hoverButton {
@@ -83,7 +83,7 @@
 }
 
 .card:hover .info {
-  background: var(--main-color2);
+  background: var(--main-color1);
 }
 
 .title {

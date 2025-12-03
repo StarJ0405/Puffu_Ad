@@ -18,8 +18,8 @@
 }
 
 .edit_container .thumb_box .photo_edit_btn:hover {
-   background-color: var(--main-color2);
-   border-color: var(--main-color2);
+   background-color: var(--main-color1);
+   border-color: var(--main-color1);
 }
 
 
@@ -70,5 +70,5 @@
 }
 
 .button_group .submit_btn {
-   background: var(--main-color2);
+   background: var(--main-color1);
 }

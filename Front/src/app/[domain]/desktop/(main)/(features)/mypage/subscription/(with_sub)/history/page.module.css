@@ -61,7 +61,7 @@
 }
 
 .revoke:hover {
-  background: var(--main-color2);
+  background: var(--main-color1);
   color: #fff;
   border-color: transparent;
 }

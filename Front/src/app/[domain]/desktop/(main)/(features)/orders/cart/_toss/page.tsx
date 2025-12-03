@@ -162,7 +162,7 @@ export default function TossPaymentPage() {
           <P
             size={18}
             weight={600}
-            color={ready ? "white" : "var(--main-color2)"}
+            color={ready ? "white" : "var(--main-color1)"}
           >
             <Span verticalAlign={"baseline"}>{total}</Span>
             <Span verticalAlign={"baseline"}>원 결제</Span>
