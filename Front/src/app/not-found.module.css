@@ -43,7 +43,7 @@
 }
 
 .home_btn:hover {
-   background: var(--main-color2);
+   background: var(--main-color1);
 }
 
 @media (max-width: 768px) {

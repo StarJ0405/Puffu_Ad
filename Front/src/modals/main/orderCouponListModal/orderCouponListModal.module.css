@@ -51,7 +51,7 @@
 
 /* 카드 체크되었을 시 */
 .item_list .item.checked > label {
-  border-color: var(--main-color2);
+  border-color: var(--main-color1);
 }
 
 .item_list .item .checkBox {
@@ -115,7 +115,7 @@
 
 @media (min-width: 768px) {
   .submit_btn:hover {
-    background: var(--main-color2);
+    background: var(--main-color1);
   } 
 }
 
@@ -148,7 +148,7 @@
 .mob_container .button_box {padding: 0 13px 20px;}
 
 .mob_container .submit_btn {
-  background: var(--main-color2);
+  background: var(--main-color1);
 }
 
 .mob_container .submit_btn:active {

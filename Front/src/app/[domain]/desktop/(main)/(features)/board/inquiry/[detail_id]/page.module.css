@@ -45,11 +45,11 @@
    /* font-weight: 600; */
 }
 
-.edit_button_group button.edit_btn {border-color: var(--main-color2);}
+.edit_button_group button.edit_btn {border-color: var(--main-color1);}
 .edit_button_group button.delete_btn:hover {
-   border-color: var(--main-color2);
+   border-color: var(--main-color1);
 }
-.edit_button_group button:hover {background: var(--main-color2);}
+.edit_button_group button:hover {background: var(--main-color1);}
 
 .list_btn {
    width: 130px;
@@ -61,7 +61,7 @@
    transition: all 0.2s;
 }
 
-.list_btn:hover {background: var(--main-color2);}
+.list_btn:hover {background: var(--main-color1);}
 
 .qa_btn {
    width: 100px;
@@ -69,11 +69,11 @@
    font-size: 18px;
    font-weight: 600;
    color: #e4e4e4;
-   background: var(--main-color2);
+   background: var(--main-color1);
    transition: all 0.2s;
 }
 
-.qa_btn:hover {background: var(--main-color2);}
+.qa_btn:hover {background: var(--main-color1);}
 
 
 /* 댓글창 */

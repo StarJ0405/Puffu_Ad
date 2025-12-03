@@ -11,12 +11,12 @@
   font-weight: 600;
   border-radius: 100px;
   aspect-ratio: 1/1;
-  background-color: var(--main-color2);
+  background-color: var(--main-color1);
 }
 
 
 .list_more_btn {
-  background: var(--main-color2);
+  background: var(--main-color1);
   color: #fff;
   font-size: 13px;
   font-weight: 600;

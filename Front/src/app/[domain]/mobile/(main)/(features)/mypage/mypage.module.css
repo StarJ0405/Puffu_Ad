@@ -32,7 +32,7 @@
 
 .profile .wish_btn:active {
    background: #000;
-   border-color: var(--main-color2);
+   border-color: var(--main-color1);
    color: #ababab;
 }
 
@@ -130,7 +130,7 @@
 
 .point_box .title_box .currency {
   font-weight: 900;
-  color: var(--main-color2);
+  color: var(--main-color1);
 }
 
 .point_box .point,
@@ -142,7 +142,7 @@
 }
 
 .point_box .point .currency {
-  color: var(--main-color2);
+  color: var(--main-color1);
 }
 
 

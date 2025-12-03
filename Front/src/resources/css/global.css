@@ -1,9 +1,11 @@
 :root {
   --mainBg: #fff;
   --foreground: #333;
-  --default-color: #fff;
+  --default-color: #000;
   --main-color1: #D03238;
   /* --main-color2: #e7156d; */
+  --maxWidthDesktop: 1274px;
+  --minWidthDesktop: 1024px;
 
   --confirmModal-bg: #222;
 
@@ -57,7 +59,7 @@ body {
 /* pc용 컨테이너 ------------------ */
 .page_container {
   width: 100%;
-  max-width: 1274px;
+  max-width: var(--maxWidthDesktop);
   margin: 0 auto;
   color: var(--default-color);
 }
@@ -132,10 +134,10 @@ a {
 
 :root {
   --admin-text-color: rgba(51, 51, 51, 0.95);
-  --admin-color: var(--main-color2);
-  --admin-background-color: var(--main-color2);
-  --admin-border-color: var(--main-color2);
-  --admin-button-color: var(--main-color2);
+  --admin-color: var(--main-color1);
+  --admin-background-color: var(--main-color1);
+  --admin-border-color: var(--main-color1);
+  --admin-button-color: var(--main-color1);
   --admin-button-text-color: #fff;
   --bg-base-color: #f4f4f4;
 }

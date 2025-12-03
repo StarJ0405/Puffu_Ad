@@ -86,7 +86,7 @@
 }
 
 .card:hover .info {
-  background: var(--main-color2);
+  background: var(--main-color1);
 }
 
 .title {

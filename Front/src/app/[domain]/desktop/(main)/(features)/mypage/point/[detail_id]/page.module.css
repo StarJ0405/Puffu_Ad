@@ -42,5 +42,5 @@
   font-weight: 600;
 }
 .point_detail .point_box .point.used {
-  color: var(--main-color2);
+  color: var(--main-color1);
 }

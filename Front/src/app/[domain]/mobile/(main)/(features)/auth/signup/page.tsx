@@ -687,7 +687,7 @@ function SMS({ setStep, handleUpdate }: StepProps) {
                   marginLeft={10}
                   width={110}
                   className={styles.button}
-                  backgroundColor="var(--main-color2)"
+                  backgroundColor="var(--main-color1)"
                   disabled={
                     !mobileNoFormat.exp.test(phone) ||
                     !birthday6Format.exp.test(identification) ||

@@ -210,7 +210,7 @@
 }
 
 .input_box .input_item .label > span {
-  color: var(--main-color2);
+  color: var(--main-color1);
 }
 
 .check_txt {
@@ -302,7 +302,7 @@
 }
 
 .next_btn:hover {
-  background: var(--main-color2) !important;
+  background: var(--main-color1) !important;
 }
 
 
@@ -317,9 +317,9 @@
 }
 
 .continue_box .home_btn:hover {
-  background: var(--main-color2);
+  background: var(--main-color1);
 }
 
 .continue_box .login_btn:hover {
-  background: var(--main-color2);
+  background: var(--main-color1);
 }

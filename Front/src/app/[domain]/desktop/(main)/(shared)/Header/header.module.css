@@ -11,7 +11,7 @@
    width: 100%;
    left: 0;
    top: 0;
-   min-width: 1380px;
+   min-width: var(--minWidthDesktop);
    transition: var(--all_transition);
 }
 

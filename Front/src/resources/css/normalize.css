@@ -172,7 +172,7 @@ input[type="search"]:focus-visible {
 }
 
 .post_btn:hover {
-  background: var(--main-color2) !important;
+  background: var(--main-color1) !important;
 }
 
 /* 버튼들 비활성화 될 때 */
@@ -200,7 +200,7 @@ input[type="search"]:focus-visible {
 
   .post_btn {
     width: 100% !important;
-    background: var(--main-color2) !important;
+    background: var(--main-color1) !important;
     color: #fff !important;
     font-size: 18px;
     font-weight: 600;

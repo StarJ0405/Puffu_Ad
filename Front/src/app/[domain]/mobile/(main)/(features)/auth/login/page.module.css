@@ -63,7 +63,7 @@
 
 .sign_features .login_and:hover span,
 .sign_features .login_and.active span {
-   color: var(--main-color2);
+   color: var(--main-color1);
 }
 
 

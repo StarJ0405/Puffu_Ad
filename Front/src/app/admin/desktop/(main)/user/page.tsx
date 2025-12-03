@@ -12,7 +12,7 @@ export default async function () {
     },
   });
   return (
-    <Container padding={20} width={"100%"} maxWidth={1380} margin={"0 auto"}>
+    <Container padding={20} width={"100%"} maxWidth={'var(--maxWidthDesktop, 1274px)'} margin={"0 auto"}>
       <VerticalFlex gap={20} flexStart={true}>
         <HorizontalFlex gap={15} justifyContent={"flex-start"}>
           <MemberShip initGroups={initGroups} />

@@ -112,11 +112,11 @@
 }
 
 .btn:hover {
-  border: 1px solid var(--main-color2);
-  color: var(--main-color2);
+  border: 1px solid var(--main-color1);
+  color: var(--main-color1);
 }
 
 .btn:active {
-  background: var(--main-color2);
+  background: var(--main-color1);
   color: #252525;
 }
