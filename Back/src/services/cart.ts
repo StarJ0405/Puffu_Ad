@@ -14,6 +14,7 @@ import { FindManyOptions, FindOneOptions, ILike, In } from "typeorm";
 import { CouponService } from "./coupon";
 import { PointService } from "./point";
 import { SubscribeService } from "./subscribe";
+import { RecentStoreService } from "./recent_store";
 
 @injectable()
 export class CartService extends BaseService<Cart, CartRepository> {
@@ -35,7 +36,9 @@ export class CartService extends BaseService<Cart, CartRepository> {
     @inject(SubscribeService)
     protected subscribeService: SubscribeService,
     @inject(VariantRepository)
-    protected variantRepository: VariantRepository
+    protected variantRepository: VariantRepository,
+    @inject(RecentStoreService)
+    protected recentStoreService: RecentStoreService
   ) {
     super(cartRepository);
   }
@@ -245,8 +248,8 @@ export class CartService extends BaseService<Cart, CartRepository> {
       : [];
     const shipping_coupons = coupons?.shippings?.length
       ? await this.couponService.getList({
-          where: { id: In(coupons.shippings) },
-        })
+        where: { id: In(coupons.shippings) },
+      })
       : [];
     const item_coupons = await Promise.all(
       (coupons?.items || [])
@@ -306,7 +309,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
       order_fix -
       Math.round(
         ((total + shipping) * (order_percents + (subscribe?.percent || 0))) /
-          100.0
+        100.0
       );
 
     await Promise.all(
@@ -340,7 +343,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
               Math.max(
                 0,
                 ((item.variant?.discount_price || 0) * (100 - percents)) / 100 -
-                  fix
+                fix
               ),
           }
         );
@@ -415,6 +418,9 @@ export class CartService extends BaseService<Cart, CartRepository> {
       await this.pointService.usePoint(user_id, point, {
         display: order?.display,
       });
+    }
+    if (order?.user_id && (order as any).offline_store_id) {
+      await this.recentStoreService.createOrder(order);
     }
 
     return order;
