@@ -1,14 +1,14 @@
 /* 메인베너 */
 .main_banner {
    width: 100%;
-   /* max-width: 1600px; */
+   max-width: 1600px;
    height: auto;
    margin: 30px auto 0;
 }
 
 .main_banner .slideItem {
-   width: 1600px !important;
-   max-width: 1600px;
+   /* width: 1600px !important;
+   max-width: 1600px; */
    /* background-position: center bottom; */
 }
 

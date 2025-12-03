@@ -188,15 +188,16 @@
 .ql-font-NanumSqaureNeo {
   font-family: var(--font-square-neo);
 }
-/* 사천 */
-[data-value="Sacheon"].ql-picker-item::before {
-  content: "사천항공체" !important;
+
+/* wanted */
+[data-value="WantedSans"].ql-picker-item::before {
+  content: "WantedSans" !important;
 }
-[data-value="Sacheon"].ql-picker-label::before {
-  content: "사천항공체" !important;
+[data-value="WantedSans"].ql-picker-label::before {
+  content: "WantedSans" !important;
 }
 .ql-font-Sacheon {
-  font-family: var(--font-sacheon);
+  font-family: var(--font-Wanted);
 }
 
 /* Icon UI */
