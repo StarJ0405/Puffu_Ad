@@ -857,8 +857,8 @@ export default function ({ contract }: { contract: ContractData }) {
                               display: "나눔스퀘어네오",
                             },
                             {
-                              value: "var(--font-sacheon)",
-                              display: "사천항공체",
+                              value: "var(--font-Wanted)",
+                              display: "WantedSans",
                             },
                           ]}
                           placeholder=""

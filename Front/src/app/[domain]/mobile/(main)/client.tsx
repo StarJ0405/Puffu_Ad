@@ -38,34 +38,8 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
     }
   );
 
+  const [bulletIdx, setbulltIdx] = useState(0);
   const swiperRef = useRef<SwiperType | null>(null);
-
-  const paintBullets = (swiper: SwiperType) => {
-    // 페이지네이션 스타일 설정
-    const bullets = swiper.pagination?.el?.querySelectorAll(
-      ".swiper-pagination-bullet"
-    );
-    if (!bullets) return;
-
-    bullets.forEach((el) => {
-      const bullet = el as HTMLElement;
-      bullet.style.setProperty("background-color", "#000", "important");
-      bullet.style.setProperty("opacity", "0.3", "important");
-      bullet.style.setProperty("transform", "scale(1)");
-      bullet.style.setProperty("margin", "0 4px", "important");
-      bullet.style.setProperty("left", "0", "important");
-      bullet.style.setProperty("top", "2px", "important");
-    });
-
-    const active = swiper.pagination?.el?.querySelector(
-      ".swiper-pagination-bullet-active"
-    ) as HTMLElement | null;
-    if (active) {
-      active.style.setProperty("opacity", "1", "important");
-      active.style.setProperty("background-color", "#fff", "important");
-      active.style.setProperty("transform", "scale(1.66)");
-    }
-  };
 
   return (
     <FlexChild className={clsx("mob_page_container", styles.main_banner)}>
@@ -73,33 +47,22 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
         loop={true}
         slidesPerView={1}
         speed={600}
-        spaceBetween={0}
-        modules={[Pagination, Autoplay]}
+        spaceBetween={10}
+        modules={[Autoplay]}
         pagination={{
           dynamicBullets: true,
           clickable: true,
         }}
-        autoplay={{ delay: 4000 }}
+        autoplay={{ delay: 4000000 }}
         onSwiper={(swiper) => {
           swiperRef.current = swiper;
         }}
-        onAfterInit={(swiper) => {
-          // Pagination DOM이 생성된 뒤
-          paintBullets(swiper);
-        }}
-        onSlideChange={(swiper) => {
-          // active bullet이 바뀔 때마다
-          paintBullets(swiper);
-        }}
-        onPaginationUpdate={(swiper) => {
-          // dynamicBullets로 bullet 구성이 바뀌는 경우
-          paintBullets(swiper);
-        }}
+        onSlideChange={(e) => setbulltIdx(e.activeIndex)}
       >
         {[...banners]?.map(
           (item: BannerData, i: number) =>
             item.thumbnail.mobile && (
-              <SwiperSlide key={i} className={`swiper_0${i}`}>
+              <SwiperSlide key={i} className={clsx(styles.slideItem, `swiper_0${i}`)}>
                 {item.to ? (
                   <Link href={item.to}>
                     <Image
@@ -108,7 +71,6 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
                           ? item.thumbnail.mobile
                           : "/resources/images/19_only_banner_mobile.png"
                       }
-                      width={"100%"}
                     />
                   </Link>
                 ) : (
@@ -118,13 +80,23 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
                         ? item.thumbnail.mobile
                         : "/resources/images/19_only_banner_mobile.png"
                     }
-                    width={"100%"}
                   />
                 )}
               </SwiperSlide>
             )
         )}
       </Swiper>
+
+      <div className={styles.pagination}>
+        {[...banners]?.map((_, i)=> (
+          <span
+            key={i}
+            className={clsx(styles.bullet, bulletIdx === i ? styles.active : '')}
+            onClick={() => swiperRef.current?.slideTo(i)}
+          >
+          </span>
+        ))}
+      </div>
     </FlexChild>
   );
 }

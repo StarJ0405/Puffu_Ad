@@ -4,6 +4,11 @@ import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import styles from "./page.module.css"
 import Link from "next/link";
+import P from "@/components/P/P";
+import clsx from "clsx";
+import Div from "@/components/div/Div";
+import Span from "@/components/span/Span";
+import Image from "@/components/Image/Image";
 import {
   HotDealWrapper,
   LinkBanner,
@@ -44,19 +49,94 @@ export default async function () {
         gap={30}
         className="mob_page_container"
       >
+
+        <VerticalFlex className={styles.sec1}>
+          <Link href={'/map'} className={styles.link_box}>
+            <VerticalFlex className={styles.about_box} alignItems="start">
+              <h4 className="Wanted">PUFFU TOY는</h4>
+  
+              <VerticalFlex className={styles.text_box} alignItems="start">
+                <P>
+                  온라인 쇼핑의 편리함과 매장 픽업의 즉시성을 결합한
+                  새로운 방식의 구매 경험을 제공합니다.
+                </P>
+    
+                <P>
+                  원하는 상품을 온라인에서 간편하게 주문하고, 가까운 매장에서 <br className={styles.br} />
+                  빠르게 수령할 수 있어 고객님의 시간을 아끼고 <br className={styles.br} />
+                  더욱 부담 없는 쇼핑을 도와드립니다.
+                </P>
+              </VerticalFlex>
+            </VerticalFlex>
+          </Link>
+
+          <Link href={'/'} className={styles.link_box}>
+            <FlexChild className={clsx(styles.link_item, styles.pickup)}>
+              <Div className={styles.text_box}>
+                <h4>픽업 매장 찾기</h4>
+                <P>
+                  어디서든 앱을 통해 상품을 담아서 자신이 <br className={styles.br} />
+                  원하는 장소에서 직접 상품을 받아보세요!
+                </P>
+                
+                <Span className={styles.arrow_btn}>
+                  <Image
+                    src={"/resources/images/button_arrow.png"}
+                    width={5}
+                  />
+                </Span>
+              </Div>
+  
+              <FlexChild className={styles.deco_box}>
+                <Image
+                  src={"/resources/images/main_pickup_icon.png"}
+                />
+              </FlexChild>
+            </FlexChild>
+          </Link>
+
+          <Link href={'/'} className={styles.link_box}>
+            <FlexChild className={clsx(styles.link_item, styles.startups)}>
+              <Div className={styles.text_box}>
+                <h4>창업 안내</h4>
+                <P>
+                  푸푸토이만의 자체 제작 키오스크 및 준비된 <br className={styles.br} />
+                  컨설턴트 서비스를 만나보세요.
+                </P>
+                
+                <Span className={styles.arrow_btn}>
+                  <Image
+                    src={"/resources/images/button_arrow.png"}
+                    width={5}
+                  />
+                </Span>
+              </Div>
+  
+              <FlexChild className={styles.deco_box}>
+                <Image
+                  src={"/resources/images/main_startups_icon.png"}
+                />
+              </FlexChild>
+            </FlexChild>
+          </Link>
+        </VerticalFlex>
+
+
         <MainCategory /> {/* 카테고리 */}
-        <LinkBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
-        <HotDealWrapper
+        {/* <LinkBanner /> */}
+        {/* <HotDealWrapper
           id={"hot"}
           lineClamp={1}
           initProducts={hotProducts}
           initCondition={hotCondition}
         />
-        <SubBanner2 />
-        <BestProducts initProducts={bestProducts} initCondition={bestCondition} /> {/* 메인, 상세 리스트 */}
-        <SubBanner1 />
+        <SubBanner2 /> */}
 
-        {/* 포토 사용 후기 */}
+        <BestProducts initProducts={bestProducts} initCondition={bestCondition} /> {/* 메인, 상세 리스트 */}
+
+        {/* <SubBanner1 /> */}
+
+        {/* 리뷰 */}
         <FlexChild marginTop={30}>
           <VerticalFlex>
             <HorizontalFlex
@@ -80,7 +160,7 @@ export default async function () {
           </VerticalFlex>
         </FlexChild>
 
-        <MiniBanner /> {/* 링크 베너 props로 받은 값만큼만 베너 보여주기 */}
+        {/* <MiniBanner /> */}
       </VerticalFlex>
     </section>
   );

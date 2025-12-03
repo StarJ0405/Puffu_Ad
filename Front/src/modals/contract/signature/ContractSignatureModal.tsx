@@ -28,7 +28,7 @@ const fonts = [
   "--font-square-neo",
   "--font-pretendard",
   "--font-notosans",
-  "--font-sacheon",
+  "--font-Wanted",
 ];
 const ContractSignatureModal = NiceModal.create(
   ({
