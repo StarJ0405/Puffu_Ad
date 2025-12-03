@@ -28,7 +28,7 @@ export function ProductStatus({ Status }: { Status: any }) {
     }
   );
   return (
-    <Div width={"100%"} maxWidth={1380} height={"auto"}>
+    <Div width={"100%"} maxWidth={'var(--minWidthDesktop, 1024px)'} height={"auto"}>
       <div className={styles.wrap}>
         {data && (
           <HorizontalFlex>

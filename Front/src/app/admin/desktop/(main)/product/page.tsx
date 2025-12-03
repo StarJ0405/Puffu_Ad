@@ -34,7 +34,7 @@ export default async function () {
     order: { created_at: "ASC" },
   });
   return (
-    <Container padding={20} width={"100%"} maxWidth={1380} margin={"0 auto"}>
+    <Container padding={20} width={"100%"} maxWidth={'var(--maxWidthDesktop, 1274px)'} margin={"0 auto"}>
       <VerticalFlex gap={20} flexStart={true}>
         <ProductStatus Status={Status} />
 
