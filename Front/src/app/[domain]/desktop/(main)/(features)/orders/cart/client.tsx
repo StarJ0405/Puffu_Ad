@@ -42,6 +42,7 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
 import LoadingPageChange from "@/components/loading/LoadingPageChange";
 import { GoogleMap, OverlayView, useLoadScript } from "@react-google-maps/api";
+import Div from "@/components/div/Div";
 
 
 
@@ -56,6 +57,7 @@ export function CartWrap() {
   );
   const formRef = useRef<DeliveryAddEditRef>(null);
   const listRef = useRef<DeliveryListRef>(null);
+
   const radio = useRef<any>([])
   const Create = (data: Partial<AddressDataFrame>) => {
     requester.createAddress(data, () => mutate());
@@ -71,11 +73,13 @@ export function CartWrap() {
   const [shippingCoupons, setShippingCupons] = useState<string[]>([]);
   const [otherStores, setOtherStores] = useState<any[]>([]);
   const [recentStores, setRecentStores] = useState<any[]>([]);
-  const [favoriteStores, setFavoriteStores] = useState<any[]>([]);
+  const [favoriteStores, setFavoriteStores] = useState<FavoriteItem[]>([]);
+  const [baseCenter, setBaseCenter] = useState<MapCenter | null>(null);
 
-  const [center, setCenter] = useState(() => {
-    return { lat: 37.5665, lng: 126.978 }
-  });
+
+  const [selectOffilineStore, setSelectOffilineStore] = useState<string | null>(null);
+
+
   const [fulfillment, setFulfillment] = useState<FulfillmentData>({
     method: "delivery",
     pickup: "recent",
@@ -100,6 +104,12 @@ export function CartWrap() {
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string,
     libraries: ["places"],
   });
+
+
+
+
+
+
 
 
   const getShippingAmount = () => {
@@ -294,6 +304,24 @@ export function CartWrap() {
     };
   }
 
+  const selectedStore =
+    fulfillment.pickup === "others"
+      ? otherStores.find((s) => s.id === selectOffilineStore)
+      : fulfillment.selectedStore;
+
+  const center: MapCenter | null = selectedStore
+    ? {
+      lat: Number(
+        selectedStore.lat ?? selectedStore.offline_store?.lat ?? baseCenter?.lat
+      ),
+      lng: Number(
+        selectedStore.lng ?? selectedStore.offline_store?.lng ?? baseCenter?.lng
+      ),
+    }
+    : baseCenter;
+
+
+
 
   const saleTotals = saleTotal(); // 세일 총합값
 
@@ -370,10 +398,19 @@ export function CartWrap() {
     if (!userData?.id) return;
 
     const storeId = store.id as string;
+
+    // 이미 즐겨찾기면 막기 (favoriteStores 기준으로 체크)
     const exists = favoriteStores.some(
-      (item) => item?.offline_store?.id === storeId
+      (item) => item.offline_store_id === storeId
     );
     if (exists) return;
+
+    // UI 먼저 반영: 해당 매장 is_favorite = true 로
+    setOtherStores((prev) =>
+      prev.map((s) =>
+        s.id === storeId ? { ...s, is_favorite: true } : s
+      )
+    );
 
     try {
       const res = await requester.createStoreWishlist(storeId, {
@@ -381,63 +418,80 @@ export function CartWrap() {
         metadata: {},
         return_data: true,
       });
+
+      // store_wishlist 새로 생성된 id 저장해서 나중에 삭제할 때 사용
       if (res?.content) {
-        setFavoriteStores((prev) => [
-          { ...res.content, offline_store: store },
-          ...prev,
-        ]);
+        const created = res.content as FavoriteItem;
+        setFavoriteStores((prev) => [created, ...prev]);
       }
-    } catch (e) { }
+    } catch (e) {
+      // 실패하면 롤백
+      setOtherStores((prev) =>
+        prev.map((s) =>
+          s.id === storeId ? { ...s, is_favorite: false } : s
+        )
+      );
+    }
   };
+
 
   const deleteWishlist = async (store: any) => {
     if (!userData?.id) return;
 
     const storeId = store.id as string;
+
+    // 이 매장에 해당하는 wishlist row 찾기
     const target = favoriteStores.find(
-      (item) => item?.offline_store?.id === storeId
+      (item) => item.offline_store_id === storeId
     );
     if (!target) return;
 
-    const wishlistId = target.id as string;
+    const wishlistId = target.id;
 
+    // UI 먼저 반영: is_favorite false 로, favoriteStores 배열에서도 제거
+    setOtherStores((prev) =>
+      prev.map((s) =>
+        s.id === storeId ? { ...s, is_favorite: false } : s
+      )
+    );
     setFavoriteStores((prev) =>
-      prev.filter((item) => item?.offline_store?.id !== storeId)
+      prev.filter((item) => item.offline_store_id !== storeId)
     );
 
     try {
       await requester.deleteStoreWishlist(wishlistId);
     } catch (e) {
+      // 실패하면 롤백
+      setOtherStores((prev) =>
+        prev.map((s) =>
+          s.id === storeId ? { ...s, is_favorite: true } : s
+        )
+      );
       setFavoriteStores((prev) => [target, ...prev]);
     }
   };
 
-  const pickupTabClick = async (
-    tab: FulfillmentData["pickup"]
-  ) => {
 
+  const pickupTabClick = async (tab: FulfillmentData["pickup"]) => {
     setFulfillment(prev => ({
       ...prev,
       pickup: tab,
     }));
 
-
     try {
       if (tab === "recent") {
-        const res = await requester.getRecentStores({ pageSize: 12, relations: ["offline_store"] });
-        console.log(res)
-        setRecentStores(res?.content);
+        const res = await requester.getRecentStores({ relations: ["offline_store"] });
+        const list = Array.isArray(res) ? res : res?.content ?? [];
+        setRecentStores(list);
       }
 
       if (tab === "favorite") {
-
-        const res = await requester.getStoreWishlist(
-          {
-            pageSize: 12,
-            pageNumber: 0,
-            relations: ["offline_store"],
-          }
-        );
+        const res = await requester.getStoreWishlist({
+          pageSize: 12,
+          pageNumber: 0,
+          relations: ["offline_store"],
+        });
+        console.log("res : ", res);
         const list = Array.isArray(res) ? res : res?.content ?? [];
         setFavoriteStores(list);
       }
@@ -448,10 +502,22 @@ export function CartWrap() {
         });
         const list = Array.isArray(res) ? res : res?.content ?? [];
         setOtherStores(list);
+        if (list.length > 0) {
+          setSelectOffilineStore(list[0].id);
+          setFulfillment(prev => ({
+            ...prev,
+            selectedStore: list[0],
+          }));
+
+        }
       }
-    } finally {
-    }
+    } finally { }
   };
+
+
+
+
+
 
 
   const deliveryListModal = () => {
@@ -557,6 +623,35 @@ export function CartWrap() {
         .filter((f) => f.coupons.length)
     );
   }, [selected, cartData?.items]);
+  useEffect(() => {
+    const init = async () => {
+      const res = await requester.getOfflineStores({ pageSize: 12 });
+      const list = Array.isArray(res) ? res : res?.content ?? [];
+      setOtherStores(list);
+
+      if (list.length > 0) {
+        const store = list[0];
+        setBaseCenter({ lat: Number(store.lat), lng: Number(store.lng) });
+        setFulfillment(prev => ({
+          ...prev,
+          selectedStore: store,
+        }));
+      }
+    };
+
+    init();
+  }, []);
+
+
+
+
+  useEffect(() => {
+    if (!isLoaded) return;
+    if (fulfillment.method === "pickup") {
+
+      pickupTabClick(fulfillment.pickup);
+    }
+  }, [isLoaded, fulfillment.method]);
   // 쿠폰 모달
   const openCouponModal = (
     coupons: CouponData[],
@@ -683,7 +778,6 @@ export function CartWrap() {
                   ))
               }
             </VerticalFlex>
-
             {cartData?.items?.length ? null : <NoContent type={"장바구니"} />}
           </VerticalFlex>
         </CheckboxGroup>
@@ -722,10 +816,14 @@ export function CartWrap() {
                 }))}>
                   <P color={"#fff"} size={17} weight={600}>배송</P>
                 </FlexChild>
-                <FlexChild border={"1px solid #fff"} borderRadius={5} padding={10} justifyContent={"center"} cursor={"pointer"} className={fulfillment.method === "pickup" ? "active" : ""} onClick={() => setFulfillment(prev => ({
-                  ...prev,
-                  method: "pickup",
-                }))}>
+                <FlexChild border={"1px solid #fff"} borderRadius={5} padding={10} justifyContent={"center"} cursor={"pointer"} className={fulfillment.method === "pickup" ? "active" : ""}
+                  onClick={() =>
+                    setFulfillment(prev => ({
+                      ...prev,
+                      method: "pickup",
+                      pickup: "recent",
+                    }))
+                  }>
                   <P color={"#fff"} size={17} weight={600}>매장 픽업</P>
                 </FlexChild>
               </HorizontalFlex>
@@ -848,24 +946,62 @@ export function CartWrap() {
             </VerticalFlex>
           </FlexChild>
         )}
-        {fulfillment.method === "pickup" && (
+        {fulfillment.method === "pickup" && isLoaded && center && (
           <FlexChild>
             <VerticalFlex alignItems="start" gap={10} >
               <FlexChild>
                 <P className={styles.list_title}>픽업 매장 선택</P>
               </FlexChild>
               <FlexChild>
-                <GoogleMap
-                  zoom={14}
-                  center={{ lat: 37.5665, lng: 126.978 }}
-                  mapContainerStyle={{ width: "100%", height: "20vh" }}
-                  options={{
-                    disableDefaultUI: true,
-                    streetViewControl: false,
-                    zoomControl: true,
-                  }}
-                >
-                </GoogleMap>
+                {isLoaded && center && (
+                  <GoogleMap
+                    zoom={12}
+                    center={center}
+                    mapContainerStyle={{ width: "100vw", height: "100vh", maxHeight: "20vh" }}
+
+                    options={{
+                      disableDefaultUI: true,
+                      streetViewControl: false,
+                      zoomControl: true,
+                      gestureHandling: "greedy",
+                      scrollwheel: true,
+                    }}
+
+                  >
+                    {otherStores.map((store) => {                      
+                      return (
+                        <OverlayView
+                          key={store.id}
+                          position={{
+                            lat: Number(store.lat),
+                            lng: Number(store.lng),
+                          }}
+                          getPixelPositionOffset={(width: number, height: number) => ({
+                            x: -(width / 2),
+                            y: -height,
+                          })}
+                          mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+                        >
+                          <Div
+                            className={clsx(
+                              styles.markerBubble,
+                              fulfillment.selectedStore?.id === store.id && styles.markerBubbleActive
+                            )}
+                          >
+                            <P size={13} className={styles.title}>
+                              {store.name}
+                            </P>
+                            <Div className={styles.tail} />
+                          </Div>
+                        </OverlayView>
+
+                      );
+                    })}
+                  </GoogleMap>
+                )}
+
+
+
               </FlexChild>
               <FlexChild>
                 <HorizontalFlex >
@@ -932,23 +1068,43 @@ export function CartWrap() {
 
                   {fulfillment.pickup === "favorite" && (
                     <>
-                      {favoriteStores.length === 0 && <P>즐겨찾기 매장이 없습니다.</P>}
-                      {favoriteStores.map(item => (
-                        <P key={item.id}>{item.offline_store?.name}</P>
-                      ))}
+                      {favoriteStores.length === 0 && (
+                        <P>즐겨찾기 매장이 없습니다.</P>
+                      )}
+
+                      {favoriteStores.map((item) => {
+                        const storeName = item.offline_store?.name ?? "";
+
+                        return (
+                          <P key={item.id}>{storeName}</P>
+                        );
+                      })}
                     </>
                   )}
+
+
 
                   {fulfillment.pickup === "others" && (
                     <>
                       {otherStores.length === 0 && <P>등록된 매장이 없습니다.</P>}
 
-                      <RadioGroup name="pickup_store">
+                      <RadioGroup
+                        name="pickup_store"
+                        value={selectOffilineStore ?? undefined}
+                        onValueChange={(val: string) => {
+                          setSelectOffilineStore(val);
+                          const store = otherStores.find((s) => s.id === val);
+                          if (store) {
+                            setFulfillment(prev => ({
+                              ...prev,
+                              selectedStore: store,
+                            }));
+                          }
+                        }}
+                      >
                         <VerticalFlex gap={10}>
                           {otherStores.map((store) => {
-                            const inWishlist = favoriteStores.some(
-                              (item) => item?.offline_store?.id === store.id
-                            );
+                            const inWishlist = store.is_favorite === true;
 
                             return (
                               <FlexChild
@@ -960,15 +1116,13 @@ export function CartWrap() {
                                     ...prev,
                                     selectedStore: store,
                                   }));
+                                  setSelectOffilineStore(store.id);
                                 }}
                               >
                                 <HorizontalFlex>
                                   <FlexChild>
                                     <FlexChild width="auto">
-                                      <RadioChild
-                                        id={`store_${store.id}`}
-                                        value={store.id}
-                                      />
+                                      <RadioChild id={store.id} />
                                     </FlexChild>
                                   </FlexChild>
                                   <FlexChild>
@@ -1000,14 +1154,12 @@ export function CartWrap() {
                       </RadioGroup>
                     </>
                   )}
-
-
-
                 </FlexChild>
               )}
             </VerticalFlex>
           </FlexChild>
-        )}
+        )
+        }
         <FlexChild className={styles.payment_root}>
           <VerticalFlex alignItems="start">
             <article>
@@ -1058,7 +1210,7 @@ export function CartWrap() {
         <FlexChild className={styles.agree_info}>
           <AgreeInfo setAgrees={setAgrees} />
         </FlexChild>
-      </VerticalFlex>
+      </VerticalFlex >
 
       <FlexChild className={styles.payment_block}>
         <VerticalFlex>
@@ -1647,7 +1799,7 @@ export function CartWrap() {
       </FlexChild>
 
       {ShowLoadingComp && <LoadingPageChange />}
-    </HorizontalFlex>
+    </HorizontalFlex >
   );
 }
 
