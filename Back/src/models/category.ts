@@ -38,6 +38,9 @@ export class Category extends BaseTreeEntity {
   name?: string;
 
   @Column({ type: "character varying", nullable: true })
+  english_name?: string;
+
+  @Column({ type: "character varying", nullable: true })
   thumbnail?: string;
 
   @Column({ type: "jsonb", default: {} })

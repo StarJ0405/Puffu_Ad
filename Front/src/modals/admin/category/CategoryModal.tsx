@@ -48,8 +48,12 @@ const CategoryModal = NiceModal.create(
       setIsLoading(true);
       try {
         const name = inputs.current[0].getValue();
+        const englishName = inputs.current[1].getValue();
         if (!name) {
           return setError("카테고리명이 입력되지 않았습니다.");
+        }
+        if (!englishName) {
+          return setError("영문 카테고리명이 입력되지 않았습니다.");
         }
         validateInputs([...inputs.current, image.current])
           .then(({ isValid }: { isValid: boolean }) => {
@@ -62,7 +66,9 @@ const CategoryModal = NiceModal.create(
               store_id: store.id,
               index,
               parent_id: parent?.id,
+              english_name: englishName,
             };
+            
             _data.thumbnail = thumbnail;
             if (category) {
               adminRequester.updateCategory(
@@ -125,7 +131,7 @@ const CategoryModal = NiceModal.create(
         setMax(
           Math.max(
             (parent.children?.length || 0) +
-              (category?.parent_id === parent.id ? -1 : 0),
+            (category?.parent_id === parent.id ? -1 : 0),
             0
           )
         );
@@ -197,6 +203,22 @@ const CategoryModal = NiceModal.create(
                   width={"100%"}
                   ref={(el) => {
                     inputs.current[0] = el;
+                  }}
+                />
+              </FlexChild>
+            </HorizontalFlex>
+          </FlexChild>
+          <FlexChild>
+            <HorizontalFlex>
+              <FlexChild className={styles.head}>
+                <P>영문 카테고리명</P>
+              </FlexChild>
+              <FlexChild className={styles.content}>
+                <Input
+                  value={category?.english_name}
+                  width={"100%"}
+                  ref={(el) => {
+                    inputs.current[1] = el;
                   }}
                 />
               </FlexChild>

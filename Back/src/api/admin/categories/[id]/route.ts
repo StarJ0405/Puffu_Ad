@@ -10,6 +10,7 @@ export const POST: ApiHandler = async (req, res) => {
     name,
     thumbnail,
     index,
+    english_name,
     metadata,
     return_data = false,
   } = req.body;
@@ -20,6 +21,7 @@ export const POST: ApiHandler = async (req, res) => {
       store_id,
       parent_id,
       name,
+      english_name,
       thumbnail,
       index,
       metadata,

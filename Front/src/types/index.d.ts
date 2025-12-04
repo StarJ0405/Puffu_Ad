@@ -138,6 +138,7 @@ interface CategoryDataFrame {
   thumbnail?: string;
   metadata?: Record<string, unknown> | null;
   index: number;
+  english_name : string;
 }
 interface CategoryData extends BaseEntity, CategoryDataFrame {
   parent?: CategoryData;
