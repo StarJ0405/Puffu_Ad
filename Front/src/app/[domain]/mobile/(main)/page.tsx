@@ -14,12 +14,11 @@ import {
   LinkBanner,
   MainBanner,
   MainCategory,
-  MiniBanner,
   BestProducts,
   // ProductList,
-  ProductSlider,
-  SubBanner1,
-  SubBanner2,
+  ReviewSection,
+  // SubBanner1,
+  // SubBanner2,
 } from "./client";
 
 export default async function () {
@@ -40,6 +39,7 @@ export default async function () {
     warehousing: false,
   };
   const bestProducts = await requester.getProducts(bestCondition);
+
   return (
     <section className="mob_root">
       <MainBanner initBanners={banners} />
@@ -47,10 +47,8 @@ export default async function () {
       <VerticalFlex
         marginTop={"25px"}
         gap={30}
-        className="mob_page_container"
       >
-
-        <VerticalFlex className={styles.sec1}>
+        <VerticalFlex className={clsx(styles.sec1, 'mob_page_container')}>
           <Link href={'/map'} className={styles.link_box}>
             <VerticalFlex className={styles.about_box} alignItems="start">
               <h4 className="Wanted">PUFFU TOY는</h4>
@@ -122,45 +120,29 @@ export default async function () {
         </VerticalFlex>
 
 
-        <MainCategory /> {/* 카테고리 */}
+        <VerticalFlex className={clsx(styles.sec2, 'mob_page_container')} gap={40}>
+          <MainCategory /> {/* 카테고리 */}
+        </VerticalFlex>
+
         {/* <LinkBanner /> */}
         {/* <HotDealWrapper
           id={"hot"}
           lineClamp={1}
           initProducts={hotProducts}
           initCondition={hotCondition}
-        />
-        <SubBanner2 /> */}
+        /> */}
 
-        <BestProducts initProducts={bestProducts} initCondition={bestCondition} /> {/* 메인, 상세 리스트 */}
-
-        {/* <SubBanner1 /> */}
+        <VerticalFlex className={clsx(styles.sec3, 'mob_page_container')}>
+          <BestProducts 
+            initProducts={bestProducts} 
+            initCondition={bestCondition} 
+          />
+        </VerticalFlex>
 
         {/* 리뷰 */}
-        <FlexChild marginTop={30}>
-          <VerticalFlex>
-            <HorizontalFlex
-              className={styles.titleBox}
-              justifyContent="center"
-              alignItems="end"
-              gap={50}
-            >
-              <div className={styles.title}>
-                <h2 className="SacheonFont">포토 사용후기</h2>
-              </div>
-            </HorizontalFlex>
-
-            <ProductSlider id={"review"} />
-
-            <FlexChild justifyContent="center">
-              <Link href={"board/photoReview"} className={styles.link_more_btn}>
-                후기 더보기
-              </Link>
-            </FlexChild>
-          </VerticalFlex>
-        </FlexChild>
-
-        {/* <MiniBanner /> */}
+        <VerticalFlex className={clsx(styles.sec4, 'mob_page_container')}>
+          <ReviewSection id={"review"} />
+        </VerticalFlex>
       </VerticalFlex>
     </section>
   );

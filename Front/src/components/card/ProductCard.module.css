@@ -1,6 +1,10 @@
 .prodcut_item {
-   padding-bottom: 40px;
-   gap: 15px;
+   margin-bottom: 30px;
+   gap: 17px;
+   border-radius: 20px;
+   overflow: hidden;
+   box-shadow: 2px 6px 12px rgba(0,0,0,0.05);
+   border: 1px solid #ededed;
 }
 
 .prodcut_item .imgBox {
@@ -8,14 +12,14 @@
    cursor: pointer;
    overflow: hidden;
    width: 100%;
-   border-radius: 10px;
+   /* border-radius: 10px; */
    aspect-ratio: 1;
+   border-bottom: 1px solid #eee;
 }
 
-.prodcut_item .imgBox img {
+.prodcut_item .imgBox .thumbnail img {
    transition: all 0.5s;
    will-change: transform;
-   border-radius: 10px;
 }
 
 .prodcut_item .imgBox .commingSoonImg {
@@ -23,12 +27,24 @@
    z-index: 10;
 }
 
-.prodcut_item .imgBox:hover img {
-   transform: scale(1.1);
+@media (min-width: 769px) {
+   .prodcut_item .imgBox:hover .thumbnail img {
+      transform: scale(1.1);
+   }  
 }
 
+.prodcut_item .imgBox .heart_counter {
+   position: absolute;
+   bottom: 15px; right: 15px;
+   align-items: center;
+   cursor: pointer;
+   gap: 5px;
+   width: auto;
+}
+
+
 .prodcut_item .text_box {
-   padding: 0 5px;
+   padding: 0 10px 20px;
 }
 
 .prodcut_item .store_name {
@@ -43,9 +59,9 @@
 }
 
 .prodcut_item .product_title {
-   margin: 7px 0 5px;
-   font-size: 16px; color: #fff;
-   line-height: 1.2; font-weight: 600;
+   margin: 0 0 10px;
+   font-size: 16px; color: #28232A;
+   line-height: 1.2; font-weight: 700;
    cursor: pointer;
 }
 
@@ -55,39 +71,50 @@
 
 .prodcut_item .content_item {
    gap: 10px;
-   align-items: center !important;
 }
 
 .prodcut_item .content_item > *{
    width: auto;
 }
 
+
+.content_item .user_state_box .heart_dt {
+   font-size: 14px; color: #000;
+   font-weight: 600;
+}
+
+.content_item .user_state_box .review_dt {
+   font-size: 14px; color: #000;
+   font-weight: 600;
+}
+
+.content_item .user_state_box .review_dt .star span {
+   color: var(--main-color1);
+   white-space: nowrap;
+}
+
+
 .prodcut_item .content_item .price_box {
    gap: 5px;
    align-items: center !important;
-
-}
-
-.prodcut_item .content_item .price_box .through_price {
-   font-size: 13px; color: rgba(255,255,255, 0.4);
-   line-height: 1;
-   text-decoration: line-through;
+   flex-wrap: wrap;
 }
 
 .prodcut_item .content_item .price_box .discount_price {
-   font-size: 18px; color: var(--main-color1);
-   line-height: 1; font-weight: 700;
+   font-size: 20px; color: #1d1d1d;
+   line-height: 1; font-weight: 800;
    word-break: break-all;
 }
 
-.prodcut_item .heart_counter {
-   align-items: center;
-   cursor: pointer;
-   gap: 5px;
+.prodcut_item .content_item .price_box .through_price {
+   font-size: 15px; color: #797979;
+   line-height: 1; font-weight: 600;
+   text-decoration: line-through;
 }
 
-.prodcut_item .heart_counter > span {
-   font-size: 14px !important; color: #fff !important;
+.prodcut_item .content_item .price_box .discount_rate {
+   font-size: 20px; font-weight: 900;
+   color: var(--main-color1);
 }
 
 
@@ -105,33 +132,44 @@
 /* 모바일 스타일 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 .mob_prodcut_item {
-   padding-bottom: 20px;
+   margin-bottom: 25px;
 }
-.mob_prodcut_item .content_item .price_box .through_price {font-size: 10px;}
-.mob_prodcut_item .content_item .price_box .discount_price {font-size: 16px;}
+
+.mob_prodcut_item .imgBox .heart_counter {
+   bottom: 10px; right: 12px;
+}
 
 .mob_prodcut_item .product_title {
-   margin: 5px 0 10px;
-   font-size: 12px; color: #fff;
-   line-height: 1.2; font-weight: 400;
-   cursor: pointer;
+   margin: 0 0 7px;
+   font-size: 13px;
+   font-weight: 800;
 }
 
-.mob_prodcut_item .heart_counter {
+/* .mob_prodcut_item .heart_counter {
    position: absolute; 
    bottom: 10px;
    right: 5px;
    z-index: 10;
    width: auto;
-}
-
+} */
+/* 
 .mob_prodcut_item .heart_counter > span {
    font-size: 13px !important; color: #fff !important;
    text-shadow: 0 0 10px #050505;
-}
+} */
 
-.mob_prodcut_item .content_item .price_box {
-   flex-direction: unset;
-   align-items: center !important;
-   flex-wrap: wrap;
+.content_item .user_state_box .review_dt {font-size: 13px;}
+
+.mob_prodcut_item .content_item .user_state_box {order: 2;}
+.mob_prodcut_item .content_item .price_box {order: 1;}
+
+.mob_prodcut_item .content_item .price_box .discount_price {
+   order: 3; font-size: 16px;
+}
+.mob_prodcut_item .content_item .price_box .through_price {
+   order: 1; display: block; width: 100%;
+   font-size: 13px; min-height: 13px;
+}
+.mob_prodcut_item .content_item .price_box .discount_rate {
+   order: 2; font-size: 16px;
 }

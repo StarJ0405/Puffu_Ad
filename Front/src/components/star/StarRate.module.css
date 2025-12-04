@@ -31,5 +31,6 @@
 /* 비활성화된 별 아이콘 */
 .star_icon.disabled {
   cursor: default; /* 마우스 오버 시 커서 변경 */
-  opacity: 0.8; /* 약간 흐리게 */
+  /* opacity: 0.8;  */
+  /* 약간 흐리게 */
 }
