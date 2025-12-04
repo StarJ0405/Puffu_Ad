@@ -272,7 +272,8 @@ export function MainCategory() {
           <VerticalFlex className={styles.ca_item} key={i}>
             <Link href={`/categories/${cat.id}`}>
               <FlexChild className={styles.ca_thumb}>
-                <Image src={cat.thumbnail} width={"auto"} height={120} />
+                {/* <Image src={cat.thumbnail} width={"auto"} height={120} /> */}
+                <img src={cat.thumbnail}/>
               </FlexChild>
             </Link>
             <Span>{cat.name}</Span>

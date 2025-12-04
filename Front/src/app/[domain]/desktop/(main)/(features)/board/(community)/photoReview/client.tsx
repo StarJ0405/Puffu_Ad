@@ -261,7 +261,7 @@ export function BestReviewSlider({
                     review={review}
                     width={"100%"}
                     height={"auto"}
-                    board="photoReviewSlide"
+                    type="photoReviewSlide"
                     slide={true}
                     lineClamp={lineClamp ?? 2}
                   />

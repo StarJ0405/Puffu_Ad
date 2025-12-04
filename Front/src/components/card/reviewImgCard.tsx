@@ -13,6 +13,7 @@ import { maskTwoThirds } from "@/shared/utils/Functions";
 import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import useNavigate from "@/shared/hooks/useNavigate";
+import StarRate from "@/components/star/StarRate";
 
 type ReviewEntity = {
   id: string;
@@ -36,7 +37,7 @@ export default function ReviewImgCard({
   lineClamp,
   width,
   height,
-  board,
+  type,
   borderRadius = 0,
   slide = false,
   onClick,
@@ -45,80 +46,76 @@ export default function ReviewImgCard({
   lineClamp?: number;
   width?: number | string;
   height?: number | string;
-  board?: string;
+  type?: string;
   borderRadius?: number;
   onClick?: (review: ReviewEntity) => void;
 
   slide?: boolean;
 }) {
   const {userData}=useAuth()
-  const boardValue = board ?? "normal";
+  const typeValue = type ?? "normal";
   const navigate = useNavigate();
 
   const thumbnail = review.images?.[0] ?? "/resources/images/no_img.png";
   const date = (review.created_at ?? "").slice(0, 10);
   const name = review.user?.name ?? "익명";
-  const productThumb =
-    review.item?.variant?.product?.thumbnail ?? "/resources/images/no_img.png";
-  const productTitle = review.item?.variant?.product?.title ?? "";
-  const count = review.count;
   const avg = review.avg;
-  const recommendCount = review?.recommend_count;
   const openDetail = () => {
     if(!userData?.adult) return;
     if (onClick) return onClick(review);
     NiceModal.show("photoReviewDetailModal", { review });
   };
 
-  const productLink = () => {
-    navigate(`/products/${review.item?.variant?.product?.id}`);
-  }
+  // 제품 정보
+  // const productThumb =
+  //   review.item?.variant?.product?.thumbnail ?? "/resources/images/no_img.png";
+  // const productTitle = review.item?.variant?.product?.title ?? "";
+  // const count = review.count;
+  // const recommendCount = review?.recommend_count;
+
+  // const productLink = () => {
+  //   navigate(`/products/${review.item?.variant?.product?.id}`);
+  // }
 
   const { isMobile } = useBrowserEvent();
 
   return (
-    <VerticalFlex
+    <FlexChild
       width={width ?? "100%"}
-      maxWidth={!isMobile ? 244 : ""}
+      maxWidth={!isMobile ? 295 : ""}
+      onClick={openDetail}
       className={clsx(
         styles.review_item,
-        boardValue !== "normal" && styles.slide_item,
+        typeValue !== "normal" && styles.slide_item,
         isMobile && styles.mob_review_item
       )}
+      backgroundImage={
+        `url(${userData?.adult ? thumbnail : "/resources/images/19_only.png"})`
+      }
+      // borderRadius={borderRadius}
+      
     >
-      <FlexChild
-        className={styles.imgBox}
-        // minWidth={142}
-        // minHeight={142}
-        // maxWidth={244}
-        // maxHeight={244}
-        onClick={openDetail}
-      >
-        <div
-          className={styles.img}
-          style={{
-            backgroundImage: `url(${
-              userData?.adult ? thumbnail : "/resources/images/19_only.png"
-            })`,
-            borderRadius: borderRadius,
-          }}
-        ></div>
-      </FlexChild>
 
-      <FlexChild padding={"0 5px"} className={styles.text_box}>
-        <VerticalFlex alignItems={"start"}>
-          <FlexChild className={styles.content} onClick={openDetail}>
-            <P
-              lineClamp={lineClamp ?? 2}
-              overflow="hidden"
-              display="--webkit-box"
-            >
-              {review.content ?? ""}
-            </P>
-          </FlexChild>
+      <FlexChild className={styles.text_box} alignItems="end">
+        <VerticalFlex alignItems={"start"} gap={15}>
+          <VerticalFlex alignItems="start" gap={10}>
+            <FlexChild>
+              <StarRate fillColor={'#fff'} width={95} starWidth={20} starHeight={20} score={avg!} readOnly />
+            </FlexChild>
+            <FlexChild className={styles.content} alignItems="start" onClick={openDetail}>
+              <P
+                // lineClamp={lineClamp ?? 2}
+                lineClamp={1}
+                overflow="hidden"
+                display="--webkit-box"
+              >
+                {review.content ?? ""}
+              </P>
+            </FlexChild>
+          </VerticalFlex>
 
           {!slide && (
-            <HorizontalFlex className={styles.title_box}>
+            <HorizontalFlex className={styles.user_dt}>
               <FlexChild className={styles.date}>
                 <Span>{date}</Span>
               </FlexChild>
@@ -130,11 +127,11 @@ export default function ReviewImgCard({
         </VerticalFlex>
       </FlexChild>
 
-      <HorizontalFlex className={styles.prodcut_data}>
+      {/* <HorizontalFlex className={styles.prodcut_data}> 제품 정보
         <FlexChild className={styles.img} onClick={productLink}>
           <Image
             src={userData?.adult ? productThumb : "/resources/images/19_only.png"}
-            width={boardValue == "normal" ? 35 : 45}
+            width={typeValue == "normal" ? 35 : 45}
           />
         </FlexChild>
         <VerticalFlex className={styles.info}>
@@ -159,7 +156,7 @@ export default function ReviewImgCard({
             </HorizontalFlex>
           </FlexChild>
         </VerticalFlex>
-      </HorizontalFlex>
-    </VerticalFlex>
+      </HorizontalFlex> */}
+    </FlexChild>
   );
 }

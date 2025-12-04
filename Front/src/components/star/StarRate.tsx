@@ -26,8 +26,8 @@ function StarRate({
   starWidth = 15,
   starHeight = 15,
   maxScoreScale = 5,
-  fillColor = "#ffcc00",
-  emptyColor = "#cacaca",
+  fillColor = "#fff",
+  emptyColor = "#888",
   width,
 }: StarRateProps) {
   const [uuid] = useState(uniqueId());

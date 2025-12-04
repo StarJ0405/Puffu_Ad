@@ -25,6 +25,8 @@ import { requester } from "@/shared/Requester";
 import { Swiper as SwiperType } from "swiper";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import Div from "@/components/div/Div";
+import { usePathname } from "next/navigation";
 
 export function MainBanner({ initBanners }: { initBanners: Pageable }) {
   const { userData } = useAuth();
@@ -53,7 +55,7 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
           dynamicBullets: true,
           clickable: true,
         }}
-        autoplay={{ delay: 4000000 }}
+        autoplay={{ delay: 4000 }}
         onSwiper={(swiper) => {
           swiperRef.current = swiper;
         }}
@@ -131,102 +133,137 @@ export function LinkBanner() {
   );
 }
 
-export function SubBanner1() {
-  const { userData } = useAuth();
+// export function SubBanner1() {
+//   const { userData } = useAuth();
 
-  return (
-    <FlexChild width={"100%"} className={styles.sub_banner}>
-      <Link href={"/"} className={styles.disabled}>
-        {userData?.adult ? (
-          <Image
-            src={"/resources/images/dummy_img/mob_sub_banner_01.jpg"}
-            width={"100%"}
-            height={"auto"}
-          />
-        ) : (
-          // 성인인증 안될때 나오는 이미지
-          <Image
-            src={"/resources/images/19_only_sub_banner_mobile.png"}
-            width={"100%"}
-            height={"auto"}
-          />
-        )}
-      </Link>
-    </FlexChild>
-  );
-}
+//   return (
+//     <FlexChild width={"100%"} className={styles.sub_banner}>
+//       <Link href={"/"} className={styles.disabled}>
+//         {userData?.adult ? (
+//           <Image
+//             src={"/resources/images/dummy_img/mob_sub_banner_01.jpg"}
+//             width={"100%"}
+//             height={"auto"}
+//           />
+//         ) : (
+//           // 성인인증 안될때 나오는 이미지
+//           <Image
+//             src={"/resources/images/19_only_sub_banner_mobile.png"}
+//             width={"100%"}
+//             height={"auto"}
+//           />
+//         )}
+//       </Link>
+//     </FlexChild>
+//   );
+// }
 
-export function SubBanner2() {
-  const { userData } = useAuth();
+// export function SubBanner2() {
+//   const { userData } = useAuth();
 
-  return (
-    <FlexChild width={"100%"} className={styles.sub_banner}>
-      <Link href={"/"} className={styles.disabled}>
-        {userData?.adult ? (
-          <Image
-            src={"/resources/images/dummy_img/mob_sub_banner_02.jpg"}
-            width={"100%"}
-            height={"auto"}
-          />
-        ) : (
-          // 성인인증 안될때 나오는 이미지
-          <Image
-            src={"/resources/images/19_only_sub_banner_mobile.png"}
-            width={"100%"}
-            height={"auto"}
-          />
-        )}
-      </Link>
-    </FlexChild>
-  );
-}
+//   return (
+//     <FlexChild width={"100%"} className={styles.sub_banner}>
+//       <Link href={"/"} className={styles.disabled}>
+//         {userData?.adult ? (
+//           <Image
+//             src={"/resources/images/dummy_img/mob_sub_banner_02.jpg"}
+//             width={"100%"}
+//             height={"auto"}
+//           />
+//         ) : (
+//           // 성인인증 안될때 나오는 이미지
+//           <Image
+//             src={"/resources/images/19_only_sub_banner_mobile.png"}
+//             width={"100%"}
+//             height={"auto"}
+//           />
+//         )}
+//       </Link>
+//     </FlexChild>
+//   );
+// }
 
-export function MiniBanner() {
-  const link_banner = [
-    { link: "/", src: "/resources/images/dummy_img/mini_banner_01.png" },
-    { link: "/", src: "/resources/images/dummy_img/mini_banner_02.png" },
-    { link: "/", src: "/resources/images/dummy_img/mini_banner_03.png" },
-    { link: "/", src: "/resources/images/dummy_img/mini_banner_04.png" },
-  ];
+// export function MiniBanner() {
+//   const link_banner = [
+//     { link: "/", src: "/resources/images/dummy_img/mini_banner_01.png" },
+//     { link: "/", src: "/resources/images/dummy_img/mini_banner_02.png" },
+//     { link: "/", src: "/resources/images/dummy_img/mini_banner_03.png" },
+//     { link: "/", src: "/resources/images/dummy_img/mini_banner_04.png" },
+//   ];
 
-  return (
-    <FlexChild width={"auto"}>
-      <div className={styles.mini_Banner}>
-        {link_banner.map((item, i) => (
-          <Link
-            href={item.link}
-            key={i}
-            className={clsx(item.link?.length <= 1 ? styles.disabled : "")}
-          >
-            <Image src={item.src} width={"100%"} height={"auto"} />
-          </Link>
-        ))}
-      </div>
-    </FlexChild>
-  );
-}
+//   return (
+//     <FlexChild width={"auto"}>
+//       <div className={styles.mini_Banner}>
+//         {link_banner.map((item, i) => (
+//           <Link
+//             href={item.link}
+//             key={i}
+//             className={clsx(item.link?.length <= 1 ? styles.disabled : "")}
+//           >
+//             <Image src={item.src} width={"100%"} height={"auto"} />
+//           </Link>
+//         ))}
+//       </div>
+//     </FlexChild>
+//   );
+// }
 
 export function MainCategory() {
   // 카테고리메뉴
 
   const { categoriesData } = useCategories();
+  const costumeData = categoriesData.find((ca)=> ca.name === '코스튬/의류');
+
+  // console.log(costumeData?.id);
 
   return (
-    <nav className={styles.category_wrap}>
-      {categoriesData
-        .sort((c1, c2) => c1.index - c2.index)
-        .map((cat, i) => (
-          <VerticalFlex className={styles.ca_item} key={i}>
-            <Link href={`/categories/${cat.id}`}>
-              <div className={styles.ca_thumb} style={{'--thumb-size': '66px'} as React.CSSProperties}>
-                {/* 받아오는 이미지 1:1비율 아닐 경우 css도 가서 고쳐주기 */}
-                <Image src={cat.thumbnail} width={'100%'} height={'100%'}/>
-              </div>
-            </Link>
-            <Span>{cat.name}</Span>
+    <>
+      <nav className={styles.category_menu}>
+        {categoriesData
+          .sort((c1, c2) => c1.index - c2.index)
+          .filter((ca)=> ca.name !== '코스튬/의류')
+          .map((cat, i) => (
+            <VerticalFlex className={styles.ca_item} key={i} justifyContent="end">
+              <Link href={`/categories/${cat.id}`}>
+                <FlexChild className={styles.ca_img} justifyContent="center" alignItems="center">
+                  <Image src={cat.thumbnail}/>
+                </FlexChild>
+              </Link>
+              <VerticalFlex className={styles.text_box}>
+                <h5>{cat.name}</h5>
+                <Span className="Wanted">abcd</Span>
+              </VerticalFlex>
+            </VerticalFlex>
+          ))}
+      </nav>  
+      
+      
+      <Link href={`categories/${costumeData?.id}`} className={styles.exhibitionBox}>
+        <Div className={styles.itemBox}>
+          <VerticalFlex className={styles.text_box} alignItems="start">
+            <P className={styles.text1}>특별한 의상을 찾으시나요?</P>
+            <h3>{costumeData?.name}</h3>
+            <P className={styles.text2}>
+              파자마부터 메이드, 교복 등 취향에 맞는 <br />
+              다양한 스타일을 만나보세요.
+            </P>
+            <Span className={styles.arrow_btn}>
+              <Image
+                src={"/resources/images/button_arrow.png"}
+                width={5}
+              />
+            </Span>
           </VerticalFlex>
-        ))}
-    </nav>
+          <Image src={costumeData?.thumbnail}/>
+        </Div>
+
+        <Div className={styles.bg_layer}>
+          <Image src={costumeData?.thumbnail} />
+          <Image src={costumeData?.thumbnail} />
+          <Image src={costumeData?.thumbnail} />
+        </Div>
+      </Link>
+    </>
   );
 }
 
@@ -261,12 +298,6 @@ export function HotDealWrapper({
       fallbackData: [initProducts],
     }
   );
-
-  const [loading, setLoading] = useState(false);
-
-  // const showMore = () => {
-  //   Load(); // 서버에서도 다음 페이지 로드
-  // };
 
   return (
     <FlexChild hidden={!products || products?.length === 0} marginBottom={20}>
@@ -303,30 +334,6 @@ export function HotDealWrapper({
           page={page}
           // loading={loading}
         />
-        {/* <>
-          {products.length > 0 ? (
-            <>
-              <VerticalFlex gap={10}>
-                <MasonryGrid gap={20} width={"100%"}>
-                  {products.map((product: ProductData, i: number) => {
-                    return (
-                      <ProductCard
-                        key={i}
-                        product={product}
-                        lineClamp={2}
-                        width={200}
-                      />
-                    );
-                  })}
-                </MasonryGrid>
-                {loading && <LoadingSpinner />}
-                <ProductLoadBtn maxPage={maxPage} page={page} loading={loading} showMore={showMore} />
-              </VerticalFlex>
-            </>
-          ) : (
-            <NoContent type="상품" />
-          )}
-        </> */}
       </VerticalFlex>
     </FlexChild>
   );
@@ -358,36 +365,31 @@ export function BestProducts({
   const [loading, setLoading] = useState(false);
 
   return (
-    <FlexChild marginBottom={20}>
-      <VerticalFlex>
-        <HorizontalFlex className={styles.titleBox} alignItems="end" gap={20}>
-          <div className={styles.title}>
-            <Image src={"/resources/images/header/logo.png"} width={50} />
-            <h2 className="SacheonFont">
-              <Span position="relative" top={3}>
-                BEST
-              </Span>{" "}
-              상품
-            </h2>
-          </div>
+    <VerticalFlex className={styles.best_list}>
+      <HorizontalFlex className={styles.titleBox} alignItems="end" gap={20}>
+        <div className={styles.title}>
+          <h2 className="Wanted">
+            BEST
+            <small>상품</small>
+          </h2>
+        </div>
 
-          <FlexChild width={"auto"}>
-            <Link className={styles.linkBtn} href={"/products/new"}>
-              더보기
-            </Link>
-          </FlexChild>
-        </HorizontalFlex>
-        <ProductList
-          id="best"
-          products={bestProducts}
-          Load={Load}
-          hidden={maxPage < 1 || page >= maxPage}
-          maxPage={maxPage}
-          page={page}
-          // loading={loading}
-        />
-      </VerticalFlex>
-    </FlexChild>
+        <FlexChild width={"auto"}>
+          <Link className={styles.linkBtn} href={"/products/best"}>
+            자세히 보기 <b>+</b>
+          </Link>
+        </FlexChild>
+      </HorizontalFlex>
+      <ProductList
+        id="best"
+        products={bestProducts}
+        Load={Load}
+        hidden={maxPage < 1 || page >= maxPage}
+        maxPage={maxPage}
+        page={page}
+        // loading={loading}
+      />
+    </VerticalFlex>
   );
 }
 
@@ -411,8 +413,8 @@ export function ProductList({
   // loading: boolean;
 }) {
   const [visibleCount, setVisibleCount] = useState(6);
-
   const [loading, setLoading] = useState(false);
+  const pathname = usePathname();
 
   // const showMore = async () => {
   //   if (loading) return;
@@ -436,23 +438,39 @@ export function ProductList({
         <VerticalFlex gap={10}>
           <MasonryGrid
             breakpoints={{
-              default: 4,
-              992: 4,
-              768: 4,
+              default: 3,
+              992: 3,
+              768: 3,
               680: 3,
               560: 2,
             }}
-            gap={15}
+            gap={16}
             width={"100%"}
           >
             {products.slice(0, visibleCount).map((product: ProductData, i) => {
               return (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  lineClamp={2}
-                  width={"auto"}
-                />
+                <FlexChild className={styles.card_wrap} key={product.id}>
+                  {
+                      // 프로덕트, new일때만 나타나기. 제품 인기순 표시임
+                      <FlexChild
+                          color="#000"
+                          className={clsx(
+                            styles.rank,
+                            // i + page * 12 < 3 ? styles.topRank : "" // 더보기나 페이징으로 다음 페이지 있을때 적용
+                          )}
+                        >
+                          <Span className="SacheonFont">
+                            {/* {page * 12 + i + 1} */}
+                            {i+1}
+                          </Span>
+                        </FlexChild>
+                    }
+                  <ProductCard
+                    product={product}
+                    lineClamp={2}
+                    width={"auto"}
+                  />
+                </FlexChild>
               );
             })}
           </MasonryGrid>
@@ -494,7 +512,7 @@ type ReviewEntity = {
   };
 };
 
-export function ProductSlider({
+export function ReviewSection({
   id,
   lineClamp,
 }: {
@@ -542,6 +560,166 @@ export function ProductSlider({
 
   return (
     <>
+      <VerticalFlex className={styles.titleBox} gap={20} alignItems="start">
+        <HorizontalFlex alignItems="end" gap={20}>
+          <div className={styles.title}>
+            <h2 className="Wanted">
+              BEST
+              <small>리뷰</small>
+            </h2>
+          </div>
+
+          <FlexChild width={"auto"}>
+            <Link className={styles.linkBtn} href={"/board/photoReview"}>
+              자세히 보기 <b>+</b>
+            </Link>
+          </FlexChild>
+        </HorizontalFlex>
+
+        <P className={styles.text1}>
+          베스트 리뷰에 선정되면  <br />
+          30%할인쿠폰 증정!
+        </P>
+      </VerticalFlex>
+        
+      {items.length > 0 || loading ? (
+        <FlexChild id={styles.review_slider} className={styles.ProductSlider}>
+          <Swiper
+            loop={false}
+            slidesPerView={1.8}
+            speed={600}
+            spaceBetween={15}
+            modules={[Autoplay, Navigation]}
+            autoplay={{ delay: 4000 }}
+            navigation={{
+              prevEl: `#${styles.review_slider} .${styles.prevBtn}`,
+              nextEl: `#${styles.review_slider} .${styles.nextBtn}`,
+            }}
+            breakpoints={{
+              580: {
+                slidesPerView: 2.5,
+              },
+              680: {
+                slidesPerView: 3.5,
+              },
+              768: {
+                slidesPerView: 3.5,
+              },
+
+              1080: {
+                slidesPerView: 3.5,
+              },
+            }}
+          >
+            {loading
+              ? Array.from({ length: 5 }).map((_, i) => (
+                  <SwiperSlide key={`skeleton-${i}`}>
+                    <LoadingCard />
+                  </SwiperSlide>
+                ))
+              : [...items]
+                  .sort(() => Math.random() - 0.5)
+                  .map((item, i) => (
+                    <SwiperSlide key={item.id ?? i}>
+                      <ReviewImgCard
+                        review={item}
+                        lineClamp={lineClamp ?? 2}
+                        type={'slide'}
+                        width="100%"
+                        height="auto"
+                      />
+                    </SwiperSlide>
+                  ))}
+          </Swiper>
+
+          {
+            // 슬라이드옵션들 props로 빼버리고 그 값 따라서 조건문 걸기
+          }
+          <div className={clsx(styles.naviBtn, styles.prevBtn)}>
+            <Image
+              src={"/resources/icons/arrow/slide_arrow.png"}
+              width={8}
+            ></Image>
+          </div>
+          <div className={clsx(styles.naviBtn, styles.nextBtn)}>
+            <Image
+              src={"/resources/icons/arrow/slide_arrow.png"}
+              width={8}
+            ></Image>
+          </div>
+        </FlexChild>
+      ) : (
+        <NoContent type="리뷰" />
+      )}
+    </>
+  );
+}
+
+
+export function EventSection({
+  id,
+  lineClamp,
+}: {
+  id: string;
+  lineClamp?: number;
+}) {
+  const PAGE_SIZE = 10;
+  const [items, setItems] = useState<ReviewEntity[]>([]);
+  const [pageNumber, setPageNumber] = useState(0);
+  const [totalPages, setTotalPages] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  const fetchPage = useCallback(async (pn: number) => {
+    setLoading(true);
+    try {
+      const params: any = {
+        pageSize: PAGE_SIZE,
+        pageNumber: pn,
+        photo: true,
+        relations: "item,item.variant.product,user",
+        order: { created_at: "DESC" },
+      };
+      const res = await requester.getPublicReviews(params);
+      const data = res?.data ?? res;
+      const list: ReviewEntity[] = data?.content ?? [];
+
+      setItems((prev) => (pn === 0 ? list : prev.concat(list)));
+      if (typeof data?.totalPages === "number") {
+        setTotalPages(data.totalPages);
+        setHasMore(pn + 1 < data.totalPages);
+      } else {
+        setTotalPages(null);
+        setHasMore(list.length === PAGE_SIZE);
+      }
+      setPageNumber(pn);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchPage(0);
+  }, [fetchPage]);
+
+  return (
+    <>
+      <VerticalFlex className={styles.titleBox} gap={20} alignItems="start">
+        <HorizontalFlex alignItems="end" gap={20}>
+          <div className={styles.title}>
+            <h2 className="Wanted">EVENT</h2>
+          </div>
+
+          <FlexChild width={"auto"}>
+            <Link className={styles.linkBtn} href={"/products/new"}>
+              자세히 보기 <b>+</b>
+            </Link>
+          </FlexChild>
+        </HorizontalFlex>
+
+        <P className={styles.text1}>다양한 이벤트들을 만나 보세요.</P>
+      </VerticalFlex>
+        
       {items.length > 0 || loading ? (
         <FlexChild id={id} className={styles.ProductSlider}>
           <Swiper

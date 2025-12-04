@@ -1,53 +1,38 @@
 .review_item {
-   padding-bottom: 30px;
-}
-
-.review_item .imgBox {
-   cursor: pointer;
-   margin-bottom: 17px;
-}
-
-.review_item .imgBox .img {
    background-size: cover;
    background-position: center center;
    background-repeat: no-repeat;
    width: 100%;
-   padding-bottom: 100%;
+   margin-bottom: 30px;
+   aspect-ratio: 3 / 4.4;
+   border-radius: 10px;
+   overflow: hidden;
+   cursor: pointer;
 }
 
 .review_item .text_box {
-   padding: 0 5px;
+   height: 100%;
+   padding: 0 10px 15px;
+   background: linear-gradient(360deg, #1A1A1A, rgba(26,26,26,0) 20%);
 }
 
 .review_item .text_box .content {
-   font-size: 15px;
-   color: #fff;
-   line-height: 1.2;
-   padding-bottom: 10px;
-   border-bottom: 1px solid #6B6B6B;
+   font-size: 16px;
+   font-weight: 700;
+   color: #f9fbfc ;
+   line-height: 1.4;
    cursor: pointer;
-   align-items: start !important;
-   min-height: 47px;
 }
 
-.review_item .text_box .content:hover {
-   text-decoration: underline;
-}
 
-.review_item .text_box .title_box {
-   padding: 17px 0 0; 
-}
+.review_item .text_box .user_dt > * {width: auto;}
 
-.review_item .text_box .title_box > * {
-   width: auto;
-}
-
-.review_item .text_box .title_box .date {
+.review_item .text_box .user_dt .date {
    color: #898989; font-weight: 600;
    font-size: 13px;
 }
 
-.review_item .text_box .title_box .name {
+.review_item .text_box .user_dt .name {
    color: #fff; font-weight: 600;
    font-size: 13px;
 }
@@ -89,9 +74,9 @@
 
 /* 카드가 슬라이드로 불러와졌을 때 */
 
-/* .slide_item {gap: 10px;} */
+.slide_item {margin-bottom: 0;}
 
-.slide_item .text_box .content {
+/* .slide_item .text_box .content {
    font-size: 13px; min-height: 32px;
 }
 
@@ -100,28 +85,24 @@
    flex-direction: column;
    align-items: start !important;
    gap: 3px;
-}
+} */
 
 
 
 /* 모바일 리뷰 카드 */
 
 .mob_review_item .text_box .content {
-   font-size: 14px;
+   font-size: 15px;
    color: #fff;
    line-height: 1.2;
-   padding-bottom: 12px;
-   border-bottom: 1px solid #6B6B6B;
-   cursor: pointer;
-   align-items: start !important;
 }
 
-.mob_review_item .text_box .title_box .date {
-   color: #898989; font-weight: 600;
-   font-size: 12px;
+.mob_review_item .text_box .user_dt .date {
+   color: #c0c6cc; font-weight: 600;
+   font-size: 14px;
 }
 
-.mob_review_item .text_box .title_box .name {
+.mob_review_item .text_box .user_dt .name {
    color: #fff; font-weight: 600;
-   font-size: 12px;
+   font-size: 14px;
 }
