@@ -145,7 +145,9 @@ export class CartService extends BaseService<Cart, CartRepository> {
     point = 0,
     coupons,
     subscribe_id,
+    offline_store_id,
   }: {
+    
     user_id: string;
     cart_id: string;
     selected: string[];
@@ -160,7 +162,10 @@ export class CartService extends BaseService<Cart, CartRepository> {
       items?: { item_id: string; coupons: string[] }[];
     };
     subscribe_id?: string;
+    offline_store_id?: string;
+    
   }): Promise<Order | null> {
+    console.log("complete.offline_store_id >>>", offline_store_id);
     if (
       !user_id ||
       !cart_id ||
@@ -232,6 +237,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
       display,
       user_id,
       store_id: cart.store_id,
+      offline_store_id,
       address: _address,
       shipping_method: _shipping_method,
       status: payment?.bank_number ? OrderStatus.AWAITING : OrderStatus.PENDING,
