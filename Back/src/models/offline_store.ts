@@ -39,6 +39,8 @@ export class OfflineStore extends BaseEntity {
   @Column({ type: "character varying", nullable: true })
   thumbnail?: string;
 
+  is_favorite?: boolean;
+
   @BeforeInsert()
   protected async beforeInsert(): Promise<void> {
     this.id = generateEntityId(this.id, "ofs");

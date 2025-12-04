@@ -172,10 +172,14 @@ export function MapFrame({ initOfflineStore }: { initOfflineStore: Pageable }) {
     }, [userData?.id]);
 
     useEffect(() => {
-        requester.getRecentStores({ pageSize: 10, relations: ["offline_store"] }, (res: any) => {
-            setRecentStores(res?.content)
-        })
-    }, [])
+        requester.getRecentStores(
+            { relations: ["offline_store"] },
+            (res: any) => {
+                setRecentStores(res?.content);
+            }
+        );
+    }, []);
+
 
     const createWishlist = async (store: any) => {
         if (!userData?.id) return;
@@ -394,14 +398,18 @@ export function MapFrame({ initOfflineStore }: { initOfflineStore: Pageable }) {
 
                 <FlexChild width="85%">
                     <VerticalFlex>
-                        <Div height="80vh">
+                        <Div height="80vh" >
                             <GoogleMap
+
                                 center={center}
                                 zoom={14}
+                                mapContainerStyle={{ width: "100vw", height: "100vh", maxHeight: "60vh" }}
                                 options={{
                                     disableDefaultUI: true,
                                     streetViewControl: false,
                                     zoomControl: true,
+                                    gestureHandling: "greedy",
+                                    scrollwheel: true,
                                 }}
                             >
                                 {offlineStores.map((store: any) => {
@@ -419,6 +427,10 @@ export function MapFrame({ initOfflineStore }: { initOfflineStore: Pageable }) {
                                             key={store.id}
                                             position={position}
                                             mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+                                            getPixelPositionOffset={(width: number, height: number) => ({
+                                                x: -(width / 2),
+                                                y: -height,
+                                            })}
                                         >
                                             <Div
                                                 className={clsx(

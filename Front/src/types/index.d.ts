@@ -280,7 +280,18 @@ interface CartData extends BaseEntity {
   metadata?: Record<string, unknown> | null;
 }
 
+interface OfflineStore {
+  id: string;
+  name: string;
+  lat: number | string;
+  lng: number | string;
+}
 
+interface FavoriteItem {
+  id: string;
+  offline_store_id: string;
+  offline_store?: OfflineStore | null;
+}
 
 interface ShippingMethodDataFrame {
   store_id?: string;
@@ -299,11 +310,11 @@ interface ShippingMethodData extends BaseEntity, ShippingMethodDataFrame {
   shipped_at?: Date | string | null;
   coupons?: CouponData[];
 }
-interface FulfillmentData {
+interface FulfillmentData  {
   method: "delivery" | "pickup";
   pickup: "recent" | "favorite" | "others";
-  selectedStore?: { id: string } | null;
-}
+  selectedStore: OfflineStore | null;
+};
 
 interface AddressDataFrame {
   id?: string;
@@ -706,6 +717,10 @@ interface InputFieldData extends BaseEntity, InputFieldDataFrame {
   page_id: string;
   page?: PageData;
   value: Record<string, any>;
+}
+interface MapCenter {
+  lat: number;
+  lng: number;
 }
 
 
