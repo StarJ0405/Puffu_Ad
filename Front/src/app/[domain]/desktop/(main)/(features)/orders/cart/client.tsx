@@ -41,6 +41,9 @@ import _ from "lodash";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
 import LoadingPageChange from "@/components/loading/LoadingPageChange";
+import { GoogleMap, OverlayView, useLoadScript } from "@react-google-maps/api";
+
+
 
 export function CartWrap() {
   const { userData } = useAuth();
@@ -53,6 +56,7 @@ export function CartWrap() {
   );
   const formRef = useRef<DeliveryAddEditRef>(null);
   const listRef = useRef<DeliveryListRef>(null);
+  const radio = useRef<any>([])
   const Create = (data: Partial<AddressDataFrame>) => {
     requester.createAddress(data, () => mutate());
   };
@@ -65,6 +69,18 @@ export function CartWrap() {
   const navigate = useNavigate();
   const [orderCoupons, setOrderCupons] = useState<string[]>([]);
   const [shippingCoupons, setShippingCupons] = useState<string[]>([]);
+  const [otherStores, setOtherStores] = useState<any[]>([]);
+  const [recentStores, setRecentStores] = useState<any[]>([]);
+  const [favoriteStores, setFavoriteStores] = useState<any[]>([]);
+
+  const [center, setCenter] = useState(() => {
+    return { lat: 37.5665, lng: 126.978 }
+  });
+  const [fulfillment, setFulfillment] = useState<FulfillmentData>({
+    method: "delivery",
+    pickup: "recent",
+    selectedStore: null,
+  });
   const [itemCoupons, setItemCupons] = useState<
     { item_id: string; coupons: string[] }[]
   >([]);
@@ -77,6 +93,15 @@ export function CartWrap() {
     (condition) => requester.getCoupons(condition),
     { onReprocessing: (data) => data?.content || [] }
   );
+
+
+
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string,
+    libraries: ["places"],
+  });
+
+
   const getShippingAmount = () => {
     if (!selected?.length) return 0;
     const amount = shipping?.amount || 0;
@@ -242,7 +267,7 @@ export function CartWrap() {
           Math.round(
             ((amount - productCoupons) *
               (100 - (userData?.subscribe?.percent || 0))) /
-              100.0
+            100.0
           )
         );
       }
@@ -269,6 +294,7 @@ export function CartWrap() {
     };
   }
 
+
   const saleTotals = saleTotal(); // 세일 총합값
 
   const getSum = () => {
@@ -287,8 +313,8 @@ export function CartWrap() {
       }, 0);
       return Math.round(
         (amount * (100 - percents - (userData?.subscribe?.percent || 0))) /
-          100.0 -
-          fix
+        100.0 -
+        fix
       );
     } else if (userData?.subscribe?.percent) {
       return Math.round(
@@ -340,6 +366,93 @@ export function CartWrap() {
       },
     });
   };
+  const createWishlist = async (store: any) => {
+    if (!userData?.id) return;
+
+    const storeId = store.id as string;
+    const exists = favoriteStores.some(
+      (item) => item?.offline_store?.id === storeId
+    );
+    if (exists) return;
+
+    try {
+      const res = await requester.createStoreWishlist(storeId, {
+        offline_store_id: storeId,
+        metadata: {},
+        return_data: true,
+      });
+      if (res?.content) {
+        setFavoriteStores((prev) => [
+          { ...res.content, offline_store: store },
+          ...prev,
+        ]);
+      }
+    } catch (e) { }
+  };
+
+  const deleteWishlist = async (store: any) => {
+    if (!userData?.id) return;
+
+    const storeId = store.id as string;
+    const target = favoriteStores.find(
+      (item) => item?.offline_store?.id === storeId
+    );
+    if (!target) return;
+
+    const wishlistId = target.id as string;
+
+    setFavoriteStores((prev) =>
+      prev.filter((item) => item?.offline_store?.id !== storeId)
+    );
+
+    try {
+      await requester.deleteStoreWishlist(wishlistId);
+    } catch (e) {
+      setFavoriteStores((prev) => [target, ...prev]);
+    }
+  };
+
+  const pickupTabClick = async (
+    tab: FulfillmentData["pickup"]
+  ) => {
+
+    setFulfillment(prev => ({
+      ...prev,
+      pickup: tab,
+    }));
+
+
+    try {
+      if (tab === "recent") {
+        const res = await requester.getRecentStores({ pageSize: 12, relations: ["offline_store"] });
+        console.log(res)
+        setRecentStores(res?.content);
+      }
+
+      if (tab === "favorite") {
+
+        const res = await requester.getStoreWishlist(
+          {
+            pageSize: 12,
+            pageNumber: 0,
+            relations: ["offline_store"],
+          }
+        );
+        const list = Array.isArray(res) ? res : res?.content ?? [];
+        setFavoriteStores(list);
+      }
+
+      if (tab === "others") {
+        const res = await requester.getOfflineStores({
+          pageSize: 12,
+        });
+        const list = Array.isArray(res) ? res : res?.content ?? [];
+        setOtherStores(list);
+      }
+    } finally {
+    }
+  };
+
 
   const deliveryListModal = () => {
     NiceModal.show(ConfirmModal, {
@@ -465,7 +578,7 @@ export function CartWrap() {
     // copType, 모달 여는 경로가 상품, 주문, 배송 쿠폰인지 구분한 값
   };
 
- 
+
   // 결제창 취소했을때 hidden 막는 용도
   if (typeof window !== "undefined" && typeof MutationObserver !== "undefined") {
     const observer = new MutationObserver(() => {
@@ -589,6 +702,44 @@ export function CartWrap() {
               </HorizontalFlex>
             </VerticalFlex>
         </FlexChild> */}
+        <FlexChild
+          className={styles.coupon_info}
+          hidden={!storeData?.metadata?.shipping && !storeData?.metadata?.order}
+        >
+          <VerticalFlex alignItems="start">
+            <article>
+              <P className={styles.list_title}>배송 방법</P>
+            </article>
+
+            <VerticalFlex className={styles.info_list}>
+              <HorizontalFlex
+                className={clsx(styles.info_item)}
+                hidden={!storeData?.metadata?.order}
+              >
+                <FlexChild border={"1px solid #fff"} borderRadius={5} padding={10} justifyContent={"center"} cursor={"pointer"} className={fulfillment.method === "delivery" ? "active" : ""} onClick={() => setFulfillment(prev => ({
+                  ...prev,
+                  method: "delivery",
+                }))}>
+                  <P color={"#fff"} size={17} weight={600}>배송</P>
+                </FlexChild>
+                <FlexChild border={"1px solid #fff"} borderRadius={5} padding={10} justifyContent={"center"} cursor={"pointer"} className={fulfillment.method === "pickup" ? "active" : ""} onClick={() => setFulfillment(prev => ({
+                  ...prev,
+                  method: "pickup",
+                }))}>
+                  <P color={"#fff"} size={17} weight={600}>매장 픽업</P>
+                </FlexChild>
+              </HorizontalFlex>
+
+              <HorizontalFlex
+                className={clsx(styles.info_item)}
+                hidden={
+                  !storeData?.metadata?.shipping || shipping?.amount === 0
+                }
+              >
+              </HorizontalFlex>
+            </VerticalFlex>
+          </VerticalFlex>
+        </FlexChild>
 
         <FlexChild
           className={styles.coupon_info}
@@ -641,62 +792,222 @@ export function CartWrap() {
             </VerticalFlex>
           </VerticalFlex>
         </FlexChild>
+        {fulfillment.method === "delivery" && (
+          <FlexChild className={styles.delivery_info}>
+            <VerticalFlex alignItems="start">
+              <article>
+                <P className={styles.list_title}>배송 정보</P>
+                {addresses.length > 0 ? (
+                  <Button
+                    className={styles.delivery_list_btn}
+                    onClick={deliveryListModal}
+                  >
+                    배송지 목록
+                  </Button>
+                ) : (
+                  <Button
+                    className={styles.delivery_list_btn}
+                    onClick={deliveryAddModal}
+                  >
+                    배송지 추가
+                  </Button>
+                )}
+              </article>
+              {address ? (
+                <VerticalFlex className={styles.info_list}>
+                  <HorizontalFlex className={styles.info_item}>
+                    <Span>이름</Span>
+                    <P>{address.name}</P>
+                  </HorizontalFlex>
 
-        <FlexChild className={styles.delivery_info}>
-          <VerticalFlex alignItems="start">
-            <article>
-              <P className={styles.list_title}>배송 정보</P>
-              {addresses.length > 0 ? (
-                <Button
-                  className={styles.delivery_list_btn}
-                  onClick={deliveryListModal}
-                >
-                  배송지 목록
-                </Button>
-              ) : (
-                <Button
-                  className={styles.delivery_list_btn}
-                  onClick={deliveryAddModal}
-                >
-                  배송지 추가
-                </Button>
-              )}
-            </article>
-            {address ? (
-              <VerticalFlex className={styles.info_list}>
-                <HorizontalFlex className={styles.info_item}>
-                  <Span>이름</Span>
-                  <P>{address.name}</P>
-                </HorizontalFlex>
+                  <HorizontalFlex className={styles.info_item}>
+                    <Span>배송주소</Span>
+                    <P>
+                      ({address.postal_code}) {address.address1}{" "}
+                      {address.address2}
+                    </P>
+                  </HorizontalFlex>
 
-                <HorizontalFlex className={styles.info_item}>
-                  <Span>배송주소</Span>
-                  <P>
-                    ({address.postal_code}) {address.address1}{" "}
-                    {address.address2}
-                  </P>
-                </HorizontalFlex>
+                  <HorizontalFlex className={styles.info_item}>
+                    <Span>연락처</Span>
+                    <P>{address.phone}</P>
+                  </HorizontalFlex>
 
-                <HorizontalFlex className={styles.info_item}>
-                  <Span>연락처</Span>
-                  <P>{address.phone}</P>
-                </HorizontalFlex>
+                  <VerticalFlex
+                    className={clsx(styles.info_item, styles.info_select_box)}
+                  >
+                    <Span>배송 요청사항 선택</Span>
 
-                <VerticalFlex
-                  className={clsx(styles.info_item, styles.info_select_box)}
-                >
-                  <Span>배송 요청사항 선택</Span>
-
-                  <SelectBox setMessage={setMessage} />
+                    <SelectBox setMessage={setMessage} />
+                  </VerticalFlex>
                 </VerticalFlex>
-              </VerticalFlex>
-            ) : (
-              // 배송지 없을 때
-              <NoContent type="배송지"></NoContent>
-            )}
-          </VerticalFlex>
-        </FlexChild>
+              ) : (
+                // 배송지 없을 때
+                <NoContent type="배송지"></NoContent>
+              )}
+            </VerticalFlex>
+          </FlexChild>
+        )}
+        {fulfillment.method === "pickup" && (
+          <FlexChild>
+            <VerticalFlex alignItems="start" gap={10} >
+              <FlexChild>
+                <P className={styles.list_title}>픽업 매장 선택</P>
+              </FlexChild>
+              <FlexChild>
+                <GoogleMap
+                  zoom={14}
+                  center={{ lat: 37.5665, lng: 126.978 }}
+                  mapContainerStyle={{ width: "100%", height: "20vh" }}
+                  options={{
+                    disableDefaultUI: true,
+                    streetViewControl: false,
+                    zoomControl: true,
+                  }}
+                >
+                </GoogleMap>
+              </FlexChild>
+              <FlexChild>
+                <HorizontalFlex >
+                  <FlexChild
+                    justifyContent="center"
+                    border="1px solid #fff"
+                    padding={10}
+                    cursor="pointer"
+                    onClick={() => pickupTabClick("recent")}
+                  >
+                    <P
+                      size={18}
+                      weight={600}
+                      color={fulfillment.pickup === "recent" ? "#000" : "#fff"}
+                    >
+                      최근 이용매장
+                    </P>
+                  </FlexChild>
+                  <FlexChild
+                    justifyContent="center"
+                    border="1px solid #fff"
+                    padding={10}
+                    cursor="pointer"
+                    onClick={() => pickupTabClick("favorite")}
+                  >
+                    <P
+                      size={18}
+                      weight={600}
+                      color={fulfillment.pickup === "favorite" ? "#000" : "#fff"}
+                    >
+                      즐겨찾기
+                    </P>
+                  </FlexChild>
+                  <FlexChild
+                    justifyContent="center"
+                    border="1px solid #fff"
+                    padding={10}
+                    cursor="pointer"
+                    onClick={() => pickupTabClick("others")}
+                  >
+                    <P
+                      size={18}
+                      weight={600}
+                      color={fulfillment.pickup === "others" ? "#000" : "#fff"}
+                    >
+                      그 외 매장
+                    </P>
+                  </FlexChild>
+                </HorizontalFlex>
+              </FlexChild>
+              <FlexChild >
+                <Input width={"100%"} />
+              </FlexChild>
+              {fulfillment.method === "pickup" && (
+                <FlexChild>
+                  {fulfillment.pickup === "recent" && (
+                    <>
+                      {recentStores.length === 0 && <P>최근 이용매장이 없습니다.</P>}
+                      {recentStores.map(store => (
+                        <P key={store.id}>{store.offline_store?.name}</P>
+                      ))}
+                    </>
+                  )}
 
+                  {fulfillment.pickup === "favorite" && (
+                    <>
+                      {favoriteStores.length === 0 && <P>즐겨찾기 매장이 없습니다.</P>}
+                      {favoriteStores.map(item => (
+                        <P key={item.id}>{item.offline_store?.name}</P>
+                      ))}
+                    </>
+                  )}
+
+                  {fulfillment.pickup === "others" && (
+                    <>
+                      {otherStores.length === 0 && <P>등록된 매장이 없습니다.</P>}
+
+                      <RadioGroup name="pickup_store">
+                        <VerticalFlex gap={10}>
+                          {otherStores.map((store) => {
+                            const inWishlist = favoriteStores.some(
+                              (item) => item?.offline_store?.id === store.id
+                            );
+
+                            return (
+                              <FlexChild
+                                key={store.id}
+                                className={styles.store_card}
+                                onClick={() => {
+                                  document.getElementById(`store_${store.id}`)?.click();
+                                  setFulfillment((prev) => ({
+                                    ...prev,
+                                    selectedStore: store,
+                                  }));
+                                }}
+                              >
+                                <HorizontalFlex>
+                                  <FlexChild>
+                                    <FlexChild width="auto">
+                                      <RadioChild
+                                        id={`store_${store.id}`}
+                                        value={store.id}
+                                      />
+                                    </FlexChild>
+                                  </FlexChild>
+                                  <FlexChild>
+                                    <Span size={16}>{store.name}</Span>
+                                  </FlexChild>
+                                  <FlexChild justifyContent="flex-end">
+                                    <Image
+                                      src={
+                                        inWishlist
+                                          ? "/resources/icons/starIcon.svg"
+                                          : "/resources/icons/emptyStarIcon.svg"
+                                      }
+                                      width={20}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (inWishlist) {
+                                          deleteWishlist(store);
+                                        } else {
+                                          createWishlist(store);
+                                        }
+                                      }}
+                                    />
+                                  </FlexChild>
+                                </HorizontalFlex>
+                              </FlexChild>
+                            );
+                          })}
+                        </VerticalFlex>
+                      </RadioGroup>
+                    </>
+                  )}
+
+
+
+                </FlexChild>
+              )}
+            </VerticalFlex>
+          </FlexChild>
+        )}
         <FlexChild className={styles.payment_root}>
           <VerticalFlex alignItems="start">
             <article>
@@ -1038,6 +1349,7 @@ export function CartWrap() {
                   address_id: address?.id,
                   shipping_method_id: shipping?.id,
                   message: message,
+                  offline_store_id: fulfillment.selectedStore?.id,
                   cart_id: cartData?.id,
                   point,
                   coupons: {
@@ -1429,7 +1741,7 @@ function Item({
                   {item.variant.title}
                 </P>
                 {
-                  item.variant.extra_price !==0 && (
+                  item.variant.extra_price !== 0 && (
                     <P color="#797979">
                       (+{(item.variant.extra_price || 0).toLocaleString()}원)
                     </P>
@@ -1474,7 +1786,7 @@ function Item({
         {/* 삭제 버튼 */}
         <FlexChild
           className={styles.delete_box}
-          // onClick={()=> }
+        // onClick={()=> }
         >
           <Button
             onClick={() =>

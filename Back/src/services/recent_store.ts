@@ -26,12 +26,4 @@ export class RecentStoreService extends BaseService<RecentStore, RecentStoreRepo
         })
         await this.repository.save(recent)
     }
-    async getRecentStoresByUserId(userId: string, limit: number = 10) {
-        return this.getList({
-            where: { user_id: userId },
-            relations: ["offline_store"],
-            order: { created_at: "DESC", id: "DESC" },
-            take: limit,
-        });
-    }
 }

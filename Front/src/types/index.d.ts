@@ -45,7 +45,7 @@ interface Pageable {
 
 interface ComponentProps<T extends HTMLElement>
   extends React.CSSProperties,
-    React.HTMLAttributes<T> {
+  React.HTMLAttributes<T> {
   Ref?: React.Ref<T> | undefined;
 }
 
@@ -280,6 +280,8 @@ interface CartData extends BaseEntity {
   metadata?: Record<string, unknown> | null;
 }
 
+
+
 interface ShippingMethodDataFrame {
   store_id?: string;
   brand_id?: string;
@@ -296,6 +298,11 @@ interface ShippingMethodDataFrame {
 interface ShippingMethodData extends BaseEntity, ShippingMethodDataFrame {
   shipped_at?: Date | string | null;
   coupons?: CouponData[];
+}
+interface FulfillmentData {
+  method: "delivery" | "pickup";
+  pickup: "recent" | "favorite" | "others";
+  selectedStore?: { id: string } | null;
 }
 
 interface AddressDataFrame {
@@ -324,13 +331,14 @@ interface OrderData extends BaseEntity {
   address_id: string;
   address?: AddressData;
   shipping_method?: ShippingMethodData;
+
   status:
-    | "awaiting"
-    | "pending"
-    | "fulfilled"
-    | "shipping"
-    | "complete"
-    | "cancel";
+  | "awaiting"
+  | "pending"
+  | "fulfilled"
+  | "shipping"
+  | "complete"
+  | "cancel";
   total: number;
   total_tax: number;
   total_discounted: number;
@@ -452,6 +460,7 @@ interface ChatroomUserData {
   room?: ChatroomData;
   last_read: Date | string;
 }
+
 
 interface QADataFrame {
   type: "exchange" | "refund" | "etc";
@@ -698,5 +707,6 @@ interface InputFieldData extends BaseEntity, InputFieldDataFrame {
   page?: PageData;
   value: Record<string, any>;
 }
+
 
 // 계약서 관련 선언 끝

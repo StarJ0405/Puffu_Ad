@@ -31,7 +31,7 @@
   gap: 30px;
 }
 
-.cart_wrap .cart_data > div,
+.cart_wrap .cart_data>div,
 .cart_wrap .payment_block {
   border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 10px;
@@ -74,7 +74,9 @@
 }
 
 .cart_wrap .cart_data .product_wrapper .cart_item .unit .item_thumb {
-  width: auto; overflow: hidden; flex: unset;
+  width: auto;
+  overflow: hidden;
+  flex: unset;
   border-radius: 5px;
   cursor: pointer;
 }
@@ -85,14 +87,14 @@
   padding-right: 25px;
 }
 
-.unit .unit_content > .unit_brand {
+.unit .unit_content>.unit_brand {
   font-size: 14px;
   color: #a8a8a8;
   font-weight: 600;
   padding-bottom: 15px;
 }
 
-.unit .unit_content > .unit_title {
+.unit .unit_content>.unit_title {
   font-size: 16px;
   line-height: 1.2;
   color: #fff;
@@ -100,7 +102,7 @@
   cursor: pointer;
 }
 
-.unit .unit_content > .unit_title:hover {
+.unit .unit_content>.unit_title:hover {
   text-decoration: underline;
 }
 
@@ -133,9 +135,11 @@
 
 
 .cart_item .delete_box {
-  align-self: end; width: auto;
+  align-self: end;
+  width: auto;
   position: absolute;
-  top: 0; right: 0;
+  top: 0;
+  right: 0;
 }
 
 .cart_item .delete_box button {
@@ -151,7 +155,9 @@
   height: auto;
 }
 
-.totalPrice .data {flex: unset;}
+.totalPrice .data {
+  flex: unset;
+}
 
 .product_wrapper .cart_item .totalPrice .total_txt {
   font-size: 25px !important;
@@ -160,7 +166,7 @@
   color: var(--main-color1) !important;
 }
 
-.product_wrapper .cart_item .totalPrice .total_txt > span {
+.product_wrapper .cart_item .totalPrice .total_txt>span {
   color: #fff;
 }
 
@@ -189,10 +195,12 @@
   margin-top: 25px;
   gap: 25px;
 }
+
 .info_item {
   gap: 10px;
 }
-.info_item > span {
+
+.info_item>span {
   font-size: 16px;
   color: #9a9a9a;
   font-weight: 600 !important;
@@ -202,19 +210,19 @@
   width: auto;
 }
 
-.info_list .info_item > p {
+.info_list .info_item>p {
   font-size: 16px;
   color: #fff;
   line-height: 1.4;
   font-weight: 600 !important;
 }
 
-.info_list .info_unit > span {
+.info_list .info_unit>span {
   font-size: 14px !important;
   font-weight: 400 !important;
 }
 
-.info_list .info_unit > p {
+.info_list .info_unit>p {
   font-size: 14px !important;
   font-weight: 400 !important;
   color: #797979 !important;
@@ -222,9 +230,7 @@
 
 
 /* 쿠폰 적용 */
-.coupon_info {
-
-}
+.coupon_info {}
 
 .coupon_select {
   width: 100%;
@@ -264,6 +270,12 @@
   color: #fff;
   font-size: 14px;
   font-weight: 600;
+
+}
+
+.pickup_info .pickup_list_btn {
+  height: 70vh;
+
 }
 
 .info_list .info_item.info_select_box {
@@ -344,18 +356,18 @@
   gap: 15px;
 }
 
-.payment_block .total_pay_txt > span {
+.payment_block .total_pay_txt>span {
   color: #fff;
   font-size: 20px !important;
   font-weight: 600 !important;
 }
 
-.payment_block .total_pay_txt > p {
+.payment_block .total_pay_txt>p {
   font-weight: 700 !important;
   font-size: 30px !important;
 }
 
-.payment_block .total_pay_txt > p span {
+.payment_block .total_pay_txt>p span {
   position: relative;
   bottom: 3px;
 }
@@ -391,16 +403,33 @@
   border: 1px solid #7a7a7a;
 }
 
-.point_box .info_item > span {color: #fff;}
+.point_box .info_item>span {
+  color: #fff;
+}
 
-.point_box .info_item .my_point {font-size: 20px;}
+.point_box .info_item .my_point {
+  font-size: 20px;
+}
 
-.point_box .point_input_box {justify-content: end !important;}
+.point_box .point_input_box {
+  justify-content: end !important;
+}
 
-.point_box .cancel_btn {background: transparent; border: 1px solid #fff; font-weight: 500; font-size: 13px;}
-.point_box .cancel_btn:active {background: #050505; border-color: #666;}
+.point_box .cancel_btn {
+  background: transparent;
+  border: 1px solid #fff;
+  font-weight: 500;
+  font-size: 13px;
+}
 
-.point_box .point_total {gap: 15px;}
+.point_box .cancel_btn:active {
+  background: #050505;
+  border-color: #666;
+}
+
+.point_box .point_total {
+  gap: 15px;
+}
 
 
 /* 오른쪽 결제정보 end -------------------------------------------------- */

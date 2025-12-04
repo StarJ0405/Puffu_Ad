@@ -90,6 +90,8 @@ export function MapFrame({ initOfflineStore }: { initOfflineStore: Pageable }) {
     const [selectedStoreId, setSelectedStoreId] = useState<string | null>(null);
     const [toggle, setToggle] = useState(false);
     const [wishlist, setWishlist] = useState<any[]>([]);
+    const [recentStores, setRecentStores] = useState<any[]>([]);
+
     const [center, setCenter] = useState(() => {
         const first = initOfflineStore?.content?.[0] as any;
         if (first?.lat && first?.lng) {
@@ -170,8 +172,8 @@ export function MapFrame({ initOfflineStore }: { initOfflineStore: Pageable }) {
     }, [userData?.id]);
 
     useEffect(() => {
-        requester.getRecentStores({ pageSize: 10 }, (res: any) => {
-            console.log("최근이용매장 : ", res);
+        requester.getRecentStores({ pageSize: 10, relations: ["offline_store"] }, (res: any) => {
+            setRecentStores(res?.content)
         })
     }, [])
 
@@ -383,6 +385,12 @@ export function MapFrame({ initOfflineStore }: { initOfflineStore: Pageable }) {
                         </Div>
                     </FlexChild>
                 )}
+                <FlexChild>
+                    <P>최근 이용 매장 : </P>
+                    {recentStores.map((store) => (
+                        <P >{store?.offline_store?.name}</P>
+                    ))}
+                </FlexChild>
 
                 <FlexChild width="85%">
                     <VerticalFlex>
