@@ -181,6 +181,8 @@ a {
 .mob_wrap {
   max-width: 768px;
   margin: 0 auto;
+  padding: 130px 0 60px;
+  /* 130 : header 높이, 65 : bottomNavi 높이 */
 }
 
 .mob_page_container {
@@ -192,9 +194,7 @@ a {
 }
 
 .mob_root {
-  padding-top: 95px;
   min-height: 70dvh;
-  /* padding-bottom: 80px; */
   color: var(--default-color);
 }
 

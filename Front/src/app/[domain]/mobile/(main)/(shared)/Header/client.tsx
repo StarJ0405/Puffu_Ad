@@ -8,28 +8,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import styles from "./header.module.css";
-import NiceModal from "@ebay/nice-modal-react";
-import SideMenu from "./sideMenu";
 import { useCart } from "@/providers/StoreProvider/StorePorivderClient";
 import Link from "next/link";
-
-
-// 햄버거 메뉴
-export function SideMenuBtn() {
-
-  const SideMenuOpen = () => {
-    NiceModal.show(SideMenu);
-  };
-
-  return (
-    <FlexChild gap={10} width={'auto'} cursor="pointer" onClick={SideMenuOpen}>
-      <Image
-        src='/resources/images/header/category_menu_icon.png'
-        width={18}
-      />
-    </FlexChild>
-  )
-}
 
 
 

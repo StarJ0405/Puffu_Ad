@@ -10,6 +10,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
+import useNavigate from "@/shared/hooks/useNavigate";
 
 import ProductLoadBtn from "@/components/buttons/ProductLoadBtn";
 import LoadingCard from "@/components/card/LoadingCard";
@@ -44,6 +45,16 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
 
   const [bulletIdx, setbulltIdx] = useState(0);
   const swiperRef = useRef<SwiperType | null>(null);
+  const navigate = useNavigate();
+
+  // 베너 링크값 없으면 링크 없애는 코드
+  const linkCheck = (link: string | undefined)=> {
+    if(link) {
+      navigate(`${link}`)
+    } else {
+      navigate('')
+    }
+  }
 
   return (
     <FlexChild className={clsx("mob_page_container", styles.main_banner)}>
@@ -58,34 +69,19 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
           clickable: true,
         }}
         autoplay={{ delay: 4000 }}
-        onSwiper={(swiper) => {
-          swiperRef.current = swiper;
-        }}
-        onSlideChange={(e) => setbulltIdx(e.activeIndex)}
+        onSwiper={(swiper) => swiperRef.current = swiper}
+        onSlideChange={(e) => setbulltIdx(e.realIndex)}
       >
         {[...banners]?.map(
           (item: BannerData, i: number) =>
             item.thumbnail.mobile && (
               <SwiperSlide key={i} className={clsx(styles.slideItem, `swiper_0${i}`)}>
-                {item.to ? (
-                  <Link href={item.to}>
-                    <Image
-                      src={
-                        userData?.adult
-                          ? item.thumbnail.mobile
-                          : "/resources/images/19_only_banner_mobile.png"
-                      }
-                    />
-                  </Link>
-                ) : (
-                  <Image
-                    src={
-                      userData?.adult
-                        ? item.thumbnail.mobile
-                        : "/resources/images/19_only_banner_mobile.png"
-                    }
-                  />
-                )}
+                <div onClick={()=> linkCheck(item.to)} className={styles.thumbnail} style={{
+                      'backgroundImage': userData?.adult
+                      ? `url(${item.thumbnail.mobile})`
+                      : "/resources/images/19_only_banner_mobile.png"
+                    }} 
+                />
               </SwiperSlide>
             )
         )}
@@ -96,7 +92,7 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
           <span
             key={i}
             className={clsx(styles.bullet, bulletIdx === i ? styles.active : '')}
-            onClick={() => swiperRef.current?.slideTo(i)}
+            onClick={() => swiperRef.current?.slideToLoop(i)}
           >
           </span>
         ))}
@@ -105,35 +101,35 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
   );
 }
 
-export function LinkBanner() {
-  const link_banner = [
-    { link: "/", src: "/resources/images/dummy_img/link_banner_01.png" },
-    { link: "/", src: "/resources/images/dummy_img/link_banner_02.png" },
-    { link: "/", src: "/resources/images/dummy_img/link_banner_03.png" },
-    { link: "/", src: "/resources/images/dummy_img/link_banner_04.png" },
-  ];
+// export function LinkBanner() {
+//   const link_banner = [
+//     { link: "/", src: "/resources/images/dummy_img/link_banner_01.png" },
+//     { link: "/", src: "/resources/images/dummy_img/link_banner_02.png" },
+//     { link: "/", src: "/resources/images/dummy_img/link_banner_03.png" },
+//     { link: "/", src: "/resources/images/dummy_img/link_banner_04.png" },
+//   ];
 
-  const { userData } = useAuth();
+//   const { userData } = useAuth();
 
-  return (
-    <VerticalFlex className={styles.link_Banner}>
-      {link_banner.map((item, i) => (
-        <Link href={item.link} key={i} className={styles.disabled}>
-          {userData?.adult ? (
-            <Image src={item.src} width={"100%"} height={"auto"} />
-          ) : (
-            // 성인인증 안될때 나오는 이미지
-            <Image
-              src={"/resources/images/19_only_sub_banner_mobile.png"}
-              width={"100%"}
-              height={"auto"}
-            />
-          )}
-        </Link>
-      ))}
-    </VerticalFlex>
-  );
-}
+//   return (
+//     <VerticalFlex className={styles.link_Banner}>
+//       {link_banner.map((item, i) => (
+//         <Link href={item.link} key={i} className={styles.disabled}>
+//           {userData?.adult ? (
+//             <Image src={item.src} width={"100%"} height={"auto"} />
+//           ) : (
+//             // 성인인증 안될때 나오는 이미지
+//             <Image
+//               src={"/resources/images/19_only_sub_banner_mobile.png"}
+//               width={"100%"}
+//               height={"auto"}
+//             />
+//           )}
+//         </Link>
+//       ))}
+//     </VerticalFlex>
+//   );
+// }
 
 // export function SubBanner1() {
 //   const { userData } = useAuth();
@@ -233,11 +229,11 @@ export function MainCategory() {
               </Link>
               <VerticalFlex className={styles.text_box}>
                 <h5>{cat.name}</h5>
-                <Span className="Wanted">abcd</Span>
+                <Span className="Wanted">{cat.english_name}</Span>
               </VerticalFlex>
             </VerticalFlex>
           ))}
-      </nav>  
+      </nav>
       
       
       <Link href={`categories/${costumeData?.id}`} className={styles.exhibitionBox}>
@@ -270,76 +266,76 @@ export function MainCategory() {
 }
 
 // 이 달의 핫딜
-export function HotDealWrapper({
-  id,
-  lineClamp,
-  initProducts,
-  initCondition,
-}: {
-  id: string;
-  lineClamp?: number;
-  initProducts: Pageable;
-  initCondition: any;
-}) {
-  const {
-    [id]: products,
-    Load,
-    page,
-    maxPage,
-  } = useInfiniteData(
-    id,
-    (pageNumber) => ({
-      ...initCondition,
-      pageSize: 6,
-      pageNumber,
-    }),
-    (condition) => requester.getProducts(condition),
-    (data) => data?.totalPages || 0,
-    {
-      onReprocessing: (data) => data?.content || [],
-      fallbackData: [initProducts],
-    }
-  );
+// export function HotDealWrapper({
+//   id,
+//   lineClamp,
+//   initProducts,
+//   initCondition,
+// }: {
+//   id: string;
+//   lineClamp?: number;
+//   initProducts: Pageable;
+//   initCondition: any;
+// }) {
+//   const {
+//     [id]: products,
+//     Load,
+//     page,
+//     maxPage,
+//   } = useInfiniteData(
+//     id,
+//     (pageNumber) => ({
+//       ...initCondition,
+//       pageSize: 6,
+//       pageNumber,
+//     }),
+//     (condition) => requester.getProducts(condition),
+//     (data) => data?.totalPages || 0,
+//     {
+//       onReprocessing: (data) => data?.content || [],
+//       fallbackData: [initProducts],
+//     }
+//   );
 
-  return (
-    <FlexChild hidden={!products || products?.length === 0} marginBottom={20}>
-      <VerticalFlex>
-        <HorizontalFlex
-          className={clsx(styles.titleBox, styles.titleBox1)}
-          alignItems="end"
-          gap={20}
-        >
-          <div className={styles.title}>
-            <h2 className="SacheonFont">
-              <Image
-                src="/resources/images/header/HotDeal_icon.png"
-                width={15}
-                height={"auto"}
-              />
-              이 달의 <Span color={"#FF4A4D"}>HOT</Span>딜
-            </h2>
-            <P width={"auto"}>매달 갱신되는 Hot Deal 상품!</P>
-          </div>
-          <FlexChild width={"auto"}>
-            <Link className={styles.linkBtn} href={"/products/hot"}>
-              더보기
-            </Link>
-          </FlexChild>
-        </HorizontalFlex>
-        {/* 메인, 상세 리스트 */}
-        <ProductList
-          id="discount"
-          products={products}
-          Load={Load}
-          hidden={maxPage < 1 || page >= maxPage}
-          maxPage={maxPage}
-          page={page}
-          // loading={loading}
-        />
-      </VerticalFlex>
-    </FlexChild>
-  );
-}
+//   return (
+//     <FlexChild hidden={!products || products?.length === 0} marginBottom={20}>
+//       <VerticalFlex>
+//         <HorizontalFlex
+//           className={clsx(styles.titleBox, styles.titleBox1)}
+//           alignItems="end"
+//           gap={20}
+//         >
+//           <div className={styles.title}>
+//             <h2 className="SacheonFont">
+//               <Image
+//                 src="/resources/images/header/HotDeal_icon.png"
+//                 width={15}
+//                 height={"auto"}
+//               />
+//               이 달의 <Span color={"#FF4A4D"}>HOT</Span>딜
+//             </h2>
+//             <P width={"auto"}>매달 갱신되는 Hot Deal 상품!</P>
+//           </div>
+//           <FlexChild width={"auto"}>
+//             <Link className={styles.linkBtn} href={"/products/hot"}>
+//               더보기
+//             </Link>
+//           </FlexChild>
+//         </HorizontalFlex>
+//         {/* 메인, 상세 리스트 */}
+//         <ProductList
+//           id="discount"
+//           products={products}
+//           Load={Load}
+//           hidden={maxPage < 1 || page >= maxPage}
+//           maxPage={maxPage}
+//           page={page}
+//           // loading={loading}
+//         />
+//       </VerticalFlex>
+//     </FlexChild>
+//   );
+// }
 
 // 베스트 상품
 export function BestProducts({
@@ -840,7 +836,7 @@ export function EventSection({
           </div>
         </FlexChild>
       ) : (
-        <NoContent type="리뷰" />
+        <NoContent type="게시판" />
       )}
     </>
   );

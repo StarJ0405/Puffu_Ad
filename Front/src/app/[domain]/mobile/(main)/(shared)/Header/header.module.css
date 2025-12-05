@@ -1,6 +1,6 @@
 .header {
-  background: #272727;
-  padding: 15px 0 0;
+  --header-bg : #F5F5F7;
+  background: var(--header-bg, #F5F5F7);
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -20,17 +20,19 @@
 
 .headerTop {
   position: relative;
-  padding: 0 10px 10px;
+  padding-top: 16px;
+  padding-bottom: 16px;
 }
 
 
 /* 하단 메뉴 */
 
 .Menu_box {
-  padding: 5px 10px !important;
+  padding-top: 10px;
+  padding-bottom: 13px;
   position: relative;
   overflow-x: auto;
-  background: linear-gradient(180deg, #313131, #1E1E20);
+  background: var(--header-bg, #F5F5F7);
 }
 
 .Menu_box::-webkit-scrollbar {
@@ -48,22 +50,13 @@
 
 .outerMenu {
   display: flex;
-  gap: 25px;
+  gap: 20px;
   align-items: center;
 }
 
 .outerMenu > li {
   position: relative;
-  /* display: flex;
-   gap: 5px;
-   align-items: center;
-   
-   font-size: 14px;
-   color: #fff;
-   transition: all 0.2s;
-   white-space: nowrap;
-   cursor: pointer; */
-   white-space: nowrap;
+  white-space: nowrap;
 }
 
 .outerMenu > li > a {
@@ -71,7 +64,8 @@
   align-items: center;
   gap: 5px;
   font-size: 14px;
-  color: #fff;
+  color: rgba(0,0,0,0.8);
+  font-weight: 600;
   transition: all 0.2s;
 }
 
@@ -79,7 +73,7 @@
   position: absolute;
   z-index: 1;
   bottom: -6px;
-  background: #fff;
+  background: var(--main-color1);
   display: block;
   width: 0;
   height: 3px;
@@ -88,7 +82,7 @@
 }
 
 .outerMenu > li:hover {
-  color: var(--main-color1);
+  color: #000;
 }
 
 .outerMenu > li:hover > .active_line,
@@ -100,7 +94,7 @@
 
 .outerMenu > li:hover > a,
 .outerMenu > li.active > a {
-  color: var(--main-color1);
+  color: #000;
 }
 
 

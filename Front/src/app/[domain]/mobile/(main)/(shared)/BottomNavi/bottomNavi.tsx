@@ -12,7 +12,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useParams, usePathname } from "next/navigation";
 import { useState } from "react";
 import styles from "./bottomNavi.module.css";
-import CategoryMenu from "./categoryMenu";
+import SideMenu from "./sideMenu";
 
 export default function BottomNavi() {
   const [active, setActive] = useState(false);
@@ -52,28 +52,28 @@ export default function BottomNavi() {
               zIndex: 1200, // 다른 UI 위로
             }}
           >
-            <CategoryMenu CaOpen={active} onClose={() => setActive(false)} />
+            <SideMenu CaOpen={active} onClose={() => setActive(false)} />
           </motion.div>
         )}
       </AnimatePresence>
 
       {!shouldHideHeader ? ( // detail 페이지일때는 숨겨짐.
         <FlexChild justifyContent="center" className={styles.bottom_navi}>
-          <HorizontalFlex className={styles.navi_wrap}>
+          <HorizontalFlex className={styles.navi_wrap} alignItems="end">
             <VerticalFlex
               className={styles.item}
               onClick={() => setActive((prev) => !prev)}
             >
               <Image
-                src={`/resources/images/bottomNavi/navi_category${
+                src={`/resources/images/bottomNavi/navi_menu${
                   active ? "_active" : ""
                 }.png`}
-                width={20}
+                width={24}
               />
               <FlexChild
                 className={clsx(styles.txt, { [styles.active]: active })}
               >
-                <P>카테고리</P>
+                <P>메뉴</P>
               </FlexChild>
             </VerticalFlex>
 
@@ -88,7 +88,7 @@ export default function BottomNavi() {
                 src={`/resources/images/bottomNavi/navi_wish${
                   linkTypeHandler("/mypage/wishList") ? "_active" : ""
                 }.png`}
-                width={22}
+                width={21}
               />
               <FlexChild
                 className={clsx(styles.txt, {
@@ -110,7 +110,7 @@ export default function BottomNavi() {
                 src={`/resources/images/bottomNavi/navi_home${
                   linkTypeHandler("/") ? "_active" : ""
                 }.png`}
-                width={22}
+                width={20}
               />
               <FlexChild
                 className={clsx(styles.txt, {
@@ -132,7 +132,7 @@ export default function BottomNavi() {
                 src={`/resources/images/bottomNavi/navi_cart${
                   linkTypeHandler("/orders/cart") ? "_active" : ""
                 }.png`}
-                width={21}
+                width={19}
               />
               <FlexChild
                 className={clsx(styles.txt, {
@@ -164,7 +164,7 @@ export default function BottomNavi() {
                     ? "_active"
                     : ""
                 }.png`}
-                width={22}
+                width={20}
               />
               <FlexChild
                 className={clsx(styles.txt, {

@@ -1,0 +1,24 @@
+.lineBanner {
+   background: var(--main-color1);
+   overflow: hidden;
+}
+
+.lineBanner .swiper-wrapper {
+   transition-timing-function: linear !important; 
+   position: relative;
+}
+
+.lineBanner .slideItem span {
+   color: #fff;
+}
+
+/* 모바일 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+.mob_lineBanner {
+   padding-top: 7px;
+   padding-bottom: 7px;
+}
+
+.mob_lineBanner .slideItem span {
+   font-size: clamp(13px, calc(100vw * 15 / 768), 15px) !important;
+
+}
