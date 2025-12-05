@@ -299,7 +299,7 @@ const ProductModal = NiceModal.create(
               <FlexChild className={styles.content}>
                 {edit ? (
                   <Input
-                    value={product?.product?.code}
+                    value={product?.code}
                     width={"100%"}
                     ref={(el) => {
                       inputs.current[4] = el;

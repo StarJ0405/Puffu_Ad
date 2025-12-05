@@ -16,9 +16,9 @@ import useData from "@/shared/hooks/data/useData";
 import clsx from "clsx";
 import Image from "@/components/Image/Image";
 import { AuthContext } from "@/providers/AuthPorivder/AuthPorivderClient";
+import Input from "@/components/inputs/Input";
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string;
-const PAGE_SIZE = 12;
 
 
 type OfflineStoreDetailProps = {
@@ -83,7 +83,7 @@ function OfflineStoreDetail({ storeId }: OfflineStoreDetailProps) {
     );
 }
 
-export function MapFrame({ initOfflineStore }: { initOfflineStore: Pageable }) {
+export function MapFrame({ initOfflineStore, initCondition }: { initOfflineStore: Pageable, initCondition: any }) {
     const { userData } = useContext(AuthContext);
     const listItemRefs = useRef<HTMLDivElement[]>([]);
 
@@ -91,6 +91,8 @@ export function MapFrame({ initOfflineStore }: { initOfflineStore: Pageable }) {
     const [toggle, setToggle] = useState(false);
     const [wishlist, setWishlist] = useState<any[]>([]);
     const [recentStores, setRecentStores] = useState<any[]>([]);
+    const [q, setQ] = useState(initCondition.q ?? "");
+
 
     const [center, setCenter] = useState(() => {
         const first = initOfflineStore?.content?.[0] as any;
@@ -105,54 +107,7 @@ export function MapFrame({ initOfflineStore }: { initOfflineStore: Pageable }) {
         libraries: ["places"],
     });
 
-    const {
-        "offlineStore": pageData,
-        page,
-        setPage,
-        maxPage,
-    } = usePageData(
-        "offlineStore",
-        (pageNumber) => ({
-            pageSize: PAGE_SIZE,
-            pageNumber,
-        }),
-        (cond) => requester.getOfflineStores(cond),
-        (d: Pageable) => Math.max(0, Number(d?.totalPages ?? 0) - 1),
-        {
-            onReprocessing: (d: any) => {
-                const content = Array.isArray(d) ? d : d?.content ?? [];
-                const total = Number(
-                    (!Array.isArray(d) &&
-                        (d.NumberOfTotalElements ?? d.totalElements ?? d.total)) ??
-                    content.length
-                );
-                return { content, total };
-            },
-            fallbackData: {
-                content: initOfflineStore?.content ?? [],
-                total: initOfflineStore?.NumberOfTotalElements ?? 0,
-                totalPages: initOfflineStore?.totalPages ?? 0,
-            },
-            revalidateOnMount: true,
-        }
-    );
 
-    const offlineStores = pageData?.content ?? [];
-
-    const selectStore = (store: any, index: number) => {
-        if (store.lat && store.lng) {
-            setCenter({ lat: Number(store.lat), lng: Number(store.lng) });
-        }
-        setSelectedStoreId(store.id);
-        listItemRefs.current.forEach((el) => {
-            if (!el) return;
-            el.classList.remove(styles.activeStoreItem);
-        });
-        const listEl = listItemRefs.current[index];
-        if (listEl) {
-            listEl.classList.add(styles.activeStoreItem);
-        }
-    };
 
     useEffect(() => {
         if (!userData?.id) {
@@ -179,6 +134,114 @@ export function MapFrame({ initOfflineStore }: { initOfflineStore: Pageable }) {
             }
         );
     }, []);
+
+
+
+    const {
+        offlineStore: pageData,
+        page,
+        setPage,
+        maxPage,
+        mutate,
+    } = usePageData(
+        "offlineStore",        
+        (pageNumber) => ({
+            pageNumber,
+        }),        
+        (cond) => {
+            const pageNumber = cond.pageNumber ?? 0;
+
+            const finalCond: any = {
+                ...initCondition,
+                pageNumber,
+            };
+
+            if (q && q.trim()) {
+                finalCond.q = q.trim();
+            } else {
+                delete finalCond.q;
+            }
+
+            return requester.getOfflineStores(finalCond);
+        },
+        (d: Pageable) => Math.max(0, Number(d?.totalPages ?? 0) - 1),
+        {
+            onReprocessing: (d: any) => {
+                const content = Array.isArray(d) ? d : d?.content ?? [];
+                const total = Number(
+                    (!Array.isArray(d) &&
+                        (d.NumberOfTotalElements ?? d.totalElements ?? d.total)) ??
+                    content.length
+                );
+                return { content, total };
+            },
+            fallbackData: {
+                content: initOfflineStore?.content ?? [],
+                total: initOfflineStore?.NumberOfTotalElements ?? 0,
+                totalPages: initOfflineStore?.totalPages ?? 0,
+            },
+            revalidateOnMount: true,
+        }
+    );
+
+    const offlineStores = pageData?.content ?? [];
+
+    useEffect(() => {
+        if (!offlineStores || offlineStores.length === 0) return;
+
+        if (offlineStores.length === 1) {
+            const store = offlineStores[0];
+            if (store.lat && store.lng) {
+                setCenter({ lat: Number(store.lat), lng: Number(store.lng) });
+            }
+            return;
+        }
+
+        const validStores = offlineStores.filter(
+            (s: any) => s.lat && s.lng
+        );
+
+        if (validStores.length === 0) return;
+
+        const latSum = validStores.reduce((acc: number, s: any) => acc + Number(s.lat), 0);
+        const lngSum = validStores.reduce((acc: number, s: any) => acc + Number(s.lng), 0);
+
+        const avgLat = latSum / validStores.length;
+        const avgLng = lngSum / validStores.length;
+
+        setCenter({ lat: avgLat, lng: avgLng });
+    }, [offlineStores]);
+
+
+
+
+
+
+
+    const handleSearch = () => {
+        if (page !== 0) {
+            setPage(0);
+        } else {
+            mutate();
+        }
+    };
+
+    const selectStore = (store: any, index: number) => {
+        if (store.lat && store.lng) {
+            setCenter({ lat: Number(store.lat), lng: Number(store.lng) });
+        }
+        setSelectedStoreId(store.id);
+        listItemRefs.current.forEach((el) => {
+            if (!el) return;
+            el.classList.remove(styles.activeStoreItem);
+        });
+        const listEl = listItemRefs.current[index];
+        if (listEl) {
+            listEl.classList.add(styles.activeStoreItem);
+        }
+    };
+
+
 
 
     const createWishlist = async (store: any) => {
@@ -245,6 +308,36 @@ export function MapFrame({ initOfflineStore }: { initOfflineStore: Pageable }) {
                         borderRight="1px solid #eee"
                     >
                         <VerticalFlex>
+                            <FlexChild>
+                                <FlexChild>
+                                    <Input
+                                        type="search"
+                                        value={q}
+                                        onChange={(v) => setQ(v as string)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                                e.preventDefault();
+
+                                                const trimmed = q.trim();
+
+                                                // 페이지 이동 + 재요청 로직
+                                                if (page !== 0) {
+                                                    setPage(0);
+                                                } else {
+                                                    mutate();
+                                                }
+                                            }
+                                        }}
+                                        placeHolder="검색 내용을 입력해 주세요."
+                                    />
+
+                                </FlexChild>
+
+                                <button type="button" onClick={handleSearch}>
+                                    검색
+                                </button>
+
+                            </FlexChild>
                             <FlexChild>
                                 <HorizontalFlex
                                     alignItems="center"
@@ -398,12 +491,13 @@ export function MapFrame({ initOfflineStore }: { initOfflineStore: Pageable }) {
 
                 <FlexChild width="85%">
                     <VerticalFlex>
-                        <Div height="80vh" >
+                        <Div >
                             <GoogleMap
-
-                                center={center}
-                                zoom={14}
+                                zoom={15}
                                 mapContainerStyle={{ width: "100vw", height: "100vh", maxHeight: "60vh" }}
+                                // center={{ lat: 35.9078, lng: 127.7669 }}
+                                center={center}
+
                                 options={{
                                     disableDefaultUI: true,
                                     streetViewControl: false,
