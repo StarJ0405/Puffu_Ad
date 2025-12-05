@@ -4,6 +4,7 @@
    max-width: 1000px;
    margin: 0 auto;
    gap: 35px;
+   padding-bottom: 80px;
 }
 
 .board_container > * {
@@ -18,27 +19,27 @@
 
 .board_container h3 {
    font-size: 3.5em;
-   color: #fff;
-   font-weight: 600;
+   color: var(--main-color1);
+   font-weight: 700;
 }
 
 
 .title {
    font-size: 2em;
-   color: #fff;
+   color: #000;
    font-weight: 600;
    margin-bottom: 0.5em !important;
 }
 
 .sub_title {
    font-size: 1.8em;
-   color: #fff;
-   font-weight: 500;
+   color: #000;
+   font-weight: 600;
 }
 
 .txt1 {
    font-size: 1.6em;
-   color: #aaa;
+   color: #3e3e3e;
    line-height: 1.8;
    margin-top: 20px !important;
 }

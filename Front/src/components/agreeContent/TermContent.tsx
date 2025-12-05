@@ -15,9 +15,11 @@ export default function TermContent({ size = 10 }: Props) {
       <FlexChild justifyContent="center">
         <h3>이용 약관</h3>
       </FlexChild>
+
       <VerticalFlex>
-        <P className={styles.sub_title}>제 1 조 (목적)</P>
         <VerticalFlex gap={5}>
+          <P className={styles.sub_title}>제 1 조 (목적)</P>
+          
           <P className={styles.txt1}>
             본 약관은 푸푸토이 쇼핑몰을 운영하는 회사 푸푸글로벌(이하 ‘회사’ 또는 ‘사이트’)가
             제공하는 인터넷 관련 서비스(이하 ‘서비스’)를 이용함에 있어 회원의 권리,

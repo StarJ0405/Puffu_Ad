@@ -200,10 +200,10 @@ export function BestReviewSlider({
               spaceBetween={20}
               modules={[Autoplay, Navigation]}
               autoplay={{ delay: 40000 }}
-              navigation={{
-                prevEl: `#${id} .${styles.prevBtn}`,
-                nextEl: `#${id} .${styles.nextBtn}`,
-              }}
+              // navigation={{
+              //   prevEl: `#${id} .${styles.prevBtn}`,
+              //   nextEl: `#${id} .${styles.nextBtn}`,
+              // }}
               breakpoints={{
                 580: {
                   slidesPerView: 2,

@@ -1,4 +1,6 @@
 'use client'
+
+import siteInfo from "@/shared/siteInfo";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
@@ -65,12 +67,12 @@ export default function BoardHeader() {
                      </FlexChild>
             
                      <FlexChild className={styles.call_number}>
-                        <P>010-2349-8677</P>
+                        <P>{siteInfo.cs_number}</P>
                      </FlexChild>
             
                      <VerticalFlex className={styles.business_time} gap={5}>
-                        <P>평일 : 09:30 ~ 18:30</P>
-                        <P>점심시간 : 12:00 ~ 13:00</P>
+                        <P>평일 : {siteInfo.cs_workTime}</P>
+                        <P>점심시간 : {siteInfo.cs_breakTime}</P>
                      </VerticalFlex>
                   </VerticalFlex>
    

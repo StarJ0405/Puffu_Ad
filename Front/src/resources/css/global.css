@@ -194,7 +194,7 @@ a {
 .mob_root {
   padding-top: 95px;
   min-height: 70dvh;
-  padding-bottom: 80px;
+  /* padding-bottom: 80px; */
   color: var(--default-color);
 }
 
