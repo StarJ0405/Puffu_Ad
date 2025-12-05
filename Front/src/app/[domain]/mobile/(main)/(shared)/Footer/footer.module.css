@@ -1,36 +1,61 @@
 .footer {
-   background: #1B1B1B;
+   --footer-font-color : #dadada;
+   background: #242424;
    padding: 0 0 90px;
 }
 
 .footer * {width: auto;}
 
+.footer .logo {
+   padding-top: 34px;
+   padding-bottom: 34px;
+   border-bottom: 1px solid #606060;
+}
+
+
+/* 고객센터, 계좌정보 */
+.footer .info_box { gap: 15px; flex: unset;}
+.footer .info_box .cs_box {
+   padding: 20px 0 10px;
+   width: 100%; gap: 30px;
+   border-bottom: 1px solid #535353;
+}
+.footer .info_box .cs_box .item h5 {
+   font-size: 16px; font-weight: 600;
+   color: #797979; margin-bottom: 15px;
+}
+
+.footer .info_box .cs_box .item .ct_box {gap: 7px;}
+.footer .info_box .cs_box .item .ct_box > p {
+   font-size: 14px !important; color: var(--footer-font-color) !important;
+   font-weight: 400 !important;
+}
+
+.footer .info_box .cs_box .cs_item .tel_number {
+   font-size: 20px !important; font-weight: 900;
+   color: var(--footer-font-color);
+   margin-bottom: 15px !important;
+}
+
 /* 개인정보처리방침 */
 .footer .info_box .policy_item {
-   gap: 5px; font-size: 12px;
+   margin-top: 10px;
+   gap: 5px; font-size: 13px;
    font-weight: 500;
    justify-content: flex-end;
    width: 100%;
-   padding: 15px 0;
-   border-bottom: 1px solid #535353;
-   color: #dadada;
+   color: var(--footer-font-color);
 }
+
+
 
 /* 회사 정보 */
-.footer .info_box {
-   gap: 15px;
-   flex: unset;
-}
-
 .footer .info_box .text_box {
    gap: 7px;
-}
-
-.footer .text_box, .footer .cs_days {
    font-size: 12px;
-   color: #dadada;
+   color: var(--footer-font-color);
    line-height: 1.2;
+   padding-bottom: 30px;
 }
 
-.footer .info_box .text_box .txt_item {gap: 10px; flex-wrap: wrap;}
-.footer .info_box .text_box > *:last-child {margin-top: 15px;}
+.footer .info_box .text_box .copy {margin-top: 15px;}

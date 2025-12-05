@@ -24,6 +24,8 @@ import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
 import { requester } from "@/shared/Requester";
 import { Swiper as SwiperType } from "swiper";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import 'swiper/css';
+import 'swiper/css/navigation';
 import { Swiper, SwiperSlide } from "swiper/react";
 import Div from "@/components/div/Div";
 import { usePathname } from "next/navigation";
@@ -513,10 +515,10 @@ type ReviewEntity = {
 };
 
 export function ReviewSection({
-  id,
+  // id,
   lineClamp,
 }: {
-  id: string;
+  // id: string;
   lineClamp?: number;
 }) {
   const PAGE_SIZE = 10;
@@ -525,6 +527,7 @@ export function ReviewSection({
   const [totalPages, setTotalPages] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  
 
   const fetchPage = useCallback(async (pn: number) => {
     setLoading(true);
@@ -558,6 +561,33 @@ export function ReviewSection({
     fetchPage(0);
   }, [fetchPage]);
 
+  const prevRef = useRef<HTMLDivElement | null>(null);
+  const nextRef = useRef<HTMLDivElement | null>(null);
+
+  const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
+
+  useEffect(() => {
+    if (swiperInstance && prevRef.current && nextRef.current) {
+      const navigation = swiperInstance.params.navigation;
+
+      // Swiper 인스턴스의 네비게이션 요소를 명시적으로 업데이트
+      if (navigation && typeof navigation !== 'boolean') {
+        navigation.prevEl = prevRef.current;
+        navigation.nextEl = nextRef.current;
+      } else {
+        // navigation 이 없거나 boolean인 경우 새로 세팅
+        swiperInstance.params.navigation = {
+          prevEl: prevRef.current,
+          nextEl: nextRef.current,
+        } as any; // 필요하면 NavigationOptions 타입으로 캐스팅
+      }
+      
+      // 네비게이션을 업데이트(초기화)합니다.
+      swiperInstance.navigation.init(); 
+      swiperInstance.navigation.update();
+    }
+  }, [swiperInstance]);
+
   return (
     <>
       <VerticalFlex className={styles.titleBox} gap={20} alignItems="start">
@@ -578,7 +608,7 @@ export function ReviewSection({
 
         <P className={styles.text1}>
           베스트 리뷰에 선정되면  <br />
-          30%할인쿠폰 증정!
+          30% 할인쿠폰 증정!
         </P>
       </VerticalFlex>
         
@@ -586,14 +616,15 @@ export function ReviewSection({
         <FlexChild id={styles.review_slider} className={styles.ProductSlider}>
           <Swiper
             loop={false}
-            slidesPerView={1.8}
+            slidesPerView={1.4}
             speed={600}
             spaceBetween={15}
             modules={[Autoplay, Navigation]}
             autoplay={{ delay: 4000 }}
+            onSwiper={(swiper) => setSwiperInstance(swiper)}
             navigation={{
-              prevEl: `#${styles.review_slider} .${styles.prevBtn}`,
-              nextEl: `#${styles.review_slider} .${styles.nextBtn}`,
+              prevEl: prevRef.current,
+              nextEl: nextRef.current
             }}
             breakpoints={{
               580: {
@@ -632,16 +663,13 @@ export function ReviewSection({
                   ))}
           </Swiper>
 
-          {
-            // 슬라이드옵션들 props로 빼버리고 그 값 따라서 조건문 걸기
-          }
-          <div className={clsx(styles.naviBtn, styles.prevBtn)}>
+          <div ref={prevRef} className={clsx(styles.naviBtn, styles.prevBtn)}>
             <Image
               src={"/resources/icons/arrow/slide_arrow.png"}
               width={8}
             ></Image>
           </div>
-          <div className={clsx(styles.naviBtn, styles.nextBtn)}>
+          <div ref={nextRef} className={clsx(styles.naviBtn, styles.nextBtn)}>
             <Image
               src={"/resources/icons/arrow/slide_arrow.png"}
               width={8}
@@ -657,10 +685,10 @@ export function ReviewSection({
 
 
 export function EventSection({
-  id,
+  // id,
   lineClamp,
 }: {
-  id: string;
+  // id: string;
   lineClamp?: number;
 }) {
   const PAGE_SIZE = 10;
@@ -702,6 +730,33 @@ export function EventSection({
     fetchPage(0);
   }, [fetchPage]);
 
+  const prevRef = useRef<HTMLDivElement | null>(null);
+  const nextRef = useRef<HTMLDivElement | null>(null);
+
+  const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
+
+  useEffect(() => {
+    if (swiperInstance && prevRef.current && nextRef.current) {
+      const navigation = swiperInstance.params.navigation;
+
+      // Swiper 인스턴스의 네비게이션 요소를 명시적으로 업데이트
+      if (navigation && typeof navigation !== 'boolean') {
+        navigation.prevEl = prevRef.current;
+        navigation.nextEl = nextRef.current;
+      } else {
+        // navigation 이 없거나 boolean인 경우 새로 세팅
+        swiperInstance.params.navigation = {
+          prevEl: prevRef.current,
+          nextEl: nextRef.current,
+        } as any; // 필요하면 NavigationOptions 타입으로 캐스팅
+      }
+      
+      // 네비게이션을 업데이트(초기화)합니다.
+      swiperInstance.navigation.init(); 
+      swiperInstance.navigation.update();
+    }
+  }, [swiperInstance]);
+
   return (
     <>
       <VerticalFlex className={styles.titleBox} gap={20} alignItems="start">
@@ -721,14 +776,19 @@ export function EventSection({
       </VerticalFlex>
         
       {items.length > 0 || loading ? (
-        <FlexChild id={id} className={styles.ProductSlider}>
+        <FlexChild className={styles.ProductSlider}>
           <Swiper
             loop={false}
-            slidesPerView={1.5}
+            slidesPerView={1.4}
             speed={600}
             spaceBetween={15}
             modules={[Autoplay, Navigation]}
             autoplay={{ delay: 4000 }}
+            onSwiper={(swiper) => setSwiperInstance(swiper)}
+            navigation={{
+              prevEl: prevRef.current,
+              nextEl: nextRef.current
+            }}
             breakpoints={{
               580: {
                 slidesPerView: 2.5,
@@ -758,12 +818,26 @@ export function EventSection({
                       <ReviewImgCard
                         review={item}
                         lineClamp={lineClamp ?? 2}
+                        type={'slide'}
                         width="100%"
                         height="auto"
                       />
                     </SwiperSlide>
                   ))}
           </Swiper>
+
+          <div ref={prevRef} className={clsx(styles.naviBtn, styles.prevBtn)}>
+            <Image
+              src={"/resources/icons/arrow/slide_arrow.png"}
+              width={8}
+            ></Image>
+          </div>
+          <div ref={nextRef} className={clsx(styles.naviBtn, styles.nextBtn)}>
+            <Image
+              src={"/resources/icons/arrow/slide_arrow.png"}
+              width={8}
+            ></Image>
+          </div>
         </FlexChild>
       ) : (
         <NoContent type="리뷰" />

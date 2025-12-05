@@ -1,3 +1,4 @@
+import siteInfo from "@/shared/siteInfo";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
@@ -21,21 +22,21 @@ export default async function Footer() {
             />
 
             <VerticalFlex alignItems={"start"} className={styles.text_box}>
-              <P>푸푸글로벌(주)</P>
+              <P>{siteInfo.company}</P>
               <FlexChild className={styles.txt_item}>
-                <Span>대표: 염희하</Span>
-                <Span>주소: 대전광역시 서구 관저중로 95번길 관저동</Span>
-                <Span>이메일: puffuglobal@gmail.com</Span>
+                <Span>대표: {siteInfo.ceo}</Span>
+                <Span>주소: {siteInfo.company_address}</Span>
+                <Span>이메일: {siteInfo.email}</Span>
               </FlexChild>
 
               <FlexChild className={styles.txt_item}>
-                <Span>사업자등록번호: 559-81-02488</Span>
-                <Span>통신판매업신고번호: 대전광역시 서구-0308</Span>
+                <Span>사업자등록번호: {siteInfo.business_number}</Span>
+                <Span>통신판매업신고번호: {siteInfo.order_business_number}</Span>
               </FlexChild>
 
               <FlexChild className={styles.txt_item}>
                 <Span>
-                  Copyright 2021.Puffu global Corp. all rights reserved
+                  {siteInfo.copyright}
                 </Span>
               </FlexChild>
 
@@ -53,24 +54,23 @@ export default async function Footer() {
             alignItems={"start"}
           >
             <P className={styles.cs_title}>CS CENTER</P>
-            <P className={styles.cs_number}>010-2349-8677</P>
+            <P className={styles.cs_number}>{siteInfo.cs_number}</P>
             <FlexChild gap={10} alignItems="start" width={"100%"}>
               <VerticalFlex className={styles.cs_days}>
                 <P>
-                  <Span>평일 : </Span>09:30 ~ 18:30
+                  <Span>평일 : </Span>{siteInfo.cs_workTime}
                 </P>
                 <P>
-                  <Span>점심시간 :</Span> 12:00 ~ 13:00
+                  <Span>점심시간 :</Span> {siteInfo.cs_breakTime}
                 </P>
               </VerticalFlex>
 
               <VerticalFlex className={styles.cs_days}>
                 <P>
-                  <Span>[은행계좌] KEB하나은행</Span> <br />
-                  642-910017-99204
+                  <Span>[은행계좌] {siteInfo.account} </Span> <br />
                 </P>
                 <P>
-                  <Span>예금주 : </Span>푸푸글로벌 주식회사
+                  <Span>예금주 : </Span>{siteInfo.account_holder}
                 </P>
               </VerticalFlex>
             </FlexChild>

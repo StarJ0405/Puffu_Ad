@@ -17,6 +17,7 @@ import {
   BestProducts,
   // ProductList,
   ReviewSection,
+  EventSection,
   // SubBanner1,
   // SubBanner2,
 } from "./client";
@@ -46,7 +47,7 @@ export default async function () {
 
       <VerticalFlex
         marginTop={"25px"}
-        gap={30}
+        // gap={30}
       >
         <VerticalFlex className={clsx(styles.sec1, 'mob_page_container')}>
           <Link href={'/map'} className={styles.link_box}>
@@ -141,7 +142,12 @@ export default async function () {
 
         {/* 리뷰 */}
         <VerticalFlex className={clsx(styles.sec4, 'mob_page_container')}>
-          <ReviewSection id={"review"} />
+          <ReviewSection />
+        </VerticalFlex>
+
+        {/* 이벤트 */}
+        <VerticalFlex className={clsx(styles.sec5, 'mob_page_container')}>
+          <EventSection />
         </VerticalFlex>
       </VerticalFlex>
     </section>

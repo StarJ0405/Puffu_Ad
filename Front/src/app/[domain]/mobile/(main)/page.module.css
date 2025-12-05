@@ -442,7 +442,7 @@
 
 /* sec5 이벤트 리스트 */
 .sec5 {
-   background: url('/resources/images/main_event_bg.png') no-repeat center center / cover;
+   background: url('/resources/images/main_event_bg.png') no-repeat left center / cover;
    padding-right: 0 !important;
    padding-top: 50px;
    padding-bottom: 60px;
