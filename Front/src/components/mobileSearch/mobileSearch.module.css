@@ -5,54 +5,77 @@
   left: 0;
   width: 100%;
   height: 100dvh;
+  overflow-y: auto;
 }
 
 .search_wrap .search_frame {
   width: 100%;
-  height: 100%;
-  background: #222;
-  padding: 0 !important;
+  padding-bottom: 150px;
+  background: #fff;
 }
 
 .frame_header {
-  gap: 25px;
-  padding: 15px;
+  gap: 30px;
+  padding: 20px;
   height: auto;
+  border-bottom: 5px solid #F4F4F4;
+}
+
+.frame_header .back_btn img {
+   filter: brightness(0);
+   transform: rotate(180deg);
 }
 
 /* 검색창 */
 .search_Box {
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 3px;
-  width: 100%;
-  padding: 11px 10px;
-  font-size: 16px;
-  background: #111 !important;
+  border: 1px solid rgba(255,255,255,0.3);
+   border-radius: 5px;
+   width: 100%;
+   padding: 7px 10px;
+   font-size: 14px;
+   background: #F4F4F4;
 }
 
-.search_frame .latest_search_box {
-  padding: 10px 0 25px;
+.search_Box input {color: #000;}
+.search_Box input::placeholder {color: #656565; font-size: 14px; font-weight: 500;}
+.search_Box img {filter: brightness(0);}
+
+
+
+/* 최근, 인기 검색어 */
+.search_frame .keyword_box {
+  overflow-y: auto;
+  padding-top: 25px;
   gap: 30px;
-  border-bottom: 5px solid #333;
   height: auto;
   flex: unset;
 }
 
-.latest_search_box div {
-  flex: unset;
+.keyword_box .recent_box {
+  padding-bottom: 15px;
+  border-bottom: 1px solid #E6E6E6;
 }
 
-.latest_list {
+.keyword_box .recent_box .sh_header h5 {
+  font-size: 15px; font-weight: 600; color: #000;
+}
+
+.keyword_box .recent_box .sh_header .delete {
+  font-size: 13px; font-weight: 600; color: #797979;
+}
+
+.keyword_box div {flex: unset;}
+
+.keyword_box .recent_list {
   gap: 15px;
 }
-.latest_list .item > * {
+.keyword_box .recent_list .item > * {
   width: auto;
 }
 
-.divider {
-  height: 5px;
-  background: #333333;
-  margin: 12px 0 0;
+.popular_box .title {
+  font-size: 20px; font-weight: 700;
+  color: #1f1f1f;
 }
 
 .popularTitle {
@@ -62,60 +85,57 @@
   font-family: "SUIT Variable";
 }
 
-.popular_grid {
+.popular_list {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, 1fr);
   gap: 12px 24px;
 }
 
-.col {
+.popular_list .col {
   list-style: none;
   padding: 0;
   margin: 0;
   display: grid;
   gap: 8px;
+  width: 100%;
+  max-width: 140px;
 }
 
-.row {
-  display: grid;
-  grid-template-columns: 20px 1fr;
-  align-items: center;
-  gap: 10px;
-}
+.popular_list .row {gap: 10px;}
 
 .rank,
 .rank1,
 .rank2,
 .rank3 {
-  font-family: "SacheonHangGong-Regular";
-  font-weight: 400;
-  font-size: 16px;
-  color: #fff;
+  font-weight: 700;
+  font-size: 18px;
+  color: #222;
   line-height: 100%;
 }
 .rank1 { color: var(--main-color1); }
-.rank2 { color: #ff5aa3; }
-.rank3 { color: #ff7ab7; }
+.rank2 { color: var(--main-color1); }
+.rank3 { color: var(--main-color1); }
 
-.term {
+.popular_list .term {
   background: transparent;
   border: 0;
   padding: 0;
   text-align: left;
   cursor: pointer;
-  color: #fff;
-  font-size: 15px;
-  font-weight: 400;
+  color: #333;
+  font-size: 16px;
+  font-weight: 700;
 }
 
-.term:hover .ellipsis {
-  text-decoration: underline;
-}
-
-.ellipsis {
+.popular_list .term .ellipsis {
   display: inline-block;
-  max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  width: 100%;
+  max-width: 120px;
+}
+
+.popular_list .term:hover .ellipsis {
+  text-decoration: underline;
 }

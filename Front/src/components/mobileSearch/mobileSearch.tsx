@@ -115,14 +115,10 @@ export default function MobileSearch({
 
   return (
     <Div className={styles.search_wrap}>
-      <VerticalFlex className={clsx("mob_page_container", styles.search_frame)}>
+      <VerticalFlex className={clsx(styles.search_frame)}>
         <FlexChild className={styles.frame_header}>
-          <FlexChild
-            cursor="pointer"
-            width={"auto"}
-            onClick={() => onClose(true)}
-          >
-            <Image src={"/resources/icons/arrow/slide_arrow.png"} width={12} />
+          <FlexChild className={styles.back_btn} cursor="pointer" width={"auto"} onClick={() => onClose(true)} >
+            <Image src={"/resources/icons/arrow/mypage_arrow.png"} width={12} />
           </FlexChild>
 
           <FlexChild
@@ -131,7 +127,7 @@ export default function MobileSearch({
           >
             <input
               type="search"
-              placeholder="2025 신제품"
+              placeholder="원하시는 제품을 검색해 보세요"
               value={value}
               onChange={(e) => setValue(e.target.value)}
               onKeyDown={(e) => {
@@ -144,8 +140,8 @@ export default function MobileSearch({
             />
 
             <Image
-              src="/resources/images/header/input_search_icon.png"
-              width={18}
+              src="/resources/images/header/search_icon_white.png"
+              width={20}
               height="auto"
               cursor="pointer"
               onClick={() => {
@@ -157,14 +153,10 @@ export default function MobileSearch({
           </FlexChild>
         </FlexChild>
 
-        <VerticalFlex className={styles.latest_search_box}>
-          <VerticalFlex gap={30} padding={'0 15px'}>
-            <HorizontalFlex height={"auto"}>
-              <FlexChild width={"auto"}>
-                <P color="#fff" size={14}>
-                  최근 검색어
-                </P>
-              </FlexChild>
+        <VerticalFlex className={clsx("mob_page_container", styles.keyword_box)}>
+          <VerticalFlex gap={20} className={styles.recent_box}>
+            <HorizontalFlex className={styles.sh_header} height={"auto"}>
+              <h5>최근 검색어</h5>
   
               <FlexChild
                 className={styles.delete}
@@ -174,13 +166,11 @@ export default function MobileSearch({
                   setRecentSearches([]);
                 }}
               >
-                <P size={13} weight={600} color="#595959">
-                  전체삭제
-                </P>
+                <P>전체삭제</P>
               </FlexChild>
             </HorizontalFlex>
   
-            <VerticalFlex className={styles.latest_list}>
+            <VerticalFlex className={styles.recent_list}>
               {recentSearches.map((word, i) => {
                 return (
                   <HorizontalFlex className={styles.item} key={i}>
@@ -191,7 +181,7 @@ export default function MobileSearch({
                         onClose(true);
                       }}
                     >
-                      <P color="#ccc" size={14}>
+                      <P color="#5B5B5B" size={14} fontWeight={500}>
                         {word}
                       </P>
                     </FlexChild>
@@ -205,90 +195,86 @@ export default function MobileSearch({
             </VerticalFlex>
           </VerticalFlex>
 
-          <VerticalFlex gap={20} hidden>
-            <Div className={styles.divider} />
-            <VerticalFlex gap={20} padding={'0 13px'}>
-              <FlexChild>
-                <P color="#fff" size={14} marginTop={5} className={styles.popularTitle}>
-                  인기 검색어
-                </P>
+          <VerticalFlex gap={20} className={styles.popular_box} alignItems="start">
+            <h5 className={styles.title}>
+              인기 검색어
+            </h5>
+
+            {top10.length > 0 ? (
+              <FlexChild className={styles.popular_list}>
+                {/* 1위~5위 */}
+                <FlexChild className={styles.col}>
+                  <VerticalFlex gap={20}>
+                    {left.map((it, i) => (
+                      <FlexChild
+                        key={`L-${it.keyword}-${i}`}
+                        className={styles.row}
+                        alignItems="center"
+                        justifyContent="flex-start"
+                      >
+                        <Span className={rankClass(i)}>{i + 1}</Span>
+                        <Button
+                          type="button"
+                          className={styles.term}
+                          onClick={() => {
+                            setValue(it.keyword);
+                            if (userData?.id && storeData?.id) {
+                              requester.addKeyword({
+                                store_id: storeData.id,
+                                keyword: it.keyword,
+                              });
+                            }
+                            navigate(`/search?q=${it.keyword}`);
+                            onClose(true);
+                          }}
+                          title={it.keyword}
+                        >
+                          <Span className={styles.ellipsis}>{it.keyword}</Span>
+                        </Button>
+                      </FlexChild>
+                    ))}
+                  </VerticalFlex>
+                </FlexChild>
+
+                {/* 5위~10위 */}
+                <FlexChild className={styles.col}>
+                  <VerticalFlex gap={20}>
+                    {right.map((it, i) => (
+                      <FlexChild
+                        key={`R-${it.keyword}-${i}`}
+                        className={styles.row}
+                        alignItems="center"
+                        justifyContent="flex-start"
+                      >
+                        <Span className={rankClass(i + 5)}>{i + 6}</Span>
+                        <Button
+                          type="button"
+                          className={styles.term}
+                          onClick={() => {
+                            setValue(it.keyword);
+                            if (userData?.id && storeData?.id) {
+                              requester.addKeyword({
+                                store_id: storeData.id,
+                                keyword: it.keyword,
+                              });
+                            }
+                            navigate(`/search?q=${it.keyword}`);
+                            onClose(true);
+                          }}
+                          title={it.keyword}
+                        >
+                          <Span className={styles.ellipsis}>{it.keyword}</Span>
+                        </Button>
+                      </FlexChild>
+                    ))}
+                  </VerticalFlex>
+                </FlexChild>
               </FlexChild>
-              {top10.length > 0 ? (
-                <HorizontalFlex className={styles.popular_grid}>
-                  {/* Left column */}
-                  <FlexChild className={styles.col}>
-                    <VerticalFlex gap={20}>
-                      {left.map((it, i) => (
-                        <HorizontalFlex
-                          key={`L-${it.keyword}-${i}`}
-                          className={styles.row}
-                          alignItems="center"
-                          justifyContent="flex-start"
-                        >
-                          <Span className={rankClass(i)}>{i + 1}</Span>
-                          <Button
-                            type="button"
-                            className={styles.term}
-                            onClick={() => {
-                              setValue(it.keyword);
-                              if (userData?.id && storeData?.id) {
-                                requester.addKeyword({
-                                  store_id: storeData.id,
-                                  keyword: it.keyword,
-                                });
-                              }
-                              navigate(`/search?q=${it.keyword}`);
-                              onClose(true);
-                            }}
-                            title={it.keyword}
-                          >
-                            <Span className={styles.ellipsis}>{it.keyword}</Span>
-                          </Button>
-                        </HorizontalFlex>
-                      ))}
-                    </VerticalFlex>
-                  </FlexChild>
-  
-                  {/* Right column */}
-                  <FlexChild className={styles.col}>
-                    <VerticalFlex gap={20}>
-                      {right.map((it, i) => (
-                        <HorizontalFlex
-                          key={`R-${it.keyword}-${i}`}
-                          className={styles.row}
-                          alignItems="center"
-                          justifyContent="flex-start"
-                        >
-                          <Span className={rankClass(i + 5)}>{i + 6}</Span>
-                          <Button
-                            type="button"
-                            className={styles.term}
-                            onClick={() => {
-                              setValue(it.keyword);
-                              if (userData?.id && storeData?.id) {
-                                requester.addKeyword({
-                                  store_id: storeData.id,
-                                  keyword: it.keyword,
-                                });
-                              }
-                              navigate(`/search?q=${it.keyword}`);
-                              onClose(true);
-                            }}
-                            title={it.keyword}
-                          >
-                            <Span className={styles.ellipsis}>{it.keyword}</Span>
-                          </Button>
-                        </HorizontalFlex>
-                      ))}
-                    </VerticalFlex>
-                  </FlexChild>
-                </HorizontalFlex>
-              ) : (
-                <P color="#595959" size={13}>
-                  인기 검색어가 없습니다.
-                </P>
-              )}
-            </VerticalFlex>
+            ) : (
+              <P color="#595959" size={13}>
+                인기 검색어가 없습니다.
+              </P>
+            )}
           </VerticalFlex>
         </VerticalFlex>
       </VerticalFlex>

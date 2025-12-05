@@ -1,7 +1,7 @@
 .footer {
    --footer-font-color : #dadada;
    background: #242424;
-   padding: 0 0 90px;
+   /* padding: 0 0 30px; */
 }
 
 .footer * {width: auto;}

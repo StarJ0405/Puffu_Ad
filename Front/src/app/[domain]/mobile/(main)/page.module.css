@@ -6,7 +6,16 @@
    position: relative;
 }
 
-.main_banner .slideItem img {width: 100%; object-fit: cover;}
+/* .main_banner .slideItem img {width: 100%; object-fit: cover;} */
+
+.main_banner .slideItem .thumbnail {
+   background-repeat: no-repeat;
+   background-size: cover;
+   background-position: center center;
+   width: 100%;
+   aspect-ratio: 1/1;
+   padding-bottom: 100%;
+}
 
 .main_banner .pagination {
    position: absolute;
@@ -155,7 +164,7 @@
 
 
 
-.sec1 {gap: 20px;}
+.sec1 {gap: 20px; padding-bottom: 40px;}
 
 .sec1 .link_box {display: block; width: 100%;}
 
@@ -260,6 +269,9 @@
 
 
 /* sec2 메인 카테고리 */
+
+.sec2 {padding-bottom: 60px;}
+
 .category_menu {
    display: grid;
    grid-template-columns: repeat(3, 1fr);
@@ -281,6 +293,7 @@
    padding: 10px 5px;
    box-shadow: 3px 4px 10px rgba(0,0,0,0.07);
    border-radius: 10px;
+   background: #fff;
 }
 
 .category_menu .ca_item .ca_img {
@@ -406,6 +419,8 @@
 
 
 /* sec3 상품 리스트 */
+.sec3 {padding-bottom: 60px;}
+
 .sec3 .best_list .title h2 {
    color: var(--main-color1);
 }

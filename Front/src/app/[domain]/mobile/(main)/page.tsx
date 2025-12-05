@@ -10,16 +10,11 @@ import Div from "@/components/div/Div";
 import Span from "@/components/span/Span";
 import Image from "@/components/Image/Image";
 import {
-  HotDealWrapper,
-  LinkBanner,
   MainBanner,
   MainCategory,
   BestProducts,
-  // ProductList,
   ReviewSection,
   EventSection,
-  // SubBanner1,
-  // SubBanner2,
 } from "./client";
 
 export default async function () {

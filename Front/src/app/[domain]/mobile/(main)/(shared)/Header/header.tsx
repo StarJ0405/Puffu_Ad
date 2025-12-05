@@ -1,37 +1,56 @@
 "use client"
+
+import siteInfo from "@/shared/siteInfo";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import clsx from "clsx";
 import Link from "next/link";
-import { HeaderBottom, SideMenuBtn } from './client';
+import { HeaderBottom } from './client';
 import styles from "./header.module.css";
 import { useParams, usePathname } from "next/navigation";
 import MobileSearch from "@/components/mobileSearch/mobileSearch"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import CountBadge from "@/components/countBadge/countBadge";
+import LineBanner from "@/components/main/lineBanner/LineBanner";
 
 
 export default function MobileHeader() {
 
    const menu1 = [ // 임시 데이터
-      { name: 'BEST 상품', link: '/products/best'},
-      { name: '입고예정', link: '/products/commingSoon'},
-      { name: '신상품', link: '/products/new'},
-      { name: '이달의 핫딜', link: '/products/hot', icon: '/resources/images/header/HotDeal_icon.png'},
-      // { name: '랜덤박스', link: '/products/randomBox'},
+      { name: '상품', link: siteInfo.pt_best},
+      { name: '픽업매장', link: siteInfo.map_location},
+      { name: '멤버쉽&구독', link: '/?'},
+      { name: '이벤트', link: siteInfo.bo_event},
+      { name: '사용후기', link: siteInfo.bo_review},
+      { name: '창업안내', link: siteInfo.startUps},
    ]
 
    const params = useParams();
    const pathname = usePathname();
    const [showSearch, setShowSearch] = useState(false);
+   const bodyOverflow = (e: string) => {
+    document.body.style.overflow = e;
+  }
    const isDetailPage = !!params?.detail_id;
 
    const shouldHideHeader = 
    pathname.includes("/orders") || pathname.includes("/border") || pathname.includes("/mypage") || pathname.includes("/board") 
    || isDetailPage;
+
+   useEffect(()=> {
+      if(showSearch) {
+         bodyOverflow('hidden');
+      } else {
+         bodyOverflow('');
+      }
+
+      return () => {
+         bodyOverflow('');
+      }
+   }, [showSearch]);
 
    return (
       <>
@@ -40,37 +59,32 @@ export default function MobileHeader() {
             !shouldHideHeader ? (
                <>
                   <header className={styles.header}>
+                     <LineBanner />
                      <HorizontalFlex className={clsx('mob_page_container',styles.headerTop)}>
-                        <FlexChild gap={20}>
-                           
-                           <SideMenuBtn/>
-   
-                           <FlexChild className={styles.logo}>
-                              <Link href='/'>
-                                 <Image
-                                    src='/resources/images/header/logo.png'
-                                    width={100}
-                                    height={'auto'}
-                                 />
-                              </Link>
-                           </FlexChild>
-   
+                        <FlexChild className={styles.logo}>
+                           <Link href='/'>
+                              <Image
+                                 src='/resources/images/header/logo.png'
+                                 width={120}
+                                 height={'auto'}
+                              />
+                           </Link>
                         </FlexChild>
    
                         <FlexChild width={'auto'} className={styles.info_box}>
                            <VerticalFlex gap={20} alignItems="end">
-                              <HorizontalFlex width={'auto'} gap={10}>
+                              <FlexChild width={'auto'} gap={20}>
                                  <FlexChild onClick={()=> setShowSearch(true)}>
-                                    <Image src='/resources/images/header/input_search_icon.png' width={22} cursor="pointer"/>
+                                    <Image src='/resources/icons/main/search_icon.png' width={20} cursor="pointer"/>
                                  </FlexChild>
    
                                  <FlexChild className={styles.cart_btn}>
                                     <Link href={'/orders/cart'}>
-                                       <Image src='/resources/icons/main/cart_icon.png' width={25} cursor="pointer"/>
+                                       <Image src='/resources/icons/main/cart_icon.png' width={20} cursor="pointer"/>
                                     </Link>
                                     <CountBadge bottom="-3px" right="-5px" />
                                  </FlexChild>
-                              </HorizontalFlex>
+                              </FlexChild>
                            </VerticalFlex>
                         </FlexChild>
                      </HorizontalFlex>
@@ -80,7 +94,7 @@ export default function MobileHeader() {
 
 
                   {/* 모바일 검색창 페이지 */}
-                  <AnimatePresence mode="wait">
+                  <AnimatePresence mode="wait" onExitComplete={()=> bodyOverflow('')}>
                   {
                      showSearch && (
                         <motion.div
