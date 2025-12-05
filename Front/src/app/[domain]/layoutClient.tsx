@@ -16,8 +16,7 @@ export default function ({ children }: { children: React.ReactNode }) {
       redirect(`/auth/login?redirect_url=${pathname}`);
   }, [userData, pathname]);
 
-  useEffect(() => {
-    // 일부 페이지 로딩되면 상단으로 이동 안해서 추가함
+  useEffect(() => {    
     window.scrollTo(0, 0);
   }, [pathname]);
 

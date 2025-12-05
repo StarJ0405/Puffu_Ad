@@ -387,7 +387,7 @@ export function SearchBox() {
 export function HeaderBottom() {
   const menu1 = [
     { name: "상품", link: "/" },
-    { name: "픽업 매장", link: "/" },
+    { name: "픽업 매장", link: "/map" },
     { name: "멤버쉽&구독", link: "/" },
     { name: "이벤트", link: "/board/event" },
     { name: "사용후기", link: "/board/photoReview" },
