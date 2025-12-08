@@ -1,0 +1,46 @@
+.frame {
+   overflow: hidden;
+   border-radius: 20px;
+   width: 100%;
+   position: relative;
+   cursor: pointer;
+}
+
+.frame .thumbnail {
+   -webkit-aspect-ratio: 1/1;
+   aspect-ratio: 1/1;
+   background-repeat: no-repeat;
+   background-position: center;
+   background-size: cover;
+}
+
+.frame .content_box {
+   background: #2C2C2C;
+   padding: 17px 15px 23px;
+}
+
+.frame .content_box .title {
+   font-size: clamp(18px, calc(100vw * 20px / 768vw), 20px) !important;
+   font-weight: 600 !important;
+   color: #fff !important;
+   /* text-align: center; */
+}
+
+
+
+/* 모바일 */
+.mob_frame .thumbnail {
+   position: relative; z-index: 1;
+}
+.mob_frame .content_box {
+   align-items: end !important;
+   position: absolute; z-index: 2;
+   bottom: 0; left: 0;
+   width: 100%; height: 100%;
+   background: linear-gradient(360deg, rgba(43,43,43,0.6), rgba(43,43,43,0) 20%);
+}
+
+.mob_frame.slide .content_box .title {
+   text-align: left;
+   width: 100% !important;
+}

@@ -10,7 +10,7 @@ import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventPr
 import useNavigate from "@/shared/hooks/useNavigate";
 import { requester } from "@/shared/Requester";
 import styles from "./ProductCard.module.css";
-import { useEffect } from "react";
+import { useState, useCallback } from "react";
 import clsx from "clsx";
 import Div from "@/components/div/Div";
 // lineClamp 구별해주기, TestProdcutCard는 임시로 만든거임. 나중에 프로덕트카드에 스타일만 입히면 됨.
@@ -59,7 +59,8 @@ export function ProductCard({
   else if (!isBuyable) overlay = "unbuyable";
   else if (isOutOfStock) overlay = "outofstock";
 
-  // console.log(product);
+
+  console.log(requester);
 
   return (
     <VerticalFlex

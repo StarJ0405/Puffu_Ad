@@ -1,7 +1,7 @@
 'use client'
 
 import { Swiper as SwiperType } from "swiper";
-import { Autoplay } from "swiper/modules";
+import { Autoplay, FreeMode } from "swiper/modules";
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -17,6 +17,8 @@ export default function LineBanner() {
    const content = [
       '푸푸토이는 배송도 시크릿하게~!',
       '오후 2시 이전 주문 시 당일발송!',
+      '푸푸토이는 배송도 시크릿하게~!',
+      '오후 2시 이전 주문 시 당일발송!',
    ]
 
    return (
@@ -25,13 +27,14 @@ export default function LineBanner() {
         loop={true}
         slidesPerView={1.5}
         speed={6000}
+        allowTouchMove={false}
         spaceBetween={!isMobile ? 310 : 50}
         modules={[Autoplay]}
         autoplay={{
           delay: 1,
-         //  allowTouchMove: false,
           disableOnInteraction: false,
         }}
+      //   freeMode={true}
       >
         {content.map((item, i) => {
             return (
