@@ -12,13 +12,13 @@ import { Variant } from "./variant";
 import { OfflineStore } from "./offline_store";
 
 @Entity({ name: "stack_item" })
-@Index(["kiosk_uuid", "variant_id"], { unique: true })
+@Index(["offline_store_id", "variant_id"], { unique: true })
 export class StackItem extends BaseEntity {
   @Column({ type: "character varying", nullable: false })
-  kiosk_uuid!: string;
+  offline_store_id!: string;
 
   @ManyToOne(() => OfflineStore)
-  @JoinColumn({ name: "kiosk_uuid", referencedColumnName: "kiosk_uuid" })
+  @JoinColumn({ name: "offline_store_id", referencedColumnName: "id" })
   offline_store?: OfflineStore;
 
   @Column({ type: "character varying", nullable: false })
