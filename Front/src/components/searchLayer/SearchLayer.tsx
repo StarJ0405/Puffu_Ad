@@ -15,6 +15,7 @@ import { requester } from "@/shared/Requester";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import styles from "./SearchLayer.module.css";
+import NoContent from "../noContent/noContent";
 
 export default function SearchLayer({
   onClose,
@@ -191,39 +192,46 @@ export default function SearchLayer({
             </HorizontalFlex>
 
             <VerticalFlex className={styles.recent_list}>
-              {recentSearches.map((word, i) => {
-                return (
-                  <HorizontalFlex className={styles.item} key={i}>
-                    <FlexChild
-                      className={styles.keyword}
-                      onClick={() => {
-                        setValue(word);
-                        navigate(`/search?q=${word}`);
-                        onClose(true);
-                      }}
-                    >
-                      {!isMobile && (
-                        <Image
-                          src="/resources/icons/main/search_icon.png"
-                          width={14}
-                          marginRight={10}
-                        />
-                      )}
-                      <P color="#5B5B5B" size={14} fontWeight={500}>
-                        {word}
-                      </P>
-                    </FlexChild>
+              {
+                recentSearches.length > 0
+                  ? recentSearches.map((word, i) => (
+                      <HorizontalFlex className={styles.item} key={i}>
+                        <FlexChild
+                          className={styles.keyword}
+                          onClick={() => {
+                            setValue(word);
+                            navigate(`/search?q=${word}`);
+                            onClose(true);
+                          }}
+                        >
+                          {!isMobile && (
+                            <Image
+                              src="/resources/icons/main/search_icon.png"
+                              width={14}
+                              marginRight={10}
+                            />
+                          )}
+                          <P color="#5B5B5B" size={14} fontWeight={500}>
+                            {word}
+                          </P>
+                        </FlexChild>
 
-                    <FlexChild
-                      className={styles.delete_btn}
-                      width={!isMobile ? "auto" : ""}
-                      onClick={() => removeSearch(word)}
-                    >
-                      <Image src="/resources/icons/closeBtn.png" width={11} />
+                        <FlexChild
+                          className={styles.delete_btn}
+                          width={!isMobile ? "auto" : ""}
+                          onClick={() => removeSearch(word)}
+                        >
+                          <Image src="/resources/icons/closeBtn.png" width={11} />
+                        </FlexChild>
+                      </HorizontalFlex>
+                    ))
+                  : (
+                    <FlexChild justifyContent="center" padding={'20px 0'}>
+                      <P color="#797979" fontSize={15}>최근 검색어가 없습니다.</P>
                     </FlexChild>
-                  </HorizontalFlex>
-                );
-              })}
+                   
+                  )
+              }
             </VerticalFlex>
           </VerticalFlex>
 

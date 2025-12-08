@@ -8,14 +8,9 @@ import { requester } from "@/shared/Requester";
 import Link from "next/link";
 import clsx from "clsx";
 import {
-  HotDealList,
-  LinkBanner,
   MainBanner,
   MainCategory,
-  MiniBanner,
   BestList,
-  SubBanner1,
-  SubBanner2,
   ProductSlider,
 } from "./client";
 import styles from "./page.module.css";
