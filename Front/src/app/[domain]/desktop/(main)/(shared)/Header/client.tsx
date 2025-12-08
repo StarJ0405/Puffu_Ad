@@ -111,17 +111,18 @@ export function SearchBox() {
           placeholder="원하시는 제품을 검색해 보세요."
           value={value}
           autoComplete="off"
-          onFocus={() => {
-            setOpen(true);
-            setShowAll(true);
-          }}
-          onChange={(e) => {
-            setValue(e.target.value);
-            setOpen(true);
-            setActiveIndex(null);
-            setShowAll(false);
-          }}
+          // onFocus={() => {
+          //   setOpen(true);
+          //   setShowAll(true);
+          // }}
+          // onChange={(e) => {
+          //   setValue(e.target.value);
+          //   setOpen(true);
+          //   setActiveIndex(null);
+          //   setShowAll(false);
+          // }}
           // onKeyDown={onKeyDown}
+          readOnly
         />
         <FlexChild className={styles.search_icon}>
           <Image
