@@ -147,7 +147,6 @@ export class CartService extends BaseService<Cart, CartRepository> {
     subscribe_id,
     offline_store_id,
   }: {
-    
     user_id: string;
     cart_id: string;
     selected: string[];
@@ -163,7 +162,6 @@ export class CartService extends BaseService<Cart, CartRepository> {
     };
     subscribe_id?: string;
     offline_store_id?: string;
-    
   }): Promise<Order | null> {
     console.log("complete.offline_store_id >>>", offline_store_id);
     if (
@@ -254,8 +252,8 @@ export class CartService extends BaseService<Cart, CartRepository> {
       : [];
     const shipping_coupons = coupons?.shippings?.length
       ? await this.couponService.getList({
-        where: { id: In(coupons.shippings) },
-      })
+          where: { id: In(coupons.shippings) },
+        })
       : [];
     const item_coupons = await Promise.all(
       (coupons?.items || [])
@@ -315,7 +313,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
       order_fix -
       Math.round(
         ((total + shipping) * (order_percents + (subscribe?.percent || 0))) /
-        100.0
+          100.0
       );
 
     await Promise.all(
@@ -349,7 +347,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
               Math.max(
                 0,
                 ((item.variant?.discount_price || 0) * (100 - percents)) / 100 -
-                fix
+                  fix
               ),
           }
         );
@@ -425,7 +423,10 @@ export class CartService extends BaseService<Cart, CartRepository> {
         display: order?.display,
       });
     }
-    if (order?.user_id && (order as any).offline_store_id) {
+    // if (order?.user_id && (order as any).offline_store_id) {
+    //   await this.recentStoreService.createOrder(order);
+    // }
+    if (order?.user_id && order.offline_store_id) {
       await this.recentStoreService.createOrder(order);
     }
 
