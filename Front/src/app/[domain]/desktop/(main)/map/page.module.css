@@ -1,7 +1,147 @@
-.storeItem {
+.layout {
+  width: 100%;
+  min-height: 60vh;
+}
+
+.topBar {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
   background-color: #fff;
 }
 
+.searchRow {
+  gap: 8px;
+  flex: 1;
+}
+
+.searchButton {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid #00c73c;
+  background-color: #00c73c;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.searchButton:hover {
+  opacity: 0.9;
+}
+
+.recentStoreChip {
+  border: 1px solid #ddd;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  background-color: #fafafa;
+  cursor: pointer;
+}
+
+.recentStoreChip:hover {
+  background-color: #f0f0f0;
+}
+
+.sidebar {
+  background-color: #fafbfc;
+}
+
+.detailPanel {
+  border-left: 1px solid #eee;
+  background-color: #fff;
+}
+
+.mapArea {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 관심 매장 영역 */
+.wishlistHeader {
+  cursor: pointer;
+}
+
+.chevronButton {
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  color: #666;
+  cursor: pointer;
+}
+
+.loginNotice {
+  padding: 10px;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+}
+
+.loginButton {
+  margin-top: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 999px;
+  border: 1px solid #00c73c;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.loginButton:hover {
+  background-color: #f0fff4;
+}
+
+.wishlistList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wishlistItem {
+  background-color: #fff;
+  border: 1px solid #eee;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.wishlistItem:hover {
+  background-color: #f8f9ff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+/* 매장 목록 */
+.storeListTitle {
+  margin-bottom: 8px;
+}
+
+.storeList {
+  max-height: 480px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.storeItem {
+  background-color: #fff;
+  border: 1px solid #eee;
+  margin-bottom: 4px;
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.storeItem:hover {
+  background-color: #f9fbff;
+  border-color: #d0e3ff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.storeItemActive {
+  border-color: #00c73c;
+  box-shadow: 0 0 0 1px rgba(0, 199, 60, 0.4);
+}
+
+/* 기존 markerBubble 스타일은 유지 */
 .markerBubble {
   position: relative;
   display: inline-flex;
@@ -17,9 +157,7 @@
   cursor: pointer;
   white-space: nowrap;
   user-select: none;
-  
 }
-
 
 .markerBubbleActive {
   background-color: blue;

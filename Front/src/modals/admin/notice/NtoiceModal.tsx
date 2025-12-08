@@ -37,7 +37,7 @@ const NoticeModal = NiceModal.create(
     edit?: boolean;
     onSuccess?: () => void;
     max: number;
-  }) => {
+  }) => {    
     const [withHeader, withFooter] = [true, false];
     const [width, height] = ["min(95%, 900px)", "auto"];
     const withCloseButton = true;
@@ -205,6 +205,7 @@ const NoticeModal = NiceModal.create(
                       inputs.current[1] = el;
                     }}
                     path="/notice"
+                    value={notice?.thumbnail}
                   />
                 ) : (
                   <Image src={notice.thumbnail} width={"100%"} />
@@ -232,8 +233,8 @@ const NoticeModal = NiceModal.create(
                     {!notice.actives_at && !notice.deactives_at
                       ? "미설정"
                       : `${dateToString(notice.actives_at)} ~ ${dateToString(
-                          notice.deactives_at
-                        )}`}
+                        notice.deactives_at
+                      )}`}
                   </P>
                 )}
               </FlexChild>
@@ -275,8 +276,8 @@ const NoticeModal = NiceModal.create(
                   <P>
                     {notice?.starts_at && notice?.ends_at
                       ? `${dateToString(notice.starts_at)} ~ ${dateToString(
-                          notice.ends_at
-                        )}`
+                        notice.ends_at
+                      )}`
                       : "무제한"}
                   </P>
                 )}
