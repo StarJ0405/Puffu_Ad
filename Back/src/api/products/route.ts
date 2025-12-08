@@ -1,6 +1,7 @@
 import { Product } from "models/product";
 import { ProductService } from "services/product";
 import { WishlistService } from "services/wishlist";
+import { ReviewService } from "services/review";
 import { container } from "tsyringe";
 
 export const GET: ApiHandler = async (req, res) => {
@@ -47,6 +48,7 @@ export const GET: ApiHandler = async (req, res) => {
     where.user_id = req.user.id;
   }
   const wishService: WishlistService = container.resolve(WishlistService);
+  const reviewService: ReviewService = container.resolve(ReviewService);
   if (pageSize) {
     const page: any = await service.getWithOrder(
       { select, order, relations, where },
@@ -68,6 +70,7 @@ export const GET: ApiHandler = async (req, res) => {
         return product;
       });
     }
+    const productIds: string[] = page.content.map((p: Product) => p.id) || [];
     const wishes = await wishService.getCounts(
       page.content.map((p: Product) => p.id) || []
     );
@@ -76,6 +79,29 @@ export const GET: ApiHandler = async (req, res) => {
       product.wishes = wishes.find((f) => f.id === product.id)?.count || 0;
       return product;
     });
+
+    if (productIds.length > 0) {
+      const stats = await reviewService.getProductStatsByIds(productIds);
+      const statMap = new Map<string, { count: number; avg: number }>();
+
+      stats.forEach((s) => {
+        statMap.set(String(s.product_id), {
+          count: Number(s.count) || 0,
+          avg: Number(s.avg) || 0,
+        });
+      });
+
+      page.content = page.content.map((product: any) => {
+        const stat = statMap.get(String(product.id));
+        product.reviews = {
+          count: stat?.count ?? 0,
+          avg: stat?.avg ?? 0,
+        };
+        return product;
+      });
+    }
+
+
     return res.json(page);
   } else {
     let content: any[] = await service.getWithOrder({
@@ -97,6 +123,7 @@ export const GET: ApiHandler = async (req, res) => {
         return product;
       });
     }
+    const productIds: string[] = content.map((p: Product) => p.id) || [];
     const wishes = await wishService.getCounts(
       content.map((p: Product) => p.id) || []
     );
@@ -104,6 +131,29 @@ export const GET: ApiHandler = async (req, res) => {
       product.wishes = wishes.find((f) => f.id === product.id)?.count || 0;
       return product;
     });
+
+    if (productIds.length > 0) {
+      const stats = await reviewService.getProductStatsByIds(productIds);
+      const statMap = new Map<string, { count: number; avg: number }>();
+
+      stats.forEach((s) => {
+        statMap.set(String(s.product_id), {
+          count: Number(s.count) || 0,
+          avg: Number(s.avg) || 0,
+        });
+      });
+
+      content = content.map((product: any) => {
+        const stat = statMap.get(String(product.id));
+        product.reviews = {
+          count: stat?.count ?? 0,
+          avg: stat?.avg ?? 0,
+        };
+        return product;
+      });
+    }
+
     return res.json({ content });
   }
+
 };

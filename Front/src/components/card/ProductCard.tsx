@@ -30,7 +30,7 @@ export function ProductCard({
   autoPlay?: number;
   mutate?: () => void;
   onClick?: () => void;
-}) {
+}) {  
   const { userData } = useAuth();
   const { isMobile } = useBrowserEvent();
   const product_link = `/products/${product.id}`;
@@ -58,9 +58,6 @@ export function ProductCard({
   if (isComingSoon) overlay = "coming";
   else if (!isBuyable) overlay = "unbuyable";
   else if (isOutOfStock) overlay = "outofstock";
-
-
-  console.log(requester);
 
   return (
     <VerticalFlex
@@ -115,9 +112,8 @@ export function ProductCard({
           className={styles.heart_counter}
         >
           <Image
-            src={`/resources/icons/main/product_heart_icon${
-              product.wish ? "_active" : ""
-            }.png`}
+            src={`/resources/icons/main/product_heart_icon${product.wish ? "_active" : ""
+              }.png`}
             width={24}
           />
         </FlexChild>
@@ -151,7 +147,7 @@ export function ProductCard({
           </FlexChild>
 
           <VerticalFlex className={styles.content_item} alignItems="start">
-            
+
             <FlexChild className={styles.user_state_box} gap={10} justifyContent="start" width={'auto'}>
               <FlexChild className={styles.heart_dt} gap={5} justifyContent="start" width={'auto'}>
                 <Image
@@ -171,7 +167,9 @@ export function ProductCard({
                 </FlexChild>
                 <FlexChild className={styles.review}>
                   {/* 평점, (리뷰 수) */}
-                  <Span>0 (0)</Span>
+                  <Span>
+                    {product?.reviews?.avg} ({product?.reviews?.count})
+                  </Span>
                 </FlexChild>
               </FlexChild>
 
@@ -181,15 +179,15 @@ export function ProductCard({
               <Span className={styles.discount_price}>
                 {Number(product.discount_price).toLocaleString("ko-KR")}원
               </Span>
-                <Span className={styles.through_price}>
-                  {
-                    product.discount_rate > 0 && 
-                    `${Number(product.price).toLocaleString("ko-KR")}원`
-                  }
-                </Span>
-                {product.discount_rate > 0 && ( // 원가랑 할인가 차이 없으면 표시 안하기
-                  <Span className={styles.discount_rate}>{product.discount_rate}%</Span>
-                )}
+              <Span className={styles.through_price}>
+                {
+                  product.discount_rate > 0 &&
+                  `${Number(product.price).toLocaleString("ko-KR")}원`
+                }
+              </Span>
+              {product.discount_rate > 0 && ( // 원가랑 할인가 차이 없으면 표시 안하기
+                <Span className={styles.discount_rate}>{product.discount_rate}%</Span>
+              )}
             </FlexChild>
 
             {/* {!isMobile && mutate && (
@@ -239,16 +237,16 @@ export function ProductCard({
 
 
 
-function StockStatusMessage({overlay} : {overlay: string | null}) {
+function StockStatusMessage({ overlay }: { overlay: string | null }) {
   const { isMobile } = useBrowserEvent();
   const message =
     overlay === "coming"
       ? "입고 예정입니다."
       : overlay === "unbuyable"
-      ? "구매 불가입니다."
-      : overlay === "outofstock"
-      ? "재고 부족입니다."
-      : null;
+        ? "구매 불가입니다."
+        : overlay === "outofstock"
+          ? "재고 부족입니다."
+          : null;
 
   return (
     <FlexChild className={styles.StatusBox} justifyContent="center">
