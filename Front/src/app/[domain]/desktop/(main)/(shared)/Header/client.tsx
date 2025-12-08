@@ -1,50 +1,32 @@
 "use client";
 
-import siteInfo from "@/shared/siteInfo";
 import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
-import Span from "@/components/span/Span";
+import SearchLayer from "@/components/searchLayer/SearchLayer";
+import ConfirmModal from "@/modals/confirm/ConfirmModal";
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
+import siteInfo from "@/shared/siteInfo";
 import { Cookies } from "@/shared/utils/Data";
 import { getCookieOption } from "@/shared/utils/Functions";
+import NiceModal from "@ebay/nice-modal-react";
 import clsx from "clsx";
+import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useRef, useState } from "react";
 import { useCookies } from "react-cookie";
 import styles from "./header.module.css";
-import useNavigate from "@/shared/hooks/useNavigate";
-import { usePathname } from "next/navigation";
-import NiceModal from "@ebay/nice-modal-react";
-import ConfirmModal from "@/modals/confirm/ConfirmModal";
-import VerticalFlex from "@/components/flex/VerticalFlex";
-import { useStore } from "@/providers/StoreProvider/StorePorivderClient";
-import { requester } from "@/shared/Requester";
-import Div from "@/components/div/Div";
-import Button from "@/components/buttons/Button";
-import SearchLayer from "@/components/searchLayer/SearchLayer";
-import { AnimatePresence, motion } from "framer-motion";
-
-interface ShopMenuItem {
-  name: string;
-  link: string;
-  icon?: string; // menu1에 icon이 있음
-}
-
-interface SubMenuItem {
-  name: string;
-  link: string;
-}
 
 export function HeaderMenu() {
   const menu1 = [
-    { name: "상품", link: "/" },
-    { name: "픽업 매장", link: "/map" },
-    { name: "멤버쉽&구독", link: "/" },
+    { name: "상품", link: siteInfo.pt_best},
+    { name: "픽업 매장", link: siteInfo.map_location },
+    { name: "멤버쉽&구독", link: siteInfo.memberShip },
     { name: "이벤트", link: siteInfo.bo_event },
     { name: "사용후기", link: siteInfo.bo_review },
-    { name: "창업안내", link: "/" },
+    { name: "창업안내", link: siteInfo.startUps },
   ];
 
   const pathname = usePathname();
@@ -60,15 +42,13 @@ export function HeaderMenu() {
                 {menu1.map((item, i) => (
                   <li
                     key={i}
-                  // className={clsx({
-                  //   [styles.active]: pathname === item.link,
-                  // })}
+                    className={clsx({
+                      [styles.active]: pathname === item.link,
+                    })}
                   >
                     <Link href={item.link}>
                       {item.name}
-                      {/* {item.icon ? <Image src={item.icon} width={12} /> : null} */}
                     </Link>
-                    {/* <Span className={styles.active_line}></Span> */}
                   </li>
                 ))}
               </ul>
@@ -84,17 +64,7 @@ export function HeaderMenu() {
 
 export function SearchBox() {
   const [value, setValue] = useState("");
-  const [open, setOpen] = useState(false);
-  const [recentSearches, setRecentSearches] = useState<string[]>([]);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [showAll, setShowAll] = useState(false);
-  const navigate = useNavigate();
   const wrapRef = useRef<HTMLDivElement | null>(null);
-  const { storeData } = useStore();
-  const { userData } = useAuth();
-  const [popular, setPopular] = useState<
-    Array<{ keyword: string; popular: number; created_at: string }>
-  >([]);
 
   const [showSearch, setShowSearch] = useState(false);
 
@@ -104,7 +74,7 @@ export function SearchBox() {
         gap={10}
         className={`searchInput_Box ${styles.search_modal_btn}`}
         Ref={wrapRef}
-        onClick={() => {setShowSearch(true)}}
+        onClick={() => {setShowSearch(prev => !prev);}}
       >
         <input
           type="search"
@@ -157,11 +127,6 @@ export function SearchBox() {
         )
       }
       </AnimatePresence>
-
-      
-      {/* {open && (items.length > 0 || recentSearches.length > 0) && (
-  
-        )} */}
     </>
   );
 }

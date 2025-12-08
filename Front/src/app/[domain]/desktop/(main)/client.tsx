@@ -21,11 +21,14 @@ import { requester } from "@/shared/Requester";
 import { Swiper as SwiperType } from "swiper";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import 'swiper/css';
+import 'swiper/css/navigation';
 import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 import ReviewImgCard from "@/components/card/reviewImgCard";
 import LoadingSpinner from "@/components/loading/LoadingSpinner";
 import LoadingCard from "@/components/card/LoadingCard";
 import ProductLoadBtn from "@/components/buttons/ProductLoadBtn";
+import useNavigate from "@/shared/hooks/useNavigate";
 // import SubBanner from "@/components/subBanner/subBanner";
 
 export function MainBanner({ initBanners }: { initBanners: Pageable }) {
@@ -39,92 +42,64 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
       fallbackData: initBanners,
     }
   );
-  // log(banners); 베너 정보
+
+  const navigate = useNavigate();
+  const [bulletIdx, setbulltIdx] = useState(0);
   const swiperRef = useRef<SwiperType | null>(null);
-  // const [banners, setBanners] = useState<BannerData[]>([]);
 
-  const paintBullets = (swiper: SwiperType) => {
-    // 페이지네이션 스타일 설정
-    const bullets = swiper.pagination?.el?.querySelectorAll(
-      ".swiper-pagination-bullet"
-    );
-    if (!bullets) return;
-
-    bullets.forEach((el) => {
-      const bullet = el as HTMLElement;
-      bullet.style.setProperty("background-color", "#000", "important");
-      bullet.style.setProperty("opacity", "0.3", "important");
-      bullet.style.setProperty("transform", "scale(1)");
-      bullet.style.setProperty("margin", "0 4px", "important");
-      bullet.style.setProperty("left", "0", "important");
-      bullet.style.setProperty("top", "2px", "important");
-    });
-
-    const active = swiper.pagination?.el?.querySelector(
-      ".swiper-pagination-bullet-active"
-    ) as HTMLElement | null;
-    if (active) {
-      active.style.setProperty("opacity", "1", "important");
-      active.style.setProperty("background-color", "#fff", "important");
-      active.style.setProperty("transform", "scale(1.66)");
+  // 베너 링크값 없으면 링크 없애는 코드
+  const linkCheck = (link: string | undefined)=> {
+    if(link) {
+      navigate(`${link}`)
+    } else {
+      navigate('')
     }
-  };
+  }
 
   return (
     <FlexChild className={clsx(styles.main_banner)}>
       <Swiper
-        loop={true}
-        speed={600}
+        slidesPerView={'auto'}
+        centeredSlides={true}
         spaceBetween={90}
-        autoplay={{ delay: 400000 }}
-        modules={[Pagination, Autoplay]}
+        loop={true}
+        observer={true}
+        observeParents={true}
         pagination={{
           dynamicBullets: true,
           clickable: true,
         }}
-        onSwiper={(swiper) => {
-          swiperRef.current = swiper;
-        }}
-        onAfterInit={(swiper) => {
-          // Pagination DOM이 생성된 뒤
-          paintBullets(swiper);
-        }}
-        onSlideChange={(swiper) => {
-          // active bullet이 바뀔 때마다
-          paintBullets(swiper);
-        }}
-        onPaginationUpdate={(swiper) => {
-          // dynamicBullets로 bullet 구성이 바뀌는 경우
-          paintBullets(swiper);
-        }}
+        modules={[Autoplay]}
+        speed={600}
+        autoplay={{ delay: 400000 }}
+        onSwiper={(swiper) => swiperRef.current = swiper}
+        onSlideChange={(e) => setbulltIdx(e.realIndex)}
       >
         {[...banners]?.map(
           (item: BannerDataFrame, i: number) =>
             item.thumbnail.pc && (
               <SwiperSlide key={i} className={clsx(`swiper_0${i}`, styles.slideItem)}>
-                {item.to ? (
-                  <Link href={item.to}>
-                    <Image
-                      src={
-                        userData?.adult
-                          ? item.thumbnail.pc
-                          : "/resources/images/19_only_banner.png"
-                      }
-                    />
-                  </Link>
-                ) : (
-                  <Image
-                    src={
-                      userData?.adult
-                        ? item.thumbnail.pc
-                        : "/resources/images/19_only_banner.png"
-                    }
-                  />
-                )}
+                <div onClick={()=> linkCheck(item.to)} className={styles.thumbnail} style={{
+                      'backgroundImage': userData?.adult
+                      ? `url(${item.thumbnail.mobile})`
+                      : "url(/resources/images/19_only_banner.png)"
+                    }} 
+                />
               </SwiperSlide>
             )
         )}
       </Swiper>
+
+      <div className={styles.pagination}>
+        {[...banners]?.map((_, i)=> (
+          <span
+            key={i}
+            className={clsx(styles.bullet, bulletIdx === i ? styles.active : '')}
+            onClick={() => swiperRef.current?.slideToLoop(i)}
+          >
+          </span>
+        ))}
+      </div>
     </FlexChild>
   );
 }
