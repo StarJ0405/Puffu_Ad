@@ -3,36 +3,43 @@ import FlexChild from "@/components/flex/FlexChild";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
 import Image from "@/components/Image/Image";
 import Link from "next/link";
-import { Auth, HeaderBottom, SearchBox } from "./client";
+import { Auth, HeaderMenu, SearchBox } from "./client";
 import styles from "./header.module.css";
 import { useRef, useState, useEffect } from "react";
 import clsx from "clsx";
 import CountBadge from "@/components/countBadge/countBadge";
+import LineBanner from "@/components/main/lineBanner/LineBanner";
 
 
 export default function Header() {
 
-  const headerRef = useRef<HTMLDivElement | null>(null);
-  const [fixed, setFixed] = useState(false);
   const [CaOpen, SetCaOpen] = useState(false);
+  const headerRef = useRef<HTMLDivElement | null>(null);
+   const [headerScroll, setHeaderScroll] = useState(false);
+   const [LBHeight, setLBHeight] = useState(0);
 
-  useEffect(() => {
-    const headerScroll = () => {
-      setFixed(window.scrollY > 0);
-    };
+   // 스크롤 되면 클래스 들어옴
+   const ScrollClass = headerScroll ? styles.scroll : '';
 
-    window.addEventListener("scroll", headerScroll);
-    return () => window.removeEventListener("scroll", headerScroll);
-  }, [headerRef]);
+   useEffect(()=> {
+      const headerScroll = () => {
+         setHeaderScroll(window.scrollY > 0)
+      };
+
+      window.addEventListener('scroll', headerScroll);
+      return ()=> window.removeEventListener('scroll', headerScroll);
+   },[]);
 
   return (
     <>
-      {/* className={styles.header} className={clsx(`${fixed ? styles.scroll : ""}`, styles.header)} */}
       <header ref={headerRef} className={
-        clsx(
-          // `${fixed ? styles.scroll : ""}`,
-          styles.header
-        )}>
+          clsx(
+            // `${scroll ? styles.scroll : ""}`,
+            styles.header
+          )}
+          style={{ top: headerScroll ? `-${LBHeight}px` : 0 }}
+          >
+        <LineBanner setLBHeight={setLBHeight} />
         <HorizontalFlex
           className={styles.header_wrap}
         >
@@ -44,7 +51,7 @@ export default function Header() {
                 />
               </Link>
             </FlexChild>
-            <HeaderBottom />
+            <HeaderMenu />
           </FlexChild>
 
           <FlexChild width={"auto"} className={styles.info_box}>
@@ -57,7 +64,7 @@ export default function Header() {
               <FlexChild width={"fit-content"}>
                 <Link href={"/board/notice"}>
                   <Image
-                    src="/resources/icons/main/customer_center_b.png"
+                    src="/resources/icons/main/customer_center.png"
                     width={25}
                     height={"auto"}
                     cursor="pointer"
@@ -68,7 +75,7 @@ export default function Header() {
               <FlexChild width={"fit-content"}>
                 <Link href={"/mypage"}>
                   <Image
-                    src="/resources/icons/main/user_icon_b.png"
+                    src="/resources/icons/main/user_icon.png"
                     width={25}
                     height={"auto"}
                     cursor="pointer"
@@ -79,7 +86,7 @@ export default function Header() {
               <FlexChild width={"fit-content"}>
                 <Link href={"/mypage/wishList"}>
                   <Image
-                    src="/resources/icons/main/product_heart_icon_b.png"
+                    src="/resources/icons/main/heart_icon.png"
                     width={25}
                     height={"auto"}
                     cursor="pointer"
@@ -90,7 +97,7 @@ export default function Header() {
               <FlexChild width={"fit-content"}>
                 <Link href={"/orders/cart"} className={styles.cart_btn}>
                   <Image
-                    src="/resources/icons/main/cart_icon_b.png"
+                    src="/resources/icons/main/cart_icon.png"
                     width={20}
                     height={"auto"}
                     cursor="pointer"
@@ -101,7 +108,6 @@ export default function Header() {
             </HorizontalFlex>
           </FlexChild>
         </HorizontalFlex>
-
 
       </header>
       </>

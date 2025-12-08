@@ -1,9 +1,8 @@
 
 .header {
-
    --all_transition: all 0.3s;
-
    background-color: #F5F5F7;
+   position: relative;
    display: flex;
    flex-direction: column;
    position: fixed;
@@ -27,198 +26,49 @@
 .logo img {width: 150px; transition: var(--all_transition);}
 
 /* 검색창 */
-.search_Box {
+.search_modal_btn {
    border: 1px solid #C4C4C4;
    border-radius: 10px;
    width: 100%;
-   max-width: 363px;
+   max-width: 270px;
    padding: 0 0 0 13px;
    transition: var(--all_transition);
    overflow: hidden;
 }
 
-.search_Box input {font-size: 13px;}
+.search_modal_btn input {font-size: 13px; min-width: 197px;}
 
-.search_icon {
+.search_modal_btn .search_icon {
   width: fit-content;
-  padding: 10px 16px;
+  padding: 8px 16px;
   box-sizing: border-box;
   background-color: rgba(240, 240, 240, 0.8);
 }
 
 
-/* 회원가입, lang */
-.info_box .info_wrap {
-   gap: 20px; transition: var(--all_transition);
-   align-items: end !important;
+/* 검색창 클릭 시 나오는 모달 */
+
+.searchModal .search_box {
+   width: 100%;
+   max-width: 1052px;
+   gap: 10px;
+   border-bottom: 2px solid rgba(0,0,0,0.8);
+   padding: 0 10px;
 }
 
-.info_box .info_top {
-   width: auto;
-   font-size: 13px;
-   color: #fff;
-   cursor: pointer;
+.searchModal .search_box input {
+   border: none;
+   flex: 1;
+   height: 100%;
+   padding: 14px 0 15px;
 }
 
-.info_box .info_top > *:hover {
-   text-decoration: underline;
-}
-
-
-.cart_btn {position: relative;}
-
-
-
-/* 카테고리 버튼 */
-.CategoryBox {
-   padding: 18px 0;
+.searchModal .search_box .search_icon {
+   background: none;
    width: auto;
 }
-
-.category_btn {
-   font-size: 16px;
-   color: #4D4D4D;
-   font-weight: 500;
-   cursor: pointer;
-}
-
-.CategoryBox:hover > .category_btn {
-   color: var(--main-color1);
-} 
-
-
-/* 하단 메뉴 */
-.outerMenu {
-   display: flex;
-   gap: 30px;
-   align-items: center;
-}
-
-.outerMenu > li {position: relative;}
-
-.outerMenu > li > a {
-   display: flex;
-   align-items: center;
-   gap: 5px;
-   font-size: 16px;
-   color: #4D4D4D;
-   transition: all 0.2s;
-}
-
-.outerMenu > li > .active_line {
-   position: absolute; z-index: 1;
-   bottom: -6px;
-   background: #fff;
-   display: block; width: 0;
-   height: 3px;
-   right: 0;
-   transition: all 0.2s;
-}
-
-.outerMenu > li:hover > .active_line,
-.outerMenu > li.active > .active_line {
-   left: 0; right: unset; width: 100%;
-}
-
-.outerMenu > li:hover > a,
-.outerMenu > li.active > a {
-   color: var(--main-color1);
-}
-
-
-/* 상품 페이지 */
-.shop_outer > li > a img {
-   position: relative; bottom: 3px;
-}
-
-/* 커뮤니티 페이지 */
-.commu_outer {
-   gap: 20px;
-}
-
-.commu_outer > li {
-   position: relative;
-   z-index: 10;
-   padding: 15px 0;
-}
-
-/* 서브메뉴 */
-/* .commu_outer > li > .subMenu {
-   position: absolute;
-   top: 80%;
-   left: 50%;
-   transform: translateX(-50%);
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   gap: 20px;
-   width: 120px;
-   padding: 13px 5px 17px;
-   background: #1a1a1a;
-   border-radius: 0 0 5px 5px;
-
-   transition: all 0.2s;
-   opacity: 0;
-   visibility: hidden;
-}
-
-.commu_outer > li > .subMenu > li a {
-   font-size: 14px;
-   color: #fff;
-   font-weight: 300;
-   transition: all 0.2s;
-}
-
-.commu_outer > li:hover .subMenu {
-   opacity: 1;
-   visibility: visible;
-   top: 100%;
-}
-
-.commu_outer > li > .subMenu > li a:hover {
-   color: var(--main-color1);
-} */
-
-
-
-/* 스크롤 fixed - headerBottom 안에 걸림. 피드백 받고 이상하다 하면 이걸로 돌려놓기 */
-/* .fixed {
-   position: fixed;
-   top: 0;
-   background: #1a1a1a;
-   border-bottom: 1px solid rgba(255,255,255,0.4);
-} */
-
-/* 스크롤되면 클래스 부여 */
-header.scroll {
-   border-bottom: 1px solid rgba(255,255,255,0.4);
-   padding: 10px 0 0;
-}
-header.scroll .header_wrap {
-   margin-bottom: 5px;
-   align-items: start !important;
-}
-header.scroll .logo img {width: 120px;}
-
-/* 검색창 */
-header.scroll .search_Box {
-   max-width: 300px;
-   padding: 7px 15px;
-   font-size: 14px;
-   border-radius: 5px;
-}
-
-header.scroll .info_box .info_wrap {
-   gap: 15px; flex-direction: unset !important;
-   align-items: center !important;
-}
-
 
 .search_dropdown {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  right: 0;
   background: #111;
   border: 1px solid #2a2a2a;
   border-radius: 10px;
@@ -308,3 +158,116 @@ header.scroll .info_box .info_wrap {
   overflow: hidden;   /* 슬라이드 잘림 방지 */
   white-space: nowrap; /* 텍스트 줄바꿈 방지 */
 }
+
+
+
+
+
+/* 회원가입, lang */
+.info_box .info_wrap {
+   gap: 20px; transition: var(--all_transition);
+   align-items: end !important;
+}
+
+.info_box .info_top {
+   width: auto;
+   font-size: 13px;
+   color: #fff;
+   cursor: pointer;
+}
+
+.info_box .info_top > *:hover {
+   text-decoration: underline;
+}
+
+
+.cart_btn {position: relative;}
+
+
+
+/* 카테고리 버튼 */
+.CategoryBox {
+   padding: 18px 0;
+   width: auto;
+}
+
+.category_btn {
+   font-size: 16px;
+   color: #4D4D4D;
+   font-weight: 500;
+   cursor: pointer;
+}
+
+.CategoryBox:hover > .category_btn {
+   color: var(--main-color1);
+} 
+
+
+/* 하단 메뉴 */
+.outerMenu {
+   display: flex;
+   gap: 30px;
+   align-items: center;
+}
+
+.outerMenu > li {position: relative;}
+
+.outerMenu > li > a {
+   display: flex;
+   align-items: center;
+   gap: 5px;
+   font-size: 16px;
+   color: #4D4D4D;
+   font-weight: 500;
+   transition: all 0.2s;
+}
+
+.outerMenu > li > .active_line {
+   position: absolute; z-index: 1;
+   bottom: -6px;
+   background: #fff;
+   display: block; width: 0;
+   height: 3px;
+   right: 0;
+   transition: all 0.2s;
+}
+
+.outerMenu > li:hover > .active_line,
+.outerMenu > li.active > .active_line {
+   left: 0; right: unset; width: 100%;
+}
+
+.outerMenu > li:hover > a,
+.outerMenu > li.active > a {
+   color: var(--main-color1);
+}
+
+
+/* 상품 페이지 */
+.shop_outer > li > a img {
+   position: relative; bottom: 3px;
+}
+
+/* 커뮤니티 페이지 */
+.commu_outer {
+   gap: 20px;
+}
+
+.commu_outer > li {
+   position: relative;
+   z-index: 10;
+   padding: 15px 0;
+}
+
+
+/* 스크롤되면 클래스 부여 */
+header.scroll {
+   border-bottom: 1px solid rgba(255,255,255,0.4);
+   padding: 10px 0 0;
+}
+header.scroll .header_wrap {
+   margin-bottom: 5px;
+   align-items: start !important;
+}
+header.scroll .logo img {width: 120px;}
+

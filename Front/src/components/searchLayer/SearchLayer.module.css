@@ -1,0 +1,277 @@
+/* pc @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+.search_wrap {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  padding: 80px 15px 55px;
+  border-bottom: 1px solid #BEBEBE;
+}
+
+.search_wrap .search_frame {max-width: 1052px; margin: 0 auto;}
+
+.search_wrap .frame_header {width: 100%; margin-bottom: 40px; gap: 30px;}
+.search_wrap .frame_header .search_Box {
+  border-bottom: 2px solid rgba(0,0,0,0.8);
+  padding: 14px 10px 15px; gap: 10px;
+}
+
+.search_wrap .frame_header .search_Box input {
+  font-size: 20px !important;
+  color: #222; font-weight: 500;
+}
+
+.search_wrap .frame_header .search_Box input::placeholder {color: #75757A; font-weight: 400;}
+
+.search_wrap .frame_header .back_btn {order: 2;}
+
+
+
+/* 최근, 인기 검색어 */
+
+.search_wrap .keyword_box {
+  flex-direction: unset !important;
+  align-items: start !important;
+}
+
+.search_wrap .keyword_box .recent_box {
+  padding-right: 40px;
+}
+
+.search_wrap .recent_box .sh_header h5 {
+  font-size: 20px; font-weight: 700;
+  color: #1f1f1f;
+}
+
+.search_wrap .recent_box .sh_header .all_delete {
+  font-size: 14px; color: #797979;
+  cursor: pointer;
+}
+
+.search_wrap .recent_box .sh_header .all_delete:hover {
+  text-decoration: underline;
+  color: #333;
+}
+
+.search_wrap .recent_box .recent_list {gap: 16px;}
+.search_wrap .recent_box .recent_list > .item {cursor: pointer;}
+.search_wrap .recent_box .recent_list > .item .keyword:hover {text-decoration: underline;}
+.search_wrap .recent_box .recent_list > .item .delete_btn:hover {filter: brightness(0);}
+
+
+.search_wrap .popular_box {
+  padding-left: 40px;
+  border-left: 1px solid #797979;
+}
+
+.search_wrap .popular_box .title {
+  font-size: 20px; font-weight: 700;
+  color: #1f1f1f;
+}
+
+.mob_search_wrap .popular_list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 24px;
+}
+
+.mob_search_wrap .popular_list .col {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  max-width: 140px;
+}
+
+.search_wrap .popular_list .row {gap: 15px;}
+
+.search_wrap .rank,
+.search_wrap .rank1,
+.search_wrap .rank2,
+.search_wrap .rank3 {
+  font-weight: 700;
+  font-size: 18px;
+  color: #222;
+  line-height: 100%;
+}
+.search_wrap .rank1 { color: var(--main-color1); }
+.search_wrap .rank2 { color: var(--main-color1); }
+.search_wrap .rank3 { color: var(--main-color1); }
+
+.search_wrap .popular_list .term {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  color: #333;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.search_wrap .popular_list .term:hover span {
+  text-decoration: underline;
+}
+
+.search_wrap .popular_list .term .ellipsis {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  max-width: 120px;
+}
+
+.mob_search_wrap .popular_list .term:hover .ellipsis {
+  text-decoration: underline;
+}
+
+
+/* 모바일 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+.mob_search_wrap {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100dvh;
+  overflow-y: auto;
+}
+
+.mob_search_wrap .search_frame {
+  width: 100%;
+  padding-bottom: 150px;
+  background: #fff;
+}
+
+.mob_search_wrap .frame_header {
+  gap: 30px;
+  padding: 20px;
+  height: auto;
+  border-bottom: 5px solid #F4F4F4;
+}
+
+.mob_search_wrap .frame_header .back_btn img {
+   filter: brightness(0);
+   transform: rotate(180deg);
+}
+
+/* 검색창 */
+.mob_search_wrap .search_Box {
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 5px;
+  width: 100%;
+  padding: 7px 10px;
+  font-size: 14px;
+  background: #F4F4F4;
+}
+
+.mob_search_wrap .search_Box input {color: #000;}
+.mob_search_wrap .search_Box input::placeholder {
+  color: #656565; font-size: 14px; font-weight: 500;
+}
+.mob_search_wrap .search_Box img {filter: brightness(0);}
+
+
+
+/* 최근, 인기 검색어 */
+.mob_search_wrap .search_frame .keyword_box {
+  overflow-y: auto;
+  padding-top: 25px;
+  gap: 30px;
+  height: auto;
+  flex: unset;
+}
+
+.mob_search_wrap .keyword_box .recent_box {
+  padding-bottom: 15px;
+  border-bottom: 1px solid #E6E6E6;
+}
+
+.mob_search_wrap .keyword_box .recent_box .sh_header h5 {
+  font-size: 15px; font-weight: 600; color: #000;
+}
+
+.mob_search_wrap .keyword_box .recent_box .sh_header .all_delete {
+  font-size: 13px; font-weight: 600; color: #797979;
+}
+
+.mob_search_wrap .keyword_box div {flex: unset;}
+
+.mob_search_wrap .keyword_box .recent_list {
+  gap: 15px;
+}
+.mob_search_wrap .keyword_box .recent_list .item > * {
+  width: auto;
+}
+
+.mob_search_wrap .popular_box .title {
+  font-size: 20px; font-weight: 700;
+  color: #1f1f1f;
+}
+
+.mob_search_wrap .popularTitle {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: "SUIT Variable";
+}
+
+.mob_search_wrap .popular_list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 24px;
+}
+
+.mob_search_wrap .popular_list .col {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  max-width: 140px;
+}
+
+.mob_search_wrap .popular_list .row {gap: 10px;}
+
+.mob_search_wrap .rank,
+.mob_search_wrap .rank1,
+.mob_search_wrap .rank2,
+.mob_search_wrap .rank3 {
+  font-weight: 700;
+  font-size: 18px;
+  color: #222;
+  line-height: 100%;
+}
+.mob_search_wrap .rank1 { color: var(--main-color1); }
+.mob_search_wrap .rank2 { color: var(--main-color1); }
+.mob_search_wrap .rank3 { color: var(--main-color1); }
+
+.mob_search_wrap .popular_list .term {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  color: #333;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.mob_search_wrap .popular_list .term .ellipsis {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  max-width: 120px;
+}
+
+.mob_search_wrap .popular_list .term:hover .ellipsis {
+  text-decoration: underline;
+}

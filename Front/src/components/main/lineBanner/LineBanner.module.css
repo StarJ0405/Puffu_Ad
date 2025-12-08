@@ -1,19 +1,26 @@
 .lineBanner {
-   background: var(--main-color1);
-   overflow: hidden;
+   width: 100%;
 }
 
-.lineBanner .swiper-wrapper {
+.slideFrams {
+   background: var(--main-color1);
+   overflow: hidden;
+   padding-top: 10px;
+   padding-bottom: 10px;
+}
+
+.slideFrams :global(.swiper-wrapper) {
    transition-timing-function: linear !important; 
    position: relative;
 }
 
-.lineBanner .slideItem span {
+.slideFrams .slideItem span {
    color: #fff;
+   font-size: 14px !important;
 }
 
 /* 모바일 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-.mob_lineBanner {
+.mob_lineBanner .slideFrams {
    padding-top: 7px;
    padding-bottom: 7px;
 }

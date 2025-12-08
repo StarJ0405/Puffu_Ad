@@ -5,6 +5,8 @@
    height: auto;
    background: #272727;
    height: var(--subpageHeader-H) !important;
+   top: 0;
+   left: 0;
 }
 
 .subHeader > * {
