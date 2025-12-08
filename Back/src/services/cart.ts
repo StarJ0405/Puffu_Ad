@@ -15,6 +15,7 @@ import { CouponService } from "./coupon";
 import { PointService } from "./point";
 import { SubscribeService } from "./subscribe";
 import { RecentStoreService } from "./recent_store";
+import { StackItemRepository } from "repositories/stack_item";
 
 @injectable()
 export class CartService extends BaseService<Cart, CartRepository> {
@@ -38,7 +39,9 @@ export class CartService extends BaseService<Cart, CartRepository> {
     @inject(VariantRepository)
     protected variantRepository: VariantRepository,
     @inject(RecentStoreService)
-    protected recentStoreService: RecentStoreService
+    protected recentStoreService: RecentStoreService,
+    @inject(StackItemRepository)
+    protected stackItemRepository: StackItemRepository
   ) {
     super(cartRepository);
   }
@@ -351,14 +354,17 @@ export class CartService extends BaseService<Cart, CartRepository> {
               ),
           }
         );
-        await this.variantRepository.update(
-          {
-            id: item.variant_id,
-          },
-          {
-            stack: () => `stack - ${item.total_quantity}`,
-          }
-        );
+        if (offline_store_id) {
+          await this.stackItemRepository.update(
+            { offline_store_id, variant_id: item.variant_id },
+            { stack: () => `stack - ${item.total_quantity}` }
+          );
+        } else {
+          await this.variantRepository.update(
+            { id: item.variant_id },
+            { stack: () => `stack - ${item.total_quantity}` }
+          );
+        }
       })
     );
     await Promise.all(

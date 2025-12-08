@@ -19,6 +19,7 @@ import {
 } from "typeorm";
 import { PointService } from "./point";
 import { CouponService } from "./coupon";
+import { StackItemRepository } from "repositories/stack_item";
 
 @injectable()
 export class OrderService extends BaseService<Order, OrderRepository> {
@@ -31,7 +32,9 @@ export class OrderService extends BaseService<Order, OrderRepository> {
     @inject(PointService)
     protected pointService: PointService,
     @inject(VariantRepository)
-    protected variantRepository: VariantRepository
+    protected variantRepository: VariantRepository,
+    @inject(StackItemRepository)
+    protected stackItemRepository: StackItemRepository
   ) {
     super(orderRepository);
   }
@@ -91,6 +94,16 @@ export class OrderService extends BaseService<Order, OrderRepository> {
             ) {
               _where.push(..._where, this.Search({}, ["user.name"], q));
               _relations.push("user");
+            }
+
+            if (
+              relations.some(
+                (relation) =>
+                  typeof relation === "string" &&
+                  relation.includes("offline_store")
+              )
+            ) {
+              _relations.push("offline_store");
             }
 
             if (_where.length > 0) {
@@ -232,6 +245,7 @@ export class OrderService extends BaseService<Order, OrderRepository> {
       where: { id },
       relations: [
         "store",
+        "offline_store",
         "items.coupons",
         "coupons",
         "shipping_method.coupons",
@@ -239,18 +253,28 @@ export class OrderService extends BaseService<Order, OrderRepository> {
     });
     if (order) {
       await Promise.all(
-        (order.items || [])?.map(
-          async (item) =>
-            await this.variantRepository.update(
+        (order.items || [])?.map(async (item) => {
+          if (order.offline_store_id) {
+            // 오프라인 매장 재고 복원
+            await this.stackItemRepository.update(
               {
-                id: item.variant_id,
+                offline_store_id: order.offline_store_id,
+                variant_id: item.variant_id,
               },
               {
                 stack: () => `stack + ${item.total_quantity}`,
               }
-            )
-        )
+            );
+          } else {
+            // 온라인 재고 복원
+            await this.variantRepository.update(
+              { id: item.variant_id },
+              { stack: () => `stack + ${item.total_quantity}` }
+            );
+          }
+        })
       );
+
       if (order?.payment_data) {
         // 환불 처리
         const payment_data = order.payment_data;

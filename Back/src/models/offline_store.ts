@@ -14,8 +14,8 @@ export class OfflineStore extends BaseEntity {
   @Column({ type: "character varying", nullable: false }) // 지점명
   name!: string;
 
-  @Column({ type: "character varying", nullable: false, unique: true }) // 매장 해당 키오스크 id
-  kiosk_uuid!: string;
+  @Column({ type: "character varying", nullable: false, unique: true }) // 매장 해당 id
+  branch_uuid!: string;
 
   @Column({   // 매장 상태 "영업중" || "점검중" || "예외"
     type: "enum",
