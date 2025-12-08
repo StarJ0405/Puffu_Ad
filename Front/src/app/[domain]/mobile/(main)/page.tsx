@@ -20,13 +20,13 @@ import {
 export default async function () {
   const banners = await requester.getBanners();
 
-  const hotCondition: any = {
-    pageSize: 12,
-    order: "discount",
-    product_type: "exclude_set",
-    warehousing: false,
-  };
-  const hotProducts = await requester.getProducts(hotCondition);
+  // const hotCondition: any = {
+  //   pageSize: 12,
+  //   order: "discount",
+  //   product_type: "exclude_set",
+  //   warehousing: false,
+  // };
+  // const hotProducts = await requester.getProducts(hotCondition);
 
   const bestCondition: any = {
     pageSize: 30,
@@ -35,6 +35,9 @@ export default async function () {
     warehousing: false,
   };
   const bestProducts = await requester.getProducts(bestCondition);
+
+  const initCondition = { type: "이벤트", pageSize: 10 };
+  const initNotices = await requester.getNotices(initCondition);
 
   return (
     <section className="mob_root">
@@ -45,7 +48,6 @@ export default async function () {
         // gap={30}
       >
         <VerticalFlex className={clsx(styles.sec1, 'mob_page_container')}>
-          <Link href={'/map'} className={styles.link_box}>
             <VerticalFlex className={styles.about_box} alignItems="start">
               <h4 className="Wanted">PUFFU TOY는</h4>
   
@@ -62,9 +64,8 @@ export default async function () {
                 </P>
               </VerticalFlex>
             </VerticalFlex>
-          </Link>
 
-          <Link href={'/'} className={styles.link_box}>
+          <Link href={'/map'} className={styles.link_box}>
             <FlexChild className={clsx(styles.link_item, styles.pickup)}>
               <Div className={styles.text_box}>
                 <h4>픽업 매장 찾기</h4>
@@ -142,7 +143,10 @@ export default async function () {
 
         {/* 이벤트 */}
         <VerticalFlex className={clsx(styles.sec5, 'mob_page_container')}>
-          <EventSection />
+          <EventSection
+            initCondition={initCondition} 
+            initNotices={initNotices} 
+          />
         </VerticalFlex>
       </VerticalFlex>
     </section>

@@ -30,6 +30,9 @@ import 'swiper/css/navigation';
 import { Swiper, SwiperSlide } from "swiper/react";
 import Div from "@/components/div/Div";
 import { usePathname } from "next/navigation";
+import siteInfo from "@/shared/siteInfo";
+import usePageData from "@/shared/hooks/data/usePageData";
+import { EventCard } from "@/components/card/EventCard";
 
 export function MainBanner({ initBanners }: { initBanners: Pageable }) {
   const { userData } = useAuth();
@@ -79,7 +82,7 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
                 <div onClick={()=> linkCheck(item.to)} className={styles.thumbnail} style={{
                       'backgroundImage': userData?.adult
                       ? `url(${item.thumbnail.mobile})`
-                      : "/resources/images/19_only_banner_mobile.png"
+                      : "url(/resources/images/19_only_banner_mobile.png)"
                     }} 
                 />
               </SwiperSlide>
@@ -373,7 +376,7 @@ export function BestProducts({
         </div>
 
         <FlexChild width={"auto"}>
-          <Link className={styles.linkBtn} href={"/products/best"}>
+          <Link className={styles.linkBtn} href={siteInfo.pt_best}>
             자세히 보기 <b>+</b>
           </Link>
         </FlexChild>
@@ -596,7 +599,7 @@ export function ReviewSection({
           </div>
 
           <FlexChild width={"auto"}>
-            <Link className={styles.linkBtn} href={"/board/photoReview"}>
+            <Link className={styles.linkBtn} href={siteInfo.bo_review}>
               자세히 보기 <b>+</b>
             </Link>
           </FlexChild>
@@ -682,49 +685,37 @@ export function ReviewSection({
 
 export function EventSection({
   // id,
+  initCondition,
+  initNotices,
   lineClamp,
 }: {
   // id: string;
+  initCondition: any;
+  initNotices: Pageable;
   lineClamp?: number;
 }) {
-  const PAGE_SIZE = 10;
-  const [items, setItems] = useState<ReviewEntity[]>([]);
-  const [pageNumber, setPageNumber] = useState(0);
-  const [totalPages, setTotalPages] = useState<number | null>(null);
+
   const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
 
-  const fetchPage = useCallback(async (pn: number) => {
-    setLoading(true);
-    try {
-      const params: any = {
-        pageSize: PAGE_SIZE,
-        pageNumber: pn,
-        photo: true,
-        relations: "item,item.variant.product,user",
-        order: { created_at: "DESC" },
-      };
-      const res = await requester.getPublicReviews(params);
-      const data = res?.data ?? res;
-      const list: ReviewEntity[] = data?.content ?? [];
-
-      setItems((prev) => (pn === 0 ? list : prev.concat(list)));
-      if (typeof data?.totalPages === "number") {
-        setTotalPages(data.totalPages);
-        setHasMore(pn + 1 < data.totalPages);
-      } else {
-        setTotalPages(null);
-        setHasMore(list.length === PAGE_SIZE);
-      }
-      setPageNumber(pn);
-    } finally {
-      setLoading(false);
+  const { notices, setPage } = usePageData(
+    "notices",
+    (pageNumber) => ({
+      ...initCondition,
+      pageNumber,
+    }),
+    (condition) => requester.getNotices(condition),
+    (data: Pageable) => data?.totalPages || 0,
+    {
+      onReprocessing: (data) => data?.content || [],
+      fallbackData: initNotices,
     }
-  }, []);
+  );
 
   useEffect(() => {
-    fetchPage(0);
-  }, [fetchPage]);
+    setPage(0);
+  }, [initCondition.q]);
+
+  
 
   const prevRef = useRef<HTMLDivElement | null>(null);
   const nextRef = useRef<HTMLDivElement | null>(null);
@@ -762,7 +753,7 @@ export function EventSection({
           </div>
 
           <FlexChild width={"auto"}>
-            <Link className={styles.linkBtn} href={"/products/new"}>
+            <Link className={styles.linkBtn} href={siteInfo.bo_event}>
               자세히 보기 <b>+</b>
             </Link>
           </FlexChild>
@@ -771,15 +762,15 @@ export function EventSection({
         <P className={styles.text1}>다양한 이벤트들을 만나 보세요.</P>
       </VerticalFlex>
         
-      {items.length > 0 || loading ? (
+      {notices.length > 0 || loading ? (
         <FlexChild className={styles.ProductSlider}>
           <Swiper
             loop={false}
-            slidesPerView={1.4}
+            slidesPerView={1.2}
             speed={600}
             spaceBetween={15}
             modules={[Autoplay, Navigation]}
-            autoplay={{ delay: 4000 }}
+            autoplay={{ delay: 400000 }}
             onSwiper={(swiper) => setSwiperInstance(swiper)}
             navigation={{
               prevEl: prevRef.current,
@@ -807,19 +798,11 @@ export function EventSection({
                     <LoadingCard />
                   </SwiperSlide>
                 ))
-              : [...items]
-                  .sort(() => Math.random() - 0.5)
-                  .map((item, i) => (
-                    <SwiperSlide key={item.id ?? i}>
-                      <ReviewImgCard
-                        review={item}
-                        lineClamp={lineClamp ?? 2}
-                        type={'slide'}
-                        width="100%"
-                        height="auto"
-                      />
-                    </SwiperSlide>
-                  ))}
+              : notices.map((item: NoticeData, i: number) => (
+                  <SwiperSlide key={item.id ?? i}>
+                    <EventCard item={item} workType={'slide'}/>
+                  </SwiperSlide>
+                ))}
           </Swiper>
 
           <div ref={prevRef} className={clsx(styles.naviBtn, styles.prevBtn)}>
