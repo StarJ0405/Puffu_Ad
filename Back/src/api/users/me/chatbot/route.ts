@@ -35,7 +35,7 @@ export const POST: ApiHandler = async (req, res) => {
       }
     );
     const result = await response.json();
-    console.log(chatId, JSON.stringify(result));
+    console.log(chatId, JSON.stringify(result?.usedTools?.[0]?.toolInput));
     // return result;
     return res.json({ answer: result?.text || "", chatId: result?.chatId });
   } catch (error) {
