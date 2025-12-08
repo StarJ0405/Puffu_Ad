@@ -144,10 +144,10 @@ export function MapFrame({ initOfflineStore, initCondition }: { initOfflineStore
         maxPage,
         mutate,
     } = usePageData(
-        "offlineStore",        
+        "offlineStore",
         (pageNumber) => ({
             pageNumber,
-        }),        
+        }),
         (cond) => {
             const pageNumber = cond.pageNumber ?? 0;
 
@@ -231,15 +231,18 @@ export function MapFrame({ initOfflineStore, initCondition }: { initOfflineStore
             setCenter({ lat: Number(store.lat), lng: Number(store.lng) });
         }
         setSelectedStoreId(store.id);
-        listItemRefs.current.forEach((el) => {
-            if (!el) return;
-            el.classList.remove(styles.activeStoreItem);
-        });
-        const listEl = listItemRefs.current[index];
-        if (listEl) {
-            listEl.classList.add(styles.activeStoreItem);
+        if (index >= 0) {
+            listItemRefs.current.forEach((el) => {
+                if (!el) return;
+                el.classList.remove(styles.activeStoreItem);
+            });
+            const listEl = listItemRefs.current[index];
+            if (listEl) {
+                listEl.classList.add(styles.activeStoreItem);
+            }
         }
     };
+
 
 
 
@@ -300,254 +303,308 @@ export function MapFrame({ initOfflineStore, initCondition }: { initOfflineStore
 
     return (
         <Container>
-            <HorizontalFlex backgroundColor="#fff">
-                <FlexChild width="10%">
-                    <Div
-                        padding="16px"
-                        overflowY="auto"
-                        borderRight="1px solid #eee"
-                    >
-                        <VerticalFlex>
-                            <FlexChild>
-                                <FlexChild>
-                                    <Input
-                                        type="search"
-                                        value={q}
-                                        onChange={(v) => setQ(v as string)}
-                                        onKeyDown={(e) => {
-                                            if (e.key === "Enter") {
-                                                e.preventDefault();
+            <VerticalFlex>
 
-                                                const trimmed = q.trim();
-
-                                                // 페이지 이동 + 재요청 로직
-                                                if (page !== 0) {
-                                                    setPage(0);
-                                                } else {
-                                                    mutate();
-                                                }
-                                            }
-                                        }}
-                                        placeHolder="검색 내용을 입력해 주세요."
-                                    />
-
-                                </FlexChild>
-
-                                <button type="button" onClick={handleSearch}>
-                                    검색
-                                </button>
-
-                            </FlexChild>
-                            <FlexChild>
-                                <HorizontalFlex
-                                    alignItems="center"
-                                    justifyContent="space-between"
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() => setToggle((prev) => !prev)}
-                                >
-                                    <P size={16} weight={600}>
-                                        관심매장
-                                    </P>
-                                    <button
-                                        type="button"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setToggle((prev) => !prev);
-                                        }}
-                                    >
-                                        버튼
-                                    </button>
-                                </HorizontalFlex>
-
-                                {toggle && (
-                                    <>
-                                        {!userData?.id && (
-                                            <Div margin="8px 0 16px">
-                                                <P size={14} color="#999">
-                                                    로그인이 필요해요
-                                                </P>
-                                                <button>로그인하기</button>
-                                            </Div>
-                                        )}
-
-                                        {userData?.id && (
-                                            <Div margin="8px 0 16px">
-                                                {wishlist.length === 0 && (
-                                                    <P size={14} color="#888">
-                                                        관심매장이 없습니다.
-                                                    </P>
-                                                )}
-                                                {wishlist.map((item, idx) => (
-                                                    <Div
-                                                        key={item.offline_store?.id}
-                                                        padding="10px 8px"
-                                                        borderRadius="8px"
-                                                        cursor="pointer"
-                                                        onClick={() =>
-                                                            selectStore(item.offline_store, idx)
-                                                        }
-                                                    >
-                                                        <P>{item.offline_store.name}</P>
-                                                        <P color="#666">
-                                                            {item.offline_store.address}
-                                                        </P>
-                                                    </Div>
-                                                ))}
-                                            </Div>
-                                        )}
-                                    </>
-                                )}
-                            </FlexChild>
-
-                            <FlexChild>
-                                <P color="black">매장 목록</P>
-                            </FlexChild>
-
-                            <FlexChild>
-                                <HorizontalFlex>
+                <FlexChild>
+                    <HorizontalFlex >
+                        <FlexChild className={styles.sidebar} width="320px">
+                            <Div
+                                padding="16px"
+                                overflowY="auto"
+                                borderRight="1px solid #eee"
+                                height="100%"
+                            >
+                                <VerticalFlex gap={16}>
                                     <FlexChild>
-                                        {offlineStores.map((store: any, idx: number) => {
-                                            const inWishlist = wishlist.some(
-                                                (item) =>
-                                                    item?.offline_store?.id === store.id
-                                            );
-
+                                        <Input
+                                            type="search"
+                                            value={q}
+                                            onChange={(v) => setQ(v as string)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === "Enter") {
+                                                    e.preventDefault();
+                                                    if (page !== 0) {
+                                                        setPage(0);
+                                                    } else {
+                                                        mutate();
+                                                    }
+                                                }
+                                            }}
+                                            placeHolder="매장명, 주소 등으로 검색해 주세요."
+                                        />
+                                    </FlexChild>
+                                    <FlexChild>
+                                        <button
+                                            type="button"
+                                            className={styles.searchButton}
+                                            onClick={handleSearch}
+                                        >
+                                            검색
+                                        </button>
+                                    </FlexChild>
+                                    <FlexChild>
+                                        <P size={14} color="#666" className={styles.recentStoresLabel}>
+                                            최근 이용 매장
+                                        </P>
+                                        {recentStores.length === 0 && (
+                                            <P size={13} color="#aaa">
+                                                최근 이용한 매장이 없습니다.
+                                            </P>
+                                        )}
+                                        {recentStores.map((item: any, idx: number) => {
+                                            const store = item?.offline_store;
+                                            if (!store) return null;
                                             return (
-                                                <Div
-                                                    key={store.id}
-                                                    Ref={(el: HTMLDivElement | null) => {
-                                                        if (el) listItemRefs.current[idx] = el;
+                                                <button
+                                                    key={store.id ?? idx}
+                                                    type="button"
+                                                    className={styles.recentStoreChip}
+                                                    onClick={() => {
+                                                        selectStore(store, offlineStores.findIndex((s: any) => s.id === store.id));
                                                     }}
-                                                    padding="10px 8px"
-                                                    borderRadius="8px"
-                                                    cursor="pointer"
-                                                    onClick={() => selectStore(store, idx)}
                                                 >
-                                                    <FlexChild>
-                                                        <P>{store.name}</P>
-                                                    </FlexChild>
-                                                    <FlexChild>
-                                                        <P color="#666">{store.address}</P>
-                                                    </FlexChild>
-                                                    <FlexChild>
-                                                        <P color="#888">
-                                                            영업시간 : {store?.metadata?.businessHours}
-                                                        </P>
-                                                    </FlexChild>
-                                                    <FlexChild>
-                                                        <P>
-                                                            {store?.status === "operating" && "영업중"}
-                                                        </P>
-                                                    </FlexChild>
-                                                    <FlexChild>
-                                                        <P>
-                                                            {store?.status === "maintenance" &&
-                                                                "점검중"}
-                                                        </P>
-                                                    </FlexChild>
-                                                    <Image
-                                                        src={
-                                                            inWishlist
-                                                                ? "/resources/icons/starIcon.svg"
-                                                                : "/resources/icons/emptyStarIcon.svg"
-                                                        }
-                                                        width={20}
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            if (inWishlist) {
-                                                                deleteWishlist(store);
-                                                            } else {
-                                                                createWishlist(store);
-                                                            }
-                                                        }}
-                                                    />
-                                                </Div>
+                                                    {store.name}
+                                                </button>
                                             );
                                         })}
+                                    </FlexChild>
+                                    <FlexChild>
+                                        <HorizontalFlex
+                                            alignItems="center"
+                                            justifyContent="space-between"
+                                            className={styles.wishlistHeader}
+                                            onClick={() => setToggle((prev) => !prev)}
+                                        >
+                                            <P size={16} weight={600}>
+                                                관심 매장
+                                            </P>
+                                            <button
+                                                type="button"
+                                                className={styles.chevronButton}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setToggle((prev) => !prev);
+                                                }}
+                                            >
+                                                {toggle ? "접기" : "펼치기"}
+                                            </button>
+                                        </HorizontalFlex>
 
-                                        {offlineStores.length === 0 && (
-                                            <P>등록된 오프라인 매장이 없습니다.</P>
+                                        {toggle && (
+                                            <>
+                                                {!userData?.id && (
+                                                    <Div margin="8px 0 16px" className={styles.loginNotice}>
+                                                        <P size={14} color="#999">
+                                                            관심 매장을 사용하려면 로그인이 필요합니다.
+                                                        </P>
+                                                        <button className={styles.loginButton}>
+                                                            로그인하기
+                                                        </button>
+                                                    </Div>
+                                                )}
+
+                                                {userData?.id && (
+                                                    <Div
+                                                        margin="8px 0 16px"
+                                                        className={styles.wishlistList}
+                                                    >
+                                                        {wishlist.length === 0 && (
+                                                            <P size={14} color="#888">
+                                                                등록된 관심 매장이 없습니다.
+                                                            </P>
+                                                        )}
+                                                        {wishlist.map((item, idx) => (
+                                                            <Div
+                                                                key={item.offline_store?.id ?? idx}
+                                                                padding="10px 8px"
+                                                                borderRadius="8px"
+                                                                cursor="pointer"
+                                                                className={styles.wishlistItem}
+                                                                onClick={() => {
+                                                                    const wishlistStore = item.offline_store;
+                                                                    if (!wishlistStore?.id) return;
+                                                                    const storeIndex = offlineStores.findIndex(
+                                                                        (s: any) => s.id === wishlistStore.id
+                                                                    );
+
+                                                                    if (storeIndex >= 0) {
+                                                                        selectStore(offlineStores[storeIndex], storeIndex);
+                                                                    } else {
+                                                                        selectStore(wishlistStore, -1);
+                                                                    }
+                                                                }}
+                                                            >
+                                                                <P weight={500}>{item.offline_store?.name}</P>
+                                                                <P color="#666" size={13}>
+                                                                    {item.offline_store?.address}
+                                                                </P>
+                                                            </Div>
+                                                        ))}
+
+                                                    </Div>
+                                                )}
+                                            </>
                                         )}
                                     </FlexChild>
-                                </HorizontalFlex>
-                            </FlexChild>
-                        </VerticalFlex>
-                    </Div>
-                </FlexChild>
 
-                {selectedStoreId && (
-                    <FlexChild width="10%">
-                        <Div padding="16px" borderTop="1px solid #eee">
-                            <OfflineStoreDetail storeId={selectedStoreId} />
-                        </Div>
-                    </FlexChild>
-                )}
-                <FlexChild>
-                    <P>최근 이용 매장 : </P>
-                    {recentStores.map((store) => (
-                        <P >{store?.offline_store?.name}</P>
-                    ))}
-                </FlexChild>
+                                    {/* 매장 목록 */}
+                                    <FlexChild>
+                                        <P size={15} weight={600} className={styles.storeListTitle}>
+                                            매장 목록
+                                        </P>
+                                        <Div className={styles.storeList}>
+                                            {offlineStores.map((store: any, idx: number) => {
+                                                const inWishlist = wishlist.some(
+                                                    (item) => item?.offline_store?.id === store.id
+                                                );
+                                                const isActive = selectedStoreId === store.id;
 
-                <FlexChild width="85%">
-                    <VerticalFlex>
-                        <Div >
-                            <GoogleMap
-                                zoom={15}
-                                mapContainerStyle={{ width: "100vw", height: "100vh", maxHeight: "60vh" }}
-                                // center={{ lat: 35.9078, lng: 127.7669 }}
-                                center={center}
-
-                                options={{
-                                    disableDefaultUI: true,
-                                    streetViewControl: false,
-                                    zoomControl: true,
-                                    gestureHandling: "greedy",
-                                    scrollwheel: true,
-                                }}
-                            >
-                                {offlineStores.map((store: any) => {
-                                    if (!store.lat || !store.lng) return null;
-
-                                    const position = {
-                                        lat: Number(store.lat),
-                                        lng: Number(store.lng),
-                                    };
-
-                                    const isActive = selectedStoreId === store.id;
-
-                                    return (
-                                        <OverlayView
-                                            key={store.id}
-                                            position={position}
-                                            mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-                                            getPixelPositionOffset={(width: number, height: number) => ({
-                                                x: -(width / 2),
-                                                y: -height,
+                                                return (
+                                                    <Div
+                                                        key={store.id}
+                                                        Ref={(el: HTMLDivElement | null) => {
+                                                            if (el) listItemRefs.current[idx] = el;
+                                                        }}
+                                                        padding="10px 8px"
+                                                        borderRadius="10px"
+                                                        cursor="pointer"
+                                                        className={clsx(
+                                                            styles.storeItem,
+                                                            isActive && styles.storeItemActive
+                                                        )}
+                                                        onClick={() => selectStore(store, idx)}
+                                                    >
+                                                        <FlexChild>
+                                                            <HorizontalFlex
+                                                                alignItems="center"
+                                                                justifyContent="space-between"
+                                                            >
+                                                                <P weight={500}>{store.name}</P>
+                                                                <Image
+                                                                    src={
+                                                                        inWishlist
+                                                                            ? "/resources/icons/starIcon.svg"
+                                                                            : "/resources/icons/emptyStarIcon.svg"
+                                                                    }
+                                                                    width={20}
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        if (inWishlist) {
+                                                                            deleteWishlist(store);
+                                                                        } else {
+                                                                            createWishlist(store);
+                                                                        }
+                                                                    }}
+                                                                />
+                                                            </HorizontalFlex>
+                                                        </FlexChild>
+                                                        <FlexChild>
+                                                            <P color="#666" size={13}>
+                                                                {store.address}
+                                                            </P>
+                                                        </FlexChild>
+                                                        {store?.metadata?.businessHours && (
+                                                            <FlexChild>
+                                                                <P color="#888" size={12}>
+                                                                    영업시간 : {store.metadata.businessHours}
+                                                                </P>
+                                                            </FlexChild>
+                                                        )}
+                                                        <FlexChild>
+                                                            <P size={12} color="#00a400">
+                                                                {store?.status === "operating" && "영업중"}
+                                                            </P>
+                                                            <P size={12} color="#ff9800">
+                                                                {store?.status === "maintenance" && "점검중"}
+                                                            </P>
+                                                        </FlexChild>
+                                                    </Div>
+                                                );
                                             })}
-                                        >
-                                            <Div
-                                                className={clsx(
-                                                    styles.markerBubble,
-                                                    isActive && styles.markerBubbleActive
-                                                )}
-                                                onClick={() =>
-                                                    selectStore(
-                                                        store,
-                                                        offlineStores.indexOf(store)
-                                                    )
-                                                }
-                                            >
-                                                <P size={14}>{store.name}</P>
-                                            </Div>
-                                        </OverlayView>
-                                    );
-                                })}
-                            </GoogleMap>
-                        </Div>
-                    </VerticalFlex>
+
+                                            {offlineStores.length === 0 && (
+                                                <P size={14} color="#999" style={{ marginTop: 8 }}>
+                                                    등록된 오프라인 매장이 없습니다.
+                                                </P>
+                                            )}
+                                        </Div>
+                                    </FlexChild>
+                                </VerticalFlex>
+                            </Div>
+                        </FlexChild>
+                        {selectedStoreId && (
+                            <FlexChild className={styles.detailPanel} width="320px">
+                                <Div padding="16px" borderLeft="1px solid #eee">
+                                    <OfflineStoreDetail storeId={selectedStoreId} />
+                                </Div>
+                            </FlexChild>
+                        )}
+                        <FlexChild className={styles.mapArea}>
+                            <VerticalFlex>
+                                <Div>
+                                    <GoogleMap
+                                        zoom={15}
+                                        mapContainerStyle={{
+                                            width: "100%",
+                                            height: "60vh",
+                                        }}
+                                        center={center}
+                                        options={{
+                                            disableDefaultUI: true,
+                                            streetViewControl: false,
+                                            zoomControl: true,
+                                            gestureHandling: "greedy",
+                                            scrollwheel: true,
+                                        }}
+                                    >
+                                        {offlineStores.map((store: any) => {
+                                            if (!store.lat || !store.lng) return null;
+
+                                            const position = {
+                                                lat: Number(store.lat),
+                                                lng: Number(store.lng),
+                                            };
+
+                                            const isActive = selectedStoreId === store.id;
+
+                                            return (
+                                                <OverlayView
+                                                    key={store.id}
+                                                    position={position}
+                                                    mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+                                                    getPixelPositionOffset={(
+                                                        width: number,
+                                                        height: number
+                                                    ) => ({
+                                                        x: -(width / 2),
+                                                        y: -height,
+                                                    })}
+                                                >
+                                                    <Div
+                                                        className={clsx(
+                                                            styles.markerBubble,
+                                                            isActive && styles.markerBubbleActive
+                                                        )}
+                                                        onClick={() =>
+                                                            selectStore(
+                                                                store,
+                                                                offlineStores.indexOf(store)
+                                                            )
+                                                        }
+                                                    >
+                                                        <P size={14}>{store.name}</P>
+                                                    </Div>
+                                                </OverlayView>
+                                            );
+                                        })}
+                                    </GoogleMap>
+                                </Div>
+                            </VerticalFlex>
+                        </FlexChild>
+                    </HorizontalFlex>
                 </FlexChild>
-            </HorizontalFlex>
+            </VerticalFlex>
         </Container>
     );
+
 }
