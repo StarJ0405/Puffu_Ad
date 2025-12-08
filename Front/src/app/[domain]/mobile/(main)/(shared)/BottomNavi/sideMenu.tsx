@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import styles from "./sideMenu.module.css";
 import useNavigate from "@/shared/hooks/useNavigate";
 import { AnimatePresence, motion } from "framer-motion";
-import MobileSearch from "@/components/mobileSearch/mobileSearch";
+import SearchLayer from "@/components/searchLayer/SearchLayer";
 import Span from "@/components/span/Span";
 
 export default function SideMenu({
@@ -86,7 +86,7 @@ export default function SideMenu({
               zIndex: 10000, // 다른 UI 위로
             }}
           >
-            <MobileSearch onClose={() => setShowSearch(false)} />
+            <SearchLayer onClose={() => setShowSearch(false)} />
           </motion.div>
         )}
       </AnimatePresence>

@@ -59,9 +59,6 @@ export function ProductCard({
   else if (!isBuyable) overlay = "unbuyable";
   else if (isOutOfStock) overlay = "outofstock";
 
-
-  console.log(requester);
-
   return (
     <VerticalFlex
       width={width ?? (!isMobile ? 200 : 'auto')}

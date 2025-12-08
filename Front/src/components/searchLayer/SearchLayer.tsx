@@ -1,27 +1,22 @@
 "use client";
-import NiceModal, { useModal } from "@ebay/nice-modal-react";
-import ModalBase from "@/modals/ModalBase";
-import HorizontalFlex from "@/components/flex/HorizontalFlex";
-import styles from "./mobileSearch.module.css";
-import VerticalFlex from "@/components/flex/VerticalFlex";
-import { AnimatePresence, motion } from "framer-motion";
-import Container from "@/components/container/Container";
-import FlexChild from "@/components/flex/FlexChild";
-import P from "@/components/P/P";
-import Image from "@/components/Image/Image";
-import Input from "@/components/inputs/Input";
 import Button from "@/components/buttons/Button";
-import clsx from "clsx";
-import { useEffect, useRef, useState } from "react";
-import useNavigate from "@/shared/hooks/useNavigate";
 import Div from "@/components/div/Div";
-import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
-import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
-import { useStore } from "@/providers/StoreProvider/StorePorivderClient";
-import { requester } from "@/shared/Requester";
+import FlexChild from "@/components/flex/FlexChild";
+import HorizontalFlex from "@/components/flex/HorizontalFlex";
+import VerticalFlex from "@/components/flex/VerticalFlex";
+import Image from "@/components/Image/Image";
+import P from "@/components/P/P";
 import Span from "@/components/span/Span";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
+import { useBrowserEvent } from "@/providers/BrowserEventProvider/BrowserEventProviderClient";
+import { useStore } from "@/providers/StoreProvider/StorePorivderClient";
+import useNavigate from "@/shared/hooks/useNavigate";
+import { requester } from "@/shared/Requester";
+import clsx from "clsx";
+import { useEffect, useState } from "react";
+import styles from "./SearchLayer.module.css";
 
-export default function MobileSearch({
+export default function SearchLayer({
   onClose,
 }: {
   onClose: (isClosed: boolean) => void;
@@ -113,12 +108,28 @@ export default function MobileSearch({
       ? styles.rank3
       : styles.rank;
 
+  const BrowserClassCheck = !isMobile
+    ? styles.search_wrap
+    : styles.mob_search_wrap;
+
   return (
-    <Div className={styles.search_wrap}>
+    <Div className={clsx(BrowserClassCheck)}>
       <VerticalFlex className={clsx(styles.search_frame)}>
         <FlexChild className={styles.frame_header}>
-          <FlexChild className={styles.back_btn} cursor="pointer" width={"auto"} onClick={() => onClose(true)} >
-            <Image src={"/resources/icons/arrow/mypage_arrow.png"} width={12} />
+          <FlexChild
+            className={styles.back_btn}
+            cursor="pointer"
+            width={"auto"}
+            onClick={() => onClose(true)}
+          >
+            {!isMobile ? (
+              <Image src={"/resources/icons/closeBtn_black.png"} width={24} />
+            ) : (
+              <Image
+                src={"/resources/icons/arrow/mypage_arrow.png"}
+                width={12}
+              />
+            )}
           </FlexChild>
 
           <FlexChild
@@ -140,7 +151,11 @@ export default function MobileSearch({
             />
 
             <Image
-              src="/resources/images/header/search_icon_white.png"
+              src={
+                !isMobile
+                  ? "/resources/icons/main/search_icon.png"
+                  : "/resources/images/header/search_icon_white.png"
+              }
               width={20}
               height="auto"
               cursor="pointer"
@@ -153,13 +168,18 @@ export default function MobileSearch({
           </FlexChild>
         </FlexChild>
 
-        <VerticalFlex className={clsx("mob_page_container", styles.keyword_box)}>
-          <VerticalFlex gap={20} className={styles.recent_box}>
+        <VerticalFlex
+          className={clsx(
+            styles.keyword_box,
+            isMobile ? "mob_page_container" : ""
+          )}
+        >
+          <VerticalFlex gap={!isMobile ? 30 : 20} className={styles.recent_box}>
             <HorizontalFlex className={styles.sh_header} height={"auto"}>
               <h5>최근 검색어</h5>
-  
+
               <FlexChild
-                className={styles.delete}
+                className={styles.all_delete}
                 width={"auto"}
                 onClick={() => {
                   localStorage.removeItem("recentSearches");
@@ -169,24 +189,36 @@ export default function MobileSearch({
                 <P>전체삭제</P>
               </FlexChild>
             </HorizontalFlex>
-  
+
             <VerticalFlex className={styles.recent_list}>
               {recentSearches.map((word, i) => {
                 return (
                   <HorizontalFlex className={styles.item} key={i}>
                     <FlexChild
+                      className={styles.keyword}
                       onClick={() => {
                         setValue(word);
                         navigate(`/search?q=${word}`);
                         onClose(true);
                       }}
                     >
+                      {!isMobile && (
+                        <Image
+                          src="/resources/icons/main/search_icon.png"
+                          width={14}
+                          marginRight={10}
+                        />
+                      )}
                       <P color="#5B5B5B" size={14} fontWeight={500}>
                         {word}
                       </P>
                     </FlexChild>
-  
-                    <FlexChild onClick={() => removeSearch(word)}>
+
+                    <FlexChild
+                      className={styles.delete_btn}
+                      width={!isMobile ? "auto" : ""}
+                      onClick={() => removeSearch(word)}
+                    >
                       <Image src="/resources/icons/closeBtn.png" width={11} />
                     </FlexChild>
                   </HorizontalFlex>
@@ -195,10 +227,12 @@ export default function MobileSearch({
             </VerticalFlex>
           </VerticalFlex>
 
-          <VerticalFlex gap={20} className={styles.popular_box} alignItems="start">
-            <h5 className={styles.title}>
-              인기 검색어
-            </h5>
+          <VerticalFlex
+            gap={!isMobile ? 30 : 20}
+            className={styles.popular_box}
+            alignItems="start"
+          >
+            <h5 className={styles.title}>인기 검색어</h5>
 
             {top10.length > 0 ? (
               <FlexChild className={styles.popular_list}>

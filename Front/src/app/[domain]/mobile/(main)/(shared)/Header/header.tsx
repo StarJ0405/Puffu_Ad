@@ -10,8 +10,8 @@ import Link from "next/link";
 import { HeaderBottom } from './client';
 import styles from "./header.module.css";
 import { useParams, usePathname } from "next/navigation";
-import MobileSearch from "@/components/mobileSearch/mobileSearch"
-import { useState, useEffect } from "react";
+import SearchLayer from "@/components/searchLayer/SearchLayer"
+import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import CountBadge from "@/components/countBadge/countBadge";
 import LineBanner from "@/components/main/lineBanner/LineBanner";
@@ -36,6 +36,24 @@ export default function MobileHeader() {
   }
    const isDetailPage = !!params?.detail_id;
 
+   const headerRef = useRef<HTMLDivElement | null>(null);
+   const [headerScroll, setHeaderScroll] = useState(false);
+   const [LBHeight, setLBHeight] = useState(0);
+
+   // 스크롤 되면 클래스 들어옴
+   const ScrollClass = headerScroll ? styles.scroll : '';
+
+   useEffect(()=> {
+      const headerScroll = () => {
+         setHeaderScroll(window.scrollY > 0)
+      };
+
+      window.addEventListener('scroll', headerScroll);
+      return ()=> window.removeEventListener('scroll', headerScroll);
+   },[]);
+
+
+   // 검색 버튼 눌러서 검색 페이지 나오면 바디 스크롤바 숨기기
    const shouldHideHeader = 
    pathname.includes("/orders") || pathname.includes("/border") || pathname.includes("/mypage") || pathname.includes("/board") 
    || isDetailPage;
@@ -55,11 +73,11 @@ export default function MobileHeader() {
    return (
       <>
          {  
-            // || pathname === '/board/photoReview' 
+            // || pathname === '/board/photoReview'
             !shouldHideHeader ? (
                <>
-                  <header className={styles.header}>
-                     <LineBanner />
+                  <header ref={headerRef} className={clsx(ScrollClass, styles.header)} style={{ top: headerScroll ? `-${LBHeight}px` : 0 }}>
+                     <LineBanner setLBHeight={setLBHeight} />
                      <HorizontalFlex className={clsx('mob_page_container',styles.headerTop)}>
                         <FlexChild className={styles.logo}>
                            <Link href='/'>
@@ -114,7 +132,7 @@ export default function MobileHeader() {
                               zIndex: 10000,         // 다른 UI 위로
                            }}
                         >
-                           <MobileSearch onClose={() => setShowSearch(false)} />
+                           <SearchLayer onClose={() => setShowSearch(false)} />
                         </motion.div>
                      )
                   }
