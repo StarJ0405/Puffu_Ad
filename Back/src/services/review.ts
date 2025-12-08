@@ -345,6 +345,29 @@ export class ReviewService extends BaseService<Review, ReviewRepository> {
     return result;
   }
 
+  async getProductStatsByIds(
+    productIds: string[]
+  ): Promise<{ product_id: string; count: number; avg: number }[]> {
+    if (!productIds || productIds.length === 0) return [];
+
+    const rows = await this.repository
+      .builder("r")
+      .innerJoin("r.item", "i")
+      .innerJoin("i.variant", "v")
+      .select("v.product_id", "product_id")
+      .addSelect("COUNT(DISTINCT r.id)", "count")
+      .addSelect("AVG(r.star_rate)", "avg")
+      .where("v.product_id IN (:...ids)", { ids: productIds })
+      .groupBy("v.product_id")
+      .getRawMany();
+
+    return rows.map((row: any) => ({
+      product_id: row.product_id,
+      count: Number(row.count) || 0,
+      avg: Number(row.avg) || 0,
+    }));
+  }
+
   async update(
     where: FindOptionsWhere<Review> | FindOptionsWhere<Review>[],
     data: QueryDeepPartialEntity<Review>,
@@ -411,6 +434,8 @@ export class ReviewService extends BaseService<Review, ReviewRepository> {
         );
       }
     }
+
+
     const result = super.update(where, data, returnEnttiy);
 
     return result;

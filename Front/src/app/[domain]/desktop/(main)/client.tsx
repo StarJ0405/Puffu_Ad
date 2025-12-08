@@ -103,16 +103,7 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
             item.thumbnail.pc && (
               <SwiperSlide key={i} className={clsx(`swiper_0${i}`, styles.slideItem)}>
                 {item.to ? (
-                    <Link href={item.to}>
-                      <Image
-                        src={
-                          userData?.adult
-                            ? item.thumbnail.pc
-                            : "/resources/images/19_only_banner.png"
-                        }
-                      />
-                    </Link>
-                  ) : (
+                  <Link href={item.to}>
                     <Image
                       src={
                         userData?.adult
@@ -120,7 +111,16 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
                           : "/resources/images/19_only_banner.png"
                       }
                     />
-                  )}
+                  </Link>
+                ) : (
+                  <Image
+                    src={
+                      userData?.adult
+                        ? item.thumbnail.pc
+                        : "/resources/images/19_only_banner.png"
+                    }
+                  />
+                )}
               </SwiperSlide>
             )
         )}
@@ -273,7 +273,7 @@ export function MainCategory() {
             <Link href={`/categories/${cat.id}`}>
               <FlexChild className={styles.ca_thumb}>
                 {/* <Image src={cat.thumbnail} width={"auto"} height={120} /> */}
-                <img src={cat.thumbnail}/>
+                <img src={cat.thumbnail} />
               </FlexChild>
             </Link>
             <Span>{cat.name}</Span>
@@ -409,6 +409,7 @@ export function BestList({
     Load,
     maxPage,
     page,
+    mutate
   } = useInfiniteData(
     id,
     (pageNumber) => ({
@@ -452,6 +453,7 @@ export function BestList({
                   product={product}
                   lineClamp={2}
                   width={200}
+                  mutate={mutate}
                 />
               );
             })}
@@ -559,22 +561,22 @@ export function ProductSlider({
           >
             {loading
               ? Array.from({ length: 5 }).map((_, i) => (
-                  <SwiperSlide key={`skeleton-${i}`}>
-                    <LoadingCard />
-                  </SwiperSlide>
-                ))
+                <SwiperSlide key={`skeleton-${i}`}>
+                  <LoadingCard />
+                </SwiperSlide>
+              ))
               : [...items]
-                  .sort(() => Math.random() - 0.5)
-                  .map((item, i) => (
-                    <SwiperSlide key={item.id ?? i}>
-                      <ReviewImgCard
-                        review={item}
-                        lineClamp={lineClamp ?? 2}
-                        width="100%"
-                        height="auto"
-                      />
-                    </SwiperSlide>
-                  ))}
+                .sort(() => Math.random() - 0.5)
+                .map((item, i) => (
+                  <SwiperSlide key={item.id ?? i}>
+                    <ReviewImgCard
+                      review={item}
+                      lineClamp={lineClamp ?? 2}
+                      width="100%"
+                      height="auto"
+                    />
+                  </SwiperSlide>
+                ))}
           </Swiper>
           <div className={clsx(styles.naviBtn, styles.prevBtn)}>
             <Image
