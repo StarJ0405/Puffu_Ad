@@ -3,7 +3,7 @@ import { Review } from "models/review";
 import { ReviewRepository } from "repositories/review";
 import { RecommendService } from "services/recommend";
 import { inject, injectable } from "tsyringe";
-import { FindManyOptions, FindOneOptions, FindOptionsWhere } from "typeorm";
+import { FindManyOptions, FindOneOptions, FindOptionsWhere, In } from "typeorm";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 
 function normalizeWhereKeys(w: any = {}) {
@@ -37,12 +37,52 @@ export class ReviewService extends BaseService<Review, ReviewRepository> {
   ): Promise<Pageable<Review>> {
     if (options) {
       let where: any = options.where ?? {};
+      
 
       // q 처리(id/content 검색)
       if (where?.q) {
         const q = where.q;
         delete where.q;
         where = this.Search(where, ["id", "content"], q);
+      }
+      if (where.category_id) {
+        const categoryId = String(where.category_id);
+
+        const rows = await this.repository.query(
+          `
+        SELECT DISTINCT pc.product_id
+        FROM public.product_category pc
+        JOIN public.category c ON c.id = pc.category_id
+        WHERE c.mpath LIKE '%${categoryId}%'
+        `
+        );
+        const productIds = rows.map((r: any) => r.product_id);
+
+        delete where.category_id;
+
+        if (productIds.length > 0) {
+          where.item = {
+            ...(where.item || {}),
+            variant: {
+              ...(where.item?.variant || {}),
+              product: {
+                ...(where.item?.variant?.product || {}),
+                id: In(productIds),
+              },
+            },
+          };
+        } else {
+
+          return {
+            content: [],
+            pageNumber: Number(pageData.pageNumber ?? 0),
+            pageSize: Number(pageData.pageSize ?? 0),
+            totalPages: 0,
+            last: true,
+            NumberOfTotalElements: 0,
+            NumberOfElements: 0,
+          };
+        }
       }
 
       // where.* 키 정규화
