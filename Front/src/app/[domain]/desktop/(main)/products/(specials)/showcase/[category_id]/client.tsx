@@ -1,6 +1,7 @@
 "use client";
 import usePageData from "@/shared/hooks/data/usePageData";
 import { requester } from "@/shared/Requester";
+import { useCategories } from "@/providers/StoreProvider/StorePorivderClient";
 import { BaseProductList } from "../../../baseClient";
 import { Swiper as SwiperType } from "swiper";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
@@ -77,6 +78,47 @@ type ReviewEntity = {
     };
   };
 };
+
+export function CategoryTab({
+  category_id,
+}: {
+  category_id: string;
+}) {
+  const { categoriesData } = useCategories();
+
+  const current = findCategoryById(categoriesData, category_id);
+  if (!current) return null;
+
+  let secondCategories: any[] = [];
+
+  if (!current.parent_id) {
+    secondCategories = current.children ?? [];
+  }
+  else {
+    const parent = current.parent;
+    secondCategories = parent?.children ?? [];
+  }
+  if (!secondCategories.length) return null;
+
+  return (
+    <HorizontalFlex gap={10} className={styles.categoryTabs}>
+      {secondCategories.map((cat) => (
+        <Link
+          key={cat.id}
+          href={`/products/showcase/${cat.id}`}
+          className={clsx(
+            styles.categoryTab,
+            cat.id === category_id && styles.active
+          )}
+        >
+          {cat.name}
+        </Link>
+      ))}
+    </HorizontalFlex>
+  );
+}
+
+
 
 export function ReviewSection({
   // id,

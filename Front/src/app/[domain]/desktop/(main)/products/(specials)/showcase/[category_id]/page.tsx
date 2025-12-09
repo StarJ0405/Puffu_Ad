@@ -3,7 +3,7 @@
 import Container from "@/components/container/Container";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Pstyles from "../../../products.module.css";
-import { BestList, ReviewSection } from "./client";
+import { BestList, CategoryTab, ReviewSection,  } from "./client";
 import styles from "./page.module.css";
 import Image from "@/components/Image/Image";
 import { requester } from "@/shared/Requester";
@@ -36,6 +36,9 @@ export default async function ({
 
         <VerticalFlex>
           <ReviewSection category_id={category_id} />
+        </VerticalFlex>
+        <VerticalFlex>
+          <CategoryTab category_id={category_id} />
         </VerticalFlex>
 
         <VerticalFlex marginBottom={30}>
