@@ -37,7 +37,7 @@ export class ReviewService extends BaseService<Review, ReviewRepository> {
   ): Promise<Pageable<Review>> {
     if (options) {
       let where: any = options.where ?? {};
-      
+
 
       // q 처리(id/content 검색)
       if (where?.q) {
@@ -48,31 +48,17 @@ export class ReviewService extends BaseService<Review, ReviewRepository> {
       if (where.category_id) {
         const categoryId = String(where.category_id);
 
-        const rows = await this.repository.query(
+        const [row] = await this.repository.query(
           `
-        SELECT DISTINCT pc.product_id
-        FROM public.product_category pc
-        JOIN public.category c ON c.id = pc.category_id
-        WHERE c.mpath LIKE '%${categoryId}%'
-        `
+            SELECT mpath
+            FROM public.category
+            WHERE id = $1
+            LIMIT 1
+          `,
+          [categoryId]
         );
-        const productIds = rows.map((r: any) => r.product_id);
 
-        delete where.category_id;
-
-        if (productIds.length > 0) {
-          where.item = {
-            ...(where.item || {}),
-            variant: {
-              ...(where.item?.variant || {}),
-              product: {
-                ...(where.item?.variant?.product || {}),
-                id: In(productIds),
-              },
-            },
-          };
-        } else {
-
+        if (!row?.mpath) {
           return {
             content: [],
             pageNumber: Number(pageData.pageNumber ?? 0),
@@ -83,7 +69,49 @@ export class ReviewService extends BaseService<Review, ReviewRepository> {
             NumberOfElements: 0,
           };
         }
+
+        const rootCategoryId = row.mpath.split('.')[0];
+        const rootPrefix = `${rootCategoryId}.%`;
+
+        const rows = await this.repository.query(
+          `
+           SELECT DISTINCT pc.product_id
+           FROM public.product_category pc
+           JOIN public.category c ON c.id = pc.category_id
+           WHERE c.mpath = $1
+           OR c.mpath LIKE $2
+          `,
+          [rootCategoryId, rootPrefix]
+        );
+
+        const productIds = rows.map((r: any) => r.product_id);
+
+        delete where.category_id;
+
+        if (productIds.length === 0) {
+          return {
+            content: [],
+            pageNumber: Number(pageData.pageNumber ?? 0),
+            pageSize: Number(pageData.pageSize ?? 0),
+            totalPages: 0,
+            last: true,
+            NumberOfTotalElements: 0,
+            NumberOfElements: 0,
+          };
+        }
+
+        where.item = {
+          ...(where.item || {}),
+          variant: {
+            ...(where.item?.variant || {}),
+            product: {
+              ...(where.item?.variant?.product || {}),
+              id: In(productIds),
+            },
+          },
+        };
       }
+
 
       // where.* 키 정규화
       where = normalizeWhereKeys(where);
