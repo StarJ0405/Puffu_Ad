@@ -1,29 +1,28 @@
+// src/app/.../products/showcase/[category_id]/page.tsx
+
 import Container from "@/components/container/Container";
 import VerticalFlex from "@/components/flex/VerticalFlex";
-import Pstyles from "../../products.module.css";
+import Pstyles from "../../../products.module.css";
 import { BestList, ReviewSection } from "./client";
-import {ProdcutCategoryFilter } from "../../baseClient";
 import styles from "./page.module.css";
-
 import Image from "@/components/Image/Image";
 import { requester } from "@/shared/Requester";
-import { SearchParams } from "next/dist/server/request/search-params";
 
 export default async function ({
-  searchParams,
+  params,
 }: {
-  searchParams: Promise<SearchParams>;
+  params: { category_id: string };
 }) {
-  const { category_id } = await searchParams;
-  const bestCondition: any = {
+  const { category_id } = params;
+
+  const initCondition: any = {
     pageSize: 24,
-    order: "best",
-    product_type: "exclude_set",
-    warehousing: false,
+    _excludeType: true,
+    warehousing: true,
+    category_id,
   };
 
-  if (category_id) bestCondition.category_id = category_id;
-  const bestProducts = await requester.getProducts(bestCondition);
+  const categoryProducts = await requester.getProducts(initCondition);
 
   return (
     <section className="root page_container">
@@ -36,7 +35,7 @@ export default async function ({
         </VerticalFlex>
 
         <VerticalFlex>
-          <ReviewSection /> {/* 리뷰 */}
+          <ReviewSection category_id={category_id} />
         </VerticalFlex>
 
         <VerticalFlex marginBottom={30}>
@@ -44,7 +43,10 @@ export default async function ({
         </VerticalFlex>
 
         <VerticalFlex className={Pstyles.list}>
-          <BestList initProducts={bestProducts} initConiditon={bestCondition} />
+          <BestList
+            initProducts={categoryProducts}
+            initConiditon={initCondition}
+          />
         </VerticalFlex>
       </Container>
     </section>

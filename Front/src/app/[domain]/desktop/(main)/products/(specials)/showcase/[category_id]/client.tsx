@@ -1,7 +1,7 @@
 "use client";
 import usePageData from "@/shared/hooks/data/usePageData";
 import { requester } from "@/shared/Requester";
-import { BaseProductList } from "../../baseClient";
+import { BaseProductList } from "../../../baseClient";
 import { Swiper as SwiperType } from "swiper";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import 'swiper/css';
@@ -20,6 +20,8 @@ import NoContent from "@/components/noContent/noContent";
 import clsx from "clsx";
 import styles from './page.module.css'
 import siteInfo from "@/shared/siteInfo";
+import Select from "@/components/select/Select";
+import Pstyles from "../../../products.module.css"
 
 function findCategoryById(categories: any[], id: string): any | undefined {
   for (const cat of categories) {
@@ -51,6 +53,8 @@ function findCategoryById(categories: any[], id: string): any | undefined {
 // }
 
 
+
+
 type ReviewEntity = {
   id: string;
   images?: string[];
@@ -77,9 +81,12 @@ type ReviewEntity = {
 export function ReviewSection({
   // id,
   lineClamp,
+  category_id
 }: {
   // id: string;
   lineClamp?: number;
+  category_id?: string
+
 }) {
   const PAGE_SIZE = 10;
   const [items, setItems] = useState<ReviewEntity[]>([]);
@@ -87,7 +94,7 @@ export function ReviewSection({
   const [totalPages, setTotalPages] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  
+
 
   const fetchPage = useCallback(async (pn: number) => {
     setLoading(true);
@@ -99,6 +106,9 @@ export function ReviewSection({
         relations: "item,item.variant.product,user",
         order: { created_at: "DESC" },
       };
+      if (category_id) {
+        params.category_id = category_id;
+      }
       const res = await requester.getPublicReviews(params);
       const data = res?.data ?? res;
       const list: ReviewEntity[] = data?.content ?? [];
@@ -141,9 +151,9 @@ export function ReviewSection({
           nextEl: nextRef.current,
         } as any; // 필요하면 NavigationOptions 타입으로 캐스팅
       }
-      
+
       // 네비게이션을 업데이트(초기화)합니다.
-      swiperInstance.navigation.init(); 
+      swiperInstance.navigation.init();
       swiperInstance.navigation.update();
     }
   }, [swiperInstance]);
@@ -171,7 +181,7 @@ export function ReviewSection({
           30% 할인쿠폰 증정!
         </P>
       </VerticalFlex>
-        
+
       {items.length > 0 || loading ? (
         <FlexChild id={styles.review_slider} className={styles.ProductSlider}>
           <Swiper
@@ -204,23 +214,23 @@ export function ReviewSection({
           >
             {loading
               ? Array.from({ length: 5 }).map((_, i) => (
-                  <SwiperSlide key={`skeleton-${i}`}>
-                    <LoadingCard />
-                  </SwiperSlide>
-                ))
+                <SwiperSlide key={`skeleton-${i}`}>
+                  <LoadingCard />
+                </SwiperSlide>
+              ))
               : [...items]
-                  .sort(() => Math.random() - 0.5)
-                  .map((item, i) => (
-                    <SwiperSlide key={item.id ?? i}>
-                      <ReviewImgCard
-                        review={item}
-                        lineClamp={lineClamp ?? 2}
-                        type={'slide'}
-                        width="100%"
-                        height="auto"
-                      />
-                    </SwiperSlide>
-                  ))}
+                .sort(() => Math.random() - 0.5)
+                .map((item, i) => (
+                  <SwiperSlide key={item.id ?? i}>
+                    <ReviewImgCard
+                      review={item}
+                      lineClamp={lineClamp ?? 2}
+                      type={'slide'}
+                      width="100%"
+                      height="auto"
+                    />
+                  </SwiperSlide>
+                ))}
           </Swiper>
 
           <div ref={prevRef} className={clsx(styles.naviBtn, styles.prevBtn)}>
@@ -244,7 +254,6 @@ export function ReviewSection({
 }
 
 
-
 export function BestList({
   initProducts,
   initConiditon,
@@ -252,13 +261,47 @@ export function BestList({
   initProducts: Pageable;
   initConiditon: any;
 }) {
-  const { best, maxPage, page, setPage, mutate, origin } = usePageData(
-    "best",
-    (pageNumber) => ({
-      ...initConiditon,
-      pageSize: 24,
-      pageNumber,
-    }),
+  const sortOptions = [
+    { id: "latest", display: "최신순" },
+    { id: "best", display: "인기순" },
+    { id: "recommend", display: "추천순" },
+  ] as const;
+
+  const [sort, setSort] = useState<(typeof sortOptions)[number]>(
+    sortOptions[0]
+  );
+
+
+  const getOrderParam = (id: string | undefined) => {
+    switch (id) {
+      case "best":
+        return "best";
+      case "recommend":
+        return "recommend";
+      case "latest":
+      default:
+        return undefined;
+    }
+  };
+
+  const {
+    products = [],
+    maxPage,
+    page,
+    setPage,
+    mutate,
+    origin = {} as any,
+  } = usePageData(
+    "products",
+    (pageNumber) => {
+      const order = getOrderParam(sort.id);
+      return {
+        ...initConiditon,
+        pageSize: 24,
+        pageNumber,
+        ...(order && { order }),
+      };
+    },
     (condition) => requester.getProducts(condition),
     (data: Pageable) => data?.totalPages || 0,
     {
@@ -266,14 +309,42 @@ export function BestList({
       fallbackData: initProducts,
     }
   );
+
   return (
     <>
+      <HorizontalFlex className={Pstyles.sort_group}>
+        <FlexChild className={Pstyles.count_txt}>
+          <P>
+            <b>{origin.NumberOfTotalElements || 0}</b>개의 상품
+          </P>
+        </FlexChild>
+        <FlexChild width="auto">
+          <Select
+            options={sortOptions.map((opt) => ({
+              value: opt.id,
+              display: opt.display,
+            }))}
+            value={sort.id}
+            onChange={(v) => {
+              if (!v) return;
+              const next = sortOptions.find((o) => o.id === v);
+              if (!next) return;
+              setPage(0);
+              setSort(next);
+            }}
+            width={"120px"}
+            height={"36px"}
+          />
+        </FlexChild>
+      </HorizontalFlex>
+
       <BaseProductList
         mutate={mutate}
         total={origin.NumberOfTotalElements || 0}
-        listArray={best}
+        listArray={products}
         pagination={{ page, maxPage, setPage }}
       />
     </>
   );
 }
+
