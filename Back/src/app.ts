@@ -19,6 +19,8 @@ import { Socket, Server as SocketIOServer } from "socket.io";
 import { initializeDataSource } from "./data-source";
 import { initializeModules } from "./expand/register";
 import { applyConfiguredMiddlewares } from "./middleware";
+import { container } from "tsyringe";
+import { CartService } from "./services/cart";
 
 export type SocketHandler = (
   socket: Socket,
@@ -83,7 +85,7 @@ app.use(cookieParse());
 
 const httpServer = createServer(app);
 
-const io = new SocketIOServer(httpServer, {
+export const io = new SocketIOServer(httpServer, {
   cors: {
     origin,
     methods: ["GET", "POST"],
@@ -246,6 +248,22 @@ initializeDataSource().then(() => {
             socket.onAny((...args) =>
               console.log(`<Socket> [${new Date().toISOString()}]`, args)
             );
+
+          socket.on("disconnect", async () => {
+            if (process.env.CONSOLE_LOG) {
+              console.log(
+                `<Socket> [${new Date().toISOString()}] ${
+                  socket.id
+                } disconnected`
+              );
+            }
+            try {
+              const cartService = container.resolve(CartService);
+              await cartService.handleSocketDisconnect(socket.id);
+            } catch (error) {
+              console.error("Socket disconnect handler error:", error);
+            }
+          });
 
           // if (process.env.CONSOLE_LOG)
           //   socket.on("disconnect", () => {
