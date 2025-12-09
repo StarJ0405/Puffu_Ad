@@ -224,17 +224,15 @@ export function MainCategory() {
           .sort((c1, c2) => c1.index - c2.index)
           .filter((ca)=> ca.name !== '코스튬/의류')
           .map((cat, i) => (
-            <VerticalFlex className={styles.ca_item} key={i} justifyContent="end">
-              <Link href={`/categories/${cat.id}`}>
+            <Link href={`/categories/${cat.id}`} key={i} className={styles.ca_item}>
                 <FlexChild className={styles.ca_img} justifyContent="center" alignItems="center">
                   <Image src={cat.thumbnail}/>
                 </FlexChild>
-              </Link>
               <VerticalFlex className={styles.text_box}>
                 <h5>{cat.name}</h5>
                 <Span className="Wanted">{cat.english_name}</Span>
               </VerticalFlex>
-            </VerticalFlex>
+            </Link>
           ))}
       </nav>
       
@@ -460,7 +458,7 @@ export function ProductList({
                             // i + page * 12 < 3 ? styles.topRank : "" // 더보기나 페이징으로 다음 페이지 있을때 적용
                           )}
                         >
-                          <Span className="SacheonFont">
+                          <Span>
                             {/* {page * 12 + i + 1} */}
                             {i+1}
                           </Span>

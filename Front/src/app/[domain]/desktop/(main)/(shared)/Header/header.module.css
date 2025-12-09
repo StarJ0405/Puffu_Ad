@@ -46,26 +46,6 @@
 }
 
 
-
-
-/* 회원가입, lang */
-.info_box .info_wrap {
-   gap: 20px; transition: var(--all_transition);
-   align-items: end !important;
-}
-
-.info_box .info_top {
-   width: auto;
-   font-size: 13px;
-   color: #fff;
-   cursor: pointer;
-}
-
-.info_box .info_top > *:hover {
-   text-decoration: underline;
-}
-
-
 .cart_btn {position: relative;}
 
 

@@ -149,22 +149,27 @@ export function Auth() {
   };
 
   return (
-    <HorizontalFlex gap={13} className={styles.info_top} width={"auto"}>
-      <P
-        // onClick={() => removeCookie(Cookies.JWT, getCookieOption())}
-        onClick={logoutModal}
-        hidden={!userData?.id}
-        cursor="pointer"
-        className={styles.logout_txt}
-      >
-        로그아웃
-      </P>
-      <Link href={"/auth/signup"} hidden={!!userData?.id}>
-        회원가입
-      </Link>
-      <Link href={"/auth/login"} hidden={!!userData?.id}>
-        로그인
-      </Link>
-    </HorizontalFlex>
+    <FlexChild
+      // onClick={() => removeCookie(Cookies.JWT, getCookieOption())}
+      onClick={logoutModal}
+      cursor="pointer"
+      hidden={!userData?.id}
+      width={'auto'}
+    >
+      <Image
+        src="/resources/icons/main/logout_icon.png"
+        width={20}
+        height={"auto"}
+      />
+    </FlexChild>
+    // <HorizontalFlex gap={13} className={styles.info_top} width={"auto"} >
+      
+    //   <Link href={"/auth/signup"} hidden={!!userData?.id}>
+    //     회원가입
+    //   </Link>
+    //   <Link href={"/auth/login"} hidden={!!userData?.id}>
+    //     로그인
+    //   </Link>
+    // </HorizontalFlex>
   );
 }

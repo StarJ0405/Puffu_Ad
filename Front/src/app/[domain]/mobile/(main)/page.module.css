@@ -186,7 +186,7 @@
 
 .sec1 .about_box .text_box p {
    font-size: clamp(13px, calc(100VW * 16 / 768), 16px) !important;
-   color: #3f3f3f;
+   color: #3f3f3f !important;
    line-height: 1.4;
    font-weight: 500 !important;
 }
@@ -284,10 +284,15 @@
 }
 
 .category_menu > * {
-   flex: unset !important;
+   flex: unset !important; 
 }
 
-.category_menu .ca_item {
+.category_menu .ca_item { 
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   width: 100%;
    gap: 10px;
    cursor: pointer;
    padding: 10px 5px;
