@@ -15,7 +15,7 @@ import { CouponService } from "./coupon";
 import { PointService } from "./point";
 import { SubscribeService } from "./subscribe";
 import { RecentStoreService } from "./recent_store";
-import { StackItemRepository } from "repositories/stack_item";
+import { StackItemService } from "./stack_item";
 
 @injectable()
 export class CartService extends BaseService<Cart, CartRepository> {
@@ -40,8 +40,8 @@ export class CartService extends BaseService<Cart, CartRepository> {
     protected variantRepository: VariantRepository,
     @inject(RecentStoreService)
     protected recentStoreService: RecentStoreService,
-    @inject(StackItemRepository)
-    protected stackItemRepository: StackItemRepository
+    @inject(StackItemService)
+    protected stackItemService: StackItemService
   ) {
     super(cartRepository);
   }
@@ -177,265 +177,349 @@ export class CartService extends BaseService<Cart, CartRepository> {
       throw new Error("주문서를 생성하기엔 데이터가 부족합니다.");
     }
 
-    const cart = await this.repository.findOne({
-      where: {
-        id: cart_id,
+    let cart: Cart | null = null;
+
+    // --- 재고 관리 및 롤백을 위한 try-catch 블록 시작 ---
+    try {
+      cart = await this.repository.findOne({
+        where: {
+          id: cart_id,
+          user_id,
+        },
+        relations: [
+          "items.variant.product.discounts.discount",
+          "items.variant.discounts.discount",
+          "store",
+        ],
+      });
+      if (!cart) throw new Error("해당하는 카트가 없습니다.");
+      const items = cart.items?.filter((item) => selected.includes(item.id));
+      if (!items || items.length === 0)
+        throw new Error("담겨있는 상품이 없습니다.");
+
+      // --- [1] 결제 시도 시 임시 재고 선점 ---
+      if (offline_store_id) {
+        const success = await Promise.all(
+          items.map(async (item) => {
+            const totalQuantity =
+              (item.quantity || 0) + (item.extra_quantity || 0);
+            return this.stackItemService.increaseTempStack(
+              offline_store_id,
+              item.variant_id!, // Non-null Assertion
+              totalQuantity
+            );
+          })
+        );
+
+        if (success.some((s) => !s)) {
+          throw new Error(
+            "선택한 매장의 재고 확보에 실패했습니다. 재고를 확인해 주세요."
+          );
+        }
+      }
+      // ------------------------------------
+
+      const address = await this.addressRepository.findOne({
+        where: {
+          id: address_id,
+        },
+      });
+      if (!address) throw new Error("해당하는 주소가 없습니다.");
+      const _address = {
+        ...address,
+        id: undefined,
+        user_id: null,
+        message,
+      };
+      const shipping_method = await this.shippingMethodRepository.findOne({
+        where: {
+          id: shipping_method_id,
+        },
+      });
+      if (!shipping_method) throw new Error("해당하는 배송방법이 없습니다.");
+      const _shipping_method = {
+        ...shipping_method,
+        id: undefined,
+        store_id: null,
+        created_at: undefined,
+        updated_at: undefined,
+      };
+
+      // if (point > 0) {
+      //   const has = await this.pointService.getTotalPoint(user_id);
+      //   if (has < point) throw new Error("소지하고 있는 포인트가 부족합니다.");
+      // }
+
+      const now = new Date();
+      let display = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(
+        2,
+        "0"
+      )}${String(now.getDate()).padStart(2, "0")}`;
+      const count = await this.orderRepository.count({
+        where: {
+          display: ILike(`${display}%`),
+        },
+      });
+      display += count.toString(36).padStart(5, "0");
+
+      let order: Order | null = await this.orderRepository.create({
+        display,
         user_id,
-      },
-      relations: [
-        "items.variant.product.discounts.discount",
-        "items.variant.discounts.discount",
-        "store",
-      ],
-    });
-    if (!cart) throw new Error("해당하는 카트가 없습니다.");
-    const items = cart.items?.filter((item) => selected.includes(item.id));
-    if (items?.length === 0) throw new Error("담겨있는 상품이 없습니다.");
-    const address = await this.addressRepository.findOne({
-      where: {
-        id: address_id,
-      },
-    });
-    if (!address) throw new Error("해당하는 주소가 없습니다.");
-    const _address = {
-      ...address,
-      id: undefined,
-      user_id: null,
-      message,
-    };
-    const shipping_method = await this.shippingMethodRepository.findOne({
-      where: {
-        id: shipping_method_id,
-      },
-    });
-    if (!shipping_method) throw new Error("해당하는 배송방법이 없습니다.");
-    const _shipping_method = {
-      ...shipping_method,
-      id: undefined,
-      store_id: null,
-      created_at: undefined,
-      updated_at: undefined,
-    };
+        store_id: cart.store_id,
+        offline_store_id,
+        address: _address,
+        shipping_method: _shipping_method,
+        status: payment?.bank_number
+          ? OrderStatus.AWAITING
+          : OrderStatus.PENDING,
+        payment_data: payment,
+        point: point || 0,
+        subscribe_id,
+      });
+      const subscribe = subscribe_id
+        ? await this.subscribeService.get({ where: { id: subscribe_id } })
+        : null;
+      // const { orders = [], shippings = [], items=[] } = coupons || {};
+      const order_coupons = coupons?.orders?.length
+        ? await this.couponService.getList({
+            where: { id: In(coupons.orders) },
+          })
+        : [];
+      const shipping_coupons = coupons?.shippings?.length
+        ? await this.couponService.getList({
+            where: { id: In(coupons.shippings) },
+          })
+        : [];
+      const item_coupons = await Promise.all(
+        (coupons?.items || [])
+          ?.filter((f) => selected.includes(f.item_id))
+          ?.map(async (item) => ({
+            id: item.item_id,
+            coupons: await this.couponService.getList({
+              where: {
+                id: In(item.coupons),
+              },
+            }),
+          }))
+      );
 
-    // if (point > 0) {
-    //   const has = await this.pointService.getTotalPoint(user_id);
-    //   if (has < point) throw new Error("소지하고 있는 포인트가 부족합니다.");
-    // }
+      // (원본 복구) 상세 금액 계산 로직
+      const total =
+        items?.reduce((acc, item) => {
+          const amount = (item.variant?.discount_price || 0) * item.quantity;
+          const coupon = item_coupons.find((f) => f.id === item.id);
+          if (coupon) {
+            const [percents, fix] = coupon.coupons.reduce(
+              (acc, now) => {
+                if (now.calc === CalcType.FIX) acc[1] += now.value;
+                else if (now.calc === CalcType.PERCENT) acc[0] += now.value;
+                return acc;
+              },
+              [0, 0]
+            );
+            return (
+              acc +
+              Math.max(0, Math.round((amount * (100 - percents)) / 100.0 - fix))
+            );
+          }
+          return acc + amount;
+        }, 0) || 0;
 
-    const now = new Date();
-    let display = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(
-      2,
-      "0"
-    )}${String(now.getDate()).padStart(2, "0")}`;
-    const count = await this.orderRepository.count({
-      where: {
-        display: ILike(`${display}%`),
-      },
-    });
-    display += count.toString(36).padStart(5, "0");
+      const [shipping_percents, shipping_fix] = shipping_coupons.reduce(
+        (acc, now) => {
+          if (now.calc === CalcType.FIX) acc[1] += now.value;
+          else if (now.calc === CalcType.PERCENT) acc[0] += now.value;
+          return acc;
+        },
+        [0, 0]
+      );
+      const shipping =
+        ((_shipping_method?.amount || 0) * (100 - shipping_percents)) / 100.0 -
+        shipping_fix;
+      const [order_percents, order_fix] = order_coupons.reduce(
+        (acc, now) => {
+          if (now.calc === CalcType.FIX) acc[1] += now.value;
+          else if (now.calc === CalcType.PERCENT) acc[0] += now.value;
+          return acc;
+        },
+        [0, 0]
+      );
+      // line_item 총 지분 금액 계산 : 배송비 - 포인트 - 기타 할인비
+      const shared_total =
+        shipping -
+        (point || 0) -
+        order_fix -
+        Math.round(
+          ((total + shipping) * (order_percents + (subscribe?.percent || 0))) /
+            100.0
+        );
 
-    let order: Order | null = await this.orderRepository.create({
-      display,
-      user_id,
-      store_id: cart.store_id,
-      offline_store_id,
-      address: _address,
-      shipping_method: _shipping_method,
-      status: payment?.bank_number ? OrderStatus.AWAITING : OrderStatus.PENDING,
-      payment_data: payment,
-      point: point || 0,
-      subscribe_id,
-    });
-    const subscribe = subscribe_id
-      ? await this.subscribeService.get({ where: { id: subscribe_id } })
-      : null;
-    // const { orders = [], shippings = [], items=[] } = coupons || {};
-    const order_coupons = coupons?.orders?.length
-      ? await this.couponService.getList({ where: { id: In(coupons.orders) } })
-      : [];
-    const shipping_coupons = coupons?.shippings?.length
-      ? await this.couponService.getList({
-          where: { id: In(coupons.shippings) },
-        })
-      : [];
-    const item_coupons = await Promise.all(
-      (coupons?.items || [])
-        ?.filter((f) => selected.includes(f.item_id))
-        ?.map(async (item) => ({
-          id: item.item_id,
-          coupons: await this.couponService.getList({
-            where: {
-              id: In(item.coupons),
-            },
-          }),
-        }))
-    );
-    const total =
-      items?.reduce((acc, item) => {
-        const amount = (item.variant?.discount_price || 0) * item.quantity;
-        const coupon = item_coupons.find((f) => f.id === item.id);
-        if (coupon) {
-          const [percents, fix] = coupon.coupons.reduce(
+      await Promise.all(
+        (items || []).map(async (item) => {
+          const coupon = item_coupons.find((f) => f.id === item.id);
+          const [percents, fix] = coupon?.coupons.reduce(
             (acc, now) => {
               if (now.calc === CalcType.FIX) acc[1] += now.value;
               else if (now.calc === CalcType.PERCENT) acc[0] += now.value;
               return acc;
             },
             [0, 0]
-          );
-          return (
-            acc +
-            Math.max(0, Math.round((amount * (100 - percents)) / 100.0 - fix))
-          );
-        }
-        return acc + amount;
-      }, 0) || 0;
-    const [shipping_percents, shipping_fix] = shipping_coupons.reduce(
-      (acc, now) => {
-        if (now.calc === CalcType.FIX) acc[1] += now.value;
-        else if (now.calc === CalcType.PERCENT) acc[0] += now.value;
-        return acc;
-      },
-      [0, 0]
-    );
-    const shipping =
-      ((_shipping_method?.amount || 0) * (100 - shipping_percents)) / 100.0 -
-      shipping_fix;
-    const [order_percents, order_fix] = order_coupons.reduce(
-      (acc, now) => {
-        if (now.calc === CalcType.FIX) acc[1] += now.value;
-        else if (now.calc === CalcType.PERCENT) acc[0] += now.value;
-        return acc;
-      },
-      [0, 0]
-    );
-    // line_item 총 지분 금액 계산 : 배송비 - 포인트 - 기타 할인비
-    const shared_total =
-      shipping -
-      (point || 0) -
-      order_fix -
-      Math.round(
-        ((total + shipping) * (order_percents + (subscribe?.percent || 0))) /
-          100.0
-      );
-
-    await Promise.all(
-      (items || []).map(async (item) => {
-        const coupon = item_coupons.find((f) => f.id === item.id);
-        const [percents, fix] = coupon?.coupons.reduce(
-          (acc, now) => {
-            if (now.calc === CalcType.FIX) acc[1] += now.value;
-            else if (now.calc === CalcType.PERCENT) acc[0] += now.value;
-            return acc;
-          },
-          [0, 0]
-        ) || [0, 0];
-        await this.lineItemRepository.update(
-          { id: item.id },
-          {
-            cart_id: null,
-            order_id: order?.id,
-            product_title: item.variant?.product?.title,
-            variant_title: item.variant?.title,
-            description: item.variant?.product?.description,
-            thumbnail:
-              item.variant?.thumbnail || item.variant?.product?.thumbnail,
-            unit_price: item.variant?.price,
-            discount_price: item.variant?.discount_price,
-            currency_unit: cart.store?.currency_unit,
-            brand_id: item.variant?.product?.brand_id,
-            tax_rate: item.variant?.product?.tax_rate,
-            shared_price:
-              (shared_total / total) *
-              Math.max(
-                0,
-                ((item.variant?.discount_price || 0) * (100 - percents)) / 100 -
-                  fix
-              ),
-          }
-        );
-        if (offline_store_id) {
-          await this.stackItemRepository.update(
-            { offline_store_id, variant_id: item.variant_id },
-            { stack: () => `stack - ${item.total_quantity}` }
-          );
-        } else {
-          await this.variantRepository.update(
-            { id: item.variant_id },
-            { stack: () => `stack - ${item.total_quantity}` }
-          );
-        }
-      })
-    );
-    await Promise.all(
-      order_coupons.map(
-        async (coupon) =>
-          await this.couponService.update(
+          ) || [0, 0];
+          await this.lineItemRepository.update(
+            { id: item.id },
             {
-              id: coupon.id,
-            },
-            {
+              cart_id: null,
               order_id: order?.id,
+              product_title: item.variant?.product?.title,
+              variant_title: item.variant?.title,
+              description: item.variant?.product?.description,
+              thumbnail:
+                item.variant?.thumbnail || item.variant?.product?.thumbnail,
+              unit_price: item.variant?.price,
+              discount_price: item.variant?.discount_price,
+              currency_unit: cart!.store?.currency_unit,
+              brand_id: item.variant?.product?.brand_id,
+              tax_rate: item.variant?.product?.tax_rate,
+              shared_price:
+                (shared_total / total) *
+                Math.max(
+                  0,
+                  ((item.variant?.discount_price || 0) * (100 - percents)) /
+                    100 -
+                    fix
+                ),
             }
-          )
-      )
-    );
-    await Promise.all(
-      shipping_coupons.map(
-        async (coupon) =>
-          await this.couponService.update(
-            {
-              id: coupon.id,
-            },
-            {
-              shipping_method_id: order?.shipping_method?.id,
-            }
-          )
-      )
-    );
-    await Promise.all(
-      item_coupons.map(
-        async (item) =>
-          await Promise.all(
-            item.coupons.map(
-              async (coupon) =>
-                await this.couponService.update(
-                  {
-                    id: coupon.id,
-                  },
-                  {
-                    item_id: item.id,
-                  }
-                )
-            )
-          )
-      )
-    );
-    order = await this.orderRepository.findOne({
-      where: {
-        id: order.id,
-      },
-      relations: [
-        "shipping_method.coupons",
-        "address",
-        "items.brand",
-        "coupons",
-        "items.coupons",
-        "subscribe",
-      ],
-    });
-    if (point > 0) {
-      await this.pointService.usePoint(user_id, point, {
-        display: order?.display,
-      });
-    }
-    // if (order?.user_id && (order as any).offline_store_id) {
-    //   await this.recentStoreService.createOrder(order);
-    // }
-    if (order?.user_id && order.offline_store_id) {
-      await this.recentStoreService.createOrder(order);
-    }
+          );
 
-    return order;
+          // --- [2] 결제 완료 시 재고 확정 로직 (오프라인/온라인 분기) ---
+          if (offline_store_id) {
+            // StackItemService를 사용하여 실제 재고(stack)와 임시 재고(temp_stack)를 동시에 차감
+            await this.stackItemService.reduceStackOnOrderCompletion(
+              offline_store_id,
+              item.variant_id!,
+              (item.quantity || 0) + (item.extra_quantity || 0)
+            );
+          } else {
+            // 온라인 배송인 경우: variant stack 감소
+            await this.variantRepository.update(
+              { id: item.variant_id! },
+              {
+                stack: () =>
+                  `stack - ${
+                    (item.quantity || 0) + (item.extra_quantity || 0)
+                  }`,
+              }
+            );
+          }
+        })
+      );
+      await Promise.all(
+        order_coupons.map(
+          async (coupon) =>
+            await this.couponService.update(
+              {
+                id: coupon.id,
+              },
+              {
+                order_id: order?.id,
+              }
+            )
+        )
+      );
+      await Promise.all(
+        shipping_coupons.map(
+          async (coupon) =>
+            await this.couponService.update(
+              {
+                id: coupon.id,
+              },
+              {
+                shipping_method_id: order?.shipping_method?.id,
+              }
+            )
+        )
+      );
+      await Promise.all(
+        item_coupons.map(
+          async (item) =>
+            await Promise.all(
+              item.coupons.map(
+                async (coupon) =>
+                  await this.couponService.update(
+                    {
+                      id: coupon.id,
+                    },
+                    {
+                      item_id: item.id,
+                    }
+                  )
+              )
+            )
+        )
+      );
+      order = await this.orderRepository.findOne({
+        where: {
+          id: order!.id,
+        },
+        relations: [
+          "shipping_method.coupons",
+          "address",
+          "items.brand",
+          "coupons",
+          "items.coupons",
+          "subscribe",
+        ],
+      });
+      if (point > 0) {
+        await this.pointService.usePoint(user_id, point, {
+          display: order?.display,
+        });
+      }
+      // if (order?.user_id && (order as any).offline_store_id) {
+      //   await this.recentStoreService.createOrder(order);
+      // }
+      if (order?.user_id && order.offline_store_id) {
+        await this.recentStoreService.createOrder(order);
+      }
+
+      return order;
+    } catch (error) {
+      // --- [3] 오류 발생 시 임시 재고 반환 (롤백) ---
+      if (offline_store_id && cart && cart.items) {
+        const itemsToRollback = cart.items.filter((item) =>
+          selected.includes(item.id)
+        );
+
+        await Promise.all(
+          itemsToRollback.map(async (item) => {
+            await this.stackItemService.decreaseTempStack(
+              offline_store_id,
+              item.variant_id!,
+              (item.quantity || 0) + (item.extra_quantity || 0)
+            );
+          })
+        );
+      }
+      throw error;
+    }
+  }
+
+  // 소켓 연결이 끊겼을 때
+  async handleSocketDisconnect(
+    cart_id: string,
+    offline_store_id?: string,
+    items?: { variant_id: string; quantity: number }[]
+  ) {
+    if (offline_store_id && items && items.length > 0) {
+      await Promise.all(
+        items.map((item) =>
+          this.stackItemService.decreaseTempStack(
+            offline_store_id,
+            item.variant_id,
+            item.quantity
+          )
+        )
+      );
+    }
   }
 }
