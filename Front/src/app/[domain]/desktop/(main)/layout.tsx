@@ -8,7 +8,7 @@ export default async function ({
   children: React.ReactNode;
 }>) {
   return (
-    <div>
+    <div style={{minWidth: '1024px'}}>
       {/*  */}
       <Header />
       {children}
