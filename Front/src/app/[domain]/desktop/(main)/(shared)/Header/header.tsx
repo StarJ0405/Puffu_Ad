@@ -9,6 +9,7 @@ import { useRef, useState, useEffect } from "react";
 import clsx from "clsx";
 import CountBadge from "@/components/countBadge/countBadge";
 import LineBanner from "@/components/main/lineBanner/LineBanner";
+import siteInfo from "@/shared/siteInfo";
 
 
 export default function Header() {
@@ -55,9 +56,6 @@ export default function Header() {
           </FlexChild>
 
           <FlexChild width={"auto"} className={styles.info_box}>
-            {/* <VerticalFlex className={styles.info_wrap}>
-              <Auth />
-            </VerticalFlex> */}
             <HorizontalFlex width={"auto"} gap={15}>
               <SearchBox /> {/* 검색창 */}
 
@@ -72,8 +70,10 @@ export default function Header() {
                 </Link>
               </FlexChild>
 
+              <Auth />
+
               <FlexChild width={"fit-content"}>
-                <Link href={"/mypage"}>
+                <Link href={siteInfo.my_profile}>
                   <Image
                     src="/resources/icons/main/user_icon.png"
                     width={25}
@@ -84,7 +84,7 @@ export default function Header() {
               </FlexChild>
 
               <FlexChild width={"fit-content"}>
-                <Link href={"/mypage/wishList"}>
+                <Link href={siteInfo.my_wishList}>
                   <Image
                     src="/resources/icons/main/heart_icon.png"
                     width={25}
@@ -95,7 +95,7 @@ export default function Header() {
               </FlexChild>
 
               <FlexChild width={"fit-content"}>
-                <Link href={"/orders/cart"} className={styles.cart_btn}>
+                <Link href={siteInfo.order_cart} className={styles.cart_btn}>
                   <Image
                     src="/resources/icons/main/cart_icon.png"
                     width={20}

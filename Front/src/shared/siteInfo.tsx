@@ -43,6 +43,9 @@ const siteInfo = {
    my_point: '/mypage/point',
    my_inquiry: '/mypage/inquiry',
    my_review: '/mypage/review',
+
+   //장바구니
+   order_cart : '/orders/cart'
 }
 
 export default siteInfo;

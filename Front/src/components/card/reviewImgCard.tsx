@@ -82,7 +82,7 @@ export default function ReviewImgCard({
   return (
     <FlexChild
       width={width ?? "100%"}
-      maxWidth={!isMobile ? 295 : ""}
+      // maxWidth={!isMobile ? 295 : ""}
       onClick={openDetail}
       className={clsx(
         styles.review_item,
@@ -100,7 +100,7 @@ export default function ReviewImgCard({
         <VerticalFlex alignItems={"start"} gap={15}>
           <VerticalFlex alignItems="start" gap={10}>
             <FlexChild>
-              <StarRate fillColor={'#fff'} width={95} starWidth={20} starHeight={20} score={avg!} readOnly />
+              <StarRate fillColor={'#fff'} width={95} starWidth={15} starHeight={15} score={avg!} readOnly />
             </FlexChild>
             <FlexChild className={styles.content} alignItems="start" onClick={openDetail}>
               <P
