@@ -52,8 +52,8 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
   const swiperRef = useRef<SwiperType | null>(null);
 
   // 베너 링크값 없으면 링크 없애는 코드
-  const linkCheck = (link: string | undefined)=> {
-    if(link) {
+  const linkCheck = (link: string | undefined) => {
+    if (link) {
       navigate(`${link}`)
     } else {
       navigate('')
@@ -85,11 +85,11 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
           (item: BannerDataFrame, i: number) =>
             item.thumbnail.pc && (
               <SwiperSlide key={i} className={clsx(`swiper_0${i}`, styles.slideItem)}>
-                <div onClick={()=> linkCheck(item.to)} className={styles.thumbnail} style={{
-                      'backgroundImage': userData?.adult
-                      ? `url(${item.thumbnail.pc})`
-                      : "url(/resources/images/19_only_banner.png)"
-                    }} 
+                <div onClick={() => linkCheck(item.to)} className={styles.thumbnail} style={{
+                  'backgroundImage': userData?.adult
+                    ? `url(${item.thumbnail.pc})`
+                    : "url(/resources/images/19_only_banner.png)"
+                }}
                 />
               </SwiperSlide>
             )
@@ -97,7 +97,7 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
       </Swiper>
 
       <div className={styles.pagination}>
-        {[...banners]?.map((_, i)=> (
+        {[...banners]?.map((_, i) => (
           <span
             key={i}
             className={clsx(styles.bullet, bulletIdx === i ? styles.active : '')}
@@ -246,24 +246,25 @@ export function MainCategory() {
   const { categoriesData } = useCategories();
 
   // 카테고리 역순, 코스튬 제외 필터
-  const categoriesSet = 
-    categoriesData.sort((c1, c2) => c1.index - c2.index).filter((ca)=> ca.name !== '코스튬/의류');
-  
+  const categoriesSet =
+    categoriesData.sort((c1, c2) => c1.index - c2.index).filter((ca) => ca.name !== '코스튬/의류');
+
   // 배열 안에 값을 5개씩 그룹화 해서 categoryDD에 다시 담는 과정
   // 이렇게 하는 이유: pc에서 갯수가 5칸 못 채우면 공백 생기는 걸 방지.
   const categoryDD = [];
-  for(let i = 0; i < categoriesSet.length; i +=5) {
-    categoryDD.push(categoriesSet.slice(i, i+5));
+  for (let i = 0; i < categoriesSet.length; i += 5) {
+    categoryDD.push(categoriesSet.slice(i, i + 5));
   }
 
 
   // 코스튬/의류 카테고리만 추출
-  const costumeData = categoriesData.find((ca)=> ca.name === '코스튬/의류');
+  const costumeData = categoriesData.find((ca) => ca.name === '코스튬/의류');
+  
 
-  function CategoryList({group}:{group: Array<CategoryData>}) {
+  function CategoryList({ group }: { group: Array<CategoryData> }) {
     return (
       <article className={styles.category_list}>
-        {group.map((cat : CategoryData, i : number)=> {
+        {group.map((cat: CategoryData, i: number) => {
           return (
             <VerticalFlex className={styles.ca_item} key={i} justifyContent="space-between" alignItems="start">
               <VerticalFlex className={styles.text_box} alignItems="start">
@@ -271,7 +272,7 @@ export function MainCategory() {
                 <Span className="Wanted">{cat.english_name}</Span>
               </VerticalFlex>
               <FlexChild className={styles.ca_img} justifyContent="end" alignItems="center">
-                <Image src={cat.thumbnail}/>
+                <Image src={cat.thumbnail} />
               </FlexChild>
               <Link className={styles.link_btn} href={`/categories/${cat.id}`}>자세히 보기</Link>
             </VerticalFlex>
@@ -284,13 +285,12 @@ export function MainCategory() {
   return (
     <>
       <nav className={styles.category_box}>
-        {categoryDD.map((group, i)=> {
+        {categoryDD.map((group, i) => {
           return (
-            <CategoryList group={group}  key={i} />
+            <CategoryList group={group} key={i} />
           )
         })}
       </nav>
-      
       <Link href={`${siteInfo.pt_showcase}/${costumeData?.id}`} className={styles.exhibitionBox}>
         <Div className={styles.itemBox}>
           <VerticalFlex className={styles.text_box} alignItems="start">
@@ -304,7 +304,7 @@ export function MainCategory() {
               다양한 스타일을 만나보세요.
             </P>
           </VerticalFlex>
-          <Image src={costumeData?.thumbnail}/>
+          <Image src={costumeData?.thumbnail} />
         </Div>
 
         <Div className={styles.bg_layer}>
@@ -486,7 +486,7 @@ export function BestList({
               return (
                 <FlexChild className={styles.card_wrap} key={product.id}>
                   <FlexChild color="#000" className={clsx(styles.rank)}>
-                    <Span>{i+1}</Span>
+                    <Span>{i + 1}</Span>
                   </FlexChild>
 
                   <ProductCard
@@ -552,7 +552,7 @@ export function ReviewSection({
   const [totalPages, setTotalPages] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  
+
 
   const fetchPage = useCallback(async (pn: number) => {
     setLoading(true);
@@ -606,9 +606,9 @@ export function ReviewSection({
           nextEl: nextRef.current,
         } as any; // 필요하면 NavigationOptions 타입으로 캐스팅
       }
-      
+
       // 네비게이션을 업데이트(초기화)합니다.
-      swiperInstance.navigation.init(); 
+      swiperInstance.navigation.init();
       swiperInstance.navigation.update();
     }
   }, [swiperInstance]);
@@ -671,10 +671,10 @@ export function ReviewSection({
           >
             {loading
               ? Array.from({ length: 5 }).map((_, i) => (
-                  <SwiperSlide key={`skeleton-${i}`}>
-                    <LoadingCard />
-                  </SwiperSlide>
-                ))
+                <SwiperSlide key={`skeleton-${i}`}>
+                  <LoadingCard />
+                </SwiperSlide>
+              ))
               : [...items]
                   .sort(() => Math.random() - 0.5)
                   .map((item, i) => (
@@ -730,7 +730,7 @@ export function EventSection({
     setPage(0);
   }, [initCondition.q]);
 
-  
+
 
   const prevRef = useRef<HTMLDivElement | null>(null);
   const nextRef = useRef<HTMLDivElement | null>(null);
@@ -752,9 +752,9 @@ export function EventSection({
           nextEl: nextRef.current,
         } as any; // 필요하면 NavigationOptions 타입으로 캐스팅
       }
-      
+
       // 네비게이션을 업데이트(초기화)합니다.
-      swiperInstance.navigation.init(); 
+      swiperInstance.navigation.init();
       swiperInstance.navigation.update();
     }
   }, [swiperInstance]);
@@ -793,7 +793,7 @@ export function EventSection({
           </div>
         </FlexChild>
       </VerticalFlex>
-        
+
       {notices.length > 0 || loading ? (
         <FlexChild className={styles.ProductSlider}>
           <Swiper
@@ -814,10 +814,10 @@ export function EventSection({
           >
             {loading
               ? Array.from({ length: 5 }).map((_, i) => (
-                  <SwiperSlide key={`skeleton-${i}`}>
-                    <LoadingCard />
-                  </SwiperSlide>
-                ))
+                <SwiperSlide key={`skeleton-${i}`}>
+                  <LoadingCard />
+                </SwiperSlide>
+              ))
               : notices.map((item: NoticeData, i: number) => (
                   <SwiperSlide className={styles.slide_item} key={item.id ?? i}>
                     <EventCard item={item} workType={'slide'}/>
