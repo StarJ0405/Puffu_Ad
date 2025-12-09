@@ -14,11 +14,13 @@ export function EventCard({
    onClick,
    dateToString,
    workType,
+   lineClamp = 1,
 }: {
    item : NoticeData;
    dateToString?: ()=> void;
    onClick?: ()=> void;
    workType?: string;
+   lineClamp?: number
 }) {
 
    const { isMobile } = useBrowserEvent();
@@ -64,7 +66,7 @@ export function EventCard({
          <FlexChild className={styles.content_box} justifyContent="center">
             <P 
                className={styles.title}
-               lineClamp={!isMobile ? 2 : 1}
+               lineClamp={!isMobile ? lineClamp : 1}
                display={"webkit-box"}
                overflow={"hidden"}
                textOverflow={"ellipsis"}

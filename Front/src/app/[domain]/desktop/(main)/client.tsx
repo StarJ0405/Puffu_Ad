@@ -291,7 +291,7 @@ export function MainCategory() {
         })}
       </nav>
       
-      <Link href={`categories/${costumeData?.id}`} className={styles.exhibitionBox}>
+      <Link href={`${siteInfo.pt_showcase}/${costumeData?.id}`} className={styles.exhibitionBox}>
         <Div className={styles.itemBox}>
           <VerticalFlex className={styles.text_box} alignItems="start">
             <P className={styles.text1}>특별한 의상을 찾으시나요?</P>
@@ -614,7 +614,7 @@ export function ReviewSection({
   }, [swiperInstance]);
 
   return (
-    <>
+    <FlexChild className={styles.item_wrap} alignItems="stretch">
       <VerticalFlex className={styles.titleBox} gap={25} alignItems="start">
         <VerticalFlex gap={15} alignItems="start">
           <div className={styles.title}>
@@ -653,19 +653,21 @@ export function ReviewSection({
       </VerticalFlex>
 
       {items.length > 0 || loading ? (
-        <FlexChild id={styles.review_slider} className={styles.ProductSlider}>
+        <FlexChild className={styles.ProductSlider}>
           <Swiper
             loop={false}
             slidesPerView={4.2}
             speed={600}
             spaceBetween={10}
             modules={[Autoplay, Navigation]}
-            autoplay={{ delay: 4000000 }}
+            autoplay={{ delay: 400000 }}
             onSwiper={(swiper) => setSwiperInstance(swiper)}
             navigation={{
               prevEl: prevRef.current,
               nextEl: nextRef.current
             }}
+            observer={true}
+            observeParents={true}
           >
             {loading
               ? Array.from({ length: 5 }).map((_, i) => (
@@ -676,7 +678,7 @@ export function ReviewSection({
               : [...items]
                   .sort(() => Math.random() - 0.5)
                   .map((item, i) => (
-                    <SwiperSlide key={item.id ?? i}>
+                    <SwiperSlide className={styles.slide_item} key={item.id ?? i}>
                       <ReviewImgCard
                         review={item}
                         lineClamp={lineClamp ?? 2}
@@ -691,7 +693,7 @@ export function ReviewSection({
       ) : (
         <NoContent type="리뷰" />
       )}
-    </>
+    </FlexChild>
   );
 }
 
@@ -758,7 +760,7 @@ export function EventSection({
   }, [swiperInstance]);
 
   return (
-    <>
+    <FlexChild className={styles.item_wrap} alignItems="stretch">
       <VerticalFlex className={styles.titleBox} gap={25} alignItems="start">
         <VerticalFlex gap={15} alignItems="start">
           <div className={styles.title}>
@@ -800,12 +802,14 @@ export function EventSection({
             speed={600}
             spaceBetween={20}
             modules={[Autoplay, Navigation]}
-            autoplay={{ delay: 400000 }}
+            autoplay={{ delay: 4000 }}
             onSwiper={(swiper) => setSwiperInstance(swiper)}
             navigation={{
               prevEl: prevRef.current,
               nextEl: nextRef.current
             }}
+            observer={true}
+            observeParents={true}
             watchOverflow={false}
           >
             {loading
@@ -815,7 +819,7 @@ export function EventSection({
                   </SwiperSlide>
                 ))
               : notices.map((item: NoticeData, i: number) => (
-                  <SwiperSlide key={item.id ?? i}>
+                  <SwiperSlide className={styles.slide_item} key={item.id ?? i}>
                     <EventCard item={item} workType={'slide'}/>
                   </SwiperSlide>
                 ))}
@@ -824,6 +828,6 @@ export function EventSection({
       ) : (
         <NoContent type="게시판" />
       )}
-    </>
+    </FlexChild>
   );
 }

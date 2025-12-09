@@ -21,8 +21,9 @@
 
 .frame .content_box .title {
    font-size: clamp(18px, calc(100vw * 20px / 768vw), 20px) !important;
-   font-weight: 600 !important;
+   font-weight: 500 !important;
    color: #fff !important;
+   line-height: 1.2;
    /* text-align: center; */
 }
 

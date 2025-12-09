@@ -165,11 +165,11 @@ export default async function () {
         {/* <SubBanner1 /> */}
         
 
-        <FlexChild className={styles.sec4} alignItems="stretch">
+        <FlexChild className={clsx(styles.sec4, styles.freeSlide)}>
           <ReviewSection />
         </FlexChild>
 
-        <FlexChild className={styles.sec5} alignItems="stretch">
+        <FlexChild className={clsx(styles.sec5, styles.freeSlide)}>
           <EventSection initCondition={initCondition} initNotices={initNotices} />
         </FlexChild>
 
