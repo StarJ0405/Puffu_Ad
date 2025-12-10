@@ -60,6 +60,14 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
     }
   }
 
+  const cursorCheck = (link: string | undefined) => {
+    if (link) {
+      return 'pointer'
+    } else {
+      return ''
+    }
+  }
+
   return (
     <FlexChild className={clsx(styles.main_banner)}>
       <Swiper
@@ -69,7 +77,8 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
         loop={true}
         observer={true}
         observeParents={true}
-        // loopAdditionalSlides={1}
+        // maxBackfaceHiddenSlides={4}
+        // loopAdditionalSlides={3}
         pagination={{
           dynamicBullets: true,
           clickable: true,
@@ -86,9 +95,11 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
             item.thumbnail.pc && (
               <SwiperSlide key={i} className={clsx(`swiper_0${i}`, styles.slideItem)}>
                 <div onClick={() => linkCheck(item.to)} className={styles.thumbnail} style={{
-                  'backgroundImage': userData?.adult
-                    ? `url(${item.thumbnail.pc})`
-                    : "url(/resources/images/19_only_banner.png)"
+                  'backgroundImage': userData?.adult ? 
+                  `url(${item.thumbnail.pc})`
+                  : "url(/resources/images/19_only_banner.png)",
+                  
+                  cursor: cursorCheck(item.to),
                 }}
                 />
               </SwiperSlide>

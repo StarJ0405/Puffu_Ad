@@ -1,7 +1,7 @@
 
 .header {
    --all_transition: all 0.3s;
-   background-color: #F5F5F7;
+   background-color: #fff;
    position: relative;
    display: flex;
    flex-direction: column;
@@ -12,13 +12,18 @@
    top: 0;
    min-width: var(--minWidthDesktop);
    transition: var(--all_transition);
+   border-bottom: 1px solid transparent;
 }
 
 .header_wrap {
    padding: 14px 20px;
    box-sizing: border-box;
-   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
    transition: var(--all_transition);
+}
+
+.header.scroll {
+   /* background-color: #F5F5F7; */
+   border-color: rgba(0, 0, 0, 0.1);
 }
 
 
@@ -104,18 +109,6 @@
    z-index: 10;
    padding: 15px 0;
 }
-
-
-/* 스크롤되면 클래스 부여 */
-header.scroll {
-   border-bottom: 1px solid rgba(255,255,255,0.4);
-   padding: 10px 0 0;
-}
-header.scroll .header_wrap {
-   margin-bottom: 5px;
-   align-items: start !important;
-}
-header.scroll .logo img {width: 120px;}
 
 
 

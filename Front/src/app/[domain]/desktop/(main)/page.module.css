@@ -2,13 +2,13 @@
 .main_banner {
    width: 100%;
    height: auto;
-   padding-top: 30px;
    margin-bottom: 60px;
    position: relative;
 }
 
 .main_banner .slideItem {
    width: 83.99% !important;
+   max-width: 1600px !important;
    border-radius: 20px;
    overflow: hidden;
 }
@@ -39,8 +39,11 @@
    height: 5px;
    background: #555;
    opacity: 0.5;
+   cursor: pointer;
+   transition: 0.2s;
 }
 
+.main_banner .pagination > .bullet:hover,
 .main_banner .pagination .bullet.active {
    background: var(--main-color1);
    opacity: 1;
@@ -157,6 +160,11 @@
    position: absolute;
    right: -90px;
    padding-left: clamp(40px, calc(100VW * 80 / 1300), 80px);
+   transition: 0.5s;
+}
+
+.sec1 .link_item:hover .deco_box {
+   transform: translateX(-10%);
 }
 
 .sec1 .link_item.startups .deco_box {
@@ -263,6 +271,13 @@
    position: relative;
    z-index: 2;
    background: #fff;
+   transition: 0.2s;
+}
+
+.sec2 .category_list .ca_item .link_btn:hover {
+   background: #333;
+   border-color: #333;
+   color: #fff;
 }
 
 .sec2 .category_list .ca_item .ca_img {
@@ -272,10 +287,14 @@
    z-index: 1;
    right: 20px;
    bottom: 45px;
-   
+   transition: 0.4s;
 }
 .sec2 .category_list .ca_item .ca_img img {
    width: auto; height: 100%;
+}
+
+.sec2 .category_list > .ca_item:hover .ca_img {
+   transform: translateX(-10%);
 }
 
 
@@ -346,24 +365,36 @@
    position: absolute;
    width: clamp(200px, calc(100vw * 220 / 1300), 220px); 
    opacity: 0.2;
+   will-change: transform;
 }
 
 .sec2 .exhibitionBox .bg_layer > img:first-child {
    top: 20%;
    left: 50%;
-   transform: translate(-50%, -50%) rotate(25deg);
+   transform: translate(-50%, -50%);
+   /* rotate(25deg) */
+   animation: shape_rotate 10s infinite linear;
 }
 
 .sec2 .exhibitionBox .bg_layer > img:nth-child(2) {
    bottom: -87%;
    left: 3%;
-   transform: translate(-50%, -50%) rotate(61deg);
+   transform: translate(-50%, -50%);
+   /* rotate(61deg) */
+   animation: shape_rotate 10s infinite linear;
 }
 
 .sec2 .exhibitionBox .bg_layer > img:last-child {
    bottom: -90%;
    right: -16%;
-   transform: translate(-50%, -50%) rotate(30deg);
+   transform: translate(-50%, -50%);
+   /* rotate(30deg) */
+   animation: shape_rotate 10s infinite linear;
+}
+
+@keyframes shape_rotate {
+   from {transform: translate(-50%, -50%) rotate(0deg);}
+   to {transform: translate(-50%, -50%) rotate(360deg);}
 }
 
 
