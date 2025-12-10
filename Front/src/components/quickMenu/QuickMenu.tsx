@@ -157,7 +157,7 @@ export default function QuickMenu() {
          </AnimatePresence>
 
          {/* 채팅 버튼 */}
-         {/* <button hidden id="reload_read" onClick={() => reload_read()} /> */}
+         <button hidden id="reload_read" onClick={() => reload_read()} />
          {(isChatable() && adminCheck) && (
                <FlexChild position="relative">
                <P className={styles.chat_number} hidden={!chatroom?.unread}>

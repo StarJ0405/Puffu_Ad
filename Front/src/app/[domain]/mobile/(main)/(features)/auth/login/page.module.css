@@ -2,7 +2,9 @@
    display: flex;
    justify-content: center;
    align-items: center;
-   min-height: 100lvh;
+   min-height: 60lvh;
+   padding-top: 30px;
+   padding-bottom: 40px;
 }
 
 .loginBox {
@@ -12,11 +14,12 @@
    margin-top: 20px;
 }
 
-.loginBox .logo {
-   justify-content: center;
+.loginBox .login_txt {
+   font-size: 35px !important;
+   font-weight: 800 !important;
+   text-align: center;
+   color: #3E3A39 !important;
 }
-
-/* .loginBox div {width: auto;} */
 
 .signup {
    border-radius: 10px;
@@ -32,11 +35,17 @@
 }
 
 .signup .input_box input {
-   width: 100%; background: #000;
-   border-radius: 5px;
-   color: #fff;
-   border: 1px solid rgba(255,255,255,0.5);
+   width: 100%; background: #fff;
+   border-radius: 3px;
+   color: #222;
+   border: 1px solid #D3D3D3;
    padding: 10px 12px;
+   font-size: 15px;
+   font-weight: 500;
+}
+.signup .input_box input::placeholder {
+   font-size: 14px; font-weight: 500;
+   color: #8b8b8b;
 }
 .signup .input_box input:focus {
    border-color: #eb5353;
@@ -45,21 +54,43 @@
 
 /* 상태유지, 이메일, 비번 찾기 */
 .sign_features {
-   font-size: 14px;
-   font-weight: 400;
-   color: #c7c7c7;
+   font-size: 13px;
+   font-weight: 500;
+   color: #8b8b8b;
 }
 
 .sign_features > * {width: auto;}
 
-.sign_features .find_box {
-   gap: 7px; justify-content: flex-end;
-}
-
+.sign_features .find_box {gap: 7px; justify-content: flex-end;}
 .sign_features .find_box > * {width: auto;}
-
 .sign_features .find_box span {cursor: pointer !important;}
+.sign_features .login_and {cursor: pointer;}
+.sign_features .login_and label {display: flex; gap: 5px; align-items: center;}
+.sign_features .login_and label input {margin: 0; display: none;}
+/* 체크박스 커스텀 */
+.sign_features .login_and label .check_custom {
+   width: 15px; height: 15px;
+   border-radius: 3px;
+   border: 1px solid #ccc;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   background: #fff;
+}
+.sign_features .login_and label .check_custom img {display: none;}
 
+/* 체크박스 체크 시 */
+.sign_features .login_and label input:checked + .check_custom {
+   background: var(--main-color1);
+   border-color: var(--main-color1);
+}
+.sign_features .login_and label input:checked + .check_custom img {display: block;}
+
+
+.sign_features .login_and:hover span,
+.sign_features .login_and.active span {
+   color: var(--main-color1);
+}
 
 .sign_features .login_and:hover span,
 .sign_features .login_and.active span {
@@ -81,12 +112,15 @@
 }
 
 .join_btn {
-   background: transparent;
-   border: 1px solid #c7c7c7;
+   background: #fff;
+   border: 1px solid #3E3A39;
+   color: #3E3A39;
 }
+.login_btn:active {filter: var(--mob-active-filter);}
 
-.btn:active {
-   filter: var(--mob-active-filter);
+.join_btn:active {
+   border-color: var(--main-color1);
+   color: var(--main-color1);
 }
 
 
