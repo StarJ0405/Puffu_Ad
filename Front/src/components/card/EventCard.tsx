@@ -25,7 +25,7 @@ export function EventCard({
 
    const { isMobile } = useBrowserEvent();
    const LoadThumbnail = item.thumbnail ? item.thumbnail : "resources/images/no-img.png";
-   const BrowserClass = !isMobile ? styles.frame : styles.mob_frame;
+   const mobileClass = isMobile ? styles.mob_frame : '';
    const typeCheck = workType === 'slide' ? styles.slide : '';
    const navigate = useNavigate();
 
@@ -55,7 +55,7 @@ export function EventCard({
    // }, [item.thumbnail]);
 
    return (
-      <VerticalFlex className={clsx(BrowserClass, typeCheck)} onClick={() => navigate(`${siteInfo.bo_event}/${item.id}`)}>
+      <VerticalFlex className={clsx(styles.frame, mobileClass, typeCheck)} onClick={() => navigate(`${siteInfo.bo_event}/${item.id}`)}>
          <div 
             // ref={thumbRef}
             className={styles.thumbnail}

@@ -3,10 +3,12 @@
    background: #fff;
    width: 470px;
    min-height: 585px;
-   position: absolute;
-   bottom: 80px;
-   right: 0;
+   position: fixed;
+   bottom: 10%;
+   right: 100px;
    padding: 25px 15px 10px;
+   border: 1px solid #ccc;
+   z-index: 1000;
 }
 
 
