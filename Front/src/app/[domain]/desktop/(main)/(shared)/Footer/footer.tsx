@@ -6,7 +6,7 @@ import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import Link from "next/link";
-import SideNavi from "../sideNavi/sideNavi";
+import QuickMenu from "@/components/quickMenu/QuickMenu";
 import styles from "./footer.module.css";
 import clsx from "clsx";
 
@@ -73,7 +73,7 @@ export default async function Footer() {
         </HorizontalFlex>
       </footer>
 
-      <SideNavi />
+      <QuickMenu />
     </>
   );
 }
