@@ -1,11 +1,11 @@
 import { BaseRepository } from "data-source";
-import { StackItem } from "models/stack_item";
+import { VariantOfs } from "models/variant_ofs";
 import { inject, injectable } from "tsyringe";
 import { EntityManager } from "typeorm";
 
 @injectable()
-export class StackItemRepository extends BaseRepository<StackItem> {
+export class VariantOfsRepository extends BaseRepository<VariantOfs> {
   constructor(@inject("dataSource") public readonly manager: EntityManager) {
-    super(manager, StackItem);
+    super(manager, VariantOfs);
   }
 }
