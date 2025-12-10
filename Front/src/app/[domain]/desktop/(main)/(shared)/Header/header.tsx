@@ -43,7 +43,7 @@ export default function Header() {
     <>
       <header ref={headerRef} className={
           clsx(
-            // `${scroll ? styles.scroll : ""}`,
+            `${headerScroll ? styles.scroll : ""}`,
             styles.header
           )}
           style={{ top: headerScroll ? `-${LBHeight}px` : 0 }}
