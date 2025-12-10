@@ -98,8 +98,10 @@ export class CartService extends BaseService<Cart, CartRepository> {
     await this.lineItemRepository
       .builder("l")
       .delete()
-      .where(`id='${item_id}'`)
-      .andWhere(`cart_id = '${cart_id}'`)
+      // .where(`id='${item_id}'`)
+      // .andWhere(`cart_id = '${cart_id}'`)
+      .where("id = :item_id", { item_id })
+      .andWhere("cart_id = :cart_id", { cart_id })
       .andWhere(`(quantity + extra_quantity) < 1`)
       .execute();
   }
@@ -172,7 +174,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
       !cart_id ||
       !selected ||
       selected.length === 0 ||
-      !address_id
+      (!address_id && !offline_store_id) // 픽업이 아닌데 주소가 없으면 에러
     ) {
       throw new Error("주문서를 생성하기엔 데이터가 부족합니다.");
     }
@@ -219,18 +221,19 @@ export class CartService extends BaseService<Cart, CartRepository> {
       }
       // ------------------------------------
 
-      const address = await this.addressRepository.findOne({
-        where: {
-          id: address_id,
-        },
-      });
-      if (!address) throw new Error("해당하는 주소가 없습니다.");
-      const _address = {
-        ...address,
-        id: undefined,
-        user_id: null,
-        message,
-      };
+      let _address: any = undefined;
+      if (address_id) {
+        const address = await this.addressRepository.findOne({
+          where: { id: address_id },
+        });
+        if (!address) throw new Error("해당하는 주소가 없습니다.");
+        _address = {
+          ...address,
+          id: undefined,
+          user_id: null,
+          message,
+        };
+      }
       const shipping_method = await this.shippingMethodRepository.findOne({
         where: {
           id: shipping_method_id,
@@ -390,27 +393,6 @@ export class CartService extends BaseService<Cart, CartRepository> {
                 ),
             }
           );
-
-          // --- [2] 결제 완료 시 재고 확정 로직 (오프라인/온라인 분기) ---
-          if (offline_store_id) {
-            // StackItemService를 사용하여 실제 재고(stack)와 임시 재고(temp_stack)를 동시에 차감
-            await this.stackItemService.reduceStackOnOrderCompletion(
-              offline_store_id,
-              item.variant_id!,
-              (item.quantity || 0) + (item.extra_quantity || 0)
-            );
-          } else {
-            // 온라인 배송인 경우: variant stack 감소
-            await this.variantRepository.update(
-              { id: item.variant_id! },
-              {
-                stack: () =>
-                  `stack - ${
-                    (item.quantity || 0) + (item.extra_quantity || 0)
-                  }`,
-              }
-            );
-          }
         })
       );
       await Promise.all(
@@ -475,6 +457,24 @@ export class CartService extends BaseService<Cart, CartRepository> {
           display: order?.display,
         });
       }
+
+      await Promise.all(
+        items.map(async (item) => {
+          const totalQty = (item.quantity || 0) + (item.extra_quantity || 0);
+          if (offline_store_id) {
+            await this.stackItemService.reduceStackOnOrderCompletion(
+              offline_store_id,
+              item.variant_id!,
+              totalQty
+            );
+          } else {
+            await this.variantRepository.update(
+              { id: item.variant_id! },
+              { stack: () => `stack - ${totalQty}` }
+            );
+          }
+        })
+      );
       // if (order?.user_id && (order as any).offline_store_id) {
       //   await this.recentStoreService.createOrder(order);
       // }
