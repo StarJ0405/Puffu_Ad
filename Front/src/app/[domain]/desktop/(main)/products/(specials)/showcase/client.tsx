@@ -2,7 +2,7 @@
 import usePageData from "@/shared/hooks/data/usePageData";
 import { requester } from "@/shared/Requester";
 import { useCategories } from "@/providers/StoreProvider/StorePorivderClient";
-import { BaseProductList } from "../../../baseClient";
+import { BaseProductList } from "../../baseClient";
 import { Swiper as SwiperType } from "swiper";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import 'swiper/css';
@@ -22,7 +22,8 @@ import clsx from "clsx";
 import styles from './page.module.css'
 import siteInfo from "@/shared/siteInfo";
 import Select from "@/components/select/Select";
-import Pstyles from "../../../products.module.css"
+import Pstyles from "../../products.module.css"
+import useNavigate from "@/shared/hooks/useNavigate";
 
 function findCategoryById(categories: any[], id: string): any | undefined {
   for (const cat of categories) {
@@ -79,12 +80,14 @@ type ReviewEntity = {
   };
 };
 
-export function CategoryTab({
-  category_id,
-}: {
+type CategoryTabProps = {
   category_id: string;
-}) {
+  onChange?: (id: string) => void;
+};
+
+export function CategoryTab({ category_id, onChange }: CategoryTabProps) {
   const { categoriesData } = useCategories();
+  const navigate = useNavigate();
 
   const current = findCategoryById(categoriesData, category_id);
   if (!current) return null;
@@ -93,8 +96,7 @@ export function CategoryTab({
 
   if (!current.parent_id) {
     secondCategories = current.children ?? [];
-  }
-  else {
+  } else {
     const parent = current.parent;
     secondCategories = parent?.children ?? [];
   }
@@ -103,20 +105,24 @@ export function CategoryTab({
   return (
     <HorizontalFlex gap={10} className={styles.categoryTabs}>
       {secondCategories.map((cat) => (
-        <Link
+        <FlexChild
           key={cat.id}
-          href={`/products/showcase/${cat.id}`}
           className={clsx(
             styles.categoryTab,
             cat.id === category_id && styles.active
           )}
+          onClick={() =>
+            navigate(`/products/showcase?category_id=${cat.id}`)
+          }
         >
           {cat.name}
-        </Link>
+        </FlexChild>
       ))}
     </HorizontalFlex>
   );
 }
+
+
 
 
 
