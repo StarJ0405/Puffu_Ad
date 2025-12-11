@@ -270,7 +270,7 @@ export function MainCategory() {
 
   // 코스튬/의류 카테고리만 추출
   const costumeData = categoriesData.find((ca) => ca.name === '코스튬/의류');
-
+  
 
   function CategoryList({ group }: { group: Array<CategoryData> }) {
     return (
@@ -302,7 +302,7 @@ export function MainCategory() {
           )
         })}
       </nav>
-      <Link href={`/products/showcase?category_id=${costumeData?.id}`} className={styles.exhibitionBox}>
+      <Link href={`/products/showcase?category_id=${costumeData?.id}`} className={styles.exhibitionBox}>02d6fdcae527de5cd2626c3a385bab7ef9b3d3
         <Div className={styles.itemBox}>
           <VerticalFlex className={styles.text_box} alignItems="start">
             <P className={styles.text1}>특별한 의상을 찾으시나요?2</P>

@@ -34,7 +34,7 @@ export class VariantOfsService extends BaseService<
    */
   async updateStack(
     offlineStoreId: string,
-    offlineVariantId: string, // kiosk_variant_id -> offline_variant_id
+    offlineVariantId: string,
     stack: number
   ) {
     await this.repository.update(
@@ -59,7 +59,7 @@ export class VariantOfsService extends BaseService<
       .builder("vo")
       .update()
       .set({
-        stack: () => `"stack" - :quantity`,
+        stack: () => `"stack" - ${quantity}`,
       })
       .where("offline_store_id = :storeId", { storeId: offlineStoreId })
       .andWhere("variant_id = :varId", { varId: variantId })

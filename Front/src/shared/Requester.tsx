@@ -6,7 +6,7 @@ const mode = process.env.REACT_APP_MODE;
 
 const origin = mode
   ? process.env["NEXT_PUBLIC_BACK_" + mode.toUpperCase()] ||
-  process.env.NEXT_PUBLIC_BACK
+    process.env.NEXT_PUBLIC_BACK
   : process.env.NEXT_PUBLIC_BACK;
 
 class _Requester {
@@ -125,7 +125,7 @@ class _Requester {
             resolve(result);
           });
       });
-    } catch (e) { }
+    } catch (e) {}
   }
 
   async delete(url: string, data: any) {
@@ -161,7 +161,7 @@ class _Requester {
             resolve(result);
           });
       });
-    } catch (e) { }
+    } catch (e) {}
   }
   async put(url: string, data: any) {
     let instance = this.instance;
@@ -189,7 +189,7 @@ class _Requester {
             resolve(result);
           });
       });
-    } catch (e) { }
+    } catch (e) {}
   }
 
   // 회원 관련
@@ -415,6 +415,11 @@ class _Requester {
   async getMyCart(data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.get(`/users/me/cart`, data));
     else return await this.get(`/users/me/cart`, data);
+  }
+  // 결제 전 매장 재고 확인 (O2O)
+  async checkStock(data?: any, callback?: Function): Promise<any> {
+    if (callback) callback(await this.post(`/users/me/cart/check`, data));
+    else return await this.post(`/users/me/cart/check`, data);
   }
   // 주문서 관련
   async createOrder(data?: any, callback?: Function): Promise<any> {
@@ -832,19 +837,26 @@ class _Requester {
     else return await this.get(`/contract/${id}/verify`, data);
   }
 
-
   // 운영중인 오프라인 매장 조회
   async getOfflineStores(data?: any, callback?: Function): Promise<any> {
     if (callback) callback(await this.get(`/offline_store`, data));
     else return await this.get(`/offline_store`, data);
   }
-  async getOfflineStore(id?: string, data?: any, callback?: Function): Promise<any> {
+  async getOfflineStore(
+    id?: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
     if (callback) callback(await this.get(`/offline_store/${id}`, data));
     else return await this.get(`/offline_store/${id}`, data);
   }
 
   // 매장 즐겨찾기 관련
-  async createStoreWishlist(id?: string, data?: any, callback?: Function): Promise<any> {
+  async createStoreWishlist(
+    id?: string,
+    data?: any,
+    callback?: Function
+  ): Promise<any> {
     if (callback) callback(await this.post(`/store_wishlist/${id}`, data));
     else return await this.post(`/store_wishlist/${id}`, data);
   }
@@ -866,13 +878,7 @@ class _Requester {
     if (callback) callback(await this.get(`/recent_store`, data));
     else return await this.get(`/recent_store`, data);
   }
-
-
-
-
-
 }
-
 
 export default _Requester;
 
