@@ -10,7 +10,7 @@ import { ShippingMethodRepository } from "repositories/shipping_method";
 import { UserRepository } from "repositories/user";
 import { VariantRepository } from "repositories/variant";
 import { inject, injectable } from "tsyringe";
-import { FindManyOptions, FindOneOptions, ILike, In } from "typeorm";
+import { FindManyOptions, FindOneOptions, ILike, In, Raw } from "typeorm";
 import { CouponService } from "./coupon";
 import { PointService } from "./point";
 import { RecentStoreService } from "./recent_store";
@@ -138,15 +138,13 @@ export class CartService extends BaseService<Cart, CartRepository> {
     return super.getList(options);
   }
 
-
   // 결제 전 재고 확인
 
   async checkStock(
     offline_store_id: string,
     items: { variant_id: string; quantity: number }[]
   ): Promise<{ buyable: boolean; error?: { code: string; message: string } }> {
-    
-    //매핑 정보 조회 
+    //매핑 정보 조회
     const variantOfsList = await this.variantOfsService.getMappings(
       offline_store_id,
       items.map((i) => i.variant_id)
@@ -155,7 +153,10 @@ export class CartService extends BaseService<Cart, CartRepository> {
     if (variantOfsList.length !== items.length) {
       return {
         buyable: false,
-        error: { code: "101", message: "매장에 등록되지 않은 상품이 포함되어 있습니다." },
+        error: {
+          code: "101",
+          message: "매장에 등록되지 않은 상품이 포함되어 있습니다.",
+        },
       };
     }
 
@@ -166,7 +167,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
           buyable: true,
           variants: variantOfsList.map((v) => ({
             id: v.offline_variant_id,
-            stack: 50, 
+            stack: 50,
           })),
           error: null,
         },
@@ -174,20 +175,25 @@ export class CartService extends BaseService<Cart, CartRepository> {
 
       const { buyable, variants, error } = response.data;
 
-      //비동기 재고 최신화 
+      //비동기 재고 최신화
       if (variants) {
         Promise.all(
-          variants.map((v) => 
+          variants.map((v) =>
             this.variantOfsService.updateStack(offline_store_id, v.id, v.stack)
           )
-        ).catch((err) => console.error("[Sync Error] 로컬 재고 동기화 실패:", err));
+        ).catch((err) =>
+          console.error("[Sync Error] 로컬 재고 동기화 실패:", err)
+        );
       }
 
       //결과 리턴
       if (!buyable) {
         return {
           buyable: false,
-          error: error || { code: "STOCK_LACK", message: "매장 재고가 부족합니다." },
+          error: error || {
+            code: "STOCK_LACK",
+            message: "매장 재고가 부족합니다.",
+          },
         };
       }
 
@@ -196,7 +202,10 @@ export class CartService extends BaseService<Cart, CartRepository> {
       console.error("Store Server Communication Error", e);
       return {
         buyable: false,
-        error: { code: "500", message: "매장 시스템 연결 중 오류가 발생했습니다." },
+        error: {
+          code: "500",
+          message: "매장 시스템 연결 중 오류가 발생했습니다.",
+        },
       };
     }
   }
@@ -232,7 +241,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
     offline_store_id?: string;
   }): Promise<Order | null> {
     console.log("complete.offline_store_id >>>", offline_store_id);
-    
+
     //픽업일 경우 주소 필수 체크 해제
     if (
       !user_id ||
@@ -259,7 +268,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
       const items = cart.items?.filter((item) => selected.includes(item.id));
       if (!items || items.length === 0)
         throw new Error("담겨있는 상품이 없습니다.");
-      let _address: any = undefined; 
+      let _address: any = undefined;
       if (address_id) {
         const address = await this.addressRepository.findOne({
           where: { id: address_id },
@@ -272,7 +281,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
           message,
         };
       }
-      
+
       const shipping_method = await this.shippingMethodRepository.findOne({
         where: { id: shipping_method_id },
       });
@@ -283,8 +292,10 @@ export class CartService extends BaseService<Cart, CartRepository> {
         store_id: null,
         created_at: undefined,
         updated_at: undefined,
+        deleted_at: undefined,
+        shipped_at: undefined,
+        coupons: undefined,
       };
-
       const now = new Date();
       let display = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(
         2,
@@ -300,19 +311,21 @@ export class CartService extends BaseService<Cart, CartRepository> {
         user_id,
         store_id: cart.store_id,
         offline_store_id,
-        address: _address ? (JSON.stringify(_address) as any) : undefined,
-        shipping_method: _shipping_method ? (JSON.stringify(_shipping_method) as any) : undefined,
+        address: _address,
+        shipping_method: _shipping_method,
         status: payment?.bank_number
           ? OrderStatus.AWAITING
           : OrderStatus.PENDING,
-        payment_data: JSON.stringify(payment) as any,
+        payment_data: Raw((alias) => `CAST(:paymentVal AS jsonb)`, {
+          paymentVal: JSON.stringify(payment),
+        }) as any,
         point: point || 0,
         subscribe_id,
       });
       const subscribe = subscribe_id
         ? await this.subscribeService.get({ where: { id: subscribe_id } })
         : null;
-      
+
       const order_coupons = coupons?.orders?.length
         ? await this.couponService.getList({
             where: { id: In(coupons.orders) },
@@ -334,7 +347,8 @@ export class CartService extends BaseService<Cart, CartRepository> {
           }))
       );
 
-      const total = items?.reduce((acc, item) => {
+      const total =
+        items?.reduce((acc, item) => {
           const amount = (item.variant?.discount_price || 0) * item.quantity;
           const coupon = item_coupons.find((f) => f.id === item.id);
           if (coupon) {
@@ -378,8 +392,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
         (point || 0) -
         order_fix -
         Math.round(
-          ((total + shipping) *
-            (order_percents + (subscribe?.percent || 0))) /
+          ((total + shipping) * (order_percents + (subscribe?.percent || 0))) /
             100.0
         );
 
@@ -421,33 +434,37 @@ export class CartService extends BaseService<Cart, CartRepository> {
           );
         })
       );
-      
+
       await Promise.all(
-        order_coupons.map(async (coupon) =>
-          await this.couponService.update(
-            { id: coupon.id },
-            { order_id: order?.id }
-          )
+        order_coupons.map(
+          async (coupon) =>
+            await this.couponService.update(
+              { id: coupon.id },
+              { order_id: order?.id }
+            )
         )
       );
       await Promise.all(
-        shipping_coupons.map(async (coupon) =>
-          await this.couponService.update(
-            { id: coupon.id },
-            { shipping_method_id: order?.shipping_method?.id }
-          )
+        shipping_coupons.map(
+          async (coupon) =>
+            await this.couponService.update(
+              { id: coupon.id },
+              { shipping_method_id: order?.shipping_method?.id }
+            )
         )
       );
       await Promise.all(
-        item_coupons.map(async (item) =>
-          await Promise.all(
-            item.coupons.map(async (coupon) =>
-              await this.couponService.update(
-                { id: coupon.id },
-                { item_id: item.id }
+        item_coupons.map(
+          async (item) =>
+            await Promise.all(
+              item.coupons.map(
+                async (coupon) =>
+                  await this.couponService.update(
+                    { id: coupon.id },
+                    { item_id: item.id }
+                  )
               )
             )
-          )
         )
       );
 
@@ -473,7 +490,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
       await Promise.all(
         items.map(async (item) => {
           const totalQty = (item.quantity || 0) + (item.extra_quantity || 0);
-          
+
           if (offline_store_id) {
             await this.variantOfsService.decreaseStack(
               offline_store_id,
@@ -505,7 +522,5 @@ export class CartService extends BaseService<Cart, CartRepository> {
     cart_id: string,
     offline_store_id?: string,
     items?: { variant_id: string; quantity: number }[]
-  ) {
-
-  }
+  ) {}
 }
