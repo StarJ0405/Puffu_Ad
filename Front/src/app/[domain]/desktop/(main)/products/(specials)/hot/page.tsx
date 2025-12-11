@@ -6,10 +6,11 @@ import Span from "@/components/span/Span";
 // import { HotList } from "./client";
 import Pstyles from "../../products.module.css";
 import {} from "./client";
-import styles from "./page.module.css";
+import { CategoryMenu, ProductMenu, BaseProductList } from "../../baseClient";
 import { requester } from "@/shared/Requester";
-import { HotList } from "./client";
+// import { HotList } from "./client";
 import { SearchParams } from "next/dist/server/request/search-params";
+import FlexChild from "@/components/flex/FlexChild";
 
 export default async function ({
   searchParams,
@@ -27,25 +28,27 @@ export default async function ({
   const hotProducts = await requester.getProducts(hotCondition);
 
   return (
-    <section className="root">
-      <Container className="page_container" marginTop={80}>
-        <VerticalFlex className={styles.titleBox}>
-          <VerticalFlex className={styles.title}>
-            <h2 className="SacheonFont" style={{ marginBottom: "12px" }}>
-              <Image
-                src="/resources/images/header/HotDeal_icon.png"
-                width={24}
-                height={"auto"}
-              />
-              이 달의 <Span color={"#FF4A4D"}>HOT</Span>딜
-            </h2>
-            <P width={"auto"}>매달 갱신되는 Hot Deal 상품!</P>
+    <section className="root page_container">
+      <Container marginTop={80}>
+        <VerticalFlex className={Pstyles.titleBox} alignItems="start">
+          <VerticalFlex className={Pstyles.title} gap={10} width={'auto'}>
+            <h2 className="Wanted">BEST <small>상품</small></h2>
           </VerticalFlex>
+
+          <ProductMenu />
         </VerticalFlex>
 
-        <VerticalFlex className={Pstyles.list}>
-          <HotList initProducts={hotProducts} initConiditon={hotCondition} />
-        </VerticalFlex>
+        <FlexChild className={Pstyles.container} alignItems="start" gap={40}>
+          <CategoryMenu ConditionOrder={hotCondition} />
+  
+          <VerticalFlex className={Pstyles._wrap}>
+            <BaseProductList
+              id={'discount'}
+              initProducts={hotProducts}
+              initConiditon={hotCondition}
+            />
+          </VerticalFlex>
+        </FlexChild>
       </Container>
     </section>
   );

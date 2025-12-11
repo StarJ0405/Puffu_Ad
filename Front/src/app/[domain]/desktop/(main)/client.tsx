@@ -302,14 +302,10 @@ export function MainCategory() {
           )
         })}
       </nav>
-      <Link
-        href={`/products/showcase?category_id=${costumeData?.id}`}
-        className={styles.exhibitionBox}
-      />
-      <Link href={`${siteInfo.pt_showcase}/${costumeData?.id}`} className={styles.exhibitionBox}>
+      <Link href={`/products/showcase?category_id=${costumeData?.id}`} className={styles.exhibitionBox}>
         <Div className={styles.itemBox}>
           <VerticalFlex className={styles.text_box} alignItems="start">
-            <P className={styles.text1}>특별한 의상을 찾으시나요?</P>
+            <P className={styles.text1}>특별한 의상을 찾으시나요?2</P>
             <FlexChild gap={10}>
               <h3>{costumeData?.name}</h3>
               <Span className={clsx(styles.eng_txt, 'Wanted')}>{costumeData?.english_name}</Span>
