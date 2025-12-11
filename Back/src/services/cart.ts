@@ -13,8 +13,8 @@ import { inject, injectable } from "tsyringe";
 import { FindManyOptions, FindOneOptions, ILike, In } from "typeorm";
 import { CouponService } from "./coupon";
 import { PointService } from "./point";
-import { SubscribeService } from "./subscribe";
 import { RecentStoreService } from "./recent_store";
+import { SubscribeService } from "./subscribe";
 import { VariantOfsService } from "./variant_ofs";
 
 @injectable()
@@ -300,12 +300,12 @@ export class CartService extends BaseService<Cart, CartRepository> {
         user_id,
         store_id: cart.store_id,
         offline_store_id,
-        address: _address,
-        shipping_method: _shipping_method,
+        address: _address ? (JSON.stringify(_address) as any) : undefined,
+        shipping_method: _shipping_method ? (JSON.stringify(_shipping_method) as any) : undefined,
         status: payment?.bank_number
           ? OrderStatus.AWAITING
           : OrderStatus.PENDING,
-        payment_data: payment,
+        payment_data: JSON.stringify(payment) as any,
         point: point || 0,
         subscribe_id,
       });

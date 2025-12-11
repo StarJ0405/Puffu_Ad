@@ -599,12 +599,30 @@ export function CartWrap() {
         .filter((f) => f.coupons.length)
     );
   }, [selected, cartData?.items]);
+
+  // [수정된 useEffect] 매장 목록과 즐겨찾기 목록 동시 로드
   useEffect(() => {
     const init = async () => {
-      const res = await requester.getOfflineStores({ pageSize: 12 });
-      const list = Array.isArray(res) ? res : res?.content ?? [];
+      // 1. 매장 목록과 즐겨찾기 목록 병렬 호출
+      const [resStores, resFav] = await Promise.all([
+        requester.getOfflineStores({ pageSize: 12 }),
+        requester.getStoreWishlist({
+          pageSize: 100,
+          relations: ["offline_store"],
+        }),
+      ]);
+
+      // 2. 그 외 매장 세팅
+      const list = Array.isArray(resStores)
+        ? resStores
+        : resStores?.content ?? [];
       setOtherStores(list);
 
+      // 3. 즐겨찾기 목록 세팅 (삭제 기능 작동 보장)
+      const favList = Array.isArray(resFav) ? resFav : resFav?.content ?? [];
+      setFavoriteStores(favList);
+
+      // 4. 초기 선택값 세팅
       if (list.length > 0) {
         const store = list[0];
         setBaseCenter({ lat: Number(store.lat), lng: Number(store.lng) });
@@ -612,6 +630,7 @@ export function CartWrap() {
           ...prev,
           selectedStore: store,
         }));
+        setSelectOffilineStore(store.id); // 라디오 버튼 싱크 맞추기
       }
     };
 
@@ -756,20 +775,6 @@ export function CartWrap() {
           </VerticalFlex>
         </CheckboxGroup>
 
-        {/* 추후에 픽업 기능 넣는다 하면 살리기 <FlexChild className={style.delivery_root}>
-            <VerticalFlex alignItems="start">
-              <article>
-                  <P className={style.list_title}>배송방법</P>
-              </article>
-
-              <HorizontalFlex marginTop={15}>
-                  <FlexChild className={style.delivery_btn}>
-                    <Image src="/resources/icons/cart/delivery_icon.png" width={36} />
-                    <Span>배송</Span>
-                  </FlexChild>
-              </HorizontalFlex>
-            </VerticalFlex>
-        </FlexChild> */}
         <FlexChild
           className={styles.coupon_info}
           hidden={!storeData?.metadata?.shipping && !storeData?.metadata?.order}
@@ -1136,6 +1141,7 @@ export function CartWrap() {
                                           : "/resources/icons/emptyStarIcon.svg"
                                       }
                                       width={20}
+                                      style={{ cursor: "pointer" }}
                                       onClick={(e) => {
                                         e.stopPropagation();
                                         if (inWishlist) {
@@ -1193,14 +1199,6 @@ export function CartWrap() {
                   </FlexChild>
                   <Span>무통장 입금</Span>
                 </FlexChild>
-                {/* <FlexChild className={clsx(styles.payment_card)} onClick={() => document.getElementById("toss")?.click()}>
-                  <FlexChild width={"auto"}>
-                    <RadioChild id={"toss"} />
-                  </FlexChild>
-                  <Span>
-                    토스 결제
-                  </Span>
-                </FlexChild> */}
               </VerticalFlex>
             </RadioGroup>
           </VerticalFlex>
@@ -1308,14 +1306,6 @@ export function CartWrap() {
                     사용 취소
                   </Button>
                 </HorizontalFlex>
-
-                {/* <HorizontalFlex className={clsx(styles.info_item, styles.point_total)}>
-                  <P><Span>사용 후 남은 포인트 </Span></P>
-                  <P className={styles.my_point}>
-                    <Span>{(userData?.point || 0) - point}</Span>
-                    <Span> P</Span>
-                  </P>
-                </HorizontalFlex> */}
               </VerticalFlex>
 
               <VerticalFlex gap={10}>
@@ -1493,11 +1483,50 @@ export function CartWrap() {
                 ) {
                   return toast({ message: "픽업할 매장을 선택해주세요." });
                 }
-                if (point > 0) {
+
+                // [신규] 픽업 주문 시 재고 확인 (O2O 통신)
+                if (fulfillment.method === "pickup") {
                   setIsLoading(true);
+                  try {
+                    const checkItems = cartData?.items
+                      .filter((item) => selected.includes(item.id))
+                      .map((item) => ({
+                        variant_id: item.variant_id,
+                        quantity:
+                          (item.quantity || 0) + (item.extra_quantity || 0),
+                      }));
+
+                    if (checkItems && checkItems.length > 0) {
+                      const checkResult = await requester.checkStock({
+                        offline_store_id: fulfillment.selectedStore!.id,
+                        items: checkItems,
+                      });
+
+                      if (!checkResult.buyable) {
+                        setIsLoading(false);
+                        return toast({
+                          message:
+                            checkResult.error?.message ||
+                            "매장 재고가 부족하여 주문할 수 없습니다.",
+                        });
+                      }
+                    }
+                  } catch (e: any) {
+                    setIsLoading(false);
+                    return toast({
+                      message:
+                        e?.message ||
+                        "매장 정보를 확인하는 중 오류가 발생했습니다.",
+                    });
+                  }
+                }
+
+                if (point > 0) {
+                  if (fulfillment.method !== "pickup") setIsLoading(true);
                   const { user } = await requester.getCurrentUser();
                   if (user.point < point) {
                     reload();
+                    setIsLoading(false);
                     return toast({
                       message: "보유포인트가 사용포인트보다 적습니다.",
                     });
@@ -1522,7 +1551,7 @@ export function CartWrap() {
                   subscribe_id: userData?.subscribe?.id,
                 };
                 if (getTotal() === 0) {
-                  setIsLoading(true);
+                  if (!isLoading) setIsLoading(true);
                   requester.createOrder(
                     data,
                     ({
@@ -1551,12 +1580,12 @@ export function CartWrap() {
                 } else
                   switch (payment) {
                     // case "toss": {
-                    //   sessionStorage.setItem(
-                    //     Sessions.PAYMENT,
-                    //     JSON.stringify(data)
-                    //   );
-                    //   navigate(`/orders/cart/toss`);
-                    //   break;
+                    //    sessionStorage.setItem(
+                    //      Sessions.PAYMENT,
+                    //      JSON.stringify(data)
+                    //    );
+                    //    navigate(`/orders/cart/toss`);
+                    //    break;
                     // }
                     case "direct_bank": {
                       requester.createOrder(
