@@ -1,19 +1,18 @@
+import { ConnectCodeService } from "services/connect-code";
+import { LinkService } from "services/link";
 import { container } from "tsyringe";
 import { schedule } from "../module";
-import { StackItemService } from "services/stack_item";
 
 export function regist(DEV: boolean) {
-  // 매 1분마다 실행 (* * * * *)
+  // 스케줄링된 작업 시작
+
   schedule(
-    "* * * * *",
+    "0 0 0 * * *",
     async () => {
-      try {
-        const stackItemService = container.resolve(StackItemService);
-        // 180초(3분) 지난 임시 재고 정리
-        await stackItemService.clearExpiredTempStacks(180);
-      } catch (e) {
-        console.error("[Cron] clean_temp_stack_item Error:", e);
-      }
+      const connectCodeService = container.resolve(ConnectCodeService);
+      await connectCodeService.removeExpires();
+      const linkService = container.resolve(LinkService);
+      await linkService.clean();
     },
     {}
   );
