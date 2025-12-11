@@ -15,7 +15,7 @@ import { CouponService } from "./coupon";
 import { PointService } from "./point";
 import { SubscribeService } from "./subscribe";
 import { RecentStoreService } from "./recent_store";
-import { StackItemService } from "./stack_item";
+import { VariantOfsService } from "./variant_ofs";
 
 @injectable()
 export class CartService extends BaseService<Cart, CartRepository> {
@@ -40,8 +40,8 @@ export class CartService extends BaseService<Cart, CartRepository> {
     protected variantRepository: VariantRepository,
     @inject(RecentStoreService)
     protected recentStoreService: RecentStoreService,
-    @inject(StackItemService)
-    protected stackItemService: StackItemService
+    @inject(VariantOfsService)
+    protected variantOfsService: VariantOfsService
   ) {
     super(cartRepository);
   }
@@ -80,6 +80,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
       });
     }
   }
+
   async updateItem(
     cart_id: string,
     item_id: string,
@@ -98,8 +99,6 @@ export class CartService extends BaseService<Cart, CartRepository> {
     await this.lineItemRepository
       .builder("l")
       .delete()
-      // .where(`id='${item_id}'`)
-      // .andWhere(`cart_id = '${cart_id}'`)
       .where("id = :item_id", { item_id })
       .andWhere("cart_id = :cart_id", { cart_id })
       .andWhere(`(quantity + extra_quantity) < 1`)
@@ -139,6 +138,70 @@ export class CartService extends BaseService<Cart, CartRepository> {
     return super.getList(options);
   }
 
+
+  // 결제 전 재고 확인
+
+  async checkStock(
+    offline_store_id: string,
+    items: { variant_id: string; quantity: number }[]
+  ): Promise<{ buyable: boolean; error?: { code: string; message: string } }> {
+    
+    //매핑 정보 조회 
+    const variantOfsList = await this.variantOfsService.getMappings(
+      offline_store_id,
+      items.map((i) => i.variant_id)
+    );
+
+    if (variantOfsList.length !== items.length) {
+      return {
+        buyable: false,
+        error: { code: "101", message: "매장에 등록되지 않은 상품이 포함되어 있습니다." },
+      };
+    }
+
+    try {
+      //통신 Mockup
+      const response = {
+        data: {
+          buyable: true,
+          variants: variantOfsList.map((v) => ({
+            id: v.offline_variant_id,
+            stack: 50, 
+          })),
+          error: null,
+        },
+      };
+
+      const { buyable, variants, error } = response.data;
+
+      //비동기 재고 최신화 
+      if (variants) {
+        Promise.all(
+          variants.map((v) => 
+            this.variantOfsService.updateStack(offline_store_id, v.id, v.stack)
+          )
+        ).catch((err) => console.error("[Sync Error] 로컬 재고 동기화 실패:", err));
+      }
+
+      //결과 리턴
+      if (!buyable) {
+        return {
+          buyable: false,
+          error: error || { code: "STOCK_LACK", message: "매장 재고가 부족합니다." },
+        };
+      }
+
+      return { buyable: true };
+    } catch (e) {
+      console.error("Store Server Communication Error", e);
+      return {
+        buyable: false,
+        error: { code: "500", message: "매장 시스템 연결 중 오류가 발생했습니다." },
+      };
+    }
+  }
+
+  // 주문 완료 (단순 차감)
   async complete({
     user_id,
     cart_id,
@@ -169,6 +232,8 @@ export class CartService extends BaseService<Cart, CartRepository> {
     offline_store_id?: string;
   }): Promise<Order | null> {
     console.log("complete.offline_store_id >>>", offline_store_id);
+    
+    //픽업일 경우 주소 필수 체크 해제
     if (
       !user_id ||
       !cart_id ||
@@ -181,13 +246,9 @@ export class CartService extends BaseService<Cart, CartRepository> {
 
     let cart: Cart | null = null;
 
-    // --- 재고 관리 및 롤백을 위한 try-catch 블록 시작 ---
     try {
       cart = await this.repository.findOne({
-        where: {
-          id: cart_id,
-          user_id,
-        },
+        where: { id: cart_id, user_id },
         relations: [
           "items.variant.product.discounts.discount",
           "items.variant.discounts.discount",
@@ -198,30 +259,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
       const items = cart.items?.filter((item) => selected.includes(item.id));
       if (!items || items.length === 0)
         throw new Error("담겨있는 상품이 없습니다.");
-
-      // --- [1] 결제 시도 시 임시 재고 선점 ---
-      if (offline_store_id) {
-        const success = await Promise.all(
-          items.map(async (item) => {
-            const totalQuantity =
-              (item.quantity || 0) + (item.extra_quantity || 0);
-            return this.stackItemService.increaseTempStack(
-              offline_store_id,
-              item.variant_id!, // Non-null Assertion
-              totalQuantity
-            );
-          })
-        );
-
-        if (success.some((s) => !s)) {
-          throw new Error(
-            "선택한 매장의 재고 확보에 실패했습니다. 재고를 확인해 주세요."
-          );
-        }
-      }
-      // ------------------------------------
-
-      let _address: any = undefined;
+      let _address: any = undefined; 
       if (address_id) {
         const address = await this.addressRepository.findOne({
           where: { id: address_id },
@@ -234,10 +272,9 @@ export class CartService extends BaseService<Cart, CartRepository> {
           message,
         };
       }
+      
       const shipping_method = await this.shippingMethodRepository.findOne({
-        where: {
-          id: shipping_method_id,
-        },
+        where: { id: shipping_method_id },
       });
       if (!shipping_method) throw new Error("해당하는 배송방법이 없습니다.");
       const _shipping_method = {
@@ -248,20 +285,13 @@ export class CartService extends BaseService<Cart, CartRepository> {
         updated_at: undefined,
       };
 
-      // if (point > 0) {
-      //   const has = await this.pointService.getTotalPoint(user_id);
-      //   if (has < point) throw new Error("소지하고 있는 포인트가 부족합니다.");
-      // }
-
       const now = new Date();
       let display = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(
         2,
         "0"
       )}${String(now.getDate()).padStart(2, "0")}`;
       const count = await this.orderRepository.count({
-        where: {
-          display: ILike(`${display}%`),
-        },
+        where: { display: ILike(`${display}%`) },
       });
       display += count.toString(36).padStart(5, "0");
 
@@ -282,7 +312,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
       const subscribe = subscribe_id
         ? await this.subscribeService.get({ where: { id: subscribe_id } })
         : null;
-      // const { orders = [], shippings = [], items=[] } = coupons || {};
+      
       const order_coupons = coupons?.orders?.length
         ? await this.couponService.getList({
             where: { id: In(coupons.orders) },
@@ -299,16 +329,12 @@ export class CartService extends BaseService<Cart, CartRepository> {
           ?.map(async (item) => ({
             id: item.item_id,
             coupons: await this.couponService.getList({
-              where: {
-                id: In(item.coupons),
-              },
+              where: { id: In(item.coupons) },
             }),
           }))
       );
 
-      // (원본 복구) 상세 금액 계산 로직
-      const total =
-        items?.reduce((acc, item) => {
+      const total = items?.reduce((acc, item) => {
           const amount = (item.variant?.discount_price || 0) * item.quantity;
           const coupon = item_coupons.find((f) => f.id === item.id);
           if (coupon) {
@@ -347,13 +373,13 @@ export class CartService extends BaseService<Cart, CartRepository> {
         },
         [0, 0]
       );
-      // line_item 총 지분 금액 계산 : 배송비 - 포인트 - 기타 할인비
       const shared_total =
         shipping -
         (point || 0) -
         order_fix -
         Math.round(
-          ((total + shipping) * (order_percents + (subscribe?.percent || 0))) /
+          ((total + shipping) *
+            (order_percents + (subscribe?.percent || 0))) /
             100.0
         );
 
@@ -395,54 +421,38 @@ export class CartService extends BaseService<Cart, CartRepository> {
           );
         })
       );
+      
       await Promise.all(
-        order_coupons.map(
-          async (coupon) =>
-            await this.couponService.update(
-              {
-                id: coupon.id,
-              },
-              {
-                order_id: order?.id,
-              }
-            )
+        order_coupons.map(async (coupon) =>
+          await this.couponService.update(
+            { id: coupon.id },
+            { order_id: order?.id }
+          )
         )
       );
       await Promise.all(
-        shipping_coupons.map(
-          async (coupon) =>
-            await this.couponService.update(
-              {
-                id: coupon.id,
-              },
-              {
-                shipping_method_id: order?.shipping_method?.id,
-              }
-            )
+        shipping_coupons.map(async (coupon) =>
+          await this.couponService.update(
+            { id: coupon.id },
+            { shipping_method_id: order?.shipping_method?.id }
+          )
         )
       );
       await Promise.all(
-        item_coupons.map(
-          async (item) =>
-            await Promise.all(
-              item.coupons.map(
-                async (coupon) =>
-                  await this.couponService.update(
-                    {
-                      id: coupon.id,
-                    },
-                    {
-                      item_id: item.id,
-                    }
-                  )
+        item_coupons.map(async (item) =>
+          await Promise.all(
+            item.coupons.map(async (coupon) =>
+              await this.couponService.update(
+                { id: coupon.id },
+                { item_id: item.id }
               )
             )
+          )
         )
       );
+
       order = await this.orderRepository.findOne({
-        where: {
-          id: order!.id,
-        },
+        where: { id: order!.id },
         relations: [
           "shipping_method.coupons",
           "address",
@@ -452,22 +462,26 @@ export class CartService extends BaseService<Cart, CartRepository> {
           "subscribe",
         ],
       });
+
       if (point > 0) {
         await this.pointService.usePoint(user_id, point, {
           display: order?.display,
         });
       }
 
+      // 모든 결제/DB 처리가 성공한 후 최종 재고 차감 (Service 이용)
       await Promise.all(
         items.map(async (item) => {
           const totalQty = (item.quantity || 0) + (item.extra_quantity || 0);
+          
           if (offline_store_id) {
-            await this.stackItemService.reduceStackOnOrderCompletion(
+            await this.variantOfsService.decreaseStack(
               offline_store_id,
               item.variant_id!,
               totalQty
             );
           } else {
+            // 온라인 재고 차감
             await this.variantRepository.update(
               { id: item.variant_id! },
               { stack: () => `stack - ${totalQty}` }
@@ -475,51 +489,23 @@ export class CartService extends BaseService<Cart, CartRepository> {
           }
         })
       );
-      // if (order?.user_id && (order as any).offline_store_id) {
-      //   await this.recentStoreService.createOrder(order);
-      // }
+
       if (order?.user_id && order.offline_store_id) {
         await this.recentStoreService.createOrder(order);
       }
 
       return order;
     } catch (error) {
-      // --- [3] 오류 발생 시 임시 재고 반환 (롤백) ---
-      if (offline_store_id && cart && cart.items) {
-        const itemsToRollback = cart.items.filter((item) =>
-          selected.includes(item.id)
-        );
-
-        await Promise.all(
-          itemsToRollback.map(async (item) => {
-            await this.stackItemService.decreaseTempStack(
-              offline_store_id,
-              item.variant_id!,
-              (item.quantity || 0) + (item.extra_quantity || 0)
-            );
-          })
-        );
-      }
       throw error;
     }
   }
 
-  // 소켓 연결이 끊겼을 때
+  // 소켓 연결 해제 시: 더 이상 할 일이 없으므로 빈 함수로 남김
   async handleSocketDisconnect(
     cart_id: string,
     offline_store_id?: string,
     items?: { variant_id: string; quantity: number }[]
   ) {
-    if (offline_store_id && items && items.length > 0) {
-      await Promise.all(
-        items.map((item) =>
-          this.stackItemService.decreaseTempStack(
-            offline_store_id,
-            item.variant_id,
-            item.quantity
-          )
-        )
-      );
-    }
+
   }
 }
