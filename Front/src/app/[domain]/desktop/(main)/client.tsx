@@ -270,7 +270,7 @@ export function MainCategory() {
 
   // 코스튬/의류 카테고리만 추출
   const costumeData = categoriesData.find((ca) => ca.name === '코스튬/의류');
-
+  
 
   function CategoryList({ group }: { group: Array<CategoryData> }) {
     return (
