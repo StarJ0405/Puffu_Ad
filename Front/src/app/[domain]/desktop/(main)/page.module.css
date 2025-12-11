@@ -4,6 +4,7 @@
    height: auto;
    margin-bottom: 60px;
    position: relative;
+   margin-top: 30px;
 }
 
 .main_banner .slideItem {
@@ -459,9 +460,10 @@
    padding-right: 120px;
 }
 
-/* .sec4 .slide_item {
-   max-width: 300px !important;
-} */
+.sec4 .slide_item {
+   width: 294px;
+   flex-shrink: 0;
+}
 
 
 .sec5 {
@@ -470,9 +472,10 @@
    background: url('/resources/images/main_event_bg.png') no-repeat center / cover;
 }
 
-/* .sec5 .slide_item {
-   max-width: 410px !important;
-} */
+.sec5 .slide_item {
+   width: 398px;
+   flex-shrink: 0;
+}
 
 .sec5 .titleBox {
    padding-right: 50px;
@@ -495,7 +498,7 @@
 }
 
 @media (min-width: 1301px) {
-   .freeSlide .ProductSlider {min-width: 100%;}
+   .freeSlide .ProductSlider {min-width: 70vw;}
    /* .freeSlide .ProductSlider {min-width: 67.72vw; max-width: 1800px;} */
    .freeSlide .item_wrap {max-width: 1274px; margin: 0 auto;}
 }

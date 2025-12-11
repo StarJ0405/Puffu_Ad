@@ -10,12 +10,14 @@ import clsx from "clsx";
 import styles from "./EventCard.module.css";
 
 export function EventCard({
+   width,
    item,
    onClick,
    dateToString,
    workType,
    lineClamp = 1,
 }: {
+   width?: number | string;
    item : NoticeData;
    dateToString?: ()=> void;
    onClick?: ()=> void;
