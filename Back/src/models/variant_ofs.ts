@@ -29,7 +29,10 @@ export class VariantOfs extends BaseEntity {
   offline_store?: OfflineStore;
 
   @Column({ type: "character varying", nullable: false })
-  kiosk_variant_id!: string;
+  offline_variant_id!: string;
+
+  @Column({ type: "integer", default: 0 })
+  stack!: number;
 
   @Column({ type: "jsonb", default: {} })
   metadata?: Record<string, unknown> | null;

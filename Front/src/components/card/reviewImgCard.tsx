@@ -82,7 +82,7 @@ export default function ReviewImgCard({
   return (
     <FlexChild
       width={width ?? "100%"}
-      // maxWidth={!isMobile ? 295 : ""}
+      // maxWidth={!isMobile ? 320 : ""}
       onClick={openDetail}
       className={clsx(
         styles.review_item,

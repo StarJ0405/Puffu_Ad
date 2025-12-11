@@ -16,6 +16,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import styles from "./page.module.css";
+import Image from "@/components/Image/Image";
 
 export function LoginFrame() {
   const [loginKeep, setLoginkeep] = useState<boolean>(false);
@@ -46,10 +47,17 @@ export function SignFeatures({
       <FlexChild
         className={clsx(styles.login_and, loginKeep && styles.active)}
         width={"auto"}
-        onClick={() => setLoginkeep((prev) => !prev)}
       >
-        {/* <CheckboxChild id={'11'} /> */}
-        <Span cursor="pointer">로그인 상태 유지</Span>
+        <label>
+          <input type="checkbox" checked={loginKeep} onChange={() => setLoginkeep((prev) => !prev)} />
+          <div className={styles.check_custom}>
+            <Image
+              src={"/resources/icons//checkBox_icon.png"}
+              width={7}
+            />
+          </div>
+          <Span cursor="pointer">로그인 상태 유지</Span>
+        </label>
       </FlexChild>
 
       <FlexChild className={styles.find_box}>

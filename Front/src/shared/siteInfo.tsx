@@ -22,6 +22,7 @@ const siteInfo = {
    pt_new : '/products/new',
    pt_sale : '/products/hot',
    pt_commingSoon : '/products/commingSoon',
+   pt_showcase : '/products/showcase',
 
    // 페이지
    map_location: '/map',

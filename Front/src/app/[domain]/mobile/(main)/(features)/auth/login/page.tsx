@@ -10,6 +10,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { LoginFrame } from "./client";
 import styles from "./page.module.css";
+import P from "@/components/P/P";
 
 export default async function ({
   searchParams,
@@ -27,17 +28,12 @@ export default async function ({
         className={clsx("mob_root mob_page_container", styles.container)}
       >
         <VerticalFlex className={styles.loginBox}>
-          <FlexChild className={styles.logo}>
-            <Link href={"/"}>
-              <Image src={"/resources/images/header/logo.png"} width={140} />
-            </Link>
-          </FlexChild>
+          <P className={clsx(styles.login_txt, 'Wanted')}>LOGIN</P>
 
           <FlexChild className={styles.signup}>
             <VerticalFlex gap={30}>
               <VerticalFlex gap={20} width={"100%"}>
                 <FlexChild className={styles.input_box}>
-                  <Span>아이디</Span>
                   <Input
                     id="username"
                     placeHolder="아이디"
@@ -47,7 +43,6 @@ export default async function ({
                 </FlexChild>
 
                 <FlexChild className={styles.input_box}>
-                  <Span>비밀번호</Span>
                   <Input
                     id="password"
                     type="password"

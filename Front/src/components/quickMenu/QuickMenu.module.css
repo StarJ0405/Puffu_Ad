@@ -1,0 +1,101 @@
+.sideNavi {
+  position: fixed;
+  right: -30%;
+  bottom: 35%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: auto;
+  height: auto;
+  z-index: 1100;
+  transition: 1s;
+}
+
+/* 퀵메뉴 오픈 버튼 */
+.sideNavi .navi_toggle_btn {
+   position: fixed;
+   right: 0;
+   bottom: 35%;
+   width: 15px;
+   height: 150px;
+   border-radius: 10px 0 0 10px;
+   background: var(--main-color1);
+   opacity: 0.8;
+   transform: 0.5s;
+}
+
+.sideNavi button {
+   background: transparent;
+   border-radius: 50%;
+   width: 55px;
+   height: 55px;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.sideNavi button:focus-visible {outline: none !important;}
+
+.sideNavi .location_btn {
+   background: var(--main-color1);
+   margin-bottom: 20px;
+}
+.sideNavi .chat_btn {
+   background: #212334;
+   padding: 0;
+   transition: 0.2s;
+}
+
+/* 관리자채팅 답변 왔을때 표시 */
+.sideNavi .chat_number {
+  position: absolute;
+  background-color: var(--main-color1);
+  z-index: 2;
+  border-radius: 5px;
+  width: max-content;
+  top: -3px;
+  right: -5px;
+  padding: 4px 5px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #fff;
+}
+
+
+/* 장바구니일때 위치 조정 */
+.customPosition {bottom: 20%;}
+
+/* 관리자 채팅 열릴때 숨김처리 */
+.hidden {display: none;}
+
+
+/* top 버튼 부모 */
+.Btn_frame {
+   position: fixed;
+   bottom: 12%;
+   right: 13px;
+   width: auto !important;
+   z-index: 1000;
+}
+
+
+/* 퀵메뉴 오픈 버튼 누르면  */
+.sideNavi.open {right: 13px; transition: 0.3s; z-index: 1201;}
+
+.sideNavi .navi_toggle_btn.close {right: -30%;}
+
+
+/* 모바일 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+@media (max-width: 768px) {
+   .mob_sideNavi {bottom: 40%;}
+   .mob_sideNavi button {
+      width: 40px;
+      height: 40px;
+   }
+
+   .mob_sideNavi .location_btn {padding-bottom: 7px; margin-bottom: 10px;}
+   .mob_sideNavi .chat_btn {padding-bottom: 3px;}
+
+   .mob_sideNavi .navi_toggle_btn {width: 10px; height: 130px; bottom: 40%;}
+}

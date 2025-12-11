@@ -1,34 +1,28 @@
 .footer {
-   background: #1B1B1B;
-   padding: 28px 15px;
+   --footer-font-color: #dadada;
+   background: #242424;
+   padding: 50px 15px;
 }
 
 .footer * {width: auto;}
 
 /* 회사 정보 */
 .footer .info_box {
-   gap: 10px;
+   gap: 25px;
    flex: unset;
+   color: var(--footer-font-color);
 }
 
-.footer .info_box .text_box {
-   gap: 7px;
-}
-
-.footer .text_box, .footer .cs_days {
-   font-size: 13px;
-   color: #dadada;
-   line-height: 1.3;
-}
-
-.footer .info_box .text_box .txt_item {gap: 10px;}
-.footer .info_box .text_box > *:last-child {margin-top: 15px;}
+.footer .info_box .text_box .txt_item {gap: 7px 10px; font-size: 13px; flex-wrap: wrap;}
  
+
+.footer .info_box .info_dt {gap: 7px;}
 
 /* 개인정보처리방침 */
 .footer .info_box .policy_item {
    gap: 5px; font-size: 14px;
    font-weight: 500;
+   margin-bottom: 15px;
 }
 
 .footer .info_box .policy_item > a:hover {
@@ -36,31 +30,25 @@
 }
 
 
-/* 콜센터 */
-.footer .Cs_center {
-   gap: 5px;
-   flex: unset;
+
+.footer .cs_box {
+   padding: 20px 0 10px;
+   width: 100%; gap: 30px;
+   max-width: 440px;
+}
+.footer .cs_box .item h5 {
+   font-size: 15px; font-weight: 600;
+   color: #fff; margin-bottom: 15px;
 }
 
-.footer .Cs_center .cs_title {
-   font-size: 13px;
-   color: #fff;
-   font-weight: 600;
-   margin-bottom: 3px !important;
+.footer .cs_box .item .ct_box {gap: 7px;}
+.footer .cs_box .item .ct_box > p {
+   font-size: 14px !important; color: var(--footer-font-color) !important;
+   font-weight: 400 !important;
 }
 
-.footer .Cs_center .cs_number {
-   font-size: 25px;
-   color: var(--main-color1);
-   font-weight: 900;
+.footer .cs_box .cs_item .tel_number {
+   font-size: 20px !important; font-weight: 900;
+   color: var(--footer-font-color);
+   margin-bottom: 15px !important;
 }
-
-.footer .Cs_center .cs_days {
-   align-items: start !important;
-   gap: 5px;
-}
-
-.footer .Cs_center .cs_days p > span {
-   font-weight: 600 !important;
-}
-

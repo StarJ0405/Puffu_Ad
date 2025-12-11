@@ -61,8 +61,17 @@ body {
 .page_container {
   width: 100%;
   max-width: var(--maxWidthDesktop);
+  /* min-width: var(--minWidthDesktop); */
   margin: 0 auto;
   color: var(--default-color);
+}
+
+@media (max-width: 1025px) {
+  .page_container {overflow: hidden;}
+}
+
+@media (max-width: 1300px) {
+  .page_container {padding:  0 13px;}
 }
 
 .root {

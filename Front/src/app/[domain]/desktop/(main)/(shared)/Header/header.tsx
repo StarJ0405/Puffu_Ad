@@ -5,37 +5,45 @@ import Image from "@/components/Image/Image";
 import Link from "next/link";
 import { Auth, HeaderMenu, SearchBox } from "./client";
 import styles from "./header.module.css";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect,  } from "react";
 import clsx from "clsx";
 import CountBadge from "@/components/countBadge/countBadge";
 import LineBanner from "@/components/main/lineBanner/LineBanner";
 import siteInfo from "@/shared/siteInfo";
+import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 
 
 export default function Header() {
 
   const [CaOpen, SetCaOpen] = useState(false);
   const headerRef = useRef<HTMLDivElement | null>(null);
-   const [headerScroll, setHeaderScroll] = useState(false);
-   const [LBHeight, setLBHeight] = useState(0);
+  const [headerScroll, setHeaderScroll] = useState(false);
+  const [LBHeight, setLBHeight] = useState(0);
+  const { userData } = useAuth();
+  const [loginLInkCheck, setLoginLInkCheck] = useState('/auth/login');
 
-   // 스크롤 되면 클래스 들어옴
-   const ScrollClass = headerScroll ? styles.scroll : '';
+  useEffect(()=> {
+    const value = !userData?.id ? '/auth/login' : siteInfo.my_profile;
+    setLoginLInkCheck(value);
+  }, [userData])
 
-   useEffect(()=> {
-      const headerScroll = () => {
-         setHeaderScroll(window.scrollY > 0)
-      };
+  // 스크롤 되면 클래스 들어옴
+  const ScrollClass = headerScroll ? styles.scroll : '';
 
-      window.addEventListener('scroll', headerScroll);
-      return ()=> window.removeEventListener('scroll', headerScroll);
-   },[]);
+  useEffect(()=> {
+    const headerScroll = () => {
+        setHeaderScroll(window.scrollY > 0)
+    };
+
+    window.addEventListener('scroll', headerScroll);
+    return ()=> window.removeEventListener('scroll', headerScroll);
+  },[]);
 
   return (
     <>
       <header ref={headerRef} className={
           clsx(
-            // `${scroll ? styles.scroll : ""}`,
+            `${headerScroll ? styles.scroll : ""}`,
             styles.header
           )}
           style={{ top: headerScroll ? `-${LBHeight}px` : 0 }}
@@ -73,7 +81,7 @@ export default function Header() {
               <Auth />
 
               <FlexChild width={"fit-content"}>
-                <Link href={siteInfo.my_profile}>
+                <Link href={loginLInkCheck}>
                   <Image
                     src="/resources/icons/main/user_icon.png"
                     width={25}

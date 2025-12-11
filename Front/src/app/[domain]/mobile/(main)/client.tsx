@@ -8,7 +8,7 @@ import MasonryGrid from "@/components/masonry/MasonryGrid";
 import Span from "@/components/span/Span";
 import clsx from "clsx";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styles from "./page.module.css";
 import useNavigate from "@/shared/hooks/useNavigate";
 
@@ -25,8 +25,8 @@ import useInfiniteData from "@/shared/hooks/data/useInfiniteData";
 import { requester } from "@/shared/Requester";
 import { Swiper as SwiperType } from "swiper";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
-import 'swiper/css';
-import 'swiper/css/navigation';
+import "swiper/css";
+import "swiper/css/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Div from "@/components/div/Div";
 import { usePathname } from "next/navigation";
@@ -51,13 +51,13 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
   const navigate = useNavigate();
 
   // 베너 링크값 없으면 링크 없애는 코드
-  const linkCheck = (link: string | undefined)=> {
-    if(link) {
-      navigate(`${link}`)
+  const linkCheck = (link: string | undefined) => {
+    if (link) {
+      navigate(`${link}`);
     } else {
-      navigate('')
+      navigate("");
     }
-  }
+  };
 
   return (
     <FlexChild className={clsx("mob_page_container", styles.main_banner)}>
@@ -72,18 +72,24 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
           clickable: true,
         }}
         autoplay={{ delay: 4000 }}
-        onSwiper={(swiper) => swiperRef.current = swiper}
+        onSwiper={(swiper) => (swiperRef.current = swiper)}
         onSlideChange={(e) => setbulltIdx(e.realIndex)}
       >
         {[...banners]?.map(
           (item: BannerData, i: number) =>
             item.thumbnail.mobile && (
-              <SwiperSlide key={i} className={clsx(styles.slideItem, `swiper_0${i}`)}>
-                <div onClick={()=> linkCheck(item.to)} className={styles.thumbnail} style={{
-                      'backgroundImage': userData?.adult
+              <SwiperSlide
+                key={i}
+                className={clsx(styles.slideItem, `swiper_0${i}`)}
+              >
+                <div
+                  onClick={() => linkCheck(item.to)}
+                  className={styles.thumbnail}
+                  style={{
+                    backgroundImage: userData?.adult
                       ? `url(${item.thumbnail.mobile})`
-                      : "url(/resources/images/19_only_banner_mobile.png)"
-                    }} 
+                      : "url(/resources/images/19_only_banner_mobile.png)",
+                  }}
                 />
               </SwiperSlide>
             )
@@ -91,13 +97,15 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
       </Swiper>
 
       <div className={styles.pagination}>
-        {[...banners]?.map((_, i)=> (
+        {[...banners]?.map((_, i) => (
           <span
             key={i}
-            className={clsx(styles.bullet, bulletIdx === i ? styles.active : '')}
+            className={clsx(
+              styles.bullet,
+              bulletIdx === i ? styles.active : ""
+            )}
             onClick={() => swiperRef.current?.slideToLoop(i)}
-          >
-          </span>
+          ></span>
         ))}
       </div>
     </FlexChild>
@@ -213,7 +221,7 @@ export function MainCategory() {
   // 카테고리메뉴
 
   const { categoriesData } = useCategories();
-  const costumeData = categoriesData.find((ca)=> ca.name === '코스튬/의류');
+  const costumeData = categoriesData.find((ca) => ca.name === "코스튬/의류");
 
   // console.log(costumeData?.id);
 
@@ -222,12 +230,20 @@ export function MainCategory() {
       <nav className={styles.category_menu}>
         {categoriesData
           .sort((c1, c2) => c1.index - c2.index)
-          .filter((ca)=> ca.name !== '코스튬/의류')
+          .filter((ca) => ca.name !== "코스튬/의류")
           .map((cat, i) => (
-            <Link href={`/categories/${cat.id}`} key={i} className={styles.ca_item}>
-                <FlexChild className={styles.ca_img} justifyContent="center" alignItems="center">
-                  <Image src={cat.thumbnail}/>
-                </FlexChild>
+            <Link
+              href={`/categories/${cat.id}`}
+              key={i}
+              className={styles.ca_item}
+            >
+              <FlexChild
+                className={styles.ca_img}
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Image src={cat.thumbnail} />
+              </FlexChild>
               <VerticalFlex className={styles.text_box}>
                 <h5>{cat.name}</h5>
                 <Span className="Wanted">{cat.english_name}</Span>
@@ -235,9 +251,11 @@ export function MainCategory() {
             </Link>
           ))}
       </nav>
-      
-      
-      <Link href={`categories/${costumeData?.id}`} className={styles.exhibitionBox}>
+
+      <Link
+        href={`categories/${costumeData?.id}`}
+        className={styles.exhibitionBox}
+      >
         <Div className={styles.itemBox}>
           <VerticalFlex className={styles.text_box} alignItems="start">
             <P className={styles.text1}>특별한 의상을 찾으시나요?</P>
@@ -247,13 +265,10 @@ export function MainCategory() {
               다양한 스타일을 만나보세요.
             </P>
             <Span className={styles.arrow_btn}>
-              <Image
-                src={"/resources/images/button_arrow.png"}
-                width={5}
-              />
+              <Image src={"/resources/images/button_arrow.png"} width={5} />
             </Span>
           </VerticalFlex>
-          <Image src={costumeData?.thumbnail}/>
+          <Image src={costumeData?.thumbnail} />
         </Div>
 
         <Div className={styles.bg_layer}>
@@ -450,25 +465,21 @@ export function ProductList({
               return (
                 <FlexChild className={styles.card_wrap} key={product.id}>
                   {
-                      // 프로덕트, new일때만 나타나기. 제품 인기순 표시임
-                      <FlexChild
-                          color="#000"
-                          className={clsx(
-                            styles.rank,
-                            // i + page * 12 < 3 ? styles.topRank : "" // 더보기나 페이징으로 다음 페이지 있을때 적용
-                          )}
-                        >
-                          <Span>
-                            {/* {page * 12 + i + 1} */}
-                            {i+1}
-                          </Span>
-                        </FlexChild>
-                    }
-                  <ProductCard
-                    product={product}
-                    lineClamp={2}
-                    width={"auto"}
-                  />
+                    // 프로덕트, new일때만 나타나기. 제품 인기순 표시임
+                    <FlexChild
+                      color="#000"
+                      className={clsx(
+                        styles.rank
+                        // i + page * 12 < 3 ? styles.topRank : "" // 더보기나 페이징으로 다음 페이지 있을때 적용
+                      )}
+                    >
+                      <Span>
+                        {/* {page * 12 + i + 1} */}
+                        {i + 1}
+                      </Span>
+                    </FlexChild>
+                  }
+                  <ProductCard product={product} lineClamp={2} width={"auto"} />
                 </FlexChild>
               );
             })}
@@ -488,25 +499,28 @@ export function ProductList({
   );
 }
 
-type ReviewEntity = {
+type ApiReview = {
   id: string;
   images?: string[];
-  content?: string;
   avg?: number;
   count: number;
+  content?: string;
   created_at?: string;
   star_rate?: number;
+  recommend_count: number;
   metadata?: {
     source?: string;
     aspects?: { design?: string; finish?: string; maintenance?: string };
   };
-  recommend_count: number;
   user?: { id?: string; name?: string };
   item?: {
-    id?: string;
     variant?: {
-      id?: string;
-      product?: { id?: string; title?: string; thumbnail?: string };
+      product?: {
+        id?: string;
+        title?: string;
+        thumbnail?: string;
+        reviews?: { count?: number; avg?: number };
+      };
     };
   };
 };
@@ -518,45 +532,74 @@ export function ReviewSection({
   // id: string;
   lineClamp?: number;
 }) {
-  const PAGE_SIZE = 10;
-  const [items, setItems] = useState<ReviewEntity[]>([]);
-  const [pageNumber, setPageNumber] = useState(0);
-  const [totalPages, setTotalPages] = useState<number | null>(null);
+  const PAGE_SIZE = 300; // 랭킹 근사치용 벌크 수집
+  const TOP_N = 21; // 슬라이드 상단 노출 개수
+  const slideMax = 7; // 처음 보일 슬라이드 개수
+  const [rows, setRows] = useState<ApiReview[]>([]);
   const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
-  
-
-  const fetchPage = useCallback(async (pn: number) => {
+  const fetchBulk = useCallback(async () => {
     setLoading(true);
     try {
       const params: any = {
         pageSize: PAGE_SIZE,
-        pageNumber: pn,
+        pageNumber: 0,
         photo: true,
-        relations: "item,item.variant.product,user",
-        order: { created_at: "DESC" },
+        relations: "item.variant.product,user",
+        best: true,
+        order: { index: "ASC", idx: "DESC" },
       };
       const res = await requester.getPublicReviews(params);
       const data = res?.data ?? res;
-      const list: ReviewEntity[] = data?.content ?? [];
-
-      setItems((prev) => (pn === 0 ? list : prev.concat(list)));
-      if (typeof data?.totalPages === "number") {
-        setTotalPages(data.totalPages);
-        setHasMore(pn + 1 < data.totalPages);
-      } else {
-        setTotalPages(null);
-        setHasMore(list.length === PAGE_SIZE);
-      }
-      setPageNumber(pn);
+      setRows(data?.content ?? []);
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchPage(0);
-  }, [fetchPage]);
+    fetchBulk();
+  }, [fetchBulk]);
+
+  useEffect(() => {
+    const onChanged = (e: any) => {
+      const { id, delta } = e?.detail ?? {};
+      if (!id || !delta) return;
+      setRows((prev) =>
+        prev.map((r) =>
+          r.id === id
+            ? {
+                ...r,
+                recommend_count: Number(r.recommend_count ?? 0) + Number(delta),
+              }
+            : r
+        )
+      );
+    };
+    window.addEventListener(
+      "review:recommend-changed",
+      onChanged as EventListener
+    );
+    return () =>
+      window.removeEventListener(
+        "review:recommend-changed",
+        onChanged as EventListener
+      );
+  }, []);
+
+  const ranked: ApiReview[] = useMemo(() => {
+    return [...rows]
+      .filter((r) => (r.images?.length ?? 0) > 0)
+      .sort((a, b) => {
+        const cb = Number(b.recommend_count ?? 0);
+        const ca = Number(a.recommend_count ?? 0);
+        if (cb !== ca) return cb - ca;
+        const tb = new Date(b.created_at ?? 0).getTime();
+        const ta = new Date(a.created_at ?? 0).getTime();
+        return tb - ta;
+        // return ta - tb;
+      })
+      .slice(0, TOP_N);
+  }, [rows]);
 
   const prevRef = useRef<HTMLDivElement | null>(null);
   const nextRef = useRef<HTMLDivElement | null>(null);
@@ -568,7 +611,7 @@ export function ReviewSection({
       const navigation = swiperInstance.params.navigation;
 
       // Swiper 인스턴스의 네비게이션 요소를 명시적으로 업데이트
-      if (navigation && typeof navigation !== 'boolean') {
+      if (navigation && typeof navigation !== "boolean") {
         navigation.prevEl = prevRef.current;
         navigation.nextEl = nextRef.current;
       } else {
@@ -578,9 +621,9 @@ export function ReviewSection({
           nextEl: nextRef.current,
         } as any; // 필요하면 NavigationOptions 타입으로 캐스팅
       }
-      
+
       // 네비게이션을 업데이트(초기화)합니다.
-      swiperInstance.navigation.init(); 
+      swiperInstance.navigation.init();
       swiperInstance.navigation.update();
     }
   }, [swiperInstance]);
@@ -604,12 +647,12 @@ export function ReviewSection({
         </HorizontalFlex>
 
         <P className={styles.text1}>
-          베스트 리뷰에 선정되면  <br />
+          베스트 리뷰에 선정되면 <br />
           30% 할인쿠폰 증정!
         </P>
       </VerticalFlex>
-        
-      {items.length > 0 || loading ? (
+
+      {ranked.length > 0 || loading ? (
         <FlexChild id={styles.review_slider} className={styles.ProductSlider}>
           <Swiper
             loop={false}
@@ -621,7 +664,7 @@ export function ReviewSection({
             onSwiper={(swiper) => setSwiperInstance(swiper)}
             navigation={{
               prevEl: prevRef.current,
-              nextEl: nextRef.current
+              nextEl: nextRef.current,
             }}
             breakpoints={{
               580: {
@@ -645,14 +688,14 @@ export function ReviewSection({
                     <LoadingCard />
                   </SwiperSlide>
                 ))
-              : [...items]
+              : [...ranked]
                   .sort(() => Math.random() - 0.5)
-                  .map((item, i) => (
-                    <SwiperSlide key={item.id ?? i}>
+                  .map((review, i) => (
+                    <SwiperSlide key={review.id ?? i}>
                       <ReviewImgCard
-                        review={item}
+                        review={review}
                         lineClamp={lineClamp ?? 2}
-                        type={'slide'}
+                        type={"slide"}
                         width="100%"
                         height="auto"
                       />
@@ -680,7 +723,6 @@ export function ReviewSection({
   );
 }
 
-
 export function EventSection({
   // id,
   initCondition,
@@ -692,7 +734,6 @@ export function EventSection({
   initNotices: Pageable;
   lineClamp?: number;
 }) {
-
   const [loading, setLoading] = useState(false);
 
   const { notices, setPage } = usePageData(
@@ -713,8 +754,6 @@ export function EventSection({
     setPage(0);
   }, [initCondition.q]);
 
-  
-
   const prevRef = useRef<HTMLDivElement | null>(null);
   const nextRef = useRef<HTMLDivElement | null>(null);
 
@@ -725,7 +764,7 @@ export function EventSection({
       const navigation = swiperInstance.params.navigation;
 
       // Swiper 인스턴스의 네비게이션 요소를 명시적으로 업데이트
-      if (navigation && typeof navigation !== 'boolean') {
+      if (navigation && typeof navigation !== "boolean") {
         navigation.prevEl = prevRef.current;
         navigation.nextEl = nextRef.current;
       } else {
@@ -735,12 +774,14 @@ export function EventSection({
           nextEl: nextRef.current,
         } as any; // 필요하면 NavigationOptions 타입으로 캐스팅
       }
-      
+
       // 네비게이션을 업데이트(초기화)합니다.
-      swiperInstance.navigation.init(); 
+      swiperInstance.navigation.init();
       swiperInstance.navigation.update();
     }
   }, [swiperInstance]);
+
+  console.log(notices);
 
   return (
     <>
@@ -759,20 +800,20 @@ export function EventSection({
 
         <P className={styles.text1}>다양한 이벤트들을 만나 보세요.</P>
       </VerticalFlex>
-        
+
       {notices.length > 0 || loading ? (
         <FlexChild className={styles.ProductSlider}>
           <Swiper
-            loop={false}
+            loop={true}
             slidesPerView={1.2}
             speed={600}
             spaceBetween={15}
             modules={[Autoplay, Navigation]}
-            autoplay={{ delay: 400000 }}
+            autoplay={{ delay: 4000 }}
             onSwiper={(swiper) => setSwiperInstance(swiper)}
             navigation={{
               prevEl: prevRef.current,
-              nextEl: nextRef.current
+              nextEl: nextRef.current,
             }}
             breakpoints={{
               580: {
@@ -798,7 +839,7 @@ export function EventSection({
                 ))
               : notices.map((item: NoticeData, i: number) => (
                   <SwiperSlide key={item.id ?? i}>
-                    <EventCard item={item} workType={'slide'}/>
+                    <EventCard item={item} workType={"slide"} />
                   </SwiperSlide>
                 ))}
           </Swiper>

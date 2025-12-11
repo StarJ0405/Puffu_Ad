@@ -19,7 +19,8 @@ import {
 } from "typeorm";
 import { PointService } from "./point";
 import { CouponService } from "./coupon";
-import { StackItemRepository } from "repositories/stack_item";
+import { VariantOfsRepository } from "repositories/variant_ofs";
+import { VariantOfs } from "models/variant_ofs";
 
 @injectable()
 export class OrderService extends BaseService<Order, OrderRepository> {
@@ -33,11 +34,14 @@ export class OrderService extends BaseService<Order, OrderRepository> {
     protected pointService: PointService,
     @inject(VariantRepository)
     protected variantRepository: VariantRepository,
-    @inject(StackItemRepository)
-    protected stackItemRepository: StackItemRepository
+    @inject(VariantOfsRepository)
+    protected variantOfsRepository: VariantOfsRepository
   ) {
     super(orderRepository);
   }
+
+  // ... (getPageable, getList, getStatus, updateTrackingNumber는 기존 유지) ...
+
   async getPageable(
     pageData: PageData,
     options: FindOneOptions<Order>
@@ -240,6 +244,7 @@ export class OrderService extends BaseService<Order, OrderRepository> {
       }
     );
   }
+
   async cancelOrder(id: string) {
     const order = await this.repository.findOne({
       where: { id },
@@ -255,16 +260,16 @@ export class OrderService extends BaseService<Order, OrderRepository> {
       await Promise.all(
         (order.items || [])?.map(async (item) => {
           if (order.offline_store_id) {
-            // 오프라인 매장 재고 복원
-            await this.stackItemRepository.update(
-              {
-                offline_store_id: order.offline_store_id,
-                variant_id: item.variant_id,
-              },
-              {
-                stack: () => `stack + ${item.total_quantity}`,
-              }
-            );
+            //오프라인 매장 재고 복원 
+            await this.variantOfsRepository.manager
+              .createQueryBuilder()
+              .update(VariantOfs)
+              .set({ stack: () => `stack + ${item.total_quantity}` }) // 재고 원복 (+)
+              .where("offline_store_id = :storeId", {
+                storeId: order.offline_store_id,
+              })
+              .andWhere("variant_id = :varId", { varId: item.variant_id })
+              .execute();
           } else {
             // 온라인 재고 복원
             await this.variantRepository.update(
@@ -276,10 +281,9 @@ export class OrderService extends BaseService<Order, OrderRepository> {
       );
 
       if (order?.payment_data) {
-        // 환불 처리
         const payment_data = order.payment_data;
         if (payment_data.trackId) {
-          // NESTPAY
+          // NESTPAY 환불
           const NESTPAY_BASE_URL = process.env.NESTPAY_BASE_URL;
           const NESTPAY_SECRET_KEY = process.env.NESTPAY_SECRET_KEY;
 
@@ -313,7 +317,7 @@ export class OrderService extends BaseService<Order, OrderRepository> {
             );
           }
         } else if (payment_data.type === "BRANDPAY") {
-          // TOSS
+          // TOSS 환불
           const secret = process.env.BRAND_PAY_SECRET_KEY?.trim();
           const auth = "Basic " + Buffer.from(`${secret}:`).toString("base64");
           const response = await fetch(
@@ -341,6 +345,8 @@ export class OrderService extends BaseService<Order, OrderRepository> {
           );
         }
       }
+      
+      // 포인트 및 쿠폰 환불 로직 (기존 유지)
       if (order?.point && order?.point > 0) {
         await this.pointService.create({
           user_id: order.user_id,
@@ -357,54 +363,17 @@ export class OrderService extends BaseService<Order, OrderRepository> {
             total,
           },
         });
-
-        // 포인트 환불 처리
-        // this.userRepository.update(
-        //   {
-        //     id: order.user_id,
-        //   },
-        //   {
-        //     metadata: () =>
-        //       `metadata || CONCAT('{ "point":"', CAST((CAST(COALESCE(metadata ->>'point','0') as bigint) +${order?.total_discounted}) as TEXT),'"}')::jsonb`,
-        //   }
-        // );
       }
       const couponService = container.resolve(CouponService);
       if (order.coupons?.length) {
         await couponService.refundCoupon(
           order.coupons.map((coupon) => coupon.id)
         );
-        // await Promise.all(
-        //   order.coupons.map(
-        //     async (coupon) =>
-        //       await this.couponRepository.update(
-        //         {
-        //           id: coupon.id,
-        //         },
-        //         {
-        //           order_id: null,
-        //         }
-        //       )
-        //   )
-        // );
       }
       if (order.shipping_method?.coupons?.length) {
         await couponService.refundCoupon(
           order.shipping_method.coupons.map((coupon) => coupon.id)
         );
-        // await Promise.all(
-        //   order.shipping_method.coupons.map(
-        //     async (coupon) =>
-        //       await this.couponRepository.update(
-        //         {
-        //           id: coupon.id,
-        //         },
-        //         {
-        //           shipping_method_id: null,
-        //         }
-        //       )
-        //   )
-        // );
       }
       await Promise.all(
         (order.items || [])?.map(
@@ -412,19 +381,6 @@ export class OrderService extends BaseService<Order, OrderRepository> {
             await couponService.refundCoupon(
               (item.coupons || [])?.map((coupon) => coupon.id)
             )
-          // await Promise.all(
-          //   (item?.coupons || []).map(
-          //     async (coupon) =>
-          //       await this.couponRepository.update(
-          //         {
-          //           id: coupon.id,
-          //         },
-          //         {
-          //           item_id: null,
-          //         }
-          //       )
-          //   )
-          // )
         )
       );
 
@@ -445,14 +401,13 @@ export class OrderService extends BaseService<Order, OrderRepository> {
         "items.coupons",
         "items.variant",
         "shipping_method.coupons",
-        "coupons", // 주문 쿠폰
-        "subscribe", // 구독 퍼센트
+        "coupons",
+        "subscribe",
       ],
     });
     if (!order) throw new Error("ORDER_NOT_FOUND");
     if (byUserId && order.user_id !== byUserId) throw new Error("FORBIDDEN");
 
-    // 아이템 소계(아이템 쿠폰 적용)
     const itemsNet =
       order.items?.reduce((acc, it) => {
         const gross = (it.discount_price || 0) * (it.quantity || 0);
@@ -470,7 +425,6 @@ export class OrderService extends BaseService<Order, OrderRepository> {
         return acc + net;
       }, 0) || 0;
 
-    // 배송 소계(배송 쿠폰 적용)
     const shipGross = order.shipping_method?.amount || 0;
     const shipRed = (order.shipping_method?.coupons || []).reduce(
       (s, c) => ({
@@ -484,7 +438,6 @@ export class OrderService extends BaseService<Order, OrderRepository> {
       Math.round((shipGross * (100 - shipRed.pct)) / 100.0 - shipRed.fix)
     );
 
-    // 주문 쿠폰(참고값)
     const orderRed = (order.coupons || []).reduce(
       (s, c) => ({
         pct: s.pct + (c.calc === CalcType.PERCENT ? c.value : 0),
@@ -493,7 +446,6 @@ export class OrderService extends BaseService<Order, OrderRepository> {
       { pct: 0, fix: 0 }
     );
 
-    // 구독 퍼센트 혜택
     const percent = order.subscribe?.percent || 0;
     const base = itemsNet + shippingNet;
     const amount = Math.round((base * percent) / 100.0);

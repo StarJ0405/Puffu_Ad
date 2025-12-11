@@ -8,7 +8,7 @@ import MasonryGrid from "@/components/masonry/MasonryGrid";
 import Span from "@/components/span/Span";
 import clsx from "clsx";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styles from "./page.module.css";
 import { useStore } from "@/providers/StoreProvider/StorePorivderClient";
 import HorizontalFlex from "@/components/flex/HorizontalFlex";
@@ -60,6 +60,14 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
     }
   }
 
+  const cursorCheck = (link: string | undefined) => {
+    if (link) {
+      return 'pointer'
+    } else {
+      return ''
+    }
+  }
+
   return (
     <FlexChild className={clsx(styles.main_banner)}>
       <Swiper
@@ -69,7 +77,8 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
         loop={true}
         observer={true}
         observeParents={true}
-        // loopAdditionalSlides={1}
+        // maxBackfaceHiddenSlides={4}
+        // loopAdditionalSlides={3}
         pagination={{
           dynamicBullets: true,
           clickable: true,
@@ -86,9 +95,11 @@ export function MainBanner({ initBanners }: { initBanners: Pageable }) {
             item.thumbnail.pc && (
               <SwiperSlide key={i} className={clsx(`swiper_0${i}`, styles.slideItem)}>
                 <div onClick={() => linkCheck(item.to)} className={styles.thumbnail} style={{
-                  'backgroundImage': userData?.adult
-                    ? `url(${item.thumbnail.pc})`
-                    : "url(/resources/images/19_only_banner.png)"
+                  'backgroundImage': userData?.adult ? 
+                  `url(${item.thumbnail.pc})`
+                  : "url(/resources/images/19_only_banner.png)",
+                  
+                  cursor: cursorCheck(item.to),
                 }}
                 />
               </SwiperSlide>
@@ -291,11 +302,11 @@ export function MainCategory() {
           )
         })}
       </nav>
-
       <Link
         href={`/products/showcase?category_id=${costumeData?.id}`}
         className={styles.exhibitionBox}
       >
+      <Link href={`${siteInfo.pt_showcase}/${costumeData?.id}`} className={styles.exhibitionBox}>
         <Div className={styles.itemBox}>
           <VerticalFlex className={styles.text_box} alignItems="start">
             <P className={styles.text1}>특별한 의상을 찾으시나요?</P>
@@ -519,25 +530,28 @@ export function BestList({
   );
 }
 
-type ReviewEntity = {
+type ApiReview = {
   id: string;
   images?: string[];
-  content?: string;
   avg?: number;
   count: number;
+  content?: string;
   created_at?: string;
   star_rate?: number;
+  recommend_count: number;
   metadata?: {
     source?: string;
     aspects?: { design?: string; finish?: string; maintenance?: string };
   };
-  recommend_count: number;
   user?: { id?: string; name?: string };
   item?: {
-    id?: string;
     variant?: {
-      id?: string;
-      product?: { id?: string; title?: string; thumbnail?: string };
+      product?: {
+        id?: string;
+        title?: string;
+        thumbnail?: string;
+        reviews?: { count?: number; avg?: number };
+      };
     };
   };
 };
@@ -550,45 +564,74 @@ export function ReviewSection({
   // id: string;
   lineClamp?: number;
 }) {
-  const PAGE_SIZE = 10;
-  const [items, setItems] = useState<ReviewEntity[]>([]);
-  const [pageNumber, setPageNumber] = useState(0);
-  const [totalPages, setTotalPages] = useState<number | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
-
-
-  const fetchPage = useCallback(async (pn: number) => {
-    setLoading(true);
-    try {
-      const params: any = {
-        pageSize: PAGE_SIZE,
-        pageNumber: pn,
-        photo: true,
-        relations: "item,item.variant.product,user",
-        order: { created_at: "DESC" },
-      };
-      const res = await requester.getPublicReviews(params);
-      const data = res?.data ?? res;
-      const list: ReviewEntity[] = data?.content ?? [];
-
-      setItems((prev) => (pn === 0 ? list : prev.concat(list)));
-      if (typeof data?.totalPages === "number") {
-        setTotalPages(data.totalPages);
-        setHasMore(pn + 1 < data.totalPages);
-      } else {
-        setTotalPages(null);
-        setHasMore(list.length === PAGE_SIZE);
+    const PAGE_SIZE = 300; // 랭킹 근사치용 벌크 수집
+    const TOP_N = 21; // 슬라이드 상단 노출 개수
+    const slideMax = 7; // 처음 보일 슬라이드 개수
+    const [rows, setRows] = useState<ApiReview[]>([]);
+    const [loading, setLoading] = useState(false);
+    const fetchBulk = useCallback(async () => {
+      setLoading(true);
+      try {
+        const params: any = {
+          pageSize: PAGE_SIZE,
+          pageNumber: 0,
+          photo: true,
+          relations: "item.variant.product,user",
+          best: true,
+          order: { index: "ASC", idx: "DESC" },
+        };
+        const res = await requester.getPublicReviews(params);
+        const data = res?.data ?? res;
+        setRows(data?.content ?? []);
+      } finally {
+        setLoading(false);
       }
-      setPageNumber(pn);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchPage(0);
-  }, [fetchPage]);
+    }, []);
+  
+    useEffect(() => {
+      fetchBulk();
+    }, [fetchBulk]);
+  
+    useEffect(() => {
+      const onChanged = (e: any) => {
+        const { id, delta } = e?.detail ?? {};
+        if (!id || !delta) return;
+        setRows((prev) =>
+          prev.map((r) =>
+            r.id === id
+              ? {
+                  ...r,
+                  recommend_count: Number(r.recommend_count ?? 0) + Number(delta),
+                }
+              : r
+          )
+        );
+      };
+      window.addEventListener(
+        "review:recommend-changed",
+        onChanged as EventListener
+      );
+      return () =>
+        window.removeEventListener(
+          "review:recommend-changed",
+          onChanged as EventListener
+        );
+    }, []);
+  
+    const ranked: ApiReview[] = useMemo(() => {
+      return [...rows]
+        .filter((r) => (r.images?.length ?? 0) > 0)
+        .sort((a, b) => {
+          const cb = Number(b.recommend_count ?? 0);
+          const ca = Number(a.recommend_count ?? 0);
+          if (cb !== ca) return cb - ca;
+          const tb = new Date(b.created_at ?? 0).getTime();
+          const ta = new Date(a.created_at ?? 0).getTime();
+          return tb - ta;
+          // return ta - tb;
+        })
+        .slice(0, TOP_N);
+    }, [rows]);
 
   const prevRef = useRef<HTMLDivElement | null>(null);
   const nextRef = useRef<HTMLDivElement | null>(null);
@@ -618,7 +661,7 @@ export function ReviewSection({
   }, [swiperInstance]);
 
   return (
-    <>
+    <FlexChild className={styles.item_wrap} alignItems="stretch">
       <VerticalFlex className={styles.titleBox} gap={25} alignItems="start">
         <VerticalFlex gap={15} alignItems="start">
           <div className={styles.title}>
@@ -656,20 +699,22 @@ export function ReviewSection({
         </FlexChild>
       </VerticalFlex>
 
-      {items.length > 0 || loading ? (
-        <FlexChild id={styles.review_slider} className={styles.ProductSlider}>
+      {ranked.length > 0 || loading ? (
+        <FlexChild className={styles.ProductSlider}>
           <Swiper
             loop={false}
             slidesPerView={4.2}
             speed={600}
             spaceBetween={10}
             modules={[Autoplay, Navigation]}
-            autoplay={{ delay: 4000000 }}
+            autoplay={{ delay: 4000 }}
             onSwiper={(swiper) => setSwiperInstance(swiper)}
             navigation={{
               prevEl: prevRef.current,
               nextEl: nextRef.current
             }}
+            observer={true}
+            observeParents={true}
           >
             {loading
               ? Array.from({ length: 5 }).map((_, i) => (
@@ -677,25 +722,25 @@ export function ReviewSection({
                   <LoadingCard />
                 </SwiperSlide>
               ))
-              : [...items]
-                .sort(() => Math.random() - 0.5)
-                .map((item, i) => (
-                  <SwiperSlide key={item.id ?? i}>
-                    <ReviewImgCard
-                      review={item}
-                      lineClamp={lineClamp ?? 2}
-                      type={'slide'}
-                      width="100%"
-                      height="auto"
-                    />
-                  </SwiperSlide>
-                ))}
+              : [...ranked]
+                  .sort(() => Math.random() - 0.5)
+                  .map((review, i) => (
+                    <SwiperSlide className={styles.slide_item} key={review.id ?? i}>
+                      <ReviewImgCard
+                        review={review}
+                        lineClamp={lineClamp ?? 2}
+                        type={'slide'}
+                        width="100%"
+                        height="auto"
+                      />
+                    </SwiperSlide>
+                  ))}
           </Swiper>
         </FlexChild>
       ) : (
         <NoContent type="리뷰" />
       )}
-    </>
+    </FlexChild>
   );
 }
 
@@ -762,7 +807,7 @@ export function EventSection({
   }, [swiperInstance]);
 
   return (
-    <>
+    <FlexChild className={styles.item_wrap} alignItems="stretch">
       <VerticalFlex className={styles.titleBox} gap={25} alignItems="start">
         <VerticalFlex gap={15} alignItems="start">
           <div className={styles.title}>
@@ -804,12 +849,14 @@ export function EventSection({
             speed={600}
             spaceBetween={20}
             modules={[Autoplay, Navigation]}
-            autoplay={{ delay: 400000 }}
+            autoplay={{ delay: 4000 }}
             onSwiper={(swiper) => setSwiperInstance(swiper)}
             navigation={{
               prevEl: prevRef.current,
               nextEl: nextRef.current
             }}
+            observer={true}
+            observeParents={true}
             watchOverflow={false}
           >
             {loading
@@ -819,15 +866,15 @@ export function EventSection({
                 </SwiperSlide>
               ))
               : notices.map((item: NoticeData, i: number) => (
-                <SwiperSlide key={item.id ?? i}>
-                  <EventCard item={item} workType={'slide'} />
-                </SwiperSlide>
-              ))}
+                  <SwiperSlide className={styles.slide_item} key={item.id ?? i}>
+                    <EventCard item={item} workType={'slide'}/>
+                  </SwiperSlide>
+                ))}
           </Swiper>
         </FlexChild>
       ) : (
         <NoContent type="게시판" />
       )}
-    </>
+    </FlexChild>
   );
 }

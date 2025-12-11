@@ -5,6 +5,7 @@ import { schedule } from "../module";
 
 export function regist(DEV: boolean) {
   // 스케줄링된 작업 시작
+
   schedule(
     "0 0 0 * * *",
     async () => {
