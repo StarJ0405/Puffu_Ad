@@ -15,8 +15,39 @@ import useNavigate from "@/shared/hooks/useNavigate";
 import clsx from "clsx";
 import { usePathname, useSearchParams } from "next/navigation";
 import Pstyles from "./products.module.css";
+import Link from "next/link";
+import siteInfo from "@/shared/siteInfo";
+import { requester } from "@/shared/Requester";
+import usePageData from "@/shared/hooks/data/usePageData";
 
-export function ProdcutCategoryFilter({
+
+export function ProductMenu() {
+
+  const pathname = usePathname();
+
+  const menu = [
+    {name: 'best 상품', link: siteInfo.pt_best},
+    {name: '신상품', link: siteInfo.pt_new},
+    {name: '세일 상품', link: siteInfo.pt_sale},
+    {name: '입고 예정', link: siteInfo.pt_commingSoon},
+  ]
+
+  return (
+    <nav className={Pstyles.page_list}>
+      {menu.map((item, i)=> {
+
+          const active = pathname === item.link ? Pstyles.active : '';
+
+          return (
+            <Link key={i} href={item.link} className={active}>{item.name}</Link>
+          )
+        })
+      }
+    </nav>
+  )
+}
+
+export function CategoryMenu({
   ConditionOrder,
 }: {
   ConditionOrder: any;
@@ -30,49 +61,37 @@ export function ProdcutCategoryFilter({
   const navigate = useNavigate();
   const order = ConditionOrder.order;
 
-  // css : 카테고리 추가되어도 flex-wrap 구조 문제 없게 수정하기
-
   return (
-    <nav className={Pstyles.cat_filter_wrap}>
-      {/* ca_item에 active 클래스 주기. active 클래스만 걸리면 효과 들어감. */}
-      {pathname !== "/" ? (
-        <VerticalFlex
-          className={clsx(
-            Pstyles.ca_item,
-            Pstyles.ca_all,
-            !currentCategoryId && Pstyles.active
-          )}
-          onClick={() => navigate(`/products/${order}`)}
-        >
-          <FlexChild className={Pstyles.ca_thumb}>
-            <P>ALL</P>
-          </FlexChild>
-          <Span>전체</Span>
-        </VerticalFlex>
-      ) : null}
+    <nav className={Pstyles.category_menu}>
+      <HorizontalFlex className={Pstyles.title}>
+        <h3 className="Wanted">CATEGORY</h3>
 
-      {categoriesData
-        .sort((c1, c2) => c1.index - c2.index)
-        .map((cat, i) => {
-          const cat_check =
-            pathname === `/products/${order}` &&
-            currentCategoryId === String(cat.id);
+        <Button onClick={()=> navigate(`/products/${order}`)} className={Pstyles.reset_btn}>초기화</Button>
+      </HorizontalFlex>
+     
+      <VerticalFlex className={Pstyles.ca_list} alignItems="start">
+        {categoriesData
+          .sort((c1, c2) => c1.index - c2.index)
+          .map((cat, i) => {
+            const cat_check =
+              pathname === `/products/${order}` &&
+              currentCategoryId === String(cat.id);
+  
+            return (
+              <HorizontalFlex
+                className={clsx(Pstyles.ca_item, cat_check && Pstyles.active)}
+                key={i}
+                onClick={() =>
+                  navigate(`/products/${order}?category_id=${cat.id}`)
+                }
+              >
+                <P>{cat.name}</P>
 
-          return (
-            <VerticalFlex
-              className={clsx(Pstyles.ca_item, cat_check && Pstyles.active)}
-              key={i}
-              onClick={() =>
-                navigate(`/products/${order}?category_id=${cat.id}`)
-              }
-            >
-              <FlexChild className={Pstyles.ca_thumb}>
-                <Image src={cat.thumbnail} />
-              </FlexChild>
-              <Span>{cat.name}</Span>
-            </VerticalFlex>
-          );
-        })}
+                <Image src={'/resources/icons/arrow_right.png'} width={7} />
+              </HorizontalFlex>
+            );
+          })}
+      </VerticalFlex>
     </nav>
   );
 }
@@ -122,54 +141,66 @@ export function SortFilter({
 }
 
 export function BaseProductList({
-  mutate,
-  total,
-  listArray,
-  // sortOptions,
+  id,
   sortConfig,
-  pagination,
+  // pagination,
+  initProducts,
+  initConiditon,
 }: {
-  mutate?: () => void;
-  total?: number;
-  listArray: ProductData[];
-  // sortOptions: { id: string; display: string }[];
+  id: string,
+  initProducts?: Pageable;
+  initConiditon?: any;
+  // pagination?: { page: number; maxPage: number; setPage: (p: number) => void };
   sortConfig?: {
     sort: { id: string; display: string };
     setSort: (opt: { id: string; display: string }) => void;
     sortOptions: { id: string; display: string }[];
   };
-  pagination?: { page: number; maxPage: number; setPage: (p: number) => void };
 }) {
+
+  const { [id]: products, maxPage, page, setPage, mutate, origin } = usePageData(
+    id,
+    (pageNumber) => ({
+      ...initConiditon,
+      pageSize: 24,
+      pageNumber,
+    }),
+    (condition) => requester.getProducts(condition),
+    (data: Pageable) => data?.totalPages || 0,
+    {
+      onReprocessing: (data) => data?.content || [],
+      fallbackData: initProducts,
+    }
+  );
+
   // const [sort, setSort] = useState(sortOptions?.[0]); // 정렬 상태 관리
-  const listLength = listArray.length;
 
   const pathname = usePathname();
 
+  const breakPoint = {
+    default: 4,
+    1300: 3,
+    1024: 3,
+  }
+
   return (
     <>
-      {listLength > 0 ? (
+      {products?.length > 0 ? (
         <>
-          <SortFilter length={total || listLength} sortConfig={sortConfig} />
+          <SortFilter length={products?.length} sortConfig={sortConfig} />
           {/* sortOptions={sortOptions} */}
           <VerticalFlex alignItems="start">
-            <MasonryGrid gap={20} width={"100%"} breakpoints={6}>
-              {listArray.map((product: ProductData, i:number) => {
+            <MasonryGrid gap={20} width={"100%"} breakpoints={breakPoint}>
+              {products?.map((product: ProductData, i:number) => {
                 return (
-                  <FlexChild key={product.id} className={Pstyles.item_wrap}>
+                  <FlexChild key={product.id} className={Pstyles.card_wrap}>
                     {
                       // 프로덕트, new일때만 나타나기. 제품 인기순 표시임
                       (pathname === "/products/new" ||
                         pathname === "/products/best") && (
-                        <FlexChild
-                          className={clsx(
-                            Pstyles.rank,
-                            i + (pagination?.page || 0) * 24 < 3
-                              ? Pstyles.topRank
-                              : ""
-                          )}
-                        >
-                          <Span className="SacheonFont">
-                            {(pagination?.page || 0) * 24 + i + 1}
+                        <FlexChild className={clsx(Pstyles.rank)}>
+                          <Span>
+                            {(page || 0) * 24 + i + 1}
                           </Span>
                         </FlexChild>
                       )
@@ -185,11 +216,11 @@ export function BaseProductList({
               })}
             </MasonryGrid>
           </VerticalFlex>
-          {pagination && pagination.maxPage > 0 && (
+          {products?.lenght < 0 && (
             <ListPagination
-              page={pagination.page}
-              maxPage={pagination.maxPage}
-              onChange={pagination.setPage}
+              page={page}
+              maxPage={maxPage}
+              onChange={setPage}
             />
           )}
         </>
@@ -199,3 +230,83 @@ export function BaseProductList({
     </>
   );
 }
+
+// export function BaseProductList({
+//   id,
+//   mutate,
+//   total,
+//   listArray,
+//   // sortOptions,
+//   sortConfig,
+//   pagination,
+// }: {
+//   id: string,
+//   mutate?: () => void;
+//   total?: number;
+//   listArray: ProductData[];
+//   // sortOptions: { id: string; display: string }[];
+//   sortConfig?: {
+//     sort: { id: string; display: string };
+//     setSort: (opt: { id: string; display: string }) => void;
+//     sortOptions: { id: string; display: string }[];
+//   };
+//   pagination?: { page: number; maxPage: number; setPage: (p: number) => void };
+// }) {
+//   // const [sort, setSort] = useState(sortOptions?.[0]); // 정렬 상태 관리
+//   const listLength = listArray.length;
+
+//   const pathname = usePathname();
+
+//   const breakPoint = {
+//     default: 4,
+//     1300: 3,
+//     1024: 3,
+//   }
+
+//   return (
+//     <>
+//       {listLength > 0 ? (
+//         <>
+//           <SortFilter length={total || listLength} sortConfig={sortConfig} />
+//           {/* sortOptions={sortOptions} */}
+//           <VerticalFlex alignItems="start">
+//             <MasonryGrid gap={20} width={"100%"} breakpoints={breakPoint}>
+//               {listArray.map((product: ProductData, i:number) => {
+//                 return (
+//                   <FlexChild key={product.id} className={Pstyles.card_wrap}>
+//                     {
+//                       // 프로덕트, new일때만 나타나기. 제품 인기순 표시임
+//                       (pathname === "/products/new" ||
+//                         pathname === "/products/best") && (
+//                         <FlexChild className={clsx(Pstyles.rank)}>
+//                           <Span>
+//                             {(pagination?.page || 0) * 24 + i + 1}
+//                           </Span>
+//                         </FlexChild>
+//                       )
+//                     }
+//                     <ProductCard
+//                       product={product}
+//                       lineClamp={2}
+//                       width={"100%"}
+//                       mutate={mutate}
+//                     />
+//                   </FlexChild>
+//                 );
+//               })}
+//             </MasonryGrid>
+//           </VerticalFlex>
+//           {pagination && (
+//             <ListPagination
+//               page={pagination.page}
+//               maxPage={pagination.maxPage}
+//               onChange={pagination.setPage}
+//             />
+//           )}
+//         </>
+//       ) : (
+//         <NoContent type={"상품"} />
+//       )}
+//     </>
+//   );
+// }

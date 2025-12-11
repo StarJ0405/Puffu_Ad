@@ -3,7 +3,9 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import { requester } from "@/shared/Requester";
 import { SearchParams } from "next/dist/server/request/search-params";
 import Pstyles from "../../products.module.css";
-import { CommingSoonList } from "./client";
+import { CategoryMenu, ProductMenu, BaseProductList } from "../../baseClient";
+// import { CommingSoonList } from "./client";
+import FlexChild from "@/components/flex/FlexChild";
 
 export default async function ({
   searchParams,
@@ -13,7 +15,7 @@ export default async function ({
   const { category_id } = await searchParams;
   const newCondition: any = {
     pageSize: 24,
-    order: "new",
+    order: "commingSoon",
     warehousing: true,
   };
   if (category_id) newCondition.category_id = category_id;
@@ -21,18 +23,27 @@ export default async function ({
   const newProducts = await requester.getProducts(newCondition);
 
   return (
-    <section className="root">
-      <Container className="page_container" marginTop={80}>
-        <VerticalFlex className={Pstyles.title_box}>
-          <h3>입고예정</h3>
+    <section className="root page_container">
+      <Container marginTop={80}>
+        <VerticalFlex className={Pstyles.titleBox} alignItems="start">
+          <VerticalFlex className={Pstyles.title} gap={10} width={'auto'}>
+            <h2 className="Wanted">BEST <small>상품</small></h2>
+          </VerticalFlex>
+
+          <ProductMenu />
         </VerticalFlex>
 
-        <VerticalFlex className={Pstyles.list}>
-          <CommingSoonList
-            initProducts={newProducts}
-            initConiditon={newCondition}
-          />
-        </VerticalFlex>
+        <FlexChild className={Pstyles.container} alignItems="start" gap={40}>
+          <CategoryMenu ConditionOrder={newCondition} />
+  
+          <VerticalFlex className={Pstyles.list_wrap}>
+            <BaseProductList
+              id={'commingSoon'}
+              initProducts={newProducts}
+              initConiditon={newCondition}
+            />
+          </VerticalFlex>
+        </FlexChild>
       </Container>
     </section>
   );

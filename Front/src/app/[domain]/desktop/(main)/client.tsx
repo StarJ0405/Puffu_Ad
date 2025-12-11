@@ -302,10 +302,10 @@ export function MainCategory() {
           )
         })}
       </nav>
-      <Link href={`${siteInfo.pt_showcase}/${costumeData?.id}`} className={styles.exhibitionBox}>
+      <Link href={`/products/showcase?category_id=${costumeData?.id}`} className={styles.exhibitionBox}>
         <Div className={styles.itemBox}>
           <VerticalFlex className={styles.text_box} alignItems="start">
-            <P className={styles.text1}>특별한 의상을 찾으시나요?</P>
+            <P className={styles.text1}>특별한 의상을 찾으시나요?2</P>
             <FlexChild gap={10}>
               <h3>{costumeData?.name}</h3>
               <Span className={clsx(styles.eng_txt, 'Wanted')}>{costumeData?.english_name}</Span>
@@ -699,7 +699,7 @@ export function ReviewSection({
         <FlexChild className={styles.ProductSlider}>
           <Swiper
             loop={false}
-            slidesPerView={4.2}
+            slidesPerView={'auto'}
             speed={600}
             spaceBetween={10}
             modules={[Autoplay, Navigation]}
@@ -709,8 +709,9 @@ export function ReviewSection({
               prevEl: prevRef.current,
               nextEl: nextRef.current
             }}
-            observer={true}
-            observeParents={true}
+            // observer={true}
+            // observeParents={true}
+            updateOnWindowResize={false}
           >
             {loading
               ? Array.from({ length: 5 }).map((_, i) => (
@@ -726,7 +727,7 @@ export function ReviewSection({
                         review={review}
                         lineClamp={lineClamp ?? 2}
                         type={'slide'}
-                        width="100%"
+                        width={'100%'}
                         height="auto"
                       />
                     </SwiperSlide>
@@ -841,7 +842,8 @@ export function EventSection({
         <FlexChild className={styles.ProductSlider}>
           <Swiper
             loop={true}
-            slidesPerView={3.1}
+            slidesPerView={'auto'}
+            centeredSlides={false}
             speed={600}
             spaceBetween={20}
             modules={[Autoplay, Navigation]}
@@ -851,9 +853,10 @@ export function EventSection({
               prevEl: prevRef.current,
               nextEl: nextRef.current
             }}
-            observer={true}
-            observeParents={true}
-            watchOverflow={false}
+            // observer={true}
+            // observeParents={true}
+            updateOnWindowResize={false}
+            // watchOverflow={false}
           >
             {loading
               ? Array.from({ length: 5 }).map((_, i) => (
@@ -863,7 +866,7 @@ export function EventSection({
               ))
               : notices.map((item: NoticeData, i: number) => (
                   <SwiperSlide className={styles.slide_item} key={item.id ?? i}>
-                    <EventCard item={item} workType={'slide'}/>
+                    <EventCard item={item} width={398} workType={'slide'}/>
                   </SwiperSlide>
                 ))}
           </Swiper>

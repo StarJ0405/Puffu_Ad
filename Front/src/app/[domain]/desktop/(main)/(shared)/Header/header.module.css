@@ -1,7 +1,8 @@
 
 .header {
    --all_transition: all 0.3s;
-   background-color: #fff;
+   background-color: #F5F5F7;
+   border-color: rgba(0, 0, 0, 0.1);
    position: relative;
    display: flex;
    flex-direction: column;
@@ -21,10 +22,10 @@
    transition: var(--all_transition);
 }
 
-.header.scroll {
-   /* background-color: #F5F5F7; */
+/* .header.scroll {
+   background-color: #F5F5F7;
    border-color: rgba(0, 0, 0, 0.1);
-}
+} */
 
 
 .logo {width: auto;}

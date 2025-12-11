@@ -11,23 +11,25 @@
 }
 
 .pagingBox .paging {
-   width: 35px;
-   height: 35px;
+   width: 30px;
+   height: 30px;
    border-radius: 50%;
-   border: 2px solid #fff;
+   border: 2px solid var(--main-color1);
    display: flex;
    align-items: center;
    justify-content: center;
 }
 
 .pagingBox > .num_btn {
-   font-size: 13px; 
-   font-weight: 600;
+   font-size: 14px; 
+   font-weight: 700;
    border: none;
+   color: #222;
 }
 
 .pagingBox > .num_btn.active {
-   background: #434343;
+   background: var(--main-color1);
+   color: #fff;
 }
 
 

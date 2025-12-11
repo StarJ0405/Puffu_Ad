@@ -4,9 +4,9 @@ import Span from "@/components/span/Span";
 import { requester } from "@/shared/Requester";
 import { SearchParams } from "next/dist/server/request/search-params";
 import Pstyles from "../../products.module.css";
-import { NewList } from "./client";
-import {ProdcutCategoryFilter } from "../../baseClient";
-import styles from "./page.module.css";
+// import { NewList } from "./client";
+import { CategoryMenu, ProductMenu, BaseProductList } from "../../baseClient";
+import FlexChild from "@/components/flex/FlexChild";
 
 export default async function ({
   searchParams,
@@ -25,23 +25,23 @@ export default async function ({
   const newProducts = await requester.getProducts(newCondition);
 
   return (
-    <section className="root">
-      <Container className="page_container" marginTop={80}>
-        <VerticalFlex className={styles.titleBox}>
-          <VerticalFlex className={styles.title}>
-            <h2 className="SacheonFont">
-              <Span>따끈따끈</Span> 신상품
-            </h2>
+    <section className="root page_container">
+      <Container marginTop={80}>
+        <VerticalFlex className={Pstyles.titleBox} alignItems="start">
+          <VerticalFlex className={Pstyles.title} gap={10} width={'auto'}>
+            <h2 className="Wanted">신상품</h2>
           </VerticalFlex>
+
+          <ProductMenu />
         </VerticalFlex>
 
-        <VerticalFlex marginBottom={30}>
-          <ProdcutCategoryFilter ConditionOrder={newCondition} />
-        </VerticalFlex>
-
-        <VerticalFlex className={Pstyles.list}>
-          <NewList initProducts={newProducts} initConiditon={newCondition} />
-        </VerticalFlex>
+        <FlexChild className={Pstyles.container} alignItems="start" gap={40}>
+          <CategoryMenu ConditionOrder={newCondition} />
+  
+          <VerticalFlex className={Pstyles.list_wrap}>
+            <BaseProductList id={'new'} initProducts={newProducts} initConiditon={newCondition} />
+          </VerticalFlex>
+        </FlexChild>
       </Container>
     </section>
   );

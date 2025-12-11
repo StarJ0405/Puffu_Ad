@@ -1,13 +1,13 @@
 import Container from "@/components/container/Container";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Pstyles from "../../products.module.css";
-import { BestList } from "./client";
-import {ProdcutCategoryFilter } from "../../baseClient";
+import { CategoryMenu, ProductMenu, BaseProductList } from "../../baseClient";
 import styles from "./page.module.css";
-
 import Image from "@/components/Image/Image";
 import { requester } from "@/shared/Requester";
 import { SearchParams } from "next/dist/server/request/search-params";
+import Link from "next/link";
+import FlexChild from "@/components/flex/FlexChild";
 
 export default async function ({
   searchParams,
@@ -30,20 +30,26 @@ export default async function ({
   return (
     <section className="root page_container">
       <Container marginTop={80}>
-        <VerticalFlex className={styles.titleBox}>
-          <VerticalFlex className={styles.title} gap={10}>
-            <Image src={"/resources/images/header/logo.png"} width={100} />
-            <h2 className="SacheonFont">BEST 상품</h2>
+        <VerticalFlex className={Pstyles.titleBox} alignItems="start">
+          <VerticalFlex className={Pstyles.title} gap={10} width={'auto'}>
+            <h2 className="Wanted">BEST <small>상품</small></h2>
           </VerticalFlex>
+
+          <ProductMenu />
         </VerticalFlex>
 
-        <VerticalFlex marginBottom={30}>
-          <ProdcutCategoryFilter ConditionOrder={bestCondition} />
-        </VerticalFlex>
-
-        <VerticalFlex className={Pstyles.list}>
-          <BestList initProducts={bestProducts} initConiditon={bestCondition} />
-        </VerticalFlex>
+        <FlexChild className={Pstyles.container} alignItems="start" gap={40}>
+          <CategoryMenu ConditionOrder={bestCondition} />
+  
+          <VerticalFlex className={Pstyles.list_wrap}>
+            {/* <BestList initProducts={bestProducts} initConiditon={bestCondition} /> */}
+            <BaseProductList
+              id={'best'}
+              initProducts={bestProducts}
+              initConiditon={bestCondition}
+            />
+          </VerticalFlex>
+        </FlexChild>
       </Container>
     </section>
   );
