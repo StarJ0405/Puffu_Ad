@@ -4,8 +4,8 @@ import Span from "@/components/span/Span";
 import { requester } from "@/shared/Requester";
 import { SearchParams } from "next/dist/server/request/search-params";
 import Pstyles from "../../products.module.css";
-import { NewList } from "./client";
-import { CategoryMenu, ProductMenu } from "../../baseClient";
+// import { NewList } from "./client";
+import { CategoryMenu, ProductMenu, BaseProductList } from "../../baseClient";
 import FlexChild from "@/components/flex/FlexChild";
 
 export default async function ({
@@ -39,7 +39,7 @@ export default async function ({
           <CategoryMenu ConditionOrder={newCondition} />
   
           <VerticalFlex className={Pstyles.list_wrap}>
-            <NewList initProducts={newProducts} initConiditon={newCondition} />
+            <BaseProductList id={'new'} initProducts={newProducts} initConiditon={newCondition} />
           </VerticalFlex>
         </FlexChild>
       </Container>
