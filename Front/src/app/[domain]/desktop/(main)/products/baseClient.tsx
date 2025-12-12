@@ -12,46 +12,38 @@ import P from "@/components/P/P";
 import Span from "@/components/span/Span";
 import { useCategories } from "@/providers/StoreProvider/StorePorivderClient";
 import useNavigate from "@/shared/hooks/useNavigate";
+import siteInfo from "@/shared/siteInfo";
 import clsx from "clsx";
+import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import Pstyles from "./products.module.css";
-import Link from "next/link";
-import siteInfo from "@/shared/siteInfo";
-import { requester } from "@/shared/Requester";
-import usePageData from "@/shared/hooks/data/usePageData";
-
 
 export function ProductMenu() {
-
   const pathname = usePathname();
 
   const menu = [
-    {name: 'best 상품', link: siteInfo.pt_best},
-    {name: '신상품', link: siteInfo.pt_new},
-    {name: '세일 상품', link: siteInfo.pt_sale},
-    {name: '입고 예정', link: siteInfo.pt_commingSoon},
-  ]
+    { name: "best 상품", link: siteInfo.pt_best },
+    { name: "신상품", link: siteInfo.pt_new },
+    { name: "세일 상품", link: siteInfo.pt_sale },
+    { name: "입고 예정", link: siteInfo.pt_commingSoon },
+  ];
 
   return (
     <nav className={Pstyles.page_list}>
-      {menu.map((item, i)=> {
+      {menu.map((item, i) => {
+        const active = pathname === item.link ? Pstyles.active : "";
 
-          const active = pathname === item.link ? Pstyles.active : '';
-
-          return (
-            <Link key={i} href={item.link} className={active}>{item.name}</Link>
-          )
-        })
-      }
+        return (
+          <Link key={i} href={item.link} className={active}>
+            {item.name}
+          </Link>
+        );
+      })}
     </nav>
-  )
+  );
 }
 
-export function CategoryMenu({
-  ConditionOrder,
-}: {
-  ConditionOrder: any;
-}) {
+export function CategoryMenu({ ConditionOrder }: { ConditionOrder: any }) {
   // 대분류 카테고리
 
   const pathname = usePathname();
@@ -66,9 +58,14 @@ export function CategoryMenu({
       <HorizontalFlex className={Pstyles.title}>
         <h3 className="Wanted">CATEGORY</h3>
 
-        <Button onClick={()=> navigate(`/products/${order}`)} className={Pstyles.reset_btn}>초기화</Button>
+        <Button
+          onClick={() => navigate(`/products/${order}`)}
+          className={Pstyles.reset_btn}
+        >
+          초기화
+        </Button>
       </HorizontalFlex>
-     
+
       <VerticalFlex className={Pstyles.ca_list} alignItems="start">
         {categoriesData
           .sort((c1, c2) => c1.index - c2.index)
@@ -76,7 +73,7 @@ export function CategoryMenu({
             const cat_check =
               pathname === `/products/${order}` &&
               currentCategoryId === String(cat.id);
-  
+
             return (
               <HorizontalFlex
                 className={clsx(Pstyles.ca_item, cat_check && Pstyles.active)}
@@ -87,7 +84,7 @@ export function CategoryMenu({
               >
                 <P>{cat.name}</P>
 
-                <Image src={'/resources/icons/arrow_right.png'} width={7} />
+                <Image src={"/resources/icons/arrow_right.png"} width={7} />
               </HorizontalFlex>
             );
           })}
@@ -241,7 +238,7 @@ export function BaseProductList({
   // sortOptions,
   sortConfig,
   pagination,
-  pageSize,
+  pageSize = 0,
 }: {
   // id: string,
   mutate?: () => void;
@@ -254,7 +251,7 @@ export function BaseProductList({
     sortOptions: { id: string; display: string }[];
   };
   pagination?: { page: number; maxPage: number; setPage: (p: number) => void };
-  pageSize: number;
+  pageSize?: number;
 }) {
   // const [sort, setSort] = useState(sortOptions?.[0]); // 정렬 상태 관리
   const listLength = listArray.length;
@@ -265,7 +262,7 @@ export function BaseProductList({
     default: 4,
     1300: 3,
     1024: 3,
-  }
+  };
 
   // console.log(pagination);
 
@@ -277,7 +274,7 @@ export function BaseProductList({
           {/* sortOptions={sortOptions} */}
           <VerticalFlex alignItems="start">
             <MasonryGrid gap={20} width={"100%"} breakpoints={breakPoint}>
-              {listArray.map((product: ProductData, i:number) => {
+              {listArray.map((product: ProductData, i: number) => {
                 return (
                   <FlexChild key={product.id} className={Pstyles.card_wrap}>
                     {
