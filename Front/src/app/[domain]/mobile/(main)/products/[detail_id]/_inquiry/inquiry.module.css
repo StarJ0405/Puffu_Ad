@@ -1,7 +1,7 @@
 
 .inquiry_board {
    gap: 45px;
-   padding: 20px 10px 0;
+   padding: 0 10px;
 }
 
 
@@ -21,14 +21,19 @@
 .inquiry_content .content_textArea {
   height: 150px;
   border-radius: 3px;
-  border-color: #707070;
-  background-color: #333333;
-  color: #fff;
+  border-color: #d9d9d9;
+  background-color: #fff;
+  color: #000;
 }
 
 .inquiry_content .Private_checkBox {
+   display: flex;
    gap: 10px;
-   align-items: center;
+   font-size: 15px;
+   font-weight: 500;
+}
+.inquiry_content .Private_checkBox p {
+   padding-top: 2px;
 }
 
 
@@ -38,7 +43,7 @@
 .toggle_btn {background: none; transition: 0.2s}
 .toggle_btn.active {transform: rotate(180deg);}
 
-.inquiry_list {gap: 45px;}
+.inquiry_list {gap: 8px;}
 
 .inquiry_list .list_title {
    gap: 10px;
@@ -46,39 +51,46 @@
 
 .inquiry_list .list_title {
    font-size: 20px;
-   color: #fff;
-   font-weight: 600;
+   color: #000;
+   font-weight: 700;
 }
 
 .inquiry_list .list_title span {position: relative; bottom: 2px;}
 
 .inquiry_list .inquiry_item {
    padding-bottom: 15px;
-   border-bottom: 1px solid #535353;
+   border-bottom: 1px solid #d2d2d2;
 }
 
 .inquiry_item .user_question .item_title {
-   margin-bottom: 20px;
+   padding-bottom: 6px;
 }
 
 .inquiry_item .user_question .item_title p {
-   font-size: 16px !important; color: #fff !important;
+   font-size: 15px !important; 
+   color: #000 !important;
 }
 
 .inquiry_item .user_question .data_group {
-   gap: 10px; margin-bottom: 15px;
+   gap: 10px;
+
 }
 
 .inquiry_item .user_question .data_group .response_check {
-   width: auto; padding: 10px 9px;
-   background: #2D2D2D;
+   width: auto; 
+   padding: 7px;
    border-radius: 3px;
+   border: 1px solid var(--main-color1);
+   font-size: 14px;
 }
 
-.inquiry_item .user_question .data_group .response_check span {color: #555;}
+.inquiry_item .user_question .data_group .response_check span {
+   color: #555;
+}
 
 .inquiry_item .user_question .data_group .item_name {
-   color: #fff !important; font-size: 13px !important;
+   color: #000 !important; 
+   font-size: 13px !important;
 }
 
 .inquiry_item .user_question .data_group .item_date {
@@ -86,11 +98,10 @@
 }
 
 .inquiry_item .item_content {
-   padding: 15px;
-   background: #333;
-   border: 1px solid #707070;
+   padding: 12px;
+   border: 1px solid #d9d9d9;
    border-radius: 3px;
-   color: #BFBFBF;
+   color: #303030;
    min-height: 140px;
    align-items: start !important;
    line-height: 1.4;
@@ -100,11 +111,11 @@
 
 /* 관리자 답변 */
 .inquiry_item .admin_answer {
-   margin-top: 20px;
+   margin-top: 16px;
 }
 
 .inquiry_item .admin_answer .item_content {
-   background: #111;
+   border: 1px solid #d9d9d9;
 }
 
 .inquiry_item .admin_answer .answer_title {

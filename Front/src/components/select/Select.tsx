@@ -269,7 +269,7 @@ function Select<T extends string | number>({
             })
             .map((option, index) => (
               <div
-                style={{ fontSize: isMobile ? "12px" : "", ...style?.line }}
+                style={{ fontSize: isMobile ? "14px" : "", ...style?.line }}
                 key={String(option?.value) + index}
                 className={clsx(
                   styles.optionItem,

@@ -52,7 +52,7 @@ export default async function ({ params }: { params: Promise<Params> }) {
             alignItems="start"
             className={styles.slide_wrap}
           >
-            <FlexChild marginBottom={20}>
+            <FlexChild padding={"20px 0"}>
               <h3 className={clsx("SacheonFont", styles.slide_title)}>
                 보시는 상품과 비슷한 추천 상품
               </h3>

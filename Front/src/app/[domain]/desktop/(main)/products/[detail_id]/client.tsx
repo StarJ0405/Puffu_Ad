@@ -79,8 +79,6 @@ export function ProductWrapper({
     }))
   );
 
-  // console.log(product);
-
   const fetchQAs = async (pageNumber: number) => {
     const res = await requester.getProductQAs(initProduct?.content?.id, {
       relations: ["user"],
@@ -615,24 +613,28 @@ export function BuyButtonGroup({
         </Button>
       </FlexChild>
 
-      <FlexChild className={styles.cart_box}>
-        <Button
-          className={styles.cart_btn}
-          onClick={onCartClick}
-          disabled={disabled}
-        >
-          <P>{disabledReason ?? "장바구니"}</P>
-        </Button>
-      </FlexChild>
+      <FlexChild>
+        <HorizontalFlex gap={6}>
+          <FlexChild className={styles.cart_box}>
+            <Button
+              className={styles.cart_btn}
+              onClick={onCartClick}
+              disabled={disabled}
+            >
+              <P>{disabledReason ?? "장바구니"}</P>
+            </Button>
+          </FlexChild>
 
-      <FlexChild className={styles.buy_box}>
-        <Button
-          className={styles.buy_btn}
-          onClick={onPurchaseClick}
-          disabled={disabled}
-        >
-          <P>{disabledReason ?? "바로 구매"}</P>
-        </Button>
+          <FlexChild className={styles.buy_box}>
+            <Button
+              className={styles.buy_btn}
+              onClick={onPurchaseClick}
+              disabled={disabled}
+            >
+              <P>{disabledReason ?? "바로 구매"}</P>
+            </Button>
+          </FlexChild>
+        </HorizontalFlex>
       </FlexChild>
     </HorizontalFlex>
   );
@@ -731,18 +733,18 @@ export function DetailTabContainer({
 
   const tabAraays = [
     {
-      name: "상세정보",
+      name: "상세설명",
       paramsName: "description",
       component: <Description product={product} />,
     },
     {
-      name: "사용후기",
+      name: "리뷰",
       paramsName: "review",
       component: <Review product={product} />,
       count: totalReviewCount,
     },
     {
-      name: "상품 Q&A",
+      name: "Q&A",
       paramsName: "inquiry",
       component: (
         <Inquiry
@@ -756,7 +758,7 @@ export function DetailTabContainer({
       count: totalQaCount,
     },
     {
-      name: "배송/반품/교환/안내",
+      name: "배송안내",
       paramsName: "deliveryGuide",
       component: <DeliveryGuide />,
     },

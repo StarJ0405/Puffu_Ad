@@ -222,8 +222,8 @@ export default function Inquiry({
                           }
                         >
                           <Image
-                            src={`/resources/icons/arrow/board_arrow_bottom_icon.png`}
-                            width={20}
+                            src={`/resources/icons/down_arrow.png`}
+                            width={16}
                           />
                         </Button>
                       )}
