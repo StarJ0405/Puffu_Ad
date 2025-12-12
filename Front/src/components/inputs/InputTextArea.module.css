@@ -61,7 +61,7 @@
   pointer-events: none;
   display: flex;
   align-items: center; /* Align vertically with padding */
-  padding: 10px 12px; /* Match textarea padding */
+  padding: 15px; /* Match textarea padding */
   color: var(--placeholder-color, #8b8b8b);
   transition: all 0.2s ease-in-out;
   /* Adjust height/width if needed to cover the entire area initially */

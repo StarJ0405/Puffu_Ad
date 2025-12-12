@@ -139,7 +139,7 @@ export default function Inquiry({
     <VerticalFlex className={styles.inquiry_wrap}>
       <VerticalFlex className={styles.inquiry_board}>
         {/* 문의글 작성란 */}
-        <VerticalFlex className={styles.inquiry_write} gap={15}>
+        <VerticalFlex className={styles.inquiry_write} gap={10}>
           <FlexChild className={styles.select_item}>
             <Select
               classNames={{
@@ -161,7 +161,7 @@ export default function Inquiry({
             />
           </FlexChild>
 
-          <VerticalFlex className={styles.inquiry_content} gap={10}>
+          <VerticalFlex className={styles.inquiry_content} gap={16}>
             <InputTextArea
               width={"100%"}
               className={styles.content_textArea}
@@ -169,7 +169,6 @@ export default function Inquiry({
               value={content}
               onChange={(value) => setContent(value as string)}
             />
-
             <CheckboxGroup name="private_Check">
               <label>
                 <FlexChild className={styles.Private_checkBox}>
@@ -178,7 +177,7 @@ export default function Inquiry({
                     checked={isHidden}
                     onChange={() => setIsHidden(!isHidden)}
                   />
-                  <P>비공개로 작성</P>
+                  <P weight={500}>비공개로 작성</P>
                 </FlexChild>
               </label>
             </CheckboxGroup>
@@ -231,8 +230,10 @@ export default function Inquiry({
                     </HorizontalFlex>
 
                     <FlexChild className={styles.data_group}>
-                      <FlexChild className={styles.response_check}>
-                        <Span color={inquiry.answer ? "#F5146E" : "#ffffff"}>
+                      <FlexChild className={styles.response_check} 
+                        backgroundColor={inquiry.answer ? "#fff" : "var(--main-color1)"}
+                      >
+                        <Span color={inquiry.answer ? "var(--main-color1)" : "#ffffff"}>
                           {inquiry.answer ? "답변완료" : "답변대기"}
                         </Span>
                       </FlexChild>
@@ -286,10 +287,12 @@ export default function Inquiry({
               );
             })
           ) : (
-            <NoContent type="문의" />
+            <FlexChild padding={"30px 0"}>
+              <NoContent type="문의" />
+            </FlexChild>
           )}
 
-          <FlexChild justifyContent="center">
+          <FlexChild justifyContent="center" paddingTop={20}>
             <ListPagination
               page={page}
               maxPage={totalPage}

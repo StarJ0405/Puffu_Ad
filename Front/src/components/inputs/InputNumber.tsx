@@ -82,7 +82,7 @@ const InputNumber = forwardRef<refInterface, InputNumberProps>((props, ref) => {
     decimal = -1,
     step = 1,
     height,
-    width = 60,
+    width = 45,
     style: componentStyle,
     borderColor,
   } = props;
@@ -397,8 +397,8 @@ const InputNumber = forwardRef<refInterface, InputNumberProps>((props, ref) => {
             <div className={style.center}>
               {/* Minus icon SVG */}
               <svg
-                width="24"
-                height="24"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -503,8 +503,8 @@ const InputNumber = forwardRef<refInterface, InputNumberProps>((props, ref) => {
               {/* Plus icon SVG */}
               {/* <P size={!isMobile ? 30 : 25}>+</P> */}
               <svg
-                width="24"
-                height="24"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"

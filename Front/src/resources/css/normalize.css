@@ -172,7 +172,11 @@ input[type="search"]:focus-visible {
 }
 
 .post_btn:hover {
-  background: var(--main-color1) !important;
+  background: var(--main-color1-hover) !important;
+}
+.post_btn:active {
+  background: var(--main-color1-active) !important;
+  transform: translateY(var(--btn-active-translate)) scale(var(--btn-active-scale));
 }
 
 /* 버튼들 비활성화 될 때 */
@@ -217,9 +221,9 @@ input[type="search"]:focus-visible {
 /* 셀렉트 */
 /* width는 위에 flexChild 씌워서 그걸로 조정하면 됨. */
 .web_select {
-  background-color: #222 !important;
+  background-color: #fff !important;
   border-radius: 4px !important;
-  border: 1px solid #4c4c4c !important;
+  border: 1px solid #d9d9d9 !important;
   color: #fff !important;
   width: 100%;
 }
@@ -229,11 +233,12 @@ input[type="search"]:focus-visible {
 }
 
 .web_select:hover {
-  border-color: #fff !important;
+  /* border-color: #fff !important; */
+  background-color: #fafafa !important;
 }
 
 .web_select_arrow {
-  color: #fff !important;
+  color: #bbb !important;
 }
 
 .web_select_placholder {
@@ -241,12 +246,13 @@ input[type="search"]:focus-visible {
 }
 
 .web_select_line {
-  background: #222 !important;
-  color: #fff !important;
+  background: #fff !important;
+  color: #888 !important;
+  font-weight: 500 !important;
 }
 
 .web_select_line:hover {
-  background: #000 !important;
+  background: #fafafa !important;
 }
 
 .web_select_line.selected {

@@ -4,12 +4,20 @@
   --default-color: #000;
   --main-color1: #D03238;
   --active-color: #F73149;
+  --main-color1-hover: #df3c41;
+  --main-color1-active: #D03238;
+  /* --main-color2: #e7156d; */
+  --black-color-hover: #2b2b2b;
+  --black-color-active: #000;
   --maxWidthDesktop: 1274px;
   --minWidthDesktop: 1024px;
 
   --confirmModal-bg: #222;
 
-  --button-disabled-bg: #535353;
+  --button-disabled-bg: #bebebe;
+
+  --btn-active-translate: 2px;
+  --btn-active-scale: 0.98;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -71,7 +79,7 @@ body {
 }
 
 @media (max-width: 1300px) {
-  .page_container {padding:  0 13px;}
+  .page_container {padding:  0 50px;}
 }
 
 .root {
