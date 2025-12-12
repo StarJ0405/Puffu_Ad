@@ -302,7 +302,7 @@ export function MainCategory() {
           )
         })}
       </nav>
-      <Link href={`/products/showcase?category_id=${costumeData?.id}`} className={styles.exhibitionBox}>02d6fdcae527de5cd2626c3a385bab7ef9b3d3
+      <Link href={`/products/showcase?category_id=${costumeData?.id}`} className={styles.exhibitionBox}>
         <Div className={styles.itemBox}>
           <VerticalFlex className={styles.text_box} alignItems="start">
             <P className={styles.text1}>특별한 의상을 찾으시나요?2</P>
