@@ -143,6 +143,24 @@ input[type="search"]:focus-visible {
 
 /* 컴포넌트 공통 css ----------------------- */
 
+.card_wrap {position: relative;}
+
+.card_wrap .rank {
+  position: absolute;
+  top: 10px; left: 10px;
+  min-width: 25px; height: 25px;
+  width: fit-content;
+  background: var(--main-color1);
+  color: #fff !important;
+  font-size: 16px;
+  font-weight: 700 !important;
+  z-index: 2;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  padding: 2px 3px 0;
+}
+
 .searchInput_Box {
   border-color: rgba(255, 255, 255, 0.3);
   background: #fff;
@@ -216,6 +234,9 @@ input[type="search"]:focus-visible {
   .post_btn:active {
     filter: var(--mob-active-filter);
   }
+
+  .card_wrap .rank {border-radius: 6px;}
+
 }
 
 /* 셀렉트 */

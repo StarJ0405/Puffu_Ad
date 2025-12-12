@@ -463,13 +463,13 @@ export function ProductList({
           >
             {products.slice(0, visibleCount).map((product: ProductData, i) => {
               return (
-                <FlexChild className={styles.card_wrap} key={product.id}>
+                <FlexChild className={'card_wrap'} key={product.id}>
                   {
                     // 프로덕트, new일때만 나타나기. 제품 인기순 표시임
                     <FlexChild
                       color="#000"
                       className={clsx(
-                        styles.rank
+                        'rank'
                         // i + page * 12 < 3 ? styles.topRank : "" // 더보기나 페이징으로 다음 페이지 있을때 적용
                       )}
                     >

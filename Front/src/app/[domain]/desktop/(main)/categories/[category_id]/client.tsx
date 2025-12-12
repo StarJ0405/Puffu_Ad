@@ -87,6 +87,7 @@ export function CategoryList({
       <BaseProductList
         pageSize={maxPage}
         mutate={mutate}
+        pageSize={origin?.pageSize}
         total={origin?.NumberOfTotalElements || 0}
         listArray={categories}
         sortConfig={{ sort, setSort, sortOptions }}

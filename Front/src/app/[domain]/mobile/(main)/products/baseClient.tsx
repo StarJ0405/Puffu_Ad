@@ -17,72 +17,177 @@ import clsx from "clsx";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import Pstyles from "./products.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoadingSpinner from "@/components/loading/LoadingSpinner";
 import ProductLoadBtn from "@/components/buttons/ProductLoadBtn";
+import NiceModal, { useModal } from "@ebay/nice-modal-react";
+import siteInfo from "@/shared/siteInfo";
+import ModalBase from "@/modals/ModalBase";
 
-export function ProdcutCategoryFilter({
-  ConditionOrder,
-}: {
-  ConditionOrder: any;
-}) {
-  // 대분류 카테고리
-
+export function ProductMenu() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const currentCategoryId = searchParams.get("category_id");
-  const { categoriesData } = useCategories();
-  const navigate = useNavigate();
-  const order = ConditionOrder.order;
 
-  // css : 카테고리 추가되어도 flex-wrap 구조 문제 없게 수정하기
+  const menu = [
+    { name: "best 상품", link: siteInfo.pt_best },
+    { name: "신상품", link: siteInfo.pt_new },
+    { name: "세일 상품", link: siteInfo.pt_sale },
+    { name: "입고 예정", link: siteInfo.pt_commingSoon },
+  ];
 
   return (
-    <VerticalFlex marginBottom={30} className={Pstyles.filter_box}>
-      <nav className={Pstyles.cat_filter_wrap}>
-        {/* ca_item에 active 클래스 주기. active 클래스만 걸리면 효과 들어감. */}
-        {pathname !== "/" ? (
-          <VerticalFlex
-            className={clsx(
-              Pstyles.ca_item,
-              Pstyles.ca_all,
-              !currentCategoryId && Pstyles.active
-            )}
-            onClick={() => navigate(`/products/${order}`)}
-          >
-            <FlexChild className={Pstyles.ca_thumb}>
-              <P>ALL</P>
-            </FlexChild>
-            <Span>전체</Span>
-          </VerticalFlex>
-        ) : null}
+    <nav className={Pstyles.page_list}>
+      {menu.map((item, i) => {
+        const active = pathname === item.link ? Pstyles.active : "";
 
-        {categoriesData
-          .sort((c1, c2) => c1.index - c2.index)
-          .map((cat, i) => {
-            const cat_check =
-              pathname === `/products/${order}` &&
-              currentCategoryId === String(cat.id);
-
-            return (
-              <VerticalFlex
-                className={clsx(Pstyles.ca_item, cat_check && Pstyles.active)}
-                key={i}
-                onClick={() =>
-                  navigate(`/products/${order}?category_id=${cat.id}`)
-                }
-              >
-                <FlexChild className={Pstyles.ca_thumb}>
-                  <Image src={cat.thumbnail} />
-                </FlexChild>
-                <Span>{cat.name}</Span>
-              </VerticalFlex>
-            );
-          })}
-      </nav>
-    </VerticalFlex>
+        return (
+          <Link key={i} href={item.link} className={active}>
+            {item.name}
+          </Link>
+        );
+      })}
+    </nav>
   );
 }
+
+
+// 카테고리 메뉴
+export function CategoryMenu({ ConditionOrder }: { ConditionOrder: any }) {
+  const { categoriesData } = useCategories();
+  const order = ConditionOrder.order;
+
+  const searchParams = useSearchParams();
+  const currentCategoryId = searchParams.get("category_id");
+  const [caTag, setCaTag] = useState("카테고리 선택");
+
+  useEffect(() => {
+    if (!categoriesData) return;
+
+    const categoryFromUrl = categoriesData.find(
+      (cat: any) => String(cat.id) === currentCategoryId
+    );
+
+    if (categoryFromUrl) {
+      setCaTag(categoryFromUrl.name);
+    } else {
+      setCaTag("카테고리 선택");
+    }
+  }, [currentCategoryId, categoriesData]);
+
+  return (
+    <FlexChild
+      className={Pstyles.category_select}
+      onClick={() =>
+        NiceModal.show(CategoryModal, { categoriesData, order, setCaTag, currentCategoryId })
+      }
+    >
+      <P>{caTag}</P>
+      <Image
+        src={"/resources/icons/arrow/board_arrow_bottom_icon.png"}
+        width={12}
+      />
+    </FlexChild>
+  );
+}
+
+// 카테고리 메뉴(=> 모달)
+const CategoryModal = NiceModal.create(
+  ({
+    categoriesData,
+    order,
+    setCaTag,
+    currentCategoryId,
+  }: {
+    categoriesData: any;
+    order: any;
+    setCaTag: React.Dispatch<React.SetStateAction<string>>;
+    currentCategoryId: string | null;
+  }) => {
+    const pathname = usePathname();
+    const navigate = useNavigate();
+    const modal = useModal();
+
+    // 세일 전용
+    const orderCheck = order == 'discount' ? 'hot' : order;
+
+    const orderState = (cat: any)=> {
+      navigate(`/products/${orderCheck}?category_id=${cat.id}`);
+      modal.remove();
+      setCaTag(cat.name);
+    }
+
+    return (
+      <ModalBase
+        withHeader
+        headerStyle={{
+          backgroundColor: "#fff",
+          borderBottom: "none",
+          color: "#000",
+        }}
+        borderRadius={10}
+        width={"90%"}
+        maxWidth={450}
+        height={"90lvh"}
+        maxHeight={660}
+        title={"카테고리 선택"}
+        // onClose={() => {
+        //   onCancel?.();
+        //   modal.remove();
+        // }}
+        backgroundColor={"#fff"}
+        clickOutsideToClose
+      >
+        <nav className={Pstyles.category_menu}>
+          {pathname !== "/" ? (
+            <VerticalFlex
+              className={clsx(
+                Pstyles.ca_item,
+                Pstyles.ca_all,
+                !currentCategoryId && Pstyles.active
+              )}
+              onClick={() => {
+                navigate(`/products/${orderCheck}`);
+                modal.remove();
+                setCaTag('카테고리 선택');
+              }}
+            >
+              <FlexChild className={Pstyles.ca_img}>
+                <P>ALL</P>
+              </FlexChild>
+              <Span>전체</Span>
+            </VerticalFlex>
+          ) : null}
+
+          {categoriesData
+            .sort((c1: CategoryData, c2: CategoryData) => c1.index - c2.index)
+            .map((cat: CategoryData, i: number) => {
+              const cat_check =
+                pathname === `/products/${orderCheck}` &&
+                currentCategoryId === String(cat.id);
+
+              return (
+                <VerticalFlex
+                  className={clsx(Pstyles.ca_item, cat_check && Pstyles.active)}
+                  justifyContent="start"
+                  key={i}
+                  onClick={() =>
+                    orderState(cat)
+                  }
+                >
+                  <FlexChild className={Pstyles.ca_img}>
+                    <Image src={cat.thumbnail} />
+                  </FlexChild>
+                  <VerticalFlex className={Pstyles.text_box}>
+                    <h5>{cat.name}</h5>
+                    <Span className="Wanted">{cat.english_name}</Span>
+                  </VerticalFlex>
+                </VerticalFlex>
+              );
+            })}
+        </nav>
+      </ModalBase>
+    );
+  }
+);
 
 // 인기순, 추천순, 최신순 필터
 export function SortFilter({
@@ -149,7 +254,7 @@ export function BaseProductList({
     id,
     (pageNumber) => ({
       ...initCondition,
-      pageSize: 12,
+      // pageSize: 12,
       pageNumber,
     }),
     (condition) => requester.getProducts(condition),
@@ -167,12 +272,11 @@ export function BaseProductList({
     setLoading(true);
     try {
       await Load(); // 데이터 로드
-      
     } finally {
       setLoading(false); // 끝나면 로딩 해제
     }
-  }
-
+  };
+  // const pageSize = initCondition.pageSize;
   const pathname = usePathname();
 
   return (
@@ -186,7 +290,7 @@ export function BaseProductList({
           <VerticalFlex alignItems="start">
             <MasonryGrid
               width={"100%"}
-              gap={20}
+              gap={16}
               breakpoints={{
                 992: 5,
                 768: 4,
@@ -196,19 +300,14 @@ export function BaseProductList({
             >
               {products.map((product: ProductData, i: number) => {
                 return (
-                  <FlexChild className={Pstyles.item_wrap} key={product.id}>
+                  <FlexChild className={'card_wrap'} key={product.id}>
                     {
                       // 프로덕트, new일때만 나타나기. 제품 인기순 표시임
                       (pathname === "/products/new" ||
                         pathname === "/products/best") && (
-                        <FlexChild
-                          className={clsx(
-                            Pstyles.rank,
-                            i + page * 12 < 3 ? Pstyles.topRank : ""
-                          )}
-                        >
-                          <Span className="SacheonFont">
-                            {page * 12 + i + 1}
+                        <FlexChild className={'rank'}>
+                          <Span>
+                            {i + 1}
                           </Span>
                         </FlexChild>
                       )
@@ -225,7 +324,12 @@ export function BaseProductList({
             </MasonryGrid>
           </VerticalFlex>
           {loading && <LoadingSpinner />}
-          <ProductLoadBtn maxPage={maxPage} page={page} loading={loading} showMore={showMore} />
+          <ProductLoadBtn
+            maxPage={maxPage}
+            page={page}
+            loading={loading}
+            showMore={showMore}
+          />
         </>
       ) : (
         <NoContent type={"상품"} />
