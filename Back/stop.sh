@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PID=$(ps -ef | grep app.js | grep usr | awk '{print $2}')
+PID=$(ps -ef | grep app.js | grep node | awk '{print $2}')
 
 if [ -z "$PID" ];
 

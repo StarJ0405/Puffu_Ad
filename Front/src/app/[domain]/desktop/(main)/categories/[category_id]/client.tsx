@@ -85,6 +85,7 @@ export function CategoryList({
   return (
     <>
       <BaseProductList
+        pageSize={maxPage}
         mutate={mutate}
         total={origin?.NumberOfTotalElements || 0}
         listArray={categories}
