@@ -3,10 +3,10 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import Image from "@/components/Image/Image";
 import P from "@/components/P/P";
 import Span from "@/components/span/Span";
-// import { HotList } from "./client";
+import { HotList } from "./client";
 import Pstyles from "../../products.module.css";
 import {} from "./client";
-import { CategoryMenu, ProductMenu, BaseProductList } from "../../baseClient";
+import { CategoryMenu, ProductMenu } from "../../baseClient";
 import { requester } from "@/shared/Requester";
 // import { HotList } from "./client";
 import { SearchParams } from "next/dist/server/request/search-params";
@@ -41,12 +41,13 @@ export default async function ({
         <FlexChild className={Pstyles.container} alignItems="start" gap={40}>
           <CategoryMenu ConditionOrder={hotCondition} />
   
-          <VerticalFlex className={Pstyles._wrap}>
-            <BaseProductList
+          <VerticalFlex className={Pstyles.list_wrap}>
+            <HotList initProducts={hotProducts} initConiditon={hotCondition} />
+            {/* <BaseProductList
               id={'discount'}
               initProducts={hotProducts}
               initConiditon={hotCondition}
-            />
+            /> */}
           </VerticalFlex>
         </FlexChild>
       </Container>

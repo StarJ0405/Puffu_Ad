@@ -3,8 +3,8 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import { requester } from "@/shared/Requester";
 import { SearchParams } from "next/dist/server/request/search-params";
 import Pstyles from "../../products.module.css";
-import { CategoryMenu, ProductMenu, BaseProductList } from "../../baseClient";
-// import { CommingSoonList } from "./client";
+import { CategoryMenu, ProductMenu } from "../../baseClient";
+import { CommingSoonList } from "./client";
 import FlexChild from "@/components/flex/FlexChild";
 
 export default async function ({
@@ -37,11 +37,12 @@ export default async function ({
           <CategoryMenu ConditionOrder={newCondition} />
   
           <VerticalFlex className={Pstyles.list_wrap}>
-            <BaseProductList
+            <CommingSoonList initProducts={newProducts} initConiditon={newCondition} />
+            {/* <BaseProductList
               id={'commingSoon'}
               initProducts={newProducts}
               initConiditon={newCondition}
-            />
+            /> */}
           </VerticalFlex>
         </FlexChild>
       </Container>
