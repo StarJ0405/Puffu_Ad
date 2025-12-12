@@ -2,6 +2,7 @@
 import usePageData from "@/shared/hooks/data/usePageData";
 import { requester } from "@/shared/Requester";
 import { BaseProductList } from "../../baseClient";
+import { useEffect } from "react";
 
 // function findCategoryById(categories: any[], id: string): any | undefined {
 //   for (const cat of categories) {
@@ -53,11 +54,14 @@ export function BestList({
       fallbackData: initProducts,
     }
   );
+  useEffect(() => {
+    setPage(0);
+  }, [initConiditon.category_id]);
 
   return (
     <>
       <BaseProductList
-      //   id={'best'}
+        //   id={'best'}
         mutate={mutate}
         pageSize={origin.pageSize}
         total={origin.NumberOfTotalElements || 0}

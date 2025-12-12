@@ -28,15 +28,16 @@ import useNavigate from "@/shared/hooks/useNavigate";
 function findCategoryById(categories: any[], id: string): any | undefined {
   for (const cat of categories) {
     if (cat.id === id) {
-      return cat; // 현재 레벨에서 찾음
+      return cat;
     }
     if (cat.children && cat.children.length > 0) {
       const found = findCategoryById(cat.children, id);
-      if (found) return found; // 자식 트리에서 찾음
+      if (found) return found;
     }
   }
   return undefined;
 }
+
 
 // export function CategoryFilter({ category_id }: { category_id: any }) {
 //   const { categoriesData } = useCategories();
@@ -97,9 +98,11 @@ export function CategoryTab({ category_id, onChange }: CategoryTabProps) {
   if (!current.parent_id) {
     secondCategories = current.children ?? [];
   } else {
-    const parent = current.parent;
+
+    const parent = findCategoryById(categoriesData, current.parent_id);
     secondCategories = parent?.children ?? [];
   }
+
   if (!secondCategories.length) return null;
 
   return (
@@ -121,6 +124,7 @@ export function CategoryTab({ category_id, onChange }: CategoryTabProps) {
     </HorizontalFlex>
   );
 }
+
 
 
 
@@ -387,6 +391,7 @@ export function BestList({
       </HorizontalFlex>
 
       <BaseProductList
+        pageSize={origin.pageSize}
         mutate={mutate}
         total={origin.NumberOfTotalElements || 0}
         listArray={products}
