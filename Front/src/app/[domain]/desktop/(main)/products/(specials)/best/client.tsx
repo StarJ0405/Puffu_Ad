@@ -32,37 +32,38 @@ import { BaseProductList } from "../../baseClient";
 //   );
 // }
 
-// export function BestList({
-//   initProducts,
-//   initConiditon,
-// }: {
-//   initProducts: Pageable;
-//   initConiditon: any;
-// }) {
-//   const { best, maxPage, page, setPage, mutate, origin } = usePageData(
-//     "best",
-//     (pageNumber) => ({
-//       ...initConiditon,
-//       pageSize: 24,
-//       pageNumber,
-//     }),
-//     (condition) => requester.getProducts(condition),
-//     (data: Pageable) => data?.totalPages || 0,
-//     {
-//       onReprocessing: (data) => data?.content || [],
-//       fallbackData: initProducts,
-//     }
-//   );
+export function BestList({
+  initProducts,
+  initConiditon,
+}: {
+  initProducts: Pageable;
+  initConiditon: any;
+}) {
+  const { best, maxPage, page, setPage, mutate, origin } = usePageData(
+    "best",
+    (pageNumber) => ({
+      ...initConiditon,
+      pageSize: 16,
+      pageNumber,
+    }),
+    (condition) => requester.getProducts(condition),
+    (data: Pageable) => data?.totalPages || 0,
+    {
+      onReprocessing: (data) => data?.content || [],
+      fallbackData: initProducts,
+    }
+  );
 
-//   return (
-//     <>
-//       <BaseProductList
-//         id={'best'}
-//         mutate={mutate}
-//         total={origin.NumberOfTotalElements || 0}
-//         listArray={best}
-//         pagination={{ page, maxPage, setPage }}
-//       />
-//     </>
-//   );
-// }
+  return (
+    <>
+      <BaseProductList
+      //   id={'best'}
+        mutate={mutate}
+        pageSize={origin.pageSize}
+        total={origin.NumberOfTotalElements || 0}
+        listArray={best}
+        pagination={{ page, maxPage, setPage }}
+      />
+    </>
+  );
+}

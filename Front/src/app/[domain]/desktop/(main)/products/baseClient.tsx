@@ -140,120 +140,40 @@ export function SortFilter({
   );
 }
 
-export function BaseProductList({
-  id,
-  sortConfig,
-  // pagination,
-  initProducts,
-  initConiditon,
-}: {
-  id: string,
-  initProducts?: Pageable;
-  initConiditon?: any;
-  // pagination?: { page: number; maxPage: number; setPage: (p: number) => void };
-  sortConfig?: {
-    sort: { id: string; display: string };
-    setSort: (opt: { id: string; display: string }) => void;
-    sortOptions: { id: string; display: string }[];
-  };
-}) {
-
-  const { [id]: products, maxPage, page, setPage, mutate, origin } = usePageData(
-    id,
-    (pageNumber) => ({
-      ...initConiditon,
-      pageSize: 24,
-      pageNumber,
-    }),
-    (condition) => requester.getProducts(condition),
-    (data: Pageable) => data?.totalPages || 0,
-    {
-      onReprocessing: (data) => data?.content || [],
-      fallbackData: initProducts,
-    }
-  );
-
-  // const [sort, setSort] = useState(sortOptions?.[0]); // 정렬 상태 관리
-
-  const pathname = usePathname();
-
-  const breakPoint = {
-    default: 4,
-    1300: 3,
-    1024: 3,
-  }
-
-  return (
-    <>
-      {products?.length > 0 ? (
-        <>
-          <SortFilter length={products?.length} sortConfig={sortConfig} />
-          {/* sortOptions={sortOptions} */}
-          <VerticalFlex alignItems="start">
-            <MasonryGrid gap={20} width={"100%"} breakpoints={breakPoint}>
-              {products?.map((product: ProductData, i:number) => {
-                return (
-                  <FlexChild key={product.id} className={Pstyles.card_wrap}>
-                    {
-                      // 프로덕트, new일때만 나타나기. 제품 인기순 표시임
-                      (pathname === "/products/new" ||
-                        pathname === "/products/best") && (
-                        <FlexChild className={clsx(Pstyles.rank)}>
-                          <Span>
-                            {(page || 0) * 24 + i + 1}
-                          </Span>
-                        </FlexChild>
-                      )
-                    }
-                    <ProductCard
-                      product={product}
-                      lineClamp={2}
-                      width={"100%"}
-                      mutate={mutate}
-                    />
-                  </FlexChild>
-                );
-              })}
-            </MasonryGrid>
-          </VerticalFlex>
-          {products?.lenght < 0 && (
-            <ListPagination
-              page={page}
-              maxPage={maxPage}
-              onChange={setPage}
-            />
-          )}
-        </>
-      ) : (
-        <NoContent type={"상품"} />
-      )}
-    </>
-  );
-}
-
 // export function BaseProductList({
 //   id,
-//   mutate,
-//   total,
-//   listArray,
-//   // sortOptions,
 //   sortConfig,
-//   pagination,
+//   // pagination,
+//   initProducts,
+//   initConiditon,
 // }: {
 //   id: string,
-//   mutate?: () => void;
-//   total?: number;
-//   listArray: ProductData[];
-//   // sortOptions: { id: string; display: string }[];
+//   initProducts?: Pageable;
+//   initConiditon?: any;
+//   // pagination?: { page: number; maxPage: number; setPage: (p: number) => void };
 //   sortConfig?: {
 //     sort: { id: string; display: string };
 //     setSort: (opt: { id: string; display: string }) => void;
 //     sortOptions: { id: string; display: string }[];
 //   };
-//   pagination?: { page: number; maxPage: number; setPage: (p: number) => void };
 // }) {
+
+//   const { [id]: products, maxPage, page, setPage, mutate, origin } = usePageData(
+//     id,
+//     (pageNumber) => ({
+//       ...initConiditon,
+//       // pageSize: 30,
+//       pageNumber,
+//     }),
+//     (condition) => requester.getProducts(condition),
+//     (data: Pageable) => data?.totalPages || 0,
+//     {
+//       onReprocessing: (data) => data?.content || [],
+//       fallbackData: initProducts,
+//     }
+//   );
+
 //   // const [sort, setSort] = useState(sortOptions?.[0]); // 정렬 상태 관리
-//   const listLength = listArray.length;
 
 //   const pathname = usePathname();
 
@@ -263,15 +183,17 @@ export function BaseProductList({
 //     1024: 3,
 //   }
 
+//   console.log();
+
 //   return (
 //     <>
-//       {listLength > 0 ? (
+//       {products?.length > 0 ? (
 //         <>
-//           <SortFilter length={total || listLength} sortConfig={sortConfig} />
+//           <SortFilter length={products?.length} sortConfig={sortConfig} />
 //           {/* sortOptions={sortOptions} */}
 //           <VerticalFlex alignItems="start">
 //             <MasonryGrid gap={20} width={"100%"} breakpoints={breakPoint}>
-//               {listArray.map((product: ProductData, i:number) => {
+//               {products?.map((product: ProductData, i:number) => {
 //                 return (
 //                   <FlexChild key={product.id} className={Pstyles.card_wrap}>
 //                     {
@@ -280,7 +202,7 @@ export function BaseProductList({
 //                         pathname === "/products/best") && (
 //                         <FlexChild className={clsx(Pstyles.rank)}>
 //                           <Span>
-//                             {(pagination?.page || 0) * 24 + i + 1}
+//                             {(page || 0) * 24 + i + 1}
 //                           </Span>
 //                         </FlexChild>
 //                       )
@@ -296,11 +218,11 @@ export function BaseProductList({
 //               })}
 //             </MasonryGrid>
 //           </VerticalFlex>
-//           {pagination && (
+//           {products?.lenght < 0 && (
 //             <ListPagination
-//               page={pagination.page}
-//               maxPage={pagination.maxPage}
-//               onChange={pagination.setPage}
+//               page={page}
+//               maxPage={maxPage}
+//               onChange={setPage}
 //             />
 //           )}
 //         </>
@@ -310,3 +232,87 @@ export function BaseProductList({
 //     </>
 //   );
 // }
+
+export function BaseProductList({
+  // id,
+  mutate,
+  total,
+  listArray,
+  // sortOptions,
+  sortConfig,
+  pagination,
+  pageSize,
+}: {
+  // id: string,
+  mutate?: () => void;
+  total?: number;
+  listArray: ProductData[];
+  // sortOptions: { id: string; display: string }[];
+  sortConfig?: {
+    sort: { id: string; display: string };
+    setSort: (opt: { id: string; display: string }) => void;
+    sortOptions: { id: string; display: string }[];
+  };
+  pagination?: { page: number; maxPage: number; setPage: (p: number) => void };
+  pageSize: number;
+}) {
+  // const [sort, setSort] = useState(sortOptions?.[0]); // 정렬 상태 관리
+  const listLength = listArray.length;
+
+  const pathname = usePathname();
+
+  const breakPoint = {
+    default: 4,
+    1300: 3,
+    1024: 3,
+  }
+
+  // console.log(pagination);
+
+  return (
+    <>
+      {listLength > 0 ? (
+        <>
+          <SortFilter length={total || listLength} sortConfig={sortConfig} />
+          {/* sortOptions={sortOptions} */}
+          <VerticalFlex alignItems="start">
+            <MasonryGrid gap={20} width={"100%"} breakpoints={breakPoint}>
+              {listArray.map((product: ProductData, i:number) => {
+                return (
+                  <FlexChild key={product.id} className={Pstyles.card_wrap}>
+                    {
+                      // 프로덕트, new일때만 나타나기. 제품 인기순 표시임
+                      (pathname === "/products/new" ||
+                        pathname === "/products/best") && (
+                        <FlexChild className={clsx(Pstyles.rank)}>
+                          <Span>
+                            {(pagination?.page || 0) * pageSize + i + 1}
+                          </Span>
+                        </FlexChild>
+                      )
+                    }
+                    <ProductCard
+                      product={product}
+                      lineClamp={2}
+                      width={"100%"}
+                      mutate={mutate}
+                    />
+                  </FlexChild>
+                );
+              })}
+            </MasonryGrid>
+          </VerticalFlex>
+          {pagination && (
+            <ListPagination
+              page={pagination.page}
+              maxPage={pagination.maxPage}
+              onChange={pagination.setPage}
+            />
+          )}
+        </>
+      ) : (
+        <NoContent type={"상품"} />
+      )}
+    </>
+  );
+}

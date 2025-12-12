@@ -1,7 +1,8 @@
 import Container from "@/components/container/Container";
 import VerticalFlex from "@/components/flex/VerticalFlex";
 import Pstyles from "../../products.module.css";
-import { CategoryMenu, ProductMenu, BaseProductList } from "../../baseClient";
+import { CategoryMenu, ProductMenu } from "../../baseClient";
+import { BestList } from './client'
 import styles from "./page.module.css";
 import Image from "@/components/Image/Image";
 import { requester } from "@/shared/Requester";
@@ -42,12 +43,12 @@ export default async function ({
           <CategoryMenu ConditionOrder={bestCondition} />
   
           <VerticalFlex className={Pstyles.list_wrap}>
-            {/* <BestList initProducts={bestProducts} initConiditon={bestCondition} /> */}
-            <BaseProductList
+            <BestList initProducts={bestProducts} initConiditon={bestCondition} />
+            {/* <BaseProductList
               id={'best'}
               initProducts={bestProducts}
               initConiditon={bestCondition}
-            />
+            /> */}
           </VerticalFlex>
         </FlexChild>
       </Container>
