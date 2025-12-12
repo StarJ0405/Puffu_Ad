@@ -3,7 +3,7 @@ import VerticalFlex from "@/components/flex/VerticalFlex";
 import Span from "@/components/span/Span";
 import { requester } from "@/shared/Requester";
 import { SearchParams } from "next/dist/server/request/search-params";
-import { BaseProductList, ProdcutCategoryFilter } from "../../baseClient";
+import { BaseProductList, ProductMenu, CategoryMenu } from "../../baseClient";
 import Pstyles from "../../products.module.css";
 import styles from "./page.module.css";
 
@@ -25,16 +25,12 @@ export default async function ({
 
   return (
     <section className="mob_root mob_page_container">
-      <Container marginTop={35}>
-        <VerticalFlex className={styles.titleBox}>
-          <VerticalFlex className={styles.title}>
-            <h2 className="SacheonFont">
-              <Span>따끈따끈</Span> 신상품
-            </h2>
-          </VerticalFlex>
+      <Container marginTop={40}>
+        <VerticalFlex className={Pstyles.titleBox} alignItems="start" justifyContent="start">
+          <ProductMenu />
         </VerticalFlex>
 
-        <ProdcutCategoryFilter ConditionOrder={newCondition} />
+        <CategoryMenu ConditionOrder={newCondition} />
 
         <VerticalFlex className={Pstyles.list}>
           <BaseProductList

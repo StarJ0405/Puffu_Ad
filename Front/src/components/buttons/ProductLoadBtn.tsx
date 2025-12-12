@@ -31,7 +31,7 @@ function ProductLoadBtn (
          disabled={loading}
          onClick={showMore}
          >
-         <FlexChild gap={10}>
+         <FlexChild gap={6} justifyContent="center">
             <Span>{loading ? '불러오는 중' : '상품 더보기'}</Span>
             <Image
                src={"/resources/icons/arrow/arrow_bottom_icon.png"}

@@ -495,8 +495,8 @@ export function BestList({
           <MasonryGrid gap={20} width={"100%"} breakpoints={4}>
             {products.map((product: ProductData, i: number) => {
               return (
-                <FlexChild className={styles.card_wrap} key={product.id}>
-                  <FlexChild color="#000" className={clsx(styles.rank)}>
+                <FlexChild className={'card_wrap'} key={product.id}>
+                  <FlexChild color="#000" className={'rank'}>
                     <Span>{i + 1}</Span>
                   </FlexChild>
 
