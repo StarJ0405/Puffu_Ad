@@ -22,13 +22,20 @@
    left: 50%;
    transform: translateX(-50%);
    z-index: 2;
-   width: 130px;
-   padding: 8px 5px;
+   width: 140px;
+   padding: 10px 5px;
    border-radius: 5px;
    background: #050505;
+   box-shadow: 0 3px 4px rgba(0,0,0,0.2);
    font-size: 16px;
    color: #fff;
+   transition: all 0.15s
 }
+.description_box .view_more_btn:active {
+   background-color: #1f1f1f;
+   transform: translateX(-50%) var(--btn-active-translateY) var(--btn-active-scale);
+}
+
 
 
 

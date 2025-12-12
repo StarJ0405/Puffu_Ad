@@ -164,7 +164,7 @@
    transition: all 0.1s;
 }
 .buyButton_box .heart_btn:active {
-   transform: translateY(var(--btn-active-translate)) scale(var(--btn-active-scale));
+   transform: var(--btn-active-translateY) var(--btn-active-scale);
 }
 
 .buyButton_box .cart_btn {
@@ -193,7 +193,7 @@
 }
 .buyButton_box .cart_btn:active {
    background-color: var(--main-color1-active);
-   transform: translateY(var(--btn-active-translate)) scale(var(--btn-active-scale));
+   transform: var(--btn-active-translateY) var(--btn-active-scale);
 }
 
 .buyButton_box .buy_btn:hover {
@@ -201,7 +201,7 @@
 }
 .buyButton_box .buy_btn:active {
    background: var(--black-color-active);
-   transform: translateY(var(--btn-active-translate)) scale(var(--btn-active-scale));
+   transform: var(--btn-active-translateY) var(--btn-active-scale);
 }
 
 

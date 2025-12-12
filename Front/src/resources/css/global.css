@@ -6,9 +6,11 @@
   --active-color: #F73149;
   --main-color1-hover: #df3c41;
   --main-color1-active: #D03238;
+  --main-color1-mobile-active: #df3c41;
   /* --main-color2: #e7156d; */
   --black-color-hover: #2b2b2b;
   --black-color-active: #000;
+  --black-color-mobile-active: #2b2b2b;
   --maxWidthDesktop: 1274px;
   --minWidthDesktop: 1024px;
 
@@ -16,8 +18,8 @@
 
   --button-disabled-bg: #bebebe;
 
-  --btn-active-translate: 2px;
-  --btn-active-scale: 0.98;
+  --btn-active-translateY: translateY(2px);
+  --btn-active-scale: scale(0.98);
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -198,8 +200,8 @@ a {
 .mob_wrap {
   max-width: 768px;
   margin: 0 auto;
-  padding: 130px 0 60px;
-  /* 130 : header 높이, 65 : bottomNavi 높이 */
+  padding: 0 0 60px;
+  /* 65 : bottomNavi 높이 */
 }
 
 .mob_page_container {

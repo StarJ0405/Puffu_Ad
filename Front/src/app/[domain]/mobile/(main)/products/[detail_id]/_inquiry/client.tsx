@@ -217,9 +217,9 @@ export default function InquiryClient({
         <VerticalFlex className={styles.inquiry_list}>
           <FlexChild className={styles.list_title}>
             <P className={styles.title}>전체 문의목록</P>
-            <P size={14} color="#797979">
+            {/* <P size={14} color="#797979">
               <Span color="#fff">{qaList?.length}</Span>건
-            </P>
+            </P> */}
           </FlexChild>
 
           {qaList?.length > 0 ? (
@@ -247,16 +247,18 @@ export default function InquiryClient({
                           }
                         >
                           <Image
-                            src={`/resources/icons/arrow/board_arrow_bottom_icon.png`}
-                            width={20}
+                            src={`/resources/icons/down_arrow.png`}
+                            width={13}
                           />
                         </Button>
                       )}
                     </HorizontalFlex>
 
                     <FlexChild className={styles.data_group}>
-                      <FlexChild className={styles.response_check}>
-                        <Span color={inquiry.answer ? "#F5146E" : "#ffffff"}>
+                      <FlexChild className={styles.response_check} 
+                        backgroundColor={inquiry.answer ? "#fff" : "var(--main-color1)"}
+                      >
+                        <Span color={inquiry.answer ? "var(--main-color1)" : "#ffffff"}>
                           {inquiry.answer ? "답변완료" : "답변대기"}
                         </Span>
                       </FlexChild>
@@ -281,7 +283,7 @@ export default function InquiryClient({
                           animate={{ opacity: 1 }}
                           transition={{ duration: 0.5, ease: "easeInOut" }}
                         >
-                          <VerticalFlex>
+                          <VerticalFlex paddingTop={10}>
                             <FlexChild className={styles.item_content}>
                               <P>
                                 {canView
@@ -313,7 +315,7 @@ export default function InquiryClient({
             <NoContent type="문의" />
           )}
           
-          <FlexChild justifyContent="center">
+          <FlexChild justifyContent="center" paddingTop={20}>
             <ListPagination
               page={page}
               maxPage={totalPage}

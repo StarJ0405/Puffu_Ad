@@ -21,7 +21,7 @@
 }
 
 .pagingBox > .num_btn {
-   font-size: 14px; 
+   font-size: 15px; 
    font-weight: 700;
    border: none;
    color: #222;
@@ -35,7 +35,7 @@
 
 @media (max-width: 768px) {
    .pagingBox {
-      gap: 5px;
+      gap: 6px;
    }
 
    .pagingBox .paging {
@@ -44,6 +44,6 @@
    }
 
    .pagingBox > .num_btn {
-      font-size: 12px; 
+      font-size: 14px; 
    }
 }

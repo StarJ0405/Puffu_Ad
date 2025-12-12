@@ -290,24 +290,23 @@ export function DetailFrame({
           </P>
         </FlexChild>
 
-        <VerticalFlex>
-          {product.discount_rate > 0 && (
-            <FlexChild className={styles.regular_price}>
-              <P>{product?.price}</P>₩
-            </FlexChild>
-          )}
-
-          <FlexChild>
+        <FlexChild>
+          <HorizontalFlex gap={10}>
             {product.discount_rate > 0 && (
               <FlexChild className={styles.sale_price}>
                 <P>{product.discount_rate}%</P>
               </FlexChild>
             )}
-            <FlexChild className={styles.price} marginLeft={5}>
-              <P>{product?.discount_price}</P> ₩
+            <FlexChild className={styles.price}>
+              <P>{product?.discount_price}</P> 원
             </FlexChild>
-          </FlexChild>
-        </VerticalFlex>
+            {product.discount_rate > 0 && (
+              <FlexChild className={styles.regular_price}>
+                <P>{product?.price}</P>원
+              </FlexChild>
+            )}
+          </HorizontalFlex>
+        </FlexChild>
 
         <HorizontalFlex className={styles.delivery_share_box}>
           <FlexChild className={styles.delivery_info}>
@@ -330,7 +329,7 @@ export function DetailFrame({
 
         <VerticalFlex className={styles.delivery_admin_write_data}>
           <VerticalFlex alignItems="start" gap={5}>
-            <P size={16} color="#ddd" weight={600}>
+            <P size={16} color="#222" weight={600} paddingBottom={8}>
               <Span>배송비 </Span>
               {shipping?.amount === 0 ? (
                 <Span>무료</Span>
@@ -395,6 +394,7 @@ const buyCartModal = NiceModal.create(
         // slideLeft
         cancelBack
         topRound
+        borderRadius={0}
         width={"100%"}
         maxWidth={768}
         minWidth={220}
@@ -437,7 +437,7 @@ const buyCartModal = NiceModal.create(
                     return acc + now.discount_price * quantity;
                   }, 0)}
                 </P>
-                ₩
+                원
               </FlexChild>
             </FlexChild>
 
@@ -462,7 +462,7 @@ const buyCartModal = NiceModal.create(
                     if (result) modalRef.current.close();
                   }}
                 >
-                  <P>바로구매</P>
+                  <P>구매하기</P>
                 </Button>
               </FlexChild>
             </FlexChild>
@@ -804,18 +804,18 @@ export function DetailTabContainer({
 
   const tabAraays = [
     {
-      name: "상세정보",
+      name: "상세설명",
       paramsName: "description",
       component: <Description product={product} />,
     },
     {
-      name: "사용후기",
+      name: "리뷰",
       paramsName: "review",
       component: <Review product={product} />,
       count: totalReviewCount,
     },
     {
-      name: "상품 Q&A",
+      name: "Q&A",
       paramsName: "inquiry",
       component: (
         <InquiryClient
@@ -829,7 +829,7 @@ export function DetailTabContainer({
       count: totalQaCount,
     },
     {
-      name: "배송/반품/교환/안내",
+      name: "배송안내",
       paramsName: "deliveryGuide",
       component: <DeliveryGuide />,
     },

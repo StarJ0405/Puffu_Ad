@@ -194,7 +194,7 @@ input[type="search"]:focus-visible {
 }
 .post_btn:active {
   background: var(--main-color1-active) !important;
-  transform: translateY(var(--btn-active-translate)) scale(var(--btn-active-scale));
+  transform: var(--btn-active-translateY) var(--btn-active-scale) !important;
 }
 
 /* 버튼들 비활성화 될 때 */
@@ -232,7 +232,7 @@ input[type="search"]:focus-visible {
   }
 
   .post_btn:active {
-    filter: var(--mob-active-filter);
+    background-color: var(--main-color1-mobile-active) !important;
   }
 
   .card_wrap .rank {border-radius: 6px;}

@@ -114,58 +114,95 @@ export default function Review({ product }: { product: ProductData }) {
 
   return (
     <VerticalFlex className={styles.review_wrap}>
-      <VerticalFlex className={styles.review_top}>
-        <FlexChild width={"auto"} gap={10}>
-          <Image
-            src={"/resources/icons/board/review_start_rating.png"}
-            width={30}
-          />
-          <P className={styles.rating}>{avg}</P>
-          <P className={styles.total_rating}>
-            총{" "}
-            <Span color="#fff" weight={600}>
-              {count}
-            </Span>
-            건 리뷰
-          </P>
+      <HorizontalFlex className={styles.review_top}>
+        <FlexChild borderRight={"1px solid #d5d5d5"}>
+          <VerticalFlex gap={10}>
+            <FlexChild width={"fit-content"}>
+              <P className={styles.rating}>{avg}</P>
+            </FlexChild>
+            <FlexChild width={"fit-content"}>
+              <HorizontalFlex gap={6}>
+                {Array.from({ length: avg }).map((_, i) => (
+                  <FlexChild key={`${key}:mobile-avg-star-red-${i}`}>
+                    <Image
+                      src={"/resources/icons/board/review_rating_star_red.png"}
+                      width={17}
+                    />
+                  </FlexChild>
+                ))}
+                {Array.from({ length: 5 - avg }).map((_, i) => (
+                  <FlexChild key={`${key}:mobile-avg-star-black-${i}`}>
+                    <Image
+                      src={"/resources/icons/board/review_rating_star_black.png"}
+                      width={17}
+                    />
+                  </FlexChild>
+                ))}
+              </HorizontalFlex>
+            </FlexChild>
+          </VerticalFlex>
+        </FlexChild>
+        <FlexChild>
+          <VerticalFlex gap={10}>
+            <FlexChild width={"fit-content"}>
+              <P className={styles.total_rating}>{count}</P>
+            </FlexChild>
+            <FlexChild width={"fit-content"}>
+              <P weight={600}>REVIEWS</P>
+            </FlexChild>
+          </VerticalFlex>
         </FlexChild>
 
-        <Button
+        {/* <Button
           className={styles.link_btn}
           onClick={() => navigate("/board/photoReview")}
         >
           포토후기 이동
-        </Button>
-      </VerticalFlex>
+        </Button> */}
+      </HorizontalFlex>
 
       <VerticalFlex className={styles.review_board}>
         {/* 리스트 */}
-        <VerticalFlex className={styles.review_list} gap={35}>
+        <VerticalFlex className={styles.review_list} gap={20}>
           {list?.length > 0 ? (
             list.map((r: any) => (
-              <VerticalFlex key={r.id} gap={25} className={styles.item}>
+              <VerticalFlex key={r.id} gap={15} className={styles.item}>
                 <VerticalFlex gap={15}>
                   <HorizontalFlex className={styles.item_header} gap={15}>
                     <FlexChild>
-                      <StarRate
-                        width={110}
-                        starWidth={20}
-                        starHeight={20}
-                        score={r.star_rate}
-                        readOnly
-                      />
+                      <HorizontalFlex gap={4}>
+                        {Array.from({ length: r.star_rate }).map((_, i) => (
+                          <FlexChild key={`${r.id}:rating-star-red-${i}`}>
+                            <Image
+                              src={"/resources/icons/board/review_rating_star_red.png"}
+                              width={16}
+                            />
+                          </FlexChild>
+                        ))}
+                        {Array.from({ length: 5 - r.star_rate }).map((_, i) => (
+                          <FlexChild key={`${r.id}:rating-star-black-${i}`}>
+                            <Image
+                              src={"/resources/icons/board/review_rating_star_black.png"}
+                              width={16}
+                            />
+                          </FlexChild>
+                        ))}
+                        <FlexChild paddingLeft={6}>
+                          <P size={17} weight={600}>{r.star_rate}</P>
+                        </FlexChild>
+                      </HorizontalFlex>
                     </FlexChild>
 
                     <FlexChild gap={10}>
                       <FlexChild justifyContent="center">
-                        <P color="#d7d7d7" size={18}>
+                        <P color="#797979" size={14}>
                           {maskTwoThirds(r.user.name)}
                         </P>{" "}
                         {/* 닉네임 뒷글자 *** 표시 */}
                       </FlexChild>
 
                       <FlexChild justifyContent="center">
-                        <P color="#797979" size={13}>
+                        <P color="#797979" size={14}>
                           {formatDateDots(r?.created_at)}
                         </P>
                       </FlexChild>
@@ -180,7 +217,7 @@ export default function Review({ product }: { product: ProductData }) {
                   </FlexChild>
                 </VerticalFlex>
 
-                <VerticalFlex gap={25}>
+                <VerticalFlex gap={15}>
                   <VerticalFlex className={styles.feedback} alignItems="start">
                     <FlexChild className={styles.feed_item}>
                       <FlexChild className={styles.feed_title}>
@@ -218,11 +255,12 @@ export default function Review({ product }: { product: ProductData }) {
                   </VerticalFlex>
 
                   <VerticalFlex className={styles.content}>
-                    <P size={14} color="#fff" lineHeight={1.4}>
+                    <P size={14} color="#000" lineHeight={1.4}>
                       {r.content}
                     </P>
 
-                    {r.images.length > 0 && (
+                    {/* {r.images.length > 0 && ( */}
+                    {r.images.length === 0 && (
                       <FlexChild
                         width={100}
                         height={100}
