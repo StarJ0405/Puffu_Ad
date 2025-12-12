@@ -41,8 +41,8 @@ export default async function ({ params }: { params: Promise<Params> }) {
 
   return (
     <ProductWrapper initCondition={initCondition} initProduct={initProduct}>
-      <VerticalFlex position="relative" marginTop={40} alignItems="start">
-        <FlexChild marginBottom={20}>
+      <VerticalFlex position="relative" alignItems="start" paddingTop={100}>
+        <FlexChild paddingBottom={20} display={"flex"} justifyContent={"center"}>
           <h3 className={clsx("SacheonFont", styles.slide_title)}>
             보시는 상품과 비슷한 추천 상품
           </h3>

@@ -126,29 +126,45 @@ export default function Review({ product }: { product: ProductData }) {
 
   return (
     <VerticalFlex className={styles.review_wrap}>
-      <VerticalFlex className={styles.review_top}>
-        <FlexChild width={"auto"} gap={10}>
-          <Image
-            src={"/resources/icons/board/review_start_rating.png"}
-            width={35}
-          />
-          <P className={styles.rating}>{avg}</P>
-          <P className={styles.total_rating}>
-            총{" "}
-            <Span color="#fff" weight={600}>
-              {count}
-            </Span>
-            건 리뷰
-          </P>
+      <HorizontalFlex backgroundColor={"#f5f5f5"} padding={"35px 0"} className={styles.review_top}>
+        <FlexChild borderRight={"1px solid #d5d5d5"}>
+          <VerticalFlex gap={14}>
+            <FlexChild width={"fit-content"}>
+              <P size={50} weight={600}>{avg}</P>
+            </FlexChild>
+            <FlexChild width={"fit-content"}>
+              <HorizontalFlex gap={6}>
+                {Array.from({ length: avg }).map((_, i) => (
+                  <FlexChild key={`${key}:avg-star-red-${i}`}>
+                    <Image
+                      src={"/resources/icons/board/review_rating_star_red.png"}
+                      width={28}
+                    />
+                  </FlexChild>
+                ))}
+                {Array.from({ length: 5 - avg }).map((_, i) => (
+                  <FlexChild key={`${key}:avg-star-black-${i}`}>
+                    <Image
+                      src={"/resources/icons/board/review_rating_star_black.png"}
+                      width={28}
+                    />
+                  </FlexChild>
+                ))}
+              </HorizontalFlex>
+            </FlexChild>
+          </VerticalFlex>
         </FlexChild>
-
-        <Button
-          className={styles.link_btn}
-          onClick={() => navigate("/board/photoReview")}
-        >
-          포토후기 이동
-        </Button>
-      </VerticalFlex>
+        <FlexChild>
+          <VerticalFlex gap={15}>
+            <FlexChild width={"fit-content"}>
+              <P size={50} weight={600}>{count}</P>
+            </FlexChild>
+            <FlexChild width={"fit-content"}>
+              <P size={24} weight={700}>REVIEWS</P>
+            </FlexChild>
+          </VerticalFlex>
+        </FlexChild>
+      </HorizontalFlex>
 
       <VerticalFlex className={styles.review_board}>
         {/* 리스트 */}
@@ -156,43 +172,52 @@ export default function Review({ product }: { product: ProductData }) {
           {list?.length > 0 ? (
             <div className={styles.items}>
               {list.map((r: any) => (
-                <HorizontalFlex key={r.id} gap={100} className={styles.item}>
-                  <VerticalFlex className={styles.item_header} gap={15}>
-                    <FlexChild>
-                      <StarRate
-                        width={100}
-                        starWidth={20}
-                        starHeight={20}
-                        score={r.star_rate}
-                        readOnly
-                      />
+                <VerticalFlex key={r.id} gap={15} className={styles.item}>
+                  <HorizontalFlex className={styles.item_header}>
+                    <FlexChild width={"fit-content"}>
+                      <HorizontalFlex gap={4}>
+                        {Array.from({ length: r.star_rate }).map((_, i) => (
+                          <FlexChild key={`${r.id}:rating-star-red-${i}`}>
+                            <Image
+                              src={"/resources/icons/board/review_rating_star_red.png"}
+                              width={20}
+                            />
+                          </FlexChild>
+                        ))}
+                        {Array.from({ length: 5 - r.star_rate }).map((_, i) => (
+                          <FlexChild key={`${r.id}:rating-star-black-${i}`}>
+                            <Image
+                              src={"/resources/icons/board/review_rating_star_black.png"}
+                              width={20}
+                            />
+                          </FlexChild>
+                        ))}
+                        <FlexChild paddingLeft={6}>
+                          <P size={19} weight={600}>{r.star_rate}</P>
+                        </FlexChild>
+                      </HorizontalFlex>
                     </FlexChild>
 
-                    <VerticalFlex gap={10}>
-                      <FlexChild justifyContent="center">
-                        <P color="#d7d7d7" size={18}>
-                          {maskTwoThirds(r.user.name)}
-                        </P>{" "}
-                        {/* 닉네임 뒷글자 *** 표시 */}
-                      </FlexChild>
-
-                      <FlexChild justifyContent="center">
-                        <P color="#797979" size={13}>
-                          {formatDateDots(r?.created_at)}
-                        </P>
-                      </FlexChild>
-
-                      <FlexChild>
-                        {/* 리뷰 추천 표시 */}
-                        <P size={14} color="#eee" hidden>
-                          {3}명에게 도움이 되었어요.
-                        </P>
-                      </FlexChild>
-                    </VerticalFlex>
-                    <RecommendButton
+                    <FlexChild width={"fit-content"}>
+                      <HorizontalFlex gap={15}>
+                        <FlexChild justifyContent="center" width={"fit-content"}>
+                          <P color="#797979" size={16}>
+                            {maskTwoThirds(r.user.name)}
+                          </P>{" "}
+                          {/* 닉네임 뒷글자 *** 표시 */}
+                        </FlexChild>
+  
+                        <FlexChild justifyContent="center" width={"fit-content"}>
+                          <P color="#797979" size={16}>
+                            {formatDateDots(r?.created_at)}
+                          </P>
+                        </FlexChild>
+                      </HorizontalFlex>
+                    </FlexChild>
+                    {/* <RecommendButton
                       reviewId={r.id}
-                    />
-                  </VerticalFlex>
+                    /> */}
+                  </HorizontalFlex>
 
                   <VerticalFlex gap={25}>
                     <HorizontalFlex className={styles.feedback}>
@@ -231,7 +256,10 @@ export default function Review({ product }: { product: ProductData }) {
                       </FlexChild>
                     </HorizontalFlex>
 
-                    <HorizontalFlex className={styles.content}>
+                    <VerticalFlex className={styles.content}>
+                      <P size={16} color="#2F2C2C" lineHeight={1.6}>
+                        {r.content}
+                      </P>
                       {r.images.length > 0 && (
                         <FlexChild
                           width={180}
@@ -254,18 +282,19 @@ export default function Review({ product }: { product: ProductData }) {
                           <Div className={styles.click_layer}>자세히 보기</Div>
                         </FlexChild>
                       )}
-                      <P size={14} color="#fff" lineHeight={1.6}>
-                        {r.content}
-                      </P>
-                    </HorizontalFlex>
+
+                    </VerticalFlex>
                   </VerticalFlex>
-                </HorizontalFlex>
+                </VerticalFlex>
               ))}
             </div>
           ) : (
-            <NoContent type={"리뷰"} />
+            <FlexChild padding={"30px 0"}>
+              <NoContent type={"리뷰"} />
+            </FlexChild>
+           
           )}
-          <FlexChild justifyContent="center">
+          <FlexChild justifyContent="center" paddingTop={20}>
             <ListPagination
               page={page1}
               maxPage={totalPage}

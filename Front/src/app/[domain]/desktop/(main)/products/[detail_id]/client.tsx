@@ -215,7 +215,7 @@ export function ProductWrapper({
   }, [product?.reviews?.count]);
 
   return (
-    <section className="root">
+    <section className="root page_container">
       <Container className={clsx("page_container", styles.detail_container)}>
         <DetailFrame
           product={product}
@@ -241,11 +241,11 @@ export function ProductWrapper({
             setPage={setPage}
             fetchQAs={fetchQAs}
           />
-          <MiniInfoBox
+          {/* <MiniInfoBox
             product={product}
             selected={selected}
             setSelected={setSelected}
-          />
+          /> */}
         </HorizontalFlex>
       </Container>
     </section>
@@ -287,113 +287,122 @@ export function DetailFrame({
         />
       </FlexChild>
 
-      <VerticalFlex className={styles.detail_infoBox} alignItems="start">
-        <FlexChild className={styles.brand}>
-          <Span>{product?.brand.name}</Span>
-        </FlexChild>
-
-        <FlexChild className={styles.detail_title}>
-          <P lineClamp={4} display="--webkit-box" overflow="hidden">
-            {product?.title}
-          </P>
-        </FlexChild>
-
-        <HorizontalFlex marginBottom={17} gap={10}>
-          <FlexChild className={styles.price} marginLeft={5}>
-            <P>{product?.discount_price}</P> ₩
-          </FlexChild>
-
-          {product.discount_rate > 0 && (
-            <FlexChild className={styles.sale_price}>
-              <P>{product.discount_rate}%</P>
+      <VerticalFlex minHeight={600} justifyContent={"space-between"}>
+        <FlexChild>
+          <VerticalFlex className={styles.detail_infoBox} alignItems="start">
+            <FlexChild className={styles.brand}>
+              <Span>{product?.brand.name}</Span>
             </FlexChild>
-          )}
-          {product.discount_rate > 0 && (
-            <FlexChild className={styles.regular_price}>
-              <P>{product?.price}</P>₩
+
+            <FlexChild className={styles.detail_title}>
+              <P lineClamp={4} display="--webkit-box" overflow="hidden">
+                {product?.title}
+              </P>
             </FlexChild>
-          )}
-        </HorizontalFlex>
 
-        <HorizontalFlex className={styles.delivery_share_box}>
-          <FlexChild className={styles.delivery_info}>
-            <P>배송정보</P>
-            <Image src={"/resources/icons/cart/cj_icon.png"} width={22} />
-          </FlexChild>
+            <HorizontalFlex marginBottom={17} gap={10}>
+              <FlexChild className={styles.price} marginLeft={5}>
+                <P>{product?.discount_price}</P>원
+              </FlexChild>
 
-          {/* 링크 공유 버튼 */}
-          {/* <FlexChild cursor="pointer">
-              <Image
-                src={"/resources/icons/main/share_icon.png"}
-                width={25}
-              />
-              <Image
-                        src={'/resources/icons/main/share_icon_action.png'}
-                        width={25}
-                      />
-            </FlexChild> */}
-        </HorizontalFlex>
-
-        <VerticalFlex className={styles.delivery_admin_write_data}>
-          <VerticalFlex alignItems="start" gap={5}>
-            <P size={16} color="#bbb" weight={600}>
-              <Span>배송비 </Span>
-              {shipping?.amount === 0 ? (
-                <Span>무료</Span>
-              ) : (
-                <>
-                  <Span>{shipping?.amount || 0}</Span>
-                  <Span>{storeData?.currency_unit}</Span>
-                </>
+              {product.discount_rate > 0 && (
+                <FlexChild className={styles.sale_price}>
+                  <P>{product.discount_rate}%</P>
+                </FlexChild>
               )}
-            </P>
-            <P size={14} color="#ddd" whiteSpace="prewrap">
-              {shipping?.description}
-            </P>
-            <P
-              size={14}
-              color="#ddd"
-              hidden={!freeShipping || freeShipping.min === 0}
-            >
-              <Span>{freeShipping?.min}</Span>
-              <Span>원 이상 구매시 무료배송</Span>
-            </P>
+              {product.discount_rate > 0 && (
+                <FlexChild className={styles.regular_price}>
+                  <P>{product?.price}</P>원
+                </FlexChild>
+              )}
+            </HorizontalFlex>
+
+            <HorizontalFlex className={styles.delivery_share_box}>
+              <FlexChild className={styles.delivery_info}>
+                <P>배송정보</P>
+                <Image src={"/resources/icons/cart/cj_icon.png"} width={22} />
+              </FlexChild>
+
+              {/* 링크 공유 버튼 */}
+              {/* <FlexChild cursor="pointer">
+                  <Image
+                    src={"/resources/icons/main/share_icon.png"}
+                    width={25}
+                  />
+                  <Image
+                            src={'/resources/icons/main/share_icon_action.png'}
+                            width={25}
+                          />
+                </FlexChild> */}
+            </HorizontalFlex>
+
+            <VerticalFlex className={styles.delivery_admin_write_data}>
+              <VerticalFlex alignItems="start" gap={5}>
+                <P size={16} color="#222222" weight={600} paddingBottom={5}>
+                  <Span>배송비 </Span>
+                  {shipping?.amount === 0 ? (
+                    <Span>무료</Span>
+                  ) : (
+                    <>
+                      <Span>{shipping?.amount || 0}</Span>
+                      <Span>{storeData?.currency_unit}</Span>
+                    </>
+                  )}
+                </P>
+                <P size={14} color="#797979" whiteSpace="prewrap">
+                  {shipping?.description}
+                </P>
+                <P
+                  size={14}
+                  color="#797979"
+                  hidden={!freeShipping || freeShipping.min === 0}
+                >
+                  <Span>{freeShipping?.min}</Span>
+                  <Span>원 이상 구매시 무료배송</Span>
+                </P>
+              </VerticalFlex>
+            </VerticalFlex>
+
+            <VerticalFlex className={styles.option_box}>
+              <OptionItem
+                product={product}
+                setSelected={setSelected}
+                selected={selected}
+              />
+            </VerticalFlex>
           </VerticalFlex>
-        </VerticalFlex>
+        </FlexChild>
+        <FlexChild>
+          <VerticalFlex>
+            <HorizontalFlex className={styles.total_box}>
+              <P className={styles.total_txt}>총 상품 금액</P>
 
-        <VerticalFlex className={styles.option_box}>
-          <OptionItem
-            product={product}
-            setSelected={setSelected}
-            selected={selected}
-          />
-        </VerticalFlex>
+              <FlexChild className={styles.price} width={"auto"}>
+                <P>
+                  {product.variants
+                  // .filter((v) => v.stack > 0 && v.buyable)
+                  .reduce((acc, now) => {
+                    const quantity =
+                      selected.find((f) => f.variant_id === now.id)?.quantity || 0;
 
-        <HorizontalFlex className={styles.total_box}>
-          <P className={styles.total_txt}>총 상품 금액</P>
+                    return acc + now.discount_price * quantity;
+                  }, 0)}
+                </P>
+                원
+              </FlexChild>
+            </HorizontalFlex>
 
-          <FlexChild className={styles.price} width={"auto"}>
-            <P>
-              {product.variants
-              // .filter((v) => v.stack > 0 && v.buyable)
-              .reduce((acc, now) => {
-                const quantity =
-                  selected.find((f) => f.variant_id === now.id)?.quantity || 0;
-
-                return acc + now.discount_price * quantity;
-              }, 0)}
-            </P>
-            ₩
-          </FlexChild>
-        </HorizontalFlex>
-
-        <BuyButtonGroup
-          product={product}
-          onCartClick={onCartClick}
-          onPurchaseClick={onPurchaseClick}
-          onWishClick={onWishClick}
-        />
+            <BuyButtonGroup
+              product={product}
+              onCartClick={onCartClick}
+              onPurchaseClick={onPurchaseClick}
+              onWishClick={onWishClick}
+            />
+          </VerticalFlex>
+        </FlexChild>
       </VerticalFlex>
+
+
     </HorizontalFlex>
   );
 }
@@ -498,7 +507,7 @@ export function OptionItem({
           <HorizontalFlex
             className={styles.option_item}
             key={v.id}
-            alignItems={!disabled ? "start" : "center"}
+            alignItems={"center"}
           >
             {!disabled && (
               <InputNumber
@@ -771,7 +780,7 @@ export function DetailTabContainer({
             <P>
               {item.name}
               {["review", "inquiry"].includes(item.paramsName) && (
-                <Span className={styles.list_count}>{item.count}</Span> // 리뷰, qna 개수 출력
+                <Span className={`${styles.list_count} ${tabParams === `${item.paramsName}` && styles.active}`}>{item.count}</Span> // 리뷰, qna 개수 출력
               )}
             </P>
           </FlexChild>

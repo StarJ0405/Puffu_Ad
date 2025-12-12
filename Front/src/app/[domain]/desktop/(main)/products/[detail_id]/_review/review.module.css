@@ -1,39 +1,11 @@
 .review_wrap {
-  gap: 80px;
+  gap: 50px;
   width: 100%;
-}
-
-.review_wrap .review_top {
-  gap: 16px;
-}
-
-.review_wrap .review_top .rating {
-  font-size: 30px !important;
-  font-weight: 600 !important;
-  color: #fff !important;
-}
-
-.review_wrap .review_top .total_rating {
-  font-size: 18px !important;
-  font-weight: 400 !important;
-  color: #797979 !important;
-}
-
-.review_wrap .review_top .link_btn {
-  background: #050505;
-  border-radius: 3px;
-  padding: 10px 15px;
-  color: #fff;
-  font-size: 16px;
-}
-
-.review_wrap .review_top .link_btn:hover {
-  color: var(--main-color1);
 }
 
 .review_wrap .review_board {
   width: 100%;
-  gap: 50px;
+  gap: 60px;
 }
 
 .review_wrap .review_board .review_write {
@@ -82,7 +54,7 @@
 .items {
   display: flex;
   flex-direction: column;
-  row-gap: 30px;           /* 아이템 사이 간격 유지 */
+  row-gap: 50px;           /* 아이템 사이 간격 유지 */
 }
 
 /* 마지막을 제외한 아이템에만 하단 보더 */
@@ -92,29 +64,23 @@
 }
 
 .review_list .item {
-  align-items: start !important;
-  border: 1px solid #333;
-  border-radius: 10px;
-  padding: 25px 15px;
+  border-bottom: 1px solid #e6e6e6;
+  padding-bottom: 50px;
 }
 
-.review_list .item .item_header {
-  flex: unset;
-  width: auto;
-  padding-left: 30px;
-}
+.review_list .item .item_header {}
 
-.review_list .item .item_header > * {
-  width: auto;
-}
+.review_list .item .item_header > * {}
 
 .feedback {
-  justify-content: start;
-  gap: 30px;
+  justify-content: center;
+  gap: 100px;
+  background-color: #f5f5f5;
+  padding: 30px 0;
 }
 
 .feedback .feed_item {
-  gap: 10px;
+  gap: 14px;
   width: auto;
 }
 
@@ -123,21 +89,18 @@
 }
 
 .feedback .feed_item .feed_title {
-  font-size: 14px;
+  font-size: 16px;
   color: #797979;
-  font-weight: 700;
-}
-
-.feedback .feed_item .feed_content {
-  font-size: 14px;
-  color: #eaeaea;
   font-weight: 500;
 }
 
+.feedback .feed_item .feed_content {
+  font-size: 16px;
+  color: #201F1F;
+  font-weight: 600;
+}
+
 .review_list .item .content {
-  border-radius: 10px;
-  background: #181818;
-  padding: 20px;
   align-items: start !important;
   justify-content: start !important;
   gap: 15px;
@@ -174,6 +137,7 @@
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
+  border: 1px solid #ddd;
 }
 
 .review_list .item .content .img_box:hover .click_layer {
@@ -188,8 +152,9 @@
   padding: 6px 8px 5px;
   background: #2b2b2b;
   line-height: 1;
-  border-radius: 3px;
+  /* border-radius: 3px; */
   font-size: 12px;
+  color: #fff;
 }
 
 .review_list .item .content .img_box .click_layer {
@@ -200,7 +165,7 @@
    display: flex;
    align-items: center;
    justify-content: center;
-   font-size: 15px;
+   font-size: 17px;
    color: #fff;
    transition: 0.2s;
    opacity: 0;

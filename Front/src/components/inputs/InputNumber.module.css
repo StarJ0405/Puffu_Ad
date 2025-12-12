@@ -4,8 +4,9 @@
   width: initial;
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--line-color, #eaeaea);
-  border-radius: 4px;
+  border: 1px solid var(--line-color, #d9d9d9);
+  border-radius: 6px;
+  overflow: hidden;
 }
 
 .inputContainer {
@@ -38,7 +39,7 @@
   width: 100%;
   height: 100%;
   /* padding: 10px 12px; */
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   border: 1px solid var(--line-color, #ccc);
   border-radius: 0;
@@ -72,7 +73,7 @@
 }
 
 .input:focus {
-  border-color: var(--primary-color, #007bff);
+  border-color: var(--primary-color, #777777);
 }
 
 .prefix,
@@ -109,7 +110,7 @@
 
 .leftArrow:hover:not(.mobile),
 .rightArrow:hover:not(.mobile) {
-  background-color: var(--button-hover-bg, #e0e0e0);
+  background-color: var(--button-hover-bg, #ebebeb);
 }
 
 .leftArrow {
