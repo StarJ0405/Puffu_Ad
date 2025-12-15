@@ -55,6 +55,7 @@ const BannerModal = NiceModal.create(
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string>("");
     const displayTo = isMini ? banner.to ?? banner.link : banner.to;
+    const editKey = `edit-${banner?.id ?? `${banner?.store?.id}-${banner?.index}`}`;
     const handleSave = async () => {
       setIsLoading(true);
       try {
@@ -289,10 +290,8 @@ const BannerModal = NiceModal.create(
                     {edit ? (
                       <CheckboxGroup
                         name="limit"
-                        initialValues={unlimit ? ["unlimit"] : []}
-                        onChange={(values) =>
-                          setUnlimit(values.includes("unlimit"))
-                        }
+                        values={unlimit ? ["unlimit"] : []}
+                        onChange={(values) => setUnlimit(values.includes("unlimit"))}
                       >
                         <HorizontalFlex justifyContent="flex-start" gap={20}>
                           <FlexChild width={"max-content"} gap={12}>
@@ -316,8 +315,8 @@ const BannerModal = NiceModal.create(
                       <P>
                         {banner?.starts_at && banner?.ends_at
                           ? `${dateToString(banner.starts_at)} ~ ${dateToString(
-                              banner.ends_at
-                            )}`
+                            banner.ends_at
+                          )}`
                           : "무제한"}
                       </P>
                     )}
@@ -333,13 +332,12 @@ const BannerModal = NiceModal.create(
                     {edit ? (
                       <CheckboxGroup
                         name="visible"
-                        initialValues={visible ? ["visible"] : []}
-                        onChange={(values) =>
-                          setVisible(values.includes("visible"))
-                        }
+                        values={visible ? ["visible"] : []}
+                        onChange={(values) => setVisible(values.includes("visible"))}
                       >
                         <CheckboxChild id="visible" />
                       </CheckboxGroup>
+
                     ) : (
                       <Image
                         src={
@@ -361,13 +359,12 @@ const BannerModal = NiceModal.create(
                     {edit ? (
                       <CheckboxGroup
                         name="adult"
-                        initialValues={adult ? ["adult"] : []}
-                        onChange={(values) =>
-                          setAdult(values.includes("adult"))
-                        }
+                        values={adult ? ["adult"] : []}
+                        onChange={(values) => setAdult(values.includes("adult"))}
                       >
                         <CheckboxChild id="adult" />
                       </CheckboxGroup>
+
                     ) : (
                       <Image
                         src={
