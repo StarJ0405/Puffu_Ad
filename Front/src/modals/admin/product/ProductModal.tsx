@@ -104,7 +104,7 @@ const ProductModal = NiceModal.create(
         if (!title) {
           return setError("상품명이 입력되지 않았습니다.");
         }
-        const code = inputs.current[4].getValue();
+        const code = inputs.current[4].getValue();        
         validateInputs([...inputs.current, image.current])
           .then(({ isValid }: { isValid: boolean }) => {
             if (!isValid) return;
@@ -236,38 +236,38 @@ const ProductModal = NiceModal.create(
               >
                 {edit
                   ? selectedCategories.map((category: CategoryData) => (
-                      <Button
-                        key={category.id}
-                        styleType="admin"
-                        onClick={() => {
-                          NiceModal.show("categorySelect", {
-                            categories,
-                            selected: selectedCategories,
-                            onSelect: (value: CategoryData[]) => {
-                              if (value.length === 0)
-                                NiceModal.show("confirm", {
-                                  message:
-                                    "카테고리는 최소 1개 선택되어야합니다.",
-                                  confirmText: "확인",
-                                });
-                              else setCategoryIds(value.map((cat) => cat.id));
-                            },
-                          });
-                        }}
-                      >
-                        <P>{getName(category)}</P>
-                      </Button>
-                    ))
+                    <Button
+                      key={category.id}
+                      styleType="admin"
+                      onClick={() => {
+                        NiceModal.show("categorySelect", {
+                          categories,
+                          selected: selectedCategories,
+                          onSelect: (value: CategoryData[]) => {
+                            if (value.length === 0)
+                              NiceModal.show("confirm", {
+                                message:
+                                  "카테고리는 최소 1개 선택되어야합니다.",
+                                confirmText: "확인",
+                              });
+                            else setCategoryIds(value.map((cat) => cat.id));
+                          },
+                        });
+                      }}
+                    >
+                      <P>{getName(category)}</P>
+                    </Button>
+                  ))
                   : selectedCategories.map((category: CategoryData) => (
-                      <P
-                        key={category.id}
-                        backgroundColor="var(--admin-color)"
-                        color="#fff"
-                        padding={"5px 10px"}
-                      >
-                        {getName(category)}
-                      </P>
-                    ))}
+                    <P
+                      key={category.id}
+                      backgroundColor="var(--admin-color)"
+                      color="#fff"
+                      padding={"5px 10px"}
+                    >
+                      {getName(category)}
+                    </P>
+                  ))}
               </FlexChild>
             </HorizontalFlex>
           </FlexChild>
@@ -482,8 +482,8 @@ const ProductModal = NiceModal.create(
                     {product?.product_type === "is_set"
                       ? "세트상품"
                       : product?.product_type === "random_box"
-                      ? "랜덤박스"
-                      : "기본상품"}
+                        ? "랜덤박스"
+                        : "기본상품"}
                   </P>
                 )}
               </FlexChild>
@@ -549,17 +549,17 @@ const ProductModal = NiceModal.create(
                     {!product?.tags || product?.tags?.length === 0
                       ? "없음"
                       : (product?.tags || [])?.map((tag: string) => (
-                          <Span
-                            key={tag}
-                            marginRight={6}
-                            padding={"2px 6px"}
-                            borderRadius={4}
-                            backgroundColor="var(--admin-color)"
-                            color="#fff"
-                          >
-                            #{tag}
-                          </Span>
-                        ))}
+                        <Span
+                          key={tag}
+                          marginRight={6}
+                          padding={"2px 6px"}
+                          borderRadius={4}
+                          backgroundColor="var(--admin-color)"
+                          color="#fff"
+                        >
+                          #{tag}
+                        </Span>
+                      ))}
                   </P>
                 )}
               </FlexChild>
