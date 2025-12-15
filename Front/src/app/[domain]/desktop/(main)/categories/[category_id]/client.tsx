@@ -7,6 +7,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BaseProductList } from "../../products/baseClient";
 import Pstyles from "../../products/products.module.css";
+import style from "./page.module.css"
+import clsx from "clsx";
 
 function findCategoryById(categories: any[], id: string): any | undefined {
   for (const cat of categories) {
@@ -28,7 +30,7 @@ export function TitleBox({category_id}: {category_id: any}) {
 
   return (
     <VerticalFlex className={Pstyles.titleBox} alignItems="start">
-      <VerticalFlex className={Pstyles.title} width={'auto'}>
+      <VerticalFlex className={clsx(style.title)} width={'auto'}>
         <h2 className="Wanted">{category.name}</h2>
       </VerticalFlex>
 

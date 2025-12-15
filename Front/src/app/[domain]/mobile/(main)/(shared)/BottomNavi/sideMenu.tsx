@@ -105,7 +105,7 @@ export default function SideMenu({
               width: "100%",
               height: "100vh",
               background: "#111", // 검색창 배경색
-              zIndex: 10000, // 다른 UI 위로
+              zIndex: 1200, // 다른 UI 위로
             }}
           >
             <SearchLayer onClose={() => setShowSearch(false)} />

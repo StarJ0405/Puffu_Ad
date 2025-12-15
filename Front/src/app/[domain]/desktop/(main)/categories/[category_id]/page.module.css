@@ -1,16 +1,11 @@
-.title_box {
-   margin-bottom: 20px;
-}
-
-.title_box h3 {
-   font-size: 30px;
-   margin-bottom: 80px;
-   line-height: 1;
+.title {
+   font-size: 40px !important;
    font-weight: 700;
+   color: var(--main-color1);
 }
 
 
-.sort_group {align-items: end !important; margin-bottom: 20px;}
+/* .sort_group {align-items: end !important; margin-bottom: 20px;}
 
 .sort_group .count_txt {
    font-size: 16px;
@@ -42,6 +37,6 @@
    background: #050505;
    color: var(--main-color1);
    border-color: var(--main-color1);
-}
+} */
 
 /* 메인 카테고리  end -------------------*/

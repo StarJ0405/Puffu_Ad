@@ -15,7 +15,7 @@ export default async function ({
 }) {
   const { category_id } = await searchParams;
   const newCondition: any = {
-    pageSize: 24,
+    pageSize: 16,
     order: "new",
     product_type: "exclude_set",
     warehousing: false,

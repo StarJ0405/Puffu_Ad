@@ -17,6 +17,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import Pstyles from "./products.module.css";
+import Select from "@/components/select/Select";
 
 export function ProductMenu() {
   const pathname = usePathname();
@@ -101,6 +102,7 @@ export function SortFilter({
   length,
   // sortOptions
   sortConfig,
+  pagination
 }: {
   length: number;
   sortConfig?: {
@@ -108,14 +110,41 @@ export function SortFilter({
     setSort: (opt: { id: string; display: string }) => void;
     sortOptions: { id: string; display: string }[];
   };
+  pagination?: { page: number; maxPage: number; setPage: (p: number) => void };
   // sortOptions: { id: string; display: string }[]
 }) {
+
+  const sortOptions = [
+    { id: "latest", display: "최신순" },
+    { id: "best", display: "인기순" },
+    { id: "recommend", display: "추천순" },
+  ] as const;
+
   return (
     <HorizontalFlex className={Pstyles.sort_group}>
       <FlexChild className={Pstyles.count_txt}>
         <P>
           <b>{length}</b>개의 상품
         </P>
+      </FlexChild>
+
+      <FlexChild width={'auto'}>
+        <Select
+          options={sortOptions.map((opt) => ({
+            value: opt.id,
+            display: opt.display,
+          }))}
+          value={sortConfig?.sort.id}
+          onChange={(v) => {
+            if (!v) return;
+            const next = sortOptions.find((o) => o.id === v);
+            if (!next) return;
+            pagination?.setPage(0);
+            sortConfig?.setSort(next);
+          }}
+          width={"120px"}
+          height={"36px"}
+        />
       </FlexChild>
 
       <FlexChild width={"auto"}>
@@ -178,7 +207,7 @@ export function BaseProductList({
     <>
       {listLength > 0 ? (
         <>
-          <SortFilter length={total || listLength} sortConfig={sortConfig} />
+          <SortFilter length={total || listLength} pagination={pagination} sortConfig={sortConfig} />
           {/* sortOptions={sortOptions} */}
           <VerticalFlex alignItems="start">
             <MasonryGrid gap={20} width={"100%"} breakpoints={breakPoint}>

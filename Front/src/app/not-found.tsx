@@ -4,6 +4,7 @@ import styles from './not-found.module.css'
 import FlexChild from "@/components/flex/FlexChild";
 import P from "@/components/P/P";
 import {NaviBtn} from "./not-client" 
+import Div from "@/components/div/Div";
 
 export default async function () {
   const headerList = await headers();
@@ -12,9 +13,13 @@ export default async function () {
 
   return (
     <div className={styles.container}>
-      <FlexChild justifyContent="center">
-        <P className={styles.not_txt}>페이지를 찾을 수 없습니다.</P>
-      </FlexChild>
+      <div className={styles.text_box}>
+        <P className={styles.not_title}>404</P>
+        <P className={styles.not_txt}>
+          찾을 수 없는 페이지입니다. <br />
+          요청하신 페이지가 사라졌거나, 잘못된 경로입니다.
+        </P>
+      </div>
 
       <NaviBtn />
     </div>
