@@ -4,7 +4,7 @@ import { MapFrame } from "./client";
 import { requester } from "@/shared/Requester";
 import { SearchParams } from "next/dist/server/request/search-params";
 
-export default async function Page({
+export default async function({
   searchParams,
 }: {
   searchParams: Promise<SearchParams>;

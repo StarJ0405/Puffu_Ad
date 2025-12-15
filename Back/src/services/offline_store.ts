@@ -26,7 +26,7 @@ export class OfflineStoreService extends BaseService<
       if (where && where.q) {
         const q = where.q;
         delete where.q;
-        where = this.Search(where, ["name", "address", "kiosk_uuid"], q);
+        where = this.Search(where, ["name", "address", "branch_uuid"], q);
 
         options.where = where;
       }

@@ -345,20 +345,20 @@ export default function ({
                   <P width={80} paddingRight={10}>
                     수령인
                   </P>
-                  <P width={300}>{cell.name}</P>
+                  <P width={300}>{cell?.name}</P>
                 </FlexChild>
                 <FlexChild alignItems="flex-start">
                   <P width={80} paddingRight={10}>
                     전화번호
                   </P>
-                  <P width={300}>{cell.phone}</P>
+                  <P width={300}>{cell?.phone}</P>
                 </FlexChild>
                 <FlexChild alignItems="flex-start">
                   <P width={80} paddingRight={10}>
                     주소
                   </P>
                   <P width={300}>
-                    {cell.address1} {cell.address2} ({cell.postal_code})
+                    {cell?.address1} {cell?.address2} ({cell?.postal_code})
                   </P>
                 </FlexChild>
                 <FlexChild alignItems="flex-start">
@@ -389,10 +389,10 @@ export default function ({
             }
           >
             <VerticalFlex width={150} maxWidth={150}>
-              <P>{cell.name}</P>
-              <P>{cell.phone}</P>
+              <P>{cell?.name}</P>
+              <P>{cell?.phone}</P>
               <P>
-                {cell.address1} {cell.address2} ({cell.postal_code})
+                {cell?.address1} {cell?.address2} ({cell?.postal_code})
               </P>
               <P>{cell?.message}</P>
               <P
