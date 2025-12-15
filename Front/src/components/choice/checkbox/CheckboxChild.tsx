@@ -113,8 +113,8 @@ const CheckboxChild = forwardRef<HTMLInputElement, CheckboxChildProps>(
         id={id}
         className={className}
         style={{
-          width: hasImages ? "24px" : undefined, // 이미지 크기에 따라 조절
-          height: hasImages ? "24px" : undefined, // 이미지 크기에 따라 조절
+          width: hasImages ? "20px" : undefined, // 이미지 크기에 따라 조절
+          height: hasImages ? "20px" : undefined, // 이미지 크기에 따라 조절
           ...style,
           position: "relative",
           display: "inline-block", // 또는 'flex', 'inline-flex' 등 적절한 값

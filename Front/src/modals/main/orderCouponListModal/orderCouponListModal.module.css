@@ -106,10 +106,18 @@
   background: var(--main-color1);
   border-radius: 5px;
   color: #fff;
-  padding: 14px 10px;
+  padding: 18px 10px;
   line-height: 1;
   font-size: 20px;
-  transition: all 0.3s;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+.submit_btn:hover {
+  background: var(--main-color1-hover) !important;
+}
+.submit_btn:active {
+  background: var(--main-color1-active) !important;
+  transform: var(--btn-active-translateY) var(--btn-active-scale);
 }
 
 
