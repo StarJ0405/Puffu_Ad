@@ -3,7 +3,7 @@
    justify-content: center;
    align-items: center;
    min-height: 60lvh;
-   padding-top: 30px;
+   padding-top: 145px; /* 헤더 높이값 + 20px */
    padding-bottom: 40px;
 }
 

@@ -15,11 +15,12 @@ import { useAuth } from "@/providers/AuthPorivder/AuthPorivderClient";
 
 export default function Header() {
 
-  const [CaOpen, SetCaOpen] = useState(false);
   const headerRef = useRef<HTMLDivElement | null>(null);
   const [headerScroll, setHeaderScroll] = useState(false);
   const [LBHeight, setLBHeight] = useState(0);
   const { userData } = useAuth();
+
+  // 로그인체크
   const [loginLInkCheck, setLoginLInkCheck] = useState('/auth/login');
 
   useEffect(()=> {

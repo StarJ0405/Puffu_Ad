@@ -655,7 +655,7 @@ export function ProductSlider({
         <FlexChild id={id} className={styles.ProductSlider}>
           <Swiper
             loop={false}
-            slidesPerView={6}
+            slidesPerView={5}
             speed={600}
             spaceBetween={20}
             modules={[Autoplay, Navigation]}
@@ -668,7 +668,7 @@ export function ProductSlider({
             {listArray?.map((product: ProductData, i: number) => {
               return (
                 <SwiperSlide key={i}>
-                  <ProductCard product={product} lineClamp={lineClamp ?? 2} />
+                  <ProductCard product={product} width={'100%'} lineClamp={lineClamp ?? 2} />
                 </SwiperSlide>
               );
             })}

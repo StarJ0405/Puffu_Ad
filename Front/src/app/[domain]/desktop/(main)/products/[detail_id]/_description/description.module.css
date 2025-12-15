@@ -1,3 +1,2 @@
-.detail_thumb_box p img {
-   width: 100%;
-}
+.detail_thumb_box {width: 75%; margin: 0 auto;}
+.detail_thumb_box p img {width: 100%;}

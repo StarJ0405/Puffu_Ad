@@ -213,7 +213,8 @@ a {
 }
 
 .mob_root {
-  min-height: 70dvh;
+  padding-top: 125px;
+  min-height: 70lvh;
   color: var(--default-color);
 }
 
@@ -221,7 +222,7 @@ a {
 .detail_root {
   padding-top: var(--subpageHeader-H);
   padding-bottom: 80px;
-  min-height: 70dvh;
+  min-height: 70lvh;
   color: var(--default-color);
 }
 

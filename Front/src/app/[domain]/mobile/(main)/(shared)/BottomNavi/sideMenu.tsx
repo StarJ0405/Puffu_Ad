@@ -16,6 +16,7 @@ import useNavigate from "@/shared/hooks/useNavigate";
 import { AnimatePresence, motion } from "framer-motion";
 import SearchLayer from "@/components/searchLayer/SearchLayer";
 import Span from "@/components/span/Span";
+import { usePathname } from "next/navigation";
 
 export default function SideMenu({
   CaOpen,
@@ -27,9 +28,7 @@ export default function SideMenu({
   // 카테고리메뉴
   const { categoriesData } = useCategories();
   const costumeData = categoriesData.find((ca)=> ca.name === '코스튬/의류');
-  const navigate = useNavigate();
-
-  const [activeDepth1, setActiveDepth1] = useState<string | null>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     if (CaOpen) {
@@ -63,6 +62,29 @@ export default function SideMenu({
       bodyOverflow('')
     };
   }, [showSearch])
+
+
+  const communityLink = [
+    {name: '사용 후기', link: siteInfo.bo_review},
+  ]
+
+  const customerLink = [
+    {name: '공지사항', link: siteInfo.bo_notice},
+    {name: '이벤트', link: siteInfo.bo_event},
+  ]
+
+  const myPageLink = [
+    {name: '내 정보', link: siteInfo.my_profile},
+    {name: '내 주문 관리', link: siteInfo.my_order},
+    {name: '최근 본 상품', link: siteInfo.my_recentlyView},
+    {name: '배송지 관리', link: siteInfo.my_delivery},
+    {name: '문의 내역', link: siteInfo.my_inquiry},
+    {name: '리뷰 관리', link: siteInfo.my_review},
+  ]
+
+  const pathnameActive = (itemLink: string) => {
+    return pathname == itemLink ? styles.active : ''
+  }
 
   return (
     <>
@@ -158,27 +180,33 @@ export default function SideMenu({
             <VerticalFlex className={styles.link_box} alignItems="start">
               <h5 className={clsx(styles.title, 'Wanted')}>Community</h5>
               <Div className={styles.grid}>
-                <Div><Link href={siteInfo.bo_review}>사용 후기</Link></Div>
+                {communityLink.map((item, i)=> {
+                    return (
+                      <Div className={clsx(pathnameActive(item.link))} key={i}><Link href={item.link}>{item.name}</Link></Div>
+                    )
+                })}
               </Div>
             </VerticalFlex>
 
             <VerticalFlex className={styles.link_box} alignItems="start">
-              <h5 className={clsx(styles.title, 'Wanted')}>Cutomer Center</h5>
+              <h5 className={clsx(styles.title, 'Wanted')}>Customer Center</h5>
               <Div className={styles.grid}>
-                <Div><Link href={siteInfo.bo_notice}>공지사항</Link></Div>
-                <Div><Link href={siteInfo.bo_event}>이벤트</Link></Div>
+                {customerLink.map((item, i)=> {
+                    return (
+                      <Div className={clsx(pathnameActive(item.link))} key={i}><Link href={item.link}>{item.name}</Link></Div>
+                    )
+                })}
               </Div>
             </VerticalFlex>
 
             <VerticalFlex className={styles.link_box} alignItems="start">
               <h5 className={clsx(styles.title, 'Wanted')}>My page</h5>
               <Div className={styles.grid}>
-                <Div><Link href={siteInfo.my_profile}>내 정보</Link></Div>
-                <Div><Link href={siteInfo.my_order}>내 주문 관리</Link></Div>
-                <Div><Link href={siteInfo.my_recentlyView}>최근 본 상품</Link></Div>
-                <Div><Link href={siteInfo.my_delivery}>배송지 관리</Link></Div>
-                <Div><Link href={siteInfo.my_inquiry}>문의 내역</Link></Div>
-                <Div><Link href={siteInfo.my_review}>리뷰 관리</Link></Div>
+                {myPageLink.map((item, i)=> {
+                    return (
+                      <Div className={clsx(pathnameActive(item.link))} key={i}><Link href={item.link}>{item.name}</Link></Div>
+                    )
+                })}
               </Div>
             </VerticalFlex>
 

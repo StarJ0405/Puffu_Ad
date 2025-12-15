@@ -184,6 +184,8 @@
 
 .container .link_box .grid > div {min-width: 120px;}
 
+.container .link_box .grid .active a {color: var(--main-color1);}
+
 .container .link_box .grid a {
    font-size: 16px; color: #202020;
    font-weight: 700; display: block;

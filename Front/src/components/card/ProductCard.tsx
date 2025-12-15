@@ -61,7 +61,7 @@ export function ProductCard({
 
   return (
     <VerticalFlex
-      width={width ?? (!isMobile ? 200 : 'auto')}
+      width={width ?? (!isMobile ? '100%' : 'auto')}
       // margin={product.margin}
       className={clsx(
         styles.prodcut_item,
@@ -70,7 +70,8 @@ export function ProductCard({
     >
       <FlexChild
         className={styles.imgBox}
-        height={width ?? (!isMobile ? 305 : 'auto')}
+        // height={width ?? (!isMobile ? '100%' : 'auto')}
+        height={'auto'}
       >
         <FlexChild
           className={styles.thumbnail}
