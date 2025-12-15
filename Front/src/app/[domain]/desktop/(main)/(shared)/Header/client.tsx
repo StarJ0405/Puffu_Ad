@@ -43,7 +43,7 @@ export function HeaderMenu() {
                   <li
                     key={i}
                     className={clsx({
-                      [styles.active]: pathname === item.link,
+                      [styles.active]: item.name == '상품' ? pathname.includes('/products') : pathname === item.link,
                     })}
                   >
                     <Link href={item.link}>
