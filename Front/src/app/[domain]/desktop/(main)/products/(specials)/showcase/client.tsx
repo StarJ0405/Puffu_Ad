@@ -315,14 +315,14 @@ export function BestList({
   initConiditon: any;
 }) {
   const sortOptions = [
-    { id: "latest", display: "최신순" },
+    { id: undefined, display: "최신순" },
     { id: "best", display: "인기순" },
-    { id: "recommend", display: "추천순" },
-  ] as const;
+    { id: "low_price", display: "높은 가격순" },
+    { id: "high_price", display: "낮은 가격순" },
+  ];
 
-  const [sort, setSort] = useState<(typeof sortOptions)[number]>(
-    sortOptions[0]
-  );
+  const [sort, setSort] = useState(sortOptions[0]);
+
 
 
   const getOrderParam = (id: string | undefined) => {
@@ -372,7 +372,6 @@ export function BestList({
           </P>
         </FlexChild>
         <FlexChild width="auto">
-
           <Select
             options={sortOptions.map((opt) => ({
               value: opt.id,
@@ -388,7 +387,7 @@ export function BestList({
             }}
             width={"120px"}
             height={"36px"}
-          />
+          /> */}
         </FlexChild>
       </HorizontalFlex>
 
