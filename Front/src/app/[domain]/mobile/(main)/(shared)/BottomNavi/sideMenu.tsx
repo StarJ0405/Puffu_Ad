@@ -189,7 +189,7 @@ export default function SideMenu({
             </VerticalFlex>
 
             <VerticalFlex className={styles.link_box} alignItems="start">
-              <h5 className={clsx(styles.title, 'Wanted')}>Customer Center</h5>
+              <h5 className={clsx(styles.title, 'Wanted')}>CS Center</h5>
               <Div className={styles.grid}>
                 {customerLink.map((item, i)=> {
                     return (

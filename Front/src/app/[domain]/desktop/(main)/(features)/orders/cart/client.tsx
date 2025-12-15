@@ -43,6 +43,7 @@ import styles from "./page.module.css";
 import LoadingPageChange from "@/components/loading/LoadingPageChange";
 import { GoogleMap, OverlayView, useLoadScript } from "@react-google-maps/api";
 import Div from "@/components/div/Div";
+import Inline from "@/components/inline/Inline";
 
 export function CartWrap() {
   const { userData } = useAuth();
@@ -702,9 +703,9 @@ export function CartWrap() {
           <VerticalFlex className={styles.product_wrapper}>
             <article>
               <P className={styles.list_title}>담은 상품</P>
-              <FlexChild alignItems="center" gap={10} paddingBottom={40}>
+              <FlexChild alignItems="center" gap={10} paddingBottom={30}>
                 <CheckboxAll />
-                <Span>전체선택</Span>
+                <Span size={17} weight={600}>전체선택</Span>
               </FlexChild>
             </article>
             <VerticalFlex className={styles.item_list}>
@@ -776,7 +777,6 @@ export function CartWrap() {
         </CheckboxGroup>
 
         <FlexChild
-          className={styles.coupon_info}
           hidden={!storeData?.metadata?.shipping && !storeData?.metadata?.order}
         >
           <VerticalFlex alignItems="start">
@@ -784,18 +784,18 @@ export function CartWrap() {
               <P className={styles.list_title}>배송 방법</P>
             </article>
 
-            <VerticalFlex className={styles.info_list}>
+            <VerticalFlex>
               <HorizontalFlex
                 className={clsx(styles.info_item)}
                 hidden={!storeData?.metadata?.order}
               >
                 <FlexChild
-                  border={"1px solid #fff"}
-                  borderRadius={5}
-                  padding={10}
+                  border={fulfillment.method === "delivery" ? "1px solid var(--main-color1)" : "1px solid #ccc"}
+                  borderRadius={6}
+                  padding={20}
                   justifyContent={"center"}
                   cursor={"pointer"}
-                  className={fulfillment.method === "delivery" ? "active" : ""}
+                  className={styles.fulfillment_btn}
                   onClick={() =>
                     setFulfillment((prev) => ({
                       ...prev,
@@ -803,17 +803,17 @@ export function CartWrap() {
                     }))
                   }
                 >
-                  <P color={"#fff"} size={17} weight={600}>
+                  <P color={fulfillment.method === "delivery" ? "var(--main-color1)" : "#666"} size={18} weight={500}>
                     배송
                   </P>
                 </FlexChild>
                 <FlexChild
-                  border={"1px solid #fff"}
-                  borderRadius={5}
-                  padding={10}
+                  border={fulfillment.method === "pickup" ? "1px solid var(--main-color1)" : "1px solid #ccc"}
+                  borderRadius={6}
+                  padding={20}
                   justifyContent={"center"}
                   cursor={"pointer"}
-                  className={fulfillment.method === "pickup" ? "active" : ""}
+                  className={styles.fulfillment_btn}
                   onClick={() =>
                     setFulfillment((prev) => ({
                       ...prev,
@@ -822,7 +822,7 @@ export function CartWrap() {
                     }))
                   }
                 >
-                  <P color={"#fff"} size={17} weight={600}>
+                  <P color={fulfillment.method === "pickup" ? "var(--main-color1)" : "#666"} size={18} weight={500}>
                     매장 픽업
                   </P>
                 </FlexChild>
@@ -850,43 +850,47 @@ export function CartWrap() {
               </P>
             </article>
 
-            <VerticalFlex className={styles.info_list}>
-              <HorizontalFlex
-                className={clsx(styles.info_item)}
-                hidden={!storeData?.metadata?.order}
-              >
-                <Span>주문 할인</Span>
-
-                <CouponSelect
-                  openCouponModal={openCouponModal}
-                  onConfirm={(data) => setOrderCupons(data)}
-                  selected={orderCoupons}
-                  max={Number(storeData?.metadata?.order || 0)}
-                  coupons={coupons.filter(
-                    (f: CouponData) => f.type === "order"
-                  )}
-                />
-              </HorizontalFlex>
-
-              <HorizontalFlex
-                className={clsx(styles.info_item)}
-                hidden={
-                  !storeData?.metadata?.shipping || shipping?.amount === 0
-                }
-              >
-                <Span>배송 할인</Span>
-
-                <CouponSelect
-                  openCouponModal={openCouponModal}
-                  onConfirm={(data) => setShippingCupons(data)}
-                  selected={shippingCoupons}
-                  max={Number(storeData?.metadata?.shipping || 0)}
-                  coupons={coupons.filter(
-                    (f: CouponData) => f.type === "shipping"
-                  )}
-                />
-              </HorizontalFlex>
-            </VerticalFlex>
+            <Div className={styles.info_list}>
+              <VerticalFlex gap={10}>
+                <HorizontalFlex
+                  className={clsx(styles.info_item)}
+                  alignItems={"flex-start"}
+                  hidden={!storeData?.metadata?.order}
+                >
+                  <Span paddingTop={13} width={80}>주문 할인</Span>
+  
+                  <CouponSelect
+                    openCouponModal={openCouponModal}
+                    onConfirm={(data) => setOrderCupons(data)}
+                    selected={orderCoupons}
+                    max={Number(storeData?.metadata?.order || 0)}
+                    coupons={coupons.filter(
+                      (f: CouponData) => f.type === "order"
+                    )}
+                  />
+                </HorizontalFlex>
+  
+                <HorizontalFlex
+                  className={clsx(styles.info_item)}
+                  alignItems={"flex-start"}
+                  hidden={
+                    !storeData?.metadata?.shipping || shipping?.amount === 0
+                  }
+                >
+                  <Span paddingTop={13} width={80}>배송 할인</Span>
+  
+                  <CouponSelect
+                    openCouponModal={openCouponModal}
+                    onConfirm={(data) => setShippingCupons(data)}
+                    selected={shippingCoupons}
+                    max={Number(storeData?.metadata?.shipping || 0)}
+                    coupons={coupons.filter(
+                      (f: CouponData) => f.type === "shipping"
+                    )}
+                  />
+                </HorizontalFlex>
+              </VerticalFlex>
+            </Div>
           </VerticalFlex>
         </FlexChild>
         {fulfillment.method === "delivery" && (
@@ -912,28 +916,28 @@ export function CartWrap() {
               </article>
               {address ? (
                 <VerticalFlex className={styles.info_list}>
-                  <HorizontalFlex className={styles.info_item}>
-                    <Span>이름</Span>
+                  <VerticalFlex className={styles.info_item}>
+                    <Span color={"#999"}>이름</Span>
                     <P>{address.name}</P>
-                  </HorizontalFlex>
+                  </VerticalFlex>
 
-                  <HorizontalFlex className={styles.info_item}>
-                    <Span>배송주소</Span>
+                  <VerticalFlex className={styles.info_item}>
+                    <Span color={"#999"}>배송주소</Span>
                     <P>
                       ({address.postal_code}) {address.address1}{" "}
                       {address.address2}
                     </P>
-                  </HorizontalFlex>
+                  </VerticalFlex>
 
-                  <HorizontalFlex className={styles.info_item}>
-                    <Span>연락처</Span>
+                  <VerticalFlex className={styles.info_item}>
+                    <Span color={"#999"}>연락처</Span>
                     <P>{address.phone}</P>
-                  </HorizontalFlex>
+                  </VerticalFlex>
 
                   <VerticalFlex
                     className={clsx(styles.info_item, styles.info_select_box)}
                   >
-                    <Span>배송 요청사항 선택</Span>
+                    <Span color={"#999"}>배송 요청사항 선택</Span>
 
                     <SelectBox setMessage={setMessage} />
                   </VerticalFlex>
@@ -947,11 +951,11 @@ export function CartWrap() {
         )}
         {fulfillment.method === "pickup" && isLoaded && center && (
           <FlexChild>
-            <VerticalFlex alignItems="start" gap={10}>
+            <VerticalFlex alignItems="start">
               <FlexChild>
                 <P className={styles.list_title}>픽업 매장 선택</P>
               </FlexChild>
-              <FlexChild>
+              <FlexChild borderRadius={8} overflow={"hidden"}>
                 {isLoaded && center && (
                   <GoogleMap
                     zoom={12}
@@ -1004,35 +1008,39 @@ export function CartWrap() {
                   </GoogleMap>
                 )}
               </FlexChild>
-              <FlexChild>
+              <FlexChild padding={"20px 0 10px"}>
                 <HorizontalFlex>
                   <FlexChild
                     justifyContent="center"
-                    border="1px solid #fff"
-                    padding={10}
+                    border="1px solid #d2d2d2"
+                    borderRadius={"8px 0 0 8px"}
+                    padding={16}
+                    backgroundColor={fulfillment.pickup === "recent" ? "#fafafa" : "#fff"}
                     cursor="pointer"
                     onClick={() => pickupTabClick("recent")}
                   >
                     <P
-                      size={18}
+                      size={17}
                       weight={600}
-                      color={fulfillment.pickup === "recent" ? "#000" : "#fff"}
+                      color={fulfillment.pickup === "recent" ? "var(--main-color1)" : "#222"}
                     >
                       최근 이용매장
                     </P>
                   </FlexChild>
                   <FlexChild
                     justifyContent="center"
-                    border="1px solid #fff"
-                    padding={10}
+                    borderTop="1px solid #d2d2d2"
+                    borderBottom="1px solid #d2d2d2"
+                    backgroundColor={fulfillment.pickup === "favorite" ? "#fafafa" : "#fff"}
+                    padding={16}
                     cursor="pointer"
                     onClick={() => pickupTabClick("favorite")}
                   >
                     <P
-                      size={18}
+                      size={17}
                       weight={600}
                       color={
-                        fulfillment.pickup === "favorite" ? "#000" : "#fff"
+                        fulfillment.pickup === "favorite" ? "var(--main-color1)" : "#222"
                       }
                     >
                       즐겨찾기
@@ -1040,55 +1048,99 @@ export function CartWrap() {
                   </FlexChild>
                   <FlexChild
                     justifyContent="center"
-                    border="1px solid #fff"
-                    padding={10}
+                    border="1px solid #d2d2d2"
+                    borderRadius={"0 8px 8px 0"}
+                    backgroundColor={fulfillment.pickup === "others" ? "#fafafa" : "#fff"}
+                    padding={16}
                     cursor="pointer"
                     onClick={() => pickupTabClick("others")}
                   >
                     <P
-                      size={18}
+                      size={17}
                       weight={600}
-                      color={fulfillment.pickup === "others" ? "#000" : "#fff"}
+                      color={fulfillment.pickup === "others" ? "var(--main-color1)" : "#222"}
                     >
                       그 외 매장
                     </P>
                   </FlexChild>
                 </HorizontalFlex>
               </FlexChild>
-              <FlexChild>
-                <Input width={"100%"} />
+              <FlexChild padding={"0 0 10px"}>
+                <Input 
+                  width={"100%"}
+                  placeHolder={"매장명 / 주소를 입력해 주세요."}
+                  style={{ borderRadius: "8px", height: "44px" }} />
               </FlexChild>
               {fulfillment.method === "pickup" && (
                 <FlexChild>
                   {fulfillment.pickup === "recent" && (
                     <>
                       {recentStores.length === 0 && (
-                        <P>최근 이용매장이 없습니다.</P>
+                        <Div padding={"22px 0 2px"}>
+                          <P textAlign={"center"} color={"#a6a6a6"}>최근 이용매장이 없습니다.</P>
+                        </Div>
                       )}
-                      {recentStores.map((store) => (
-                        <P key={store.id}>{store.offline_store?.name}</P>
-                      ))}
+
+                      <HorizontalFlex gap={8} justifyContent={"flex-start"}>
+                        {recentStores.map((store) => (
+                          <FlexChild
+                            key={store.id}
+                            width={"fit-content"} 
+                            border={"1px solid #ccc"} 
+                            borderRadius={6}
+                            padding={"11px 12px"}
+                            cursor={"pointer"}
+                          >
+                            <P color={"#666"}>{store.offline_store?.name}</P>
+                          </FlexChild>
+                         
+                        ))}
+                      </HorizontalFlex>
                     </>
                   )}
 
                   {fulfillment.pickup === "favorite" && (
                     <>
                       {favoriteStores.length === 0 && (
-                        <P>즐겨찾기 매장이 없습니다.</P>
+                        <Div padding={"22px 0 2px"}>
+                          <P textAlign={"center"} color={"#a6a6a6"}>즐겨찾기 매장이 없습니다.</P>
+                        </Div>
                       )}
+                      <HorizontalFlex>
+                        {favoriteStores.map((item) => {
+                          const storeName = item.offline_store?.name ?? "";
 
-                      {favoriteStores.map((item) => {
-                        const storeName = item.offline_store?.name ?? "";
+                          return (
+                            <FlexChild
+                              key={item.id}
+                              width={"fit-content"}
+                              border={"1px solid #ccc"} 
+                              borderRadius={6}
+                              padding={"11px 12px"}
+                              cursor={"pointer"}
+                            >
+                              <P color={"#666"}>{storeName}</P>
+                            </FlexChild>
+                           
+                          );
+                        })}
+                      </HorizontalFlex>
 
-                        return <P key={item.id}>{storeName}</P>;
-                      })}
+
+
+
+
+
+
                     </>
                   )}
 
                   {fulfillment.pickup === "others" && (
                     <>
                       {otherStores.length === 0 && (
-                        <P>등록된 매장이 없습니다.</P>
+                        <Div padding={"22px 0 2px"}>
+                          <P textAlign={"center"} color={"#a6a6a6"}>등록된 매장이 없습니다.</P>
+                        </Div>
                       )}
 
                       <RadioGroup
@@ -1105,7 +1157,7 @@ export function CartWrap() {
                           }
                         }}
                       >
-                        <VerticalFlex gap={10}>
+                        <VerticalFlex gap={16} paddingTop={15}>
                           {otherStores.map((store) => {
                             const inWishlist = store.is_favorite === true;
 
@@ -1124,16 +1176,17 @@ export function CartWrap() {
                                   setSelectOffilineStore(store.id);
                                 }}
                               >
-                                <HorizontalFlex>
-                                  <FlexChild>
+                                <HorizontalFlex gap={10}>
+                                  <FlexChild width={"fit-content"}>
                                     <FlexChild width="auto">
                                       <RadioChild id={store.id} />
                                     </FlexChild>
                                   </FlexChild>
                                   <FlexChild>
-                                    <Span size={16}>{store.name}</Span>
+                                    <Span size={16} color={"#666"}>{store.name}
+                                    </Span>
                                   </FlexChild>
-                                  <FlexChild justifyContent="flex-end">
+                                  <FlexChild width={"fit-content"} justifyContent="flex-end">
                                     <Image
                                       src={
                                         inWishlist
@@ -1179,6 +1232,7 @@ export function CartWrap() {
               <VerticalFlex className={styles.payment_deak}>
                 <FlexChild
                   className={clsx(styles.payment_card)}
+                  border={payment === "credit_card" ? "1px solid var(--main-color1)" : "1px solid #ccc"}
                   onClick={() =>
                     document.getElementById("credit_card")?.click()
                   }
@@ -1186,10 +1240,14 @@ export function CartWrap() {
                   <FlexChild width={"auto"}>
                     <RadioChild id={"credit_card"} />
                   </FlexChild>
-                  <Span>신용카드 결제</Span>
+                  <Span 
+                    color={payment === "credit_card" ? "var(--main-color1)" : "#666"}
+                    weight={payment === "credit_card" ? 600 : 400}
+                  >신용카드 결제</Span>
                 </FlexChild>
                 <FlexChild
                   className={clsx(styles.payment_card)}
+                  border={payment === "direct_bank" ? "1px solid var(--main-color1)" : "1px solid #ccc"}
                   onClick={() =>
                     document.getElementById("direct_bank")?.click()
                   }
@@ -1197,7 +1255,10 @@ export function CartWrap() {
                   <FlexChild width={"auto"}>
                     <RadioChild id={"direct_bank"} />
                   </FlexChild>
-                  <Span>무통장 입금</Span>
+                  <Span 
+                    color={payment === "direct_bank" ? "var(--main-color1)" : "#666"}
+                    weight={payment === "direct_bank" ? 600 : 400}
+                  >무통장 입금</Span>
                 </FlexChild>
               </VerticalFlex>
             </RadioGroup>
@@ -1215,7 +1276,7 @@ export function CartWrap() {
             <article>
               <P className={styles.list_title}>결제 금액</P>
 
-              <P fontSize={13} color="#797979" lineHeight={1.3}>
+              <P fontSize={14} color="#797979" lineHeight={1.3}>
                 상품 금액(세일 할인가 포함){" "}
                 {(shipping?.max || 0).toLocaleString()}원 이상 구매 시 배송비
                 무료
@@ -1240,7 +1301,7 @@ export function CartWrap() {
                     <P>
                       {/* <Span>{getProductSum()}</Span> */}
                       <Span>{ProductPriceSum()}</Span>
-                      <Span> ₩</Span>
+                      <Span> 원</Span>
                     </P>
                   </HorizontalFlex>
                 </FlexChild>
@@ -1256,7 +1317,7 @@ export function CartWrap() {
 
                     <P>
                       <Span>{!selected?.length ? 0 : getShippingAmount()}</Span>
-                      <Span> ₩</Span>
+                      <Span> 원</Span>
                     </P>
                   </HorizontalFlex>
                 </FlexChild>
@@ -1271,18 +1332,18 @@ export function CartWrap() {
                     <Span> P</Span>
                   </P> */}
                   <FlexChild width={"auto"} gap={10}>
-                    <Span color="#797979" fontSize={13}>
+                    <Span color="#797979" fontSize={14}>
                       내 포인트
                     </Span>
                     <FlexChild width={"auto"} gap={3}>
                       <FlexChild width={"auto"} gap={2}>
-                        <Span>{(userData?.point || 0) - point}</Span>
-                        <Span>P</Span>
+                        <Span size={14}>{(userData?.point || 0) - point}</Span>
+                        <Span size={14}>P</Span>
                       </FlexChild>
-                      <Span>/</Span>
+                      <Span size={14}>/</Span>
                       <FlexChild width={"auto"} color="#797979" gap={2}>
-                        <Span>{userData?.point || 0}</Span>
-                        <Span> P</Span>
+                        <Span size={14}>{userData?.point || 0}</Span>
+                        <Span size={14}> P</Span>
                       </FlexChild>
                     </FlexChild>
                   </FlexChild>
@@ -1291,20 +1352,28 @@ export function CartWrap() {
                 <HorizontalFlex
                   className={clsx(styles.info_item, styles.point_input_box)}
                 >
-                  <InputNumber
-                    width={"100%"}
-                    hideArrow
-                    value={point}
-                    onChange={(value) => setPoint(value as number)}
-                    max={Math.min(userData?.point || 0, getSum())}
-                    min={0}
-                  />
-                  <Button
-                    className={styles.cancel_btn}
-                    onClick={() => setPoint(0)}
-                  >
-                    사용 취소
-                  </Button>
+                  <FlexChild width={"48%"}>
+                    <InputNumber
+                      style={{
+                        width: "100%"
+                      }}
+                      width={180}
+                      hideArrow
+                      value={point}
+                      onChange={(value) => setPoint(value as number)}
+                      max={Math.min(userData?.point || 0, getSum())}
+                      // min={87852}
+                      min={0}
+                    />
+                  </FlexChild>
+                  <FlexChild width={"fit-content"}>
+                    <Button
+                      className={styles.cancel_btn}
+                      onClick={() => setPoint(0)}
+                    >
+                      사용 취소
+                    </Button>
+                  </FlexChild>
                 </HorizontalFlex>
               </VerticalFlex>
 
@@ -1312,9 +1381,9 @@ export function CartWrap() {
                 <HorizontalFlex className={styles.info_item}>
                   <Span>할인가</Span>
 
-                  <P color="#fff">
+                  <P>
                     <Span>{-saleTotals.total - (point || 0)}</Span>
-                    <Span> ₩</Span>
+                    <Span> 원</Span>
                   </P>
                 </HorizontalFlex>
 
@@ -1336,7 +1405,7 @@ export function CartWrap() {
                     <P>
                       <Span>+ </Span>
                       <Span>{saleTotals.promotions}</Span>
-                      <Span> ₩</Span>
+                      <Span> 원</Span>
                     </P>
                   </HorizontalFlex>
                 </FlexChild>
@@ -1355,7 +1424,7 @@ export function CartWrap() {
                     <P>
                       <Span>+ </Span>
                       <Span>{point || 0}</Span>
-                      <Span> ₩</Span>
+                      <Span> 원</Span>
                     </P>
                   </HorizontalFlex>
                 </FlexChild>
@@ -1378,7 +1447,7 @@ export function CartWrap() {
                     <P>
                       <Span>+ </Span>
                       <Span>{saleTotals.productCoupons}</Span>
-                      <Span> ₩</Span>
+                      <Span> 원</Span>
                     </P>
                   </HorizontalFlex>
                 </FlexChild>
@@ -1401,7 +1470,7 @@ export function CartWrap() {
                     <P>
                       <Span>+ </Span>
                       <Span>{saleTotals.orders}</Span>
-                      <Span> ₩</Span>
+                      <Span> 원</Span>
                     </P>
                   </HorizontalFlex>
                 </FlexChild>
@@ -1423,7 +1492,7 @@ export function CartWrap() {
                     <P>
                       <Span>+ </Span>
                       <Span>{saleTotals.subscribes}</Span>
-                      <Span> ₩</Span>
+                      <Span> 원</Span>
                     </P>
                   </HorizontalFlex>
                 </FlexChild>
@@ -1445,7 +1514,7 @@ export function CartWrap() {
                     <P>
                       <Span>+ </Span>
                       <Span>{saleTotals.delivery_fee}</Span>
-                      <Span> ₩</Span>
+                      <Span> 원</Span>
                     </P>
                   </HorizontalFlex>
                 </FlexChild>
@@ -1454,9 +1523,9 @@ export function CartWrap() {
               <HorizontalFlex className={styles.info_item}>
                 <Span>합계</Span>
 
-                <P color={"var(--main-color1)"}>
+                <P>
                   <Span>{getTotal()}</Span>
-                  <Span color="#fff"> ₩</Span>
+                  <Span> 원</Span>
                 </P>
               </HorizontalFlex>
             </VerticalFlex>
@@ -1466,7 +1535,7 @@ export function CartWrap() {
             <Span>총 결제 금액</Span>
             <P color={"var(--main-color1)"}>
               <Span>{getTotal()}</Span>
-              <Span color="#fff"> ₩</Span>
+              <Span>원</Span>
             </P>
           </FlexChild>
 
@@ -1890,7 +1959,7 @@ function Item({
   const navigate = useNavigate();
 
   return (
-    <VerticalFlex className={styles.cart_item} gap={20}>
+    <VerticalFlex className={styles.cart_item} gap={10} padding={"0 0 20px"}>
       <HorizontalFlex justifyContent="start" position="relative">
         <FlexChild width={"auto"} marginRight={15} alignSelf="start">
           <CheckboxChild className={styles.checkbox} id={item.id} />
@@ -1905,7 +1974,7 @@ function Item({
               src={
                 item?.variant?.thumbnail || item?.variant?.product?.thumbnail
               }
-              width={150}
+              width={142}
             />
           </FlexChild>
           <VerticalFlex className={styles.unit_content} alignItems="start">
@@ -1938,19 +2007,19 @@ function Item({
                 )}
               </FlexChild>
             )}
-            <VerticalFlex gap={20} alignItems="start" width={"auto"}>
+            <VerticalFlex gap={10} alignItems="start" width={"auto"}>
               <VerticalFlex className={styles.unit_price} alignItems="start">
                 {item?.variant?.discount_rate > 0 && ( // 원가랑 할인가 차이 없으면 표시 안하기
                   <P className={styles.normal_price}>
                     {Number(item?.variant?.price || 0).toLocaleString("ko")}{" "}
-                    <Span>₩</Span>
+                    <Span>원</Span>
                   </P>
                 )}
                 <P>
                   {Number(item?.variant?.discount_price || 0).toLocaleString(
                     "ko"
                   )}{" "}
-                  <Span>₩</Span>
+                  <Span>원</Span>
                 </P>
               </VerticalFlex>
               <Button
@@ -1988,8 +2057,9 @@ function Item({
                 () => reload()
               )
             }
+            className={styles.delete_box_btn}
           >
-            <Image src={"/resources/icons/closeBtn_white.png"} width={15} />
+            <Image src={"/resources/icons/closeBtn_black.png"} width={15} />
             {/* closeBtn_white */}
           </Button>
         </FlexChild>
@@ -2035,9 +2105,10 @@ function Item({
             쿠폰 적용가
           </P>
 
-          <P className={styles.total_txt}>
-            {getPrice().toLocaleString("ko-KR")} <Span>₩</Span>
-          </P>
+          <Div>
+            <P className={styles.total_txt}>{getPrice().toLocaleString("ko-KR")}</P>
+            <P className={styles.total_txt}>원</P>
+          </Div>
         </VerticalFlex>
       </HorizontalFlex>
     </VerticalFlex>
@@ -2064,6 +2135,10 @@ export function CouponSelect({
 }) {
   // const disabled = 1 > 2;
 
+  const selectedCoupons = coupons.filter((f: CouponData) =>
+    selected.includes(f.id)
+  );
+
   return (
     <Button
       className={clsx(styles.coupon_select)}
@@ -2073,29 +2148,37 @@ export function CouponSelect({
       {/* { [styles.disabled]: disabled } */}
       <HorizontalFlex className={styles.coupon_choice}>
         <FlexChild className={styles.coupon_title}>
-          <VerticalFlex alignItems="start" gap={5}>
-            {coupons
-              .filter((f: CouponData) => selected.includes(f.id))
-              .map((coupon) => {
+          <VerticalFlex alignItems="start">
+            {selectedCoupons.map((coupon, idx) => {
                 return (
-                  <FlexChild key={coupon.id}>
-                    <HorizontalFlex>
-                      <P>{coupon.name}</P>
-                      <P>
-                        {(-coupon.value).toLocaleString("ko")}
-                        {coupon.calc === "fix" ? "원" : "%"}
-                      </P>
-                    </HorizontalFlex>
+                  <FlexChild key={coupon.id} className={styles.coupon_item}>
+                    <VerticalFlex>
+                      <HorizontalFlex>
+                        <P paddingLeft={4}>{coupon.name}</P>
+                        <P paddingRight={4}>
+                          {(-coupon.value).toLocaleString("ko")}
+                          {coupon.calc === "fix" ? "원" : "%"}
+                        </P>
+                      </HorizontalFlex>
+                      {selectedCoupons.length > 1 && idx !== selectedCoupons.length - 1 && (
+                        <div style={{
+                          // backgroundColor: "#e1e1e1",
+                          borderTop: "1px dashed #e1e1e1",
+                          width: "100%",
+                          margin: "8px 0"
+                        }} />
+                      )}
+                    </VerticalFlex>
                   </FlexChild>
                 );
               })}
-            {selected.length === 0 && <P>쿠폰을 선택해 주세요.</P>}
+            {selected.length === 0 && <P paddingLeft={4}>쿠폰을 선택해 주세요.</P>}
           </VerticalFlex>
         </FlexChild>
 
         <FlexChild className={styles.arrow} width={"auto"}>
           <Image
-            src={"/resources/icons/arrow/arrow_bottom_icon.png"}
+            src={"/resources/icons/down_arrow.png"}
             width={10}
           />
         </FlexChild>
@@ -2177,7 +2260,7 @@ export function AgreeInfo({
           <HorizontalFlex className={styles.agree_item}>
             <FlexChild width={"auto"} gap={10}>
               <CheckboxAll></CheckboxAll>
-              <Span>전체 이용약관 동의</Span>
+              <Span weight={600}>전체 이용약관 동의</Span>
             </FlexChild>
           </HorizontalFlex>
 
@@ -2198,7 +2281,7 @@ export function AgreeInfo({
 
             {TermOpen && (
               <FlexChild className={styles.agree_box}>
-                <TermContent size={7} />
+                <TermContent size={9} />
               </FlexChild>
             )}
           </VerticalFlex>
@@ -2220,7 +2303,7 @@ export function AgreeInfo({
 
             {PrivacyOpen && (
               <FlexChild className={styles.agree_box}>
-                <PrivacyContent size={7} />
+                <PrivacyContent size={9} />
               </FlexChild>
             )}
           </VerticalFlex>

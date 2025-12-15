@@ -1,16 +1,12 @@
-.detail_container {
-   margin-bottom: 20px;
-}
-
 .board_header .title_box {
    padding: 13px 5px;
    border-bottom: 1px solid #6B6B6B;
 }
 
 .board_header .title_box > * {width: fit-content;}
-.board_header .title_box .title {font-size: 20px; color: #fff;font-weight: 600;}
-.board_header .title_box .date {font-size: 12px; color: #797979 !important;}
-.board_header .title_box .name {font-size: 13px; color: #ddd;}
+.board_header .title_box .title {font-size: 20px; color: #1a1a1a; font-weight: 700;}
+.board_header .title_box .date {font-size: 13px; color: #797979;}
+.board_header .title_box .name {font-size: 13px; color: #797979;}
 
 
 .board_header .title_box .view_comment_box {font-size: 14px; color: #DADADA;}
@@ -33,37 +29,42 @@
    text-decoration: underline;
 }
 
-
-
-/* 게시판 내용 */
-.thumb_box p img {
-   width: 100%;
+.detail {
+   padding-top: 30px;  
 }
 
+/* 게시판 내용 */
+.detail .thumb_box p {font-size: 15px; color: #0a0a0a; line-height: 1.4;}
+.detail .thumb_box p img {width: 100%;}
 
-.edit_button_group {gap: 10px;}
+
+/* .edit_button_group {gap: 10px;}
 .edit_button_group button {
    width: 58px; padding: 7px 5px;
    border: 1px solid #fff;
    border-radius: 5px;
    color: #fff; font-size: 16px;
-   /* font-weight: 600; */
 }
 
 .edit_button_group button.edit_btn {border-color: var(--main-color1);}
 .edit_button_group button.delete_btn:hover {
    border-color: var(--main-color1);
 }
-.edit_button_group button:hover {background: var(--main-color1);}
+.edit_button_group button:hover {background: var(--main-color1);} */
 
 .list_btn {
    width: 100%;
    padding: 13px 5px;
    font-size: 16px;
    font-weight: 600;
-   color: #fff;
-   background: #050505;
+   color: #1a1a1a;
+   background: #fff;
+   border: 1px solid #1a1a1a;
    transition: all 0.2s;
+}
+
+.list_btn:active {
+   transform: var(--btn-active-translateY) var(--btn-active-scale);
 }
 
 

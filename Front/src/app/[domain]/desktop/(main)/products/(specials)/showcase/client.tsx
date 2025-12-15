@@ -372,7 +372,7 @@ export function BestList({
           </P>
         </FlexChild>
         <FlexChild width="auto">
-          {/* <Select
+          <Select
             options={sortOptions.map((opt) => ({
               value: opt.id,
               display: opt.display,

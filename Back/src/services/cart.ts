@@ -513,63 +513,37 @@ export class CartService extends BaseService<Cart, CartRepository> {
     }
   }
 
-  // async cancelTemporaryOrder(
-  //   cart_id: string,
-  //   offline_store_id: string,
-  //   reason: "TIMEOUT" | "DISCONNECT"
-  // ): Promise<void> {
-  //   // 1. 카트 정보와 라인 아이템(상품) 정보 로드
-  //   const cart = await this.repository.findOne({
-  //     where: { id: cart_id },
-  //     relations: ["items"],
-  //   });
+  async cancelLockNotification(
+    cart_id: string,
+    offline_store_id: string,
+    items: { variant_id: string; quantity: number }[]
+  ): Promise<{ success: boolean; message: string }> {
+    const itemsToUnlock = items.map((item) => ({
+      offline_variant_id: item.variant_id!,
+      quantity: item.quantity || 0,
+    }));
 
-  //   if (!cart || !cart.items || cart.items.length === 0) {
-  //     console.log(`[Cancel Order] Cart not found or empty: ${cart_id}`);
-  //     return;
-  //   }
+    try {
+      const payload = {
+        order_key: cart_id,
+        offline_store_id: offline_store_id,
+        cancellation_reason: "SOCKET_DISCONNECT",
+        items_to_unlock: itemsToUnlock,
+      };
 
-  //   // 2. 오프라인 매장에 보낼 취소 요청 데이터 구성
-  //   const itemsToUnlock = cart.items.map((item) => ({
-  //     // Lock은 cart_id의 모든 상품에 대해 걸렸다고 가정
-  //     offline_variant_id: item.variant_id!,
-  //     quantity: (item.quantity || 0) + (item.extra_quantity || 0),
-  //   }));
+      console.log(
+        `[Offline Notify Mock] Lock CANCELED request sent (Disconnect): ${JSON.stringify(
+          payload
+        )}`
+      );
 
-  //   // 3. 오프라인 매장 시스템에 취소 통보 (Lock 해제 요청)
-  //   try {
-  //     const payload = {
-  //       order_id: cart.id,
-  //       store_id: offline_store_id,
-  //       cancellation_reason:
-  //         reason === "TIMEOUT" ? "TIMEOUT_180_SECONDS" : "USER_DISCONNECT",
-  //       items_to_unlock: itemsToUnlock,
-  //     };
-
-  //     // TODO: 실제로는 axios.post(OFFLINE_CANCEL_API, payload) 호출
-  //     console.log(
-  //       `[Offline Notify Mock] CANCELED request sent: ${JSON.stringify(
-  //         payload
-  //       )}`
-  //     );
-  //   } catch (e) {
-  //     console.error(
-  //       `[Offline Notify Error] Failed to send cancel notice for ${cart_id}:`,
-  //       e
-  //     );
-  //   }
-  // }
-
-//   // 소켓 연결 해제 시: 임시 재고 Lock 해제를 위해 취소 로직 실행
-//   async handleSocketDisconnect(
-//     cart_id: string,
-//     offline_store_id?: string,
-//     items?: { variant_id: string; quantity: number }[]
-//   ) {
-//     if (offline_store_id) {
-//       // Socket Disconnect 사유로 취소 로직 호출
-//       // NOTE: offline_store_id는 현재 Cart 엔티티에 없지만, 이 인자를 통해 매장 ID를 받아서 사용합니다.
-//       await this.cancelTemporaryOrder(cart_id, offline_store_id, "DISCONNECT");
-//     }
-//   }
+      return { success: true, message: "Lock 해제 통신 성공" };
+    } catch (e) {
+      console.error(
+        `[Offline Notify Error] Failed to send cancel notice for ${cart_id}:`,
+        e
+      );
+      return { success: false, message: "매장 시스템과의 통신 실패" };
+    }
+  }
 }

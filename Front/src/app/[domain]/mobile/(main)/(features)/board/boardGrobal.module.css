@@ -1,17 +1,17 @@
 
 
-.board_frame {
-   width: 100%;
-}
+.board_frame {width: 100%;}
 
 .board_frame > .title_box {
-   margin-bottom: 35px;
-   justify-content: center;
+   padding-bottom: 20px;
+   border-bottom: 3px solid #0a0a0a;
 }
 
 .board_frame > .title_box h3 {
-   font-size: 25px; text-align: center;
-   font-weight: 600;
+   font-size: clamp(25px, calc(100vw * 30 / 768), 30px); 
+   text-align: center;
+   font-weight: 700;
+   color: #1a1a1a;
 }
 
 .board_searchBox {
@@ -22,7 +22,7 @@
 .board_searchBox h3 {
    font-size: 30px;
    font-weight: 700;
-   color: #fff;
+   color: #1a1a1a;
    line-height: 1.2;
 }
 
@@ -30,7 +30,7 @@
   border: 1px solid #797979;
   border-radius: 5px;
   padding: 0;
-  background: #1a141d;
+  background: #fff;
   display: flex;
   align-items: center;
   width: max-content;
@@ -89,31 +89,26 @@
 
 
 .list_table tr {
-   border-bottom: 1px solid #323232;
-}
-
-.list_table tr td {
-   background: #1a141d;
+   border-bottom: 1px solid #e2e2e2;
 }
 
 .list_table .td_item {
    align-items: start !important;
-   gap: 10px;
+   gap: 30px;
 }
 
 .list_table .td_item .td_title {
-   font-size: 15px;
+   font-size: 16px;
    font-weight: 600;
+   line-height: 1.4;
 }
 
-.list_table .td_item .td_title > div:last-child {
-   flex: 1;
-}
+.list_table .td_item .td_title > div:last-child {flex: 1;}
 
 .list_table .td_item .sub_data > * {
    width: auto;
    padding: 0 7px;
-   font-size: 12px;
+   font-size: 13px;
    color: #797979;
 }
 
@@ -121,30 +116,18 @@
    padding-left: 0;
 }
 
-.list_table .td_item .sub_data > *:not(:last-child) {
-   border-right: 1px solid #797979;
-}
 
-
-.list_table :is(td, th) {
-   padding: 13px 15px;
-   font-size: 13px;
-   color: #cfcfcf;
+.list_table td {
+   background: #fff;
+   padding: 20px 0 15px;
+   font-size: 15px;
+   color: #1a1a1a;
    line-height: 1.2;
    text-align: center;
    word-wrap: break-word; /* 이거 줘야 테이블에서 내용들 넘치면 줄바꿈 됨. */
    /* word-break: break-all; */
    vertical-align: middle; /* 테이블 내용 세로 정렬: align-items: center라고 보면 됨 */
 }
-
-.list_table tbody tr td .td_title:hover p {
-   text-decoration: underline;
-}
-
-/* 날짜 */
-/* .list_table tbody tr td:last-child {
-   font-size: 13px;
-} */
 
 
 .list_bottom_box {
@@ -153,7 +136,7 @@
    position: relative;
 }
 
-.write_btn {
+/* .write_btn {
    background: #323232;
    border-radius: 5px;
    padding: 13px 10px;
@@ -165,18 +148,18 @@
    justify-content: center;
    align-items: center;
    max-width: 500px;
-}
+} */
 
 
 /* 1:1문의 리스트 */
 
-.inquiry_table tr {
+/* .inquiry_table tr {
    border-bottom: 1px solid #797979;
 }
 
 .inquiry_table tr td {
    background: #323232;
-}
+} */
 
 
 

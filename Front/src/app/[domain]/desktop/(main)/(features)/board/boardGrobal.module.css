@@ -1,7 +1,7 @@
 
 
 .board_frame {
-   margin: 120px 0 0;
+   margin: 80px 0 0;
    width: 100%;
 }
 
@@ -11,15 +11,21 @@
 }
 
 .board_titleBox h3 {
-   font-size: 30px;
+   font-size: 35px;
    font-weight: 700;
-   color: #fff;
    line-height: 1.2;
+   color: #1a1a1a;
 }
 
 /* 게시판 리스트 스타일 */
 
-.board_titleBox .search_box {width: auto;}
+.board_titleBox .search_box {
+   width: 100%;
+   max-width: 290px;
+   border: 1px solid #ccc;
+   border-radius: 5px;
+   overflow: hidden;
+}
 
 .board_titleBox .search_box input {
    font-size: 16px;
@@ -30,18 +36,29 @@
 }
 
 .board_titleBox .search_box .searchBtn {
-   padding: 11px 20px;
+   padding: 11px 15px;
    font-size: 16px;
-   font-weight: 500;
-   color: #fff;
-   background: #323232;
-   border-radius: 5px;
-   min-width: 80px;
-   transition: all 0.1s;
+   font-weight: 600;
+   color: #000;
+   background: transparent;
+   border-radius: 0;
+   position: relative;
+   transition: all 0.3s;
+}
+
+.board_titleBox .search_box .searchBtn::before {
+   content:'';
+   position: absolute;
+   top: 50%;
+   left: 0;
+   transform: translateY(-50%);
+   width: 1px;
+   height: 50%;
+   background: #ccc;
 }
 
 .board_titleBox .search_box .searchBtn:hover {
-   background: #050505;
+   background: #e0e0e0;
 }
 
 /* 검색창 필터 셀렉트 */
@@ -53,6 +70,7 @@
 }
 
 
+/* 테이블 */
 
 .list_table {
    width: 100%;
@@ -60,27 +78,26 @@
 }
 
 .list_table thead {
-   background: #323232;
-}
-
-.list_table thead th {
-   font-size: 16px;
-   font-weight: 600;
+   /* background: #323232; */
+   background: #fff;
+   border-bottom: 2px solid #0a0a0a;
 }
 
 
 .list_table tr {
-   border-bottom: 1px solid #323232;
+   border-bottom: 1px solid #e2e2e2;
+   cursor: pointer;
 }
 
 .list_table tr td {
-   background: #1a141d;
+   /* background: #1a141d; */
+   background: #fff;
 }
 
 .list_table :is(td, th) {
-   padding: 15px 10px;
+   padding: 25px 10px;
    font-size: 16px;
-   color: #cfcfcf;
+   color: #1a1a1a;
    line-height: 1.2;
    text-align: center;
    word-wrap: break-word; /* 이거 줘야 테이블에서 내용들 넘치면 줄바꿈 됨. */
@@ -88,13 +105,18 @@
    vertical-align: middle; /* 테이블 내용 세로 정렬: align-items: center라고 보면 됨 */
 }
 
-.list_table tbody tr td .td_title:hover p {
-   text-decoration: underline;
+.list_table thead th {
+   font-size: 16px;
+   font-weight: 600;
+   padding: 15px 10px !important;
 }
 
-/* 날짜 */
-.list_table tbody tr td:last-child {
-   font-size: 13px;
+.list_table tbody tr :is(.td_number, .td_title) {
+   font-weight: 600;
+}
+
+.list_table tr:hover .td_title p {
+   text-decoration: underline;
 }
 
 
@@ -104,14 +126,14 @@
    position: relative;
 }
 
-.list_bottom_box .write_btn {
+/* .list_bottom_box .write_btn {
    background: #323232;
    border-radius: 5px;
    padding: 11px 17px;
    color: #fff;
    font-size: 18px;
    font-weight: 600;
-}
+} */
 
 /* 댓글수 */
 .comment_count {font-size: 0.8125em !important; color: #FF5B5D;}

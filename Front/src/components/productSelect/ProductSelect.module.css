@@ -1,5 +1,6 @@
 .selectBody {
    position: relative;
+   max-width: 130px;
 }
 
 .selectBody > img {
@@ -22,7 +23,6 @@
    font-weight: 600;
    padding-right: 27px;
    text-align: right;
-   max-width: 130px;
    border: none;
    cursor: pointer;
 }
