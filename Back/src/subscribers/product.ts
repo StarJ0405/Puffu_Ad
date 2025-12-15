@@ -24,7 +24,15 @@ export class ProductSubscriber implements EntitySubscriberInterface<Product> {
     });
     if (id && _product) {
       const document = productToDocument(_product);
-      await insertDocument([document], "PRODUCT");
+      try {
+        await insertDocument([document], "PRODUCT");
+        if (_product?.title) {
+          await insertIntention([_product.title], "PRODUCT");
+        }
+      } catch {
+
+      }
+
       if (_product.title) await insertIntention([_product.title], "PRODUCT");
     }
   }

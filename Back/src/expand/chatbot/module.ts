@@ -81,13 +81,12 @@ export async function embedContent(
         WHERE 
           content::text ~ '^\s*\{.*\}\s*$'
           ${intent ? `AND intent = '${intent}'` : ""}
-          ${
-            where
-              ? Array.isArray(where)
-                ? where.map((whs) => ` ${whs} `).join(" ")
-                : ` ${where} `
-              : ""
-          }
+          ${where
+      ? Array.isArray(where)
+        ? where.map((whs) => ` ${whs} `).join(" ")
+        : ` ${where} `
+      : ""
+    }
         ORDER BY 
             embedding_vector <=> $1 ${_sort ? `, ${_sort}` : ""}
         LIMIT $2;
@@ -108,7 +107,8 @@ export async function dataToVector(data: string) {
 
 export async function insertDocument(data: InsertDocument[], intent: string) {
   if (data.length === 0) return;
-  let chunksToSave = [];
+  if (!splitter) return;
+    let chunksToSave = [];
   for (const datum of data) {
     const doc = new Document({
       pageContent:
