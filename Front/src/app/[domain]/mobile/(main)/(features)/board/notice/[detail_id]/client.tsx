@@ -18,16 +18,7 @@ import useNavigate from "@/shared/hooks/useNavigate";
 import sanitizeHtml from "sanitize-html";
 
 
-export function BoardTitleBox() {
-  return (
-    <HorizontalFlex className={boardStyle.board_titleBox}>
-      <FlexChild>
-        {/* 여기 현재 path 주소에 맞게 이름 바뀌게 해야 함. */}
-        <h3>공지사항</h3>
-      </FlexChild>
-    </HorizontalFlex>
-  );
-}
+
 
 // 본문 -----------------------------------------------
 export function DetailFrame({ initNotice }: { initNotice: any }) {
@@ -75,15 +66,15 @@ export function DetailFrame({ initNotice }: { initNotice: any }) {
           <FlexChild className={styles.title}>
             <P>{notice.title}</P>
           </FlexChild>
+        </HorizontalFlex>
+
+        <HorizontalFlex className={styles.title_box} border={'none'}>
+          <FlexChild className={styles.name}>
+            <P>관리자</P>
+          </FlexChild>
 
           <FlexChild className={styles.date}>
             <P>{dateToString(notice.created_at)}</P>
-          </FlexChild>
-        </HorizontalFlex>
-
-        <HorizontalFlex className={styles.title_box}>
-          <FlexChild className={styles.name}>
-            <P>관리자</P>
           </FlexChild>
 
           <FlexChild className={styles.view_comment_box} gap={10} hidden>
@@ -96,8 +87,8 @@ export function DetailFrame({ initNotice }: { initNotice: any }) {
           </FlexChild>
         </HorizontalFlex>
 
-        <HorizontalFlex className={styles.edit_box}>
-          {/* <VerticalFlex className={styles.file_list} gap={5}>
+        {/* <HorizontalFlex className={styles.edit_box}> 첨부파일란 - 관리자에 아직 기능 없어서 보류
+          <VerticalFlex className={styles.file_list} gap={5}>
 
             {uploadFile.map((item, i) => (
               <FlexChild key={i} className={styles.file_name} gap={5}>
@@ -108,17 +99,17 @@ export function DetailFrame({ initNotice }: { initNotice: any }) {
               </FlexChild>
             ))}
 
-          </VerticalFlex> */}
+          </VerticalFlex>
 
-          {/* <FlexChild gap={10} className={styles.edit_button_group}>
+            <FlexChild gap={10} className={styles.edit_button_group}>
                 <FlexChild cursor="pointer" width={'auto'}>
                   <Image src={'/resources/icons/main/share_icon.png'} width={25} />
                 </FlexChild>
 
                 <Button className={styles.delete_btn}>삭제</Button>
                 <Button className={styles.edit_btn}>수정</Button>
-            </FlexChild> */}
-        </HorizontalFlex>
+            </FlexChild>
+        </HorizontalFlex> */}
       </VerticalFlex>
 
 
@@ -142,6 +133,7 @@ export function DetailFrame({ initNotice }: { initNotice: any }) {
           ))}
         </VerticalFlex> */}
       {/* </VerticalFlex> */}
+      
       <FlexChild className={styles.detail}>
         {/* <Div dangerouslySetInnerHTML={{ __html: notice.detail }} /> */}
         <div className={styles.thumb_box} dangerouslySetInnerHTML={{ __html: cleanHTML }} />

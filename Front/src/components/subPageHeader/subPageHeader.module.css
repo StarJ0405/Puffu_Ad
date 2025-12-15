@@ -6,7 +6,8 @@
    background: #272727;
    height: var(--subpageHeader-H) !important;
    top: 0;
-   left: 0;
+   left: 50%;
+   transform: translateX(-50%);
 }
 
 .subHeader > * {

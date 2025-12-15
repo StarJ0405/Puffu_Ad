@@ -40,11 +40,10 @@ export function BoardTitleBox() {
   return (
     <HorizontalFlex className={boardStyle.board_titleBox}>
       <FlexChild>
-        {/* 여기 현재 path 주소에 맞게 이름 바뀌게 해야 함. */}
         <h3>공지사항</h3>
       </FlexChild>
 
-      <FlexChild gap={10} className={boardStyle.search_box}>
+      <FlexChild justifyContent="end" gap={10} className={boardStyle.search_box}>
         <Input
           type={"search"}
           value={q}
@@ -128,7 +127,7 @@ export function BoardTable({
                 <th>번호</th>
                 <th>제목</th>
                 <th>작성자</th>
-                <th hidden>조회</th>
+                {/* <th hidden>조회</th> */}
                 <th>날짜</th>
               </tr>
             </thead>
@@ -137,9 +136,9 @@ export function BoardTable({
             <tbody>
               {notices.length > 0 ? (
                 notices.map((notice: NoticeData, index: number) => (
-                  <tr key={notice.id}>
+                  <tr key={notice.id} onClick={() => navigate(`/board/notice/${notice.id}`)}>
                     {/* 번호 */}
-                    <td>{(origin.pageSize || 0) * page + index + 1}</td>
+                    <td className={boardStyle.td_number}>{(origin.pageSize || 0) * page + index + 1}</td>
 
                     {/* 제목 */}
                     <td>
@@ -149,10 +148,6 @@ export function BoardTable({
                         height={"100%"}
                         className={boardStyle.td_title}
                         width={"fit-content"}
-                        cursor="pointer"
-                        onClick={() =>
-                          navigate(`/board/notice/${notice.id}`)
-                        }
                       >
                         <P
                           lineClamp={1}
@@ -202,7 +197,7 @@ export function BoardTable({
 
                     {/* 날짜 */}
                     {/* 공지사항은 년월일까지 표시, 1:1문의는 분시초도 표시. */}
-                    <td>
+                    <td >
                       <Span weight={400}>
                         {dateToString(notice.created_at)}
                       </Span>
