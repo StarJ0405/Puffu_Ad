@@ -23,6 +23,7 @@ import ProductLoadBtn from "@/components/buttons/ProductLoadBtn";
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import siteInfo from "@/shared/siteInfo";
 import ModalBase from "@/modals/ModalBase";
+import ProductSelect from "@/components/productSelect/ProductSelect";
 
 export function ProductMenu() {
   const pathname = usePathname();
@@ -286,6 +287,8 @@ export function BaseProductList({
           <SortFilter
             length={origin?.[origin?.length - 1]?.NumberOfTotalElements || 0}
           />
+
+          <ProductSelect />
           {/* sortOptions={sortOptions} */}
           <VerticalFlex alignItems="start">
             <MasonryGrid

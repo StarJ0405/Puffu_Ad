@@ -4,7 +4,7 @@ import styles from './not-found.module.css'
 import FlexChild from "@/components/flex/FlexChild";
 import P from "@/components/P/P";
 import {NaviBtn} from "./not-client" 
-import Div from "@/components/div/Div";
+import clsx from "clsx";
 
 export default async function () {
   const headerList = await headers();
@@ -12,7 +12,7 @@ export default async function () {
   const deviceType = getDeviceType(userAgent);
 
   return (
-    <div className={styles.container}>
+    <div className={clsx(styles.container, 'page_container')}>
       <div className={styles.text_box}>
         <P className={styles.not_title}>404</P>
         <P className={styles.not_txt}>
