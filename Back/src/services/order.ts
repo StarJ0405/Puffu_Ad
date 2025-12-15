@@ -256,11 +256,16 @@ export class OrderService extends BaseService<Order, OrderRepository> {
         "shipping_method.coupons",
       ],
     });
+
+    if (order && order.offline_store_id) {
+      await this.notifyStoreCancellation(order);
+    }
+
     if (order) {
       await Promise.all(
         (order.items || [])?.map(async (item) => {
           if (order.offline_store_id) {
-            //오프라인 매장 재고 복원 
+            //오프라인 매장 재고 복원
             await this.variantOfsRepository.manager
               .createQueryBuilder()
               .update(VariantOfs)
@@ -345,7 +350,7 @@ export class OrderService extends BaseService<Order, OrderRepository> {
           );
         }
       }
-      
+
       // 포인트 및 쿠폰 환불 로직 (기존 유지)
       if (order?.point && order?.point > 0) {
         await this.pointService.create({
@@ -501,5 +506,35 @@ export class OrderService extends BaseService<Order, OrderRepository> {
       coupon_benefit: couponSum,
       total: percentSum + couponSum,
     };
+  }
+
+  async notifyStoreCancellation(order: Order): Promise<void> {
+    try {
+      if (!order.items || order.items.length === 0) return;
+
+      const itemsToCancel = order.items.map((item) => ({
+        offline_variant_id: item.variant_id,
+        quantity: item.total_quantity || 0,
+      }));
+
+      const payload = {
+        order_id: order.id,
+        offline_store_id: order.offline_store_id,
+        cancellation_reason: "EXPLICIT_USER_CANCELLATION",
+        items_to_unlock: itemsToCancel,
+      };
+
+      console.log(
+        `[Order Cancel Mock] Notification sent to store: ${JSON.stringify(
+          payload
+        )}`
+      );
+
+    } catch (e) {
+      console.error(
+        `[Order Cancel Error] Failed to notify store for order ${order.id}:`,
+        e
+      );
+    }
   }
 }

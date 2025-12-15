@@ -244,6 +244,18 @@ initializeDataSource().then(() => {
               socketEvent(socket, io, urlPath, data)
             );
           }
+
+          socket.on(
+            "lock_attempt",
+            (data: { cart_id: string; offline_store_id: string }) => {
+              (socket as any).lockData = data;
+              if (process.env.CONSOLE_LOG)
+                console.log(
+                  `<Socket> Lock data stored for ${socket.id}:`,
+                  data  
+                );
+            }
+          );
           if (process.env.CONSOLE_LOG)
             socket.onAny((...args) =>
               console.log(`<Socket> [${new Date().toISOString()}]`, args)
@@ -257,11 +269,33 @@ initializeDataSource().then(() => {
                 } disconnected`
               );
             }
-            try {
-              const cartService = container.resolve(CartService);
-              
-            } catch (error) {
-              console.error("Socket disconnect handler error:", error);
+            if ((socket as any).lockData) {
+              const { cart_id, offline_store_id } = (socket as any).lockData;
+              try {
+                const cartService = container.resolve(CartService);
+
+                const cart = await cartService.get({
+                  where: { id: cart_id },
+                  relations: ["items"],
+                });
+
+                if (cart && cart.items && cart.items.length > 0) {
+                  await cartService.cancelLockNotification(
+                    cart_id,
+                    offline_store_id,
+                    cart.items.map((item) => ({
+                      variant_id: item.variant_id!,
+                      quantity:
+                        (item.quantity || 0) + (item.extra_quantity || 0),
+                    }))
+                  );
+                }
+              } catch (error) {
+                console.error(
+                  `Socket disconnect Lock 해제 실패 (Cart: ${cart_id}):`,
+                  error
+                );
+              }
             }
           });
 
