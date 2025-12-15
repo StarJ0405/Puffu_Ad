@@ -12,7 +12,6 @@ import { generateEntityId } from "utils/functions";
 import { LineItem } from "./line_item";
 import { Store } from "./store";
 import { User } from "./user";
-import { OfflineStore } from "./offline_store";
 
 @Entity({ name: "cart" })
 @Index(["created_at"])
@@ -30,13 +29,6 @@ export class Cart extends BaseEntity {
   @ManyToOne(() => Store)
   @JoinColumn({ name: "store_id", referencedColumnName: "id" })
   store?: Store;
-
-  @Column({ type: "character varying", nullable: true })
-  offline_store_id?: string;
-
-  @ManyToOne(() => OfflineStore)
-  @JoinColumn({ name: "offline_store_id", referencedColumnName: "id" })
-  offline_store?: OfflineStore;
 
   @Column({ type: "character varying", nullable: true })
   type?: string;

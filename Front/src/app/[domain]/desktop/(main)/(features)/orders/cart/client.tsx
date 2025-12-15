@@ -1498,6 +1498,7 @@ export function CartWrap() {
 
                     if (checkItems && checkItems.length > 0) {
                       const checkResult = await requester.checkStock({
+                        cart_id: cartData?.id,
                         offline_store_id: fulfillment.selectedStore!.id,
                         items: checkItems,
                       });
