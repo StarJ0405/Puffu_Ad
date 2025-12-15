@@ -14,7 +14,7 @@ export default async function ({
 }) {
   const { category_id } = await searchParams;
   const newCondition: any = {
-    pageSize: 24,
+    pageSize: 16,
     order: "commingSoon",
     warehousing: true,
   };
