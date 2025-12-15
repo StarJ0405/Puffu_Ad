@@ -24,6 +24,7 @@ import siteInfo from "@/shared/siteInfo";
 import Select from "@/components/select/Select";
 import Pstyles from "../../products.module.css"
 import useNavigate from "@/shared/hooks/useNavigate";
+import ProductSelect from "@/components/productSelect/ProductSelect";
 
 function findCategoryById(categories: any[], id: string): any | undefined {
   for (const cat of categories) {

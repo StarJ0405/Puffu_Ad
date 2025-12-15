@@ -81,7 +81,7 @@ body {
 }
 
 @media (max-width: 1300px) {
-  .page_container {padding:  0 50px;}
+  .page_container {padding:  0 20px;}
 }
 
 .root {
@@ -175,12 +175,6 @@ a {
 
 /* 모바일 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
-/* @media (max-width: 1280px) {
-  .page_container {
-    padding: 0 10px;
-  }
-} */
-
 @media (max-width: 768px) {
   /* 탭 하이라이트 제거 */
   * {
@@ -191,10 +185,6 @@ a {
     --mob-active-filter: brightness(0.5);
     --subpageHeader-H: 50px;
   }
-
-  /* html {
-    max-width: 768px;
-  } */
 }
 
 .mob_wrap {
