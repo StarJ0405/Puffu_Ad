@@ -139,12 +139,10 @@ export class CartService extends BaseService<Cart, CartRepository> {
   }
 
   // 결제 전 재고 확인
-
   async checkStock(
     offline_store_id: string,
     items: { variant_id: string; quantity: number }[]
   ): Promise<{ buyable: boolean; error?: { code: string; message: string } }> {
-    //매핑 정보 조회
     const variantOfsList = await this.variantOfsService.getMappings(
       offline_store_id,
       items.map((i) => i.variant_id)
@@ -161,13 +159,13 @@ export class CartService extends BaseService<Cart, CartRepository> {
     }
 
     try {
-      //통신 Mockup
+      // 외부 통신 (Mockup): 구매 수량을 매장 시스템에 보내고, 재고 여부와 최신 재고를 받음
       const response = {
         data: {
           buyable: true,
           variants: variantOfsList.map((v) => ({
-            id: v.offline_variant_id,
-            stack: 50,
+            id: v.offline_variant_id, // 외부 시스템 ID
+            stack: 2, // 외부에서 받은 최신 재고 (Mock)
           })),
           error: null,
         },
@@ -175,7 +173,7 @@ export class CartService extends BaseService<Cart, CartRepository> {
 
       const { buyable, variants, error } = response.data;
 
-      //비동기 재고 최신화
+      // 비동기 재고 최신화 (로컬 DB의 재고를 동기화)
       if (variants) {
         Promise.all(
           variants.map((v) =>
@@ -186,7 +184,6 @@ export class CartService extends BaseService<Cart, CartRepository> {
         );
       }
 
-      //결과 리턴
       if (!buyable) {
         return {
           buyable: false,
@@ -209,7 +206,6 @@ export class CartService extends BaseService<Cart, CartRepository> {
       };
     }
   }
-
   // 주문 완료 (단순 차감)
   async complete({
     user_id,
@@ -517,10 +513,63 @@ export class CartService extends BaseService<Cart, CartRepository> {
     }
   }
 
-  // 소켓 연결 해제 시: 더 이상 할 일이 없으므로 빈 함수로 남김
-  async handleSocketDisconnect(
-    cart_id: string,
-    offline_store_id?: string,
-    items?: { variant_id: string; quantity: number }[]
-  ) {}
+  // async cancelTemporaryOrder(
+  //   cart_id: string,
+  //   offline_store_id: string,
+  //   reason: "TIMEOUT" | "DISCONNECT"
+  // ): Promise<void> {
+  //   // 1. 카트 정보와 라인 아이템(상품) 정보 로드
+  //   const cart = await this.repository.findOne({
+  //     where: { id: cart_id },
+  //     relations: ["items"],
+  //   });
+
+  //   if (!cart || !cart.items || cart.items.length === 0) {
+  //     console.log(`[Cancel Order] Cart not found or empty: ${cart_id}`);
+  //     return;
+  //   }
+
+  //   // 2. 오프라인 매장에 보낼 취소 요청 데이터 구성
+  //   const itemsToUnlock = cart.items.map((item) => ({
+  //     // Lock은 cart_id의 모든 상품에 대해 걸렸다고 가정
+  //     offline_variant_id: item.variant_id!,
+  //     quantity: (item.quantity || 0) + (item.extra_quantity || 0),
+  //   }));
+
+  //   // 3. 오프라인 매장 시스템에 취소 통보 (Lock 해제 요청)
+  //   try {
+  //     const payload = {
+  //       order_id: cart.id,
+  //       store_id: offline_store_id,
+  //       cancellation_reason:
+  //         reason === "TIMEOUT" ? "TIMEOUT_180_SECONDS" : "USER_DISCONNECT",
+  //       items_to_unlock: itemsToUnlock,
+  //     };
+
+  //     // TODO: 실제로는 axios.post(OFFLINE_CANCEL_API, payload) 호출
+  //     console.log(
+  //       `[Offline Notify Mock] CANCELED request sent: ${JSON.stringify(
+  //         payload
+  //       )}`
+  //     );
+  //   } catch (e) {
+  //     console.error(
+  //       `[Offline Notify Error] Failed to send cancel notice for ${cart_id}:`,
+  //       e
+  //     );
+  //   }
+  // }
+
+//   // 소켓 연결 해제 시: 임시 재고 Lock 해제를 위해 취소 로직 실행
+//   async handleSocketDisconnect(
+//     cart_id: string,
+//     offline_store_id?: string,
+//     items?: { variant_id: string; quantity: number }[]
+//   ) {
+//     if (offline_store_id) {
+//       // Socket Disconnect 사유로 취소 로직 호출
+//       // NOTE: offline_store_id는 현재 Cart 엔티티에 없지만, 이 인자를 통해 매장 ID를 받아서 사용합니다.
+//       await this.cancelTemporaryOrder(cart_id, offline_store_id, "DISCONNECT");
+//     }
+//   }
 }

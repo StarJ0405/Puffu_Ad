@@ -259,7 +259,7 @@ initializeDataSource().then(() => {
             }
             try {
               const cartService = container.resolve(CartService);
-              await cartService.handleSocketDisconnect(socket.id);
+              
             } catch (error) {
               console.error("Socket disconnect handler error:", error);
             }
