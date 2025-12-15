@@ -99,15 +99,26 @@ const ProductModal = NiceModal.create(
     };
     const handleSave = () => {
       setIsLoading(true);
+
       try {
+        if (!selectedCategories || selectedCategories.length === 0) {
+          setIsLoading(false);
+          return setError("카테고리는 최소 1개 선택되어야합니다.");
+        }
         const title = inputs.current[0].getValue();
         if (!title) {
+          setIsLoading(false);
           return setError("상품명이 입력되지 않았습니다.");
         }
-        const code = inputs.current[4].getValue();        
+
+        const code = inputs.current[4].getValue();
+
         validateInputs([...inputs.current, image.current])
           .then(({ isValid }: { isValid: boolean }) => {
-            if (!isValid) return;
+            if (!isValid) {
+              setIsLoading(false);
+              return;
+            }
 
             const _data: ProductDataFrame = {
               store_id: product.store_id,
@@ -115,36 +126,28 @@ const ProductModal = NiceModal.create(
               categories: selectedCategories.map((category: CategoryData) => ({
                 id: category.id,
               })),
-              // adult,
               visible: radio[0],
               buyable: radio[1],
               warehousing,
               product_type:
-                productType === "null"
-                  ? null
-                  : (productType as "is_set" | "random_box"),
-              title: title,
+                productType === "null" ? null : (productType as "is_set" | "random_box"),
+              title,
               code,
               description: inputs.current[1].getValue(),
               price: inputs.current[2].getValue(),
               thumbnail: image.current.getValue(),
               tags: inputs.current[3].getValue(),
               detail,
-              // tax_rate: !radio[2] ? inputs.current[3].getValue() : 0,
               tax_rate: 0,
             };
 
-            adminRequester.updateProduct(
-              product.id,
-              _data,
-              ({ message, error }: { message?: string; error?: string }) => {
-                setIsLoading(false);
-                if (message) {
-                  onSuccess?.();
-                  modal.current.close();
-                } else if (error) setError(error);
-              }
-            );
+            adminRequester.updateProduct(product.id, _data, ({ message, error }) => {
+              setIsLoading(false);
+              if (message) {
+                onSuccess?.();
+                modal.current.close();
+              } else if (error) setError(error);
+            });
           })
           .catch(() => {
             toast({ message: "오류가 발생했습니다." });
@@ -154,6 +157,7 @@ const ProductModal = NiceModal.create(
         setIsLoading(false);
       }
     };
+
     useEffect(() => {
       if (!product) {
         modal.current.close();
@@ -229,46 +233,75 @@ const ProductModal = NiceModal.create(
               <FlexChild className={styles.head}>
                 <P>카테고리</P>
               </FlexChild>
-              <FlexChild
-                className={styles.content}
-                gap={"5px 10px"}
-                flexWrap="wrap"
-              >
-                {edit
-                  ? selectedCategories.map((category: CategoryData) => (
-                    <Button
-                      key={category.id}
-                      styleType="admin"
-                      onClick={() => {
-                        NiceModal.show("categorySelect", {
-                          categories,
-                          selected: selectedCategories,
-                          onSelect: (value: CategoryData[]) => {
-                            if (value.length === 0)
-                              NiceModal.show("confirm", {
-                                message:
-                                  "카테고리는 최소 1개 선택되어야합니다.",
-                                confirmText: "확인",
-                              });
-                            else setCategoryIds(value.map((cat) => cat.id));
-                          },
-                        });
-                      }}
-                    >
-                      <P>{getName(category)}</P>
-                    </Button>
-                  ))
-                  : selectedCategories.map((category: CategoryData) => (
-                    <P
-                      key={category.id}
-                      backgroundColor="var(--admin-color)"
-                      color="#fff"
-                      padding={"5px 10px"}
-                    >
-                      {getName(category)}
-                    </P>
-                  ))}
+              <FlexChild className={styles.content} gap={"5px 10px"} flexWrap="wrap">
+                {edit ? (
+                  <>
+                    {/* 선택된 카테고리 버튼들 */}
+                    {selectedCategories.map((category: CategoryData) => (
+                      <Button
+                        key={category.id}
+                        styleType="admin"
+                        onClick={() => {
+                          NiceModal.show("categorySelect", {
+                            categories,
+                            selected: selectedCategories,
+                            onSelect: (value: CategoryData[]) => {
+                              if (value.length === 0)
+                                NiceModal.show("confirm", {
+                                  message: "카테고리는 최소 1개 선택되어야합니다.",
+                                  confirmText: "확인",
+                                });
+                              else setCategoryIds(value.map((cat) => cat.id));
+                            },
+                          });
+                        }}
+                      >
+                        <P>{getName(category)}</P>
+                      </Button>
+                    ))}
+                    {selectedCategories.length === 0 && (
+                      <Button
+                        styleType="admin"
+                        onClick={() => {
+                          NiceModal.show("categorySelect", {
+                            categories,
+                            selected: selectedCategories,
+                            onSelect: (value: CategoryData[]) => {
+                              if (value.length === 0)
+                                NiceModal.show("confirm", {
+                                  message: "카테고리는 최소 1개 선택되어야합니다.",
+                                  confirmText: "확인",
+                                });
+                              else setCategoryIds(value.map((cat) => cat.id));
+                            },
+                          });
+                        }}
+                      >
+                        <P>+ 추가</P>
+                      </Button>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {/* 상세보기 모드 */}
+                    {selectedCategories.length === 0 ? (
+                      <P>없음</P>
+                    ) : (
+                      selectedCategories.map((category: CategoryData) => (
+                        <P
+                          key={category.id}
+                          backgroundColor="var(--admin-color)"
+                          color="#fff"
+                          padding={"5px 10px"}
+                        >
+                          {getName(category)}
+                        </P>
+                      ))
+                    )}
+                  </>
+                )}
               </FlexChild>
+
             </HorizontalFlex>
           </FlexChild>
           <FlexChild>
