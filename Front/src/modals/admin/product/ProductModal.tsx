@@ -141,7 +141,7 @@ const ProductModal = NiceModal.create(
               tax_rate: 0,
             };
 
-            adminRequester.updateProduct(product.id, _data, ({ message, error }) => {
+            adminRequester.updateProduct(product.id, _data, ({ message, error }: { message: string, error: string }) => {
               setIsLoading(false);
               if (message) {
                 onSuccess?.();
