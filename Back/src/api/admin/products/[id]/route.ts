@@ -60,6 +60,7 @@ export const POST: ApiHandler = async (req, res) => {
     );
     return res.json(return_data ? { content: result } : { message: "success" });
   } catch (err: any) {
+    console.log(err)
     return res.status(500).json({ error: err?.message, status: 500 });
   }
 };
