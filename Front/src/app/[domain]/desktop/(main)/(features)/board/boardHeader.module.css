@@ -13,30 +13,21 @@
 .customer_info h3 {
    font-size: 50px;
    font-weight: 700;
-   color: #fff;
+   color: #111;
    position: relative;
-   padding-bottom: 20px;
-   margin-bottom: 20px;
-}
-
-.customer_info h3::before {
-   content: '';
-   position: absolute; 
-   bottom: 0; left: 50%;
-   transform: translateX(-50%);
-   width: 55px; height: 2px;
-   background: #fff;
+   padding-bottom: 30px;
 }
 
 .customer_info .call_number {
    font-size: 25px; font-weight: 900;
-   color: var(--main-color1);
-   margin-bottom: 10px;
+   color: #333;
+   margin-bottom: 20px;
 }
 
 .customer_info .business_time {
-   font-size: 18px;
-   color: #dadada;
+   font-size: 16px;
+   color: #424242;
+   font-weight: 500;
 }
 
 

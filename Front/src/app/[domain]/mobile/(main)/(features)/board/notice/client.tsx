@@ -24,6 +24,8 @@ import Button from "@/components/buttons/Button";
 //    }
 // }
 
+
+
 // 게시판 리스트 -----------------------------------------------
 export function SearchBox() {
   const navigate = useNavigate();
@@ -127,7 +129,7 @@ export function BoardTable({
                       >
                         {/* <P>{(origin.pageSize || 0) * page + index}</P> */}
                         <P
-                          lineClamp={1}
+                          lineClamp={2}
                           overflow="hidden"
                           display="--webkit-box"
                         >
@@ -153,22 +155,24 @@ export function BoardTable({
                       </FlexChild>
 
                       <FlexChild className={boardStyle.sub_data}>
-                        <FlexChild>
-                          <P
-                            lineClamp={2}
-                            overflow="hidden"
-                            display="--webkit-box"
-                            weight={500}
-                          >
-                            관리자
-                          </P>
-                        </FlexChild>
-
-                        <FlexChild>
-                          <Span weight={400}>
-                            {dateToString(notice.created_at)}
-                          </Span>
-                        </FlexChild>
+                        <HorizontalFlex>
+                          <FlexChild width={'auto'}>
+                            <Span weight={400}>
+                              {dateToString(notice.created_at)}
+                            </Span>
+                          </FlexChild>
+  
+                          <FlexChild width={'auto'}>
+                            <P
+                              lineClamp={2}
+                              overflow="hidden"
+                              display="--webkit-box"
+                              weight={500}
+                            >
+                              관리자
+                            </P>
+                          </FlexChild>
+                        </HorizontalFlex>
 
                         <FlexChild hidden>
                           <Image src="/resources/icons/board/views_icon.png" width={14}/>
